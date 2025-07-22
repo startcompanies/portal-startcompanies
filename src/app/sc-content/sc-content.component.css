@@ -1,0 +1,86 @@
+.sc-hero {
+  min-height: 60vh;
+  background-image: url("../../assets/hero-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.sc-hero .carousel-slide {
+  display: flex;
+  align-items: center;
+}
+/* Contenedor de los indicadores del carousel */
+.sc-hero .carousel-indicators button {
+  width: 10px; /* Ancho de los puntos */
+  height: 10px; /* Alto de los puntos */
+  border-radius: 50%; /* Hacerlos circulares */
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.5
+  ); /* Color blanco semitransparente */
+  border: none;
+  opacity: 1; /* Para que siempre sean visibles, no solo al hover */
+  transition: background-color 0.3s ease;
+}
+
+.sc-hero .carousel-indicators button.active {
+  background-color: #ffffff; /* Color blanco sólido para el activo */
+}
+.sc-slide-row {
+  margin: 6.5rem 0;
+  height: 30vh;
+}
+.sc-slide h2 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 900px;
+  color: #ffffff;
+}
+.sc-slide p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 900px;
+  color: #ffffff;
+}
+.sc-slide .btn-solid-white {
+  color: #006afe;
+  background-color: #ffffff;
+  border-radius: 1.3rem;
+}
+.sc-slide .btn-solid-white i {
+  color: #006afe;
+}
+.sc-slide .btn-transparent-white {
+  color: #ffffff;
+  background-color: transparent;
+  border-radius: 1.3rem;
+  border-color: #ffffff;
+}
+.sc-slide .btn-transparent-white i {
+  color: #ffffff;
+}
+/* Media Queries para responsividad (ajustar tamaños de fuente y padding en móviles) */
+@media (max-width: 991.8px) {
+  .sc-slide h2 {
+    font-size: 2.5rem;
+  }
+  .sc-slide p {
+    font-size: 1rem;
+  }
+  button {
+    font-size: 0.6rem;
+  }
+}
+@media (max-width: 767.98px) {
+  .sc-slide h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .sc-slide p {
+    font-size: 0.9rem;
+  }
+}
