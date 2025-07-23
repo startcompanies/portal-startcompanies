@@ -12,7 +12,7 @@
 .sc-navbar-logo {
   height: 45px; /* Altura del logo, ajusta según sea necesario */
   /* width: auto; */ /* Mantener la proporción */
-  filter: brightness(0) invert(1); /* Si el logo es oscuro, lo convierte a blanco */
+  /*filter: brightness(0) invert(1); /* Si el logo es oscuro, lo convierte a blanco */
 }
 
 /* Estilo de los elementos de navegación (links) */
@@ -25,13 +25,18 @@
 
 .sc-navbar .navbar-nav .nav-link:hover,
 .sc-navbar .navbar-nav .nav-link.active {
-  color: rgba(255, 255, 255, 0.8); /* Ligero cambio al pasar el mouse o activo */
+  color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); /* Ligero cambio al pasar el mouse o activo */
 }
 
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
   background-color: #ffffff; /* Color verde */
-  color: #006AFE;
+  color: #006afe;
   border: none;
   border-radius: 2.5rem; /* Bordes muy redondeados */
   padding: 0.75rem 1.5rem; /* Relleno */
@@ -55,7 +60,7 @@
 /* Estilo del botón de idioma */
 .sc-btn-language {
   background-color: #ffffff; /* Fondo blanco */
-  color: #006AFE; /* Texto azul oscuro */
+  color: #006afe; /* Texto azul oscuro */
   border: none;
   border-radius: 2.5rem; /* Bordes muy redondeados */
   padding: 0.75rem 1.25rem; /* Relleno */
@@ -65,8 +70,8 @@
 }
 
 .sc-btn-language:hover {
-  background-color: #f0f0f0; 
-  color: #006AFE; 
+  background-color: #f0f0f0;
+  color: #006afe;
 }
 
 /* Estilo del dropdown de idioma */
@@ -77,15 +82,14 @@
 }
 
 .sc-navbar .dropdown-item {
-  color: #006AFE;
+  color: #006afe;
 }
 
 .sc-navbar .dropdown-item:hover,
 .sc-navbar .dropdown-item.active {
-  background-color: #006AFE;
+  background-color: #006afe;
   color: #ffffff;
 }
-
 
 /* Toggler Icon (el icono de las "hamburguesas") */
 .sc-navbar .navbar-toggler {
@@ -105,10 +109,24 @@
 /* ========================================================================= */
 /* Responsividad: Cambios para el menú colapsado (en móviles) */
 /* ========================================================================= */
-@media (max-width: 991.98px) { /* Breakpoint 'lg' de Bootstrap */
+@media (max-width: 991.98px) {
+  /* Breakpoint 'lg' de Bootstrap */
   .sc-navbar {
+    /*background: #ffffff;*/
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+  .sc-navbar-light{
+    background-color: #ffffff;
+  }
+
+  .sc-navbar .navbar-nav .nav-link {
+    color: #006afe;
+  }
+
+  .sc-navbar .navbar-nav .nav-link:hover,
+  .sc-navbar .navbar-nav .nav-link.active {
+    color: #006afe;
   }
 
   /* Fondo del menú colapsado */
@@ -153,5 +171,9 @@
 
   .sc-navbar .d-flex.ms-lg-auto .dropdown .btn {
     width: 100%; /* El botón dentro del dropdown también al 100% */
+  }
+  .sc-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C 106%2C 254%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    /* Color blanco para el icono de hamburguesa */
   }
 }
