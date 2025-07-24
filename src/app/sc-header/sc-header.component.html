@@ -18,16 +18,19 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link active" aria-current="page"
-            href="#">Nosotros</a>
+            href="#" (click)="navigateToSection('heroSection')">Nosotros</a>
         </li>
         <li class="nav-item">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#">Planes y precios</a>
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
+            (click)="navigateToSection('pricingSection')">Planes y precios</a>
         </li>
         <li class="nav-item">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#">Blog</a>
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
+            (click)="navigateToSection('blogSection')">Blog</a>
         </li>
         <li class="nav-item">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#">Contacto</a>
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
+            (click)="navigateToSection('faqSection')">Contacto</a>
         </li>
       </ul>
 

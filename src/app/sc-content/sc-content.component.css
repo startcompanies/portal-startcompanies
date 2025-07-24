@@ -442,7 +442,7 @@
   align-items: stretch;
 }
 
-.pricing-card {  
+.pricing-card {
   border-radius: 2rem;
   padding: 32px;
   text-align: center;
@@ -738,6 +738,511 @@
   }
 }
 
+/* Benefits Section */
+.benefits-section {
+  padding: 80px 16px;
+  /* Padding general de la sección */
+  background-color: #ffffff;
+  /* Fondo blanco de la sección */
+}
+
+.benefits-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  /* text-align: center; */
+  /* Eliminado, el título ya tiene text-center */
+}
+
+/* Título de la sección */
+.section-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+  margin-bottom: 60px;
+  /* Espacio debajo del título */
+}
+
+/* Color azul/cian para la palabra "Beneficios" */
+.section-title .text-primary-blue {
+  color: #00B8D9;
+  /* Azul/Cian de tu lista anterior */
+}
+
+/* Grid de beneficios (ahora un row de Bootstrap) */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* gap: 32px; */
+  /* Eliminado, Bootstrap g-4 lo maneja */
+  margin-top: 60px;
+  /* Espacio superior */
+  /* row g-4 ya están en el HTML */
+}
+
+.benefit-card {
+  background-color: #f4f7fc;
+  /* Fondo gris muy claro de la tarjeta */
+  border-radius: 60px;
+  /* Bordes muy redondeados */
+  padding: 32px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  /* Espacio entre los elementos de la tarjeta */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  /* Sombra sutil */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+  /* Efecto de levantar al pasar el mouse */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  /* Sombra más intensa al hover */
+}
+
+.benefit-icon {
+  width: 60px;
+  height: 60px;
+  /* Los iconos de la captura son azul/cian, si tus SVG son grises, puedes aplicar un filtro */
+  /* filter: brightness(0) saturate(100%) invert(56%) sepia(85%) saturate(2250%) hue-rotate(159deg) brightness(98%) contrast(101%); */
+  /* Esto es para convertir un icono negro a azul/cian */
+  /* Si tus SVG ya tienen el color correcto, no necesitas el filtro. */
+}
+
+.benefit-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+  margin-bottom: 8px;
+}
+
+.benefit-description {
+  font-size: 16px;
+  font-weight: 400;
+  color: #293b49;
+  /* Color oscuro */
+  line-height: 1.5;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Partner Logos */
+/* ------------------------------------------------------------------------- */
+/* d-flex justify-content-center align-items-center flex-wrap gap-4 mt-5 ya están en el HTML */
+
+/* Asegura que las imágenes de los logos sean responsivas si no lo son por defecto */
+.benefits-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Testimonials Section */
+.testimonials-section {
+  padding: 80px 16px;
+  background-color: #ffffff;
+  /* Fondo blanco de la sección */
+}
+
+.testimonials-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  /* Centra el header y el slider */
+}
+
+.testimonials-header {
+  margin-bottom: 60px;
+}
+
+.testimonials-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+  margin-bottom: 16px;
+}
+
+.testimonials-title span {
+  /* Estilo para "Start Companies" */
+  font-size: 48px;
+  /* Tamaño grande */
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+}
+
+.testimonials-title .highlight {
+  /* Estilo para "4.8 estrellas..." */
+  font-size: 32px;
+  /* Tamaño de fuente de la captura */
+  font-weight: 700;
+  color: #02cae3;
+  /* Azul/cian */
+  display: block;
+  /* Para que ocupe su propia línea */
+  margin-top: 8px;
+  /* Espacio entre las dos líneas del título */
+}
+
+.testimonials-subtitle {
+  font-size: 16px;
+  font-weight: 400;
+  color: #293b49;
+  /* Color oscuro */
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+/* Estilo del botón "Lee más reseñas en Trustpilot" */
+.btn-primary-custom {
+  background-color: #02cae3;
+  /* Azul/cian */
+  color: #ffffff;
+  border: none;
+  border-radius: 2.5rem;
+  /* Bordes redondeados */
+  padding: 0.75rem 2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  /* Quita el subrayado del enlace */
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  background-color: #00b8d9;
+  /* Un tono más oscuro de azul/cian al hover */
+  color: #ffffff;
+}
+
+.btn-primary-custom i.bi {
+  font-size: 1.1rem;
+  /* Tamaño del icono de estrella */
+}
+
+/* Slider de testimonios (ahora un row de Bootstrap) */
+.testimonials-slider {
+  /* display: grid; */
+  /* Eliminado, Bootstrap row lo maneja */
+  /* grid-template-columns: 1fr; */
+  /* Eliminado */
+  /* gap: 24px; */
+  /* Eliminado, Bootstrap g-4 lo maneja */
+  margin-bottom: 40px;
+  /* Espacio debajo del slider */
+}
+
+.testimonial-card {
+  background-color: #ffffff;
+  /* Fondo blanco */
+  border: 3px solid #02cae3;
+  /* Borde azul/cian */
+  border-radius: 60px;
+  /* Bordes muy redondeados */
+  padding: 32px;
+  text-align: center;
+  height: 100%;
+  /* Asegura que todas las tarjetas tengan la misma altura */
+  display: flex;
+  /* Para organizar el contenido verticalmente */
+  flex-direction: column;
+  align-items: center;
+  /* Centra el contenido horizontalmente */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  /* Sombra sutil */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+  /* Efecto de levantar al pasar el mouse */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  /* Sombra más intensa al hover */
+}
+
+.testimonial-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  /* Redondo */
+  margin: 0 auto 16px;
+  /* Centra y da margen inferior */
+  object-fit: cover;
+  /* Asegura que la imagen cubra el área sin distorsionar */
+}
+
+.testimonial-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+  margin-bottom: 4px;
+}
+
+.testimonial-location {
+  font-size: 16px;
+  font-weight: 400;
+  color: #293b49;
+  /* Color oscuro */
+  margin-bottom: 16px;
+}
+
+.testimonial-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: #293b49;
+  /* Color oscuro */
+  line-height: 1.5;
+  margin-bottom: 16px;
+  flex-grow: 1;
+  /* Permite que el texto crezca y empuje las estrellas al final */
+}
+
+.rating {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: auto;
+  /* Empuja las estrellas al final de la tarjeta */
+}
+
+.star-icon {
+  /* Estilo para los iconos de estrella de Bootstrap */
+  color: #ffd700;
+  /* Color amarillo/dorado para las estrellas */
+  font-size: 16px;
+}
+
+/* Carrusel de puntos (indicadores) */
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 184, 217, 0.4);
+  /* Azul/cian transparente para inactivos */
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.carousel-dot.active {
+  background-color: #00B8D9;
+  /* Azul/cian sólido para el activo */
+}
+
+/* Blog Section */
+.blog-section {
+  padding: 80px 16px;
+  background-color: #ffffff;
+  /* Fondo blanco de la sección */
+}
+
+.blog-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.blog-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1F2A37;
+  /* Color oscuro para "¿Deseas" */
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.blog-title .text-primary-blue {
+  color: #02cae3;
+  /* Azul/cian para "conocer más" */
+}
+
+/* Blog Grid (ahora un row de Bootstrap) */
+.blog-grid {
+  /* display: grid; */
+  /* Eliminado, Bootstrap row lo maneja */
+  /* grid-template-columns: 1fr; */
+  /* Eliminado */
+  /* gap: 32px; */
+  /* Eliminado, Bootstrap g-4 lo maneja */
+  margin-bottom: 40px;
+  /* Espacio debajo de la cuadrícula */
+}
+
+.blog-card {
+  background-color: #f4f7fc;
+  /* Fondo gris muy claro de la tarjeta */
+  border-radius: 20px;
+  /* Bordes redondeados */
+  padding: 0;
+  /* Padding se manejará internamente */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Para que la imagen se recorte con el border-radius */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  /* Sombra sutil */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+  /* Efecto de levantar al pasar el mouse */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  /* Sombra más intensa al hover */
+}
+
+.blog-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+  /* Solo esquinas superiores redondeadas para la imagen */
+  margin-bottom: 16px;
+  /* Espacio debajo de la imagen */
+}
+
+.blog-card-content {
+  padding: 0 24px 24px 24px;
+  /* Padding interno para el contenido de la tarjeta */
+  text-align: left;
+  /* Alineación del texto dentro de la tarjeta */
+  flex-grow: 1;
+  /* Permite que el contenido se estire */
+}
+
+.blog-category {
+  font-size: 14px;
+  font-weight: 400;
+  color: #bababa;
+  /* Gris claro */
+  margin-bottom: 8px;
+  /* Espacio debajo de la categoría */
+}
+
+.blog-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #293b49;
+  /* Color oscuro */
+  line-height: 1.3;
+  margin-bottom: 8px;
+  /* Espacio debajo del título */
+}
+
+.blog-excerpt {
+  font-size: 14px;
+  font-weight: 400;
+  color: #bababa;
+  /* Gris claro */
+  line-height: 1.5;
+  margin-bottom: 16px;
+  /* Espacio debajo del extracto */
+}
+
+.blog-read-more {
+  font-size: 14px;
+  font-weight: 400;
+  color: #0068bb;
+  /* Azul del enlace */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.blog-read-more:hover {
+  color: #004a80;
+  /* Un tono más oscuro de azul al hover */
+}
+
+/* Botones de navegación (carrusel) */
+.btn-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* Círculo perfecto */
+  padding: 0;
+  background-color: #02cae3;
+  /* Azul/cian */
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-circle:hover {
+  background-color: #00b8d9;
+  /* Un tono más oscuro de azul/cian al hover */
+}
+
+.btn-circle img {
+  width: 24px;
+  height: 24px;
+}
+
+/* FAQ Section */
+.faq-section {
+  background-color: #fafafa; /* Fondo gris muy claro de la sección */
+  padding: 80px 16px;
+}
+
+.faq-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center; /* Centra el título */
+}
+
+.faq-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #293b49; /* Color oscuro para "Preguntas" */
+  margin-bottom: 60px; /* Espacio debajo del título */
+}
+
+.faq-title .highlight {
+  color: #02cae3; /* Azul/cian para "Frecuentes" */
+}
+
+/* Estilos para la lista de preguntas estáticas */
+.faq-list {
+  max-width: 800px; /* Limita el ancho de la lista */
+  margin: 0 auto; /* Centra la lista */
+  background-color: #fafafa; /* ¡FONDO DE LA LISTA IGUAL AL DE LA SECCIÓN! */
+  border-radius: 0; /* Asegura que no haya bordes redondeados */
+  box-shadow: none; /* Elimina la sombra */
+}
+
+.faq-item-static {
+  background-color: #fafafa; /* ¡FONDO DE CADA ITEM IGUAL AL DE LA SECCIÓN! */
+  border-bottom: 1px solid #e0e0e0; /* Línea divisoria gris clara y visible */
+  padding: 20px 24px; /* Padding para el contenido del item */
+  transition: background-color 0.3s ease; /* Transición para hover */
+}
+
+.faq-item-static:last-child {
+  border-bottom: none; /* Elimina la última línea divisoria */
+}
+
+.faq-item-static:hover {
+  background-color: #f0f0f0; /* Un tono ligeramente más oscuro al hover, usando un color de tu lista */
+  cursor: default; /* Cambia el cursor para indicar que no es clickeable */
+}
+
+.faq-question-static {
+  font-size: 16px;
+  font-weight: 400;
+  color: #293b49; /* Color oscuro para el texto de la pregunta */
+  text-align: left;
+  display: flex; /* Para alinear el texto y el icono */
+  justify-content: space-between; /* Espacia el texto y el icono */
+  align-items: center; /* Centra verticalmente */
+}
+
+.faq-arrow-icon {
+  font-size: 16px; /* Tamaño del icono */
+  color: #293b49; /* Color del icono (gris oscuro) */
+  margin-left: 10px; /* Espacio entre el texto y el icono */
+  flex-shrink: 0; /* Evita que el icono se encoja */
+}
+
 @media (max-width: 767.98px) {
   .sc-slide h2 {
     font-size: 1.5rem;
@@ -819,5 +1324,10 @@
 
   .sc-tab-pane-content p {
     font-size: 0.85rem;
+  }
+
+  /* Benefits Section */
+  .benefits-grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,6 +1,6 @@
 <app-sc-header></app-sc-header>
 <!--Section Hero-->
-<header class="sc-hero">
+<header class="sc-hero" #heroSection>
   <div id="carouselExampleIndicators" class="carousel slide h-100" data-bs-ride="carousel">
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
@@ -72,7 +72,7 @@
   </div>
 </header>
 <!--Our Services Section-->
-<section class="sc-services-section position-relative py-5">
+<section class="sc-services-section position-relative py-5" #servicesSection>
   <div class="container sc-services-container">
     <div class="card sc-services-card text-center p-4 shadow-lg">
       <h2 class="card-title mb-2">Nuestros <span class="sc-text-blue-accent">servicios</span></h2>
@@ -117,7 +117,7 @@
   </div>
 </section>
 <!-- Opening LLC Section -->
-<section class="sc-how-to-llc py-5">
+<section class="sc-how-to-llc py-5" #howToLlcSection>
   <div class="container">
     <h2 class="text-center mb-5">
       Cómo abrir tu LLC en <span class="sc-text-blue-accent">Estados Unidos</span>
@@ -186,7 +186,7 @@
   </div>
 </section>
 <!-- Sección de Pestañas de Servicios -->
-<section class="sc-tabs-section py-5">
+<section class="sc-tabs-section py-5" #servicesSection>
   <div class="container">
     <!-- Navegación de las Pestañas (Tab Links) -->
     <ul class="nav nav-pills mb-5 justify-content-center" id="serviceTabs" role="tablist">
@@ -277,7 +277,7 @@
   </div>
 </section>
 <!-- Pricing Section -->
-<section class="pricing-section">
+<section class="pricing-section" #pricingSection>
   <div class="sc-pricing-background"></div>
   <!-- Overlay para la imagen de fondo -->
 
@@ -305,7 +305,8 @@
                 <h3 class="card-title text-center">Pack Emprendedor</h3>
                 <div class="card-price text-center">$499</div>
                 <p class="card-description text-center">
-                  Ideal para freelancers, agencias y startups en etapa temprana que no tienen presencia física en EE.UU.<br />
+                  Ideal para freelancers, agencias y startups en etapa temprana que no tienen presencia física en
+                  EE.UU.<br />
                   Constitución de LLC en Nuevo México (Single Member)
                 </p>
                 <!-- Botón principal (usará el color #006afe de tu lista) -->
@@ -335,7 +336,8 @@
                 <h3 class="card-title text-center">Pack Elite</h3>
                 <div class="card-price text-center">$599</div>
                 <p class="card-description text-center">
-                  Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos<br />
+                  Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de
+                  impuestos<br />
                   Constitución de LLC en cualquier estado (Single Member o Partnership)
                 </p>
                 <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
@@ -390,4 +392,316 @@
     </div>
   </div>
 </section>
-<app-sc-footer></app-sc-footer>
+<!-- Benefits Section -->
+<section class="benefits-section py-5" #benefitsSection>
+  <div class="container">
+    <div class="benefits-content">
+      <h2 class="section-title text-center mb-5">
+        <span class="text-primary-blue">Beneficios</span> clave de una LLC en EE.UU.
+      </h2>
+
+      <!-- Reemplazamos benefits-grid con row y col de Bootstrap -->
+      <div class="benefits-grid row g-4 mb-5">
+        <!-- Benefit Card 1 -->
+        <div class="col-12 col-md-12 col-lg-12 d-flex">
+          <div class="benefit-card w-100">
+            <img src="assets/benefits/img_search.svg" alt="Global Access" class="benefit-icon" />
+            <div>
+              <h3 class="benefit-title">Acceso global</h3>
+              <p class="benefit-description">
+                Opera a nivel global, realiza cobros en dólares y administra cuentas bancarias a través de plataformas
+                como Relay y Mercury.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit Card 2 -->
+        <div class="col-12 col-md-12 col-lg-12 d-flex">
+          <div class="benefit-card w-100">
+            <img src="assets/benefits/img_group_16.svg" alt="Privacy Protection" class="benefit-icon" />
+            <div>
+              <h3 class="benefit-title">Privacidad y protección</h3>
+              <p class="benefit-description">
+                Protege tu identidad y patrimonio con una LLC, asegurando anonimato y seguridad frente a riesgos.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit Card 3 -->
+        <div class="col-12 col-md-12 col-lg-12 d-flex">
+          <div class="benefit-card w-100">
+            <img src="assets/benefits/img_group_15.svg" alt="100% Online" class="benefit-icon" />
+            <div>
+              <h3 class="benefit-title">Todo 100% online</h3>
+              <p class="benefit-description">
+                Lleva a cabo todo el proceso de forma online y accede a mercados internacionales sin necesidad de
+                desplazarte.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit Card 4 -->
+        <div class="col-12 col-md-12 col-lg-12 d-flex">
+          <div class="benefit-card w-100">
+            <img src="assets/benefits/img_group_14.svg" alt="Robust Finances" class="benefit-icon" />
+            <div>
+              <h3 class="benefit-title">Finanzas robustas</h3>
+              <p class="benefit-description">
+                Administra cuentas en dólares, utiliza plataformas de pago internacionales y accede a opciones de
+                financiamiento en EE.UU.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Partner Logos -->
+      <div class="d-flex justify-content-center align-items-center flex-wrap gap-4 mt-5 p-5">
+        <img src="assets/benefits/img_symbol.svg" alt="Partner 1" width="56" height="56" />
+        <img src="assets/benefits/img_wordmark.svg" alt="Partner 2" width="168" height="20" />
+        <img src="assets/benefits/img_vector.svg" alt="Partner 3" width="110" height="56" />
+        <img src="assets/benefits/img_vector_blue_a700_01.svg" alt="Partner 4" width="92" height="56" />
+        <img src="assets/benefits/img_group_12.svg" alt="Partner 5" width="322" height="60" />
+        <img src="assets/benefits/img_group_11.svg" alt="Partner 6" width="200" height="54" />
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5" #testimonialsSection>
+  <div class="container">
+    <div class="testimonials-content">
+      <div class="testimonials-header">
+        <h2 class="testimonials-title">
+          <span class="d-block" style="font-size: 48px; color: #293b49;">Start Companies</span><br />
+          <span class="highlight" style="color: #02cae3;">4.8 estrellas, 100 reseñas, "Excellent".</span>
+        </h2>
+        <p class="testimonials-subtitle">
+          Más de 200 clientes nos califican como Excelente en servicios de creación LLC. Descubrí qué opinan sobre Start
+          Companies y cómo los ayudamos a emprender en EE.UU.
+        </p>
+        <a href="#" class="btn-primary-custom d-inline-flex align-items-center justify-content-center">
+          Lee más reseñas en Trustpilot
+          <i class="bi bi-star-fill ms-2"></i> <!-- Icono de estrella de Bootstrap Icons -->
+        </a>
+      </div>
+
+      <!-- Reemplazamos testimonials-slider con row y col de Bootstrap -->
+      <div class="testimonials-slider row g-4 justify-content-center">
+        <!-- Testimonial Card 1 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <div class="testimonial-card w-100">
+            <img src="assets/testimonials/img_outdoor_shot_yo.png" alt="Boris Rivas"
+              class="testimonial-avatar rounded-circle img-fluid" />
+            <h4 class="testimonial-name">Boris Rivas</h4>
+            <p class="testimonial-location">Argentina</p>
+            <p class="testimonial-text">
+              <strong>Todo perfecto.</strong> Un 10 en atención y servicio durante todo el proceso de creación LLC. Lo
+              recomiendo 100% a quienes quieran emprender en EE.UU. sin complicaciones.
+            </p>
+            <div class="rating d-flex justify-content-center">
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial Card 2 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <div class="testimonial-card w-100">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Luis Mosquera"
+              class="testimonial-avatar rounded-circle img-fluid" />
+            <h4 class="testimonial-name">Luis Mosquera</h4>
+            <p class="testimonial-location">Ecuador</p>
+            <p class="testimonial-text">
+              Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y fui rechazado. Vi una publicidad en Instagram,
+              los contacté y me ayudaron con todo el proceso. Gracias a su asistencia, lograron que mi cuenta fuera
+              aprobada.
+            </p>
+            <div class="rating d-flex justify-content-center">
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial Card 3 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <div class="testimonial-card w-100">
+            <img src="assets/testimonials/img_young_bearded_m_64x64.png" alt="Luis Mosquera"
+              class="testimonial-avatar rounded-circle img-fluid" />
+            <h4 class="testimonial-name">Luis Mosquera</h4>
+            <p class="testimonial-location">Ecuador</p>
+            <p class="testimonial-text">
+              Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y fui rechazado. Vi una publicidad en Instagram,
+              los contacté y me ayudaron con todo el proceso. Gracias a su asistencia, lograron que mi cuenta fuera
+              aprobada.
+            </p>
+            <div class="rating d-flex justify-content-center">
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+              <i class="bi bi-star-fill star-icon"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carrusel de puntos (indicadores) -->
+      <div class="d-flex justify-content-center gap-2 mt-4">
+        <div class="carousel-dot active"></div>
+        <div class="carousel-dot"></div>
+        <div class="carousel-dot"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- Blog Section -->
+<section class="blog-section py-5" #blogSection>
+  <div class="container">
+    <div class="blog-content">
+      <h2 class="blog-title text-center mb-5">
+        ¿Deseas <span class="text-primary-blue">conocer más</span>?
+      </h2>
+
+      <!-- Reemplazamos blog-grid con row y col de Bootstrap -->
+      <div class="blog-grid row g-4 justify-content-center">
+        <!-- Blog Card 1 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="blog-card w-100">
+            <img src="assets/blog/img_image_2.png" alt="Blog Image" class="blog-image img-fluid rounded-3" />
+            <div class="blog-card-content d-flex flex-column flex-grow-1">
+              <div class="blog-category">Abrir una LLC</div>
+              <h3 class="blog-card-title">
+                ECI y LLC: La combinación perfecta para tu negocio en Estados Unidos
+              </h3>
+              <p class="blog-excerpt">
+                Expandir un negocio en EE.UU. presenta oportunidades fiscales, especialmente
+              </p>
+              <a href="#" class="blog-read-more mt-auto">Leer más</a>
+            </div>
+          </article>
+        </div>
+
+        <!-- Blog Card 2 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="blog-card w-100">
+            <img src="assets/blog/img_image_3.png" alt="Blog Image" class="blog-image img-fluid rounded-3" />
+            <div class="blog-card-content d-flex flex-column flex-grow-1">
+              <div class="blog-category">Abrir una LLC</div>
+              <h3 class="blog-card-title">
+                ¿Cómo crear una LLC en Nuevo México?
+              </h3>
+              <p class="blog-excerpt">
+                Para introducirte un poco más en el tema nueva está de más que sepas que es una LLC, y ¿por qué crear
+                una LLC en Nuevo México puede interesarte?
+              </p>
+              <a href="#" class="blog-read-more mt-auto">Leer más</a>
+            </div>
+          </article>
+        </div>
+
+        <!-- Blog Card 3 -->
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+          <article class="blog-card w-100">
+            <img src="assets/blog/img_image_4.png" alt="Blog Image" class="blog-image img-fluid rounded-3" />
+            <div class="blog-card-content d-flex flex-column flex-grow-1">
+              <div class="blog-category">Abrir una LLC</div>
+              <h3 class="blog-card-title">
+                ¿Cómo hacer un Informe BOI? – Reporte BOI LLC
+              </h3>
+              <p class="blog-excerpt">
+                El Informe BOI (Beneficial Ownership Information) es una obligación regulatoria
+              </p>
+              <a href="#" class="blog-read-more mt-auto">Leer más</a>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Botones de navegación (carrusel) -->
+      <div class="d-flex gap-4 justify-content-start mt-5">
+        <button class="btn-circle d-flex align-items-center justify-content-center">
+          <img src="assets/blog/img_group_8.svg" alt="Previous" width="24" height="24" />
+        </button>
+        <button class="btn-circle d-flex align-items-center justify-content-center">
+          <img src="assets/blog/img_group_7.svg" alt="Next" width="24" height="24" />
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- FAQ Section -->
+<section class="faq-section py-5" #faqSection>
+  <div class="container">
+    <div class="faq-content">
+      <h2 class="faq-title text-center mb-5">
+        Preguntas <span class="highlight">Frecuentes</span>
+      </h2>
+
+      <!-- Lista de preguntas estáticas (sin funcionalidad de acordeón) -->
+      <div class="faq-list">
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Qué garantía me dan del servicio y cuándo puedo pagar?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿En cuántos días puedo tener mi LLC abierta?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Cómo transferir dinero a Estados Unidos legalmente desde Argentina o Latinoamérica?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Cuáles son los requisitos para abrir una LLC en Estados Unidos?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Cuánto cuesta el servicio de apertura de una LLC en Estados Unidos?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Qué impuestos se deben pagar con una LLC en Estados Unidos?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+
+        <div class="faq-item-static">
+          <div class="faq-question-static">
+            ¿Por qué elegir nuestros servicios para abrir una LLC en Estados Unidos?
+            <i class="bi bi-chevron-down faq-arrow-icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-sc-footer #footerSection></app-sc-footer>

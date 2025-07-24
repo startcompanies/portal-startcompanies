@@ -1,6 +1,7 @@
 import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
+import { ScrollService } from '../services/scroll.service';
 
 @Component({
   selector: 'app-sc-header',
@@ -14,7 +15,8 @@ export class ScHeaderComponent implements OnInit {
   isNavbarShrunk: boolean = false;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private scrollService: ScrollService
   ) { }
 
   ngOnInit(): void {
@@ -47,5 +49,13 @@ export class ScHeaderComponent implements OnInit {
 
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
+  }
+
+  /**
+   * Navigate to a section
+   * @param sectionId - The id of the section to navigate to
+   */
+  navigateToSection(sectionId: string) {
+    this.scrollService.scrollTo(sectionId);
   }
 }
