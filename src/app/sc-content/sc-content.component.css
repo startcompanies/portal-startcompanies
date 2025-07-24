@@ -1,80 +1,145 @@
+/* Hero Section */
 .sc-hero {
-  min-height: 60vh;
+  height: 70vh; /* Altura fija para un posicionamiento estable */
   background-image: url("../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
   position: relative;
-}
-
-.sc-hero .carousel-slide {
   display: flex;
+  justify-content: center;
   align-items: center;
+  /* padding-top: 56px; */ /* Si tu navbar es fijo, considera añadir un padding-top aquí */
 }
 
-/* Contenedor de los indicadores del carousel */
+/* El carrusel en sí mismo */
+.sc-hero #carouselExampleIndicators {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Carousel Inner */
+.sc-hero .carousel-inner {
+    height: 100%;
+}
+
+/* Individual carousel item */
+.sc-hero .carousel-item {
+    height: 100%;
+}
+
+/* Contenedor de cada slide del carrusel */
+.sc-slide {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Estilos de los indicadores del carrusel (los puntos) */
+.sc-hero .carousel-indicators {
+  position: absolute !important;
+  bottom: 80px !important; /* ¡VALOR AJUSTADO AQUÍ! Puedes probar con 100px, 120px, etc. */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  z-index: 10 !important;
+}
+
 .sc-hero .carousel-indicators button {
-  width: 10px;
-  /* Ancho de los puntos */
-  height: 10px;
-  /* Alto de los puntos */
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  /* Hacerlos circulares */
-  background-color: rgba(255,
-      255,
-      255,
-      0.5);
-  /* Color blanco semitransparente */
+  background-color: rgba(255, 255, 255, 0.5);
   border: none;
   opacity: 1;
-  /* Para que siempre sean visibles, no solo al hover */
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  padding: 0;
+  flex: 0 0 auto;
 }
 
 .sc-hero .carousel-indicators button.active {
   background-color: #ffffff;
-  /* Color blanco sólido para el activo */
+  transform: scale(1.2);
 }
 
-.sc-slide-row {
-  margin: 6.5rem 0;
-  height: 30vh;
-}
-
-.sc-slide h2 {
-  font-size: 3.5rem;
+/* Título principal del Hero */
+.hero-title {
+  font-size: 3.8rem;
   font-weight: 700;
   line-height: 1.2;
-  max-width: 900px;
   color: #ffffff;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
 }
 
-.sc-slide p {
-  font-size: 1.2rem;
+/* Descripción del Hero */
+.hero-description {
+  font-size: 1.15rem;
+  font-weight: 400;
   line-height: 1.6;
-  margin-bottom: 2.5rem;
-  max-width: 900px;
   color: #ffffff;
+  margin-bottom: 0;
+  max-width: 100%;
 }
 
-.sc-slide .btn-solid-white {
-  color: #ffffff;
+/* Contenedor de los botones */
+.hero-buttons {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+/* Estilo Base para los botones del Hero */
+.hero-btn-primary,
+.hero-btn-secondary {
+  border-radius: 2.5rem;
+  padding: 0.8rem 2.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+/* Estilo para el botón "Crea TU LLC" (azul de fondo, texto blanco) */
+.hero-btn-primary {
   background-color: #02CAE3;
-  border-radius: 1.3rem;
-}
-
-.sc-slide .btn-solid-white i {
   color: #ffffff;
 }
 
-.sc-slide .btn-transparent-white {
-  color: #ffffff;
+.hero-btn-primary:hover {
+  background-color: #02CAE3;
+  border-color: #02CAE3;
+}
+
+/* Estilo para el botón "Renueva TU LLC" o "ABRE TU CUENTA LLC" (blanco con borde azul, texto azul) */
+.hero-btn-secondary {
   background-color: transparent;
-  border-radius: 1.3rem;
-  border-color: #ffffff;
+  color: #F3F6FA;
+  border: 2px solid #F3F6FA;
 }
 
-.sc-slide .btn-transparent-white i {
-  color: #ffffff;
+.hero-btn-secondary:hover {
+  background-color: #f0f0f0;
+  color: #0049c6;
+  border-color: #0049c6;
+}
+
+/* Iconos de flecha dentro de los botones */
+.hero-btn-primary i.bi,
+.hero-btn-secondary i.bi {
+  font-size: 1.1rem;
 }
 
 /* polizas */
@@ -1180,67 +1245,92 @@
 
 /* FAQ Section */
 .faq-section {
-  background-color: #fafafa; /* Fondo gris muy claro de la sección */
+  background-color: #fafafa;
+  /* Fondo gris muy claro de la sección */
   padding: 80px 16px;
 }
 
 .faq-content {
   max-width: 1200px;
   margin: 0 auto;
-  text-align: center; /* Centra el título */
+  text-align: center;
+  /* Centra el título */
 }
 
 .faq-title {
   font-size: 32px;
   font-weight: 700;
-  color: #293b49; /* Color oscuro para "Preguntas" */
-  margin-bottom: 60px; /* Espacio debajo del título */
+  color: #293b49;
+  /* Color oscuro para "Preguntas" */
+  margin-bottom: 60px;
+  /* Espacio debajo del título */
 }
 
 .faq-title .highlight {
-  color: #02cae3; /* Azul/cian para "Frecuentes" */
+  color: #02cae3;
+  /* Azul/cian para "Frecuentes" */
 }
 
 /* Estilos para la lista de preguntas estáticas */
 .faq-list {
-  max-width: 800px; /* Limita el ancho de la lista */
-  margin: 0 auto; /* Centra la lista */
-  background-color: #fafafa; /* ¡FONDO DE LA LISTA IGUAL AL DE LA SECCIÓN! */
-  border-radius: 0; /* Asegura que no haya bordes redondeados */
-  box-shadow: none; /* Elimina la sombra */
+  max-width: 800px;
+  /* Limita el ancho de la lista */
+  margin: 0 auto;
+  /* Centra la lista */
+  background-color: #fafafa;
+  /* ¡FONDO DE LA LISTA IGUAL AL DE LA SECCIÓN! */
+  border-radius: 0;
+  /* Asegura que no haya bordes redondeados */
+  box-shadow: none;
+  /* Elimina la sombra */
 }
 
 .faq-item-static {
-  background-color: #fafafa; /* ¡FONDO DE CADA ITEM IGUAL AL DE LA SECCIÓN! */
-  border-bottom: 1px solid #e0e0e0; /* Línea divisoria gris clara y visible */
-  padding: 20px 24px; /* Padding para el contenido del item */
-  transition: background-color 0.3s ease; /* Transición para hover */
+  background-color: #fafafa;
+  /* ¡FONDO DE CADA ITEM IGUAL AL DE LA SECCIÓN! */
+  border-bottom: 1px solid #e0e0e0;
+  /* Línea divisoria gris clara y visible */
+  padding: 20px 24px;
+  /* Padding para el contenido del item */
+  transition: background-color 0.3s ease;
+  /* Transición para hover */
 }
 
 .faq-item-static:last-child {
-  border-bottom: none; /* Elimina la última línea divisoria */
+  border-bottom: none;
+  /* Elimina la última línea divisoria */
 }
 
 .faq-item-static:hover {
-  background-color: #f0f0f0; /* Un tono ligeramente más oscuro al hover, usando un color de tu lista */
-  cursor: default; /* Cambia el cursor para indicar que no es clickeable */
+  background-color: #f0f0f0;
+  /* Un tono ligeramente más oscuro al hover, usando un color de tu lista */
+  cursor: default;
+  /* Cambia el cursor para indicar que no es clickeable */
 }
 
 .faq-question-static {
   font-size: 16px;
   font-weight: 400;
-  color: #293b49; /* Color oscuro para el texto de la pregunta */
+  color: #293b49;
+  /* Color oscuro para el texto de la pregunta */
   text-align: left;
-  display: flex; /* Para alinear el texto y el icono */
-  justify-content: space-between; /* Espacia el texto y el icono */
-  align-items: center; /* Centra verticalmente */
+  display: flex;
+  /* Para alinear el texto y el icono */
+  justify-content: space-between;
+  /* Espacia el texto y el icono */
+  align-items: center;
+  /* Centra verticalmente */
 }
 
 .faq-arrow-icon {
-  font-size: 16px; /* Tamaño del icono */
-  color: #293b49; /* Color del icono (gris oscuro) */
-  margin-left: 10px; /* Espacio entre el texto y el icono */
-  flex-shrink: 0; /* Evita que el icono se encoja */
+  font-size: 16px;
+  /* Tamaño del icono */
+  color: #293b49;
+  /* Color del icono (gris oscuro) */
+  margin-left: 10px;
+  /* Espacio entre el texto y el icono */
+  flex-shrink: 0;
+  /* Evita que el icono se encoja */
 }
 
 @media (max-width: 767.98px) {
