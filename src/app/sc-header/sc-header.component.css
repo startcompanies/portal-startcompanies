@@ -3,15 +3,23 @@
 /* Estilo general del Navbar */
 .sc-navbar {
   background-color: transparent;
-  padding-top: 1.5rem; /* Más padding vertical para mayor altura */
+  padding-top: 1.5rem;
+  /* Más padding vertical para mayor altura */
   padding-bottom: 1.5rem;
-  transition: background-color 0.3s ease; /* Transición para posible cambio de fondo */
+  transition: background-color 0.3s ease;
+  /* Transición para posible cambio de fondo */
+}
+
+.sc-navbar-light {
+  background-color: #ffffff;
 }
 
 /* Estilo del logo */
 .sc-navbar-logo {
-  height: 45px; /* Altura del logo, ajusta según sea necesario */
-  /* width: auto; */ /* Mantener la proporción */
+  height: 45px;
+  /* Altura del logo, ajusta según sea necesario */
+  /* width: auto; */
+  /* Mantener la proporción */
   /*filter: brightness(0) invert(1); /* Si el logo es oscuro, lo convierte a blanco */
 }
 
@@ -19,30 +27,38 @@
 .sc-navbar .navbar-nav .nav-link {
   color: #ffffff;
   font-weight: 500;
-  margin-right: 1.5rem; /* Espacio entre los links */
+  margin-right: 1.5rem;
+  /* Espacio entre los links */
   transition: color 0.2s ease;
+}
+
+.nav-link-dark {
+  color: #006afe !important;
 }
 
 .sc-navbar .navbar-nav .nav-link:hover,
 .sc-navbar .navbar-nav .nav-link.active {
-  color: rgba(
-    255,
-    255,
-    255,
-    0.8
-  ); /* Ligero cambio al pasar el mouse o activo */
+  color: rgba(255,
+      255,
+      255,
+      0.8);
+  /* Ligero cambio al pasar el mouse o activo */
 }
 
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
-  background-color: #ffffff; /* Color verde */
-  color: #006afe;
+  background-color: #02CAE3;
+  /* Color verde */
+  color: #FFFFFF;
   border: none;
-  border-radius: 2.5rem; /* Bordes muy redondeados */
-  padding: 0.75rem 1.5rem; /* Relleno */
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  /* Relleno */
   font-weight: 600;
   font-size: 1rem;
-  display: inline-flex; /* Para alinear texto e icono */
+  display: inline-flex;
+  /* Para alinear texto e icono */
   align-items: center;
   transition: background-color 0.3s ease;
 }
@@ -53,17 +69,22 @@
 }*/
 
 .sc-btn-accent i.bi {
-  margin-left: 0.75rem; /* Espacio para el icono de flecha */
+  margin-left: 0.75rem;
+  /* Espacio para el icono de flecha */
   font-size: 1.1rem;
 }
 
 /* Estilo del botón de idioma */
 .sc-btn-language {
-  background-color: #ffffff; /* Fondo blanco */
-  color: #006afe; /* Texto azul oscuro */
+  background-color: #02CAE3;
+  /* Fondo blanco */
+  color: #FFFFFF;
+  /* Texto azul oscuro */
   border: none;
-  border-radius: 2.5rem; /* Bordes muy redondeados */
-  padding: 0.75rem 1.25rem; /* Relleno */
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.25rem;
+  /* Relleno */
   font-weight: 600;
   font-size: 1rem;
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -76,13 +97,13 @@
 
 /* Estilo del dropdown de idioma */
 .sc-navbar .dropdown-menu {
-  background-color: #ffffff;
+  background-color: #02CAE3;
   border-radius: 0.5rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .sc-navbar .dropdown-item {
-  color: #006afe;
+  color: #FFFFFF;
 }
 
 .sc-navbar .dropdown-item:hover,
@@ -94,11 +115,13 @@
 /* Toggler Icon (el icono de las "hamburguesas") */
 .sc-navbar .navbar-toggler {
   border: none;
-  padding: 0.25rem 0.5rem; /* Relleno mínimo */
+  padding: 0.25rem 0.5rem;
+  /* Relleno mínimo */
 }
 
 .sc-navbar .navbar-toggler:focus {
-  box-shadow: none; /* Eliminar el foco por defecto de Bootstrap */
+  box-shadow: none;
+  /* Eliminar el foco por defecto de Bootstrap */
 }
 
 .sc-navbar .navbar-toggler-icon {
@@ -110,13 +133,15 @@
 /* Responsividad: Cambios para el menú colapsado (en móviles) */
 /* ========================================================================= */
 @media (max-width: 991.98px) {
+
   /* Breakpoint 'lg' de Bootstrap */
   .sc-navbar {
     /*background: #ffffff;*/
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
-  .sc-navbar-light{
+
+  .sc-navbar-light {
     background-color: #ffffff;
   }
 
@@ -132,9 +157,11 @@
   /* Fondo del menú colapsado */
   .sc-navbar .navbar-collapse {
     /* Aquí definimos el fondo del menú cuando está abierto en móvil */
-    background: #ffffff; /* Degradado vertical */
+    background: #ffffff;
+    /* Degradado vertical */
     padding: 1rem 0;
-    margin-top: 1rem; /* Espacio entre el toggler y el menú */
+    margin-top: 1rem;
+    /* Espacio entre el toggler y el menú */
     border-radius: 0.5rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   }
@@ -142,8 +169,10 @@
   /* Alinear los elementos de navegación al centro en móvil */
   .sc-navbar .navbar-nav {
     width: 100%;
-    text-align: center; /* Centrar los links */
-    margin-bottom: 1rem !important; /* Espacio antes de los botones */
+    text-align: center;
+    /* Centrar los links */
+    margin-bottom: 1rem !important;
+    /* Espacio antes de los botones */
   }
 
   .sc-navbar .navbar-nav .nav-item {
@@ -151,29 +180,46 @@
   }
 
   .sc-navbar .navbar-nav .nav-link {
-    margin-right: 0; /* Quitar margen entre links en móvil */
-    padding: 0.75rem 1rem; /* Más padding para los links */
+    margin-right: 0;
+    /* Quitar margen entre links en móvil */
+    padding: 0.75rem 1rem;
+    /* Más padding para los links */
   }
 
   /* Los botones en móvil se apilan */
   .sc-navbar .d-flex.ms-lg-auto {
-    flex-direction: column; /* Apilar los botones */
-    align-items: center; /* Centrar los botones */
+    flex-direction: column;
+    /* Apilar los botones */
+    align-items: center;
+    /* Centrar los botones */
     width: 100%;
   }
 
   .sc-navbar .d-flex.ms-lg-auto .btn,
   .sc-navbar .d-flex.ms-lg-auto .dropdown {
-    width: 90%; /* Ancho completo para los botones */
-    margin-bottom: 0.75rem; /* Espacio entre los botones apilados */
-    margin-right: 0 !important; /* Anular margin-right del sc-btn-accent */
+    width: 90%;
+    /* Ancho completo para los botones */
+    margin-bottom: 0.75rem;
+    /* Espacio entre los botones apilados */
+    margin-right: 0 !important;
+    /* Anular margin-right del sc-btn-accent */
   }
 
   .sc-navbar .d-flex.ms-lg-auto .dropdown .btn {
-    width: 100%; /* El botón dentro del dropdown también al 100% */
+    width: 100%;
+    /* El botón dentro del dropdown también al 100% */
   }
+
   .sc-navbar .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C 106%2C 254%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
     /* Color blanco para el icono de hamburguesa */
+  }
+
+  .sc-btn-accent {
+    width: auto !important;
+  }
+
+  .dropdown{
+    width: auto !important;
   }
 }

@@ -10,11 +10,5 @@ import { ScFooterComponent } from '../sc-footer/sc-footer.component';
   styleUrl: './sc-content.component.css',
 })
 export class ScContentComponent implements OnInit {
-  isOpen: boolean = false;
-
   ngOnInit(): void {}
-
-  toggleMenu(): void {
-    this.isOpen = !this.isOpen;
-  }
 }

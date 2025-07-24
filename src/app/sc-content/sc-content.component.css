@@ -5,33 +5,41 @@
   background-position: center;
   position: relative;
 }
+
 .sc-hero .carousel-slide {
   display: flex;
   align-items: center;
 }
+
 /* Contenedor de los indicadores del carousel */
 .sc-hero .carousel-indicators button {
-  width: 10px; /* Ancho de los puntos */
-  height: 10px; /* Alto de los puntos */
-  border-radius: 50%; /* Hacerlos circulares */
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.5
-  ); /* Color blanco semitransparente */
+  width: 10px;
+  /* Ancho de los puntos */
+  height: 10px;
+  /* Alto de los puntos */
+  border-radius: 50%;
+  /* Hacerlos circulares */
+  background-color: rgba(255,
+      255,
+      255,
+      0.5);
+  /* Color blanco semitransparente */
   border: none;
-  opacity: 1; /* Para que siempre sean visibles, no solo al hover */
+  opacity: 1;
+  /* Para que siempre sean visibles, no solo al hover */
   transition: background-color 0.3s ease;
 }
 
 .sc-hero .carousel-indicators button.active {
-  background-color: #ffffff; /* Color blanco sólido para el activo */
+  background-color: #ffffff;
+  /* Color blanco sólido para el activo */
 }
+
 .sc-slide-row {
   margin: 6.5rem 0;
   height: 30vh;
 }
+
 .sc-slide h2 {
   font-size: 3.5rem;
   font-weight: 700;
@@ -39,6 +47,7 @@
   max-width: 900px;
   color: #ffffff;
 }
+
 .sc-slide p {
   font-size: 1.2rem;
   line-height: 1.6;
@@ -46,41 +55,769 @@
   max-width: 900px;
   color: #ffffff;
 }
+
 .sc-slide .btn-solid-white {
-  color: #006afe;
-  background-color: #ffffff;
+  color: #ffffff;
+  background-color: #02CAE3;
   border-radius: 1.3rem;
 }
+
 .sc-slide .btn-solid-white i {
-  color: #006afe;
+  color: #ffffff;
 }
+
 .sc-slide .btn-transparent-white {
   color: #ffffff;
   background-color: transparent;
   border-radius: 1.3rem;
   border-color: #ffffff;
 }
+
 .sc-slide .btn-transparent-white i {
   color: #ffffff;
 }
+
+/* polizas */
+.sc-services-section {
+  position: relative;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.sc-services-container {
+  margin-top: -100px;
+  position: relative;
+  z-index: 2;
+}
+
+.sc-services-card {
+  background-color: #F3F6FA;
+  border-radius: 1.5rem;
+  border: none;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+}
+
+.sc-services-card .card-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1F2A37;
+  margin-bottom: 3rem;
+}
+
+.sc-text-blue-accent {
+  color: #00B8D9;
+}
+
+.sc-services-item h3 {
+  font-size: 1.5rem;
+  color: #1F2A37;
+  font-weight: 600;
+}
+
+.sc-services-item p {
+  font-size: 1rem;
+  color: #1F2A37;
+}
+
+.sc-icon-blue {
+  color: #00B8D9;
+  font-size: 3.5rem !important;
+  line-height: 1;
+}
+
+/* Opening LLC Section */
+.sc-how-to-llc {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.sc-how-to-llc h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+/* Timeline */
+.sc-timeline-wrapper {
+  position: relative;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/** Estilos para el espacio entre las cards en la columna izquierda */
+.sc-timeline-spacer {
+  height: 180px;
+  width: 100%;
+}
+
+/* Columna central (solo para desktop) */
+.sc-timeline-center-col {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between !important;
+  min-height: 500px;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Linea central */
+.sc-timeline-line {
+  position: absolute;
+  width: 3px;
+  /*height: 100%;*/
+  background-color: #00B8D9;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  bottom: 0;
+  z-index: 0;
+  margin-top: 6rem;
+  margin-bottom: 9rem;
+}
+
+/* Iconos de los pasos */
+.sc-timeline-dot {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  background-color: #00B8D9;
+  border-radius: 50%;
+  z-index: 1;
+  /*flex-shrink: 0;*/
+}
+
+/* Icono superior */
+.sc-timeline-dot-top {
+  margin-top: 50px;
+}
+
+/* Icono medio */
+.sc-timeline-dot-middle {
+  margin-top: 15rem;
+  margin-bottom: 15rem;
+}
+
+/* Icono inferior */
+.sc-timeline-dot-bottom {
+  margin-bottom: 100px;
+}
+
+/* Timeline Cards */
+.sc-timeline-card {
+  background-color: #ffffff;
+  border: 2px solid #00B8D9;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+  text-align: left;
+  transition: transform 0.3s ease;
+}
+
+.sc-timeline-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Timeline Cards Left */
+.sc-timeline-card-left {
+  margin-right: auto;
+  margin-left: 0;
+}
+
+/* Timeline Cards Right */
+.sc-timeline-card-right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Timeline Cards Title */
+.sc-timeline-card h3 {
+  font-size: 1.25rem;
+  color: #1F2A37;
+  margin-bottom: 0.5rem;
+}
+
+/* Timeline Cards Description */
+.sc-timeline-card p {
+  font-size: 0.95rem;
+  color: #1F2A37;
+  line-height: 1.6;
+}
+
+/* Tab Panes */
+.sc-tabs-section {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+/* Tabs styles */
+.sc-tabs-section .nav-pills .nav-link {
+  color: #1F2A37;
+  font-weight: 600;
+  font-size: 1.1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  background-color: transparent;
+  transition: all 0.3s ease;
+  margin: 0 0.5rem;
+}
+
+/* Tabs active */
+.sc-tabs-section .nav-pills .nav-link.active {
+  color: #00B8D9;
+  background-color: transparent;
+  position: relative;
+}
+
+/* Underline active tab */
+.sc-tabs-section .nav-pills .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 4px;
+  background-color: #00B8D9;
+  border-radius: 2px;
+}
+
+/* Hover styles on tabs */
+.sc-tabs-section .nav-pills .nav-link:hover:not(.active) {
+  color: #00B8D9;
+}
+
+/* Tab Panes Description */
+.sc-tab-pane-content p {
+  font-size: 1.05rem;
+  color: #1F2A37;
+  line-height: 1.6;
+}
+
+/* Button Primary */
+.sc-btn-primary {
+  background-color: #00B8D9;
+  color: #F3F6FA;
+  border: none;
+  border-radius: 2.5rem;
+  padding: 0.8rem 2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+/* Button Primary Hover */
+.sc-btn-primary:hover {
+  background-color: #f0f0f0;
+  color: #006afe;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Sección de Planes y Precios */
+/* ------------------------------------------------------------------------- */
+.pricing-section {
+  position: relative;
+  padding: 80px 16px;
+  /* Padding general de la sección */
+  /* margin-top: 80px; */
+  /* Si ya tienes un margen o padding en la sección anterior, ajusta o elimina esto */
+  overflow: hidden;
+  /* Asegura que el ribbon no se desborde */
+  background-color: #0049c6;
+  /* Color de fallback si la imagen no carga, tomado de tu CSS anterior */
+}
+
+/* Fondo de imagen con overlay */
+.sc-pricing-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/pricing-bg.jpg');
+  /* Ruta a tu imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  /* Detrás del contenido */
+  /* Overlay oscuro para que el texto blanco sea legible, mezclado con el fondo */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Ajusta la opacidad del overlay */
+  background-blend-mode: multiply;
+  /* Mezcla la imagen con el color */
+}
+
+/* Contenedor del contenido principal de precios */
+.pricing-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  /* Asegura que el contenido esté por encima del fondo */
+  z-index: 1;
+}
+
+/* Título principal de la sección */
+.pricing-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  /* Texto blanco */
+  margin-bottom: 32px;
+}
+
+.pricing-title .fw-bold {
+  font-weight: 700;
+  /* Asegura que la parte "planes Y precios" esté en negrita */
+}
+
+/* ------------------------------------------------------------------------- */
+/* Pestañas de Navegación (pricing-tabs) */
+/* ------------------------------------------------------------------------- */
+.pricing-tabs {
+  /* nav nav-pills justify-content-center ya están en el HTML */
+  gap: 32px;
+  /* Espacio entre las pestañas */
+  margin-bottom: 60px;
+  /* Espacio debajo de las pestañas */
+}
+
+.pricing-tabs .nav-link {
+  /* Aplica a los botones .nav-link */
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  /* Texto blanco para pestañas inactivas */
+  position: relative;
+  background-color: transparent;
+  /* Quita el fondo de Bootstrap */
+  border-radius: 0;
+  /* Quita el border-radius de nav-pills */
+  padding: 0 0.5rem 8px 0.5rem;
+  /* Ajusta padding para la línea inferior */
+  transition: color 0.3s ease;
+}
+
+/* Estilo de la pestaña activa */
+.pricing-tabs .nav-link.active {
+  color: #ffffff;
+  /* La pestaña activa también tiene texto blanco */
+  background-color: transparent;
+  /* Sigue siendo transparente */
+}
+
+/* Borde/línea debajo de la pestaña activa */
+.pricing-tabs .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  /* Posición debajo del texto de la pestaña */
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #ffffff;
+  /* ¡Borde blanco, como en la captura! */
+  border-radius: 2px;
+}
+
+/* Efecto hover para las pestañas inactivas */
+.pricing-tabs .nav-link:hover:not(.active) {
+  color: rgba(255, 255, 255, 0.8);
+  /* Ligeramente más opaco al hover */
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* Tarjetas de Precios (pricing-cards) */
+/* ------------------------------------------------------------------------- */
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.pricing-card {  
+  border-radius: 2rem;
+  padding: 32px;
+  text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recommended {
+  background-color: #F3F6FA;
+}
+
+.common {
+  border: 2px solid #F3F6FA;
+  color: #F3F6FA;
+}
+
+.common .card-title {
+  color: #F3F6FA !important;
+}
+
+.common .card-price {
+  color: #F3F6FA !important;
+}
+
+.common .card-description {
+  color: #F3F6FA !important;
+}
+
+.common .card-features {
+  color: #F3F6FA !important;
+}
+
+.common .card-features h6 {
+  color: #F3F6FA !important;
+}
+
+.common .card-features li {
+  color: #F3F6FA !important;
+}
+
+.pricing-card:hover {
+  transform: translateY(-10px);
+  /* Efecto de levantar al pasar el mouse */
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  /* Sombra más intensa al hover */
+}
+
+/* Estilos de texto para la tarjeta "Recomendado" */
+.pricing-card:first-child .card-title,
+.pricing-card:first-child .card-description,
+.pricing-card:first-child .card-features,
+.pricing-card:first-child .card-features li {
+  color: #1F2A37;
+  /* Color oscuro del texto */
+}
+
+.pricing-card:first-child .card-price {
+  color: #02CAE3;
+  /* Precio en azul/cian */
+}
+
+/* Ribbon "Recomendado" */
+.recommended-badge {
+  background-color: #02CAE3;
+  /* Color azul/cian para la cinta */
+  color: #ffffff;
+  padding: 4px 24px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 400;
+  margin-bottom: 16px;
+  display: inline-block;
+  /* Para que ocupe solo su contenido */
+}
+
+/* Títulos de los planes (h3) */
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1F2A37;
+  /* Color oscuro */
+  margin-bottom: 8px;
+}
+
+/* Precio */
+.card-price {
+  font-size: 32px;
+  font-weight: 700;
+  color: #02CAE3;
+  /* Color azul/cian para el precio */
+  margin-bottom: 16px;
+}
+
+/* Descripción corta del plan */
+.card-description {
+  font-size: 14px;
+  font-weight: 400;
+  color: #1F2A37;
+  /* Color oscuro */
+  line-height: 1.5;
+  margin-bottom: 24px;
+  min-height: 60px;
+  /* Asegura altura consistente para descripciones */
+}
+
+/* Sección "Incluye:" */
+.card-features {
+  font-size: 14px;
+  font-weight: 400;
+  color: #1F2A37;
+  line-height: 1.5;
+  text-align: left;
+  margin-bottom: 24px;
+  flex-grow: 1;
+}
+
+.card-features h6 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1F2A37;
+  margin-bottom: 0.5rem;
+}
+
+/*.card-features ul {
+  padding-left: 0;
+  margin-top: 0.5rem;
+}
+
+.card-features li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+}*/
+
+
+/* ------------------------------------------------------------------------- */
+/* Botones de las Tarjetas */
+/* ------------------------------------------------------------------------- */
+.btn-primary,
+.btn-secondary {
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  /* Para centrar contenido y icono */
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* Ocupa todo el ancho de la tarjeta */
+  text-decoration: none;
+  /* Quitar subrayado del <a> */
+  transition: all 0.3s ease;
+  margin-bottom: 16px;
+  /* Margen inferior del botón */
+}
+
+/* Botón principal (para tarjeta "Recomendado") - Usando #006afe de tu lista */
+.btn-primary {
+  background-color: #00B8D9;
+  /* Color #006afe */
+  color: #F3F6FA;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #02CAE3;
+  /* Un tono más oscuro de #006afe para hover */
+  color: #F3F6FA;
+}
+
+/* Botón secundario (para otras tarjetas) - Usando #1F2A37 de tu lista */
+.btn-secondary {
+  background-color: transparent;
+  color: #F3F6FA;
+  border: 1px solid #F3F6FA;
+}
+
+.btn-secondary:hover {
+  background-color: #00B8D9;
+  /* Color #00B8D9 para hover */
+  color: #ffffff;
+}
+
+/* Iconos de flecha en los botones */
+.btn-primary i.bi,
+.btn-secondary i.bi {
+  font-size: 1.1rem;
+}
+
+
 /* Media Queries para responsividad (ajustar tamaños de fuente y padding en móviles) */
 @media (max-width: 991.8px) {
   .sc-slide h2 {
     font-size: 2.5rem;
   }
+
   .sc-slide p {
     font-size: 1rem;
   }
+
   button {
     font-size: 0.6rem;
   }
+
+  /* Services Section */
+  .sc-services-container {
+    margin-top: -80px;
+    padding: 0 1rem;
+  }
+
+  .sc-services-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .sc-services-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .sc-services-item h3 {
+    font-size: 1.2rem;
+  }
+
+  .sc-services-item p {
+    font-size: 0.95rem;
+  }
+
+  .sc-icon-blue {
+    font-size: 3rem !important;
+  }
+
+  /* Tabs Section */
+  .sc-tabs-section .nav-pills .nav-link {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+    margin: 0 0.25rem;
+  }
+
+  .sc-tabs-section .nav-pills {
+    flex-wrap: wrap;
+    /* Permite que las pestañas se envuelvan */
+  }
+
+  .sc-tabs-section .nav-pills .nav-item {
+    margin-bottom: 0.5rem;
+    /* Espacio entre pestañas apiladas */
+  }
+
+  .sc-tab-pane-content {
+    flex-direction: column;
+    /* Apila imagen y texto en móviles */
+    padding: 2rem;
+    min-height: auto;
+    /* Altura automática en móviles */
+  }
+
+  .sc-tab-pane-content .col-md-6 {
+    width: 100%;
+    /* Ocupa todo el ancho */
+  }
+
+  .sc-tab-pane-content img {
+    margin-bottom: 2rem;
+    /* Espacio debajo de la imagen */
+  }
+
+  .sc-tab-pane-content h3 {
+    font-size: 1.6rem;
+    text-align: center;
+    /* Centra el título en móvil */
+  }
+
+  .sc-tab-pane-content p {
+    font-size: 0.95rem;
+    text-align: center;
+    /* Centra el párrafo en móvil */
+  }
+
+  .sc-btn-primary {
+    width: 100%;
+    /* Botón de ancho completo en móviles */
+    max-width: 300px;
+    /* Limita el ancho del botón */
+    margin-left: auto;
+    /* Centra el botón */
+    margin-right: auto;
+  }
 }
+
 @media (max-width: 767.98px) {
   .sc-slide h2 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
+
   .sc-slide p {
     font-size: 0.9rem;
+  }
+
+  .sc-services-container {
+    margin-top: -60px;
+  }
+
+  .sc-services-card {
+    padding: 2rem 1rem;
+  }
+
+  .sc-services-card .card-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .sc-services-item h3 {
+    font-size: 1.5rem;
+  }
+
+  .sc-services-item:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Timeline */
+  .sc-timeline-wrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Estilos para el espacio entre las cards en la columna izquierda */
+  .sc-timeline-spacer {
+    display: none !important;
+    /* Asegura que se oculte en móviles */
+  }
+
+  .sc-timeline-center-col {
+    display: none !important;
+  }
+
+  .sc-timeline-card-left-col,
+  .sc-timeline-card-right-col {
+    width: 100%;
+    flex: none;
+  }
+
+  .sc-timeline-card {
+    margin: 1rem auto !important;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .sc-timeline-icon-box {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sc-how-to-llc h2 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Tabs Section */
+  .sc-tabs-section .nav-pills .nav-link {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .sc-tab-pane-content h3 {
+    font-size: 1.4rem;
+  }
+
+  .sc-tab-pane-content p {
+    font-size: 0.85rem;
   }
 }

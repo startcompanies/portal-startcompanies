@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-sc-header',
@@ -12,7 +13,37 @@ export class ScHeaderComponent implements OnInit {
   isOpen: boolean = false;
   isNavbarShrunk: boolean = false;
 
-  ngOnInit(): void {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.navbarScroll();
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.navbarScroll();
+    }
+  }
+
+  private navbarScroll(): void {
+    const navbar = document.querySelector('.navbar');
+    if (!navbar) {
+      return;
+    }
+
+    const scrollThreshold = 100;
+
+    if (window.scrollY > scrollThreshold) {
+      this.isNavbarShrunk = true;
+    } else {
+      this.isNavbarShrunk = false;
+    }
+  }
 
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
