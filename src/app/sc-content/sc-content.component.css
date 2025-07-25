@@ -1,6 +1,6 @@
 /* Hero Section */
 .sc-hero {
-  height: 70vh; /* Altura fija para un posicionamiento estable */
+  height: 95vh; /* Altura fija para un posicionamiento estable */
   background-image: url("../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
