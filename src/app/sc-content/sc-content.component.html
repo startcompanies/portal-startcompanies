@@ -20,24 +20,21 @@
           <div class="row w-100 align-items-center">
             <!-- Columna izquierda: Título y Botones -->
             <div class="col-12 col-md-6 text-center text-md-start">
-              <h2 class="hero-title text-white">Expande Tu Libertad, abre tu LLC en estados unidos</h2>
+              <h2 class="hero-title text-white">{{ 'CONTENT.expand_your_freedom' | transloco }}</h2>
               <div
                 class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
                 <a href="#" class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center">
-                  Crea TU LLC <i class="bi bi-arrow-right ms-2"></i>
+                  {{'CONTENT.create_your_llc' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                 </a>
                 <a href="#" class="btn hero-btn-secondary d-inline-flex align-items-center justify-content-center">
-                  Renueva TU LLC <i class="bi bi-arrow-right ms-2"></i>
+                  {{'CONTENT.renew_your_llc' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                 </a>
               </div>
             </div>
             <!-- Columna derecha: Descripción -->
             <div class="col-12 col-md-6 text-center text-md-start mt-4 mt-md-0">
               <p class="hero-description text-white">
-                Establece tu LLC en Estados Unidos y abre tu cuenta bancaria
-                empresarial desde cualquier lugar para comenzar o expandir como
-                una empresa global con facilidad, seguridad y sin
-                complicaciones.
+                {{'CONTENT.expand_your_freedom_description' | transloco}}
               </p>
             </div>
           </div>
@@ -56,7 +53,7 @@
               <div
                 class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-md-start">
                 <a href="#" class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center">
-                  ABRIR CUENTA BANCARIA <i class="bi bi-arrow-right ms-2"></i>
+                  {{'CONTENT.open_your_bank_account_button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                 </a>
                 <!-- Si este slide solo tiene un botón, puedes eliminar el segundo o dejarlo vacío. -->
               </div>
@@ -64,11 +61,9 @@
             <!-- Columna derecha: Descripción -->
             <div class="col-12 col-md-6 text-center text-md-start mt-4 mt-md-0">
               <p class="hero-description text-white">
-                Hoy crearon tu empresa con una cuenta empresarial 100% operativa
-                desde cualquier lugar del mundo.
+                {{'CONTENT.open_your_bank_account_description' | transloco}}
                 <br>
-                Conecta tu LLC a una cuenta bancaria en Estados Unidos y accede
-                a un sistema financiero sólido, confiable y global.
+                {{'CONTENT.open_your_bank_account_description_2' | transloco}}
               </p>
             </div>
           </div>
@@ -229,7 +224,7 @@
         <div class="row align-items-center sc-tab-pane-content">
           <!-- Columna de la Imagen -->
           <div class="col-12 col-md-6 mb-4 mb-md-0">
-            <img src="assets/img_usa_flag_waving.png" class="img-fluid rounded-4 shadow-sm"
+            <img src="assets/tabs/img_usa_flag_waving.png" class="img-fluid rounded-4 shadow-sm"
               alt="Edificio Empire State para LLC" />
           </div>
           <!-- Columna del Texto y Botón -->
@@ -258,25 +253,88 @@
 
       <!-- Contenido de la segunda pestaña: Cuentas bancarias en USA -->
       <div class="tab-pane fade" id="bank-content" role="tabpanel" aria-labelledby="bank-tab">
-        <div class="p-4 bg-light rounded-3">
-          <h4>Contenido para Cuentas bancarias en USA</h4>
-          <p>Aquí irá la información sobre cómo abrir cuentas bancarias.</p>
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <img src="assets/tabs/account_bank.jpg" class="img-fluid rounded-4 shadow-sm"
+              alt="Edificio Empire State para LLC" />
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              Abre tu cuenta bancaria sin necesidad de residir en Estados Unidos.
+            </p>
+            <ul class="mb-4">
+              <li>
+                Abre tu cuenta bancaria sin necesidad de residir en Estados Unidos.
+              </li>
+              <li> 
+                Soluciones bancarias adaptadas a tus necesidades.
+                Proceso ágil y sencillo.
+              </li>
+            </ul>
+            <a href="#" class="btn sc-btn-primary">
+              Abre tu cuenta bancaria <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Contenido de la tercera pestaña: Renueva tu LLC -->
       <div class="tab-pane fade" id="renew-content" role="tabpanel" aria-labelledby="renew-tab">
-        <div class="p-4 bg-light rounded-3">
-          <h4>Contenido para Renueva tu LLC</h4>
-          <p>Aquí irá la información sobre la renovación de LLCs.</p>
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <img src="assets/tabs/renew_llc.jpg" class="img-fluid rounded-4 shadow-sm" alt="Renueva tu LLC" />
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              Optimiza beneficios fiscales de tu empresa.
+            </p>
+            <ul class="mb-4">
+              <li>
+                Asesoramiento fiscal experto.
+              </li>
+              <li> 
+                Cumplimiento integral de normativas.
+              </li>
+              <li>
+                Soporte constante para prevenir contratiempos.
+              </li>
+            </ul>
+            <a href="#" class="btn sc-btn-primary">
+              Renueva tu LLC <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Contenido de la cuarta pestaña: Declaración de impuestos -->
       <div class="tab-pane fade" id="taxes-content" role="tabpanel" aria-labelledby="taxes-tab">
-        <div class="p-4 bg-light rounded-3">
-          <h4>Contenido para Declaración de impuestos</h4>
-          <p>Aquí irá la información sobre declaración de impuestos.</p>
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <img src="assets/tabs/declaration_taxes.jpg" class="img-fluid rounded-4 shadow-sm"
+              alt="Declaración de impuestos" />
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              Mantén tu empresa actualizada en todo momento.
+            </p>
+            <ul class="mb-4">
+              <li>
+                Renovación y gestión de tramites legales.
+              </li>
+              <li> 
+                Operación ininterrumpida para tu tranquilidad.
+              </li>
+            </ul>
+            <a href="#" class="btn sc-btn-primary">
+              Declarar impuestos <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>

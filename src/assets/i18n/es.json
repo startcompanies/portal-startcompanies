@@ -1,0 +1,19 @@
+{
+    "NAVBAR": {
+        "us": "Nosotros",
+        "plans": "Planes y Precios",
+        "blog": "Blog",
+        "contact": "Contacto",
+        "call": "Agendar llamada"
+    },
+    "CONTENT": {
+        "expand_your_freedom": "Expande Tu Libertad, abre tu LLC en estados unidos",
+        "create_your_llc": "Crea tu LLC",
+        "renew_your_llc": "Renueva tu LLC",
+        "expand_your_freedom_description": "Establece tu LLC en Estados Unidos y abre tu cuenta bancaria empresarial desde cualquier lugar para comenzar o expandir como una empresa global con facilidad, seguridad y sin complicaciones.",
+        "open_your_bank_account": "Abre tu cuenta bancaria en EE. UU. con tu LLC activa",
+        "open_your_bank_account_button": "ABRIR CUENTA BANCARIA",
+        "open_your_bank_account_description": "Haz crecer tu empresa con una cuenta empresarial 100% operativa desde cualquier lugar del mundo.",
+        "open_your_bank_account_description_2": "Conecta tu LLC a una cuenta bancaria en Estados Unidos y accede a un sistema financiero sólido, confiable y global."
+    }
+}

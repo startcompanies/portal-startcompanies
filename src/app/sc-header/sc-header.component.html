@@ -18,25 +18,25 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link active" aria-current="page"
-            href="#" (click)="navigateToSection('heroSection')">Nosotros</a>
+            href="#" (click)="navigateToSection('heroSection')">{{ 'NAVBAR.us' | transloco }}</a>
         </li>
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
-            (click)="navigateToSection('pricingSection')">Planes y precios</a>
+            (click)="navigateToSection('pricingSection')">{{ 'NAVBAR.plans' | transloco }}</a>
         </li>
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
-            (click)="navigateToSection('blogSection')">Blog</a>
+            (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
         </li>
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
-            (click)="navigateToSection('faqSection')">Contacto</a>
+            (click)="navigateToSection('faqSection')">{{ 'NAVBAR.contact' | transloco }}</a>
         </li>
       </ul>
 
       <div class="d-flex ms-lg-auto">
         <button type="button" class="btn sc-btn-accent me-2">
-          Agendar llamada <i class="bi bi-arrow-right"></i>
+          {{ 'NAVBAR.call' | transloco }} <i class="bi bi-arrow-right"></i>
         </button>
         <div class="dropdown">
           <button class="btn sc-btn-language dropdown-toggle" type="button" id="dropdownMenuButton1"
@@ -44,8 +44,8 @@
             ES
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#">EN</a></li>
-            <li><a class="dropdown-item" href="#">PT</a></li>
+            <li><a class="dropdown-item" href="#" (click)="changeLanguage('en')">EN</a></li>
+            <li><a class="dropdown-item" href="#" (click)="changeLanguage('es')">ES</a></li>
           </ul>
         </div>
       </div>

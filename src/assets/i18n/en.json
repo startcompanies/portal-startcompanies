@@ -1,0 +1,19 @@
+{
+    "NAVBAR": {
+        "us": "About us",
+        "plans": "Plans and Prices",
+        "blog": "Blog",
+        "contact": "Contact us",
+        "call": "Schedule a call"
+    },
+    "CONTENT": {
+        "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
+        "create_your_llc": "Create your LLC",
+        "renew_your_llc": "Renew your LLC",
+        "expand_your_freedom_description": "Set up your LLC in the United States and open your business bank account from anywhere to start or expand as a global business with ease, security, and without complications.",
+        "open_your_bank_account": "Open your bank account in the United States with your active LLC",
+        "open_your_bank_account_button": "OPEN BANK ACCOUNT",
+        "open_your_bank_account_description": "Grow your business with a 100% operational business account from anywhere in the world.",
+        "open_your_bank_account_description_2": "Connect your LLC to a bank account in the United States and access a solid, reliable, and global financial system."
+    }
+}

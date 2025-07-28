@@ -3,11 +3,12 @@ import { ScHeaderComponent } from '../sc-header/sc-header.component';
 import { ScFooterComponent } from '../sc-footer/sc-footer.component';
 import { ScrollService } from '../services/scroll.service';
 import { Subscription } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-sc-content',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent],
+  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',
 })

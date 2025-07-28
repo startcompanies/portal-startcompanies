@@ -1,6 +1,7 @@
-import { NgModule } from '@angular/core';
+import { isDevMode, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { provideTransloco } from '@jsverse/transloco';
+import { TranslocoHttpLoader } from '../../transloco-loader';
 
 
 @NgModule({
@@ -11,5 +12,16 @@ import { CommonModule } from '@angular/common';
   exports: [
     CommonModule
   ],
+  providers: [
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'es'],
+        defaultLang: 'es',
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader
+    })
+  ]
 })
 export class SharedModule { }

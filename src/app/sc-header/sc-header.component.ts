@@ -2,11 +2,12 @@ import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/c
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../services/scroll.service';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-sc-header',
   standalone: true,
-  imports: [SharedModule],
+  imports: [SharedModule, TranslocoPipe],
   templateUrl: './sc-header.component.html',
   styleUrl: './sc-header.component.css',
 })
@@ -16,7 +17,8 @@ export class ScHeaderComponent implements OnInit {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private scrollService: ScrollService
+    private scrollService: ScrollService,
+    public translocoService: TranslocoService
   ) { }
 
   ngOnInit(): void {
@@ -57,5 +59,14 @@ export class ScHeaderComponent implements OnInit {
    */
   navigateToSection(sectionId: string) {
     this.scrollService.scrollTo(sectionId);
+  }
+
+  /**
+   * Change the language
+   * @param lang - The language to change to
+   */
+  changeLanguage(lang: string) {
+    this.translocoService.setActiveLang(lang);
+    this.translocoService.setDefaultLang(lang);
   }
 }
