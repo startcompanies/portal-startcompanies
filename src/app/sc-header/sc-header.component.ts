@@ -14,14 +14,15 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 export class ScHeaderComponent implements OnInit {
   isOpen: boolean = false;
   isNavbarShrunk: boolean = false;
-
+  currentLang: string = 'es';
+  
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private scrollService: ScrollService,
     public translocoService: TranslocoService
   ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     if (isPlatformBrowser(this.platformId)) {
       this.navbarScroll();
     }
@@ -68,5 +69,6 @@ export class ScHeaderComponent implements OnInit {
   changeLanguage(lang: string) {
     this.translocoService.setActiveLang(lang);
     this.translocoService.setDefaultLang(lang);
+    this.currentLang = lang;
   }
 }

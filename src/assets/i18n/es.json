@@ -10,10 +10,201 @@
         "expand_your_freedom": "Expande Tu Libertad, abre tu LLC en estados unidos",
         "create_your_llc": "Crea tu LLC",
         "renew_your_llc": "Renueva tu LLC",
-        "expand_your_freedom_description": "Establece tu LLC en Estados Unidos y abre tu cuenta bancaria empresarial desde cualquier lugar para comenzar o expandir como una empresa global con facilidad, seguridad y sin complicaciones.",
+        "expand_your_freedom_description": "Resolvemos tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo de esta listo para acompañarte en cada paso del proceso.",
         "open_your_bank_account": "Abre tu cuenta bancaria en EE. UU. con tu LLC activa",
         "open_your_bank_account_button": "ABRIR CUENTA BANCARIA",
         "open_your_bank_account_description": "Haz crecer tu empresa con una cuenta empresarial 100% operativa desde cualquier lugar del mundo.",
-        "open_your_bank_account_description_2": "Conecta tu LLC a una cuenta bancaria en Estados Unidos y accede a un sistema financiero sólido, confiable y global."
+        "open_your_bank_account_description_2": "Conecta tu LLC a una cuenta bancaria en Estados Unidos y accede a un sistema financiero sólido, confiable y global.",
+        "our_services": {
+            "title1": "Nuestros",
+            "title2": "servicios",
+            "service1": {
+                "title": "Constitución de LLC en Estados Unidos",
+                "description": "Inicia tu empresa en EE.UU. con asesoría completa y acompañamiento personalizado desde cualquier país."
+            },
+            "service2": {
+                "title": "Cuenta bancaria en EE. UU.",
+                "description": "Abre tu cuenta empresarial en línea y opera en dólares sin salir de tu país."
+            },
+            "service3": {
+                "title": "Gestión de impuestos y creación de empresas",
+                "description": "Organizamos la estructura legal y fiscal de tu empresa para que cumplas con las normas y optimices tus impuestos."
+            }
+        },
+        "how_to_open_llc": {
+            "title": "Cómo abrir tu LLC en",
+            "title2": "Estados Unidos",
+            "step1": {
+                "title": "Cuéntanos sobre tu negocio",
+                "description": "Explora tus necesidades empresariales con nosotros. Diseñaremos una solución personalizada que se ajuste a tu caso."
+            },
+            "step2": {
+                "title": "Envía tu documentación en línea.",
+                "description": "Sube tus documentos a través de nuestra plataforma y nuestro equipo se encargará gestionará tu LLC y la apertura de tu cuenta bancaria en EE.UU."
+            },
+            "step3": {
+                "title": "Recibe tus documentos en 10 días hábiles",
+                "description": "Obtendrás todos los certificados legales y accesos a tu cuenta bancaria en un plazo maximo de 10 días hábiles."
+            }
+        },
+        "tabs": {
+            "llc": "LLC en Estados Unidos",
+            "bank": "Cuentas bancarias en USA",
+            "renew": "Renueva tu LLC",
+            "taxes": "Declaración de impuestos",
+            "llc_content": {
+                "title": "Empieza tu negocio con tranquilidad. Nos ocupamos de todos los trámites necesarios para que tu LLC esté operativa sin contratiempos.",
+                "list": {
+                    "1": "Asesoramiento legal personalizado.",
+                    "2": "Garantía de cumplimiento normativo.",
+                    "3": "Gestión completa de documentos y acuerdos."
+                },
+                "button": "Crea tu LLC"
+            },
+            "bank_content": {
+                "title": "Abre tu cuenta bancaria sin necesidad de residir en Estados Unidos.",
+                "list": {
+                    "1": "Soluciones bancarias adaptadas a tus necesidades.",
+                    "2": "Pago ágil y sencillo."
+                },
+                "button": "Abre tu cuenta bancaria"
+            },
+            "renew_content": {
+                "title": "Optimiza los beneficios fiscales de tu empresa.",
+                "list": {
+                    "1": "Asesoramiento fiscal experto.",
+                    "2": "Cumplimiento integral denormativas.",
+                    "3": "Soporte constante para prevenir contratiempos."
+                },
+                "button": "Renueva tu LLC"
+            },
+            "taxes_content": {
+                "title": "Manten tu empresa actualizada en todo momento.",
+                "list": {
+                    "1": "Renovación y gestión de tramítes legales.",
+                    "2": "Operación ininterumpida para tu tranquilidad."
+                },
+                "button": "Declarar impuestos"
+            }
+        },
+        "pricing": {
+            "title1": "Nuestros",
+            "title2": "planes y precios",
+            "tabs": {
+                "plans": "Planes",
+                "others": "Otros"
+            },
+            "entrepreneur_pack": {
+                "header": "Recomendado",
+                "title": "Pack Emprendedor",
+                "price": "$499",
+                "description": {
+                    "1": "Ideal para freelancers, agencias y startups en etapa temprana que no tienen presencia física en EE.UU.",
+                    "2": "Constitución de LLC en Nuevo México (Single Member)"
+                },
+                "button": "Comienza tu LLC hoy",
+                "includes": {
+                    "title": "Incluye",
+                    "1": "Documentación completa: Artículos de organización, Operating Agreement, EIN.",
+                    "2": "Consulta gratuita de planificación fiscal.",
+                    "3": "Apertura de cuenta bancaria en EE.UU. garantizada en 7 días.",
+                    "4": "Dirección fiscal y social en para apertura bancaria.",
+                    "5": "Registered Agent - R.A. ⓘ",
+                    "6": "Asistencia con la implementación de sistemas de ventas como Stripe.",
+                    "7": "Reporte BOIR obligatorio para ⓘ cumplimiento legal.",
+                    "8": "E-book con información sobre LLCs."
+                }
+            },
+            "elite_pack": {
+                "title": "Pack Elite",
+                "price": "$599",
+                "description": {
+                    "1": "Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos",
+                    "2": "Constitución de LLC en cualquier estado (Single Member o Partnership)"
+                },
+                "button": "Comienza tu LLC hoy",
+                "includes": {
+                    "title": "Incluye",
+                    "1": "Todo en Pack Emprendedor",
+                    "2": "Asistencia con sistemas de ventas como Stripe y conexión bancaria"
+                }
+            },
+            "premium_pack": {
+                "title": "Pack Premium",
+                "price": "$699",
+                "description": {
+                    "1": "Ideal para emprendedores. Solución integral con soporte fiscal y renovación automática.",
+                    "2": "Constitución de LLC en cualquier estado (Single Member o Partnership)"
+                },
+                "button": "Comienza tu LLC hoy",
+                "includes": {
+                    "title": "Incluye",
+                    "1": "Todo en Pack Elite",
+                    "2": "Renovación automática al año"
+                }
+            }
+        },
+        "benefits": {
+            "title1": "Beneficios",
+            "title2": "clave de una LLC en EE.UU.",
+            "benefit1": {
+                "title": "Acceso global",
+                "description": "Opera a nivel global, realiza cobras en dólares y administra cuentas bancarias a través de plataformas como Relay y Mercury."
+            },
+            "benefit2": {
+                "title": "Privacidad y protección",
+                "description": "Protege tu identidad y patrimonio con una LLC, asegurando anonimato y seguridad frente a riesgos."
+            },
+            "benefit3": {
+                "title": "Todo 100% online",
+                "description": "Lleva a cabo todo el proceso de forma online y accede a mercados internacionales sin necesidad de desplazarte,"
+            },
+            "benefit4": {
+                "title": "Finanzas robustas",
+                "description": "Administra cuentas en dólares, utiliza plataformas de pago internacionales y accede a opciones de financiamiento en EE.UU."
+            }
+        },
+        "testimonials": {
+            "title1": "Start Companies",
+            "stars": "estrellas",
+            "reviews": "reseñas",
+            "testimonial": {
+                "most": "Más de",
+                "clients": "clientes nos califican como Excelente en servicios de creación LLC. Descubrí qué opinan sobre Start Companies y cómo los ayudamos a emprender en EE.UU."
+            },
+            "more_reviews": "Lee más reseñas en Trustpilot"
+        },
+        "blog": {
+            "title1": "¿Quieres",
+            "title2": "conocer más?",
+            "button": "Leer más"
+        },
+        "faq": {
+            "title1": "Preguntas",
+            "title2": "Frecuentes",
+            "question1": "¿Qué garantías me dan del servicio y cuándo puedo pagar?",
+            "question2": "¿En cuantos días puedo tener mi LLC abierta?",
+            "question3": "¿Cómo transferir dinero a Estados Unidos legalmente desde Argentina  o Latinoamérica?",
+            "question4": "¿Cuales son los requisitos para abrir una LLC en Estados Unidos?",
+            "question5": "¿Cuanto cuesta el servicio de apertura de una LLC en Estados Unidos?",
+            "question6": "¿Qué impuestos se deben pagar con una LLC en Estados Unidos?",
+            "question7": "¿Por qué elegir nuestros servicios para abrir una LLC en Estados Unidos?"
+        }
+    },
+    "FOOTER": {
+        "access_quick": {
+            "us": "Nosotros",
+            "plans": "Planes y Precios",
+            "blog": "Blog",
+            "contact": "Contacto"
+        },
+        "categories": {
+            "llc": "Abrir LLC",
+            "manage": "Gestionar una LLC",
+            "local": "Tu LLC a nivel local",
+            "advantages": "Ventajas de un LLC"
+        },
+        "contact_us": "Contáctanos",
+        "description": "Ebizboost LLC actúa como intermediario en la facilitación de trámites legales y bancarios en los EE. UU. No forma parte de entidades gubernamentales ni tiene alianzas con bancos. No se hace responsable por el uso indebido de cuentas ni por información incorrecta. Al agendar una llamada y aceptar los requisitos enviados, el usuario acepta la cláusula de no reembolso. Además, Ebizboost LLC compartirá únicamente la información indispensable relacionada con los requisitos explicados y enviados luego de la conversación. El usuario acepta implícitamente, ya sea de manera verbal o a través de algún canal oficial de contacto, que la información proporcionada es correcta y completa."
     }
 }
