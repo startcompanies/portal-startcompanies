@@ -22,20 +22,6 @@
   line-height: 1.2;
 }
 
-.title-main {
-  color: #333333;
-}
-
-.title-main::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: #00bcd4;
-}
-
 .title-accent {
   color: #00bcd4;
 }
