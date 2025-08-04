@@ -191,6 +191,62 @@
             "question7": "¿Por qué elegir nuestros servicios para abrir una LLC en Estados Unidos?"
         }
     },
+    "US": {
+        "mission": {
+            "title": "Misión",
+            "description": "Empoderamos a emprendedores y trabajadores independientes con soluciones confiables para establecer y gestionar negocios en Estados Unidos."
+        },
+        "vision": {
+            "title": "Visión",
+            "description": "Aspiramos a ser el referente en consultoría y creación de empresas en Estados Unidos, reconocidos por nuestra transparencia, profesionalismo y enfoque en las necesidades del cliente."
+        },
+        "empresarial-strategy": {
+            "title": "Estrategia empresarial",
+            "title2": " efectiva",
+            "description": "Descubre cómo hacemos realidad negocios exitosos"
+        },
+        "potential": {
+            "title": "Potencia tu negocio",
+            "title2": " ahora",
+            "description": "Descubre cómo cumplir con las normativas legales para vender internacionalmente con tu LLC",
+            "cta-primary": "Consulta con un experto",
+            "cta-secondary": "Planes y precios"
+        },  
+        "proposal": {
+            "title": "Propuesta de valor",
+            "title2": " distintiva",
+            "description": {
+                "1": {
+                    "title": "Especialización Internacional",
+                    "description": "Apoyamos a emprendedores internacionales en la creación de empresas en mercados globales, impulsando su expansión y fortaleciendo sus oportunidades de negocio a nivel mundial."
+                },
+                "2": {
+                    "title": "Acompañamiento Integral",
+                    "description": "Ofrecemos asesoramiento experto en planificación fiscal, cumplimiento normativo, contabilidad y finanzas para garantizar el éxito sostenible de su negocio. Facilitamos la integración de plataformas de pago como Stripe para expandir su alcance internacional."
+                },
+                "3": {
+                    "title": "Sin Barreras Geográficas",
+                    "description": "Facilitamos la apertura de empresas y cuentas bancarias sin necesidad de residencia en EE.UU., eliminando barreras geográficas y permitiendo que su negocio acceda a nuevos mercados internacionales."
+                }
+            }
+        }
+    },
+    "CONTACT": {
+        "title": "¡Escríbenos para comenzar hoy mismo!",
+        "description": "Resolvemos todas tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo está listo para acompañarte en cada paso del proceso.",
+        "name": "Nombre",
+        "email": "Correo electrónico",
+        "message": "Mensaje",
+        "send": "Enviar",
+        "advice": {
+            "title": "Tu asesoría",
+            "title2": " gratuita ",
+            "title3": "en minutos",
+            "description": "Contáctanos para resolver todas tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo está listo para acompañarte en cada paso del proceso.Expandir tu negocio internacionalmente nunca fue tan fácil. Agenda una llamada gratuita con nuestros expertos y aclara todas tus dudas en minutos.",
+            "button1": "Agenda tu llamada",
+            "button2": "Planes y precios"
+        }
+    },
     "FOOTER": {
         "access_quick": {
             "us": "Nosotros",

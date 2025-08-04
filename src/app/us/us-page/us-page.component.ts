@@ -1,9 +1,15 @@
 import { Component } from '@angular/core';
+import { ScHeaderComponent } from '../../sc-header/sc-header.component';
+import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { UsStrategiesComponent } from '../us-strategies/us-strategies.component';
+import { UsPotentialComponent } from '../us-potential/us-potential.component';
+import { UsProposalComponent } from "../us-proposal/us-proposal.component";
 
 @Component({
   selector: 'app-us-page',
   standalone: true,
-  imports: [],
+  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe, UsStrategiesComponent, UsPotentialComponent, UsProposalComponent, UsProposalComponent],
   templateUrl: './us-page.component.html',
   styleUrl: './us-page.component.css'
 })

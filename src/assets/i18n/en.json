@@ -191,6 +191,62 @@
             "question7": "Why choose our services to open an LLC in the United States?"
         }
     },
+    "US": {
+        "mission": {
+            "title": "Mission",
+            "description": "We empower entrepreneurs and independent workers with reliable solutions to establish and manage businesses in the United States."
+        },
+        "vision": {
+            "title": "Vision",
+            "description": "We aspire to be the reference in consulting and business creation in the United States, recognized for our transparency, professionalism and focus on the needs of our clients."
+        },
+        "empresarial-strategy": {
+            "title": "Effective business",
+            "title2": " strategy",
+            "description": "Discover how we make successful businesses a reality"
+        },
+        "potential": {
+            "title": "Power up",
+            "title2": "your business",
+            "description": "Discover how to comply with legal regulations to sell internationally with your LLC",
+            "cta-primary": "Consult with an expert",
+            "cta-secondary": "Plans and prices"
+        },
+        "proposal": {
+            "title": "Distinctive value",
+            "title2": "proposition",
+            "description": {
+                "1": {
+                    "title": "International specialization",
+                    "description": "We support international entrepreneurs in creating businesses in global markets, promoting their expansion and strengthening their business opportunities worldwide."
+                },
+                "2": {
+                    "title": "Comprehensive support",
+                    "description": "We offer expert advice on tax planning, legal compliance, accounting and finance to ensure the sustainable success of your business. We facilitate the integration of payment platforms like Stripe to expand your international reach."
+                },
+                "3": {
+                    "title": "No geographical barriers",
+                    "description": "We facilitate the opening of businesses and bank accounts without the need to reside in the United States, eliminating geographical barriers and allowing your business to access new international markets."
+                }
+            }
+        }
+    },
+    "CONTACT": {
+        "title": "Contact us to start today!",
+        "description": "We solve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.",
+        "name": "Name",
+        "email": "Email",
+        "message": "Message",
+        "send": "Send",
+        "advice": {
+            "title": "Your free advice",
+            "title2": "in minutes",
+            "title3": "with an expert",
+            "description": "Contact us to resolve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.Expanding your business internationally has never been easier. Schedule a free call with our experts and clear all your doubts in minutes.",
+            "button1": "Schedule your call",
+            "button2": "Plans and prices"
+        }
+    },
     "FOOTER": {
         "access_quick": {
             "us": "About us",

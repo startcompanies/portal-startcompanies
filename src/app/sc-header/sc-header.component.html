@@ -18,7 +18,7 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link active" aria-current="page"
-            href="#" (click)="navigateToSection('heroSection')">{{ 'NAVBAR.us' | transloco }}</a>
+            href="/nosotros">{{ 'NAVBAR.us' | transloco }}</a>
         </li>
         <li class="nav-item">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
@@ -29,8 +29,7 @@
             (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
         </li>
         <li class="nav-item">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
-            (click)="navigateToSection('faqSection')">{{ 'NAVBAR.contact' | transloco }}</a>
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="/contacto">{{ 'NAVBAR.contact' | transloco }}</a>
         </li>
       </ul>
 

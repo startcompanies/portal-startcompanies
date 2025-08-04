@@ -1,1 +1,73 @@
-<p>us-page works!</p>
+<app-sc-header></app-sc-header>
+<header class="sc-hero" #heroSection>
+    <div id="carouselExampleIndicators" class="carousel slide h-100" data-bs-ride="carousel">
+        <!-- Indicadores del carrusel -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+        </div>
+
+        <!-- Contenido del carrusel -->
+        <div class="carousel-inner h-100">
+            <!-- Primer Slide: Misión -->
+            <div class="carousel-item active h-100">
+                <!-- Contenedor principal de la slide, centra su contenido verticalmente -->
+                <div class="sc-slide h-100 container d-flex flex-column justify-content-center">
+                    <!-- Card de Misión -->
+                    <div class="mission-card">
+                        <div class="row align-items-center">
+                            <!-- Columna izquierda: Imagen -->
+                            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                                <div class="mission-image-container">
+                                    <img src="assets/us/mission-person.jpg" alt="Emprendedor trabajando" class="mission-image">
+                                </div>
+                            </div>
+                            <!-- Columna derecha: Texto -->
+                            <div class="col-12 col-lg-6">
+                                <div class="mission-content">
+                                    <h2 class="mission-title">{{ 'US.mission.title' | transloco }}</h2>
+                                    <p class="mission-description">
+                                        {{ 'US.mission.description' | transloco }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Segundo Slide: Visión -->
+            <div class="carousel-item h-100">
+                <!-- Contenedor principal de la slide, centra su contenido verticalmente -->
+                <div class="sc-slide h-100 container d-flex flex-column justify-content-center">
+                    <!-- Card de Visión -->
+                    <div class="mission-card">
+                        <div class="row align-items-center">
+                            <!-- Columna izquierda: Imagen -->
+                            <div class="col-12 col-lg-6 mb-4 mb-lg-0">
+                                <div class="mission-image-container">
+                                    <img src="assets/us/vision.jpg" alt="Visión de la empresa" class="mission-image">
+                                </div>
+                            </div>
+                            <!-- Columna derecha: Texto -->
+                            <div class="col-12 col-lg-6">
+                                <div class="mission-content">
+                                    <h2 class="mission-title">{{'US.vision.title' | transloco}}</h2>
+                                    <p class="mission-description">
+                                        {{'US.vision.description' | transloco}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<app-us-strategies></app-us-strategies>
+<app-us-potential></app-us-potential>
+<app-us-proposal></app-us-proposal>
+<app-sc-footer></app-sc-footer>
