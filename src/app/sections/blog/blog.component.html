@@ -1,0 +1,179 @@
+<!-- src/app/components/sc-content/sc-content.component.html -->
+<section class="blog-section py-5" #blogSection>
+    <div class="container">
+        <div class="blog-content">
+            <h2 class="blog-title text-center mb-5">
+                {{'CONTENT.blog.title1' | transloco}} <span class="text-primary-blue">{{'CONTENT.blog.title2' |
+                        transloco}}</span>
+            </h2>
+
+            <!-- Carrusel de Bootstrap para blog -->
+            <div class="blog-carousel-container">
+                <!-- Carrusel para tablets y escritorio (3 cards por slide) -->
+                <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-interval="5000" data-bs-touch="false">
+                    <div class="carousel-inner">
+                        <!-- Slide 1 -->
+                        <div class="carousel-item active">
+                            <div class="row g-4 justify-content-center">
+                                <!-- Tarjeta 1 -->
+                                <div class="col-12 col-md-4 col-lg-4 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_2.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ECI y LLC: La combinación perfecta para tu negocio en Estados Unidos
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                Expandir un negocio en EE.UU. presenta oportunidades fiscales, especialmente
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                                <!-- Tarjeta 2 -->
+                                <div class="col-12 col-md-4 col-lg-4 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_3.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ¿Cómo crear una LLC en Nuevo México?
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                Para introducirte un poco más en el tema nueva está de más que sepas que es una LLC, y
+                                                ¿por qué crear
+                                                una LLC en Nuevo México puede interesarte?
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                                <!-- Tarjeta 3 -->
+                                <div class="col-12 col-md-4 col-lg-4 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_4.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ¿Cómo hacer un Informe BOI? – Reporte BOI LLC
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                El Informe BOI (Beneficial Ownership Information) es una obligación regulatoria
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de navegación personalizados - Visibles en tablets y desktop -->
+                    <div class="blog-carousel-controls-bottom d-none d-md-flex mt-5">
+                        <button class="blog-carousel-control" type="button" data-bs-target="#blogCarouselDesktop" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="blog-carousel-control ms-3" type="button" data-bs-target="#blogCarouselDesktop" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <!-- Indicadores para desktop -->
+                    <div class="carousel-indicators blog-carousel-indicators d-md-none">
+                        <button type="button" data-bs-target="#blogCarouselDesktop" data-bs-slide-to="0" class="active"
+                            aria-current="true" aria-label="Slide 1"></button>
+                    </div>
+                </div>
+
+                <!-- Carrusel para móviles (1 card por slide) -->
+                <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-interval="5000" data-bs-touch="false">
+                    <div class="carousel-inner">
+                        <!-- Slide 1 -->
+                        <div class="carousel-item active">
+                            <div class="row justify-content-center">
+                                <div class="col-12 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_2.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ECI y LLC: La combinación perfecta para tu negocio en Estados Unidos
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                Expandir un negocio en EE.UU. presenta oportunidades fiscales, especialmente
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2 -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-12 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_3.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ¿Cómo crear una LLC en Nuevo México?
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                Para introducirte un poco más en el tema nueva está de más que sepas que es una LLC, y
+                                                ¿por qué crear
+                                                una LLC en Nuevo México puede interesarte?
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 3 -->
+                        <div class="carousel-item">
+                            <div class="row justify-content-center">
+                                <div class="col-12 d-flex">
+                                    <article class="blog-card w-100">
+                                        <img src="assets/blog/img_image_4.png" alt="Blog Image"
+                                            class="blog-image img-fluid rounded-3" />
+                                        <div class="blog-card-content d-flex flex-column flex-grow-1">
+                                            <div class="blog-category">Abrir una LLC</div>
+                                            <h3 class="blog-card-title">
+                                                ¿Cómo hacer un Informe BOI? – Reporte BOI LLC
+                                            </h3>
+                                            <p class="blog-excerpt">
+                                                El Informe BOI (Beneficial Ownership Information) es una obligación regulatoria
+                                            </p>
+                                            <a href="#" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                        </div>
+                                    </article>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicadores para móvil -->
+                    <div class="carousel-indicators blog-carousel-indicators">
+                        <button type="button" data-bs-target="#blogCarouselMobile" data-bs-slide-to="0" class="active"
+                            aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#blogCarouselMobile" data-bs-slide-to="1"
+                            aria-label="Slide 2"></button>
+                        <button type="button" data-bs-target="#blogCarouselMobile" data-bs-slide-to="2"
+                            aria-label="Slide 3"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,6 +1,8 @@
-/* Hero Section */
+/* =========================
+   HERO SECTION
+   ========================= */
 .sc-hero {
-  height: 95vh; /* Altura fija para un posicionamiento estable */
+  height: 95vh;
   background-image: url("../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
@@ -8,27 +10,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* padding-top: 56px; */ /* Si tu navbar es fijo, considera añadir un padding-top aquí */
+  /* padding-top: 56px; */
 }
 
-/* El carrusel en sí mismo */
 .sc-hero #carouselExampleIndicators {
   width: 100%;
   height: 100%;
   position: relative;
 }
 
-/* Carousel Inner */
-.sc-hero .carousel-inner {
-    height: 100%;
-}
-
-/* Individual carousel item */
+.sc-hero .carousel-inner,
 .sc-hero .carousel-item {
-    height: 100%;
+  height: 100%;
 }
 
-/* Contenedor de cada slide del carrusel */
 .sc-slide {
   height: 100%;
   display: flex;
@@ -39,10 +34,10 @@
   margin: 0 auto;
 }
 
-/* Estilos de los indicadores del carrusel (los puntos) */
+/* Carousel Indicators */
 .sc-hero .carousel-indicators {
   position: absolute !important;
-  bottom: 80px !important; /* ¡VALOR AJUSTADO AQUÍ! Puedes probar con 100px, 120px, etc. */
+  bottom: 80px !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   top: auto !important;
@@ -71,7 +66,7 @@
   transform: scale(1.2);
 }
 
-/* Título principal del Hero */
+/* Hero Titles & Description */
 .hero-title {
   font-size: 3.8rem;
   font-weight: 700;
@@ -81,7 +76,6 @@
   max-width: 100%;
 }
 
-/* Descripción del Hero */
 .hero-description {
   font-size: 1.15rem;
   font-weight: 400;
@@ -91,7 +85,7 @@
   max-width: 100%;
 }
 
-/* Contenedor de los botones */
+/* Hero Buttons */
 .hero-buttons {
   width: 100%;
   max-width: 480px;
@@ -99,7 +93,6 @@
   margin-bottom: 0;
 }
 
-/* Estilo Base para los botones del Hero */
 .hero-btn-primary,
 .hero-btn-secondary {
   border-radius: 2.5rem;
@@ -112,37 +105,34 @@
   white-space: nowrap;
 }
 
-/* Estilo para el botón "Crea TU LLC" (azul de fondo, texto blanco) */
 .hero-btn-primary {
   background-color: #02CAE3;
   color: #ffffff;
 }
-
 .hero-btn-primary:hover {
   background-color: #02CAE3;
   border-color: #02CAE3;
 }
 
-/* Estilo para el botón "Renueva TU LLC" o "ABRE TU CUENTA LLC" (blanco con borde azul, texto azul) */
 .hero-btn-secondary {
   background-color: transparent;
   color: #F3F6FA;
   border: 2px solid #F3F6FA;
 }
-
 .hero-btn-secondary:hover {
   background-color: #f0f0f0;
   color: #0049c6;
   border-color: #0049c6;
 }
 
-/* Iconos de flecha dentro de los botones */
 .hero-btn-primary i.bi,
 .hero-btn-secondary i.bi {
   font-size: 1.1rem;
 }
 
-/* polizas */
+/* =========================
+   SERVICES SECTION
+   ========================= */
 .sc-services-section {
   position: relative;
   background-color: transparent;
@@ -191,1146 +181,36 @@
   line-height: 1;
 }
 
-/* Opening LLC Section */
-.sc-how-to-llc {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-
-.sc-how-to-llc h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-}
-
-/* Timeline */
-.sc-timeline-wrapper {
-  position: relative;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-/** Estilos para el espacio entre las cards en la columna izquierda */
-.sc-timeline-spacer {
-  height: 180px;
-  width: 100%;
-}
-
-/* Columna central (solo para desktop) */
-.sc-timeline-center-col {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between !important;
-  min-height: 500px;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-}
-
-/* Linea central */
-.sc-timeline-line {
-  position: absolute;
-  width: 3px;
-  /*height: 100%;*/
-  background-color: #00B8D9;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0;
-  bottom: 0;
-  z-index: 0;
-  margin-top: 6rem;
-  margin-bottom: 9rem;
-}
-
-/* Iconos de los pasos */
-.sc-timeline-dot {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  background-color: #00B8D9;
-  border-radius: 50%;
-  z-index: 1;
-  /*flex-shrink: 0;*/
-}
-
-/* Icono superior */
-.sc-timeline-dot-top {
-  margin-top: 50px;
-}
-
-/* Icono medio */
-.sc-timeline-dot-middle {
-  margin-top: 15rem;
-  margin-bottom: 15rem;
-}
-
-/* Icono inferior */
-.sc-timeline-dot-bottom {
-  margin-bottom: 100px;
-}
-
-/* Timeline Cards */
-.sc-timeline-card {
-  background-color: #ffffff;
-  border: 2px solid #00B8D9;
-  border-radius: 1rem;
-  padding: 1.5rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
-  text-align: left;
-  transition: transform 0.3s ease;
-}
-
-.sc-timeline-card:hover {
-  transform: translateY(-5px);
-}
-
-/* Timeline Cards Left */
-.sc-timeline-card-left {
-  margin-right: auto;
-  margin-left: 0;
-}
-
-/* Timeline Cards Right */
-.sc-timeline-card-right {
-  margin-left: auto;
-  margin-right: 0;
-}
-
-/* Timeline Cards Title */
-.sc-timeline-card h3 {
-  font-size: 1.25rem;
-  color: #1F2A37;
-  margin-bottom: 0.5rem;
-}
-
-/* Timeline Cards Description */
-.sc-timeline-card p {
-  font-size: 0.95rem;
-  color: #1F2A37;
-  line-height: 1.6;
-}
-
-/* Tab Panes */
-.sc-tabs-section {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
-}
-
-/* Tabs styles */
-.sc-tabs-section .nav-pills .nav-link {
-  color: #1F2A37;
-  font-weight: 600;
-  font-size: 1.1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  background-color: transparent;
-  transition: all 0.3s ease;
-  margin: 0 0.5rem;
-}
-
-/* Tabs active */
-.sc-tabs-section .nav-pills .nav-link.active {
-  color: #00B8D9;
-  background-color: transparent;
-  position: relative;
-}
-
-/* Underline active tab */
-.sc-tabs-section .nav-pills .nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80%;
-  height: 4px;
-  background-color: #00B8D9;
-  border-radius: 2px;
-}
-
-/* Hover styles on tabs */
-.sc-tabs-section .nav-pills .nav-link:hover:not(.active) {
-  color: #00B8D9;
-}
-
-/* Tab Panes Description */
-.sc-tab-pane-content p {
-  font-size: 1.05rem;
-  color: #1F2A37;
-  line-height: 1.6;
-}
-
-/* Button Primary */
-.sc-btn-primary {
-  background-color: #00B8D9;
-  color: #F3F6FA;
-  border: none;
-  border-radius: 2.5rem;
-  padding: 0.8rem 2rem;
-  font-weight: 600;
-  font-size: 1.05rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-/* Button Primary Hover */
-.sc-btn-primary:hover {
-  background-color: #f0f0f0;
-  color: #006afe;
-}
-
-/* ------------------------------------------------------------------------- */
-/* Sección de Planes y Precios */
-/* ------------------------------------------------------------------------- */
+/* =========================
+   PRICING SECTION
+   ========================= */
 .pricing-section {
   position: relative;
   padding: 80px 16px;
-  /* Padding general de la sección */
-  /* margin-top: 80px; */
-  /* Si ya tienes un margen o padding en la sección anterior, ajusta o elimina esto */
   overflow: hidden;
-  /* Asegura que el ribbon no se desborde */
   background-color: #0049c6;
-  /* Color de fallback si la imagen no carga, tomado de tu CSS anterior */
 }
 
-/* Fondo de imagen con overlay */
-.sc-pricing-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('../../assets/pricing-bg.jpg');
-  /* Ruta a tu imagen de fondo */
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-  /* Detrás del contenido */
-  /* Overlay oscuro para que el texto blanco sea legible, mezclado con el fondo */
-  background-color: rgba(0, 0, 0, 0.4);
-  /* Ajusta la opacidad del overlay */
-  background-blend-mode: multiply;
-  /* Mezcla la imagen con el color */
-}
-
-/* Contenedor del contenido principal de precios */
-.pricing-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: center;
-  position: relative;
-  /* Asegura que el contenido esté por encima del fondo */
-  z-index: 1;
-}
-
-/* Título principal de la sección */
-.pricing-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #ffffff;
-  /* Texto blanco */
-  margin-bottom: 32px;
-}
-
-.pricing-title .fw-bold {
-  font-weight: 700;
-  /* Asegura que la parte "planes Y precios" esté en negrita */
-}
-
-/* ------------------------------------------------------------------------- */
-/* Pestañas de Navegación (pricing-tabs) */
-/* ------------------------------------------------------------------------- */
-.pricing-tabs {
-  /* nav nav-pills justify-content-center ya están en el HTML */
-  gap: 32px;
-  /* Espacio entre las pestañas */
-  margin-bottom: 60px;
-  /* Espacio debajo de las pestañas */
-}
-
-.pricing-tabs .nav-link {
-  /* Aplica a los botones .nav-link */
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  /* Texto blanco para pestañas inactivas */
-  position: relative;
-  background-color: transparent;
-  /* Quita el fondo de Bootstrap */
-  border-radius: 0;
-  /* Quita el border-radius de nav-pills */
-  padding: 0 0.5rem 8px 0.5rem;
-  /* Ajusta padding para la línea inferior */
-  transition: color 0.3s ease;
-}
-
-/* Estilo de la pestaña activa */
-.pricing-tabs .nav-link.active {
-  color: #ffffff;
-  /* La pestaña activa también tiene texto blanco */
-  background-color: transparent;
-  /* Sigue siendo transparente */
-}
-
-/* Borde/línea debajo de la pestaña activa */
-.pricing-tabs .nav-link.active::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  /* Posición debajo del texto de la pestaña */
-  left: 0;
-  right: 0;
-  height: 4px;
-  background-color: #ffffff;
-  /* ¡Borde blanco, como en la captura! */
-  border-radius: 2px;
-}
-
-/* Efecto hover para las pestañas inactivas */
-.pricing-tabs .nav-link:hover:not(.active) {
-  color: rgba(255, 255, 255, 0.8);
-  /* Ligeramente más opaco al hover */
-}
-
-
-/* ------------------------------------------------------------------------- */
-/* Tarjetas de Precios (pricing-cards) */
-/* ------------------------------------------------------------------------- */
-.pricing-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-  align-items: stretch;
-}
-
-.pricing-card {
-  border-radius: 2rem;
-  padding: 32px;
-  text-align: center;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.recommended {
-  background-color: #F3F6FA;
-}
-
-.common {
-  border: 2px solid #F3F6FA;
-  color: #F3F6FA;
-}
-
-.common .card-title {
-  color: #F3F6FA !important;
-}
-
-.common .card-price {
-  color: #F3F6FA !important;
-}
-
-.common .card-description {
-  color: #F3F6FA !important;
-}
-
-.common .card-features {
-  color: #F3F6FA !important;
-}
-
-.common .card-features h6 {
-  color: #F3F6FA !important;
-}
-
-.common .card-features li {
-  color: #F3F6FA !important;
-}
-
-.pricing-card:hover {
-  transform: translateY(-10px);
-  /* Efecto de levantar al pasar el mouse */
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-  /* Sombra más intensa al hover */
-}
-
-/* Estilos de texto para la tarjeta "Recomendado" */
-.pricing-card:first-child .card-title,
-.pricing-card:first-child .card-description,
-.pricing-card:first-child .card-features,
-.pricing-card:first-child .card-features li {
-  color: #1F2A37;
-  /* Color oscuro del texto */
-}
-
-.pricing-card:first-child .card-price {
-  color: #02CAE3;
-  /* Precio en azul/cian */
-}
-
-/* Ribbon "Recomendado" */
-.recommended-badge {
-  background-color: #02CAE3;
-  /* Color azul/cian para la cinta */
-  color: #ffffff;
-  padding: 4px 24px;
-  border-radius: 18px;
-  font-size: 14px;
-  font-weight: 400;
-  margin-bottom: 16px;
-  display: inline-block;
-  /* Para que ocupe solo su contenido */
-}
-
-/* Títulos de los planes (h3) */
-.card-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1F2A37;
-  /* Color oscuro */
-  margin-bottom: 8px;
-}
-
-/* Precio */
-.card-price {
-  font-size: 32px;
-  font-weight: 700;
-  color: #02CAE3;
-  /* Color azul/cian para el precio */
-  margin-bottom: 16px;
-}
-
-/* Descripción corta del plan */
-.card-description {
-  font-size: 14px;
-  font-weight: 400;
-  color: #1F2A37;
-  /* Color oscuro */
-  line-height: 1.5;
-  margin-bottom: 24px;
-  min-height: 60px;
-  /* Asegura altura consistente para descripciones */
-}
-
-/* Sección "Incluye:" */
-.card-features {
-  font-size: 14px;
-  font-weight: 400;
-  color: #1F2A37;
-  line-height: 1.5;
-  text-align: left;
-  margin-bottom: 24px;
-  flex-grow: 1;
-}
-
-.card-features h6 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #1F2A37;
-  margin-bottom: 0.5rem;
-}
-
-/*.card-features ul {
-  padding-left: 0;
-  margin-top: 0.5rem;
-}
-
-.card-features li {
-  margin-bottom: 0.5rem;
-  display: flex;
-  align-items: flex-start;
-}*/
-
-
-/* ------------------------------------------------------------------------- */
-/* Botones de las Tarjetas */
-/* ------------------------------------------------------------------------- */
-.btn-primary,
-.btn-secondary {
-  border-radius: 2.5rem;
-  /* Bordes muy redondeados */
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
-  display: flex;
-  /* Para centrar contenido y icono */
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  /* Ocupa todo el ancho de la tarjeta */
-  text-decoration: none;
-  /* Quitar subrayado del <a> */
-  transition: all 0.3s ease;
-  margin-bottom: 16px;
-  /* Margen inferior del botón */
-}
-
-/* Botón principal (para tarjeta "Recomendado") - Usando #006afe de tu lista */
-.btn-primary {
-  background-color: #00B8D9;
-  /* Color #006afe */
-  color: #F3F6FA;
-  border: none;
-}
-
-.btn-primary:hover {
-  background-color: #02CAE3;
-  /* Un tono más oscuro de #006afe para hover */
-  color: #F3F6FA;
-}
-
-/* Botón secundario (para otras tarjetas) - Usando #1F2A37 de tu lista */
-.btn-secondary {
-  background-color: transparent;
-  color: #F3F6FA;
-  border: 1px solid #F3F6FA;
-}
-
-.btn-secondary:hover {
-  background-color: #00B8D9;
-  /* Color #00B8D9 para hover */
-  color: #ffffff;
-}
-
-/* Iconos de flecha en los botones */
-.btn-primary i.bi,
-.btn-secondary i.bi {
-  font-size: 1.1rem;
-}
-
-
-/* Media Queries para responsividad (ajustar tamaños de fuente y padding en móviles) */
+/* =========================
+   MEDIA QUERIES
+   ========================= */
 @media (max-width: 991.8px) {
-  .sc-slide h2 {
-    font-size: 2.5rem;
-  }
+  .sc-slide h2 { font-size: 2.5rem; }
+  .sc-slide p { font-size: 1rem; }
+  button { font-size: 0.6rem; }
 
-  .sc-slide p {
-    font-size: 1rem;
-  }
-
-  button {
-    font-size: 0.6rem;
-  }
-
-  /* Services Section */
   .sc-services-container {
     margin-top: -80px;
     padding: 0 1rem;
   }
-
-  .sc-services-card {
-    padding: 2rem 1.5rem;
-  }
-
+  .sc-services-card { padding: 2rem 1.5rem; }
   .sc-services-card .card-title {
     font-size: 2rem;
     margin-bottom: 2.5rem;
   }
-
-  .sc-services-item h3 {
-    font-size: 1.2rem;
-  }
-
-  .sc-services-item p {
-    font-size: 0.95rem;
-  }
-
-  .sc-icon-blue {
-    font-size: 3rem !important;
-  }
-
-  /* Tabs Section */
-  .sc-tabs-section .nav-pills .nav-link {
-    font-size: 1rem;
-    padding: 0.6rem 1rem;
-    margin: 0 0.25rem;
-  }
-
-  .sc-tabs-section .nav-pills {
-    flex-wrap: wrap;
-    /* Permite que las pestañas se envuelvan */
-  }
-
-  .sc-tabs-section .nav-pills .nav-item {
-    margin-bottom: 0.5rem;
-    /* Espacio entre pestañas apiladas */
-  }
-
-  .sc-tab-pane-content {
-    flex-direction: column;
-    /* Apila imagen y texto en móviles */
-    padding: 2rem;
-    min-height: auto;
-    /* Altura automática en móviles */
-  }
-
-  .sc-tab-pane-content .col-md-6 {
-    width: 100%;
-    /* Ocupa todo el ancho */
-  }
-
-  .sc-tab-pane-content img {
-    margin-bottom: 2rem;
-    /* Espacio debajo de la imagen */
-  }
-
-  .sc-tab-pane-content h3 {
-    font-size: 1.6rem;
-    text-align: center;
-    /* Centra el título en móvil */
-  }
-
-  .sc-tab-pane-content p {
-    font-size: 0.95rem;
-    text-align: center;
-    /* Centra el párrafo en móvil */
-  }
-
-  .sc-btn-primary {
-    width: 100%;
-    /* Botón de ancho completo en móviles */
-    max-width: 300px;
-    /* Limita el ancho del botón */
-    margin-left: auto;
-    /* Centra el botón */
-    margin-right: auto;
-  }
-}
-
-/* Benefits Section */
-.benefits-section {
-  padding: 80px 16px;
-  /* Padding general de la sección */
-  background-color: #ffffff;
-  /* Fondo blanco de la sección */
-}
-
-.benefits-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  /* text-align: center; */
-  /* Eliminado, el título ya tiene text-center */
-}
-
-/* Título de la sección */
-.section-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-  margin-bottom: 60px;
-  /* Espacio debajo del título */
-}
-
-/* Color azul/cian para la palabra "Beneficios" */
-.section-title .text-primary-blue {
-  color: #00B8D9;
-  /* Azul/Cian de tu lista anterior */
-}
-
-/* Grid de beneficios (ahora un row de Bootstrap) */
-.benefits-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  /* gap: 32px; */
-  /* Eliminado, Bootstrap g-4 lo maneja */
-  margin-top: 60px;
-  /* Espacio superior */
-  /* row g-4 ya están en el HTML */
-}
-
-.benefit-card {
-  background-color: #f4f7fc;
-  /* Fondo gris muy claro de la tarjeta */
-  border-radius: 60px;
-  /* Bordes muy redondeados */
-  padding: 32px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  /* Espacio entre los elementos de la tarjeta */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  /* Sombra sutil */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.benefit-card:hover {
-  transform: translateY(-5px);
-  /* Efecto de levantar al pasar el mouse */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  /* Sombra más intensa al hover */
-}
-
-.benefit-icon {
-  width: 60px;
-  height: 60px;
-  /* Los iconos de la captura son azul/cian, si tus SVG son grises, puedes aplicar un filtro */
-  /* filter: brightness(0) saturate(100%) invert(56%) sepia(85%) saturate(2250%) hue-rotate(159deg) brightness(98%) contrast(101%); */
-  /* Esto es para convertir un icono negro a azul/cian */
-  /* Si tus SVG ya tienen el color correcto, no necesitas el filtro. */
-}
-
-.benefit-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-  margin-bottom: 8px;
-}
-
-.benefit-description {
-  font-size: 16px;
-  font-weight: 400;
-  color: #293b49;
-  /* Color oscuro */
-  line-height: 1.5;
-}
-
-/* ------------------------------------------------------------------------- */
-/* Partner Logos */
-/* ------------------------------------------------------------------------- */
-/* d-flex justify-content-center align-items-center flex-wrap gap-4 mt-5 ya están en el HTML */
-
-/* Asegura que las imágenes de los logos sean responsivas si no lo son por defecto */
-.benefits-content img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Testimonials Section */
-.testimonials-section {
-  padding: 80px 16px;
-  background-color: #ffffff;
-  /* Fondo blanco de la sección */
-}
-
-.testimonials-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: center;
-  /* Centra el header y el slider */
-}
-
-.testimonials-header {
-  margin-bottom: 60px;
-}
-
-.testimonials-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-  margin-bottom: 16px;
-}
-
-.testimonials-title span {
-  /* Estilo para "Start Companies" */
-  font-size: 48px;
-  /* Tamaño grande */
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-}
-
-.testimonials-title .highlight {
-  /* Estilo para "4.8 estrellas..." */
-  font-size: 32px;
-  /* Tamaño de fuente de la captura */
-  font-weight: 700;
-  color: #02cae3;
-  /* Azul/cian */
-  display: block;
-  /* Para que ocupe su propia línea */
-  margin-top: 8px;
-  /* Espacio entre las dos líneas del título */
-}
-
-.testimonials-subtitle {
-  font-size: 16px;
-  font-weight: 400;
-  color: #293b49;
-  /* Color oscuro */
-  line-height: 1.5;
-  margin-bottom: 32px;
-}
-
-/* Estilo del botón "Lee más reseñas en Trustpilot" */
-.btn-primary-custom {
-  background-color: #02cae3;
-  /* Azul/cian */
-  color: #ffffff;
-  border: none;
-  border-radius: 2.5rem;
-  /* Bordes redondeados */
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  /* Quita el subrayado del enlace */
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary-custom:hover {
-  background-color: #00b8d9;
-  /* Un tono más oscuro de azul/cian al hover */
-  color: #ffffff;
-}
-
-.btn-primary-custom i.bi {
-  font-size: 1.1rem;
-  /* Tamaño del icono de estrella */
-}
-
-/* Slider de testimonios (ahora un row de Bootstrap) */
-.testimonials-slider {
-  /* display: grid; */
-  /* Eliminado, Bootstrap row lo maneja */
-  /* grid-template-columns: 1fr; */
-  /* Eliminado */
-  /* gap: 24px; */
-  /* Eliminado, Bootstrap g-4 lo maneja */
-  margin-bottom: 40px;
-  /* Espacio debajo del slider */
-}
-
-.testimonial-card {
-  background-color: #ffffff;
-  /* Fondo blanco */
-  border: 3px solid #02cae3;
-  /* Borde azul/cian */
-  border-radius: 60px;
-  /* Bordes muy redondeados */
-  padding: 32px;
-  text-align: center;
-  height: 100%;
-  /* Asegura que todas las tarjetas tengan la misma altura */
-  display: flex;
-  /* Para organizar el contenido verticalmente */
-  flex-direction: column;
-  align-items: center;
-  /* Centra el contenido horizontalmente */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  /* Sombra sutil */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.testimonial-card:hover {
-  transform: translateY(-5px);
-  /* Efecto de levantar al pasar el mouse */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  /* Sombra más intensa al hover */
-}
-
-.testimonial-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  /* Redondo */
-  margin: 0 auto 16px;
-  /* Centra y da margen inferior */
-  object-fit: cover;
-  /* Asegura que la imagen cubra el área sin distorsionar */
-}
-
-.testimonial-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-  margin-bottom: 4px;
-}
-
-.testimonial-location {
-  font-size: 16px;
-  font-weight: 400;
-  color: #293b49;
-  /* Color oscuro */
-  margin-bottom: 16px;
-}
-
-.testimonial-text {
-  font-size: 14px;
-  font-weight: 400;
-  color: #293b49;
-  /* Color oscuro */
-  line-height: 1.5;
-  margin-bottom: 16px;
-  flex-grow: 1;
-  /* Permite que el texto crezca y empuje las estrellas al final */
-}
-
-.rating {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: auto;
-  /* Empuja las estrellas al final de la tarjeta */
-}
-
-.star-icon {
-  /* Estilo para los iconos de estrella de Bootstrap */
-  color: #ffd700;
-  /* Color amarillo/dorado para las estrellas */
-  font-size: 16px;
-}
-
-/* Carrusel de puntos (indicadores) */
-.carousel-dot {
-  width: 10px;
-  height: 10px;
-  background-color: rgba(0, 184, 217, 0.4);
-  /* Azul/cian transparente para inactivos */
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.carousel-dot.active {
-  background-color: #00B8D9;
-  /* Azul/cian sólido para el activo */
-}
-
-/* Blog Section */
-.blog-section {
-  padding: 80px 16px;
-  background-color: #ffffff;
-  /* Fondo blanco de la sección */
-}
-
-.blog-content {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.blog-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1F2A37;
-  /* Color oscuro para "¿Deseas" */
-  text-align: center;
-  margin-bottom: 60px;
-}
-
-.blog-title .text-primary-blue {
-  color: #02cae3;
-  /* Azul/cian para "conocer más" */
-}
-
-/* Blog Grid (ahora un row de Bootstrap) */
-.blog-grid {
-  /* display: grid; */
-  /* Eliminado, Bootstrap row lo maneja */
-  /* grid-template-columns: 1fr; */
-  /* Eliminado */
-  /* gap: 32px; */
-  /* Eliminado, Bootstrap g-4 lo maneja */
-  margin-bottom: 40px;
-  /* Espacio debajo de la cuadrícula */
-}
-
-.blog-card {
-  background-color: #f4f7fc;
-  /* Fondo gris muy claro de la tarjeta */
-  border-radius: 20px;
-  /* Bordes redondeados */
-  padding: 0;
-  /* Padding se manejará internamente */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  /* Para que la imagen se recorte con el border-radius */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  /* Sombra sutil */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.blog-card:hover {
-  transform: translateY(-5px);
-  /* Efecto de levantar al pasar el mouse */
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-  /* Sombra más intensa al hover */
-}
-
-.blog-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 20px 20px 0 0;
-  /* Solo esquinas superiores redondeadas para la imagen */
-  margin-bottom: 16px;
-  /* Espacio debajo de la imagen */
-}
-
-.blog-card-content {
-  padding: 0 24px 24px 24px;
-  /* Padding interno para el contenido de la tarjeta */
-  text-align: left;
-  /* Alineación del texto dentro de la tarjeta */
-  flex-grow: 1;
-  /* Permite que el contenido se estire */
-}
-
-.blog-category {
-  font-size: 14px;
-  font-weight: 400;
-  color: #bababa;
-  /* Gris claro */
-  margin-bottom: 8px;
-  /* Espacio debajo de la categoría */
-}
-
-.blog-card-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro */
-  line-height: 1.3;
-  margin-bottom: 8px;
-  /* Espacio debajo del título */
-}
-
-.blog-excerpt {
-  font-size: 14px;
-  font-weight: 400;
-  color: #bababa;
-  /* Gris claro */
-  line-height: 1.5;
-  margin-bottom: 16px;
-  /* Espacio debajo del extracto */
-}
-
-.blog-read-more {
-  font-size: 14px;
-  font-weight: 400;
-  color: #0068bb;
-  /* Azul del enlace */
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.blog-read-more:hover {
-  color: #004a80;
-  /* Un tono más oscuro de azul al hover */
-}
-
-/* Botones de navegación (carrusel) */
-.btn-circle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  /* Círculo perfecto */
-  padding: 0;
-  background-color: #02cae3;
-  /* Azul/cian */
-  border: none;
-  transition: background-color 0.3s ease;
-}
-
-.btn-circle:hover {
-  background-color: #00b8d9;
-  /* Un tono más oscuro de azul/cian al hover */
-}
-
-.btn-circle img {
-  width: 24px;
-  height: 24px;
-}
-
-/* FAQ Section */
-.faq-section {
-  background-color: #fafafa;
-  /* Fondo gris muy claro de la sección */
-  padding: 80px 16px;
-}
-
-.faq-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  text-align: center;
-  /* Centra el título */
-}
-
-.faq-title {
-  font-size: 32px;
-  font-weight: 700;
-  color: #293b49;
-  /* Color oscuro para "Preguntas" */
-  margin-bottom: 60px;
-  /* Espacio debajo del título */
-}
-
-.faq-title .highlight {
-  color: #02cae3;
-  /* Azul/cian para "Frecuentes" */
-}
-
-/* Estilos para la lista de preguntas estáticas */
-.faq-list {
-  max-width: 800px;
-  /* Limita el ancho de la lista */
-  margin: 0 auto;
-  /* Centra la lista */
-  background-color: #fafafa;
-  /* ¡FONDO DE LA LISTA IGUAL AL DE LA SECCIÓN! */
-  border-radius: 0;
-  /* Asegura que no haya bordes redondeados */
-  box-shadow: none;
-  /* Elimina la sombra */
-}
-
-.faq-item-static {
-  background-color: #fafafa;
-  /* ¡FONDO DE CADA ITEM IGUAL AL DE LA SECCIÓN! */
-  border-bottom: 1px solid #e0e0e0;
-  /* Línea divisoria gris clara y visible */
-  padding: 20px 24px;
-  /* Padding para el contenido del item */
-  transition: background-color 0.3s ease;
-  /* Transición para hover */
-}
-
-.faq-item-static:last-child {
-  border-bottom: none;
-  /* Elimina la última línea divisoria */
-}
-
-.faq-item-static:hover {
-  background-color: #f0f0f0;
-  /* Un tono ligeramente más oscuro al hover, usando un color de tu lista */
-  cursor: default;
-  /* Cambia el cursor para indicar que no es clickeable */
-}
-
-.faq-question-static {
-  font-size: 16px;
-  font-weight: 400;
-  color: #293b49;
-  /* Color oscuro para el texto de la pregunta */
-  text-align: left;
-  display: flex;
-  /* Para alinear el texto y el icono */
-  justify-content: space-between;
-  /* Espacia el texto y el icono */
-  align-items: center;
-  /* Centra verticalmente */
-}
-
-.faq-arrow-icon {
-  font-size: 16px;
-  /* Tamaño del icono */
-  color: #293b49;
-  /* Color del icono (gris oscuro) */
-  margin-left: 10px;
-  /* Espacio entre el texto y el icono */
-  flex-shrink: 0;
-  /* Evita que el icono se encoja */
+  .sc-services-item h3 { font-size: 1.2rem; }
+  .sc-services-item p { font-size: 0.95rem; }
+  .sc-icon-blue { font-size: 3rem !important; }
 }
 
 @media (max-width: 767.98px) {
@@ -1338,86 +218,70 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-
-  .sc-slide p {
-    font-size: 0.9rem;
-  }
-
-  .sc-services-container {
-    margin-top: -60px;
-  }
-
-  .sc-services-card {
-    padding: 2rem 1rem;
-  }
-
+  .sc-slide p { font-size: 0.9rem; }
+  .sc-services-container { margin-top: -60px; }
+  .sc-services-card { padding: 2rem 1rem; }
   .sc-services-card .card-title {
     font-size: 1.8rem;
     margin-bottom: 2rem;
   }
+  .sc-services-item h3 { font-size: 1.5rem; }
+  .sc-services-item:last-child { margin-bottom: 0; }
+}
 
-  .sc-services-item h3 {
-    font-size: 1.5rem;
-  }
-
-  .sc-services-item:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Timeline */
-  .sc-timeline-wrapper {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  /* Estilos para el espacio entre las cards en la columna izquierda */
-  .sc-timeline-spacer {
-    display: none !important;
-    /* Asegura que se oculte en móviles */
-  }
-
-  .sc-timeline-center-col {
-    display: none !important;
-  }
-
-  .sc-timeline-card-left-col,
-  .sc-timeline-card-right-col {
-    width: 100%;
-    flex: none;
-  }
-
-  .sc-timeline-card {
-    margin: 1rem auto !important;
-    max-width: 400px;
-    text-align: center;
-  }
-
-  .sc-timeline-icon-box {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .sc-how-to-llc h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  /* Tabs Section */
-  .sc-tabs-section .nav-pills .nav-link {
-    font-size: 0.9rem;
-    padding: 0.5rem 0.8rem;
-  }
-
-  .sc-tab-pane-content h3 {
-    font-size: 1.4rem;
-  }
-
-  .sc-tab-pane-content p {
-    font-size: 0.85rem;
-  }
-
-  /* Benefits Section */
-  .benefits-grid {
-    grid-template-columns: 1fr;
-  }
+/* =========================
+   FAQ SECTION
+   ========================= */
+.faq-section {
+  background-color: #fafafa;
+  padding: 80px 16px;
+}
+.faq-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+.faq-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #293b49;
+  margin-bottom: 60px;
+}
+.faq-title .highlight {
+  color: #02cae3;
+}
+.faq-list {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fafafa;
+  border-radius: 0;
+  box-shadow: none;
+}
+.faq-item-static {
+  background-color: #fafafa;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 20px 24px;
+  transition: background-color 0.3s ease;
+}
+.faq-item-static:last-child {
+  border-bottom: none;
+}
+.faq-item-static:hover {
+  background-color: #f0f0f0;
+  cursor: default;
+}
+.faq-question-static {
+  font-size: 16px;
+  font-weight: 400;
+  color: #293b49;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.faq-arrow-icon {
+  font-size: 16px;
+  color: #293b49;
+  margin-left: 10px;
+  flex-shrink: 0;
 }
