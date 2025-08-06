@@ -1,0 +1,38 @@
+<section class="video-grid-section">
+  <div class="container">
+    <!-- Título principal -->
+    <h2 class="main-title" *ngIf="title">
+      <span class="title-part">{{ title }}</span>
+      <span class="title-highlight" *ngIf="titleHighlight">{{ titleHighlight }}</span>
+    </h2>
+    
+    <!-- Descripción -->
+    <p class="description" *ngIf="description">
+      {{ description }}
+    </p>
+    
+    <!-- Cuadrícula de videos -->
+    <div class="video-grid" *ngIf="videos.length > 0">
+      <div class="video-row" *ngFor="let row of getVideosInRows()">
+        <div class="video-item" *ngFor="let video of row">
+          <div class="video-container">
+            <iframe 
+              [src]="getSafeUrl(video.url)" 
+              [title]="video.title"
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin" 
+              allowfullscreen 
+              loading="lazy">
+            </iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mensaje cuando no hay videos -->
+    <div class="no-videos" *ngIf="videos.length === 0">
+      <p>No hay testimonios disponibles en este momento.</p>
+    </div>
+  </div>
+</section>

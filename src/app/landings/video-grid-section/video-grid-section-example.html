@@ -1,0 +1,83 @@
+<!-- Ejemplo de uso del componente VideoGridSectionComponent -->
+
+<!-- Ejemplo 1: Con todos los elementos -->
+<app-video-grid-section
+  title="Escucha a la comunidad"
+  titleHighlight="¡Creación LLC!"
+  description="Mira lo que nuestros clientes tienen que decir sobre nosotros."
+  [videos]="[
+    {
+      id: '1',
+      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      title: 'Testimonio de Juan Pérez'
+    },
+    {
+      id: '2',
+      url: 'https://www.youtube.com/embed/example2',
+      title: 'Testimonio de María García'
+    },
+    {
+      id: '3',
+      url: 'https://www.youtube.com/embed/example3',
+      title: 'Testimonio de Carlos López'
+    },
+    {
+      id: '4',
+      url: 'https://www.youtube.com/embed/example4',
+      title: 'Testimonio de Ana Rodríguez'
+    },
+    {
+      id: '5',
+      url: 'https://www.youtube.com/embed/example5',
+      title: 'Testimonio de Luis Martínez'
+    },
+    {
+      id: '6',
+      url: 'https://www.youtube.com/embed/example6',
+      title: 'Testimonio de Carmen Sánchez'
+    }
+  ]">
+</app-video-grid-section>
+
+<!-- Ejemplo 2: Solo con título y videos -->
+<app-video-grid-section
+  title="Nuestros"
+  titleHighlight="testimonios"
+  [videos]="[
+    {
+      id: '1',
+      url: 'https://www.youtube.com/embed/example1',
+      title: 'Testimonio 1'
+    },
+    {
+      id: '2',
+      url: 'https://www.youtube.com/embed/example2',
+      title: 'Testimonio 2'
+    },
+    {
+      id: '3',
+      url: 'https://www.youtube.com/embed/example3',
+      title: 'Testimonio 3'
+    }
+  ]">
+</app-video-grid-section>
+
+<!-- Ejemplo 3: Con configuración personalizada de videos por fila -->
+<app-video-grid-section
+  title="Experiencias"
+  titleHighlight="reales"
+  description="Conoce las historias de éxito de nuestros clientes."
+  [maxVideosPerRow]="2"
+  [videos]="[
+    {
+      id: '1',
+      url: 'https://www.youtube.com/embed/example1',
+      title: 'Historia de éxito 1'
+    },
+    {
+      id: '2',
+      url: 'https://www.youtube.com/embed/example2',
+      title: 'Historia de éxito 2'
+    }
+  ]">
+</app-video-grid-section> 

@@ -23,7 +23,7 @@ export const routes: Routes = [
     },
     {
         path: 'apertura-banco-relay',
-        loadComponent: () => import('./landings/landing-open-relay/landing-open-relay.component').then(m => m.LandingOpenRelayComponent),
+        loadComponent: () => import('./landings/landing-presentation/landing-presentation.component').then(m => m.LandingPresentationComponent),
         title: 'Apertura de Banco Relay'
     }
 ];

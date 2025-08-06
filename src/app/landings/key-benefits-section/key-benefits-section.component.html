@@ -1,0 +1,44 @@
+<section class="key-benefits-section">
+  <div class="container">
+    <!-- Título principal -->
+    <div class="main-title">
+      <h2>
+        <span class="title-part">{{ title.split('Start Companies')[0] }}</span>
+        <span class="title-highlight">{{ titleHighlight }}</span>
+      </h2>
+    </div>
+    
+    <!-- Descripción -->
+    <div class="description">
+      <p>{{ description }}</p>
+      <p class="subtitle">
+        Descubre por qué más de 
+        <span class="highlight">{{ subtitleHighlights[0] }}</span> 
+        nos califican como 
+        <span class="highlight">{{ subtitleHighlights[1] }}</span>.
+      </p>
+    </div>
+    
+    <!-- Tarjetas de beneficios -->
+    <div class="benefits-grid">
+      <div class="benefit-card" *ngFor="let benefit of benefits">
+        <div class="benefit-icon">
+          <img [src]="benefit.icon" [alt]="benefit.title">
+        </div>
+        <div class="benefit-content">
+          <h3 class="benefit-title">
+            <span *ngIf="benefit.highlight; else normalTitle">
+              {{ benefit.title.split(benefit.highlight)[0] }}
+              <span class="highlight">{{ benefit.highlight }}</span>
+              {{ benefit.title.split(benefit.highlight)[1] }}
+            </span>
+            <ng-template #normalTitle>
+              {{ benefit.title }}
+            </ng-template>
+          </h3>
+          <p class="benefit-description">{{ benefit.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

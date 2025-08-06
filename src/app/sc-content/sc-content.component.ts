@@ -6,11 +6,12 @@ import { Subscription } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SectionsModule } from '../sections/sections.module';
 import { TestimonialsComponent } from "../sections/testimonials/testimonials.component";
+import { FaqComponent } from '../sections/faq/faq.component';
 
 @Component({
   selector: 'app-sc-content',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe, SectionsModule, TestimonialsComponent],
+  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe, SectionsModule, TestimonialsComponent, FaqComponent],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',
 })
@@ -61,6 +62,7 @@ export class ScContentComponent implements AfterViewInit {
         element = this.blogSection?.nativeElement;
         break;
       case 'faqSection':
+        // Para el componente FAQ, necesitamos acceder al elemento nativo del componente
         element = this.faqSection?.nativeElement;
         break;
       case 'footerSection': // Para el enlace de "Contacto" que apunta al footer

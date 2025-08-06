@@ -6,6 +6,7 @@ import { PricingComponent } from './pricing/pricing.component';
 import { TestimonialsComponent } from './testimonials/testimonials.component';
 import { BlogComponent } from './blog/blog.component';
 import { TabsComponent } from './tabs/tabs.component';
+import { FaqComponent } from './faq/faq.component';
 
 
 
@@ -18,7 +19,8 @@ import { TabsComponent } from './tabs/tabs.component';
     PricingComponent,
     TestimonialsComponent,
     BlogComponent,
-    TabsComponent
+    TabsComponent,
+    FaqComponent
   ],
   exports: [
     OpeningLlcComponent,
@@ -26,7 +28,8 @@ import { TabsComponent } from './tabs/tabs.component';
     PricingComponent,
     TestimonialsComponent,
     BlogComponent,
-    TabsComponent
+    TabsComponent,
+    FaqComponent
   ]
 })
 export class SectionsModule { }
