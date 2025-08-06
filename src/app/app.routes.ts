@@ -15,5 +15,15 @@ export const routes: Routes = [
         path: 'contacto',
         loadComponent: () => import('./contact/contact-page/contact-page.component').then(m => m.ContactPageComponent),
         title: 'Contacto'
+    },
+    {
+        path: 'abre-tu-llc',
+        loadComponent: () => import('./landings/landing-open-relay/landing-open-relay.component').then(m => m.LandingOpenRelayComponent),
+        title: 'Abre tu LLC'
+    },
+    {
+        path: 'apertura-banco-relay',
+        loadComponent: () => import('./landings/landing-open-relay/landing-open-relay.component').then(m => m.LandingOpenRelayComponent),
+        title: 'Apertura de Banco Relay'
     }
 ];

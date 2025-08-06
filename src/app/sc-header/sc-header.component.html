@@ -16,19 +16,19 @@
 
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link active" aria-current="page"
+        <li class="nav-item" [ngClass]="{'active': isRouteActive('/nosotros')}">
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" aria-current="page"
             href="/nosotros">{{ 'NAVBAR.us' | transloco }}</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{'active': isRouteActive('/planes') || isRouteActive('/pricing')}">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
             (click)="navigateToSection('pricingSection')">{{ 'NAVBAR.plans' | transloco }}</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{'active': isRouteActive('/blog')}">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
             (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" [ngClass]="{'active': isRouteActive('/contacto')}">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="/contacto">{{ 'NAVBAR.contact' | transloco }}</a>
         </li>
       </ul>

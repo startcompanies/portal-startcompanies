@@ -1,0 +1,45 @@
+<section class="hero-container">
+    <div class="hero-background">
+        <!-- Logo en la parte superior -->
+        <div class="hero-logo">
+            <img src="assets/logo.png" alt="Start Companies Logo" class="logo-image">
+        </div>
+
+        <div class="hero-content" [ngClass]="contentClass" [ngStyle]="contentStyles">
+            <!-- Área izquierda para video/imagen -->
+            <div class="hero-left">
+                <div class="video-placeholder">
+                    <!-- Aquí irá el contenido inyectado desde otros componentes -->
+                    <ng-content select="[slot=left-content]">
+                        <!-- Contenido por defecto: iframe de YouTube -->
+                        <iframe 
+                            src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1&playlist=A0xywPD8FDE"
+                            title="VIDEO VSL START COMPANIES" 
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen
+                            class="hero-iframe">
+                        </iframe>
+                    </ng-content>
+                </div>
+            </div>
+
+            <!-- Área derecha para texto y botones -->
+            <div class="hero-right">
+                <!-- Título principal -->
+                <div class="hero-title">
+                    <ng-content select="[slot=title]"></ng-content>
+                </div>
+
+                <!-- Descripción -->
+                <div class="hero-description">
+                    <ng-content select="[slot=description]"></ng-content>
+                </div>
+
+                <!-- Botón de acción (opcional) -->
+                <ng-content select="[slot=cta-button]"></ng-content>
+            </div>
+        </div>
+    </div>
+</section>
