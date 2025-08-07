@@ -1,0 +1,174 @@
+/* Hero Section */
+.hero-section {
+  background-image: url("../../../assets/hero-bg.jpg"); /* Imagen de fondo */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 95vh; /* Ocupa toda la altura de la ventana */
+  position: relative;
+  overflow: hidden;
+  padding: 80px 0; /* Asegura espacio para contenido */
+}
+
+.hero-app-logo {
+  width: 80px;
+  height: 80px;
+  filter: brightness(0) invert(1); /* Para logos blancos sobre fondo oscuro */
+}
+
+.hero-header-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-section h1 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-section .text-success {
+  color: #28a745 !important; /* Verde específico para "Relay" */
+}
+
+.hero-section .lead {
+  font-size: 1.25rem;
+}
+
+.info-card {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Fondo blanco semitransparente */
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #333;
+  transition: transform 0.3s ease-in-out;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Bank Account Section */
+.bank-account-section {
+  background-color: #f8f9fa; /* Fondo claro para esta sección */
+}
+
+.bank-account-banner {
+  background: linear-gradient(
+    90deg,
+    #007bff 0%,
+    #6f42c1 100%
+  ); /* Degradado para el banner */
+  color: white;
+}
+
+.bank-account-banner h2 {
+  font-size: 2.5rem;
+}
+
+.bank-account-banner .btn-primary {
+  background-color: white;
+  color: #007bff;
+  border: none;
+  font-weight: bold;
+}
+
+.bank-account-banner .btn-primary:hover {
+  background-color: #e2e6ea;
+  color: #0056b3;
+}
+
+/* Start Companies Section */
+.start-companies-section .card {
+  border: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+.start-companies-section .card:hover {
+  transform: translateY(-5px);
+}
+
+.start-companies-section .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Community Section */
+.community-section {
+  background-color: #ffffff;
+}
+
+.community-card {
+  background-color: #f0f0f0;
+  border: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+.community-card:hover {
+  transform: translateY(-5px);
+}
+
+.community-card img {
+  border: 2px solid #007bff; /* Borde azul para las fotos de perfil */
+}
+
+/* FAQ Section */
+.faq-section .accordion-button {
+  font-weight: bold;
+  color: #333;
+  background-color: #e9ecef;
+}
+
+.faq-section .accordion-button:not(.collapsed) {
+  color: #007bff;
+  background-color: #cfe2ff;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+}
+
+/* Footer Section */
+.footer-section {
+  background-color: #343a40; /* Color oscuro para el footer */
+}
+
+.footer-section a {
+  font-size: 0.9rem;
+}
+
+.footer-section .list-unstyled li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section .fs-4 {
+  font-size: 1.5rem !important;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 767.98px) {
+  .hero-section h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-section .lead {
+    font-size: 1rem;
+  }
+
+  .bank-account-banner h2 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .hero-section .lead {
+    font-size: 0.9rem;
+  }
+
+  .bank-account-banner h2 {
+    font-size: 1.8rem;
+  }
+}

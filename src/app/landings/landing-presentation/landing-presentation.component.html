@@ -1,1 +1,135 @@
-<p>landing-presentation works!</p>
+<!-- Hero/Header Section -->
+<section
+  class="hero-section text-center text-white d-flex align-items-center justify-content-center"
+>
+  <div class="container py-5">
+    <div class="row align-items-center justify-content-center mb-4">
+      <div class="col-12 col-md-8">
+        <div class="hero-header-content">
+          <img
+            src="/assets/logo.png"
+            alt="Logo de la Aplicación"
+            class="hero-app-logo mb-3"
+          />
+          <h3 class="display-5 fw-bold mb-3">
+            ¿Tenés tu LLC en EE.UU. pero todavía no abriste tu cuenta bancaria?
+          </h3>
+          <h2 class="d-flex align-items-center justify-content-center mb-4">
+            Aprovechá ahora y abrila GRATIS, 100% online y sin comisiones con la
+            esencial Apertura Relay!
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center g-4">
+      <div class="col-12">
+        <div class="ratio ratio-16x9">
+          <iframe
+            src="https://www.youtube.com/embed/IlsBAs3mepI?autoplay=1&mute=1&start=27"
+            title="YouTube video"
+            allow="autoplay; encrypted-media"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-video-section
+    title="Relay un banco"
+    titleHighlight="seguro y confiable"
+    description="mira aquí abajo lo que dicen de nosotros"
+    videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
+    videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
+></app-video-section>
+
+<!-- "Crea tu cuenta bancaria con Relay" Section -->
+<section class="bank-account-section py-5">
+    <div class="row align-items-center g-4 p-5">
+      <div class="col-12 col-lg-6">
+        <p class="lead">
+          Texto descriptivo a la izquierda. Lorem ipsum dolor sit amet,
+          consectetur adipiscing elit. Nulla facilisi. Sed do eiusmod tempor
+          incididunt ut labore et dolore magna aliqua.
+        </p>
+      </div>
+      <div class="col-12 col-lg-6 text-center">
+        <img
+          src="/assets/relay/work.jpg"
+          alt="Imagen Derecha"
+          class="img-fluid rounded-3 shadow-sm"
+        />
+      </div>
+    </div>
+</section>
+
+<!-- "Start Companies" Card Grid Section -->
+<section class="start-companies-section py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-5">Start Companies</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm rounded-3">
+          <img
+            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+1"
+            class="card-img-top rounded-top"
+            alt="Card Image"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Título de la Tarjeta 1</h5>
+            <p class="card-text">
+              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
+              sit amet.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm rounded-3">
+          <img
+            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+2"
+            class="card-img-top rounded-top"
+            alt="Card Image"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Título de la Tarjeta 2</h5>
+            <p class="card-text">
+              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
+              sit amet.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm rounded-3">
+          <img
+            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+3"
+            class="card-img-top rounded-top"
+            alt="Card Image"
+          />
+          <div class="card-body text-center">
+            <h5 class="card-title fw-bold">Título de la Tarjeta 3</h5>
+            <p class="card-text">
+              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
+              sit amet.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- "Explora la comunidad" Card Grid Section -->
+<app-video-grid-section
+    title="Lo que dicen nuestros"
+    titleHighlight="clientes"
+    [videos]="videoTestimonials"
+></app-video-grid-section>
+
+<!-- "Preguntas frecuentes" (FAQ) Section -->
+<app-faq></app-faq>
+
+<!-- Footer Section -->
+<app-sc-footer></app-sc-footer>
