@@ -36,97 +36,134 @@
   </div>
 </section>
 
+<section class="plans-section">
+  <app-plans-container></app-plans-container>
+</section>
+
 <app-video-section
-    title="Relay un banco"
-    titleHighlight="seguro y confiable"
-    description="mira aquí abajo lo que dicen de nosotros"
-    videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
-    videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
+  title="Relay un banco"
+  titleHighlight="seguro y confiable"
+  description="mira aquí abajo lo que dicen de nosotros"
+  videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
+  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
 ></app-video-section>
 
 <!-- "Crea tu cuenta bancaria con Relay" Section -->
-<section class="bank-account-section py-5">
-    <div class="row align-items-center g-4 p-5">
-      <div class="col-12 col-lg-6">
-        <p class="lead">
-          Texto descriptivo a la izquierda. Lorem ipsum dolor sit amet,
-          consectetur adipiscing elit. Nulla facilisi. Sed do eiusmod tempor
-          incididunt ut labore et dolore magna aliqua.
-        </p>
-      </div>
-      <div class="col-12 col-lg-6 text-center">
-        <img
-          src="/assets/relay/work.jpg"
-          alt="Imagen Derecha"
-          class="img-fluid rounded-3 shadow-sm"
-        />
-      </div>
-    </div>
+<section class="encargo-section py-5">
+  <app-support-container></app-support-container>
 </section>
 
 <!-- "Start Companies" Card Grid Section -->
-<section class="start-companies-section py-5 bg-light">
+<!-- Sección de Testimonios y Clientes -->
+<section class="testimonials-section py-5">
   <div class="container">
-    <h2 class="text-center fw-bold mb-5">Start Companies</h2>
-    <div class="row g-4 justify-content-center">
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm rounded-3">
+    <!-- Encabezado de la sección -->
+    <div class="header-card p-4 rounded-4 shadow-sm text-center mb-5">
+      <img
+        src="https://placehold.co/80x80/007bff/ffffff?text=Logo"
+        alt="Logo Start Companies"
+        class="header-logo mb-3"
+      />
+      <h2 class="fw-bold mb-2">Start Companies</h2>
+      <div class="d-flex justify-content-center align-items-center mb-3">
+        <span class="text-warning me-2">
+          <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+          ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+          ><i class="bi bi-star-fill"></i>
+        </span>
+        <span class="text-muted">4.8 estrellas, 100 reseñas, "Excellent".</span>
+      </div>
+      <h3 class="fw-bold fs-4 mb-4">
+        Más de 200 emprendedores ya confiaron en Start Companies y nos califican
+        como <span class="text-primary-blue">"Excelente"</span>
+      </h3>
+      <p class="text-muted mb-4">
+        Descubrí por qué somos la opción elegida para abrir tu cuenta bancaria
+        para LLC en EE.UU. de forma rápida, segura, confiable y 100% online. Leé
+        sus experiencias reales y conocé cómo los ayudamos a simplificar la
+        apertura Relay, optimizar su gestión financiera y hacer crecer sus
+        negocios desde cualquier parte del mundo.
+      </p>
+      <button class="btn btn-trustpilot rounded-pill px-4 py-2">
+        Leer más reseñas en Trustpilot <i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    </div>
+
+    <!-- Tarjetas de Testimonios -->
+    <div class="row justify-content-center g-4 mb-5">
+      <!-- Testimonio 1 -->
+      <div class="col-12 col-md-6 col-lg-5 d-flex">
+        <div
+          class="testimonial-card flex-grow-1 p-4 rounded-4 shadow-sm text-center"
+        >
           <img
-            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+1"
-            class="card-img-top rounded-top"
-            alt="Card Image"
+            src="https://placehold.co/80x80/cccccc/ffffff?text=User1"
+            alt="Boris Rivas"
+            class="rounded-circle mb-3 testimonial-avatar"
           />
-          <div class="card-body text-center">
-            <h5 class="card-title fw-bold">Título de la Tarjeta 1</h5>
-            <p class="card-text">
-              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
-              sit amet.
-            </p>
+          <h5 class="fw-bold mb-1">Boris Rivas</h5>
+          <p class="text-muted small mb-3">Argentina</p>
+          <div class="text-warning mb-2">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+            ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+            ><i class="bi bi-star-fill"></i>
           </div>
+          <p class="small mb-0">
+            "Todo perfecto, 10 en atención, acompañamiento en el proceso de
+            creación LLC. Lo recomiendo 100% a quienes quieran emprender en
+            EE.UU. sin complicaciones."
+          </p>
         </div>
       </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm rounded-3">
+      <!-- Testimonio 2 -->
+      <div class="col-12 col-md-6 col-lg-5 d-flex">
+        <div
+          class="testimonial-card flex-grow-1 p-4 rounded-4 shadow-sm text-center"
+        >
           <img
-            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+2"
-            class="card-img-top rounded-top"
-            alt="Card Image"
+            src="https://placehold.co/80x80/cccccc/ffffff?text=User2"
+            alt="Luis Mosquera"
+            class="rounded-circle mb-3 testimonial-avatar"
           />
-          <div class="card-body text-center">
-            <h5 class="card-title fw-bold">Título de la Tarjeta 2</h5>
-            <p class="card-text">
-              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
-              sit amet.
-            </p>
+          <h5 class="fw-bold mb-1">Luis Mosquera</h5>
+          <p class="text-muted small mb-3">Ecuador</p>
+          <div class="text-warning mb-2">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+            ><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+            ><i class="bi bi-star-fill"></i>
           </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6 col-lg-4">
-        <div class="card h-100 shadow-sm rounded-3">
-          <img
-            src="https://placehold.co/300x200/cccccc/ffffff?text=Card+Image+3"
-            class="card-img-top rounded-top"
-            alt="Card Image"
-          />
-          <div class="card-body text-center">
-            <h5 class="card-title fw-bold">Título de la Tarjeta 3</h5>
-            <p class="card-text">
-              Breve descripción del contenido de la tarjeta. Lorem ipsum dolor
-              sit amet.
-            </p>
-          </div>
+          <p class="small mb-0">
+            "Intenté abrir mi cuenta bancaria en EE.UU. por mi cuenta y no pude.
+            Busqué en Instagram, los contacté y me ayudaron en todo el proceso.
+            En menos de 2 semanas, lograron que mi cuenta fuera aprobada."
+          </p>
         </div>
       </div>
     </div>
+
+    <!-- Indicadores de Carrousel (simulados) -->
+    <div class="d-flex justify-content-center mb-5">
+      <span class="carousel-indicator-dot active me-2"></span>
+      <span class="carousel-indicator-dot"></span>
+      <span class="carousel-indicator-dot"></span>
+    </div>
+
+    <!-- Botón de acción -->
+    <div class="text-center mb-5">
+      <button class="btn btn-action rounded-pill px-4 py-2">
+        Quiero que lo hagan por mí ($99 USD)
+        <i class="bi bi-arrow-right ms-2"></i>
+      </button>
+    </div>
+
+    <!-- Sección de Videos de Clientes -->
+    <app-video-grid-section
+      title="Lo que dicen nuestros"
+      titleHighlight="clientes"
+      [videos]="videoTestimonials"
+    ></app-video-grid-section>
   </div>
 </section>
-
-<!-- "Explora la comunidad" Card Grid Section -->
-<app-video-grid-section
-    title="Lo que dicen nuestros"
-    titleHighlight="clientes"
-    [videos]="videoTestimonials"
-></app-video-grid-section>
 
 <!-- "Preguntas frecuentes" (FAQ) Section -->
 <app-faq></app-faq>

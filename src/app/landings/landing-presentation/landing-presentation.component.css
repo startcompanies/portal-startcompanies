@@ -34,114 +34,192 @@
   font-size: 1.25rem;
 }
 
-.info-card {
-  background-color: rgba(
-    255,
-    255,
-    255,
-    0.9
-  ); /* Fondo blanco semitransparente */
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #333;
-  transition: transform 0.3s ease-in-out;
+/* Sección de Planes */
+.plans-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 
-.info-card:hover {
-  transform: translateY(-5px);
+/* Sección "¿Querés que nos encarguemos por vos?" */
+.encargo-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  background-color: #ffffff; /* Fondo blanco de la sección */
 }
 
-/* Bank Account Section */
-.bank-account-section {
-  background-color: #f8f9fa; /* Fondo claro para esta sección */
+/* Sección de Testimonios y Clientes */
+.testimonials-section {
+  padding-top: 80px;
+  padding-bottom: 80px;
+  background-color: #f8f9fa; /* Fondo claro de la sección */
 }
 
-.bank-account-banner {
-  background: linear-gradient(
-    90deg,
-    #007bff 0%,
-    #6f42c1 100%
-  ); /* Degradado para el banner */
-  color: white;
-}
-
-.bank-account-banner h2 {
-  font-size: 2.5rem;
-}
-
-.bank-account-banner .btn-primary {
-  background-color: white;
-  color: #007bff;
-  border: none;
-  font-weight: bold;
-}
-
-.bank-account-banner .btn-primary:hover {
-  background-color: #e2e6ea;
-  color: #0056b3;
-}
-
-/* Start Companies Section */
-.start-companies-section .card {
-  border: none;
-  transition: transform 0.3s ease-in-out;
-}
-
-.start-companies-section .card:hover {
-  transform: translateY(-5px);
-}
-
-.start-companies-section .card-img-top {
-  height: 200px;
-  object-fit: cover;
-}
-
-/* Community Section */
-.community-section {
+/* Estilos para el encabezado de la sección */
+.header-card {
   background-color: #ffffff;
+  border: 2px solid #e0e0e0; /* Borde sutil */
+  padding: 40px;
+  max-width: 900px;
+  margin: 0 auto 50px auto; /* Centrar y añadir margen inferior */
 }
 
-.community-card {
-  background-color: #f0f0f0;
+.header-logo {
+  width: 100px;
+  height: auto;
+  filter: brightness(0) invert(1); /* Logo oscuro sobre fondo claro */
+}
+
+.header-card h2 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.header-card h3 {
+  color: #333;
+}
+
+.header-card .text-primary-blue {
+  color: #02cae3; /* Color azul/cian para "Excelente" */
+}
+
+.btn-trustpilot {
+  background-color: #02cae3;
+  color: #ffffff;
   border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-trustpilot:hover {
+  background-color: #00b8d9;
+}
+
+/* Estilos para las tarjetas de testimonios */
+.testimonial-card {
+  background-color: #ffffff;
+  border: 2px solid #02cae3; /* Borde azul/cian */
+  padding: 30px;
+  color: #333;
   transition: transform 0.3s ease-in-out;
 }
 
-.community-card:hover {
+.testimonial-card:hover {
   transform: translateY(-5px);
 }
 
-.community-card img {
-  border: 2px solid #007bff; /* Borde azul para las fotos de perfil */
+.testimonial-avatar {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border: 2px solid #02cae3; /* Borde azul para el avatar */
 }
 
-/* FAQ Section */
-.faq-section .accordion-button {
-  font-weight: bold;
-  color: #333;
-  background-color: #e9ecef;
+/* Estilos para los indicadores del carrusel (puntos) */
+.carousel-indicator-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.faq-section .accordion-button:not(.collapsed) {
-  color: #007bff;
-  background-color: #cfe2ff;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+.carousel-indicator-dot.active {
+  background-color: #02cae3;
 }
 
-/* Footer Section */
-.footer-section {
-  background-color: #343a40; /* Color oscuro para el footer */
+.carousel-indicator-dot:hover {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
-.footer-section a {
-  font-size: 0.9rem;
+/* Estilos para el botón de acción principal */
+.btn-action {
+  background-color: #02cae3;
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-.footer-section .list-unstyled li {
-  margin-bottom: 0.5rem;
+.btn-action:hover {
+  background-color: #00b8d9;
 }
 
-.footer-section .fs-4 {
-  font-size: 1.5rem !important;
+/* Estilos para los videos de clientes */
+.video-placeholder {
+  background-color: #333; /* Color de fondo para el placeholder del video */
+  aspect-ratio: 16/9; /* Relación de aspecto 16:9 */
+  width: 100%;
+  min-height: 180px; /* Altura mínima para el placeholder */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 991.98px) {
+  /* Tabletas y móviles */
+  .header-card {
+    padding: 30px;
+  }
+
+  .header-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .header-card p {
+    font-size: 0.95rem;
+  }
+
+  .testimonial-card {
+    padding: 20px;
+  }
+
+  .testimonial-card h5 {
+    font-size: 1.1rem;
+  }
+
+  .testimonial-card p.small {
+    font-size: 0.85rem;
+  }
+
+  .btn-trustpilot,
+  .btn-action {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Móviles muy pequeños */
+  .header-card {
+    padding: 20px;
+  }
+
+  .header-card h2 {
+    font-size: 1.8rem;
+  }
+
+  .header-card h3 {
+    font-size: 1.1rem;
+  }
+
+  .header-logo {
+    width: 70px;
+  }
+
+  .testimonial-avatar {
+    width: 60px;
+    height: 60px;
+  }
+
+  .video-placeholder {
+    min-height: 150px;
+  }
 }
 
 /* Media Queries para Responsividad */

@@ -1,0 +1,96 @@
+.encargo-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+}
+
+.encargo-title .text-primary-blue {
+  color: #02cae3; /* Color azul/cian del título */
+}
+
+.encargo-list {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.encargo-list li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.encargo-list-icon {
+  font-size: 2rem; /* Tamaño del punto */
+  color: #02cae3; /* Color del punto */
+  margin-right: 0.5rem;
+  line-height: 1; /* Alinea el punto con el texto */
+}
+
+.encargo-button {
+  background-color: #02cae3; /* Fondo azul claro */
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.encargo-button:hover {
+  background-color: #00b8d9;
+}
+
+.encargo-image {
+  border: 1px solid #e0e0e0; /* Borde sutil alrededor de la imagen */
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1); /* Sombra para la imagen */
+}
+
+/* Media Queries para Responsividad */
+@media (max-width: 991.98px) {
+  /* Tabletas y móviles */
+  .encargo-section .container {
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+
+  .encargo-title {
+    font-size: 2rem;
+    text-align: center; /* Centrar el título en móvil */
+  }
+
+  .encargo-list {
+    text-align: center; /* Centrar la lista en móvil */
+    padding-left: 20px; /* Ajustar padding para centrar mejor los puntos */
+  }
+
+  .encargo-list li {
+    justify-content: center; /* Centrar los ítems de la lista en móvil */
+  }
+
+  .encargo-button {
+    display: block; /* Ocupar todo el ancho */
+    width: fit-content; /* Ajustar ancho al contenido */
+    margin: 0 auto; /* Centrar el botón */
+    font-size: 0.95rem;
+    padding: 0.7rem 1.8rem;
+  }
+
+  .encargo-image {
+    margin-top: 2rem; /* Espacio superior para la imagen en móvil */
+  }
+}
+
+@media (max-width: 575.98px) {
+  /* Móviles muy pequeños */
+  .encargo-title {
+    font-size: 1.8rem;
+  }
+
+  .encargo-list {
+    font-size: 1rem;
+  }
+
+  .encargo-button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}

@@ -3,11 +3,13 @@ import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { FaqComponent } from "../../sections/faq/faq.component";
 import { VideoGridSectionComponent } from "../video-grid-section/video-grid-section.component";
 import { VideoSectionComponent } from "../video-section/video-section.component";
+import { PlansContainerComponent } from "../plans-container/plans-container.component";
+import { SupportContainerComponent } from "../support-container/support-container.component";
 
 @Component({
   selector: 'app-landing-presentation',
   standalone: true,
-  imports: [ScFooterComponent, FaqComponent, VideoGridSectionComponent, VideoSectionComponent],
+  imports: [ScFooterComponent, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent],
   templateUrl: './landing-presentation.component.html',
   styleUrl: './landing-presentation.component.css'
 })
