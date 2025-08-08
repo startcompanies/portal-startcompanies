@@ -19,7 +19,7 @@
   font-weight: 700;
   color: #333;
   line-height: 1.2;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .title-part {
@@ -38,13 +38,13 @@
   font-size: 1.1rem;
   color: #333;
   margin-bottom: 1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .subtitle {
   font-size: 1rem;
   color: #333;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .highlight {
@@ -63,10 +63,12 @@
 .benefit-card {
   background-color: white;
   border: 2px solid #00bcd4;
-  border-radius: 12px;
-  padding: 2rem 1.5rem;
+  border-radius: 3rem;
+  padding: 1.5rem;
   text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 250px;
+  min-width: 300px;
 }
 
 .benefit-card:hover {
@@ -94,7 +96,7 @@
   color: #333;
   margin-bottom: 1rem;
   line-height: 1.3;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .benefit-title .highlight {
@@ -106,7 +108,7 @@
   font-size: 0.95rem;
   color: #333;
   line-height: 1.5;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* Responsive design */
@@ -114,24 +116,24 @@
   .container {
     padding: 0 1rem;
   }
-  
+
   .main-title h2 {
     font-size: 2rem;
   }
-  
+
   .benefits-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .benefit-card {
     padding: 1.5rem 1rem;
   }
-  
+
   .benefit-title {
     font-size: 1.2rem;
   }
-  
+
   .benefit-description {
     font-size: 0.9rem;
   }
@@ -141,28 +143,28 @@
   .main-title h2 {
     font-size: 1.8rem;
   }
-  
+
   .description p {
     font-size: 1rem;
   }
-  
+
   .subtitle {
     font-size: 0.9rem;
   }
-  
+
   .benefit-card {
     padding: 1.25rem 0.75rem;
   }
-  
+
   .benefit-icon img {
     width: 50px;
     height: 50px;
   }
-  
+
   .benefit-title {
     font-size: 1.1rem;
   }
-  
+
   .benefit-description {
     font-size: 0.85rem;
   }

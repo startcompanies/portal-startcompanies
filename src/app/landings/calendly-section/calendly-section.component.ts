@@ -1,18 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-interface CalendarDay {
-  day: number;
-  available: boolean;
-  selected: boolean;
-  past: boolean;
-  hasDot: boolean;
-}
-
-interface Timezone {
-  name: string;
-  time: string;
-  offset: string;
+declare global {
+  interface Window {
+    Cal: any;
+  }
 }
 
 @Component({
@@ -20,116 +12,107 @@ interface Timezone {
   standalone: true,
   imports: [CommonModule],
   templateUrl: './calendly-section.component.html',
-  styleUrl: './calendly-section.component.css'
+  styleUrl: './calendly-section.component.css',
 })
-export class CalendlySectionComponent implements OnInit {
-  currentDate: Date = new Date(2025, 5, 1); // Junio 2025
-  currentMonthYear: string = '';
-  weekDays: string[] = ['DOM.', 'LUN.', 'MAR.', 'MIE.', 'JUE.', 'VIE.', 'SÁB.'];
-  calendarDays: CalendarDay[] = [];
-  selectedDate: CalendarDay | null = null;
-  
-  selectedTimezone: string = 'Ciudad de México (11:38am)';
-  showTimezoneDropdown: boolean = false;
-  
-  timezones: Timezone[] = [
-    { name: 'Ciudad de México', time: '11:38am', offset: '-6' },
-    { name: 'Nueva York', time: '1:38pm', offset: '-4' },
-    { name: 'Los Ángeles', time: '10:38am', offset: '-7' },
-    { name: 'Londres', time: '6:38pm', offset: '+1' },
-    { name: 'Madrid', time: '7:38pm', offset: '+2' }
-  ];
+export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
+  constructor() {}
 
-  ngOnInit(): void {
-    this.updateCalendar();
+  ngOnDestroy(): void {
+    console.log('CalendlySectionComponent destroyed');
   }
 
-  updateCalendar(): void {
-    const year = this.currentDate.getFullYear();
-    const month = this.currentDate.getMonth();
-    
-    // Actualizar el texto del mes y año
-    const monthNames = [
-      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
-    this.currentMonthYear = `${monthNames[month]} ${year}`;
-    
-    // Generar días del calendario
-    this.generateCalendarDays(year, month);
+  ngAfterViewInit(): void {
+    this.loadCalComWidget();
   }
 
-  generateCalendarDays(year: number, month: number): void {
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDate = new Date(firstDay);
-    startDate.setDate(startDate.getDate() - firstDay.getDay());
-    
-    this.calendarDays = [];
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
-    // Días disponibles para junio 2025 (como en la imagen)
-    const availableDays = [19, 20, 23, 24, 25, 26, 27, 30];
-    const daysWithDot = [18];
-    
-    for (let i = 0; i < 42; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
-      
-      const dayNumber = currentDate.getDate();
-      const isCurrentMonth = currentDate.getMonth() === month;
-      const isPast = currentDate < today && currentDate.getMonth() === month;
-      const isAvailable = availableDays.includes(dayNumber) && isCurrentMonth && !isPast;
-      const hasDot = daysWithDot.includes(dayNumber) && isCurrentMonth;
-      
-      if (isCurrentMonth) {
-        this.calendarDays.push({
-          day: dayNumber,
-          available: isAvailable,
-          selected: false,
-          past: isPast,
-          hasDot: hasDot
-        });
-      } else {
-        this.calendarDays.push({
-          day: dayNumber,
-          available: false,
-          selected: false,
-          past: true,
-          hasDot: false
-        });
-      }
+  private async loadCalComWidget(): Promise<void> {
+    let userIp: string | null = null;
+    if (typeof window === 'undefined') {
+      // Prevent execution on the server
+      return;
     }
-  }
+    const urlParams = new URLSearchParams(window.location.search);
+    const fbclid = urlParams.get('fbclid');
+    const userAgent = navigator.userAgent;
 
-  previousMonth(): void {
-    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
-    this.updateCalendar();
-  }
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      userIp = data.ip;
+    } catch (error) {
+      console.warn('Error fetching IP address:', error);
+    }
 
-  nextMonth(): void {
-    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
-    this.updateCalendar();
-  }
+    let calLink = 'startcompanies-businessenusa/30min';
+    const queryParams = new URLSearchParams();
+    if (userIp) queryParams.set('ip', userIp);
+    if (userAgent) queryParams.set('userAgent', userAgent);
+    if (fbclid) queryParams.set('notes', `fbclid=${fbclid}`);
+    const finalQuery = queryParams.toString();
+    if (finalQuery) calLink += `?${finalQuery}`;
 
-  selectDate(day: CalendarDay): void {
-    if (!day.available || day.past) return;
-    
-    // Deseleccionar fecha anterior
-    this.calendarDays.forEach(d => d.selected = false);
-    
-    // Seleccionar nueva fecha
-    day.selected = true;
-    this.selectedDate = day;
-  }
+    // Lógica de inicialización del script de Cal.com
+    // Adaptado de la función IIFE (Immediately Invoked Function Expression) original
+    (function (C: Window, A: string, L: string) {
+      let p = function (a: any, ar: any) {
+        a.q.push(ar);
+      };
+      let d = C.document;
+      C.Cal =
+        C.Cal ||
+        function () {
+          let cal = C.Cal;
+          let ar = arguments;
+          if (!cal.loaded) {
+            cal.ns = {};
+            cal.q = cal.q || [];
+            // Asegurarse de que el script solo se añada una vez
+            if (!d.querySelector(`script[src="${A}"]`)) {
+              d.head.appendChild(d.createElement('script')).src = A;
+            }
+            cal.loaded = true;
+          }
+          if (ar[0] === L) {
+            const api: any = function () {
+              p(api, arguments);
+            };
+            const namespace = ar[1];
+            api.q = api.q || [];
+            if (typeof namespace === 'string') {
+              cal.ns[namespace] = cal.ns[namespace] || api;
+              p(cal.ns[namespace], ar);
+              p(cal, ['initNamespace', namespace]);
+            } else p(cal, ar);
+            return;
+          }
+          p(cal, ar);
+        };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
-  toggleTimezoneDropdown(): void {
-    this.showTimezoneDropdown = !this.showTimezoneDropdown;
-  }
+    // Configuración y carga del widget
+    if (window.Cal) {
+      // Asegurarse de que Cal esté disponible
+      window.Cal.config = window.Cal.config || {};
+      window.Cal.config.forwardQueryParams = true;
 
-  selectTimezone(timezone: Timezone): void {
-    this.selectedTimezone = `${timezone.name} (${timezone.time})`;
-    this.showTimezoneDropdown = false;
+      window.Cal('init', '30min', { origin: 'https://cal.com' });
+
+      window.Cal.ns['30min']('inline', {
+        elementOrSelector: '#my-cal-inline',
+        config: { layout: 'month_view', forwardQueryParams: true },
+        calLink: calLink,
+      });
+
+      window.Cal.ns['30min']('ui', {
+        cssVarsPerTheme: {
+          light: { 'cal-brand': '#00B894' },
+          dark: { 'cal-brand': '#fafafa' },
+        },
+        hideEventTypeDetails: false,
+        layout: 'month_view',
+      });
+    } else {
+      console.error('Cal.com script no se cargó correctamente.');
+    }
   }
 }

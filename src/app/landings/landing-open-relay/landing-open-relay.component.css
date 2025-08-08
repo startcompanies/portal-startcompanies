@@ -11,8 +11,8 @@
 }
 
 .hero-btn-primary {
-  background-color: #02cae3;
-  color: #ffffff;
+  background-color: #fdfffe;
+  color: #01c9e2;
 }
 
 .hero-btn-primary:hover {
@@ -40,4 +40,11 @@
   background-color: #f8f9fa;
   padding: 4rem 0;
   text-align: center;
+}
+@media(max-width: 768px) {
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    font-size: 0.7rem;
+  }
+  
 }

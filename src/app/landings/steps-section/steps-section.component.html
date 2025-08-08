@@ -1,26 +1,22 @@
 <section class="steps-section">
   <div class="container">
     <!-- Título principal -->
-    <div class="main-title">
-      <h2>{{ title }}</h2>
-    </div>
-    
+    <h2 class="main-title">{{ title }}</h2>
+
     <!-- Pasos del proceso -->
-    <div class="steps-container">
-      <div class="steps-line"></div>
-      <div class="steps">
-        <div class="step" *ngFor="let step of steps">
-          <div class="step-circle">
-            <span class="step-number">{{ step.id }}</span>
-          </div>
-          <div class="step-content">
-            <h3 class="step-title">{{ step.title }}</h3>
-            <p class="step-description">{{ step.description }}</p>
-          </div>
+    <div class="steps-wrapper">
+      <div class="{{step.class}}" *ngFor="let step of steps">
+        <div class="step-icon">
+          <span>{{ step.id }}</span>
+        </div>
+        <div class="step-content">
+          <h3 class="step-title">{{ step.title }}</h3>
+          <p class="step-description">{{ step.description }}</p>
         </div>
       </div>
+      <div class="step-line"></div>
     </div>
-    
+
     <!-- Declaración final -->
     <div class="bottom-statement">
       <p>{{ bottomStatement }}</p>

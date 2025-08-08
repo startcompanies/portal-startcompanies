@@ -25,7 +25,7 @@ export class VideoSectionComponent {
     if (url.includes('youtube.com/embed/') || url.includes('youtu.be/')) {
       const separator = url.includes('?') ? '&' : '?';
       // Asegurar que el video esté silenciado por defecto
-      processedUrl = `${url}${separator}?autoplay=1&mute=1&loop=1`;
+      processedUrl = `${url}${separator}autoplay=1&mute=1&loop=1`;
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
   }

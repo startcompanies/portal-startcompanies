@@ -1,44 +1,40 @@
-<section class="hero-container">
+<section class="hero-container h-100">
     <div class="hero-background">
         <!-- Logo en la parte superior -->
-        <div class="hero-logo">
-            <img src="assets/logo.png" alt="Start Companies Logo" class="logo-image">
+        <div class="hero-logo text-center mb-4">
+            <img src="assets/logo.png" alt="Start Companies Logo" class="logo-image img-fluid">
         </div>
 
-        <div class="hero-content" [ngClass]="contentClass" [ngStyle]="contentStyles">
-            <!-- Área izquierda para video/imagen -->
-            <div class="hero-left">
-                <div class="video-placeholder">
-                    <!-- Aquí irá el contenido inyectado desde otros componentes -->
-                    <ng-content select="[slot=left-content]">
-                        <!-- Contenido por defecto: iframe de YouTube -->
-                        <iframe 
-                            src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1"
-                            title="VIDEO VSL START COMPANIES" 
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" 
-                            allowfullscreen
-                            class="hero-iframe">
-                        </iframe>
-                    </ng-content>
-                </div>
-            </div>
-
-            <!-- Área derecha para texto y botones -->
-            <div class="hero-right">
-                <!-- Título principal -->
-                <div class="hero-title">
-                    <ng-content select="[slot=title]"></ng-content>
+        <div class="container">
+            <div class="row align-items-center" [ngClass]="contentClass" [ngStyle]="contentStyles">
+                <!-- Área izquierda para video/imagen -->
+                <div class="col-12 col-md-6 mb-4 mb-md-0 hero-left">
+                    <div class="video-placeholder">
+                        <ng-content select="[slot=left-content]">
+                            <iframe 
+                                src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1"
+                                title="VIDEO VSL START COMPANIES" 
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen
+                                class="hero-iframe w-100"
+                                style="aspect-ratio: 16/9; min-height: 200px;">
+                            </iframe>
+                        </ng-content>
+                    </div>
                 </div>
 
-                <!-- Descripción -->
-                <div class="hero-description">
-                    <ng-content select="[slot=description]"></ng-content>
+                <!-- Área derecha para texto y botones -->
+                <div class="col-12 col-md-6 hero-right">
+                    <div class="hero-title mb-3">
+                        <ng-content select="[slot=title]"></ng-content>
+                    </div>
+                    <div class="hero-description mb-3">
+                        <ng-content select="[slot=description]"></ng-content>
+                    </div>
+                    <ng-content select="[slot=cta-button]"></ng-content>
                 </div>
-
-                <!-- Botón de acción (opcional) -->
-                <ng-content select="[slot=cta-button]"></ng-content>
             </div>
         </div>
     </div>

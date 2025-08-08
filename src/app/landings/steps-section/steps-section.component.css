@@ -1,5 +1,5 @@
 .steps-section {
-  background-image: url('../../../assets/hero-bg.jpg');
+  background-image: url("../../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -12,7 +12,7 @@
 }
 
 .steps-section::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -31,170 +31,172 @@
 }
 
 .main-title {
-  margin-bottom: 4rem;
-}
-
-.main-title h2 {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   color: white;
-  margin-bottom: 1rem;
-  line-height: 1.2;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin-bottom: 5rem;
 }
 
-.steps-container {
+.steps-wrapper {
   position: relative;
-  margin-bottom: 4rem;
+  width: 100%;
+  max-width: 1000px;
+  margin: 8rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.steps-line {
-  position: absolute;
-  top: 50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 200px);
-  height: 2px;
-  background-color: white;
+.step-one {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  position: relative;
   z-index: 1;
 }
 
-.steps {
+.step-two {
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: flex-start;
+  text-align: left;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
-.step {
-  flex: 1;
+.step-three {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-width: 300px;
+  flex-direction: row;
+  align-items: flex-start;
+  text-align: left;
+  position: relative;
+  z-index: 1;
 }
 
-.step-circle {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+.step-icon {
   background-color: white;
+  font-size: 1.8rem;
+  color: black;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.step-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: #00bcd4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .step-content {
-  text-align: center;
+  color: white;
+  flex: 1;
 }
 
-.step-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: white;
+.step-content .step-title {
+  font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 0.5rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-.step-description {
-  font-size: 1rem;
-  color: white;
-  font-weight: 400;
-  line-height: 1.4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+.step-content .step-description {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.step-line {
+  position: absolute;
+  background-color: white;
+  z-index: 0;
+  margin: 0 6rem;
 }
 
 .bottom-statement {
-  margin-top: 3rem;
-}
-
-.bottom-statement p {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.5rem;
   color: white;
-  text-align: center;
-  line-height: 1.4;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: bold;
+  margin-top: 5rem;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 1rem;
+/* Desktop and Tablet - Horizontal Layout */
+@media (min-width: 768px) {
+  .steps-wrapper {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 3rem;
   }
-  
-  .main-title h2 {
-    font-size: 2.5rem;
-  }
-  
-  .steps {
+
+  .step-one {
     flex-direction: column;
-    gap: 2rem;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+  .step-two {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+  .step-three {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
   }
   
-  .steps-line {
+  .step-icon {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .step-line {
+    top: 24px;
+    left: 0;
+    right: 0;
+    height: 5px;
+    margin: 0 6rem;
+  }
+}
+
+/* Desktop - Larger margins */
+@media (min-width: 1024px) {
+  .step-line {
+    margin: 0 9rem;
+  }
+}
+
+/* Mobile - Vertical Layout */
+@media (max-width: 767px) {
+  .step-line {
     display: none;
   }
-  
-  .step {
-    max-width: 100%;
-  }
-  
-  .step-circle {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .step-number {
-    font-size: 2rem;
-  }
-  
-  .step-title {
-    font-size: 1.3rem;
-  }
-  
-  .step-description {
-    font-size: 0.9rem;
-  }
-  
-  .bottom-statement p {
-    font-size: 1.1rem;
-  }
-}
 
-@media (max-width: 480px) {
-  .main-title h2 {
-    font-size: 2rem;
+  .step-one::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 48px;
+    width: 5px;
+    height: 80px;
+    background-color: white;
+    z-index: 0;
   }
-  
-  .step-circle {
-    width: 70px;
-    height: 70px;
+
+  .step-two::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 48px;
+    width: 5px;
+    height: 80px;
+    background-color: white;
+    z-index: 0;
   }
-  
-  .step-number {
-    font-size: 1.8rem;
-  }
-  
-  .step-title {
-    font-size: 1.2rem;
-  }
-  
-  .step-description {
-    font-size: 0.85rem;
-  }
-  
-  .bottom-statement p {
-    font-size: 1rem;
+
+  .step:last-child::after {
+    display: none;
   }
 }

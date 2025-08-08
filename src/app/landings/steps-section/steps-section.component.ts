@@ -15,17 +15,20 @@ export class StepsSectionComponent {
     {
       id: 1,
       title: 'Elige tu Plan',
-      description: 'Selecciona el paquete de servicios que necesitas.'
+      description: 'Selecciona el paquete de servicios que necesitas.',
+      class: 'step-one'
     },
     {
       id: 2,
       title: 'Completa el Formulario',
-      description: 'Bríndanos la información de tu empresa en 5 minutos.'
+      description: 'Bríndanos la información de tu empresa en 5 minutos.',
+      class: 'step-two'
     },
     {
       id: 3,
       title: 'Recibe tus Documentos',
-      description: 'Nosotros nos encargamos y te enviamos todo digitalmente.'
+      description: 'Nosotros nos encargamos y te enviamos todo digitalmente.',
+      class: 'step-three'
     }
   ];
   readonly bottomStatement = '¡Pagas solo cuando tienes tu cuenta de banco y empresa funcionando!';
