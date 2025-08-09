@@ -1,41 +1,62 @@
-<section class="hero-container h-100">
-    <div class="hero-background">
-        <!-- Logo en la parte superior -->
-        <div class="hero-logo text-center mb-4">
-            <img src="assets/logo.png" alt="Start Companies Logo" class="logo-image img-fluid">
+<div class="container col-xxl-8 px-4 py-5">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid">
+        </div>
+    </div>
+    <div class="row align-items-center g-5 py-5">
+        <div class="col-lg-6">
+            <iframe src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1"
+                title="VIDEO VSL START COMPANIES" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="hero-iframe">
+            </iframe>
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
+                ¡Lanza tu LLC en EE.UU. en menos de 7 días!
+            </h1>
+            <p class="lead hero-description">Crea tu empresa y tu cuenta en EE.UU. de forma simple, online y con ayuda
+                experta.</p>
+            <p class="lead hero-description">¡Vende al mundo sin fronteras!</p>
+            <p class="lead hero-description">¡No pagas hasta tener tu cuenta de banco y empresa abierta!</p>
+            <div>
+                <button class="btn btn-outline-secondary btn-lg px-4 hero-btn-primary">
+                    Empezar con una reunión gratuita <i class="bi bi-arrow-right ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<div class="container hero-container">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <div class="hero-logo">
+                <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid">
+            </div>
         </div>
 
-        <div class="container">
-            <div class="row align-items-center" [ngClass]="contentClass" [ngStyle]="contentStyles">
-                <!-- Área izquierda para video/imagen -->
-                <div class="col-12 col-md-6 mb-4 mb-md-0 hero-left">
-                    <div class="video-placeholder">
-                        <ng-content select="[slot=left-content]">
-                            <iframe 
-                                src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1"
-                                title="VIDEO VSL START COMPANIES" 
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin" 
-                                allowfullscreen
-                                class="hero-iframe w-100"
-                                style="aspect-ratio: 16/9; min-height: 200px;">
-                            </iframe>
-                        </ng-content>
-                    </div>
+        <div class="col-lg-12">
+            <div class="row"><div class="col-lg-6 col-xl-7">
+                        <iframe src="https://www.youtube.com/embed/A0xywPD8FDE?autoplay=1&mute=1&loop=1"
+                            title="VIDEO VSL START COMPANIES" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                            class="hero-iframe">
+                        </iframe>
                 </div>
 
-                <!-- Área derecha para texto y botones -->
-                <div class="col-12 col-md-6 hero-right">
-                    <div class="hero-title mb-3">
-                        <ng-content select="[slot=title]"></ng-content>
+                <div class="col-12 col-lg-6">
+                    <h3 class="hero-title mb-3">¡Lanza tu LLC en EE.UU. en menos de 7 días!</h3>
+                    <div class="col">
+                        <p class="mb-2">Crea tu empresa y tu cuenta en EE.UU. de forma simple, online y con ayuda
+                            experta.</p>
+                        <p class="mb-2">¡Vende al mundo sin fronteras!</p>
+                        <p class="mb-3">¡No pagas hasta tener tu cuenta de banco y empresa abierta!</p>
+                        <button class="hero-btn">Iniciar mi empresa</button>
                     </div>
-                    <div class="hero-description mb-3">
-                        <ng-content select="[slot=description]"></ng-content>
-                    </div>
-                    <ng-content select="[slot=cta-button]"></ng-content>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>-->

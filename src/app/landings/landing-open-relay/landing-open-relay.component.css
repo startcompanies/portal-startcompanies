@@ -1,3 +1,10 @@
+.hero-section {
+  background-image: url('../../../assets/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .hero-btn-primary,
 .hero-btn-secondary {
   border-radius: 2.5rem;
@@ -36,15 +43,18 @@
 .hero-btn-secondary i.bi {
   font-size: 1.1rem;
 }
+
 .video-grid-section {
   background-color: #f8f9fa;
   padding: 4rem 0;
   text-align: center;
 }
+
 @media(max-width: 768px) {
+
   .hero-btn-primary,
   .hero-btn-secondary {
     font-size: 0.7rem;
   }
-  
+
 }

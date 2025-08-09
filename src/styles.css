@@ -1,1 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('bootstrap/dist/css/bootstrap.min.css');
+:root{
+    --color-fondo-claro: #FDFFFE;
+    --color-secundario-tecnico: #01C9E2;
+    --color-primario: #0068BD;
+    --color-texto-oscuro: #283A48;
+    --color-degradado:  linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
+}
