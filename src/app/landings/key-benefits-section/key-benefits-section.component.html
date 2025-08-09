@@ -1,26 +1,43 @@
 <section class="key-benefits-section">
   <div class="container">
     <!-- Título principal -->
-    <div class="main-title">
+    <div class="text-center">
       <h2>
         <span class="title-part">{{ title.split('Start Companies')[0] }}</span>
         <span class="title-highlight">{{ titleHighlight }}</span>
       </h2>
     </div>
-    
+
     <!-- Descripción -->
-    <div class="description">
+    <div class="text-center">
       <p>{{ description }}</p>
       <p class="subtitle">
-        Descubre por qué más de 
-        <span class="highlight">{{ subtitleHighlights[0] }}</span> 
-        nos califican como 
+        Descubre por qué más de
+        <span class="highlight">{{ subtitleHighlights[0] }}</span>
+        nos califican como
         <span class="highlight">{{ subtitleHighlights[1] }}</span>.
       </p>
     </div>
-    
+
     <!-- Tarjetas de beneficios -->
-    <div class="benefits-grid">
+    <div class="row row-cols-1 row-cols-sm-2 g-3">
+      <div class="col" *ngFor="let benefit of benefits">
+        <div class="card text-center">
+          <div class="container p-4">
+            <img [src]="benefit.icon" [alt]="benefit.title">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">
+              {{benefit.title}}
+            </h5>
+            <p class="card-text benefit-description">
+              {{benefit.description}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--<div class="benefits-grid">
       <div class="benefit-card h-100 w-100" *ngFor="let benefit of benefits">
         <div class="benefit-icon">
           <img [src]="benefit.icon" [alt]="benefit.title">
@@ -39,6 +56,6 @@
           <p class="benefit-description">{{ benefit.description }}</p>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </section>
