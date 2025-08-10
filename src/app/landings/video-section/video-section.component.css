@@ -43,12 +43,12 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
+
 .video-container {
   max-width: 800px;
   margin: 0 auto;
   aspect-ratio: 16/9;
   background-color: #000;
-  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
@@ -80,15 +80,15 @@
   .container {
     padding: 0 1rem;
   }
-  
+
   .main-title {
     font-size: 2.5rem;
   }
-  
+
   .description {
     font-size: 1.1rem;
   }
-  
+
   .video-section {
     padding: 2rem 0;
   }
@@ -98,12 +98,17 @@
   .main-title {
     font-size: 2rem;
   }
-  
+
   .subtitle {
     font-size: 1rem;
   }
-  
+
   .description {
     font-size: 1rem;
+  }
+
+  .video-container {
+    height: 400px;
+    aspect-ratio: 9/16;
   }
 }

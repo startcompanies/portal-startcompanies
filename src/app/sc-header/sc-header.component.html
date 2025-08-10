@@ -29,15 +29,17 @@
             (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
         </li>
         <li class="nav-item" [ngClass]="{'active': isRouteActive('/contacto')}">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="/contacto">{{ 'NAVBAR.contact' | transloco }}</a>
+          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="/contacto">{{
+            'NAVBAR.contact' | transloco }}</a>
         </li>
       </ul>
 
       <div class="d-flex ms-lg-auto">
-        <button type="button" class="btn sc-btn-accent me-2">
+        <button data-cal-link="startcompanies-businessenusa/agendaorganica" data-cal-namespace="agendaorganica"
+          data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="btn sc-btn-accent me-2">
           {{ 'NAVBAR.call' | transloco }} <i class="bi bi-arrow-right"></i>
         </button>
-        <div class="dropdown">
+        <!--<div class="dropdown">
           <button class="btn sc-btn-language dropdown-toggle" type="button" id="dropdownMenuButton1"
             data-bs-toggle="dropdown" aria-expanded="false">
             {{ currentLang === 'es' ? 'ES' : 'EN' }}
@@ -46,7 +48,7 @@
             <li><a class="dropdown-item" href="#" (click)="changeLanguage('en')">EN</a></li>
             <li><a class="dropdown-item" href="#" (click)="changeLanguage('es')">ES</a></li>
           </ul>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>

@@ -1,37 +1,46 @@
 <app-sc-header></app-sc-header>
-<section class="contact-section" #heroSection>
-    <div class="contact-container">
-        <div class="contact-content">
-            <!-- Columna izquierda: Texto -->
-            <div class="contact-text">
-                <h2 class="contact-title">{{ 'CONTACT.title' | transloco }}</h2>
-                <p class="contact-description">{{ 'CONTACT.description' | transloco }}</p>
+<section class="contact-section py-5" #heroSection>
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-5 py-5">
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold text-body-emphasis">
+                    {{'CONTACT.title' | transloco}}
+                </h1>
+                <p class="lead">
+                    {{'CONTACT.description' | transloco}}
+                </p>
             </div>
-            
-            <!-- Columna derecha: Formulario -->
-            <div class="contact-form">
-                <form class="form-container">
-                    <div class="form-group">
-                        <label for="name" class="form-label">{{ 'CONTACT.name' | transloco }}</label>
-                        <input type="text" id="name" name="name" class="form-input" required>
+            <div class="col-lg-6">
+                <form action="" class="needs-validation" novalidate>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="name" class="form-label">
+                                {{'CONTACT.name' | transloco}}
+                            </label>
+                            <input type="text" class="form-control contact-input" id="name" placeholder value required>
+                        </div>
+                        <div class="col-12">
+                            <label for="email" class="form-label">{{'CONTACT.email' | transloco}}</label>
+                            <input type="email" class="form-control contact-input" id="email" placeholder value required>
+                        </div>
+                        <div class="col-12">
+                            <label for="message" class="form-label">{{'CONTACT.message' | transloco}}</label>
+                            <textarea name="message" id="message" class="form-control contact-input h-100" placeholder value
+                                required></textarea>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="email" class="form-label">{{ 'CONTACT.email' | transloco }}</label>
-                        <input type="email" id="email" name="email" class="form-input" required>
+                    <div class="row py-5">
+                        <div class="col-sm-6">
+                            <button type="submit" class="btn btn-primary btn-lg btn-submit">
+                                <span>{{'CONTACT.send' | transloco}}</span>
+                                <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="message" class="form-label">{{ 'CONTACT.message' | transloco }}</label>
-                        <textarea id="message" name="message" class="form-textarea" rows="4" required></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-button">
-                        <span>{{ 'CONTACT.send' | transloco }}</span>
-                        <svg class="arrow-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </button>
                 </form>
             </div>
         </div>

@@ -109,6 +109,7 @@
   background-color: #02CAE3;
   color: #ffffff;
 }
+
 .hero-btn-primary:hover {
   background-color: #02CAE3;
   border-color: #02CAE3;
@@ -119,6 +120,7 @@
   color: #F3F6FA;
   border: 2px solid #F3F6FA;
 }
+
 .hero-btn-secondary:hover {
   background-color: #f0f0f0;
   color: #0049c6;
@@ -195,22 +197,49 @@
    MEDIA QUERIES
    ========================= */
 @media (max-width: 991.8px) {
-  .sc-slide h2 { font-size: 2.5rem; }
-  .sc-slide p { font-size: 1rem; }
-  button { font-size: 0.6rem; }
+  .sc-slide h2 {
+    font-size: 2.5rem;
+  }
+
+  .sc-slide p {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 0.6rem;
+  }
 
   .sc-services-container {
     margin-top: -80px;
     padding: 0 1rem;
   }
-  .sc-services-card { padding: 2rem 1.5rem; }
+
+  .sc-services-card {
+    padding: 2rem 1.5rem;
+  }
+
   .sc-services-card .card-title {
     font-size: 2rem;
     margin-bottom: 2.5rem;
   }
-  .sc-services-item h3 { font-size: 1.2rem; }
-  .sc-services-item p { font-size: 0.95rem; }
-  .sc-icon-blue { font-size: 3rem !important; }
+
+  .sc-services-item h3 {
+    font-size: 1.2rem;
+  }
+
+  .sc-services-item p {
+    font-size: 0.95rem;
+  }
+
+  .sc-icon-blue {
+    font-size: 3rem !important;
+  }
+}
+
+/*FAQ Section*/
+.faq-section {
+  background-color: #fafafa;
+  padding: 80px 16px;
 }
 
 @media (max-width: 767.98px) {
@@ -218,13 +247,29 @@
     font-size: 1.5rem;
     margin-bottom: 1rem;
   }
-  .sc-slide p { font-size: 0.9rem; }
-  .sc-services-container { margin-top: -60px; }
-  .sc-services-card { padding: 2rem 1rem; }
+
+  .sc-slide p {
+    font-size: 0.9rem;
+  }
+
+  .sc-services-container {
+    margin-top: -60px;
+  }
+
+  .sc-services-card {
+    padding: 2rem 1rem;
+  }
+
   .sc-services-card .card-title {
     font-size: 1.8rem;
     margin-bottom: 2rem;
   }
-  .sc-services-item h3 { font-size: 1.5rem; }
-  .sc-services-item:last-child { margin-bottom: 0; }
+
+  .sc-services-item h3 {
+    font-size: 1.5rem;
+  }
+
+  .sc-services-item:last-child {
+    margin-bottom: 0;
+  }
 }

@@ -2,18 +2,46 @@
    CONTACT SECTION
    ========================= */
 .contact-section {
-  min-height: 100vh;
   background-image: url("../../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem 0;
-  position: relative;
+  background-repeat: no-repeat;
 }
 
-.contact-container {
+.contact-input {
+  color: var(--color-fondo-claro);
+  background: transparent;
+  border-color: var(--color-fondo-claro);
+  border-radius: 2rem;
+}
+
+.btn-submit {
+  border-radius: 2.5rem;
+  background: var(--color-secundario-tecnico);
+  width: 9rem;
+}
+.form-label{
+  color: var(--color-fondo-claro);
+  font-size: 1.5rem;
+  font-weight: 400;
+  font-style: Regular;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.text-body-emphasis{
+  color: var(--color-fondo-claro) !important;
+  font-size: 3.5rem;
+}
+.lead{
+  color: var(--color-fondo-claro) !important;
+  font-size: 1.5rem;
+}
+@media (max-width: 480px) {
+  .text-body-emphasis{
+    font-size: 2.5rem;
+  }  
+}
+/*.contact-container {
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
@@ -29,7 +57,6 @@
   margin: 0 auto;
 }
 
-/* Columna izquierda: Texto */
 .contact-text {
   color: #ffffff;
 }
@@ -53,7 +80,7 @@
   font-family: 'Arial', sans-serif;
 }
 
-/* Columna derecha: Formulario */
+
 .contact-form {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -151,7 +178,7 @@
   transform: translateX(3px);
 }
 
-/* Responsive Design */
+
 @media (max-width: 1024px) {
   .contact-content {
     gap: 3rem;
@@ -248,7 +275,6 @@
   }
 }
 
-/* Animaciones adicionales */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -268,9 +294,8 @@
   animation: fadeInUp 0.8s ease-out 0.2s both;
 }
 
-/* Efectos de hover para inputs */
 .form-input:hover,
 .form-textarea:hover {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.4);
-}
+}*/

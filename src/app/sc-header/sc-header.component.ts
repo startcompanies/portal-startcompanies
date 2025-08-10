@@ -17,7 +17,7 @@ export class ScHeaderComponent implements OnInit {
   isNavbarShrunk: boolean = false;
   currentLang: string = 'es';
   currentRoute: string = '';
-  
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private scrollService: ScrollService,
@@ -26,7 +26,7 @@ export class ScHeaderComponent implements OnInit {
     private activatedRoute: ActivatedRoute
   ) { }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.navbarScroll();
     }
@@ -39,7 +39,7 @@ export class ScHeaderComponent implements OnInit {
   private getCurrentRoute(): void {
     // Obtener la ruta inicial
     this.currentRoute = this.router.url;
-    
+
     // Suscribirse a los cambios de ruta
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
@@ -107,4 +107,35 @@ export class ScHeaderComponent implements OnInit {
     this.translocoService.setDefaultLang(lang);
     this.currentLang = lang;
   }
+
+  /*private initCalEmbed(): void {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://app.cal.com/embed/embed.js';
+    script.async = true; // Agrega esto para una carga asíncrona
+    document.head.appendChild(script);
+
+    // Usa una función de verificación para asegurarte de que Cal esté disponible
+    const checkCal = () => {
+      // @ts-ignore
+      if (window.Cal) {
+        window.Cal('init', 'agendaorganica', { origin: 'https://app.cal.com' });
+        window.Cal.ns.agendaorganica('ui', {
+          theme: 'light',
+          cssVarsPerTheme: {
+            light: { 'cal-brand': '#006AFE' },
+            dark: { 'cal-brand': '#fafafa' }
+          },
+          hideEventTypeDetails: false,
+          layout: 'month_view'
+        });
+      } else {
+        // Si no está disponible, intenta de nuevo después de un breve retraso
+        setTimeout(checkCal, 100);
+      }
+    };
+
+    // Llama a la función de verificación al cargar la página
+    checkCal();
+  }*/
 }
