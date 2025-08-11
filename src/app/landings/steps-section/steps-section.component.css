@@ -3,23 +3,6 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  padding: 4rem 0;
-  text-align: center;
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-}
-
-.steps-section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 1;
 }
 
 .container {
@@ -33,7 +16,7 @@
 .main-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: white;
+  color: var(--color-fondo-claro);
   margin-bottom: 5rem;
 }
 
@@ -75,7 +58,7 @@
 }
 
 .step-icon {
-  background-color: white;
+  background-color: var(--color-fondo-claro);
   font-size: 1.8rem;
   color: black;
   font-weight: bold;
@@ -90,7 +73,7 @@
 }
 
 .step-content {
-  color: white;
+  color: var(--color-fondo-claro);
   flex: 1;
 }
 
@@ -107,14 +90,14 @@
 
 .step-line {
   position: absolute;
-  background-color: white;
+  background-color: var(--color-fondo-claro);
   z-index: 0;
   margin: 0 6rem;
 }
 
-.bottom-statement {
+.lead {
   font-size: 1.5rem;
-  color: white;
+  color: var(--color-fondo-claro);
   font-weight: bold;
   margin-top: 5rem;
 }
@@ -134,19 +117,21 @@
     text-align: center;
     flex: 1;
   }
+
   .step-two {
     flex-direction: column;
     align-items: center;
     text-align: center;
     flex: 1;
   }
+
   .step-three {
     flex-direction: column;
     align-items: center;
     text-align: center;
     flex: 1;
   }
-  
+
   .step-icon {
     margin-right: 0;
     margin-bottom: 1rem;
@@ -181,7 +166,7 @@
     top: 48px;
     width: 5px;
     height: 80px;
-    background-color: white;
+    background-color: var(--color-fondo-claro);
     z-index: 0;
   }
 
@@ -192,7 +177,7 @@
     top: 48px;
     width: 5px;
     height: 80px;
-    background-color: white;
+    background-color: var(--color-fondo-claro);
     z-index: 0;
   }
 

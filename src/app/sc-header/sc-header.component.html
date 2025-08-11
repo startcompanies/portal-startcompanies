@@ -24,10 +24,10 @@
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
             (click)="navigateToSection('pricingSection')">{{ 'NAVBAR.plans' | transloco }}</a>
         </li>
-        <li class="nav-item" [ngClass]="{'active': isRouteActive('/blog')}">
+        <!--<li class="nav-item" [ngClass]="{'active': isRouteActive('/blog')}">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
             (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
-        </li>
+        </li>-->
         <li class="nav-item" [ngClass]="{'active': isRouteActive('/contacto')}">
           <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="/contacto">{{
             'NAVBAR.contact' | transloco }}</a>
