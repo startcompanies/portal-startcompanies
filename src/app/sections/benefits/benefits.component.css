@@ -67,7 +67,8 @@
 
 .benefits-content img {
     max-width: 100%;
-    height: auto;
+    height: 45px;
+    border: none !important;
 }
 @media (max-width: 767.98px) {
     .benefits-grid {
