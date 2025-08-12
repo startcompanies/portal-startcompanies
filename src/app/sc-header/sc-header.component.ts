@@ -1,4 +1,10 @@
-import { Component, HostListener, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  Inject,
+  OnInit,
+  PLATFORM_ID,
+} from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../services/scroll.service';
@@ -24,7 +30,7 @@ export class ScHeaderComponent implements OnInit {
     public translocoService: TranslocoService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -94,8 +100,16 @@ export class ScHeaderComponent implements OnInit {
    * Navigate to a section
    * @param sectionId - The id of the section to navigate to
    */
-  navigateToSection(sectionId: string) {
+  /*navigateToSection(sectionId: string) {
     this.scrollService.scrollTo(sectionId);
+  }*/
+  navigateToPlansSection() {
+    this.router.navigate(['/planes']).then(() => {
+      // Damos un pequeño delay para que Angular pinte el DOM
+      setTimeout(() => {
+        this.scrollService.scrollTo('pricingSection');
+      }, 50);
+    });
   }
 
   /**
@@ -107,35 +121,4 @@ export class ScHeaderComponent implements OnInit {
     this.translocoService.setDefaultLang(lang);
     this.currentLang = lang;
   }
-
-  /*private initCalEmbed(): void {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = 'https://app.cal.com/embed/embed.js';
-    script.async = true; // Agrega esto para una carga asíncrona
-    document.head.appendChild(script);
-
-    // Usa una función de verificación para asegurarte de que Cal esté disponible
-    const checkCal = () => {
-      // @ts-ignore
-      if (window.Cal) {
-        window.Cal('init', 'agendaorganica', { origin: 'https://app.cal.com' });
-        window.Cal.ns.agendaorganica('ui', {
-          theme: 'light',
-          cssVarsPerTheme: {
-            light: { 'cal-brand': '#006AFE' },
-            dark: { 'cal-brand': '#fafafa' }
-          },
-          hideEventTypeDetails: false,
-          layout: 'month_view'
-        });
-      } else {
-        // Si no está disponible, intenta de nuevo después de un breve retraso
-        setTimeout(checkCal, 100);
-      }
-    };
-
-    // Llama a la función de verificación al cargar la página
-    checkCal();
-  }*/
 }

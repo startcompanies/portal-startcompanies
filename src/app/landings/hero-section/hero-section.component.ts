@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ScrollService } from '../../services/scroll.service';
 
 @Component({
   selector: 'app-hero-section',
@@ -8,11 +9,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css'
 })
-export class HeroSectionComponent {
-  // Propiedades para estilos personalizados
-  @Input() contentClass: string | string[] | { [key: string]: boolean } = '';
-  @Input() contentStyles: { [key: string]: string } = {};
+export class HeroSectionComponent implements OnInit{
 
-  // Este componente actúa como contenedor
-  // El contenido se inyecta desde otros componentes usando content projection
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private scrollService: ScrollService
+  ){}
+
+  ngOnInit(): void {
+  }
+
+  navigateToCalendlySection(){
+    this.scrollService.scrollTo('calendlySection');
+  }
+
 }

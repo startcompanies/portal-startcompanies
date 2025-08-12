@@ -4,34 +4,31 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  min-height: 95vh; /* Ocupa toda la altura de la ventana */
-  position: relative;
-  overflow: hidden;
-  padding: 80px 0; /* Asegura espacio para contenido */
 }
 
-.hero-app-logo {
-  width: 80px;
-  height: 80px;
-  filter: brightness(0) invert(1); /* Para logos blancos sobre fondo oscuro */
+.img-fluid {
+  width: 7rem;
+  height: auto;
 }
-
-.hero-header-content {
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-.hero-section h1 {
-  font-size: 3.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.hero-section .text-success {
-  color: #28a745 !important; /* Verde específico para "Relay" */
+.hero-title {
+  color: var(--color-fondo-claro) !important;
 }
 
 .hero-section .lead {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+}
+.hero-description {
+  color: var(--color-fondo-claro) !important;
+}
+.hero-section .ratio {
+  position: relative;
+  z-index: 1;
+  margin-bottom: -6rem; /* Ajusta este valor según cuánto quieres que se desborde */
+}
+
+.hero-section {
+  position: relative;
+  z-index: 0;
 }
 
 /* Sección de Planes */
@@ -239,7 +236,7 @@
 
 @media (max-width: 575.98px) {
   .hero-section h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .hero-section .lead {

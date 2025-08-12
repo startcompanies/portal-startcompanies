@@ -41,5 +41,10 @@ export const routes: Routes = [
         path: 'form-apertura-relay',
         loadComponent: () => import('./manejo-llc/form-apertura-relay/form-apertura-relay.component').then(m => m.FormAperturaRelayComponent),
         title: 'Apertura de cuenta'
+    },
+    {
+        path: 'planes',
+        loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
+        title: 'Planes y precios'
     }
 ];

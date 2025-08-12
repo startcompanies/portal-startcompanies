@@ -2,14 +2,9 @@
    HERO SECTION
    ========================= */
 .sc-hero {
-  /*height: 95vh;*/
   background-image: url("../../assets/hero-bg.jpg");
   background-size: cover;
   background-position: center;
-  /*position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;*/
 }
 
 .sc-hero #carouselExampleIndicators {
@@ -18,12 +13,11 @@
   position: relative;
 }
 
-.sc-hero .carousel-inner{
+.sc-hero .carousel-inner {
   height: auto;
 }
 .sc-hero .carousel-item {
   min-height: 500px;
-
 }
 
 .sc-slide {
@@ -64,7 +58,7 @@
 }
 
 .sc-hero .carousel-indicators button.active {
-  background-color: #ffffff;
+  background-color: var(--color-fondo-claro);
   transform: scale(1.2);
 }
 
@@ -73,7 +67,7 @@
   font-size: 3.8rem;
   font-weight: 700;
   line-height: 1.2;
-  color: #ffffff;
+  color: var(--color-fondo-claro);
   margin-bottom: 1.5rem;
   max-width: 100%;
 }
@@ -82,7 +76,7 @@
   font-size: 1.15rem;
   font-weight: 400;
   line-height: 1.6;
-  color: #ffffff;
+  color: var(--color-fondo-claro);
   margin-bottom: 0;
   max-width: 100%;
 }
@@ -108,25 +102,25 @@
 }
 
 .hero-btn-primary {
-  background-color: #02CAE3;
-  color: #ffffff;
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
 }
 
 .hero-btn-primary:hover {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
 }
 
 .hero-btn-secondary {
   background-color: transparent;
-  color: #F3F6FA;
-  border: 2px solid #F3F6FA;
+  color: var(--color-fondo-claro);
+  border: 2px solid var(--color-fondo-claro);
 }
 
 .hero-btn-secondary:hover {
-  background-color: #f0f0f0;
-  color: #0049c6;
-  border-color: #0049c6;
+  background-color: var(--color-fondo-claro);
+  color: var(--color-primario);
+  border-color: var(--color-primario);
 }
 
 .hero-btn-primary i.bi,
@@ -150,7 +144,7 @@
 }
 
 .sc-services-card {
-  background-color: #F3F6FA;
+  background-color: var(--color-fondo-claro);
   border-radius: 1.5rem;
   border: none;
   padding: 3rem 2.5rem;
@@ -160,27 +154,27 @@
 .sc-services-card .card-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #293B49;
+  color: #293b49;
   margin-bottom: 3rem;
 }
 
 .sc-text-blue-accent {
-  color: #00B8D9;
+  color: #00b8d9;
 }
 
 .sc-services-item h3 {
   font-size: 1.5rem;
-  color: #293B49;
+  color: #293b49;
   font-weight: 600;
 }
 
 .sc-services-item p {
   font-size: 1rem;
-  color: #293B49;
+  color: #293b49;
 }
 
 .sc-icon-blue {
-  color: #00B8D9;
+  color: #00b8d9;
   font-size: 3.5rem !important;
   line-height: 1;
 }
@@ -192,7 +186,7 @@
   position: relative;
   padding: 80px 16px;
   overflow: hidden;
-  background-color: #0049c6;
+  background-color: var(--color-primario);
 }
 
 /* =========================
@@ -240,7 +234,7 @@
 
 /*FAQ Section*/
 .faq-section {
-  background-color: #fafafa;
+  background-color: var(--color-fondo-claro);
   padding: 80px 16px;
 }
 
@@ -276,6 +270,9 @@
   }
 }
 @media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
   .hero-btn-primary,
   .hero-btn-secondary {
     font-size: 0.7rem;

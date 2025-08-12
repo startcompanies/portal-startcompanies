@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ScrollService {
-
   /**
    * Subject to emit the section name when scrolling to a section
    */
@@ -16,9 +15,13 @@ export class ScrollService {
    */
   scrollTarrget$ = this.scrollTargetSource.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   scrollTo(sectionId: string) {
     this.scrollTargetSource.next(sectionId);
+  }
+
+  clearTarget() {
+    this.scrollTargetSource.next('');
   }
 }
