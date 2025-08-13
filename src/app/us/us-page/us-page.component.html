@@ -1,11 +1,10 @@
 <app-sc-header></app-sc-header>
-<header class="sc-hero" #heroSection>
+<section class="py-5 sc-hero" #heroSection>
   <div
     id="carouselExampleIndicators"
-    class="carousel slide h-100"
+    class="carousel slide mb-6 px-4 py-5"
     data-bs-ride="carousel"
   >
-    <!-- Indicadores del carrusel -->
     <div class="carousel-indicators">
       <button
         type="button"
@@ -23,18 +22,97 @@
       ></button>
     </div>
 
-    <!-- Contenido del carrusel -->
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="container">
+          <div class="mission-card row align-items-center my-5 g-5 py-5">
+            <div class="col-lg-6">
+              <div class="mission-image-container">
+                <img
+                  src="assets/us/mission-person.jpg"
+                  alt="Emprendedor trabajando"
+                  class="mission-image img-fluid"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mission-content">
+                <h2 class="mission-title">
+                  {{ "US.mission.title" | transloco }}
+                </h2>
+                <p class="mission-description">
+                  {{ "US.mission.description" | transloco }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="carousel-item">
+        <div class="container">
+          <div class="mission-card row align-items-center my-5 g-5 py-5">
+            <div class="col-lg-6">
+              <div class="mission-image-container">
+                <img
+                  src="assets/us/vision.jpg"
+                  alt="Visión de la empresa"
+                  class="mission-image img-fluid"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="mission-content">
+                <h2 class="mission-title">
+                  {{ "US.vision.title" | transloco }}
+                </h2>
+                <p class="mission-description">
+                  {{ "US.vision.description" | transloco }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--<header class="sc-hero" #heroSection>
+  <div
+    id="carouselExampleIndicators"
+    class="carousel slide h-100"
+    data-bs-ride="carousel"
+  >
+    
+    <div class="carousel-indicators">
+      <button
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide-to="0"
+        class="active"
+        aria-current="true"
+        aria-label="Slide 1"
+      ></button>
+      <button
+        type="button"
+        data-bs-target="#carouselExampleIndicators"
+        data-bs-slide-to="1"
+        aria-label="Slide 2"
+      ></button>
+    </div>
+
+    
     <div class="carousel-inner h-100">
-      <!-- Primer Slide: Misión -->
+      
       <div class="carousel-item active h-100">
-        <!-- Contenedor principal de la slide, centra su contenido verticalmente -->
+        
         <div
-          class="sc-slide h-100 container d-flex flex-column justify-content-center"
+          class="sc-slide h-100 d-flex flex-column"
         >
-          <!-- Card de Misión -->
-          <div class="mission-card">
+          
+          <div class="mission-card w-100">
             <div class="row align-items-center">
-              <!-- Columna izquierda: Imagen -->
+              
               <div class="col-12 col-lg-6 mb-4 mb-lg-0">
                 <div class="mission-image-container">
                   <img
@@ -44,7 +122,7 @@
                   />
                 </div>
               </div>
-              <!-- Columna derecha: Texto -->
+              
               <div class="col-12 col-lg-6">
                 <div class="mission-content">
                   <h2 class="mission-title">
@@ -60,16 +138,16 @@
         </div>
       </div>
 
-      <!-- Segundo Slide: Visión -->
+      
       <div class="carousel-item h-100">
-        <!-- Contenedor principal de la slide, centra su contenido verticalmente -->
+        
         <div
-          class="sc-slide h-100 container d-flex flex-column justify-content-center"
+          class="sc-slide h-100 d-flex flex-column"
         >
-          <!-- Card de Visión -->
-          <div class="mission-card">
+          
+          <div class="mission-card w-100">
             <div class="row align-items-center">
-              <!-- Columna izquierda: Imagen -->
+              
               <div class="col-12 col-lg-6 mb-4 mb-lg-0">
                 <div class="mission-image-container">
                   <img
@@ -79,7 +157,7 @@
                   />
                 </div>
               </div>
-              <!-- Columna derecha: Texto -->
+              
               <div class="col-12 col-lg-6">
                 <div class="mission-content">
                   <h2 class="mission-title">
@@ -96,7 +174,7 @@
       </div>
     </div>
   </div>
-</header>
+</header>-->
 <!--<app-us-strategies></app-us-strategies>-->
 <app-video-section
   title="Estrategía empresarial"

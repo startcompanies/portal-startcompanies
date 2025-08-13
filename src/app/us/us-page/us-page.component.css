@@ -2,15 +2,9 @@
    HERO SECTION
    ========================= */
 .sc-hero {
-    height: 95vh;
     background-image: url("../../../assets/hero-bg.jpg");
     background-size: cover;
     background-position: center;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* padding-top: 56px; */
 }
 
 .sc-hero #carouselExampleIndicators {
@@ -37,7 +31,7 @@
 /* Carousel Indicators */
 .sc-hero .carousel-indicators {
     position: absolute !important;
-    bottom: 80px !important;
+    bottom: 20px !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     top: auto !important;
@@ -138,22 +132,7 @@
 .mission-card {
     background: transparent;
     border-radius: 2rem;
-    padding: 3rem;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    position: relative;
-    overflow: hidden;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.mission-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
 }
 
 .mission-image-container {
@@ -165,7 +144,7 @@
 
 .mission-image {
     width: 100%;
-    height: auto;
+    height: 350px;
     display: block;
     border-radius: 1.5rem;
     transition: transform 0.3s ease;
@@ -229,10 +208,6 @@
 
 /* Responsive styles for mission card */
 @media (max-width: 991.98px) {
-    .mission-card {
-        padding: 2rem;
-        margin: 0 1rem;
-    }
 
     .mission-title {
         font-size: 2.5rem;
@@ -254,10 +229,6 @@
 }
 
 @media (max-width: 767.98px) {
-    .mission-card {
-        padding: 1.5rem;
-        border-radius: 1.5rem;
-    }
 
     .mission-title {
         font-size: 2rem;
@@ -287,10 +258,6 @@
 }
 
 @media (max-width: 575.98px) {
-    .mission-card {
-        padding: 1rem;
-        margin: 0 0.5rem;
-    }
 
     .mission-title {
         font-size: 1.8rem;
