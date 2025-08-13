@@ -106,9 +106,4 @@
   .description {
     font-size: 1rem;
   }
-
-  .video-container {
-    height: 400px;
-    aspect-ratio: 9/16;
-  }
 }

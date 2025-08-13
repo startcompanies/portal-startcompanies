@@ -45,205 +45,21 @@
 }
 
 /* Sección de Testimonios y Clientes */
-.testimonials-section {
-  padding-top: 80px;
-  padding-bottom: 80px;
-  background-color: #f8f9fa; /* Fondo claro de la sección */
+.qualifications {
+  border-radius: 2rem !important;
 }
-
-/* Estilos para el encabezado de la sección */
-.header-card {
-  background-color: #ffffff;
-  border: 2px solid #e0e0e0; /* Borde sutil */
-  padding: 40px;
-  max-width: 900px;
-  margin: 0 auto 50px auto; /* Centrar y añadir margen inferior */
+.qualifications-descriptions {
+  max-width: 700px;
 }
-
-.header-logo {
-  width: 100px;
-  height: auto;
-  filter: brightness(0) invert(1); /* Logo oscuro sobre fondo claro */
+.qualifications-buttons {
+  background-color: var(--color-secundario-tecnico) !important;
+  color: var(--color-fondo-claro) !important;
+  border-radius: 2rem !important;
+  font-size: 1.3rem !important;
 }
-
-.header-card h2 {
-  font-size: 2rem;
-  color: #333;
-}
-
-.header-card h3 {
-  color: #333;
-}
-
-.header-card .text-primary-blue {
-  color: #02cae3; /* Color azul/cian para "Excelente" */
-}
-
-.btn-trustpilot {
-  background-color: #02cae3;
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-trustpilot:hover {
-  background-color: #00b8d9;
-}
-
-/* Estilos para las tarjetas de testimonios */
-.testimonial-card {
-  background-color: #ffffff;
-  border: 2px solid #02cae3; /* Borde azul/cian */
-  padding: 30px;
-  color: #333;
-  transition: transform 0.3s ease-in-out;
-}
-
-.testimonial-card:hover {
-  transform: translateY(-5px);
-}
-
-.testimonial-avatar {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border: 2px solid #02cae3; /* Borde azul para el avatar */
-}
-
-/* Estilos para los indicadores del carrusel (puntos) */
-.carousel-indicator-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
-  margin: 0 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.carousel-indicator-dot.active {
-  background-color: #02cae3;
-}
-
-.carousel-indicator-dot:hover {
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-/* Estilos para el botón de acción principal */
-.btn-action {
-  background-color: #02cae3;
-  color: #ffffff;
-  border: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-action:hover {
-  background-color: #00b8d9;
-}
-
-/* Estilos para los videos de clientes */
-.video-placeholder {
-  background-color: #333; /* Color de fondo para el placeholder del video */
-  aspect-ratio: 16/9; /* Relación de aspecto 16:9 */
-  width: 100%;
-  min-height: 180px; /* Altura mínima para el placeholder */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 1.2rem;
-}
-
 /* Media Queries para Responsividad */
-@media (max-width: 991.98px) {
-  /* Tabletas y móviles */
-  .header-card {
-    padding: 30px;
-  }
-
-  .header-card h3 {
-    font-size: 1.3rem;
-  }
-
-  .header-card p {
-    font-size: 0.95rem;
-  }
-
-  .testimonial-card {
-    padding: 20px;
-  }
-
-  .testimonial-card h5 {
-    font-size: 1.1rem;
-  }
-
-  .testimonial-card p.small {
-    font-size: 0.85rem;
-  }
-
-  .btn-trustpilot,
-  .btn-action {
-    font-size: 0.9rem;
-    padding: 0.6rem 1.5rem;
-  }
-}
-
-@media (max-width: 575.98px) {
-  /* Móviles muy pequeños */
-  .header-card {
-    padding: 20px;
-  }
-
-  .header-card h2 {
-    font-size: 1.8rem;
-  }
-
-  .header-card h3 {
-    font-size: 1.1rem;
-  }
-
-  .header-logo {
-    width: 70px;
-  }
-
-  .testimonial-avatar {
-    width: 60px;
-    height: 60px;
-  }
-
-  .video-placeholder {
-    min-height: 150px;
-  }
-}
-
-/* Media Queries para Responsividad */
-@media (max-width: 767.98px) {
-  .hero-section h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero-section .lead {
-    font-size: 1rem;
-  }
-
-  .bank-account-banner h2 {
-    font-size: 2rem;
-  }
-}
-
-@media (max-width: 575.98px) {
-  .hero-section h1 {
-    font-size: 1.5rem;
-  }
-
-  .hero-section .lead {
-    font-size: 0.9rem;
-  }
-
-  .bank-account-banner h2 {
-    font-size: 1.8rem;
+@media (max-width: 768px) {
+  .qualifications-buttons {
+    font-size: 0.7rem !important;
   }
 }

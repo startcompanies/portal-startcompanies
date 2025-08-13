@@ -5,11 +5,12 @@ import { VideoGridSectionComponent } from "../video-grid-section/video-grid-sect
 import { VideoSectionComponent } from "../video-section/video-section.component";
 import { PlansContainerComponent } from "../plans-container/plans-container.component";
 import { SupportContainerComponent } from "../support-container/support-container.component";
+import { TestimonialsCarouselComponent } from "../testimonials-carousel/testimonials-carousel.component";
 
 @Component({
   selector: 'app-landing-presentation',
   standalone: true,
-  imports: [ScFooterComponent, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent],
+  imports: [ScFooterComponent, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent, TestimonialsCarouselComponent],
   templateUrl: './landing-presentation.component.html',
   styleUrl: './landing-presentation.component.css'
 })
