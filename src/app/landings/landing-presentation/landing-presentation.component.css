@@ -23,7 +23,7 @@
 .hero-section .ratio {
   position: relative;
   z-index: 1;
-  margin-bottom: -6rem; /* Ajusta este valor según cuánto quieres que se desborde */
+  margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
 }
 
 .hero-section {

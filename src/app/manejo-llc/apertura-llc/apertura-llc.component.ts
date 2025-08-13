@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { ScHeaderComponent } from "../../sc-header/sc-header.component";
 import { ScFooterComponent } from "../../sc-footer/sc-footer.component";
+import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 
 @Component({
   selector: 'app-apertura-llc',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent],
+  imports: [ScFooterComponent, HeaderManejoComponent],
   templateUrl: './apertura-llc.component.html',
   styleUrl: './apertura-llc.component.css'
 })

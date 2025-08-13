@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ScHeaderComponent } from '../../sc-header/sc-header.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
+import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 
 @Component({
   selector: 'app-form-apertura-relay',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent],
+  imports: [ScFooterComponent, HeaderManejoComponent],
   templateUrl: './form-apertura-relay.component.html',
   styleUrl: './form-apertura-relay.component.css',
 })

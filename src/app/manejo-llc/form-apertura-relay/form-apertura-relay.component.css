@@ -1,11 +1,3 @@
-.header-section {
-  background-image: url("../../../assets/hero-bg.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  min-height: 12vh;
-}
-
 .iframe-container {
   position: relative;
   padding-top: 1930px;
@@ -38,6 +30,11 @@
 }
 .divider{
     min-height: 12vh;
+}
+.wp-button{
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border-radius: 2rem;
 }
 @media (max-width: 480px) {
   .header-section {
