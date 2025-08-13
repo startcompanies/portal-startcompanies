@@ -1,15 +1,19 @@
 <!-- Footer -->
 <footer class="footer py-5">
-    <div class="container">
-        <div class="footer-content">
-            <!-- Sección principal del footer con columnas de Bootstrap -->
-            <div class="footer-main row g-4 mb-4">
-                <!-- Columna del Logo y Redes Sociales -->
-                <div class="col-12 col-md-4 col-lg-3 d-flex flex-column align-items-center align-items-md-start">
-                    <img src="assets/footer/img_footer_logo.png" alt="Start Companies Logo"
-                        class="footer-logo mb-4" />
-                    <div class="footer-social d-flex gap-3 mb-4">
-                        <!-- Usamos Bootstrap Icons para mayor flexibilidad si es posible, o mantenemos tus SVG si son específicos -->
+  <div class="container">
+    <div class="footer-content">
+      <!-- Sección principal del footer con columnas de Bootstrap -->
+      <div class="footer-main row g-4 mb-4">
+        <!-- Columna del Logo y Redes Sociales -->
+        <div
+          class="col-12 col-md-4 col-lg-3 d-flex flex-column align-items-center align-items-md-start"
+        >
+          <img
+            src="assets/footer/img_footer_logo.png"
+            alt="Start Companies Logo"
+            class="footer-logo mb-4"
+          />
+          <!--<div class="footer-social d-flex gap-3 mb-4">
                         <a href="#" class="social-icon-link"><img src="assets/footer/img_10_linkedin.svg"
                                 alt="LinkedIn" class="social-icon" /></a>
                         <a href="#" class="social-icon-link"><img src="assets/footer/img_f.svg" alt="Facebook"
@@ -18,60 +22,92 @@
                                 alt="Twitter" class="social-icon" /></a>
                         <a href="#" class="social-icon-link"><img src="assets/footer/img_vector_white_a700.svg"
                                 alt="Instagram" class="social-icon" /></a>
-                    </div>
-                </div>
-
-                <!-- Contenedor de Acceso Rápido y Categorías (para mantenerlos juntos en móvil/tablet) -->
-                <div class="col-12 col-md-8 col-lg-5">
-                    <div class="row g-4">
-                        <!-- Columna de Acceso rápido -->
-                        <div class="col-12 col-sm-6">
-                            <h4 class="footer-section-title mb-3">{{'FOOTER.access_quick.us' | transloco}}</h4>
-                            <div class="footer-links d-flex flex-column gap-2">
-                                <a href="#">{{'FOOTER.access_quick.us' | transloco}}</a>
-                                <a href="#">{{'FOOTER.access_quick.plans' | transloco}}</a>
-                                <a href="#">{{'FOOTER.access_quick.blog' | transloco}}</a>
-                                <a href="#">{{'FOOTER.access_quick.contact' | transloco}}</a>
-                            </div>
-                        </div>
-
-                        <!-- Columna de Categorias -->
-                        <div class="col-12 col-sm-6">
-                            <h4 class="footer-section-title mb-3">{{'FOOTER.categories.llc' | transloco}}</h4>
-                            <div class="footer-links d-flex flex-column gap-2">
-                                <a href="#">{{'FOOTER.categories.llc' | transloco}}</a>
-                                <a href="#">{{'FOOTER.categories.manage' | transloco}}</a>
-                                <a href="#">{{'FOOTER.categories.local' | transloco}}</a>
-                                <a href="#">{{'FOOTER.categories.advantages' | transloco}}</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Columna de Contáctanos -->
-                <div class="col-12 col-lg-4">
-                    <h4 class="footer-section-title mb-3">{{'FOOTER.contact_us' | transloco}}</h4>
-                    <div class="footer-contact d-flex flex-column gap-3">
-                        <div class="contact-item d-flex align-items-start gap-2">
-                            <img src="assets/footer/img_mail.svg" alt="Email" class="contact-icon mt-1" />
-                            <span>administracion&#64;startcompanies.us</span>
-                        </div>
-                        <div class="contact-item d-flex align-items-start gap-2">
-                            <img src="assets/footer/img_phone.svg" alt="Phone" class="contact-icon mt-1" />
-                            <span>+1 (786) 935-4213</span>
-                        </div>
-                        <div class="contact-item d-flex align-items-start gap-2">
-                            <img src="assets/footer/img_location_on.svg" alt="Location" class="contact-icon mt-1" />
-                            <span>1209 Mountain Road Pl NE, STE N, Albuquerque, NM 87110, New Mexico.</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Texto legal inferior -->
-            <div class="footer-bottom pt-4 text-center text-md-start">
-                {{'FOOTER.description' | transloco}}
-            </div>
+                    </div>-->
         </div>
+
+        <!-- Contenedor de Acceso Rápido y Categorías (para mantenerlos juntos en móvil/tablet) -->
+        <div class="col-12 col-md-8 col-lg-5">
+          <div class="row g-4">
+            <!-- Columna de Acceso rápido -->
+            <div class="col-12 col-sm-6">
+              <h4 class="footer-section-title mb-3">
+                {{ "FOOTER.access_quick.us" | transloco }}
+              </h4>
+              <div class="footer-links d-flex flex-column gap-2">
+                <a href="/nosotros">{{
+                  "FOOTER.access_quick.us" | transloco
+                }}</a>
+                <a href="/planes">{{
+                  "FOOTER.access_quick.plans" | transloco
+                }}</a>
+                <!--<a href="#">{{ "FOOTER.access_quick.blog" | transloco }}</a>-->
+                <a href="/contacto">{{
+                  "FOOTER.access_quick.contact" | transloco
+                }}</a>
+              </div>
+            </div>
+
+            <!-- Columna de Categorias -->
+            <div class="col-12 col-sm-6">
+              <h4 class="footer-section-title mb-3">
+                {{ "FOOTER.categories.manage" | transloco }}
+              </h4>
+              <div class="footer-links d-flex flex-column gap-2">
+                <a href="/apertura-llc">{{
+                  "FOOTER.categories.llc" | transloco
+                }}</a>
+                <a href="/renovar-llc">{{
+                  "FOOTER.categories.renew" | transloco
+                }}</a>
+                <a href="/form-apertura-relay">{{
+                  "FOOTER.categories.account" | transloco
+                }}</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna de Contáctanos -->
+        <div class="col-12 col-lg-4">
+          <h4 class="footer-section-title mb-3">
+            {{ "FOOTER.contact_us" | transloco }}
+          </h4>
+          <div class="footer-contact d-flex flex-column gap-3">
+            <div class="contact-item d-flex align-items-start gap-2">
+              <img
+                src="assets/footer/img_mail.svg"
+                alt="Email"
+                class="contact-icon mt-1"
+              />
+              <span>administracion&#64;startcompanies.us</span>
+            </div>
+            <div class="contact-item d-flex align-items-start gap-2">
+              <img
+                src="assets/footer/img_phone.svg"
+                alt="Phone"
+                class="contact-icon mt-1"
+              />
+              <span>+1 (786) 935-4213</span>
+            </div>
+            <div class="contact-item d-flex align-items-start gap-2">
+              <img
+                src="assets/footer/img_location_on.svg"
+                alt="Location"
+                class="contact-icon mt-1"
+              />
+              <span
+                >1209 Mountain Road Pl NE, STE N, Albuquerque, NM 87110, New
+                Mexico.</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Texto legal inferior -->
+      <div class="footer-bottom pt-4 text-center text-md-start">
+        {{ "FOOTER.description" | transloco }}
+      </div>
     </div>
+  </div>
 </footer>

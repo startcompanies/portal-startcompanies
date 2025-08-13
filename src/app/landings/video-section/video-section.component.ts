@@ -2,12 +2,14 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
+declare var YT: any;
+
 @Component({
   selector: 'app-video-section',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './video-section.component.html',
-  styleUrl: './video-section.component.css'
+  styleUrl: './video-section.component.css',
 })
 export class VideoSectionComponent {
   @Input() subtitle: string = '';
@@ -25,7 +27,7 @@ export class VideoSectionComponent {
     if (url.includes('youtube.com/embed/') || url.includes('youtu.be/')) {
       const separator = url.includes('?') ? '&' : '?';
       // Asegurar que el video esté silenciado por defecto
-      processedUrl = `${url}${separator}autoplay=1&mute=1&loop=1`;
+      processedUrl = `${url}${separator}autoplay=1&mute=1&loop=1&rel=0`;
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
   }

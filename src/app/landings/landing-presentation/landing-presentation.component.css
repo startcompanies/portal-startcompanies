@@ -57,9 +57,35 @@
   border-radius: 2rem !important;
   font-size: 1.3rem !important;
 }
+.qualifications-title {
+  font-size: 1.1rem;
+}
+.paraphs {
+  max-width: 700px;
+  font-size: 1.3rem;
+  color: var(--color-texto-oscuro);
+}
+.paraphs-header {
+  font-weight: bold;
+}
+.paraphs-hightlight {
+  color: var(--color-secundario-tecnico);
+}
+.paraphs-description {
+  color: var(--color-texto-oscuro);
+  font-weight: 500;
+}
 /* Media Queries para Responsividad */
 @media (max-width: 768px) {
   .qualifications-buttons {
     font-size: 0.7rem !important;
+  }
+  .qualifications-title {
+    font-size: 0.7rem;
+  }
+  .paraphs {
+    max-width: 700px;
+    font-size: 0.7rem;
+    color: var(--color-texto-oscuro);
   }
 }

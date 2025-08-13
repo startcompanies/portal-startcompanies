@@ -258,7 +258,9 @@
             "llc": "Open LLC",
             "manage": "Manage an LLC",
             "local": "Your LLC at the local level",
-            "advantages": "Advantages of an LLC"
+            "advantages": "Advantages of an LLC",
+            "renew": "Renew your LLC",
+            "account": "Open account"
         },
         "contact_us": "Contact us",
         "description": "Ebizboost LLC acts as an intermediary in the facilitation of legal and banking procedures in the United States. It is not part of government entities and does not have banking alliances. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the necessary information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
