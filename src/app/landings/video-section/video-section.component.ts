@@ -24,7 +24,7 @@ export class VideoSectionComponent {
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  /*getSafeUrl(url: string): SafeResourceUrl {
+  getSafeUrl(url: string): SafeResourceUrl {
     // Agregar parámetros de autoplay y muted para asegurar que el video esté silenciado por defecto
     let processedUrl = url;
     if (url.includes('youtube.com/embed/') || url.includes('youtu.be/')) {
@@ -33,34 +33,5 @@ export class VideoSectionComponent {
       processedUrl = `${url}${separator}autoplay=1&mute=1&loop=1&rel=0`;
     }
     return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
-  }*/
-  getSafeUrl(url: string): SafeResourceUrl {
-    // Extrae el ID del video de la URL
-    const videoIdMatch = url.match(/(?:\/embed\/|v=)([a-zA-Z0-9_-]{11})/);
-    const videoId = videoIdMatch ? videoIdMatch[1] : null;
-
-    if (videoId) {
-      // Parámetros que provienen de la URL funcional que compartiste
-      const params = new URLSearchParams({
-        controls: '1',
-        rel: '0',
-        playsinline: '0',
-        cc_load_policy: '1',
-        autoplay: '1',
-        mute: '1', // Añadido para asegurar autoplay
-        enablejsapi: '1',
-        // Este `origin` debe ser tu dominio real.
-        //origin: window.location.origin,
-        widgetid: '1',
-      });
-
-      // Construye la URL final con el dominio correcto y los parámetros
-      const processedUrl = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
-
-      return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
-    }
-
-    // Si no se encuentra un ID, devuelve la URL original sanitizada como respaldo
-    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
