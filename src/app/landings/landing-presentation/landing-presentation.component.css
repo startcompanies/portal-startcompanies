@@ -23,7 +23,7 @@
 .hero-section .ratio {
   position: relative;
   z-index: 1;
-  margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
+  margin-bottom: -20rem; /* Ajusta este valor según cuánto quieres que se desborde */
 }
 
 .hero-section {
@@ -76,9 +76,23 @@
   font-weight: 500;
 }
 /* Media Queries para Responsividad */
-@media (max-width: 768px) {
+@media (min-width: 2000px) {
+  .hero-section .ratio{
+    margin-bottom: -30rem;
+  }  
+}
+@media (max-width: 1100px) {
   .qualifications-buttons {
     font-size: 0.7rem !important;
+  }
+  .hero-title {
+    font-size: 1.1rem !important;
+  }
+  .hero-section .lead {
+    font-size: 0.8rem;
+  }
+  .plans-section{
+    padding-top: 10rem;
   }
   .qualifications-title {
     font-size: 0.7rem;
@@ -87,5 +101,16 @@
     max-width: 700px;
     font-size: 0.7rem;
     color: var(--color-texto-oscuro);
+  }
+}
+@media (max-width: 450px) {
+  .hero-section .ratio {
+    margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
+  }
+  .hero-section .lead {
+    font-size: 0.7rem;
+  }
+  .plans-section{
+    padding-top: 0;
   }
 }

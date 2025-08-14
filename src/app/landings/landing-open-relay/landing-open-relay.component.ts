@@ -16,7 +16,6 @@ import { StepsSectionComponent } from '../steps-section/steps-section.component'
 import { KeyBenefitsSectionComponent } from '../key-benefits-section/key-benefits-section.component';
 import { Subscription } from 'rxjs';
 import { ScrollService } from '../../services/scroll.service';
-import { YoutubePlayerComponent } from "../youtube-player/youtube-player.component";
 
 @Component({
   selector: 'app-landing-open-relay',
@@ -29,8 +28,7 @@ import { YoutubePlayerComponent } from "../youtube-player/youtube-player.compone
     VideoSectionComponent,
     VideoGridSectionComponent,
     StepsSectionComponent,
-    KeyBenefitsSectionComponent,
-    YoutubePlayerComponent
+    KeyBenefitsSectionComponent
 ],
   templateUrl: './landing-open-relay.component.html',
   styleUrl: './landing-open-relay.component.css',

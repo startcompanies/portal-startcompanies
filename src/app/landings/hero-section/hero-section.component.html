@@ -1,30 +1,53 @@
 <div class="container col-xxl-8 px-4 py-5">
-    <div class="row">
-        <div class="col-12 text-center mb-4">
-            <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid">
-        </div>
+  <div class="row">
+    <div class="col-12 text-center mb-4">
+      <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid" />
     </div>
-    <div class="row align-items-center g-5 py-5">
-        <div class="col-lg-6">
-            <iframe [src]="getSafeUrl('https://www.youtube.com/embed/A0xywPD8FDE')"
+  </div>
+  <div class="row align-items-center g-5 py-5">
+    <div class="col-lg-6">
+      <!-- Contenedor del video -->
+      <div class="video-container" *ngIf="videoId; else noVideo">
+        <app-youtube-player
+          [videoId]="videoId"
+          [title]="videoTitle"
+        ></app-youtube-player>
+      </div>
+
+      <ng-template #noVideo>
+        <div class="video-placeholder">
+          <div class="placeholder-content">
+            <span>Video placeholder</span>
+          </div>
+        </div>
+      </ng-template>
+      <!--<iframe [src]="getSafeUrl('https://www.youtube.com/embed/A0xywPD8FDE')"
                 title="VIDEO VSL START COMPANIES" frameborder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="hero-iframe">
-            </iframe>
-        </div>
-        <div class="col-lg-6">
-            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-                ¡Lanza tu LLC en EE.UU. en menos de 7 días!
-            </h1>
-            <p class="lead hero-description">Crea tu empresa y tu cuenta en EE.UU. de forma simple, online y con ayuda
-                experta.</p>
-            <p class="lead hero-description">¡Vende al mundo sin fronteras!</p>
-            <p class="lead hero-description">¡No pagas hasta tener tu cuenta de banco y empresa abierta!</p>
-            <div>
-                <button class="btn btn-outline-secondary btn-lg px-4 hero-btn-primary" (click)="navigateToCalendlySection()">
-                    Empezar con una reunión gratuita <i class="bi bi-arrow-right ms-2"></i>
-                </button>
-            </div>
-        </div>
+            </iframe>-->
     </div>
+    <div class="col-lg-6">
+      <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
+        ¡Lanza tu LLC en EE.UU. en menos de 7 días!
+      </h1>
+      <p class="lead hero-description">
+        Crea tu empresa y tu cuenta en EE.UU. de forma simple, online y con
+        ayuda experta.
+      </p>
+      <p class="lead hero-description">¡Vende al mundo sin fronteras!</p>
+      <p class="lead hero-description">
+        ¡No pagas hasta tener tu cuenta de banco y empresa abierta!
+      </p>
+      <div>
+        <button
+          class="btn btn-outline-secondary btn-lg px-4 hero-btn-primary"
+          (click)="navigateToCalendlySection()"
+        >
+          Empezar con una reunión gratuita
+          <i class="bi bi-arrow-right ms-2"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

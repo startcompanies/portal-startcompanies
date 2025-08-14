@@ -2,15 +2,18 @@ import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../../services/scroll.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { YoutubePlayerComponent } from '../youtube-player/youtube-player.component';
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, YoutubePlayerComponent],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
 export class HeroSectionComponent implements OnInit {
+  videoUrl: any = 'https://www.youtube.com/embed/A0xywPD8FDE';
+  videoTitle: any = 'VIDEO VSL START COMPANIES';
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private scrollService: ScrollService,
@@ -23,7 +26,24 @@ export class HeroSectionComponent implements OnInit {
     this.scrollService.scrollTo('calendlySection');
   }
 
-  getSafeUrl(url: string): SafeResourceUrl {
+  get videoId(): string | null {
+    if (!this.videoUrl) return null;
+    // Casos como: https://youtu.be/ID
+    const shortUrlMatch = this.videoUrl.match(/youtu\.be\/([^?&]+)/);
+    if (shortUrlMatch) return shortUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/watch?v=ID
+    const longUrlMatch = this.videoUrl.match(/v=([^?&]+)/);
+    if (longUrlMatch) return longUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/embed/ID
+    const embedUrlMatch = this.videoUrl.match(/embed\/([^?&]+)/);
+    if (embedUrlMatch) return embedUrlMatch[1];
+
+    return null;
+  }
+
+  /*getSafeUrl(url: string): SafeResourceUrl {
     // Extrae el ID del video de la URL
     // Se asume que la URL ya está en el formato de incrustación de YouTube
     const videoIdMatch = url.match(/(?:\/embed\/|v=)([a-zA-Z0-9_-]{11})/);
@@ -49,5 +69,5 @@ export class HeroSectionComponent implements OnInit {
     const processedUrl = `https://www.youtube.com/embed/${videoId}?${finalParams}`;
 
     return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
-  }
+  }*/
 }

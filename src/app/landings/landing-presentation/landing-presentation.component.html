@@ -22,12 +22,26 @@
     <div class="row">
       <div class="col-lg-12">
         <div class="ratio ratio-16x9">
-          <iframe
+          <div class="video-container" *ngIf="videoId; else noVideo">
+            <app-youtube-player
+              [videoId]="videoId"
+              [title]="videoTitle"
+            ></app-youtube-player>
+          </div>
+
+          <ng-template #noVideo>
+            <div class="video-placeholder">
+              <div class="placeholder-content">
+                <span>Video placeholder</span>
+              </div>
+            </div>
+          </ng-template>
+          <!--<iframe
             src="https://www.youtube.com/embed/IlsBAs3mepI?autoplay=1&mute=1&start=27"
             title="YouTube video"
             allow="autoplay; encrypted-media"
             allowfullscreen
-          ></iframe>
+          ></iframe>-->
         </div>
       </div>
     </div>
