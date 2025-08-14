@@ -1,15 +1,13 @@
-import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
-declare var YT: any;
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { YoutubePlayerComponent } from '../youtube-player/youtube-player.component';
 
 @Component({
   selector: 'app-video-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, YoutubePlayerComponent],
   templateUrl: './video-section.component.html',
-  styleUrl: './video-section.component.css',
+  styleUrls: ['./video-section.component.css'],
 })
 export class VideoSectionComponent {
   @Input() subtitle: string = '';
@@ -19,19 +17,21 @@ export class VideoSectionComponent {
   @Input() videoUrl: string = '';
   @Input() videoTitle: string = 'Video';
 
-  constructor(
-    private sanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  get videoId(): string | null {
+    if (!this.videoUrl) return null;
 
-  getSafeUrl(url: string): SafeResourceUrl {
-    // Agregar parámetros de autoplay y muted para asegurar que el video esté silenciado por defecto
-    let processedUrl = url;
-    if (url.includes('youtube.com/embed/') || url.includes('youtu.be/')) {
-      const separator = url.includes('?') ? '&' : '?';
-      // Asegurar que el video esté silenciado por defecto
-      processedUrl = `${url}${separator}autoplay=1&mute=1&loop=1&rel=0`;
-    }
-    return this.sanitizer.bypassSecurityTrustResourceUrl(processedUrl);
+    // Casos como: https://youtu.be/ID
+    const shortUrlMatch = this.videoUrl.match(/youtu\.be\/([^?&]+)/);
+    if (shortUrlMatch) return shortUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/watch?v=ID
+    const longUrlMatch = this.videoUrl.match(/v=([^?&]+)/);
+    if (longUrlMatch) return longUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/embed/ID
+    const embedUrlMatch = this.videoUrl.match(/embed\/([^?&]+)/);
+    if (embedUrlMatch) return embedUrlMatch[1];
+
+    return null;
   }
 }

@@ -6,7 +6,6 @@ import {
   PLATFORM_ID,
   ViewChild,
 } from '@angular/core';
-import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { HeroSectionComponent } from '../hero-section/hero-section.component';
 import { CalendlySectionComponent } from '../calendly-section/calendly-section.component';
 import { TestimonialsComponent } from '../../sections/testimonials/testimonials.component';
@@ -17,12 +16,12 @@ import { StepsSectionComponent } from '../steps-section/steps-section.component'
 import { KeyBenefitsSectionComponent } from '../key-benefits-section/key-benefits-section.component';
 import { Subscription } from 'rxjs';
 import { ScrollService } from '../../services/scroll.service';
+import { YoutubePlayerComponent } from "../youtube-player/youtube-player.component";
 
 @Component({
   selector: 'app-landing-open-relay',
   standalone: true,
   imports: [
-    ScFooterComponent,
     HeroSectionComponent,
     CalendlySectionComponent,
     TestimonialsComponent,
@@ -31,7 +30,8 @@ import { ScrollService } from '../../services/scroll.service';
     VideoGridSectionComponent,
     StepsSectionComponent,
     KeyBenefitsSectionComponent,
-  ],
+    YoutubePlayerComponent
+],
   templateUrl: './landing-open-relay.component.html',
   styleUrl: './landing-open-relay.component.css',
 })

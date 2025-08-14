@@ -1,0 +1,41 @@
+<div class="youtube-wrapper">
+  <!-- Miniatura inicial -->
+  <ng-container *ngIf="!showIframe; else player">
+    <div class="thumbnail" (click)="loadAndPlay()">
+      <img [src]="thumbnailUrl" [alt]="title" loading="lazy" />
+      <div class="play-button"></div>
+    </div>
+  </ng-container>
+
+  <!-- Iframe del reproductor -->
+  <ng-template #player>
+    <iframe
+      #ytPlayer
+      [src]="safeUrl"
+      [title]="title"
+      frameborder="0"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen
+    >
+    </iframe>
+
+    <!-- Capa de overlay cuando el video está pausado o terminado -->
+    <div class="video-overlay" *ngIf="state === 'paused' || state === 'ended'">
+      <button
+        class="overlay-btn overlay-play"
+        *ngIf="state === 'paused'"
+        (click)="playVideo()"
+      >
+        ▶
+      </button>
+
+      <button
+        class="overlay-btn overlay-restart"
+        *ngIf="state === 'ended'"
+        (click)="restartVideo()"
+      >
+        🔄
+      </button>
+    </div>
+  </ng-template>
+</div>
