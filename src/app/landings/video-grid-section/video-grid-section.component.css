@@ -1,15 +1,16 @@
-.container {
+.video-grid-section-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
 }
+
 
 .main-title {
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.2;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .title-part {
@@ -26,7 +27,7 @@
   font-size: 1.2rem;
   margin-bottom: 3rem;
   font-weight: 400;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .video-grid {
@@ -48,12 +49,13 @@
 }
 
 .video-container {
+  width: 100%;
   aspect-ratio: 16/9;
   background-color: #000;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 2px solid #fff;
+  /*box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fff;*/
 }
 
 .video-container iframe {
@@ -65,7 +67,12 @@
 .no-videos {
   color: #666;
   font-size: 1.1rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+.video-container app-youtube-player {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Responsive design */
@@ -73,26 +80,27 @@
   .container {
     padding: 0 1rem;
   }
-  
+
   .main-title {
     font-size: 2.5rem;
   }
-  
+
   .description {
     font-size: 1.1rem;
   }
-  
+
   .video-grid-section {
     padding: 2rem 0;
   }
-  
+
   .video-row {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .video-item {
     max-width: 100%;
+    flex: 1 1 auto;
   }
 }
 
@@ -100,11 +108,11 @@
   .main-title {
     font-size: 2rem;
   }
-  
+
   .description {
     font-size: 1rem;
   }
-  
+
   .video-row {
     gap: 0.5rem;
   }

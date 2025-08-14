@@ -1,4 +1,4 @@
-<div class="container">
+<div class="video-grid-section-wrapper">
   <!-- Título principal -->
   <h2 class="main-title" *ngIf="title">
     <span class="title-part">{{ title }}</span>
@@ -13,7 +13,95 @@
   </p>
 
   <!-- Cuadrícula de videos -->
-  <div class="video-grid" *ngIf="videos.length > 0">
+  <div class="video-grid">
+    <div class="video-row">
+      <div class="video-item">
+        <!--<div class="video-container">          
+          <!--<iframe
+            [src]="getSafeUrl('https://www.youtube.com/embed/vTCE6ZbvKHA')"
+            [title]="videoTitle"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy"
+          >
+          </iframe>
+        </div>-->
+        <div class="video-container" *ngIf="videoIdOne; else noVideo">
+          <app-youtube-player
+            [videoId]="videoIdOne"
+            [title]="videoTitleUno"
+          ></app-youtube-player>
+        </div>
+
+        <ng-template #noVideo>
+          <div class="video-placeholder">
+            <div class="placeholder-content">
+              <span>Video placeholder</span>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="video-item">
+        <!--<div class="video-container">
+          <iframe
+            [src]="getSafeUrl('https://www.youtube.com/embed/vTCE6ZbvKHA')"
+            [title]="videoTitle"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy"
+          >
+          </iframe>
+        </div>-->
+        <div class="video-container" *ngIf="videoIdTwo; else noVideo">
+          <app-youtube-player
+            [videoId]="videoIdTwo"
+            [title]="videoTitleDos"
+          ></app-youtube-player>
+        </div>
+
+        <ng-template #noVideo>
+          <div class="video-placeholder">
+            <div class="placeholder-content">
+              <span>Video placeholder</span>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+      <div class="video-item">
+        <!--<div class="video-container">
+          <iframe
+            [src]="getSafeUrl('https://www.youtube.com/embed/vTCE6ZbvKHA')"
+            [title]="videoTitle"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+            loading="lazy"
+          >
+          </iframe>
+        </div>-->
+        <div class="video-container" *ngIf="videoIdThree; else noVideo">
+          <app-youtube-player
+            [videoId]="videoIdThree"
+            [title]="videoTitleTres"
+          ></app-youtube-player>
+        </div>
+
+        <ng-template #noVideo>
+          <div class="video-placeholder">
+            <div class="placeholder-content">
+              <span>Video placeholder</span>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <!--<div class="video-grid" *ngIf="videos.length > 0">
     <div class="video-row" *ngFor="let row of getVideosInRows()">
       <div class="video-item" *ngFor="let video of row">
         <div class="video-container">
@@ -30,10 +118,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>-->
 
   <!-- Mensaje cuando no hay videos -->
-  <div class="no-videos" *ngIf="videos.length === 0">
+  <!--<div class="no-videos" *ngIf="videos.length === 0">
     <p>No hay testimonios disponibles en este momento.</p>
-  </div>
+  </div>-->
 </div>

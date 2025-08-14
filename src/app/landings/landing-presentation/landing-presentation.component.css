@@ -23,7 +23,7 @@
 .hero-section .ratio {
   position: relative;
   z-index: 1;
-  margin-bottom: -20rem; /* Ajusta este valor según cuánto quieres que se desborde */
+  margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
 }
 
 .hero-section {
@@ -77,9 +77,9 @@
 }
 /* Media Queries para Responsividad */
 @media (min-width: 2000px) {
-  .hero-section .ratio{
-    margin-bottom: -30rem;
-  }  
+  /*.hero-section .ratio{
+    margin-bottom: -20rem;
+  }  */
 }
 @media (max-width: 1100px) {
   .qualifications-buttons {
@@ -91,8 +91,8 @@
   .hero-section .lead {
     font-size: 0.8rem;
   }
-  .plans-section{
-    padding-top: 10rem;
+  .plans-section {
+    padding-top: 4rem;
   }
   .qualifications-title {
     font-size: 0.7rem;
@@ -105,12 +105,12 @@
 }
 @media (max-width: 450px) {
   .hero-section .ratio {
-    margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
+    margin-bottom: -9rem;
   }
   .hero-section .lead {
     font-size: 0.7rem;
   }
-  .plans-section{
+  .plans-section {
     padding-top: 0;
   }
 }

@@ -1,6 +1,7 @@
 import { Component, Inject, Input, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { YoutubePlayerComponent } from '../youtube-player/youtube-player.component';
 
 interface VideoTestimonial {
   id: string;
@@ -12,7 +13,7 @@ interface VideoTestimonial {
 @Component({
   selector: 'app-video-grid-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, YoutubePlayerComponent],
   templateUrl: './video-grid-section.component.html',
   styleUrl: './video-grid-section.component.css',
 })
@@ -22,6 +23,13 @@ export class VideoGridSectionComponent {
   @Input() description: string = '';
   @Input() videos: VideoTestimonial[] = [];
   @Input() maxVideosPerRow: number = 3;
+
+  videoUrlUno: string = 'https://www.youtube.com/embed/vTCE6ZbvKHA';
+  videoTitleUno: string = '¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo.';
+  videoUrlDos: string = 'https://www.youtube.com/embed/OlVmAaSS4z0';
+  videoTitleDos: string = '¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo.';
+  videoUrlTres: string = 'https://www.youtube.com/embed/C4LivIlBcAI';
+  videoTitleTres: string = '¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo.';
 
   constructor(private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) private platformId: Object) {}
 
@@ -76,5 +84,56 @@ export class VideoGridSectionComponent {
       rows.push(this.videos.slice(i, i + this.maxVideosPerRow));
     }
     return rows;
+  }
+
+  get videoIdOne(): string | null {
+    if (!this.videoUrlUno) return null;
+    // Casos como: https://youtu.be/ID
+    const shortUrlMatch = this.videoUrlUno.match(/youtu\.be\/([^?&]+)/);
+    if (shortUrlMatch) return shortUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/watch?v=ID
+    const longUrlMatch = this.videoUrlUno.match(/v=([^?&]+)/);
+    if (longUrlMatch) return longUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/embed/ID
+    const embedUrlMatch = this.videoUrlUno.match(/embed\/([^?&]+)/);
+    if (embedUrlMatch) return embedUrlMatch[1];
+
+    return null;
+  }
+
+  get videoIdTwo(): string | null {
+    if (!this.videoUrlDos) return null;
+    // Casos como: https://youtu.be/ID
+    const shortUrlMatch = this.videoUrlDos.match(/youtu\.be\/([^?&]+)/);
+    if (shortUrlMatch) return shortUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/watch?v=ID
+    const longUrlMatch = this.videoUrlDos.match(/v=([^?&]+)/);
+    if (longUrlMatch) return longUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/embed/ID
+    const embedUrlMatch = this.videoUrlDos.match(/embed\/([^?&]+)/);
+    if (embedUrlMatch) return embedUrlMatch[1];
+
+    return null;
+  }
+
+  get videoIdThree(): string | null {
+    if (!this.videoUrlTres) return null;
+    // Casos como: https://youtu.be/ID
+    const shortUrlMatch = this.videoUrlTres.match(/youtu\.be\/([^?&]+)/);
+    if (shortUrlMatch) return shortUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/watch?v=ID
+    const longUrlMatch = this.videoUrlTres.match(/v=([^?&]+)/);
+    if (longUrlMatch) return longUrlMatch[1];
+
+    // Casos como: https://www.youtube.com/embed/ID
+    const embedUrlMatch = this.videoUrlTres.match(/embed\/([^?&]+)/);
+    if (embedUrlMatch) return embedUrlMatch[1];
+
+    return null;
   }
 }
