@@ -1,11 +1,11 @@
-<!--<section class="faq-section py-5" #faqSection>-->
+<!--
   <div class="container">
     <div class="faq-content">
       <h2 class="faq-title text-center mb-5">
         {{'CONTENT.faq.title1' | transloco}} <span class="highlight">{{'CONTENT.faq.title2' | transloco}}</span>
       </h2>
 
-      <!-- Lista de preguntas estáticas (sin funcionalidad de acordeón) -->
+      
       <div class="faq-list">
         <div class="faq-item-static">
           <div class="faq-question-static">
@@ -58,4 +58,259 @@
       </div>
     </div>
   </div>
-<!--</section>-->
+-->
+<div class="container">
+  <div class="faq-content">
+    <h2 class="faq-title text-center mb-5">
+      {{ "CONTENT.faq.title1" | transloco }}
+      <span class="highlight">{{ "CONTENT.faq.title2" | transloco }}</span>
+    </h2>
+
+    <div class="faq-list" id="faqAccordion">
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseOne"
+          aria-expanded="false"
+          aria-controls="collapseOne"
+        >
+          {{ "CONTENT.faq.question1" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseOne" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            Te ofrecemos una garantía de satisfacción: si no estás conforme con
+            el trabajo realizado, te devolvemos tu dinero. Además, puedes pagar
+            después de que tu LLC esté creada y funcionando correctamente.
+            Nuestro objetivo es brindarte tranquilidad durante todo el proceso.
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseTwo"
+          aria-expanded="false"
+          aria-controls="collapseTwo"
+        >
+          {{ "CONTENT.faq.question2" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseTwo" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            Las abrimos en 7 a 10 días hábiles. Nos enfocamos en ofrecer un
+            proceso sin complicaciones, transparente y con el máximo soporte
+            para garantizar una experiencia eficiente.
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseThree"
+          aria-expanded="false"
+          aria-controls="collapseThree"
+        >
+          {{ "CONTENT.faq.question3" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseThree" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            Transferir dinero a Estados Unidos legalmente es un proceso sencillo
+            si se cumplen las normativas del país de origen y destino. Puedes
+            utilizar plataformas como Wise, Binance o Dólar App para gestionar
+            tus fondos. Una combinación efectiva es transferir dinero a una
+            cuenta personal en Estados Unidos mediante Wise y luego usar Binance
+            para convertir los fondos a USDT o criptomonedas. O puedes usar
+            Dólar App para gestionar los fondos en tu país, ya que esta
+            plataforma ofrece cuentas personales en Estados Unidos con bajas
+            comisiones y permite convertir tus dólares a USDT.
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseFour"
+          aria-expanded="false"
+          aria-controls="collapseFour"
+        >
+          {{ "CONTENT.faq.question4" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseFour" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            Para abrir una LLC, necesitas:
+            <ol>
+              <li>Pasaporte vigente.</li>
+              <li>
+                Dirección de residencia (comprobable con una factura de
+                servicio).
+              </li>
+              <li>Elección del estado donde registrarás la LLC.</li>
+              <li>Objeto al que se dedicará la empresa.</li>
+              <li>
+                Pago de los costos estatales y de servicio. Nuestro equipo te
+                guiará en cada paso del proceso para asegurarte de que todo esté
+                en orden.
+              </li>
+            </ol>
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseFive"
+          aria-expanded="false"
+          aria-controls="collapseFive"
+        >
+          {{ "CONTENT.faq.question5" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseFive" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            El costo de apertura depende del estado seleccionado. En Start
+            Companies, ofrecemos servicios desde $499 en Nuevo México hasta $600
+            en estados como Delaware, Wyoming o Florida. Este precio incluye:
+            <ol>
+              <li>Registro oficial de la LLC.</li>
+              <li>Reporte BOI.</li>
+              <li>Artículos de organización.</li>
+              <li>Operating Agreement.</li>
+              <li>Asesoramiento personalizado.</li>
+            </ol>
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseSix"
+          aria-expanded="false"
+          aria-controls="collapseSix"
+        >
+          {{ "CONTENT.faq.question6" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseSix" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            Si tu LLC no tiene presencia física en Estados Unidos ni nexo
+            vinculante, solo deberás presentar los formularios correspondientes,
+            como el 1120 y el 5472 si es una Single Member, o el 1065 si es una
+            LLC Multi-Member. Si tienes presencia física o nexo vinculante,
+            deberás pagar impuestos, solicitar un ITIN y cumplir con las
+            presentaciones fiscales requeridas.
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item-static">
+        <div
+          class="faq-question-static collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseSeven"
+          aria-expanded="false"
+          aria-controls="collapseSeven"
+        >
+          {{ "CONTENT.faq.question7" | transloco }}
+          <i class="bi bi-chevron-down faq-arrow-icon"></i>
+        </div>
+        <div id="collapseSeven" class="collapse" data-bs-parent="#faqAccordion">
+          <div class="faq-answer text-start py-3">
+            En Start Companies somos expertos en la formación de LLCs para
+            extranjeros. Ofrecemos:
+            <ol>
+              <li>Proceso rápido y sin complicaciones.</li>
+              <li>Asesoría personalizada en tu idioma.</li>
+              <li>Documentación lista para abrir una cuenta bancaria.</li>
+              <li>Precios competitivos y sin costos ocultos.</li>
+              <li>
+                Garantía de satisfacción: Si no estás conforme, te devolvemos el
+                dinero.
+              </li>
+              <li>
+                Flexibilidad de pago: Puedes pagar después de finalizado el
+                proceso.
+              </li>
+            </ol>
+            <button
+              data-cal-link="startcompanies-businessenusa/agendaorganica"
+              data-cal-namespace="agendaorganica"
+              data-cal-config='{"layout":"month_view","theme":"light"}'
+              type="button"
+              class="btn sc-btn-accent px-4 py-3 shadow-lg d-block mt-4 mb-3"
+            >
+              ¡Haz clic aquí y contáctanos!
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
