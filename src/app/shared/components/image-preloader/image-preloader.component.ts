@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-image-preloader',
@@ -39,6 +40,8 @@ import { CommonModule } from '@angular/common';
 export class ImagePreloaderComponent implements OnInit {
   @Input() criticalImages: Array<{src: string, alt: string, loaded: boolean}> = [];
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
   ngOnInit() {
     // Imágenes críticas que deben precargarse
     this.criticalImages = [
@@ -48,10 +51,16 @@ export class ImagePreloaderComponent implements OnInit {
     ];
 
     // Intentar precargar versiones WebP si están disponibles
-    this.preloadWebPVersions();
+    if (isPlatformBrowser(this.platformId)) {
+      this.preloadWebPVersions();
+    }
   }
 
   private preloadWebPVersions() {
+    if (!isPlatformBrowser(this.platformId)) {
+      return;
+    }
+
     const webpImages = [
       '/assets/logo.webp',
       '/assets/hero-bg.webp',
