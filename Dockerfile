@@ -47,7 +47,7 @@ RUN apk add --no-cache nginx brotli
 
 # Instalar solo las dependencias de producción
 COPY package*.json ./
-RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
+RUN npm install --only=production --legacy-peer-deps && npm cache clean --force
 
 # Copiar el build SSR
 COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompanies
