@@ -22,7 +22,7 @@ COPY . .
 RUN npm run optimize:images
 
 # Build de la aplicación Angular
-RUN npm run build:ssr
+RUN npm run build:ssr:production
 
 # Stage final de producción
 FROM node:18-alpine AS production
