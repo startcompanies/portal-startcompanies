@@ -27,6 +27,9 @@ RUN npm run build:ssr
 # Stage final de producción
 FROM node:18-alpine AS production
 
+# Establecer la variable de entorno NODE_ENV
+ENV NODE_ENV=production
+
 # Instalar nginx
 RUN apk add --no-cache nginx
 
