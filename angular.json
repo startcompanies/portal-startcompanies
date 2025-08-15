@@ -54,7 +54,11 @@
                 }
               ],
               "outputHashing": "all",
-              "prerender": true
+              "prerender": true,
+              "optimization": true,
+              "sourceMap": false,
+              "extractLicenses": false,
+              "namedChunks": false
             },
             "development": {
               "optimization": false,
