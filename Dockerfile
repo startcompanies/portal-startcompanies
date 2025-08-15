@@ -37,7 +37,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar solo las dependencias de producción
-RUN npm ci --omit=dev --legacy-peer-deps && npm cache clean --force
+RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
 # Copiar archivos compilados desde el builder
 COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompanies
