@@ -9,7 +9,7 @@ RUN apk add --no-cache python3 make g++ imagemagick
 COPY package*.json ./
 
 # Instalar TODAS las dependencias (incluyendo devDependencies para el build)
-RUN npm ci --legacy-peer-deps
+RUN npm intsall --legacy-peer-deps
 
 # Instalar Angular CLI globalmente
 RUN npm install -g @angular/cli@18
