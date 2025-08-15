@@ -7,7 +7,12 @@ RUN apk add --no-cache python3 make g++
 
 # Copiar los archivos de dependencias
 COPY package*.json ./
-RUN npm ci --only=production --legacy-peer-deps
+
+# Instalar TODAS las dependencias (incluyendo devDependencies para el build)
+RUN npm ci --legacy-peer-deps
+
+# Instalar Angular CLI globalmente
+RUN npm install -g @angular/cli@18
 
 # Copiar el resto del código
 COPY . .
