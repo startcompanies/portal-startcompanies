@@ -2,6 +2,29 @@ import { Routes } from '@angular/router';
 import { title } from 'process';
 
 export const routes: Routes = [
+    // Redirecciones 301 para mantener SEO (solo URLs que no existen)
+    {
+        path: 'servicios',
+        redirectTo: '/',
+        pathMatch: 'full'
+    },
+    {
+        path: 'blog',
+        redirectTo: '/',
+        pathMatch: 'full'
+    },
+    {
+        path: 'agenda-tu-consulta-gratis',
+        redirectTo: '/contacto',
+        pathMatch: 'full'
+    },
+    {
+        path: 'abrir-llc',
+        redirectTo: '/abre-tu-llc',
+        pathMatch: 'full'
+    },
+        
+    // Rutas existentes
     {
         path: '',
         loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
@@ -46,5 +69,12 @@ export const routes: Routes = [
         path: 'planes',
         loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
         title: 'Planes y precios'
+    },
+    
+    // Catch-all para URLs de blog y contenido no implementado
+    {
+        path: '**',
+        redirectTo: '/',
+        pathMatch: 'full'
     }
 ];
