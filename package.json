@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:ssr": "ng build && ng run portal-startcompanies:server",
+    "build:ssr": "ng build --output-hashing=all && ng run portal-startcompanies:server",
     "serve:ssr:portal-startcompanies": "node dist/portal-startcompanies/server/main.js",
     "dev:ssr": "npm run build:ssr && npm run serve:ssr:portal-startcompanies",
     "clean": "rm -rf dist && npm cache clean --force",
@@ -15,7 +15,7 @@
     "optimize:images": "node optimize-images-sharp.js",
     "build:optimized": "npm run optimize:images && npm run build:ssr",
     "build:ultra": "npm run optimize:images && npm run build:ssr:production",
-    "build:ssr:production": "ng build --configuration production && ng run portal-startcompanies:server:production",
+    "build:ssr:production": "ng build --configuration production --output-hashing=all && ng run portal-startcompanies:server:production",
     "docker:build": "docker build -t portal-startcompanies .",
     "docker:run": "docker run -p 4000:4000 -p 80:80 portal-startcompanies",
     "docker:build:optimized": "npm run build:optimized && docker build -t portal-startcompanies-optimized ."
