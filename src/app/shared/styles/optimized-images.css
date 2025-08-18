@@ -150,8 +150,10 @@ img.loaded {
 
 /* Imágenes de footer */
 .footer-logo {
-  max-height: 40px;
-  width: auto;
+  /*max-height: 70px;
+  width: auto;*/
+  height: 100%;
+  width: 100%;
   filter: brightness(0) invert(1);
   transition: filter 0.3s ease-in-out;
 }
