@@ -1,0 +1,385 @@
+<div class="container py-5">
+  <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+    <h2>
+      {{ "CONTENT.pricing.title1" | transloco }}
+      <span class="fw-bold">{{ "CONTENT.pricing.title2" | transloco }}</span>
+    </h2>
+  </div>
+  <div
+    class="nav nav-pills justify-content-center mb-5"
+    id="pricingTabs"
+    role="tablist"
+  >
+    <button
+      class=""
+      id="llc-plans-tab"
+      data-bs-toggle="pill"
+      data-bs-target="#llc-plans-content"
+      type="button"
+      role="tab"
+      aria-controls="llc-plans-content"
+      aria-selected="true"
+    >
+      LLC Packs
+    </button>
+    <button
+      class=""
+      id="other-plans-tab"
+      data-bs-toggle="pill"
+      data-bs-target="#other-plans-content"
+      type="button"
+      role="tab"
+      aria-controls="other-plans-content"
+      aria-selected="false"
+    >
+      Otros Planes
+    </button>
+  </div>
+
+  <div class="tab-content" id="pricingTabsContent">
+    <div
+      class="tab-pane fade show active"
+      id="llc-plans-content"
+      role="tabpanel"
+      aria-labelledby="llc-plans-tab"
+    >
+      <!-- Vista de tablets y escritorio: Grid normal sin carrusel -->
+      <div class="row row-cols-1 row-cols-md-3 mb-3">
+        <div class="col">
+          <div class="card recommended-card h-100">
+            <div class="card-body d-flex flex-column">
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <div class="recommended-badge fw-400 mb-2">
+                  {{ "CONTENT.pricing.entrepreneur_pack.header" | transloco }}
+                </div>
+              </div>
+              <h3 class="card-title text-center fw-700 mb-3">
+                {{ "CONTENT.pricing.entrepreneur_pack.title" | transloco }}
+              </h3>
+              <p class="card-price text-center mb-2 fw-bold">
+                {{ "CONTENT.pricing.entrepreneur_pack.price" | transloco }}
+              </p>
+              <ul>
+                <li>
+                  {{
+                    "CONTENT.pricing.entrepreneur_pack.description.1"
+                      | transloco
+                  }}
+                </li>
+                <li>
+                  {{
+                    "CONTENT.pricing.entrepreneur_pack.description.2"
+                      | transloco
+                  }}
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center mt-auto"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-primary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  {{ "CONTENT.pricing.entrepreneur_pack.button" | transloco }}
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{
+                    "CONTENT.pricing.entrepreneur_pack.includes.title"
+                      | transloco
+                  }}:
+                </h6>
+                <ul>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.1" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.2" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.3" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.4" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.5" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.6" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.7" | transloco
+                    }}
+                  </li>
+                  <li>
+                    {{
+                      "CONTENT.pricing.entrepreneur_pack.includes.8" | transloco
+                    }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card pack-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title text-center fw-700 mb-3">
+                {{ "CONTENT.pricing.elite_pack.title" | transloco }}
+              </h3>
+              <p class="card-price-pack fw-bold text-center">
+                {{ "CONTENT.pricing.elite_pack.price" | transloco }}
+              </p>
+              <ul>
+                <li>
+                  {{ "CONTENT.pricing.elite_pack.description.1" | transloco }}
+                </li>
+                <li>
+                  {{ "CONTENT.pricing.elite_pack.description.2" | transloco }}
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  {{ "CONTENT.pricing.elite_pack.button" | transloco }}
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{ "CONTENT.pricing.elite_pack.includes.title" | transloco }}:
+                </h6>
+                <ul>
+                  <li>
+                    {{ "CONTENT.pricing.elite_pack.includes.1" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.elite_pack.includes.2" | transloco }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card pack-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title text-center fw-700 mb-3">
+                {{ "CONTENT.pricing.premium_pack.title" | transloco }}
+              </h3>
+              <p class="card-price-pack fw-bold text-center">
+                {{ "CONTENT.pricing.premium_pack.price" | transloco }}
+              </p>
+              <ul>
+                <li>
+                  {{ "CONTENT.pricing.premium_pack.description.1" | transloco }}
+                </li>
+                <li>
+                  {{ "CONTENT.pricing.premium_pack.description.2" | transloco }}
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  {{ "CONTENT.pricing.premium_pack.button" | transloco }}
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{
+                    "CONTENT.pricing.premium_pack.includes.title" | transloco
+                  }}:
+                </h6>
+                <ul>
+                  <li>
+                    {{ "CONTENT.pricing.premium_pack.includes.1" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.premium_pack.includes.2" | transloco }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de la segunda pestaña: Otros-->
+    <div
+      class="tab-pane fade"
+      id="other-plans-content"
+      role="tabpanel"
+      aria-labelledby="other-plans-tab"
+    >
+      <div class="row row-cols-1 row-cols-md-3 mb-3">
+        <div class="col">
+          <div class="card pack-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title text-center fw-700 mb-3">
+                Plan Banco
+              </h3>
+              <p class="card-price-pack fw-bold text-center">
+                $150
+              </p>
+              <ul>
+                <li>
+                  Ideal para LLC o corporaciones ya constituidas.
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  Comienza hoy
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{
+                    "CONTENT.pricing.premium_pack.includes.title" | transloco
+                  }}:
+                </h6>
+                <ul>
+                  <li>
+                    Apertura de cuenta bancaria en EE.UU. en 3 días hábiles.
+                  </li>
+                  <li>
+                    Consulta gratuita de planificación fiscal.
+                  </li>
+                  <li>
+                    Asistencia con la implementación de sistemas de ventas como Stripe.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card pack-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title text-center fw-700 mb-3">
+                Plan Impuestos
+              </h3>
+              <p class="card-price-pack fw-bold text-center">
+                $450-$950
+              </p>
+              <ul>
+                <li>
+                  Ideal para LLC o corporaciones ya constituidas.
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  Comienza hoy
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{
+                    "CONTENT.pricing.premium_pack.includes.title" | transloco
+                  }}:
+                </h6>
+                <ul>
+                  <li>
+                    Declaración de impuestos de tu sociedad con planificación fiscal.
+                  </li>
+                  <li>
+                    Investigación del estado actual de tu sociedad, sin costo adicional.
+                  </li>
+                  <li>Opción de mudar tu servicio para reducir costos.</li>
+                  <li>Asistencia con la implementación de sistemas de ventas como Stripe.</li>
+                  <li>Dirección fiscal y social en EE.UU.</li>
+                  <li>Registered Agent - R.A.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card pack-card h-100">
+            <div class="card-body d-flex flex-column">
+              <h3 class="card-title text-center fw-700 mb-3">
+                {{ "CONTENT.pricing.premium_pack.title" | transloco }}
+              </h3>
+              <p class="card-price-pack fw-bold text-center">
+                {{ "CONTENT.pricing.premium_pack.price" | transloco }}
+              </p>
+              <ul>
+                <li>
+                  {{ "CONTENT.pricing.premium_pack.description.1" | transloco }}
+                </li>
+                <li>
+                  {{ "CONTENT.pricing.premium_pack.description.2" | transloco }}
+                </li>
+              </ul>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center"
+              >
+                <a
+                  href="/apertura-llc"
+                  class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
+                >
+                  {{ "CONTENT.pricing.premium_pack.button" | transloco }}
+                  <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+              </div>
+              <div class="card-features">
+                <h6>
+                  {{
+                    "CONTENT.pricing.premium_pack.includes.title" | transloco
+                  }}:
+                </h6>
+                <ul>
+                  <li>
+                    {{ "CONTENT.pricing.premium_pack.includes.1" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.premium_pack.includes.2" | transloco }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

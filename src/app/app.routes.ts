@@ -67,7 +67,8 @@ export const routes: Routes = [
     },
     {
         path: 'planes',
-        loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
+        //loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
+        loadComponent: () =>  import('./plans/pricing-planes/pricing-planes.component').then(m => m.PricingPlanesComponent),
         title: 'Planes y precios'
     },
     
