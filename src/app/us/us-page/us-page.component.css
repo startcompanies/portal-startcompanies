@@ -1,0 +1,274 @@
+/* =========================
+   HERO SECTION
+   ========================= */
+.sc-hero {
+    background-image: url("../../../assets/hero-bg.jpg");
+    background-size: cover;
+    background-position: center;
+}
+
+.sc-hero #carouselExampleIndicators {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.sc-hero .carousel-inner,
+.sc-hero .carousel-item {
+    height: 100%;
+}
+
+.sc-slide {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Carousel Indicators */
+.sc-hero .carousel-indicators {
+    position: absolute !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    z-index: 10 !important;
+}
+
+.sc-hero .carousel-indicators button {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    opacity: 1;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    padding: 0;
+    flex: 0 0 auto;
+}
+
+.sc-hero .carousel-indicators button.active {
+    background-color: #ffffff;
+    transform: scale(1.2);
+}
+
+/* Hero Titles & Description */
+.hero-title {
+    font-size: 3.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+}
+
+.hero-description {
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #ffffff;
+    margin-bottom: 0;
+    max-width: 100%;
+}
+
+/* Hero Buttons */
+.hero-buttons {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 2rem;
+    margin-bottom: 0;
+}
+
+.hero-btn-primary,
+.hero-btn-secondary {
+    border-radius: 2.5rem;
+    padding: 0.8rem 2.2rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    flex-grow: 1;
+    white-space: nowrap;
+}
+
+.hero-btn-primary {
+    background-color: #02CAE3;
+    color: #ffffff;
+}
+
+.hero-btn-primary:hover {
+    background-color: #02CAE3;
+    border-color: #02CAE3;
+}
+
+.hero-btn-secondary {
+    background-color: transparent;
+    color: #F3F6FA;
+    border: 2px solid #F3F6FA;
+}
+
+.hero-btn-secondary:hover {
+    background-color: #f0f0f0;
+    color: #0049c6;
+    border-color: #0049c6;
+}
+
+.hero-btn-primary i.bi,
+.hero-btn-secondary i.bi {
+    font-size: 1.1rem;
+}
+
+/* =========================
+   MISSION CARD
+   ========================= */
+.mission-card {
+    background: transparent;
+    border-radius: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.mission-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.mission-image {
+    width: 100%;
+    height: 350px;
+    display: block;
+    border-radius: 1.5rem;
+    transition: transform 0.3s ease;
+}
+
+.mission-image:hover {
+    transform: scale(1.02);
+}
+
+.mission-content {
+    padding: 2rem 0;
+    color: #ffffff;
+}
+
+.mission-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.mission-description {
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #ffffff;
+    margin-bottom: 0;
+    opacity: 0.95;
+}
+
+.mission-buttons {
+    margin-top: 2rem;
+}
+
+.mission-btn-primary {
+    background-color: #02CAE3;
+    color: #ffffff;
+    border: none;
+    border-radius: 2.5rem;
+    padding: 0.8rem 2.2rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mission-btn-primary:hover {
+    background-color: #00B8D9;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(2, 202, 227, 0.3);
+}
+
+.mission-btn-primary i.bi {
+    font-size: 1.1rem;
+}
+
+/* Responsive styles for mission card */
+@media (max-width: 991.98px) {
+
+    .mission-title {
+        font-size: 2.5rem;
+        text-align: center;
+    }
+
+    .mission-description {
+        font-size: 1.1rem;
+        text-align: center;
+    }
+
+    .mission-content {
+        padding: 1.5rem 0;
+    }
+
+    .mission-buttons {
+        text-align: center;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    .mission-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .mission-description {
+        font-size: 1rem;
+    }
+
+    .mission-content {
+        padding: 1rem 0;
+    }
+
+    .mission-image-container {
+        border-radius: 1rem;
+    }
+
+    .mission-image {
+        border-radius: 1rem;
+    }
+
+    .mission-btn-primary {
+        padding: 0.7rem 1.8rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+
+    .mission-title {
+        font-size: 1.8rem;
+    }
+
+    .mission-description {
+        font-size: 0.95rem;
+    }
+
+    .mission-btn-primary {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.95rem;
+    }
+}

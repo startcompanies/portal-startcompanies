@@ -1,0 +1,22 @@
+/* src/app/components/cal-embed/cal-embed.component.css */
+.cal-embed-container {
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.cal-widget {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#my-cal-inline {
+  /* Cal.com maneja el tamaño interno del widget, pero puedes dar un min-height si es necesario */
+  min-height: 600px; /* Valor de ejemplo, ajusta según la altura deseada del calendario */
+}
+/* Estilos para resoluciones de pantalla de móvil (hasta 767px) */
+@media (max-width: 769px) {
+  #my-cal-inline {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+}

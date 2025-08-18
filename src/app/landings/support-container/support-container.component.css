@@ -1,0 +1,36 @@
+.title {
+  color: var(--color-texto-oscuro) !important;
+  font-size: 2.5rem !important;
+}
+.highlight {
+  color: var(--color-secundario-tecnico) !important;
+}
+.vertical-img {
+  width: 100%;
+  aspect-ratio: 3 / 4; /* ancho/alto = proporción vertical */
+  object-fit: cover;
+  border-radius: 1rem; /* similar a tu rounded-4 */
+}
+.garanty-highlight {
+  color: var(--color-texto-oscuro);
+  font-weight: bold;
+}
+.list-actions {
+  font-size: 1rem;
+  color: var(--color-texto-oscuro);
+  line-height: 1.2;
+}
+.cta-button {
+  background-color: var(--color-secundario-tecnico) !important;
+  color: var(--color-fondo-claro) !important;
+  border-radius: 2rem !important;
+  font-size: 1.3rem !important;
+}
+@media (max-width: 576px) {
+  .title {
+    font-size: 1.7rem !important;
+  }
+  .cta-button {
+    font-size: 0.7rem !important;
+  }
+}

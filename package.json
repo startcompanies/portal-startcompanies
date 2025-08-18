@@ -7,7 +7,18 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:portal-startcompanies": "node dist/portal-startcompanies/server/server.mjs"
+    "build:ssr": "ng build --output-hashing=all && ng run portal-startcompanies:server",
+    "serve:ssr:portal-startcompanies": "node dist/portal-startcompanies/server/main.js",
+    "dev:ssr": "npm run build:ssr && npm run serve:ssr:portal-startcompanies",
+    "clean": "rm -rf dist && npm cache clean --force",
+    "rebuild": "npm run clean && npm run build:ssr",
+    "optimize:images": "node optimize-images-sharp.js",
+    "build:optimized": "npm run optimize:images && npm run build:ssr",
+    "build:ultra": "npm run optimize:images && npm run build:ssr:production",
+    "build:ssr:production": "ng build --configuration production --output-hashing=all && ng run portal-startcompanies:server:production",
+    "docker:build": "docker build -t portal-startcompanies .",
+    "docker:run": "docker run -p 4000:4000 -p 80:80 portal-startcompanies",
+    "docker:build:optimized": "npm run build:optimized && docker build -t portal-startcompanies-optimized ."
   },
   "private": true,
   "dependencies": {
@@ -21,7 +32,12 @@
     "@angular/platform-server": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/ssr": "^18.2.20",
+    "@jsverse/transloco": "^7.6.1",
+    "@types/youtube": "^0.0.50",
+    "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
     "express": "^4.18.2",
+    "ngx-youtube-player": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.10"
@@ -36,9 +52,11 @@
     "jasmine-core": "~5.2.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
+    "karma-coverage": "^2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "sharp": "^0.34.3",
+    "terser": "^5.43.1",
     "typescript": "~5.5.2"
   }
 }

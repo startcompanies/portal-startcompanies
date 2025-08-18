@@ -1,0 +1,21 @@
+<section class="steps-section py-4">
+  <div class="container">
+    <!-- Título principal -->
+    <h1 class="display-4 text-center main-title">{{ title }}</h1>
+
+    <!-- Pasos del proceso -->
+    <div class="steps-wrapper">
+      <div class="{{step.class}}" *ngFor="let step of steps">
+        <div class="step-icon">
+          <span>{{ step.id }}</span>
+        </div>
+        <div class="step-content">
+          <h3 class="step-title">{{ step.title }}</h3>
+          <p class="step-description">{{ step.description }}</p>
+        </div>
+      </div>
+      <div class="step-line"></div>
+    </div>
+    <p class="lead text-center">{{ bottomStatement }}</p>
+  </div>
+</section>

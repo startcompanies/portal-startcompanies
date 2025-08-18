@@ -1,0 +1,262 @@
+<section class="testimonials-section py-5" #testimonialsSection>
+  <div class="container">
+    <div class="testimonials-content">
+      <div class="testimonials-header">
+        <h2 class="testimonials-title">
+          <span class="d-block" style="font-size: 48px; color: #293b49">{{
+            "CONTENT.testimonials.title1" | transloco
+          }}</span
+          ><br />
+          <span class="highlight" style="color: #02cae3"
+            >4.8 {{ "CONTENT.testimonials.stars" | transloco }}, 100
+            {{ "CONTENT.testimonials.reviews" | transloco }}, "Excellent".</span
+          >
+        </h2>
+        <p class="testimonials-subtitle">
+          {{ "CONTENT.testimonials.testimonial.most" | transloco }} 200
+          {{ "CONTENT.testimonials.testimonial.clients" | transloco }}
+        </p>
+        <a
+          href="https://www.trustpilot.com/review/www.startcompanies.us"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary-custom d-inline-flex align-items-center justify-content-center"
+        >
+          {{ "CONTENT.testimonials.more_reviews" | transloco }}
+          <i class="bi bi-star-fill ms-2"></i>
+          <!-- Icono de estrella de Bootstrap Icons -->
+        </a>
+      </div>
+
+      <!-- Carrusel de Bootstrap para testimonios -->
+      <div class="testimonials-carousel-container">
+        <!-- Carrusel para tablets y escritorio (3 cards por slide) -->
+        <div
+          id="testimonialsCarouselDesktop"
+          class="carousel slide d-none d-md-block"
+          data-bs-ride="carousel"
+          data-bs-interval="5000"
+        >
+          <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+              <div class="row g-4 justify-content-center">
+                <!-- Testimonio 1 -->
+                <div class="col-12 col-md-4 d-flex">
+                  <div class="testimonial-card w-100 h-100">
+                    <img
+                      src="assets/testimonials/img_outdoor_shot_yo.png"
+                      alt="Boris Rivas"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Boris Rivas</h4>
+                    <p class="testimonial-location">Argentina</p>
+                    <p class="testimonial-text">
+                      <strong>Todo perfecto.</strong> Un 10 en atención y
+                      servicio durante todo el proceso de creación LLC. Lo
+                      recomiendo 100% a quienes quieran emprender en EE.UU. sin
+                      complicaciones.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- Testimonio 2 -->
+                <div class="col-12 col-md-4 d-flex">
+                  <div class="testimonial-card w-100 h-100">
+                    <img
+                      src="assets/testimonials/img_young_bearded_m.png"
+                      alt="Luis Mosquera"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Luis Mosquera</h4>
+                    <p class="testimonial-location">Ecuador</p>
+                    <p class="testimonial-text">
+                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
+                      fui rechazado. Vi una publicidad en Instagram, los
+                      contacté y me ayudaron con todo el proceso. Gracias a su
+                      asistencia, lograron que mi cuenta fuera aprobada.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- Testimonio 3 -->
+                <div class="col-12 col-md-4 d-flex">
+                  <div class="testimonial-card w-100 h-100">
+                    <img
+                      src="assets/testimonials/img_young_bearded_m_64x64.png"
+                      alt="Luis Mosquera"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Luis Mosquera</h4>
+                    <p class="testimonial-location">Ecuador</p>
+                    <p class="testimonial-text">
+                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
+                      fui rechazado. Vi una publicidad en Instagram, los
+                      contacté y me ayudaron con todo el proceso. Gracias a su
+                      asistencia, lograron que mi cuenta fuera aprobada.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indicadores para desktop -->
+          <div class="carousel-indicators testimonials-carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#testimonialsCarouselDesktop"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Carrusel para móviles (1 card por slide) -->
+        <div
+          id="testimonialsCarouselMobile"
+          class="carousel slide d-md-none"
+          data-bs-ride="carousel"
+          data-bs-interval="5000"
+        >
+          <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+              <div class="row justify-content-center">
+                <div class="col-12 d-flex">
+                  <div class="testimonial-card w-100">
+                    <img
+                      src="assets/testimonials/img_outdoor_shot_yo.png"
+                      alt="Boris Rivas"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Boris Rivas</h4>
+                    <p class="testimonial-location">Argentina</p>
+                    <p class="testimonial-text">
+                      <strong>Todo perfecto.</strong> Un 10 en atención y
+                      servicio durante todo el proceso de creación LLC. Lo
+                      recomiendo 100% a quienes quieran emprender en EE.UU. sin
+                      complicaciones.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+              <div class="row justify-content-center">
+                <div class="col-12 d-flex">
+                  <div class="testimonial-card w-100">
+                    <img
+                      src="assets/testimonials/img_young_bearded_m.png"
+                      alt="Luis Mosquera"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Luis Mosquera</h4>
+                    <p class="testimonial-location">Ecuador</p>
+                    <p class="testimonial-text">
+                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
+                      fui rechazado. Vi una publicidad en Instagram, los
+                      contacté y me ayudaron con todo el proceso. Gracias a su
+                      asistencia, lograron que mi cuenta fuera aprobada.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="carousel-item">
+              <div class="row justify-content-center">
+                <div class="col-12 d-flex">
+                  <div class="testimonial-card w-100">
+                    <img
+                      src="assets/testimonials/img_young_bearded_m_64x64.png"
+                      alt="Luis Mosquera"
+                      class="testimonial-avatar rounded-circle img-fluid"
+                    />
+                    <h4 class="testimonial-name">Luis Mosquera</h4>
+                    <p class="testimonial-location">Ecuador</p>
+                    <p class="testimonial-text">
+                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
+                      fui rechazado. Vi una publicidad en Instagram, los
+                      contacté y me ayudaron con todo el proceso. Gracias a su
+                      asistencia, lograron que mi cuenta fuera aprobada.
+                    </p>
+                    <div class="rating d-flex justify-content-center">
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                      <i class="bi bi-star-fill star-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Indicadores para móvil -->
+          <div class="carousel-indicators testimonials-carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#testimonialsCarouselMobile"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#testimonialsCarouselMobile"
+              data-bs-slide-to="1"
+              aria-label="Slide 2"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#testimonialsCarouselMobile"
+              data-bs-slide-to="2"
+              aria-label="Slide 3"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,69 @@
+.card-left {
+  border: 2px solid var(--color-secundario-tecnico);
+  border-radius: 2rem;
+  background-color: var(--color-fondo-claro);
+}
+.card-left a {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  font-size: 1.5rem;
+  border-radius: 1.5rem;
+}
+.card-left h1 {
+  font-size: 2rem;
+  color: var(--color-texto-oscuro);
+}
+.card-left li {
+  font-size: 1rem;
+  color: var(--color-texto-oscuro);
+}
+.card-right {
+  border-radius: 2rem;
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+}
+.card-right a {
+  border: 1px solid var(--color-fondo-claro);
+  background-color: transparent;
+  font-size: 1.5rem;
+  border-radius: 1.5rem;
+}
+.card-right h1 {
+  font-size: 2rem;
+  color: var(--color-fondo-claro);
+}
+.card-right li {
+  font-size: 1rem;
+}
+.row.equal-height {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.row.equal-height > [class*="col-"] {
+  display: flex;
+}
+
+.row.equal-height .card {
+  flex: 1 1 auto;
+}
+@media (max-width: 576px) {
+  .card-left a {
+    font-size: 0.9rem;
+  }
+  .card-left h1 {
+    font-size: 1rem;
+  }
+  .card-left li {
+    font-size: 0.9rem;
+  }
+  .card-right a {
+    font-size: 0.9rem;
+  }
+  .card-right h1 {
+    font-size: 1rem;
+  }
+  .card-right li {
+    font-size: 0.9rem;
+  }
+}

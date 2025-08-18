@@ -1,0 +1,35 @@
+.hero-iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.img-fluid {
+  width: 7rem;
+  height: auto;
+}
+
+.hero-title {
+  color: var(--color-fondo-claro) !important;
+}
+
+.hero-description {
+  color: var(--color-fondo-claro) !important;
+}
+
+.hero-btn-primary {
+  border-radius: 2.5rem;
+  padding: 0.8rem 2.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  white-space: nowrap;
+  background-color: var(--color-fondo-claro) !important;
+  color: var(--color-primario) !important;
+}
+@media (max-width: 768px) {
+  .hero-btn-primary{
+    font-size: 0.8rem;
+  }  
+}

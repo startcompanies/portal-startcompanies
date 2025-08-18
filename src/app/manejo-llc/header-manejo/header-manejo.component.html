@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top sc-navbar">
+  <div
+    class="container d-flex flex-wrap align-items-center justify-content-between pt-3 mb-2"
+  >
+    <a class="navbar-brand me-auto" href="#">
+      <img
+        src="assets/logo-dark.png"
+        alt="Start Companies Logo"
+        class="sc-navbar-logo"
+      />
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+      (click)="toggleMenu()"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+      <ul class="navbar-nav mb-2 mb-lg-0">
+        <li class="nav-item" [ngClass]="{ active: isRouteActive('/nosotros') }">
+          <a class="nav-link" aria-current="page" href="/nosotros">{{
+            "NAVBAR.us" | transloco
+          }}</a>
+        </li>
+        <li
+          class="nav-item"
+          [ngClass]="{
+            active: isRouteActive('/planes') || isRouteActive('/pricing')
+          }"
+        >
+          <a
+            class="nav-link"
+            href="javascript:void(0)"
+            (click)="navigateToPlansSection()"
+            >{{ "NAVBAR.plans" | transloco }}</a
+          >
+        </li>
+        <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
+          <a class="nav-link" href="/contacto">{{
+            "NAVBAR.contact" | transloco
+          }}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="d-none d-lg-block">
+      <button
+        data-cal-link="startcompanies-businessenusa/agendaorganica"
+        data-cal-namespace="agendaorganica"
+        data-cal-config='{"layout":"month_view","theme":"light"}'
+        type="button"
+        class="btn sc-btn-accent"
+      >
+        {{ "NAVBAR.call" | transloco }} <i class="bi bi-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</nav>

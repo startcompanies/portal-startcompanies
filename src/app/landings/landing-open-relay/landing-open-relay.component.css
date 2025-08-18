@@ -1,0 +1,59 @@
+.hero-section {
+  background-image: url('../../../assets/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-btn-primary,
+.hero-btn-secondary {
+  border-radius: 2.5rem;
+  padding: 0.8rem 2.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+.hero-btn-primary {
+  background-color: #fdfffe;
+  color: #01c9e2;
+}
+
+.hero-btn-primary:hover {
+  background-color: #02cae3;
+  border-color: #02cae3;
+}
+
+.hero-btn-secondary {
+  background-color: transparent;
+  color: #f3f6fa;
+  border: 2px solid #f3f6fa;
+}
+
+.hero-btn-secondary:hover {
+  background-color: #f0f0f0;
+  color: #0049c6;
+  border-color: #0049c6;
+}
+
+.hero-btn-primary i.bi,
+.hero-btn-secondary i.bi {
+  font-size: 1.1rem;
+}
+
+.video-grid-section {
+  padding: 4rem 0;
+  text-align: center;
+}
+
+@media(max-width: 768px) {
+
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    font-size: 0.7rem;
+  }
+
+}

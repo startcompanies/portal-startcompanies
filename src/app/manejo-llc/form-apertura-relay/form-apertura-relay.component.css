@@ -1,0 +1,43 @@
+.iframe-container {
+  position: relative;
+  padding-top: 1930px;
+}
+
+.iframe-container iframe {
+  /* Posiciona el iframe de manera absoluta para que llene el contenedor */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.expert-section {
+  /* Establece la altura de la sección. Vh es "viewport height". */
+  /*height: 60vh;*/
+
+  /* Carga la imagen desde tus assets. Ajusta la ruta si es necesario. */
+  background-image: url("../../../assets/hero-bg.jpg");
+
+  /* Asegura que la imagen cubra toda la sección. */
+  background-size: cover;
+
+  /* Centra la imagen de fondo. */
+  background-position: center;
+
+  /* Opcional: Evita que la imagen se repita. */
+  background-repeat: no-repeat;
+}
+.divider{
+    min-height: 12vh;
+}
+.wp-button{
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border-radius: 2rem;
+}
+@media (max-width: 480px) {
+  .header-section {
+    min-height: 15vh;
+  }
+}

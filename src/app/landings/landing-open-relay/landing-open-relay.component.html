@@ -1,0 +1,45 @@
+<section class="hero-section">
+  <app-hero-section></app-hero-section>
+</section>
+
+<!-- Calendly inline widget -->
+<section #calendly>
+  <app-calendly-section></app-calendly-section>
+</section>
+<!-- Creación de LLC -->
+<app-video-section
+  subtitle="Creación LLC"
+  title="¡Basta de"
+  titleHighlight="Impuestos y Comisiones!"
+  videoUrl="https://www.youtube.com/embed/4vJs_6fB3w8"
+  videoTitle="Video explicativo"
+></app-video-section>
+<!-- Key Benefits Section -->
+<app-key-benefits-section></app-key-benefits-section>
+<!-- Steps Section -->
+<app-steps-section></app-steps-section>
+<!-- Testimonials -->
+<app-testimonials></app-testimonials>
+<!-- Relay, un banco -->
+<app-video-section
+  title="Relay, un banco"
+  titleHighlight="seguro y confiable"
+  description="Mira aquí abajo lo que dicen de nosotros"
+  videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
+  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
+></app-video-section>
+<!-- Video Grid Section -->
+<section class="video-grid-section">
+  <app-video-grid-section
+    title="Escucha a la comunidad"
+    titleHighlight="¡Creación LLC!"
+    description="Mira lo que nuestros clientes tienen que decir  nosotros"
+    [videos]="videoTestimonials"
+  ></app-video-grid-section>
+</section>
+
+<!-- FAQ -->
+<section class="py-5 pt-5">
+  <app-faq></app-faq>
+</section>
+<!--<app-sc-footer></app-sc-footer>-->

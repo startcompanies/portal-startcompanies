@@ -1,0 +1,212 @@
+/* style.css o un archivo .scss para el navbar */
+
+/* Estilo general del Navbar */
+.sc-navbar {
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.sc-navbar-light {
+  background-color: var(--color-fondo-claro);
+}
+
+/* Estilo del logo */
+.sc-navbar-logo {
+  /*height: 45px;*/
+  height: 70px;
+}
+
+/* Estilo de los elementos de navegación (links) */
+.sc-navbar .navbar-nav .nav-link {
+  color: var(--color-fondo-claro);
+  font-weight: 500;
+  margin-right: 1.5rem;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.nav-link {
+  color: var(--color-fondo-claro) !important;
+}
+
+.nav-link-dark {
+  color: var(--color-primario) !important;
+}
+
+.sc-navbar .navbar-nav .nav-link:hover,
+.sc-navbar .navbar-nav .nav-link.active {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Estilo para el underline de elementos activos */
+.sc-navbar .navbar-nav .nav-item.active .nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-fondo-claro);
+  border-radius: 1px;
+}
+
+/* Estilo para el underline de elementos activos cuando el navbar es claro */
+.sc-navbar.sc-navbar-light .navbar-nav .nav-item.active .nav-link::after {
+  background-color: var(--color-primario);
+}
+
+/* Estilo del botón "Agendar llamada" */
+.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.sc-btn-accent i.bi {
+  margin-left: 0.75rem;
+  font-size: 1.1rem;
+}
+
+/* Estilo del botón de idioma */
+.sc-btn-language {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sc-btn-language:hover {
+  background-color: #f0f0f0;
+  color: var(--color-primario);
+}
+
+/* Estilo del dropdown de idioma */
+.sc-navbar .dropdown-menu {
+  background-color: var(--color-secundario-tecnico);
+  border-radius: 0.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sc-navbar .dropdown-item {
+  color: var(--color-fondo-claro);
+}
+
+.sc-navbar .dropdown-item:hover,
+.sc-navbar .dropdown-item.active {
+  background-color: var(--color-primario);
+  color: var(--color-fondo-claro);
+}
+
+/* Toggler Icon (el icono de las "hamburguesas") */
+.sc-navbar .navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.5rem;
+}
+
+.sc-navbar .navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.sc-navbar .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* ========================================================================= */
+/* Responsividad: Cambios para el menú colapsado (en móviles) */
+/* ========================================================================= */
+@media (max-width: 991.98px) {
+  /* Breakpoint 'lg' de Bootstrap */
+  .sc-navbar {
+    /*background: var(--color-fondo-claro);*/
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .sc-navbar-light {
+    background-color: var(--color-fondo-claro);
+  }
+
+  .sc-navbar .navbar-nav .nav-link {
+    color: var(--color-primario);
+  }
+
+  .sc-navbar .navbar-nav .nav-link:hover,
+  .sc-navbar .navbar-nav .nav-link.active {
+    color: var(--color-primario);
+  }
+
+  /* Estilo para el underline de elementos activos en móvil */
+  .sc-navbar .navbar-nav .nav-item.active .nav-link::after {
+    background-color: var(--color-primario);
+  }
+
+  /* Fondo del menú colapsado */
+  .sc-navbar .navbar-collapse {
+    background: var(--color-fondo-claro);
+    padding: 1rem 0;
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Alinear los elementos de navegación al centro en móvil */
+  .sc-navbar .navbar-nav {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1rem !important;
+  }
+
+  .sc-navbar .navbar-nav .nav-item {
+    width: 100%;
+  }
+
+  .sc-navbar .navbar-nav .nav-link {
+    margin-right: 0;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Los botones en móvil se apilan */
+  .sc-navbar .d-flex.ms-lg-auto {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .sc-navbar .d-flex.ms-lg-auto .btn,
+  .sc-navbar .d-flex.ms-lg-auto .dropdown {
+    width: 90%;
+    margin-bottom: 0.75rem;
+    margin-right: 0 !important;
+  }
+
+  .sc-navbar .d-flex.ms-lg-auto .dropdown .btn {
+    width: 100%;
+  }
+
+  .sc-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C 106%2C 254%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  .sc-btn-accent {
+    width: auto !important;
+    font-size: 0.7rem;
+  }
+
+  .dropdown {
+    width: auto !important;
+  }
+  .sc-navbar .navbar-nav .nav-item.active .nav-link::after {
+    content: none;
+  }
+}
