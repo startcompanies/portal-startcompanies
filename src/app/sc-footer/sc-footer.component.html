@@ -77,7 +77,14 @@
               />
               <span>administracion&#64;startcompanies.us</span>
             </div>
-            <div class="contact-item d-flex align-items-start gap-2">
+            <div
+              class="contact-item d-flex align-items-start gap-2"
+              (click)="
+                openUrl(
+                  'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0'
+                )
+              "
+            >
               <img
                 src="assets/footer/img_phone.svg"
                 alt="Phone"

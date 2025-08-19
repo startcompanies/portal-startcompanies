@@ -135,6 +135,10 @@
     /* Eliminado, Bootstrap gap-2 lo maneja */
     justify-content: start;
     /* Centra los ítems de contacto en móvil */
+    cursor: pointer;
+}
+.contact-item:hover{
+    color: #02cae3;
 }
 
 /* Alinea los ítems de contacto a la izquierda en desktop */

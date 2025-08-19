@@ -8,4 +8,5 @@
     --color-primario: #0068BD;
     --color-texto-oscuro: #283A48;
     --color-degradado:  linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
+    --color-fondo-gris: #f8f9fa;
 }

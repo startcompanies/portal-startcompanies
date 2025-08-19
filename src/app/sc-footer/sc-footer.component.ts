@@ -6,8 +6,10 @@ import { TranslocoPipe } from '@jsverse/transloco';
   standalone: true,
   imports: [TranslocoPipe],
   templateUrl: './sc-footer.component.html',
-  styleUrl: './sc-footer.component.css'
+  styleUrl: './sc-footer.component.css',
 })
 export class ScFooterComponent {
-
+  openUrl(url: string) {
+    window.open(url, '_blank');
+  }
 }
