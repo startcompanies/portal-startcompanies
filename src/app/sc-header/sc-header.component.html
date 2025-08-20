@@ -55,10 +55,15 @@
             >{{ "NAVBAR.plans" | transloco }}</a
           >
         </li>
-        <!--<li class="nav-item" [ngClass]="{'active': isRouteActive('/blog')}">
-          <a [ngClass]="{'nav-link-dark': isOpen || isNavbarShrunk}" class="nav-link" href="#"
-            (click)="navigateToSection('blogSection')">{{ 'NAVBAR.blog' | transloco }}</a>
-        </li>-->
+        <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
+          <a
+            [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
+            aria-current="page"
+            class="nav-link"
+            href="/blog"
+            >{{ "NAVBAR.blog" | transloco }}</a
+          >
+        </li>
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
           <a
             [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"

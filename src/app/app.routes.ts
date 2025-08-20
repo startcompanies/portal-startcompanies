@@ -8,11 +8,11 @@ export const routes: Routes = [
         redirectTo: '/',
         pathMatch: 'full'
     },
-    {
+    /*{
         path: 'blog',
         redirectTo: '/',
         pathMatch: 'full'
-    },
+    },*/
     {
         path: 'agenda-tu-consulta-gratis',
         redirectTo: '/contacto',
@@ -70,6 +70,11 @@ export const routes: Routes = [
         //loadComponent: () => import('./sc-content/sc-content.component').then(m => m.ScContentComponent),
         loadComponent: () =>  import('./plans/pricing-planes/pricing-planes.component').then(m => m.PricingPlanesComponent),
         title: 'Planes y precios'
+    },
+    {
+        path: 'blog',
+        loadComponent: () => import('./blog/blog-home/blog-home.component').then(m => m.BlogHomeComponent),
+        title: 'Blog'
     },
     
     // Catch-all para URLs de blog y contenido no implementado
