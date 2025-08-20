@@ -7,7 +7,8 @@
   <div class="row align-items-center g-5 py-5">
     <div class="col-lg-6">
       <!-- Contenedor del video -->
-      <div class="video-container" *ngIf="videoId; else noVideo">
+      <app-wistia-player ngSkipHydration mediaId="o9xq5e1pus"></app-wistia-player>
+      <!--<div class="video-container" *ngIf="videoId; else noVideo">
         <app-youtube-player
           [videoId]="videoId"
           [title]="videoTitle"
@@ -20,12 +21,7 @@
             <span>Video placeholder</span>
           </div>
         </div>
-      </ng-template>
-      <!--<iframe [src]="getSafeUrl('https://www.youtube.com/embed/A0xywPD8FDE')"
-                title="VIDEO VSL START COMPANIES" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="hero-iframe">
-            </iframe>-->
+      </ng-template>-->
     </div>
     <div class="col-lg-6">
       <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">

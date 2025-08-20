@@ -1,17 +1,18 @@
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../../services/scroll.service';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { YoutubePlayerComponent } from '../youtube-player/youtube-player.component';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { WistiaPlayerComponent } from "../wistia-player/wistia-player.component";
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule, YoutubePlayerComponent],
+  imports: [CommonModule, WistiaPlayerComponent],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
 export class HeroSectionComponent implements OnInit {
+  
   videoUrl: any = 'https://www.youtube.com/embed/A0xywPD8FDE';
   videoTitle: any = 'VIDEO VSL START COMPANIES';
   constructor(
@@ -20,7 +21,8 @@ export class HeroSectionComponent implements OnInit {
     private sanitizer: DomSanitizer
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   navigateToCalendlySection() {
     this.scrollService.scrollTo('calendlySection');
