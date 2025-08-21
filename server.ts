@@ -83,7 +83,7 @@ export function app(): express.Express {
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4000;
+  const port = parseInt(process.env['PORT'] || '4000', 10);
   const isDev = process.env['NODE_ENV'] !== 'production';
 
   // Start up the Node server
