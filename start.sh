@@ -2,30 +2,56 @@
 
 # Script de inicio para ejecutar nginx y la aplicación Angular SSR
 
-# Función para manejar señales de terminación
-cleanup() {
-    echo "🛑 Recibida señal de terminación, cerrando servicios..."
+# FUNCIÓN: Limpiar contenedores anteriores de la misma aplicación
+cleanup_previous_containers() {
+    echo "🧹 Limpiando contenedores anteriores..."
     
-    # Detener nginx
+    # Buscar y detener contenedores anteriores de la misma aplicación
+    # Usamos el nombre de la imagen para identificar contenedores relacionados
+    CONTAINER_IDS=$(docker ps -q --filter "ancestor=bot-start-companies-frontend-gktazp" 2>/dev/null)
+    if [ -n "$CONTAINER_IDS" ]; then
+        echo "🔄 Deteniendo contenedores anteriores: $CONTAINER_IDS"
+        docker stop $CONTAINER_IDS 2>/dev/null || true
+        docker rm $CONTAINER_IDS 2>/dev/null || true
+        echo "✅ Contenedores anteriores limpiados"
+    else
+        echo "ℹ️ No se encontraron contenedores anteriores"
+    fi
+    
+    # También limpiar contenedores huérfanos que puedan estar usando los puertos
+    echo "🧹 Limpiando contenedores huérfanos en puertos 8080 y 4000..."
+    docker ps -q --filter "publish=8080" 2>/dev/null | xargs -r docker stop 2>/dev/null || true
+    docker ps -q --filter "publish=4000" 2>/dev/null | xargs -r docker stop 2>/dev/null || true
+    echo "✅ Limpieza de puertos completada"
+}
+
+# FUNCIÓN: Limpiar procesos al salir
+cleanup() {
+    echo "🛑 Recibida señal de terminación, limpiando procesos..."
+    
     if [ -n "$NGINX_PID" ]; then
         echo "🔄 Deteniendo nginx (PID: $NGINX_PID)..."
-        kill -TERM "$NGINX_PID" 2>/dev/null
-        wait "$NGINX_PID" 2>/dev/null
+        kill -TERM "$NGINX_PID" 2>/dev/null || true
+        wait "$NGINX_PID" 2>/dev/null || true
+        echo "✅ nginx detenido"
     fi
     
-    # Detener la aplicación Node.js
     if [ -n "$NODE_PID" ]; then
-        echo "🔄 Deteniendo aplicación Node.js (PID: $NODE_PID)..."
-        kill -TERM "$NODE_PID" 2>/dev/null
-        wait "$NODE_PID" 2>/dev/null
+        echo "🔄 Deteniendo aplicación Angular SSR (PID: $NODE_PID)..."
+        kill -TERM "$NODE_PID" 2>/dev/null || true
+        wait "$NODE_PID" 2>/dev/null || true
+        echo "✅ Aplicación Angular SSR detenida"
     fi
     
-    echo "✅ Servicios detenidos correctamente"
+    echo "✅ Limpieza completada"
     exit 0
 }
 
 # Configurar manejo de señales
-trap cleanup TERM INT
+trap cleanup TERM INT QUIT
+
+# Ejecutar limpieza automática al inicio
+cleanup_previous_containers
 
 # Verificar que los directorios existan
 if [ ! -d "/app/dist/portal-startcompanies" ]; then

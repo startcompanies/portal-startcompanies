@@ -77,8 +77,8 @@ EXPOSE 8080
 COPY --chown=root:root start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
-# Health check para verificar que el servicio esté funcionando
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+# Health check más agresivo y rápido para detectar fallos antes
+HEALTHCHECK --interval=15s --timeout=8s --start-period=45s --retries=2 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Comando para iniciar la aplicación
