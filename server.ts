@@ -88,8 +88,8 @@ function run(): void {
 
   // Start up the Node server
   const server = app();
-  server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+  server.listen(port, '0.0.0.0', () => {
+    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
     console.log(`🚀 Servidor configurado para evitar caché`);
     if (isDev) {
       console.log(`🔧 Modo desarrollo activado - Cache busting habilitado`);
