@@ -2,10 +2,18 @@
    CONTACT SECTION
    ========================= */
 .contact-section {
-  background-image: url("../../../assets/hero-bg.jpg");
+  position: relative;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.contact-section .container {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .contact-input {
@@ -40,4 +48,14 @@
   .text-body-emphasis{
     font-size: 2.5rem;
   }  
+}
+
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
 }

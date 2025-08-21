@@ -55,10 +55,21 @@
               ],
               "outputHashing": "all",
               "prerender": true,
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "sourceMap": false,
               "extractLicenses": false,
-              "namedChunks": false
+              "namedChunks": false,
+              "aot": true,
+              "buildOptimizer": true,
+              "vendorChunk": false,
+              "commonChunk": false
             },
             "development": {
               "optimization": false,
@@ -80,7 +91,14 @@
             "production": {
               "outputHashing": "media",
               "sourceMap": false,
-              "optimization": true
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                }
+              },
+              "buildOptimizer": true
             },
             "development": {
               "outputHashing": "media",

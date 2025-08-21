@@ -4,39 +4,45 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Archivos de build y distribución
+# Archivos de build
 dist
 .angular
-.next
-.nuxt
-.vuepress/dist
+.cache
 
-# Archivos de desarrollo
-.git
-.gitignore
-README.md
+# Archivos de configuración de desarrollo
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Archivos de sistema
-.DS_Store
-Thumbs.db
+# Archivos de IDE
+.vscode
+.idea
 *.swp
 *.swo
 *~
 
-# Archivos de IDE
-.vscode
-.idea
-*.sublime-project
-*.sublime-workspace
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de Git
+.git
+.gitignore
+
+# Archivos de Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Archivos de documentación
+README.md
+*.md
+docs/
 
 # Archivos de testing
 coverage
 .nyc_output
-.jest
 
 # Archivos de logs
 logs
@@ -45,69 +51,27 @@ logs
 # Archivos temporales
 tmp
 temp
-.tmp
-.temp
-
-# Archivos de cache
-.cache
-.parcel-cache
-.eslintcache
-
-# Archivos de documentación
-docs
-*.md
-!README.md
 
 # Archivos de configuración de desarrollo
+angular.json
+tsconfig.json
+tsconfig.app.json
+tsconfig.spec.json
+
+# Archivos de configuración de herramientas
 .eslintrc*
 .prettierrc*
-.editorconfig
-.browserslistrc
+.stylelintrc*
 
-# Archivos de Docker (evitar recursión)
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Archivos de CI/CD
+# Archivos de configuración de CI/CD
 .github
 .gitlab-ci.yml
 .travis.yml
-.circleci
 
-# Archivos de backup
-*.bak
-*.backup
-*.old
+# Archivos de configuración de servidores
+nginx.conf
+server.ts
 
-# Archivos de desarrollo local
-.env
-.env.*
-!.env.example
-
-# Archivos de testing local
-test-results
-playwright-report
-cypress/videos
-cypress/screenshots
-
-# Archivos de análisis
-bundle-analyzer-report.html
-webpack-bundle-analyzer-report.html
-
-# Archivos de debugging
-.debug
-debug.log
-
-# Archivos de profiling
-*.cpuprofile
-*.heapsnapshot
-
-# Archivos de coverage
-coverage/
-*.lcov
-
-# Archivos de lock (mantener solo uno)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Scripts de desarrollo
+start.sh
+optimize-images*.js
