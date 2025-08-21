@@ -4,10 +4,12 @@
 <app-sc-header></app-sc-header>
 <!--Section Hero-->
 <section class="py-5 sc-hero">
-  <picture>
-    <source srcset="../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image 
+    [images]="heroImages" 
+    context="hero" 
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   
   <div
     id="carouselExampleIndicators"
@@ -170,10 +172,12 @@
 <app-tabs></app-tabs>
 <!-- Pricing Section -->
 <section class="pricing-section py-5" #pricingSection>
-  <picture>
-    <source srcset="../../assets/pricing-bg.webp" type="image/webp">
-    <img src="../../assets/pricing-bg.jpg" alt="Pricing Background" class="sc-pricing-bg">
-  </picture>
+  <app-responsive-image 
+    [images]="pricingImages" 
+    context="hero" 
+    loading="lazy"
+    cssClass="sc-pricing-bg">
+  </app-responsive-image>
   <app-pricing></app-pricing>
 </section>
 <!-- Benefits Section -->

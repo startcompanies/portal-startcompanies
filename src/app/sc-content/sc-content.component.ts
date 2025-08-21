@@ -18,6 +18,8 @@ import { FaqComponent } from '../sections/faq/faq.component';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { SeoBaseComponent } from '../shared/components/seo-base/seo-base.component';
+import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
+import { IMAGE_CONFIG, ImageConfig } from '../config/image-config';
 
 declare var bootstrap: any;
 
@@ -32,6 +34,7 @@ declare var bootstrap: any;
     TestimonialsComponent,
     FaqComponent,
     SeoBaseComponent,
+    ResponsiveImageComponent,
   ],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',
@@ -39,6 +42,10 @@ declare var bootstrap: any;
 export class ScContentComponent implements AfterViewInit, OnDestroy {
   @ViewChild('pricingSection', { static: false })
   pricingSection!: ElementRef<HTMLElement>;
+
+  // Configuración de imágenes responsive
+  heroImages: ImageConfig = IMAGE_CONFIG['hero']!;
+  pricingImages: ImageConfig = IMAGE_CONFIG['pricing']!;
 
   private scrollSubscription!: Subscription;
   private carousel: any;
