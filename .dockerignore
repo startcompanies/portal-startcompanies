@@ -35,9 +35,7 @@ Thumbs.db
 docker-compose*.yml
 
 # Scripts de limpieza manual (solo útiles en el host)
-cleanup-containers.sh
-deploy.sh
-optimized-images.json
+# Nota: La limpieza ahora se maneja externamente en Dokploy
 
 # Archivos de documentación (no necesarios en Docker)
 *.md
