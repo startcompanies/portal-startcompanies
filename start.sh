@@ -4,7 +4,7 @@
 
 # FUNCIÓN: Limpiar procesos al salir
 cleanup() {
-    echo "🛑 Recibida señal de terminación, limpiando procesos..."
+    echo "🛑 Recibida señal de terminación, cerrando servicios..."
     
     if [ -n "$NGINX_PID" ]; then
         echo "🔄 Deteniendo nginx (PID: $NGINX_PID)..."
@@ -27,8 +27,8 @@ cleanup() {
 # Configurar manejo de señales
 trap cleanup TERM INT QUIT
 
-# NOTA: La limpieza de contenedores anteriores ahora se ejecuta ANTES del despliegue
-# usando el script pre-deploy-cleanup.sh para evitar conflictos
+# NOTA: La limpieza de contenedores anteriores ahora se maneja externamente
+# usando scripts de limpieza en Dokploy para evitar conflictos
 
 # Verificar que los directorios existan
 if [ ! -d "/app/dist/portal-startcompanies" ]; then
@@ -74,7 +74,6 @@ sleep 3
 if ! kill -0 "$NODE_PID" 2>/dev/null; then
     echo "❌ Error: Aplicación Angular SSR no se pudo iniciar"
     cleanup
-    exit 1
 fi
 
 echo "✅ Aplicación Angular SSR iniciada correctamente (PID: $NODE_PID)"
@@ -84,6 +83,7 @@ echo "   - SSR: http://localhost:4000 (Angular SSR)"
 echo "📊 Estado de servicios:"
 echo "   - nginx: ✅ Ejecutándose (PID: $NGINX_PID)"
 echo "   - Angular SSR: ✅ Ejecutándose (PID: $NODE_PID)"
+echo ""
 
 # Mantener el script ejecutándose y esperar señales
 while true; do
@@ -105,4 +105,3 @@ done
 # Si llegamos aquí, algo salió mal
 echo "❌ Uno de los servicios se detuvo inesperadamente"
 cleanup
-exit 1
