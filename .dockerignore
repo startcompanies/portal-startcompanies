@@ -71,6 +71,3 @@ tsconfig.spec.json
 # Archivos de configuración de servidores
 nginx.conf
 server.ts
-
-# Scripts de desarrollo
-optimize-images*.js
