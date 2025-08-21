@@ -2,7 +2,8 @@
 FROM node:18-alpine AS builder
 
 # Instalar dependencias del sistema para compilación
-RUN apk add --no-cache python3 make g++ imagemagick sharp
+# Sharp se instala vía npm, no es un paquete de Alpine
+RUN apk add --no-cache python3 make g++ imagemagick
 
 WORKDIR /app
 
