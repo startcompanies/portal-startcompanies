@@ -87,13 +87,7 @@
             "production": {
               "outputHashing": "media",
               "sourceMap": false,
-              "optimization": {
-                "scripts": true,
-                "styles": {
-                  "minify": true,
-                  "inlineCritical": false
-                }
-              }
+              "optimization": true
             },
             "development": {
               "outputHashing": "media",
