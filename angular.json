@@ -65,11 +65,7 @@
               },
               "sourceMap": false,
               "extractLicenses": false,
-              "namedChunks": false,
-              "aot": true,
-              "buildOptimizer": true,
-              "vendorChunk": false,
-              "commonChunk": false
+              "namedChunks": false
             },
             "development": {
               "optimization": false,
@@ -97,8 +93,7 @@
                   "minify": true,
                   "inlineCritical": false
                 }
-              },
-              "buildOptimizer": true
+              }
             },
             "development": {
               "outputHashing": "media",
