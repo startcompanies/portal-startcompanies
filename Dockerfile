@@ -55,7 +55,7 @@ COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompan
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
 # Crear directorios para nginx con permisos correctos
-RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx/logs && \
+RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx/logs /var/lib/nginx/tmp && \
     chown -R root:root /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx && \
     chmod -R 755 /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx
 
@@ -70,11 +70,11 @@ RUN chown -R nodejs:nodejs /app
 # El puerto 4000 es solo para comunicación interna nginx -> Angular SSR
 EXPOSE 80
 
-# Cambiar al usuario no-root
-USER nodejs
+# NO cambiar al usuario no-root aquí - nginx necesita ejecutarse como root
+# USER nodejs
 
 # Script de inicio que ejecuta tanto nginx como la aplicación
-COPY --chown=nodejs:nodejs start.sh /app/start.sh
+COPY --chown=root:root start.sh /app/start.sh
 RUN chmod +x /app/start.sh
 
 # Health check para verificar que el servicio esté funcionando
