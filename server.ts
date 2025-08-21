@@ -67,6 +67,9 @@ export function app(): express.Express {
   server.get('**', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
 
+    console.log(`🌐 Request recibida: ${req.method} ${originalUrl}`);
+    console.log(`📋 Headers:`, headers);
+
     commonEngine
       .render({
         bootstrap,
@@ -75,8 +78,14 @@ export function app(): express.Express {
         publicPath: browserDistFolder,
         providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
       })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+      .then((html) => {
+        console.log(`✅ Renderizado exitoso para: ${originalUrl}`);
+        res.send(html);
+      })
+      .catch((err) => {
+        console.error(`❌ Error renderizando ${originalUrl}:`, err);
+        next(err);
+      });
   });
 
   return server;

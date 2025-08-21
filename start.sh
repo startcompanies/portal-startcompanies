@@ -76,7 +76,7 @@ fi
 
 echo "✅ Aplicación Angular SSR iniciada correctamente (PID: $NODE_PID)"
 echo "🌐 Servidor disponible en:"
-echo "   - HTTP: http://localhost:80 (nginx)"
+echo "   - HTTP: http://localhost:8080 (nginx)"
 echo "   - SSR: http://localhost:4000 (Angular SSR)"
 echo "📊 Estado de servicios:"
 echo "   - nginx: ✅ Ejecutándose (PID: $NGINX_PID)"

@@ -66,9 +66,9 @@ RUN addgroup -g 1001 -S nodejs && \
 # Cambiar permisos de la aplicación
 RUN chown -R nodejs:nodejs /app
 
-# Exponer solo el puerto 80 (nginx)
+# Exponer solo el puerto 8080 (nginx)
 # El puerto 4000 es solo para comunicación interna nginx -> Angular SSR
-EXPOSE 80
+EXPOSE 8080
 
 # NO cambiar al usuario no-root aquí - nginx necesita ejecutarse como root
 # USER nodejs
@@ -79,7 +79,7 @@ RUN chmod +x /app/start.sh
 
 # Health check para verificar que el servicio esté funcionando
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:80/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
 # Comando para iniciar la aplicación
 CMD ["/app/start.sh"]
