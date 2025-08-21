@@ -6,8 +6,13 @@ RUN apk add --no-cache python3 make g++ imagemagick
 
 WORKDIR /app
 
-# Copiar archivos de dependencias
-COPY package*.json ./
+# Copiar TODOS los archivos del proyecto primero
+COPY . .
+
+# Verificar que estamos en el directorio correcto y que es un proyecto Angular
+RUN pwd && ls -la && \
+    echo "Verificando archivos de Angular:" && \
+    ls -la angular.json package.json tsconfig.json
 
 # Instalar TODAS las dependencias (incluyendo devDependencies para el build)
 RUN npm install --legacy-peer-deps
@@ -15,11 +20,8 @@ RUN npm install --legacy-peer-deps
 # Instalar Angular CLI globalmente
 RUN npm install -g @angular/cli@18
 
-# Copiar código fuente
-COPY . .
-
-# Verificar que estamos en el directorio correcto
-RUN pwd && ls -la
+# Verificar que Angular CLI reconoce el proyecto
+RUN ng version && ng config --global cli.warnings.versionMismatch false
 
 # Optimizar imágenes
 RUN npm run optimize:images
