@@ -116,17 +116,30 @@ async function processImages() {
           const isJpeg = /\.(jpg|jpeg)$/i.test(file);
           const outputFormat = isJpeg ? 'jpeg' : 'png';
           
-          // Optimizar imagen original y sobrescribir
-          const optimized = await optimizeImage(inputPath, inputPath, outputFormat);
+          // Crear archivo temporal para optimización
+          const tempPath = path.join(dir, `temp_${file}`);
+          
+          // Optimizar imagen original usando archivo temporal
+          const optimized = await optimizeImage(inputPath, tempPath, outputFormat);
           if (optimized) {
+            // Reemplazar archivo original con el optimizado
+            fs.unlinkSync(inputPath);
+            fs.renameSync(tempPath, inputPath);
+            
             updateRegistry(inputPath);
             totalOptimized++;
+            
             // Verificar tamaño optimizado
             if (fs.existsSync(inputPath)) {
               const optimizedStats = fs.statSync(inputPath);
               const optimizedSize = optimizedStats.size;
               const reduction = ((originalSize - optimizedSize) / originalSize * 100).toFixed(1);
               console.log(`    ✅ Optimizada: ${reduction}% reducción`);
+            }
+          } else {
+            // Si falló la optimización, limpiar archivo temporal
+            if (fs.existsSync(tempPath)) {
+              fs.unlinkSync(tempPath);
             }
           }
           

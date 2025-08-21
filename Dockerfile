@@ -18,6 +18,9 @@ RUN npm install -g @angular/cli@18
 # Copiar código fuente
 COPY . .
 
+# Verificar que estamos en el directorio correcto
+RUN pwd && ls -la
+
 # Optimizar imágenes
 RUN npm run optimize:images
 
