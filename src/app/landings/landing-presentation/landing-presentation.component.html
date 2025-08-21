@@ -1,5 +1,9 @@
 <!-- Hero/Header Section -->
 <section class="hero-section">
+  <picture>
+    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
+    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
+  </picture>
   <div class="container col-xxl-8 px-4 py-5">
     <div class="row">
       <div class="col-12 text-center mb-4">
@@ -9,7 +13,7 @@
           class="img-fluid"
         />
       </div>
-      <div class="col-12 text-center">
+      <div class="col-12 text-center pb-5">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
           ¿Tienés tu LLC en EE.UU. pero todavía no abriste tu cuenta bancaria?
         </h1>
@@ -19,29 +23,21 @@
         </p>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- Video Section (Entre hero y plans, con superposición) -->
+<div class="video-overlay">
+  <div class="container">
     <div class="row">
       <div class="col-lg-12">
         <div class="ratio ratio-16x9">
           <app-wistia-player mediaId="8yxsnzvoqk"></app-wistia-player>
-          <!--<div class="video-container" *ngIf="videoId; else noVideo">
-            <app-youtube-player
-              [videoId]="videoId"
-              [title]="videoTitle"
-            ></app-youtube-player>
-          </div>
-
-          <ng-template #noVideo>
-            <div class="video-placeholder">
-              <div class="placeholder-content">
-                <span>Video placeholder</span>
-              </div>
-            </div>
-          </ng-template>-->
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
 <section class="plans-section">
   <app-plans-container></app-plans-container>
@@ -57,7 +53,7 @@
 ></app-video-section>
 
 <!-- "Crea tu cuenta bancaria con Relay" Section -->
-<section class="encargo-section py-5">
+<section class="encargo-section">
   <app-support-container></app-support-container>
 </section>
 

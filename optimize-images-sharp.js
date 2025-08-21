@@ -1,6 +1,7 @@
 const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // Configuración de optimización
 const config = {
@@ -32,6 +33,35 @@ const imageDirs = [
   'src/assets/testimonials',
   'src/assets/us'
 ];
+
+const registryPath = 'optimized-images.json';
+let registry = {};
+
+// Cargar el registro existente
+if (fs.existsSync(registryPath)) {
+  registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+}
+
+// Función para generar un hash de una imagen
+function generateHash(filePath) {
+  const fileBuffer = fs.readFileSync(filePath);
+  const hashSum = crypto.createHash('sha256');
+  hashSum.update(fileBuffer);
+  return hashSum.digest('hex');
+}
+
+// Función para verificar si una imagen necesita optimización
+function needsOptimization(filePath) {
+  const currentHash = generateHash(filePath);
+  return registry[filePath] !== currentHash;
+}
+
+// Función para actualizar el registro después de la optimización
+function updateRegistry(filePath) {
+  const newHash = generateHash(filePath);
+  registry[filePath] = newHash;
+  fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2));
+}
 
 // Función para optimizar una imagen individual
 async function optimizeImage(inputPath, outputPath, format) {
@@ -76,46 +106,55 @@ async function processImages() {
       
       for (const file of files) {
         const inputPath = path.join(dir, file);
-        const stats = fs.statSync(inputPath);
-        const originalSize = stats.size;
-        
-        console.log(`  📸 Procesando: ${file} (${(originalSize / 1024 / 1024).toFixed(2)} MB)`);
-        
-        // Determinar formato de salida
-        const isJpeg = /\.(jpg|jpeg)$/i.test(file);
-        const outputFormat = isJpeg ? 'jpeg' : 'png';
-        
-        // Crear nombre de archivo optimizado
-        const nameWithoutExt = path.parse(file).name;
-        const optimizedFile = `${nameWithoutExt}-optimized.${outputFormat === 'jpeg' ? 'jpg' : 'png'}`;
-        const optimizedPath = path.join(dir, optimizedFile);
-        
-        // Crear nombre de archivo WebP
-        const webpFile = `${nameWithoutExt}.webp`;
-        const webpPath = path.join(dir, webpFile);
-        
-        // Optimizar imagen original
-        const optimized = await optimizeImage(inputPath, optimizedPath, outputFormat);
-        if (optimized) {
-          totalOptimized++;
+        if (needsOptimization(inputPath)) {
+          const stats = fs.statSync(inputPath);
+          const originalSize = stats.size;
           
-          // Verificar tamaño optimizado
-          if (fs.existsSync(optimizedPath)) {
-            const optimizedStats = fs.statSync(optimizedPath);
-            const optimizedSize = optimizedStats.size;
-            const reduction = ((originalSize - optimizedSize) / originalSize * 100).toFixed(1);
-            console.log(`    ✅ Optimizada: ${reduction}% reducción`);
+          console.log(`  📸 Procesando: ${file} (${(originalSize / 1024 / 1024).toFixed(2)} MB)`);
+          
+          // Determinar formato de salida
+          const isJpeg = /\.(jpg|jpeg)$/i.test(file);
+          const outputFormat = isJpeg ? 'jpeg' : 'png';
+          
+          // Crear archivo temporal para optimización
+          const tempPath = path.join(dir, `temp_${file}`);
+          
+          // Optimizar imagen original usando archivo temporal
+          const optimized = await optimizeImage(inputPath, tempPath, outputFormat);
+          if (optimized) {
+            // Reemplazar archivo original con el optimizado
+            fs.unlinkSync(inputPath);
+            fs.renameSync(tempPath, inputPath);
+            
+            updateRegistry(inputPath);
+            totalOptimized++;
+            
+            // Verificar tamaño optimizado
+            if (fs.existsSync(inputPath)) {
+              const optimizedStats = fs.statSync(inputPath);
+              const optimizedSize = optimizedStats.size;
+              const reduction = ((originalSize - optimizedSize) / originalSize * 100).toFixed(1);
+              console.log(`    ✅ Optimizada: ${reduction}% reducción`);
+            }
+          } else {
+            // Si falló la optimización, limpiar archivo temporal
+            if (fs.existsSync(tempPath)) {
+              fs.unlinkSync(tempPath);
+            }
           }
+          
+          // Crear versión WebP optimizada
+          const webpPath = path.join(dir, `${path.parse(file).name}.webp`);
+          const webpCreated = await optimizeImage(inputPath, webpPath, 'webp');
+          if (webpCreated) {
+            totalWebPCreated++;
+            console.log(`    🌐 WebP creado`);
+          }
+          
+          totalProcessed++;
+        } else {
+          console.log(`    🔄 ${file} ya está optimizada.`);
         }
-        
-        // Crear versión WebP
-        const webpCreated = await optimizeImage(inputPath, webpPath, 'webp');
-        if (webpCreated) {
-          totalWebPCreated++;
-          console.log(`    🌐 WebP creado`);
-        }
-        
-        totalProcessed++;
       }
     }
   }

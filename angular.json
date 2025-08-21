@@ -55,7 +55,14 @@
               ],
               "outputHashing": "all",
               "prerender": true,
-              "optimization": true,
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
               "sourceMap": false,
               "extractLicenses": false,
               "namedChunks": false

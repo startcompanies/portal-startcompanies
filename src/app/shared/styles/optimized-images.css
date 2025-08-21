@@ -33,7 +33,6 @@ img.loaded {
 
 /* Imágenes de fondo optimizadas */
 .hero-bg {
-  background-image: url('/assets/hero-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -47,7 +46,6 @@ img.loaded {
 }
 
 .pricing-bg {
-  background-image: url('/assets/pricing-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -60,6 +58,39 @@ img.loaded {
   }
 }
 
+/* Estilos unificados para todas las secciones hero */
+.sc-hero, .sc-plans-hero, .sc-blog-hero, .contact-section, .hero-section, .steps-section, .header-section, .pricing-section {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Contenido interno con altura mínima */
+.sc-hero .carousel-item,
+.sc-plans-hero .container,
+.sc-blog-hero .container,
+.contact-section .container,
+.hero-section .container,
+.hero-section app-hero-section,
+.steps-section .container,
+.header-section .container,
+.pricing-section .container {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sc-hero-bg, .sc-pricing-bg {
+  width: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.sc-hero-bg{
+  height: 100%;
+}
 /* Logos optimizados */
 .logo {
   max-height: 50px;

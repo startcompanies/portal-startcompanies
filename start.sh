@@ -1,48 +1,107 @@
 #!/bin/sh
 
-# Script de inicio para ejecutar Nginx y Node.js SSR
+# Script de inicio para ejecutar nginx y la aplicación Angular SSR
 
-echo "🚀 Iniciando servicios..."
+# FUNCIÓN: Limpiar procesos al salir
+cleanup() {
+    echo "🛑 Recibida señal de terminación, cerrando servicios..."
+    
+    if [ -n "$NGINX_PID" ]; then
+        echo "🔄 Deteniendo nginx (PID: $NGINX_PID)..."
+        kill -TERM "$NGINX_PID" 2>/dev/null || true
+        wait "$NGINX_PID" 2>/dev/null || true
+        echo "✅ nginx detenido"
+    fi
+    
+    if [ -n "$NODE_PID" ]; then
+        echo "🔄 Deteniendo aplicación Angular SSR (PID: $NODE_PID)..."
+        kill -TERM "$NODE_PID" 2>/dev/null || true
+        wait "$NODE_PID" 2>/dev/null || true
+        echo "✅ Aplicación Angular SSR detenida"
+    fi
+    
+    echo "✅ Limpieza completada"
+    exit 0
+}
 
-# Crear directorios necesarios si no existen
-mkdir -p /var/log/nginx
-mkdir -p /var/cache/nginx
-mkdir -p /var/run
+# Configurar manejo de señales
+trap cleanup TERM INT QUIT
 
-# Verificar que los archivos de build existan
-if [ ! -f "/app/dist/portal-startcompanies/server/main.js" ]; then
-    echo "❌ Error: No se encontró el build de la aplicación SSR"
+# NOTA: La limpieza de contenedores anteriores ahora se maneja externamente
+# usando scripts de limpieza en Dokploy para evitar conflictos
+
+# Verificar que los directorios existan
+if [ ! -d "/app/dist/portal-startcompanies" ]; then
+    echo "❌ Error: Directorio de la aplicación no encontrado"
     exit 1
 fi
 
-if [ ! -f "/app/dist/portal-startcompanies/browser/index.html" ]; then
-    echo "❌ Error: No se encontró el build del browser"
+# Verificar que nginx.conf exista
+if [ ! -f "/etc/nginx/nginx.conf" ]; then
+    echo "❌ Error: Configuración de nginx no encontrada"
     exit 1
 fi
 
-# Verificar configuración de Nginx
-if ! nginx -t; then
-    echo "❌ Error: Configuración de Nginx inválida"
-    exit 1
-fi
+# Crear directorios temporales si no existen
+mkdir -p /tmp/nginx /var/cache/nginx
 
-# Iniciar Nginx en segundo plano
-echo "📡 Iniciando Nginx..."
+# Iniciar nginx en segundo plano
+echo "🚀 Iniciando nginx..."
 nginx -g "daemon off;" &
 NGINX_PID=$!
 
-# Esperar un momento para que Nginx se inicie
+# Esperar un momento para que nginx se inicie
 sleep 2
 
-# Verificar que Nginx esté funcionando
-if ! kill -0 $NGINX_PID 2>/dev/null; then
-    echo "❌ Error: Nginx no se pudo iniciar"
+# Verificar que nginx esté ejecutándose
+if ! kill -0 "$NGINX_PID" 2>/dev/null; then
+    echo "❌ Error: nginx no se pudo iniciar"
     exit 1
 fi
 
-echo "✅ Nginx iniciado con PID: $NGINX_PID"
+echo "✅ nginx iniciado correctamente (PID: $NGINX_PID)"
 
-# Iniciar la aplicación Node.js SSR
-echo "🟢 Iniciando aplicación SSR..."
+# Iniciar la aplicación Angular SSR
+echo "🚀 Iniciando aplicación Angular SSR..."
 cd /app
-exec node dist/portal-startcompanies/server/main.js
+npm run serve:ssr:portal-startcompanies &
+NODE_PID=$!
+
+# Esperar un momento para que la aplicación se inicie
+sleep 3
+
+# Verificar que la aplicación esté ejecutándose
+if ! kill -0 "$NODE_PID" 2>/dev/null; then
+    echo "❌ Error: Aplicación Angular SSR no se pudo iniciar"
+    cleanup
+fi
+
+echo "✅ Aplicación Angular SSR iniciada correctamente (PID: $NODE_PID)"
+echo "🌐 Servidor disponible en:"
+echo "   - HTTP: http://localhost:8080 (nginx)"
+echo "   - SSR: http://localhost:4000 (Angular SSR)"
+echo "📊 Estado de servicios:"
+echo "   - nginx: ✅ Ejecutándose (PID: $NGINX_PID)"
+echo "   - Angular SSR: ✅ Ejecutándose (PID: $NODE_PID)"
+echo ""
+
+# Mantener el script ejecutándose y esperar señales
+while true; do
+    # Verificar que ambos servicios estén ejecutándose
+    if ! kill -0 "$NGINX_PID" 2>/dev/null; then
+        echo "❌ nginx se detuvo inesperadamente"
+        break
+    fi
+    
+    if ! kill -0 "$NODE_PID" 2>/dev/null; then
+        echo "❌ Aplicación Angular SSR se detuvo inesperadamente"
+        break
+    fi
+    
+    # Esperar un poco antes de verificar nuevamente
+    sleep 10
+done
+
+# Si llegamos aquí, algo salió mal
+echo "❌ Uno de los servicios se detuvo inesperadamente"
+cleanup

@@ -1,15 +1,21 @@
 /* Hero Section */
 .hero-section {
-  background-image: url("../../../assets/hero-bg.jpg"); /* Imagen de fondo */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+  min-height: 100vh; /* Ocupar toda la altura de la pantalla */
+  display: flex;
+  align-items: flex-start; /* Cambiado de center a flex-start */
+  padding-top: 2rem; /* Agregar padding superior */
 }
 
 .img-fluid {
-  width: 7rem;
+  width: 5rem;
   height: auto;
 }
+
 .hero-title {
   color: var(--color-fondo-claro) !important;
 }
@@ -17,24 +23,54 @@
 .hero-section .lead {
   font-size: 1.5rem;
 }
+
 .hero-description {
   color: var(--color-fondo-claro) !important;
 }
-.hero-section .ratio {
+
+.hero-section .container {
+  min-height: auto; /* Removido para que no interfiera con 100vh */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Cambiado de center a flex-start */
   position: relative;
-  z-index: 1;
-  margin-bottom: -10rem; /* Ajusta este valor según cuánto quieres que se desborde */
+  z-index: 2;
+  width: 100%;
+  padding-top: 3rem; /* Agregar padding superior */
 }
 
-.hero-section {
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Video Overlay (Superposición) */
+.video-overlay {
   position: relative;
-  z-index: 0;
+  z-index: 10; /* Alto z-index para estar por encima de todo */
+  margin-top: -16rem; /* Reducido para que esté más cerca del texto */
+  margin-bottom: -5rem; /* Para que se superponga con la sección de planes */
+  background-color: transparent;
+}
+
+.video-overlay .ratio {
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Sombra para destacar */
 }
 
 /* Sección de Planes */
 .plans-section {
   padding-top: 80px;
   padding-bottom: 80px;
+  position: relative;
+  z-index: 3;
+  background-color: #ffffff;
 }
 
 /* Sección "¿Querés que nos encarguemos por vos?" */
@@ -42,40 +78,67 @@
   padding-top: 80px;
   padding-bottom: 80px;
   background-color: #ffffff; /* Fondo blanco de la sección */
+  position: relative;
+  z-index: 3;
 }
 
 /* Sección de Testimonios y Clientes */
 .qualifications {
   border-radius: 2rem !important;
+  position: relative;
+  z-index: 3;
 }
+
 .qualifications-descriptions {
   max-width: 700px;
 }
+
 .qualifications-buttons {
   background-color: var(--color-secundario-tecnico) !important;
   color: var(--color-fondo-claro) !important;
   border-radius: 2rem !important;
   font-size: 1.3rem !important;
 }
+
 .qualifications-title {
   font-size: 1.1rem;
 }
+
 .paraphs {
   max-width: 700px;
   font-size: 1.3rem;
   color: var(--color-texto-oscuro);
 }
+
 .paraphs-header {
   font-weight: bold;
 }
+
 .paraphs-hightlight {
   color: var(--color-secundario-tecnico);
 }
+
 .paraphs-description {
   color: var(--color-texto-oscuro);
   font-weight: 500;
 }
+
 /* Media Queries para Responsividad */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 100vh; /* Mantener 100vh en móviles también */
+    padding-top: 1rem;
+  }
+  
+  .hero-section .container {
+    padding-top: 2rem;
+  }
+  
+  .video-overlay {
+    margin-top: -1rem; /* Reducido en móviles también */
+  }
+}
+
 @media (min-width: 2000px) {
   /*.hero-section .ratio{
     margin-bottom: -20rem;

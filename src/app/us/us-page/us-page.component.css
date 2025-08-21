@@ -2,128 +2,163 @@
    HERO SECTION
    ========================= */
 .sc-hero {
-    background-image: url("../../../assets/hero-bg.jpg");
-    background-size: cover;
-    background-position: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+}
+
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .sc-hero #carouselExampleIndicators {
-    width: 100%;
-    height: 100%;
-    position: relative;
+  position: relative;
+  z-index: 2;
+  height: 100%;
 }
 
-.sc-hero .carousel-inner,
+.sc-hero .carousel-inner {
+  height: 100%;
+}
+
 .sc-hero .carousel-item {
-    height: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.sc-slide {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 80px 15px;
-    max-width: 1200px;
-    margin: 0 auto;
+/* Bootstrap Carousel Fix - Ocultar slides inactivos */
+.sc-hero .carousel-item:not(.active) {
+  display: none !important;
+}
+
+.sc-hero .carousel-item.active {
+  display: flex !important;
+}
+
+/* Asegurar que el carrusel funcione correctamente */
+.sc-hero .carousel-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sc-hero .carousel-item {
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 100%;
+  margin-right: -100%;
+  backface-visibility: hidden;
+}
+
+.sc-hero .carousel-item .container {
+  position: relative;
+  z-index: 3;
 }
 
 /* Carousel Indicators */
 .sc-hero .carousel-indicators {
-    position: absolute !important;
-    bottom: 20px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: auto !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-    justify-content: center !important;
-    gap: 10px !important;
-    z-index: 10 !important;
+  position: absolute !important;
+  bottom: 35px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  z-index: 10 !important;
 }
 
 .sc-hero .carousel-indicators button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    opacity: 1;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    padding: 0;
-    flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: none;
+  opacity: 1;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  padding: 0;
+  flex: 0 0 auto;
 }
 
 .sc-hero .carousel-indicators button.active {
-    background-color: #ffffff;
-    transform: scale(1.2);
+  background-color: #ffffff;
+  transform: scale(1.2);
 }
 
 /* Hero Titles & Description */
 .hero-title {
-    font-size: 3.8rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: #ffffff;
-    margin-bottom: 1.5rem;
-    max-width: 100%;
+  font-size: 3.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  max-width: 100%;
 }
 
 .hero-description {
-    font-size: 1.15rem;
-    font-weight: 400;
-    line-height: 1.6;
-    color: #ffffff;
-    margin-bottom: 0;
-    max-width: 100%;
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #ffffff;
+  margin-bottom: 0;
+  max-width: 100%;
 }
 
 /* Hero Buttons */
 .hero-buttons {
-    width: 100%;
-    max-width: 480px;
-    margin-top: 2rem;
-    margin-bottom: 0;
+  width: 100%;
+  max-width: 480px;
+  margin-top: 2rem;
+  margin-bottom: 0;
 }
 
 .hero-btn-primary,
 .hero-btn-secondary {
-    border-radius: 2.5rem;
-    padding: 0.8rem 2.2rem;
-    font-weight: 600;
-    font-size: 1.05rem;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    flex-grow: 1;
-    white-space: nowrap;
+  border-radius: 2.5rem;
+  padding: 0.8rem 2.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  white-space: nowrap;
 }
 
 .hero-btn-primary {
-    background-color: #02CAE3;
-    color: #ffffff;
+  background-color: #00B8D9;
+  color: #ffffff;
 }
 
 .hero-btn-primary:hover {
-    background-color: #02CAE3;
-    border-color: #02CAE3;
+  background-color: #00B8D9;
+  border-color: #00B8D9;
 }
 
 .hero-btn-secondary {
-    background-color: transparent;
-    color: #F3F6FA;
-    border: 2px solid #F3F6FA;
+  background-color: transparent;
+  color: #ffffff;
+  border: 2px solid #ffffff;
 }
 
 .hero-btn-secondary:hover {
-    background-color: #f0f0f0;
-    color: #0049c6;
-    border-color: #0049c6;
+  background-color: #ffffff;
+  color: #0068BD;
+  border-color: #0068BD;
 }
 
 .hero-btn-primary i.bi,
 .hero-btn-secondary i.bi {
-    font-size: 1.1rem;
+  font-size: 1.1rem;
 }
 
 /* =========================
@@ -148,10 +183,6 @@
     display: block;
     border-radius: 1.5rem;
     transition: transform 0.3s ease;
-}
-
-.mission-image:hover {
-    transform: scale(1.02);
 }
 
 .mission-content {

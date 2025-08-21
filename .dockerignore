@@ -1,42 +1,49 @@
-# Dependencias de desarrollo
+# Archivos de desarrollo
 node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Archivos de build y distribución
+# Archivos de build (se copian desde el builder stage)
 dist
 .angular
-.next
-.nuxt
-.vuepress/dist
+.cache
 
-# Archivos de desarrollo
-.git
-.gitignore
-README.md
+# Archivos de configuración local
+.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Archivos de sistema
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-*~
-
 # Archivos de IDE
 .vscode
 .idea
-*.sublime-project
-*.sublime-workspace
+*.swp
+*.swo
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de Git
+.git
+.gitignore
+
+# Archivos de Docker
+.dockerignore
+docker-compose*.yml
+
+# Scripts de limpieza manual (solo útiles en el host)
+# Nota: La limpieza ahora se maneja externamente en Dokploy
+
+# Archivos de documentación (no necesarios en Docker)
+*.md
+!README.md
 
 # Archivos de testing
 coverage
 .nyc_output
-.jest
 
 # Archivos de logs
 logs
@@ -45,69 +52,16 @@ logs
 # Archivos temporales
 tmp
 temp
-.tmp
-.temp
 
-# Archivos de cache
-.cache
-.parcel-cache
-.eslintcache
-
-# Archivos de documentación
-docs
-*.md
-!README.md
-
-# Archivos de configuración de desarrollo
+# Archivos de configuración de herramientas
 .eslintrc*
 .prettierrc*
-.editorconfig
-.browserslistrc
+.stylelintrc*
 
-# Archivos de Docker (evitar recursión)
-Dockerfile*
-docker-compose*
-.dockerignore
-
-# Archivos de CI/CD
+# Archivos de configuración de CI/CD
 .github
 .gitlab-ci.yml
 .travis.yml
-.circleci
 
-# Archivos de backup
-*.bak
-*.backup
-*.old
-
-# Archivos de desarrollo local
-.env
-.env.*
-!.env.example
-
-# Archivos de testing local
-test-results
-playwright-report
-cypress/videos
-cypress/screenshots
-
-# Archivos de análisis
-bundle-analyzer-report.html
-webpack-bundle-analyzer-report.html
-
-# Archivos de debugging
-.debug
-debug.log
-
-# Archivos de profiling
-*.cpuprofile
-*.heapsnapshot
-
-# Archivos de coverage
-coverage/
-*.lcov
-
-# Archivos de lock (mantener solo uno)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# Archivos de configuración de nginx (ya no se necesitan)
+# nginx.production.conf

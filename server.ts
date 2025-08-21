@@ -67,6 +67,9 @@ export function app(): express.Express {
   server.get('**', (req, res, next) => {
     const { protocol, originalUrl, baseUrl, headers } = req;
 
+    console.log(`🌐 Request recibida: ${req.method} ${originalUrl}`);
+    console.log(`📋 Headers:`, headers);
+
     commonEngine
       .render({
         bootstrap,
@@ -75,21 +78,27 @@ export function app(): express.Express {
         publicPath: browserDistFolder,
         providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
       })
-      .then((html) => res.send(html))
-      .catch((err) => next(err));
+      .then((html) => {
+        console.log(`✅ Renderizado exitoso para: ${originalUrl}`);
+        res.send(html);
+      })
+      .catch((err) => {
+        console.error(`❌ Error renderizando ${originalUrl}:`, err);
+        next(err);
+      });
   });
 
   return server;
 }
 
 function run(): void {
-  const port = process.env['PORT'] || 4000;
+  const port = parseInt(process.env['PORT'] || '4000', 10);
   const isDev = process.env['NODE_ENV'] !== 'production';
 
   // Start up the Node server
   const server = app();
-  server.listen(port, () => {
-    console.log(`Node Express server listening on http://localhost:${port}`);
+  server.listen(port, '0.0.0.0', () => {
+    console.log(`Node Express server listening on http://0.0.0.0:${port}`);
     console.log(`🚀 Servidor configurado para evitar caché`);
     if (isDev) {
       console.log(`🔧 Modo desarrollo activado - Cache busting habilitado`);

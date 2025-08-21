@@ -4,11 +4,12 @@ import { ScFooterComponent } from "../../sc-footer/sc-footer.component";
 import { BlogComponent } from "../../sections/blog/blog.component";
 import { BlogArticlesComponent } from "../blog-articles/blog-articles.component";
 import { BlogQuestionsComponent } from "../blog-questions/blog-questions.component";
+import { SeoBaseComponent } from "../../shared/components/seo-base/seo-base.component";
 
 @Component({
   selector: 'app-blog-home',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent, BlogComponent, BlogArticlesComponent, BlogQuestionsComponent],
+  imports: [ScHeaderComponent, ScFooterComponent, BlogComponent, BlogArticlesComponent, BlogQuestionsComponent, SeoBaseComponent],
   templateUrl: './blog-home.component.html',
   styleUrl: './blog-home.component.css'
 })

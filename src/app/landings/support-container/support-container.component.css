@@ -6,7 +6,7 @@
   color: var(--color-secundario-tecnico) !important;
 }
 .vertical-img {
-  width: 100%;
+  width: 75%;
   aspect-ratio: 3 / 4; /* ancho/alto = proporción vertical */
   object-fit: cover;
   border-radius: 1rem; /* similar a tu rounded-4 */
