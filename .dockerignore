@@ -61,7 +61,3 @@ temp
 .github
 .gitlab-ci.yml
 .travis.yml
-
-# Archivos de configuración de servidores
-nginx.conf
-server.ts
