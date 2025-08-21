@@ -54,15 +54,17 @@ COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompan
 # Copiar configuración de nginx optimizada para producción
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
-# Crear directorios para nginx
-RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run /tmp/nginx
+# Crear directorios para nginx con permisos correctos
+RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx/logs && \
+    chown -R root:root /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx && \
+    chmod -R 755 /var/log/nginx /var/cache/nginx /var/run /tmp/nginx /var/lib/nginx
 
 # Crear usuario no-root para seguridad
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-# Cambiar permisos
-RUN chown -R nodejs:nodejs /app /var/log/nginx /var/cache/nginx /var/run /tmp/nginx
+# Cambiar permisos de la aplicación
+RUN chown -R nodejs:nodejs /app
 
 # Exponer solo el puerto 80 (nginx)
 # El puerto 4000 es solo para comunicación interna nginx -> Angular SSR
