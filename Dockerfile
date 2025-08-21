@@ -2,7 +2,7 @@
 FROM node:18-alpine AS builder
 
 # Instalar dependencias del sistema para compilación
-RUN apk add --no-cache python3 make g++ imagemagick
+RUN apk add --no-cache python3 make g++ imagemagick sharp
 
 WORKDIR /app
 
@@ -23,11 +23,17 @@ RUN npm install -g @angular/cli@18
 # Verificar que Angular CLI reconoce el proyecto
 RUN ng version && ng config --global cli.warnings.versionMismatch false
 
-# Optimizar imágenes
-RUN npm run optimize:images
+# Pipeline optimizado de imágenes y build
+# 1. Validar y generar solo las imágenes responsive faltantes
+# 2. Build de producción con todas las optimizaciones
+RUN npm run validate:images && \
+    npm run build:production:minified
 
-# Build de la aplicación Angular para producción con optimizaciones máximas
-RUN npm run build:production:minified
+# Verificar que se generaron las imágenes responsive
+RUN echo "Verificando imágenes responsive generadas:" && \
+    ls -la src/assets/*-mobile.* && \
+    ls -la src/assets/*-tablet.* && \
+    ls -la src/assets/*-desktop.*
 
 # Stage final de producción
 FROM node:18-alpine AS production
@@ -50,6 +56,9 @@ RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 # Copiar archivos compilados desde el builder
 COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompanies
 
+# Copiar imágenes responsive generadas
+COPY --from=builder /app/src/assets /app/src/assets
+
 # Copiar configuración de nginx
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
@@ -71,3 +80,6 @@ USER nodejs
 
 # Comando para iniciar la aplicación (como en tu configuración original)
 CMD ["npm", "run", "serve:ssr:portal-startcompanies"]
+
+# Dockerfile optimizado para imágenes responsive
+# Incluye: Sharp, optimización de imágenes, generación responsive, build optimizado
