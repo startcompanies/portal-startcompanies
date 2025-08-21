@@ -4,7 +4,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Archivos de build
+# Archivos de build (se copian desde el builder stage)
 dist
 .angular
 .cache
@@ -34,10 +34,33 @@ Thumbs.db
 .dockerignore
 docker-compose*.yml
 
-# Archivos de limpieza (solo útiles en el host)
+# Scripts de limpieza manual (solo útiles en el host)
 cleanup-containers.sh
+deploy.sh
 optimized-images.json
 
-# Archivos de documentación
+# Archivos de documentación (no necesarios en Docker)
 *.md
 !README.md
+
+# Archivos de testing
+coverage
+.nyc_output
+
+# Archivos de logs
+logs
+*.log
+
+# Archivos temporales
+tmp
+temp
+
+# Archivos de configuración de herramientas
+.eslintrc*
+.prettierrc*
+.stylelintrc*
+
+# Archivos de configuración de CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml

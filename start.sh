@@ -2,29 +2,6 @@
 
 # Script de inicio para ejecutar nginx y la aplicación Angular SSR
 
-# FUNCIÓN: Limpiar contenedores anteriores de la misma aplicación
-cleanup_previous_containers() {
-    echo "🧹 Limpiando contenedores anteriores..."
-    
-    # Buscar y detener contenedores anteriores de la misma aplicación
-    # Usamos el nombre de la imagen para identificar contenedores relacionados
-    CONTAINER_IDS=$(docker ps -q --filter "ancestor=bot-start-companies-frontend-gktazp" 2>/dev/null)
-    if [ -n "$CONTAINER_IDS" ]; then
-        echo "🔄 Deteniendo contenedores anteriores: $CONTAINER_IDS"
-        docker stop $CONTAINER_IDS 2>/dev/null || true
-        docker rm $CONTAINER_IDS 2>/dev/null || true
-        echo "✅ Contenedores anteriores limpiados"
-    else
-        echo "ℹ️ No se encontraron contenedores anteriores"
-    fi
-    
-    # También limpiar contenedores huérfanos que puedan estar usando los puertos
-    echo "🧹 Limpiando contenedores huérfanos en puertos 8080 y 4000..."
-    docker ps -q --filter "publish=8080" 2>/dev/null | xargs -r docker stop 2>/dev/null || true
-    docker ps -q --filter "publish=4000" 2>/dev/null | xargs -r docker stop 2>/dev/null || true
-    echo "✅ Limpieza de puertos completada"
-}
-
 # FUNCIÓN: Limpiar procesos al salir
 cleanup() {
     echo "🛑 Recibida señal de terminación, limpiando procesos..."
@@ -50,8 +27,8 @@ cleanup() {
 # Configurar manejo de señales
 trap cleanup TERM INT QUIT
 
-# Ejecutar limpieza automática al inicio
-cleanup_previous_containers
+# NOTA: La limpieza de contenedores anteriores ahora se ejecuta ANTES del despliegue
+# usando el script pre-deploy-cleanup.sh para evitar conflictos
 
 # Verificar que los directorios existan
 if [ ! -d "/app/dist/portal-startcompanies" ]; then

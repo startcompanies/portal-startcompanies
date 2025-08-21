@@ -73,6 +73,10 @@ EXPOSE 8080
 # NO cambiar al usuario no-root aquí - nginx necesita ejecutarse como root
 # USER nodejs
 
+# Script de entrada que ejecuta limpieza previa
+COPY --chown=root:root pre-deploy-cleanup.sh /app/pre-deploy-cleanup.sh
+RUN chmod +x /app/pre-deploy-cleanup.sh
+
 # Script de inicio que ejecuta tanto nginx como la aplicación
 COPY --chown=root:root start.sh /app/start.sh
 RUN chmod +x /app/start.sh
@@ -81,5 +85,5 @@ RUN chmod +x /app/start.sh
 HEALTHCHECK --interval=15s --timeout=8s --start-period=45s --retries=2 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
 
-# Comando para iniciar la aplicación
-CMD ["/app/start.sh"]
+# Comando para iniciar la aplicación (ejecuta limpieza + servicios)
+CMD ["/bin/sh", "-c", "/app/pre-deploy-cleanup.sh && /app/start.sh"]
