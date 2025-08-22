@@ -246,6 +246,28 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'blog/categoria/:slug',
+    loadComponent: () =>
+      import('./blog/blog-home/blog-home.component').then(
+        (m) => m.BlogHomeComponent
+      ),
+    data: {
+      seo: {
+        title: 'Categoría de Blog - Start Companies LLC',
+        description:
+          'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+        keywords:
+          'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+        ogTitle: 'Categoría de Blog - Start Companies LLC',
+        ogDescription:
+          'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
+      },
+    },
+  },
+  {
     path: 'error-404',
     loadComponent: () =>
       import('./shared/error-404/error-404.component').then(
