@@ -4,17 +4,20 @@ import {
   Inject,
   OnInit,
   PLATFORM_ID,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../services/scroll.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-sc-header',
   standalone: true,
-  imports: [SharedModule, TranslocoPipe],
+  imports: [SharedModule, TranslocoPipe, ResponsiveImageComponent],
   templateUrl: './sc-header.component.html',
   styleUrl: './sc-header.component.css',
 })
@@ -24,12 +27,50 @@ export class ScHeaderComponent implements OnInit {
   currentLang: string = 'es';
   currentRoute: string = '';
 
+  // Usar BehaviorSubject para forzar detección de cambios
+  private logoImagesSubject = new BehaviorSubject({
+    mobile: "/assets/logo-mobile.webp",
+    tablet: "/assets/logo-tablet.webp",
+    desktop: "/assets/logo.webp",
+    fallback: "/assets/logo.webp",
+    alt: "Start Companies Logo",
+    priority: false
+  });
+
+  // Exponer como observable para el template
+  logoImages$ = this.logoImagesSubject.asObservable();
+
+  // Getter para compatibilidad
+  get logoImages() {
+    return this.logoImagesSubject.value;
+  }
+
+  /**
+   * Actualiza las imágenes del logo según el estado del navbar
+   */
+  private updateLogoImages(): void {
+    const isDarkMode = this.isOpen || this.isNavbarShrunk;
+    
+    // Usar BehaviorSubject para forzar detección de cambios
+    this.logoImagesSubject.next({
+      ...this.logoImages,
+      mobile: isDarkMode ? "/assets/logo-dark-mobile.webp" : "/assets/logo-mobile.webp",
+      tablet: isDarkMode ? "/assets/logo-dark-tablet.webp" : "/assets/logo-tablet.webp",
+      desktop: isDarkMode ? "/assets/logo-dark.webp" : "/assets/logo.webp",
+      fallback: isDarkMode ? "/assets/logo-dark.webp" : "/assets/logo.webp",
+    });
+    
+    // Forzar detección de cambios como respaldo
+    this.cdr.markForCheck();
+  }
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private scrollService: ScrollService,
     public translocoService: TranslocoService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -84,16 +125,29 @@ export class ScHeaderComponent implements OnInit {
     }
 
     const scrollThreshold = 100;
+    const wasShrunk = this.isNavbarShrunk;
+    const currentScrollY = window.scrollY;
 
-    if (window.scrollY > scrollThreshold) {
+    if (currentScrollY > scrollThreshold) {
       this.isNavbarShrunk = true;
     } else {
       this.isNavbarShrunk = false;
+    }
+
+    // Actualizar logo si cambió el estado
+    if (wasShrunk !== this.isNavbarShrunk) {
+      this.updateLogoImages();
+      // Forzar detección de cambios
+      this.cdr.detectChanges();
     }
   }
 
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
+    // Actualizar logo cuando cambie el estado del menú
+    this.updateLogoImages();
+    // Forzar detección de cambios
+    this.cdr.detectChanges();
   }
 
   /**

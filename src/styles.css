@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('bootstrap/dist/css/bootstrap.min.css');
 @import url('./app/shared/styles/optimized-images.css');
+@import url('./app/shared/styles/responsive-images.css');
 
 :root{
     --color-fondo-claro: #FDFFFE;

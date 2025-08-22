@@ -3,10 +3,13 @@
 
 <app-sc-header></app-sc-header>
 <section class="py-5 sc-hero" #heroSection>
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image 
+    [images]="heroImages" 
+    context="hero" 
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
+  
   <div
     id="carouselExampleIndicators"
     class="carousel slide"
@@ -35,11 +38,12 @@
           <div class="mission-card row align-items-center my-5 g-5 py-5">
             <div class="col-lg-6">
               <div class="mission-image-container">
-                <img
-                  src="assets/us/mission-person.jpg"
-                  alt="Emprendedor trabajando"
-                  class="mission-image img-fluid"
-                />
+                <app-responsive-image 
+                  [images]="carouselImages.mission" 
+                  context="content" 
+                  loading="lazy"
+                  cssClass="mission-image img-fluid">
+                </app-responsive-image>
               </div>
             </div>
             <div class="col-lg-6">
@@ -61,11 +65,12 @@
           <div class="mission-card row align-items-center my-5 g-5 py-5">
             <div class="col-lg-6">
               <div class="mission-image-container">
-                <img
-                  src="assets/us/vision.jpg"
-                  alt="Visión de la empresa"
-                  class="mission-image img-fluid"
-                />
+                <app-responsive-image 
+                  [images]="carouselImages.vision" 
+                  context="content" 
+                  loading="lazy"
+                  cssClass="mission-image img-fluid">
+                </app-responsive-image>
               </div>
             </div>
             <div class="col-lg-6">

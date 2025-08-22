@@ -36,6 +36,21 @@
     max-height: 120px;
 }
 
+/* Estilos para app-responsive-image en el footer */
+.footer-logo app-responsive-image {
+    max-width: 120px;
+    max-height: 120px;
+    display: block;
+}
+
+.footer-logo app-responsive-image img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
 .footer-social {
     /* display: flex; */
     /* Eliminado, Bootstrap d-flex lo maneja */

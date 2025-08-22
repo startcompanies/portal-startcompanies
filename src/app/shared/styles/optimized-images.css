@@ -98,9 +98,10 @@ img.loaded {
   transition: transform 0.2s ease-in-out;
 }
 
-.logo:hover {
+/* Eliminado el efecto hover que causaba comportamiento extraño */
+/* .logo:hover {
   transform: scale(1.05);
-}
+} */
 
 /* Imágenes de beneficios */
 .benefit-icon {
@@ -189,9 +190,10 @@ img.loaded {
   transition: filter 0.3s ease-in-out;
 }
 
-.footer-logo:hover {
+/* Eliminado el efecto hover que causaba comportamiento extraño */
+/* .footer-logo:hover {
   filter: brightness(1) invert(0);
-}
+} */
 
 /* Media queries para responsive */
 @media (max-width: 768px) {

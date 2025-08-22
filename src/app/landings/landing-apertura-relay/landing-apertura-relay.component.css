@@ -12,8 +12,10 @@
 }
 
 .img-fluid {
-  width: 5rem;
+  width: 7rem;
   height: auto;
+  margin: 0 auto;
+  display: block;
 }
 
 .hero-title {

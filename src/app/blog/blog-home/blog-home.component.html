@@ -3,10 +3,13 @@
 
 <app-sc-header></app-sc-header>
 <section class="sc-blog-hero py-5">
-  <picture>
-    <source srcset="/assets/hero-bg.webp" type="image/webp">
-    <img src="/assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image 
+    [images]="heroImages" 
+    context="hero" 
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
+  
   <div class="container py-5">
     <div class="row align-items-center g-5 py-5">
       <div class="col-lg-6">

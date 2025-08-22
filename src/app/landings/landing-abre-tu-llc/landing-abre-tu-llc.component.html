@@ -1,13 +1,23 @@
 <section class="hero-section">
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   <app-hero-section></app-hero-section>
 </section>
 
 <!-- Calendly inline widget -->
-<section #calendly>
+<section #calendly class="calendly-cta-section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
+        <p class="calendly-subtitle">Reserva 30 minutos para resolver todas tus dudas sobre la apertura de tu LLC en EE.UU.</p>
+      </div>
+    </div>
+  </div>
   <app-calendly-section></app-calendly-section>
 </section>
 <!-- Key Benefits Section -->

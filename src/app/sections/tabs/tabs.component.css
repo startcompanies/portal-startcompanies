@@ -257,3 +257,33 @@
     background-color: #f0f0f0;
     color: #006afe;
 }
+
+/* Estilos para las imágenes de tabs con app-responsive-image */
+.sc-tab-pane-content app-responsive-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.sc-tab-pane-content app-responsive-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+/* Dimensiones específicas para diferentes breakpoints */
+@media (min-width: 992px) {
+    .sc-tab-pane-content app-responsive-image img {
+        max-width: 570px;
+        max-height: 550px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .sc-tab-pane-content app-responsive-image img {
+        max-width: 680px;
+        max-height: 660px;
+    }
+}

@@ -19,7 +19,6 @@ export class BlogArticlesComponent implements OnInit {
     this.blogService
       .getCategories()
       .then((categories) => {
-        console.log('Categories:', categories);
         this.categories = categories;
       })
       .catch((error) => {

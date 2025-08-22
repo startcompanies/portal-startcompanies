@@ -1,8 +1,10 @@
 <section class="steps-section py-4">
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="lazy"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   <div class="container">
     <!-- Título principal -->
     <h1 class="display-4 text-center main-title">{{ title }}</h1>

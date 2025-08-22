@@ -1,13 +1,15 @@
-<div class="container col-xxl-8 px-4 py-5">
+<div class="container py-5">
   <div class="row">
-    <div class="col-12 text-center mb-4">
-      <picture>
-        <source srcset="assets/logo.webp" type="image/webp">
-        <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid" />
-      </picture>
+    <div class="col-12 text-center">
+      <app-responsive-image
+        [images]="logoImages"
+        context="logo"
+        loading="eager"
+        cssClass="img-fluid">
+      </app-responsive-image>
     </div>
   </div>
-  <div class="row align-items-center g-5 py-5">
+  <div class="row align-items-center g-5 py-3">
     <div class="col-lg-6">
       <!-- Contenedor del video -->
       <app-wistia-player ngSkipHydration mediaId="o9xq5e1pus"></app-wistia-player>

@@ -1,17 +1,20 @@
 <!-- Hero/Header Section -->
 <section class="hero-section">
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   <div class="container col-xxl-8 px-4 py-5">
     <div class="row">
       <div class="col-12 text-center mb-4">
-        <img
-          src="assets/logo.png"
-          alt="Start Companies Logo"
-          class="img-fluid"
-        />
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="img-fluid">
+        </app-responsive-image>
       </div>
       <div class="col-12 text-center pb-5">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">

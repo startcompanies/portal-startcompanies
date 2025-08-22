@@ -3,11 +3,12 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../../services/scroll.service';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { WistiaPlayerComponent } from "../wistia-player/wistia-player.component";
+import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule, WistiaPlayerComponent],
+  imports: [CommonModule, WistiaPlayerComponent, ResponsiveImageComponent],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })
@@ -15,6 +16,16 @@ export class HeroSectionComponent implements OnInit {
   
   videoUrl: any = 'https://www.youtube.com/embed/A0xywPD8FDE';
   videoTitle: any = 'VIDEO VSL START COMPANIES';
+
+  // Configuración de imágenes del logo para NgOptimizedImage
+  logoImages = {
+    mobile: "/assets/logo-mobile.webp",
+    tablet: "/assets/logo-tablet.webp",
+    desktop: "/assets/logo.webp",
+    fallback: "/assets/logo.png",
+    alt: "Start Companies Logo",
+    priority: true
+  };
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private scrollService: ScrollService,
