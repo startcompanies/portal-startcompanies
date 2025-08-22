@@ -18,6 +18,13 @@
         <div class="step-content">
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-description">{{ step.description }}</p>
+          <!-- CTA solo para el primer paso y solo en desktop -->
+          <button *ngIf="step.hasCta" 
+                  class="step-cta-btn desktop-only"
+                  (click)="scrollToCalendly()">
+            Agendar llamada
+            <i class="bi bi-calendar-check ms-2"></i>
+          </button>
         </div>
       </div>
       <div class="step-line"></div>

@@ -10,7 +10,7 @@
 
 <!-- Calendly inline widget -->
 <section #calendly class="calendly-cta-section">
-  <div class="container">
+  <div class="container pb-3">
     <div class="row">
       <div class="col-12 text-center">
         <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
@@ -49,4 +49,12 @@
 <section class="py-5 pt-5">
   <app-faq></app-faq>
 </section>
+
+<!-- Botón flotante para mobile -->
+<button class="floating-cta-button" 
+        [class.show]="showFloatingButton"
+        (click)="scrollToCalendly()">
+  Empezar con una reunión gratuita
+</button>
+
 <!--<app-sc-footer></app-sc-footer>-->

@@ -100,3 +100,81 @@
   }
 
 }
+
+/* Botón flotante para mobile */
+.floating-cta-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background-color: #5BCADF;
+  color: white;
+  border: none;
+  border-radius: 2.5rem;
+  padding: 0.6rem 2.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 8px 25px rgba(91, 202, 223, 0.4);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  visibility: hidden;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 320px;
+  min-height: 50px;
+  transform: translateX(-50%) translateY(100px);
+}
+
+.floating-cta-button:hover {
+  background-color: #4BB8C9;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 12px 30px rgba(91, 202, 223, 0.6);
+}
+
+.floating-cta-button.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.floating-cta-button i {
+  transition: transform 0.3s ease;
+}
+
+.floating-cta-button:hover i {
+  transform: translateX(3px);
+}
+
+/* Mostrar botón flotante solo en mobile */
+@media (max-width: 768px) {
+  .floating-cta-button.show {
+    width: 90%;
+    max-width: 320px;
+  }
+  
+  .floating-cta-button {
+    font-size: 1rem;
+    padding: 0.5rem 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-cta-button.show {
+    width: 95%;
+    max-width: 320px;
+    bottom: 15px;
+  }
+  
+  .floating-cta-button {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.8rem;
+    min-height: 45px;
+  }
+}

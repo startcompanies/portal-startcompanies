@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
@@ -10,29 +10,38 @@ import { ResponsiveImageComponent } from '../../shared/components/responsive-ima
   styleUrl: './steps-section.component.css'
 })
 export class StepsSectionComponent {
+  @ViewChild('calendly', { static: false }) calendlySection!: ElementRef<HTMLElement>;
+
   // Contenido estático del componente
-  readonly title = 'Tu LLC en menos de 7 días en 3 Pasos sencillos';
+  readonly title = 'Tu LLC en menos de 7 días en 4 Pasos sencillos';
   readonly steps = [
     {
       id: 1,
-      title: 'Elige tu Plan',
-      description: 'Selecciona el paquete de servicios que necesitas.',
-      class: 'step-one'
+      title: 'Agenda una llamada',
+      description: 'Agenda una llamada hoy mismo.',
+      class: 'step-one',
+      hasCta: true
     },
     {
       id: 2,
-      title: 'Completa el Formulario',
-      description: 'Bríndanos la información de tu empresa en 5 minutos.',
+      title: 'Elige tu Plan',
+      description: 'Selecciona el paquete de servicios que necesitas.',
       class: 'step-two'
     },
     {
       id: 3,
-      title: 'Recibe tus Documentos',
-      description: 'Nosotros nos encargamos y te enviamos todo digitalmente.',
+      title: 'Completa el Formulario',
+      description: 'Bríndanos la información de tu empresa en 5 minutos.',
       class: 'step-three'
+    },
+    {
+      id: 4,
+      title: 'Paga cuando esté todo listo',
+      description: 'Solo pagas cuando tengas tu cuenta de banco y empresa funcionando.',
+      class: 'step-four'
     }
   ];
-  readonly bottomStatement = '¡Pagas solo cuando tienes tu cuenta de banco y empresa funcionando!';
+  readonly bottomStatement = '¡Simple, rápido y sin complicaciones!';
 
   // Configuración de imágenes del hero para NgOptimizedImage
   heroImages = {
@@ -43,4 +52,15 @@ export class StepsSectionComponent {
     alt: "Hero Background",
     priority: false
   };
+
+  scrollToCalendly(): void {
+    // Buscar la sección de calendly en el DOM
+    const calendlySection = document.querySelector('.calendly-cta-section');
+    if (calendlySection) {
+      calendlySection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
 }
