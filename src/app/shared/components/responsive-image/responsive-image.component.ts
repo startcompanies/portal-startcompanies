@@ -38,7 +38,8 @@ import { Subscription } from 'rxjs';
     
     img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: cover;
       transition: opacity 0.3s ease;
     }
     
@@ -96,11 +97,33 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy {
     // Configurar fallback
     this.fallbackSrc = this.images.fallback;
     this.alt = this.images.alt;
+
+    // DEBUG: Log para verificar qué se está configurando
+    console.log('🔍 DEBUG ResponsiveImage:', {
+      context: this.context,
+      webpSrcSet: this.webpSrcSet,
+      jpegSrcSet: this.jpegSrcSet,
+      sizes: this.sizes,
+      fallback: this.fallbackSrc
+    });
   }
 
   onImageLoad() {
     // La imagen se cargó exitosamente
     console.log(`✅ Imagen cargada: ${this.alt}`);
+    
+    // DEBUG: Verificar qué imagen se cargó realmente
+    const imgElement = event?.target as HTMLImageElement;
+    if (imgElement) {
+      console.log('🔍 DEBUG Imagen cargada:', {
+        src: imgElement.src,
+        naturalWidth: imgElement.naturalWidth,
+        naturalHeight: imgElement.naturalHeight,
+        offsetWidth: imgElement.offsetWidth,
+        offsetHeight: imgElement.offsetHeight,
+        alt: imgElement.alt
+      });
+    }
   }
 
   onImageError() {
