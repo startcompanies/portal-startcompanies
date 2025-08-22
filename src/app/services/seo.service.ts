@@ -15,6 +15,7 @@ export interface SeoData {
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
+  twitterSite?: string;
 }
 
 @Injectable({
@@ -57,7 +58,12 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: data.twitterTitle || data.title });
     this.meta.updateTag({ name: 'twitter:description', content: data.twitterDescription || data.description });
-    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || '/assets/logo.png' });
+    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || 'https://dev.startcompanies.us/assets/logo.png' });
+    
+    // Twitter Site (nuevo)
+    if (data.twitterSite) {
+      this.meta.updateTag({ name: 'twitter:site', content: data.twitterSite });
+    }
 
     // Canonical URL
     if (data.canonical) {
@@ -111,6 +117,7 @@ export class SeoService {
     this.meta.removeTag('name="twitter:title"');
     this.meta.removeTag('name="twitter:description"');
     this.meta.removeTag('name="twitter:image"');
+    this.meta.removeTag('name="twitter:site"');
 
     // Limpiar canonical URL
     this.meta.removeTag('rel="canonical"');

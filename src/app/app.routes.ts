@@ -34,7 +34,8 @@ export const routes: Routes = [
                 keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
                 ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
                 ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us'
             }
         }
@@ -49,7 +50,8 @@ export const routes: Routes = [
                 keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
                 ogTitle: 'Nosotros - Start Companies LLC',
                 ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/nosotros'
             }
         }
@@ -64,7 +66,8 @@ export const routes: Routes = [
                 keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
                 ogTitle: 'Contacto - Start Companies LLC',
                 ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/contacto'
             }
         }
@@ -79,7 +82,8 @@ export const routes: Routes = [
                 keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
                 ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
                 ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/abre-tu-llc'
             }
         }
@@ -94,7 +98,8 @@ export const routes: Routes = [
                 keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
                 ogTitle: 'Apertura de Banco Relay - Start Companies LLC',
                 ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/apertura-banco-relay'
             }
         }
@@ -109,7 +114,8 @@ export const routes: Routes = [
                 keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
                 ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
                 ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/apertura-llc'
             }
         }
@@ -124,7 +130,8 @@ export const routes: Routes = [
                 keywords: 'renovación LLC Estados Unidos, renovar LLC USA, mantener LLC activa, Start Companies',
                 ogTitle: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
                 ogDescription: 'Renovamos tu LLC en Estados Unidos antes de que expire.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/renovar-llc'
             }
         }
@@ -139,7 +146,8 @@ export const routes: Routes = [
                 keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
                 ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
                 ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/form-apertura-relay'
             }
         }
@@ -154,7 +162,8 @@ export const routes: Routes = [
                 keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
                 ogTitle: 'Planes y Precios - Start Companies LLC',
                 ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/planes'
             }
         }
@@ -169,7 +178,8 @@ export const routes: Routes = [
                 keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
                 ogTitle: 'Blog - Start Companies LLC',
                 ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-                ogImage: '/assets/logo.png',
+                ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+                twitterSite: '@startcompaniess',
                 canonical: 'https://dev.startcompanies.us/blog'
             }
         }
