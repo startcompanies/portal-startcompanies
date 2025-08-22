@@ -10,11 +10,11 @@ export interface SeoData {
   ogDescription?: string;
   ogImage?: string;
   ogUrl?: string;
+  canonical?: string;
   twitterCard?: string;
   twitterTitle?: string;
   twitterDescription?: string;
   twitterImage?: string;
-  canonicalUrl?: string;
 }
 
 @Injectable({
@@ -30,12 +30,9 @@ export class SeoService {
 
   /**
    * Aplica todos los meta tags de SEO para una página
+   * Ahora funciona tanto en navegador como en servidor (SSR)
    */
   updateSeoData(data: SeoData): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return; // Solo ejecutar en el navegador
-    }
-
     // Title principal
     this.title.setTitle(data.title);
 
@@ -47,8 +44,14 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:title', content: data.ogTitle || data.title });
     this.meta.updateTag({ property: 'og:description', content: data.ogDescription || data.description });
     this.meta.updateTag({ property: 'og:image', content: data.ogImage || '/assets/logo.png' });
-    this.meta.updateTag({ property: 'og:url', content: data.ogUrl || window.location.href });
+    
+    // Solo en navegador para og:url dinámico
+    if (isPlatformBrowser(this.platformId)) {
+      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || window.location.href });
+    }
+    
     this.meta.updateTag({ property: 'og:type', content: 'website' });
+    this.meta.updateTag({ property: 'og:locale', content: 'es_ES' });
 
     // Twitter Card tags
     this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
@@ -57,9 +60,27 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || '/assets/logo.png' });
 
     // Canonical URL
-    if (data.canonicalUrl) {
-      this.meta.updateTag({ rel: 'canonical', href: data.canonicalUrl });
+    if (data.canonical) {
+      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
     }
+  }
+
+  /**
+   * Método NUEVO: Lee SEO de la configuración de ruta
+   * Este método se llama automáticamente desde el componente SEO
+   */
+  updateFromRoute(routeData: any): void {
+    if (routeData && routeData.seo) {
+      this.updateSeoData(routeData.seo);
+    }
+  }
+
+  /**
+   * Método NUEVO: Actualiza SEO basándose en la ruta actual
+   * Útil para navegación programática
+   */
+  updateSeoForRoute(route: string, seoData: SeoData): void {
+    this.updateSeoData(seoData);
   }
 
   /**
@@ -73,10 +94,6 @@ export class SeoService {
    * Limpia todos los meta tags personalizados
    */
   clearSeoData(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
     // Limpiar meta tags básicos
     this.meta.removeTag('name="description"');
     this.meta.removeTag('name="keywords"');
@@ -87,6 +104,7 @@ export class SeoService {
     this.meta.removeTag('property="og:image"');
     this.meta.removeTag('property="og:url"');
     this.meta.removeTag('property="og:type"');
+    this.meta.removeTag('property="og:locale"');
 
     // Limpiar Twitter Card tags
     this.meta.removeTag('name="twitter:card"');
@@ -111,5 +129,14 @@ export class SeoService {
   getCurrentDescription(): string {
     const metaTag = this.meta.getTag('name="description"');
     return metaTag ? metaTag.content || '' : '';
+  }
+
+  /**
+   * Método NUEVO: Verifica si el SEO está configurado correctamente
+   */
+  isSeoConfigured(): boolean {
+    const title = this.getCurrentTitle();
+    const description = this.getCurrentDescription();
+    return title.length > 0 && description.length > 0;
   }
 }
