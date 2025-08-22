@@ -5,14 +5,25 @@ import { BlogComponent } from "../../sections/blog/blog.component";
 import { BlogArticlesComponent } from "../blog-articles/blog-articles.component";
 import { BlogQuestionsComponent } from "../blog-questions/blog-questions.component";
 import { SeoBaseComponent } from "../../shared/components/seo-base/seo-base.component";
+import { ResponsiveImageComponent } from "../../shared/components/responsive-image/responsive-image.component";
 
 @Component({
   selector: 'app-blog-home',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent, BlogComponent, BlogArticlesComponent, BlogQuestionsComponent, SeoBaseComponent],
+  imports: [ScHeaderComponent, ScFooterComponent, BlogComponent, BlogArticlesComponent, BlogQuestionsComponent, SeoBaseComponent, ResponsiveImageComponent],
   templateUrl: './blog-home.component.html',
   styleUrl: './blog-home.component.css'
 })
 export class BlogHomeComponent {
+
+  // Configuración de imágenes para NgOptimizedImage
+  heroImages = {
+    mobile: "/assets/hero-bg-mobile.jpg",
+    tablet: "/assets/hero-bg-tablet.jpg",
+    desktop: "/assets/hero-bg.jpg",
+    fallback: "/assets/hero-bg.jpg",
+    alt: "Blog Hero Background",
+    priority: true
+  };
 
 }

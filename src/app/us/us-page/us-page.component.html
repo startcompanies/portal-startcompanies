@@ -3,10 +3,13 @@
 
 <app-sc-header></app-sc-header>
 <section class="py-5 sc-hero" #heroSection>
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image 
+    [images]="heroImages" 
+    context="hero" 
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
+  
   <div
     id="carouselExampleIndicators"
     class="carousel slide"

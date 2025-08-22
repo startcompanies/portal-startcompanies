@@ -17,6 +17,14 @@
     </div>
 </section>
 <section class="expert-section text-center text-white d-flex align-items-center justify-content-center py-5">
+    <!-- Imagen de fondo optimizada con NgOptimizedImage -->
+    <app-responsive-image 
+        [images]="heroImages" 
+        context="hero" 
+        loading="lazy"
+        cssClass="expert-bg">
+    </app-responsive-image>
+    
     <div class="container">
         <div class="row">
             <div class="col-12">

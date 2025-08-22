@@ -9,6 +9,13 @@ export interface ResponsiveImage {
   desktop: string;
   fallback: string;
   alt: string;
+  mobileWidth?: number;
+  mobileHeight?: number;
+  tabletWidth?: number;
+  tabletHeight?: number;
+  desktopWidth?: number;
+  desktopHeight?: number;
+  priority?: boolean;
 }
 
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
@@ -94,16 +101,20 @@ export class ResponsiveImageService {
   }
 
   /**
-   * Obtiene el srcset completo para una imagen
+   * Obtiene el srcset completo para una imagen con dimensiones específicas
    */
   getSrcSet(images: ResponsiveImage): string {
-    return `${images.mobile} 768w, ${images.tablet} 1024w, ${images.desktop} 1920w`;
+    const mobileWidth = images.mobileWidth || 768;
+    const tabletWidth = images.tabletWidth || 1024;
+    const desktopWidth = images.desktopWidth || 1920;
+    
+    return `${images.mobile} ${mobileWidth}w, ${images.tablet} ${tabletWidth}w, ${images.desktop} ${desktopWidth}w`;
   }
 
   /**
-   * Obtiene el sizes apropiado para el contexto
+   * Obtiene el sizes apropiado para el contexto con dimensiones más específicas
    */
-  getSizes(context: 'hero' | 'content' | 'thumbnail' = 'content'): string {
+  getSizes(context: 'hero' | 'content' | 'thumbnail' | 'logo' = 'content'): string {
     switch (context) {
       case 'hero':
         return '(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 100vw';
@@ -111,8 +122,42 @@ export class ResponsiveImageService {
         return '(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw';
       case 'thumbnail':
         return '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 300px';
+      case 'logo':
+        return '(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 300px';
       default:
         return '(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw';
     }
+  }
+
+  /**
+   * Obtiene las dimensiones óptimas para el dispositivo actual
+   */
+  getOptimalDimensions(images: ResponsiveImage): Observable<{width: number, height: number}> {
+    return this.getDeviceType().pipe(
+      map(deviceType => {
+        switch (deviceType) {
+          case 'mobile':
+            return {
+              width: images.mobileWidth || 768,
+              height: images.mobileHeight || 576
+            };
+          case 'tablet':
+            return {
+              width: images.tabletWidth || 1024,
+              height: images.tabletHeight || 768
+            };
+          case 'desktop':
+            return {
+              width: images.desktopWidth || 1920,
+              height: images.desktopHeight || 1080
+            };
+          default:
+            return {
+              width: images.desktopWidth || 1920,
+              height: images.desktopHeight || 1080
+            };
+        }
+      })
+    );
   }
 }

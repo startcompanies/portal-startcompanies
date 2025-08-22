@@ -1,30 +1,32 @@
 // Configuración de imágenes responsive generada automáticamente
 export const IMAGE_CONFIG = {
   "hero": {
-    "mobile": "/assets/hero-bg-mobile.jpg",
-    "tablet": "/assets/hero-bg-tablet.jpg",
-    "desktop": "/assets/hero-bg.jpg",
-    "fallback": "/assets/hero-bg.jpg",
+    "mobile": "/assets/hero-bg-mobile.webp",
+    "tablet": "/assets/hero-bg-tablet.webp",
+    "desktop": "/assets/hero-bg.webp",
+    "fallback": "/assets/hero-bg.webp",
     "alt": "Hero Background",
     "mobileWidth": 768,
-    "mobileHeight": 432,
+    "mobileHeight": 512, // 768 / 1.50 = 512
     "tabletWidth": 1024,
-    "tabletHeight": 576,
+    "tabletHeight": 683, // 1024 / 1.50 = 683
     "desktopWidth": 1920,
-    "desktopHeight": 1080
+    "desktopHeight": 1280, // 1920 / 1.50 = 1280
+    "priority": true // Solo el hero es LCP element
   },
   "pricing": {
-    "mobile": "/assets/pricing-bg-mobile.jpg",
-    "tablet": "/assets/pricing-bg-tablet.jpg",
-    "desktop": "/assets/pricing-bg.jpg",
-    "fallback": "/assets/pricing-bg.jpg",
+    "mobile": "/assets/pricing-bg-mobile.webp",
+    "tablet": "/assets/pricing-bg-tablet.webp",
+    "desktop": "/assets/pricing-bg.webp",
+    "fallback": "/assets/pricing-bg.webp",
     "alt": "Pricing Background",
     "mobileWidth": 768,
-    "mobileHeight": 432,
+    "mobileHeight": 512, // 768 / 1.50 = 512
     "tabletWidth": 1024,
-    "tabletHeight": 576,
+    "tabletHeight": 683, // 1024 / 1.50 = 683
     "desktopWidth": 1920,
-    "desktopHeight": 1080
+    "desktopHeight": 1280, // 1920 / 1.50 = 1280
+    "priority": false // Pricing NO es LCP element
   },
   "logo": {
     "mobile": "/assets/logo-mobile.png",
@@ -37,7 +39,8 @@ export const IMAGE_CONFIG = {
     "tabletWidth": 250,
     "tabletHeight": 75,
     "desktopWidth": 300,
-    "desktopHeight": 90
+    "desktopHeight": 90,
+    "priority": false // Logo NO es LCP element
   }
 };
 
@@ -53,4 +56,5 @@ export interface ImageConfig {
   tabletHeight?: number;
   desktopWidth?: number;
   desktopHeight?: number;
+  priority?: boolean;
 }

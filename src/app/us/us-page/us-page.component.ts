@@ -8,18 +8,29 @@ import { UsProposalComponent } from "../us-proposal/us-proposal.component";
 import { VideoSectionComponent } from "../../landings/video-section/video-section.component";
 import { isPlatformBrowser } from '@angular/common';
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
+import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-us-page',
   standalone: true,
-  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe, UsPotentialComponent, UsProposalComponent, UsProposalComponent, VideoSectionComponent, SeoBaseComponent],
+  imports: [ScHeaderComponent, ScFooterComponent, TranslocoPipe, UsPotentialComponent, UsProposalComponent, UsProposalComponent, VideoSectionComponent, SeoBaseComponent, ResponsiveImageComponent],
   templateUrl: './us-page.component.html',
   styleUrl: './us-page.component.css'
 })
 export class UsPageComponent implements AfterViewInit, OnDestroy {
   private carousel: any;
+
+  // Configuración de imágenes para NgOptimizedImage
+  heroImages = {
+    mobile: "/assets/hero-bg-mobile.jpg",
+    tablet: "/assets/hero-bg-tablet.jpg",
+    desktop: "/assets/hero-bg.jpg",
+    fallback: "/assets/hero-bg.jpg",
+    alt: "Nosotros Hero Background",
+    priority: true
+  };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 

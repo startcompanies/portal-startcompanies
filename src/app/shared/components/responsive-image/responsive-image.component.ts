@@ -1,45 +1,38 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { ResponsiveImageService, ResponsiveImage } from '../../../services/responsive-image.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-responsive-image',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgOptimizedImage],
   template: `
-    <picture>
-      <!-- WebP sources con srcset responsive -->
-      <source 
-        [srcset]="webpSrcSet" 
-        type="image/webp"
-        [sizes]="sizes">
-      
-      <!-- JPEG sources con srcset responsive -->
-      <source 
-        [srcset]="jpegSrcSet" 
-        type="image/jpeg"
-        [sizes]="sizes">
-      
-      <!-- Imagen principal con fallback -->
-      <img 
-        [src]="fallbackSrc" 
-        [alt]="alt"
-        [loading]="loading"
-        [class]="cssClass"
-        (load)="onImageLoad()"
-        (error)="onImageError()">
-    </picture>
+    <img
+      [ngSrc]="fallbackSrc"
+      [alt]="alt"
+      [width]="imageWidth"
+      [height]="imageHeight"
+      [priority]="isPriority"
+      [loading]="!isPriority ? loading : undefined"
+      (load)="onImageLoad()"
+      (error)="onImageError()" />
   `,
   styles: [`
     :host {
       display: block;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
     }
     
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       transition: opacity 0.3s ease;
     }
     
@@ -54,15 +47,19 @@ import { Subscription } from 'rxjs';
 })
 export class ResponsiveImageComponent implements OnInit, OnDestroy {
   @Input() images!: ResponsiveImage;
-  @Input() context: 'hero' | 'content' | 'thumbnail' = 'content';
+  @Input() context: 'hero' | 'content' | 'thumbnail' | 'logo' = 'content';
   @Input() loading: 'lazy' | 'eager' = 'lazy';
   @Input() cssClass: string = '';
 
-  webpSrcSet: string = '';
-  jpegSrcSet: string = '';
-  sizes: string = '';
+  @HostBinding('class') get hostClass() {
+    return this.cssClass;
+  }
+
   fallbackSrc: string = '';
   alt: string = '';
+  imageWidth: number = 0;
+  imageHeight: number = 0;
+  isPriority: boolean = false;
 
   private subscription = new Subscription();
 
@@ -79,51 +76,46 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy {
   }
 
   private setupResponsiveImage() {
-    // Configurar srcset para WebP
-    this.webpSrcSet = this.responsiveImageService.getSrcSet({
-      mobile: this.images.mobile.replace('.jpg', '.webp').replace('.png', '.webp'),
-      tablet: this.images.tablet.replace('.jpg', '.webp').replace('.png', '.webp'),
-      desktop: this.images.desktop.replace('.jpg', '.webp').replace('.png', '.webp'),
-      fallback: this.images.fallback,
-      alt: this.images.alt
-    });
-
-    // Configurar srcset para JPEG/PNG
-    this.jpegSrcSet = this.responsiveImageService.getSrcSet(this.images);
-
-    // Configurar sizes según el contexto
-    this.sizes = this.responsiveImageService.getSizes(this.context);
-
     // Configurar fallback
     this.fallbackSrc = this.images.fallback;
     this.alt = this.images.alt;
 
-    // DEBUG: Log para verificar qué se está configurando
-    console.log('🔍 DEBUG ResponsiveImage:', {
-      context: this.context,
-      webpSrcSet: this.webpSrcSet,
-      jpegSrcSet: this.jpegSrcSet,
-      sizes: this.sizes,
-      fallback: this.fallbackSrc
-    });
+    // Configurar dimensiones y prioridad según la configuración de la imagen
+    this.setImageDimensions();
+  }
+
+  private setImageDimensions() {
+    // Usar la configuración de prioridad de la imagen
+    this.isPriority = this.images.priority || false;
+    
+    // Configurar dimensiones apropiadas para evitar advertencias NG0913
+    // Las imágenes reales tienen aspect ratio 1.50 (4096x2731)
+    switch (this.context) {
+      case 'hero':
+        this.imageWidth = 1920;
+        this.imageHeight = 1080; // Aspect ratio 16:9 para hero
+        break;
+      case 'content':
+        this.imageWidth = 800;
+        this.imageHeight = 600; // Aspect ratio 4:3 para content
+        break;
+      case 'thumbnail':
+        this.imageWidth = 300;
+        this.imageHeight = 200; // Aspect ratio 3:2 para thumbnail
+        break;
+      case 'logo':
+        this.imageWidth = 300;
+        this.imageHeight = 90; // Aspect ratio específico del logo
+        break;
+      default:
+        this.imageWidth = 800;
+        this.imageHeight = 600; // Aspect ratio 4:3 por defecto
+    }
   }
 
   onImageLoad() {
     // La imagen se cargó exitosamente
     console.log(`✅ Imagen cargada: ${this.alt}`);
-    
-    // DEBUG: Verificar qué imagen se cargó realmente
-    const imgElement = event?.target as HTMLImageElement;
-    if (imgElement) {
-      console.log('🔍 DEBUG Imagen cargada:', {
-        src: imgElement.src,
-        naturalWidth: imgElement.naturalWidth,
-        naturalHeight: imgElement.naturalHeight,
-        offsetWidth: imgElement.offsetWidth,
-        offsetHeight: imgElement.offsetHeight,
-        alt: imgElement.alt
-      });
-    }
   }
 
   onImageError() {
