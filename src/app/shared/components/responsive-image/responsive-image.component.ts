@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, HostBinding, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { ResponsiveImageService, ResponsiveImage } from '../../../services/responsive-image.service';
@@ -25,7 +25,7 @@ import { Subscription } from 'rxjs';
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 100%;
+      /*min-height: 100%;*/
     }
     
     img {
@@ -34,6 +34,12 @@ import { Subscription } from 'rxjs';
       object-fit: cover;
       object-position: center;
       transition: opacity 0.3s ease;
+    }
+    
+    /* Estilos específicos para logos */
+    :host.logo img {
+      object-fit: contain;
+      object-position: center;
     }
     
     img.loading {
@@ -45,9 +51,9 @@ import { Subscription } from 'rxjs';
     }
   `]
 })
-export class ResponsiveImageComponent implements OnInit, OnDestroy {
+export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() images!: ResponsiveImage;
-  @Input() context: 'hero' | 'content' | 'thumbnail' | 'logo' = 'content';
+  @Input() context: 'hero' | 'content' | 'thumbnail' | 'logo' | 'logo-footer' | 'tabs' = 'logo';
   @Input() loading: 'lazy' | 'eager' = 'lazy';
   @Input() cssClass: string = '';
 
@@ -67,6 +73,12 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (this.images) {
+      this.setupResponsiveImage();
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['images'] && changes['images'].currentValue) {
       this.setupResponsiveImage();
     }
   }
@@ -104,8 +116,16 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy {
         this.imageHeight = 200; // Aspect ratio 3:2 para thumbnail
         break;
       case 'logo':
-        this.imageWidth = 300;
-        this.imageHeight = 90; // Aspect ratio específico del logo
+        this.imageWidth = 70;
+        this.imageHeight = 70; // Aspect ratio 1:1 (cuadrado) para logos de headers, tamaño real de renderizado
+        break;
+      case 'logo-footer':
+        this.imageWidth = 120;
+        this.imageHeight = 120; // Aspect ratio 1:1 (cuadrado) para logos de footer, tamaño real de renderizado
+        break;
+      case 'tabs':
+        this.imageWidth = 570;
+        this.imageHeight = 550; // Dimensiones específicas para tabs en laptop
         break;
       default:
         this.imageWidth = 800;
@@ -114,12 +134,10 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy {
   }
 
   onImageLoad() {
-    // La imagen se cargó exitosamente
-    console.log(`✅ Imagen cargada: ${this.alt}`);
+    // Imagen cargada exitosamente
   }
 
   onImageError() {
     // Fallback en caso de error
-    console.warn(`⚠️ Error cargando imagen: ${this.alt}, usando fallback`);
   }
 }

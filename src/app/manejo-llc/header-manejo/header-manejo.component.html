@@ -2,12 +2,13 @@
   <div
     class="container d-flex flex-wrap align-items-center justify-content-between mb-2"
   >
-    <a class="navbar-brand me-auto" href="#">
-      <img
-        src="assets/logo-dark.png"
-        alt="Start Companies Logo"
-        class="sc-navbar-logo"
-      />
+    <a class="navbar-brand me-auto" href="/">
+      <app-responsive-image 
+        [images]="logoImages" 
+        context="logo" 
+        loading="eager"
+        cssClass="sc-navbar-logo">
+      </app-responsive-image>
     </a>
 
     <button

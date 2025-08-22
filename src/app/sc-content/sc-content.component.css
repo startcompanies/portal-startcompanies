@@ -5,7 +5,7 @@
   position: relative;
   overflow: hidden;
   min-height: 600px;
-  height: 100vh; /* Asegurar altura completa */
+  /*height: 100vh;  Asegurar altura completa */
 }
 
 /* Configuración para NgOptimizedImage con fill mode */

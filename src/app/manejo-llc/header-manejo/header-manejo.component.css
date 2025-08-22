@@ -8,6 +8,19 @@
   height: 70px;
 }
 
+/* Estilos para app-responsive-image en el header-manejo */
+.sc-navbar-logo app-responsive-image {
+  height: 70px;
+  width: auto;
+  display: block;
+}
+
+.sc-navbar-logo app-responsive-image img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* Estilo de los elementos de navegación (links) */
 .sc-navbar .navbar-nav .nav-link {
   color: var(--color-primario);

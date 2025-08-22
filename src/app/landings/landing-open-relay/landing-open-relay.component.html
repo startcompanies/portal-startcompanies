@@ -1,8 +1,10 @@
 <section class="hero-section">
-  <picture>
-    <source srcset="../../../assets/hero-bg.webp" type="image/webp">
-    <img src="../../../assets/hero-bg.jpg" alt="Hero Background" class="sc-hero-bg">
-  </picture>
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   <app-hero-section></app-hero-section>
 </section>
 

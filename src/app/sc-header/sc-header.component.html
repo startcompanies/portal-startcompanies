@@ -6,15 +6,12 @@
     class="container d-flex flex-wrap align-items-center justify-content-between mb-2"
   >
     <a class="navbar-brand me-auto" href="/">
-      <img
-        [src]="
-          !isOpen && !isNavbarShrunk
-            ? 'assets/logo.png'
-            : 'assets/logo-dark.png'
-        "
-        alt="Start Companies Logo"
-        class="sc-navbar-logo"
-      />
+      <app-responsive-image 
+        [images]="(logoImages$ | async)!" 
+        context="logo" 
+        loading="eager"
+        cssClass="sc-navbar-logo">
+      </app-responsive-image>
     </a>
 
     <button

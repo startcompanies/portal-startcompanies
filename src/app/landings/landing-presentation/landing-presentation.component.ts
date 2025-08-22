@@ -7,13 +7,33 @@ import { SupportContainerComponent } from "../support-container/support-containe
 import { TestimonialsCarouselComponent } from "../testimonials-carousel/testimonials-carousel.component";
 import { CommonModule } from '@angular/common';
 import { WistiaPlayerComponent } from "../wistia-player/wistia-player.component";
+import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-landing-presentation',
   standalone: true,
-  imports: [CommonModule, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent, TestimonialsCarouselComponent, WistiaPlayerComponent],
+  imports: [CommonModule, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent, TestimonialsCarouselComponent, WistiaPlayerComponent, ResponsiveImageComponent],
   templateUrl: './landing-presentation.component.html',
   styleUrl: './landing-presentation.component.css'
 })
 export class LandingPresentationComponent {
+  // Configuración de imágenes del hero para NgOptimizedImage
+  heroImages = {
+    mobile: "/assets/hero-bg-mobile.webp",
+    tablet: "/assets/hero-bg-tablet.webp",
+    desktop: "/assets/hero-bg.webp",
+    fallback: "/assets/hero-bg.jpg",
+    alt: "Hero Background",
+    priority: true
+  };
+
+  // Configuración de imágenes del logo para NgOptimizedImage
+  logoImages = {
+    mobile: "/assets/logo-mobile.webp",
+    tablet: "/assets/logo-tablet.webp",
+    desktop: "/assets/logo.webp",
+    fallback: "/assets/logo.png",
+    alt: "Start Companies Logo",
+    priority: true
+  };
 }

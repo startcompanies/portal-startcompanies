@@ -32,6 +32,26 @@ export class UsPageComponent implements AfterViewInit, OnDestroy {
     priority: true
   };
 
+  // Configuración de imágenes del carousel para NgOptimizedImage
+  carouselImages = {
+    mission: {
+      mobile: "/assets/us/mission-person.jpg",
+      tablet: "/assets/us/mission-person.jpg",
+      desktop: "/assets/us/mission-person.jpg",
+      fallback: "/assets/us/mission-person.jpg",
+      alt: "Emprendedor trabajando",
+      priority: false
+    },
+    vision: {
+      mobile: "/assets/us/vision.jpg",
+      tablet: "/assets/us/vision.jpg",
+      desktop: "/assets/us/vision.jpg",
+      fallback: "/assets/us/vision.jpg",
+      alt: "Visión de la empresa",
+      priority: false
+    }
+  };
+
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngAfterViewInit() {
