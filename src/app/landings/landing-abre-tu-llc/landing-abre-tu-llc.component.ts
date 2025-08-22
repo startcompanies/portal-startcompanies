@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs';
 import { ScrollService } from '../../services/scroll.service';
 
 @Component({
-  selector: 'app-landing-open-relay',
+  selector: 'app-landing-abre-tu-llc',
   standalone: true,
   imports: [
     HeroSectionComponent,
@@ -32,10 +32,10 @@ import { ScrollService } from '../../services/scroll.service';
     KeyBenefitsSectionComponent,
     ResponsiveImageComponent
 ],
-  templateUrl: './landing-open-relay.component.html',
-  styleUrl: './landing-open-relay.component.css',
+  templateUrl: './landing-abre-tu-llc.component.html',
+  styleUrl: './landing-abre-tu-llc.component.css',
 })
-export class LandingOpenRelayComponent implements AfterViewInit {
+export class LandingAbreTuLlcComponent implements AfterViewInit {
   @ViewChild('calendly', { static: false })
   calendlySection!: ElementRef<HTMLElement>;
 

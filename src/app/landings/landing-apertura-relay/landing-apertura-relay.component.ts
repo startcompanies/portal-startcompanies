@@ -10,13 +10,13 @@ import { WistiaPlayerComponent } from "../wistia-player/wistia-player.component"
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
-  selector: 'app-landing-presentation',
+  selector: 'app-landing-apertura-relay',
   standalone: true,
   imports: [CommonModule, FaqComponent, VideoGridSectionComponent, VideoSectionComponent, PlansContainerComponent, SupportContainerComponent, TestimonialsCarouselComponent, WistiaPlayerComponent, ResponsiveImageComponent],
-  templateUrl: './landing-presentation.component.html',
-  styleUrl: './landing-presentation.component.css'
+  templateUrl: './landing-apertura-relay.component.html',
+  styleUrl: './landing-apertura-relay.component.css',
 })
-export class LandingPresentationComponent {
+export class LandingAperturaRelayComponent {
   // Configuración de imágenes del hero para NgOptimizedImage
   heroImages = {
     mobile: "/assets/hero-bg-mobile.webp",

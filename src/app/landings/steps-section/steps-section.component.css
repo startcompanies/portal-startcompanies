@@ -32,7 +32,6 @@
   position: relative;
   width: 100%;
   max-width: 1000px;
-  margin: 8rem auto;
   display: flex;
   flex-direction: column;
   gap: 2rem;

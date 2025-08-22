@@ -105,7 +105,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
       window.Cal.ns['30min']('ui', {
         cssVarsPerTheme: {
-          light: { 'cal-brand': '#00B894' },
+          light: { 'cal-brand': '#006AFE' },
           dark: { 'cal-brand': '#fafafa' },
         },
         hideEventTypeDetails: false,

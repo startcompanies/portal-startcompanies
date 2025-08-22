@@ -74,7 +74,7 @@ export const routes: Routes = [
     },
     {
         path: 'abre-tu-llc',
-        loadComponent: () => import('./landings/landing-open-relay/landing-open-relay.component').then(m => m.LandingOpenRelayComponent),
+        loadComponent: () => import('./landings/landing-abre-tu-llc/landing-abre-tu-llc.component').then(m => m.LandingAbreTuLlcComponent),
         data: {
             seo: {
                 title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
@@ -90,7 +90,7 @@ export const routes: Routes = [
     },
     {
         path: 'apertura-banco-relay',
-        loadComponent: () => import('./landings/landing-presentation/landing-presentation.component').then(m => m.LandingPresentationComponent),
+        loadComponent: () => import('./landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent),
         data: {
             seo: {
                 title: 'Apertura de Banco Relay - Start Companies LLC',
