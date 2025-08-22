@@ -1,0 +1,26 @@
+<app-seo-base></app-seo-base>
+<app-sc-header></app-sc-header>
+<section class="sc-error-hero">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  ></app-responsive-image>
+  <div class="container py-5 text-center">
+    <h1 class="error-404-title fw-bold col-lg-6 mx-auto">¡Ooops!</h1>
+    <div class="col-lg-6 mx-auto">
+      <p class="error-404-description fw-700 lead mb-4">
+        ¡Te hemos perdido! No sabemos qué ha podido pasar... ¿Pero, dónde te has
+        metido? Rápido, vuelve con nosotros.
+      </p>
+      <div class="justify-content sm-center">
+        <a href="/" class="btn btn-light btn-primary">
+          Volver al Inicio
+          <i class="bi bi-arrow-left"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+<app-sc-footer></app-sc-footer>
