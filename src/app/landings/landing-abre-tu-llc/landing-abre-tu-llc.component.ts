@@ -40,6 +40,7 @@ export class LandingAbreTuLlcComponent implements AfterViewInit {
   calendlySection!: ElementRef<HTMLElement>;
 
   private scrollSubscription!: Subscription;
+  showFloatingButton = false;
 
   constructor(
     private scrollService: ScrollService,
@@ -83,6 +84,40 @@ export class LandingAbreTuLlcComponent implements AfterViewInit {
         this.scrollTargetSection(sectionId);
       }
     );
+
+    // Agregar listener de scroll para el botón flotante
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', () => {
+        this.checkScrollForFloatingButton();
+      });
+    }
+  }
+
+  private checkScrollForFloatingButton() {
+    // Buscar las secciones en el DOM
+    const heroSection = document.querySelector('.hero-section');
+    const calendlySection = document.querySelector('.calendly-cta-section');
+    
+    if (heroSection && calendlySection) {
+      const heroRect = heroSection.getBoundingClientRect();
+      const calendlyRect = calendlySection.getBoundingClientRect();
+      
+      // Mostrar botón cuando ambas secciones (hero y calendly) estén fuera de vista
+      const isHeroOutOfView = heroRect.bottom < 0;
+      const isCalendlyOutOfView = calendlyRect.bottom < 0;
+      
+      // Mostrar botón solo en mobile y cuando ambas secciones estén fuera de vista
+      this.showFloatingButton = window.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
+    }
+  }
+
+  scrollToCalendly(): void {
+    if (this.calendlySection) {
+      this.calendlySection.nativeElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
   }
 
   scrollTargetSection(sectionId: string) {
