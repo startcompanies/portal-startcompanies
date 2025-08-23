@@ -1,8 +1,10 @@
-import { Component, Input, OnInit, OnDestroy, HostBinding, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, HostBinding, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
-import { ResponsiveImageService, ResponsiveImage } from '../../../services/responsive-image.service';
-import { Subscription } from 'rxjs';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { ResponsiveImage } from '../../../services/responsive-image.service';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-responsive-image',
@@ -10,12 +12,14 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, NgOptimizedImage],
   template: `
     <img
-      [ngSrc]="fallbackSrc"
+      [ngSrc]="currentImageSrc"
       [alt]="alt"
-      [width]="imageWidth"
-      [height]="imageHeight"
+      [width]="currentWidth"
+      [height]="currentHeight"
       [priority]="isPriority"
       [loading]="!isPriority ? loading : undefined"
+      [fill]="false"
+      [sizes]="currentSizes"
       (load)="onImageLoad()"
       (error)="onImageError()" />
   `,
@@ -25,7 +29,6 @@ import { Subscription } from 'rxjs';
       position: relative;
       width: 100%;
       height: 100%;
-      /*min-height: 100%;*/
     }
     
     img {
@@ -61,20 +64,26 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
     return this.cssClass;
   }
 
-  fallbackSrc: string = '';
-  alt: string = '';
-  imageWidth: number = 0;
-  imageHeight: number = 0;
+  currentImageSrc: string = '';
+  currentWidth: number = 70;
+  currentHeight: number = 70;
+  currentSizes: string = '';
   isPriority: boolean = false;
+  isMobile: boolean = false;
+  isTablet: boolean = false;
+  isDesktop: boolean = false;
+  alt: string = '';
 
-  private subscription = new Subscription();
+  private destroy$ = new Subject<void>();
 
-  constructor(private responsiveImageService: ResponsiveImageService) {}
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
-    if (this.images) {
-      this.setupResponsiveImage();
-    }
+    this.setupBreakpointObserver();
+    this.setupResponsiveImage();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -84,60 +93,113 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupBreakpointObserver() {
+    this.breakpointObserver
+      .observe([
+        Breakpoints.HandsetPortrait,
+        Breakpoints.TabletPortrait,
+        Breakpoints.WebPortrait
+      ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(result => {
+        this.isMobile = result.breakpoints[Breakpoints.HandsetPortrait];
+        this.isTablet = result.breakpoints[Breakpoints.TabletPortrait];
+        this.isDesktop = result.breakpoints[Breakpoints.WebPortrait];
+        
+        this.updateImageForBreakpoint();
+        this.cdr.detectChanges();
+      });
+  }
+
+  private updateImageForBreakpoint() {
+    if (this.isMobile) {
+      this.currentImageSrc = this.images.mobile;
+      this.currentSizes = '(max-width: 768px) 100vw';
+    } else if (this.isTablet) {
+      this.currentImageSrc = this.images.tablet;
+      this.currentSizes = '(max-width: 1024px) 100vw';
+    } else {
+      this.currentImageSrc = this.images.desktop;
+      this.currentSizes = '100vw';
+    }
+  }
+
+  private getDefaultWidth(breakpoint: 'mobile' | 'tablet' | 'desktop'): number {
+    switch (breakpoint) {
+      case 'mobile': return 768;
+      case 'tablet': return 1024;
+      case 'desktop': return 1920;
+      default: return 800;
+    }
+  }
+
+  private getDefaultHeight(breakpoint: 'mobile' | 'tablet' | 'desktop'): number {
+    switch (breakpoint) {
+      case 'mobile': return 1024;
+      case 'tablet': return 1365;
+      case 'desktop': return 1280;
+      default: return 600;
+    }
   }
 
   private setupResponsiveImage() {
-    // Configurar fallback
-    this.fallbackSrc = this.images.fallback;
-    this.alt = this.images.alt;
+    if (!this.images) return;
 
-    // Configurar dimensiones y prioridad según la configuración de la imagen
+    this.isPriority = this.images.priority || false;
+    this.alt = this.images.alt;
+    
+    // Establecer dimensiones estáticas basadas en el contexto
     this.setImageDimensions();
+    
+    // Actualizar solo la fuente de la imagen según el breakpoint
+    this.updateImageForBreakpoint();
   }
 
   private setImageDimensions() {
-    // Usar la configuración de prioridad de la imagen
-    this.isPriority = this.images.priority || false;
-    
-    // Configurar dimensiones apropiadas para evitar advertencias NG0913
-    // Las imágenes reales tienen aspect ratio 1.50 (4096x2731)
     switch (this.context) {
       case 'hero':
-        this.imageWidth = 1920;
-        this.imageHeight = 1080; // Aspect ratio 16:9 para hero
+        this.currentWidth = 1920;
+        this.currentHeight = 1280;
         break;
       case 'content':
-        this.imageWidth = 800;
-        this.imageHeight = 600; // Aspect ratio 4:3 para content
+        this.currentWidth = 800;
+        this.currentHeight = 600;
         break;
       case 'thumbnail':
-        this.imageWidth = 300;
-        this.imageHeight = 200; // Aspect ratio 3:2 para thumbnail
+        this.currentWidth = 300;
+        this.currentHeight = 200;
         break;
       case 'logo':
-        this.imageWidth = 70;
-        this.imageHeight = 70; // Aspect ratio 1:1 (cuadrado) para logos de headers, tamaño real de renderizado
+        this.currentWidth = 70;
+        this.currentHeight = 70;
         break;
       case 'logo-footer':
-        this.imageWidth = 120;
-        this.imageHeight = 120; // Aspect ratio 1:1 (cuadrado) para logos de footer, tamaño real de renderizado
+        this.currentWidth = 120;
+        this.currentHeight = 120;
         break;
       case 'tabs':
-        this.imageWidth = 570;
-        this.imageHeight = 550; // Dimensiones específicas para tabs en laptop
+        this.currentWidth = 570;
+        this.currentHeight = 550;
         break;
       default:
-        this.imageWidth = 800;
-        this.imageHeight = 600; // Aspect ratio 4:3 por defecto
+        this.currentWidth = 800;
+        this.currentHeight = 600;
     }
   }
 
   onImageLoad() {
     // Imagen cargada exitosamente
+    console.log(`✅ Imagen cargada: ${this.currentImageSrc}`);
   }
 
   onImageError() {
-    // Fallback en caso de error
+    // Fallback a imagen por defecto
+    console.warn(`⚠️ Error cargando imagen: ${this.currentImageSrc}, usando fallback`);
+    this.currentImageSrc = this.images.fallback;
+    this.cdr.detectChanges();
   }
 }
