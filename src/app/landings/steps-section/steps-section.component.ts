@@ -48,7 +48,7 @@ export class StepsSectionComponent {
     mobile: "/assets/hero-bg-mobile.webp",
     tablet: "/assets/hero-bg-tablet.webp",
     desktop: "/assets/hero-bg.webp",
-    fallback: "/assets/hero-bg.jpg",
+    fallback: "/assets/hero-bg.webp",
     alt: "Hero Background",
     priority: false
   };

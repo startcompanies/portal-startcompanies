@@ -24,10 +24,10 @@ export class UsPageComponent implements AfterViewInit, OnDestroy {
 
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {
-    mobile: "/assets/hero-bg-mobile.jpg",
-    tablet: "/assets/hero-bg-tablet.jpg",
-    desktop: "/assets/hero-bg.jpg",
-    fallback: "/assets/hero-bg.jpg",
+    mobile: "/assets/hero-bg-mobile.webp",
+    tablet: "/assets/hero-bg-tablet.webp",
+    desktop: "/assets/hero-bg.webp",
+    fallback: "/assets/hero-bg.webp",
     alt: "Nosotros Hero Background",
     priority: true
   };
@@ -35,18 +35,18 @@ export class UsPageComponent implements AfterViewInit, OnDestroy {
   // Configuración de imágenes del carousel para NgOptimizedImage
   carouselImages = {
     mission: {
-      mobile: "/assets/us/mission-person.jpg",
-      tablet: "/assets/us/mission-person.jpg",
-      desktop: "/assets/us/mission-person.jpg",
-      fallback: "/assets/us/mission-person.jpg",
+      mobile: "/assets/us/mission-person.webp",
+      tablet: "/assets/us/mission-person.webp",
+      desktop: "/assets/us/mission-person.webp",
+      fallback: "/assets/us/mission-person.webp",
       alt: "Emprendedor trabajando",
       priority: false
     },
     vision: {
-      mobile: "/assets/us/vision.jpg",
-      tablet: "/assets/us/vision.jpg",
-      desktop: "/assets/us/vision.jpg",
-      fallback: "/assets/us/vision.jpg",
+      mobile: "/assets/us/vision.webp",
+      tablet: "/assets/us/vision.webp",
+      desktop: "/assets/us/vision.webp",
+      fallback: "/assets/us/vision.webp",
       alt: "Visión de la empresa",
       priority: false
     }

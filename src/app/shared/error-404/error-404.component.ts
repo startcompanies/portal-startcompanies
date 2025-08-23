@@ -18,10 +18,10 @@ import { ResponsiveImageComponent } from '../components/responsive-image/respons
 })
 export class Error404Component {
   heroImages = {
-    mobile: '/assets/hero-bg-mobile.jpg',
-    tablet: '/assets/hero-bg-tablet.jpg',
-    desktop: '/assets/hero-bg.jpg',
-    fallback: '/assets/hero-bg.jpg',
+    mobile: '/assets/hero-bg-mobile.webp',
+    tablet: '/assets/hero-bg-tablet.webp',
+    desktop: '/assets/hero-bg.webp',
+    fallback: '/assets/hero-bg.webp',
     alt: 'Blog Hero Background',
     priority: true,
   };

@@ -18,7 +18,7 @@ const qualityConfig = {
 
 // Directorios de imágenes críticas
 const criticalImages = [
-  'src/assets/hero-bg.jpg',
+  'src/assets/hero-bg.png',
   'src/assets/pricing-bg.jpg',
   'src/assets/logo.png',
   'src/assets/logo-dark.png',

@@ -20,6 +20,10 @@
 
 .hero-title {
   color: var(--color-fondo-claro) !important;
+  /* Sistema de escalado responsive */
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 .hero-section .lead {
@@ -28,6 +32,10 @@
 
 .hero-description {
   color: var(--color-fondo-claro) !important;
+  /* Sistema de escalado responsive */
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  line-height: 1.4;
+  font-weight: 600;
 }
 
 .hero-section .container {
@@ -51,12 +59,20 @@
   z-index: 1;
 }
 
-/* Video Overlay (Superposición) */
+/* Video integrado en hero para mobile */
+.hero-section .ratio {
+  max-width: 100%;
+  margin: 0 auto;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Video Overlay (Superposición) - Solo desktop/tablet */
 .video-overlay {
   position: relative;
   z-index: 10; /* Alto z-index para estar por encima de todo */
-  margin-top: -16rem; /* Reducido para que esté más cerca del texto */
-  margin-bottom: -5rem; /* Para que se superponga con la sección de planes */
+  /* Sistema de superposición escalada responsive */
+  margin-top: clamp(-12rem, -16vw, -18rem); /* Superposición escalada: mobile -8rem, desktop -16rem */
+  margin-bottom: clamp(-2rem, -4vw, -5rem); /* Superposición inferior escalada */
   background-color: transparent;
 }
 
@@ -78,7 +94,6 @@
 /* Sección "¿Querés que nos encarguemos por vos?" */
 .encargo-section {
   padding-top: 80px;
-  padding-bottom: 80px;
   background-color: #ffffff; /* Fondo blanco de la sección */
   position: relative;
   z-index: 3;
@@ -125,19 +140,43 @@
   font-weight: 500;
 }
 
-/* Media Queries para Responsividad */
+/* Sistema de escalado responsive para logo */
+.img-fluid {
+  width: clamp(5rem, 8vw, 7rem);
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+/* Media Queries para Responsividad - Solo ajustes de layout, no de tamaño de texto */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 100vh; /* Mantener 100vh en móviles también */
+    min-height: auto; /* Cambiar de 100vh a auto en móviles */
     padding-top: 1rem;
+    padding-bottom: 2rem; /* Agregar padding inferior */
   }
   
   .hero-section .container {
-    padding-top: 2rem;
+    padding-top: 1rem; /* Reducir padding superior en móviles */
+    padding-bottom: 1rem; /* Agregar padding inferior */
+  }
+  
+  .hero-section .ratio {
+    margin-bottom: 1rem; /* Espacio después del video en mobile */
   }
   
   .video-overlay {
-    margin-top: -1rem; /* Reducido en móviles también */
+    display: none; /* Ocultar en mobile ya que está integrado */
+  }
+  
+  .plans-section {
+    padding-top: 2rem; /* Reducir padding en móviles */
+    padding-bottom: 2rem;
+  }
+  
+  .encargo-section {
+    padding-top: 2rem; /* Reducir padding en móviles */
+    padding-bottom: 2rem;
   }
 }
 
@@ -146,15 +185,10 @@
     margin-bottom: -20rem;
   }  */
 }
+
 @media (max-width: 1100px) {
   .qualifications-buttons {
     font-size: 0.7rem !important;
-  }
-  .hero-title {
-    font-size: 1.1rem !important;
-  }
-  .hero-section .lead {
-    font-size: 0.8rem;
   }
   .plans-section {
     padding-top: 4rem;
@@ -168,14 +202,31 @@
     color: var(--color-texto-oscuro);
   }
 }
+
 @media (max-width: 450px) {
-  .hero-section .ratio {
-    margin-bottom: -9rem;
+  .hero-section {
+    min-height: auto; /* Asegurar que sea auto en móviles pequeños */
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
   }
+  
+  .hero-section .container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .hero-section .ratio {
+    margin-bottom: 0.5rem; /* Menos espacio en móviles pequeños */
+  }
+  
   .hero-section .lead {
     font-size: 0.7rem;
   }
   .plans-section {
     padding-top: 0;
+  }
+  
+  .video-overlay {
+    display: none; /* Asegurar que esté oculto */
   }
 }

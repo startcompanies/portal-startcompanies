@@ -1,7 +1,9 @@
-<picture>
-  <source srcset="../../../assets/pricing-bg.webp" type="image/webp">
-  <img src="../../../assets/pricing-bg.jpg" alt="Pricing Background" class="sc-pricing-bg">
-</picture>
+<app-responsive-image
+  [images]="pricingImages"
+  context="hero"
+  loading="eager"
+  cssClass="sc-pricing-bg">
+</app-responsive-image>
 <!-- Overlay para la imagen de fondo -->
 
 <div class="container position-relative z-1">
