@@ -9,13 +9,13 @@ export interface ResponsiveImage {
   desktop: string;
   fallback: string;
   alt: string;
+  priority: boolean;
   mobileWidth?: number;
   mobileHeight?: number;
   tabletWidth?: number;
   tabletHeight?: number;
   desktopWidth?: number;
   desktopHeight?: number;
-  priority?: boolean;
 }
 
 export type DeviceType = 'mobile' | 'tablet' | 'desktop';
@@ -158,6 +158,88 @@ export class ResponsiveImageService {
             };
         }
       })
+    );
+  }
+
+  // Método para crear configuración de imagen optimizada para LCP
+  static createOptimizedImage(
+    mobile: string,
+    tablet: string,
+    desktop: string,
+    fallback: string,
+    alt: string,
+    priority: boolean = false,
+    mobileWidth: number = 0,
+    mobileHeight: number = 0,
+    tabletWidth: number = 0,
+    tabletHeight: number = 0,
+    desktopWidth: number = 0,
+    desktopHeight: number = 0
+  ): ResponsiveImage {
+    return {
+      mobile,
+      tablet,
+      desktop,
+      fallback,
+      alt,
+      priority,
+      mobileWidth,
+      mobileHeight,
+      tabletWidth,
+      tabletHeight,
+      desktopWidth,
+      desktopHeight
+    };
+  }
+
+  // Método para crear imagen hero (LCP element)
+  static createHeroImage(
+    mobile: string,
+    tablet: string,
+    desktop: string,
+    fallback: string,
+    alt: string
+  ): ResponsiveImage {
+    return this.createOptimizedImage(
+      mobile, tablet, desktop, fallback, alt,
+      true, // priority = true para LCP
+      768, 1024, // mobile dimensions
+      1024, 1365, // tablet dimensions
+      1920, 1280 // desktop dimensions
+    );
+  }
+
+  // Método para crear logo (above-the-fold)
+  static createLogoImage(
+    mobile: string,
+    tablet: string,
+    desktop: string,
+    fallback: string,
+    alt: string
+  ): ResponsiveImage {
+    return this.createOptimizedImage(
+      mobile, tablet, desktop, fallback, alt,
+      true, // priority = true para above-the-fold
+      60, 60, // mobile dimensions
+      70, 70, // tablet dimensions
+      70, 70 // desktop dimensions
+    );
+  }
+
+  // Método para crear imagen de contenido (lazy loading)
+  static createContentImage(
+    mobile: string,
+    tablet: string,
+    desktop: string,
+    fallback: string,
+    alt: string
+  ): ResponsiveImage {
+    return this.createOptimizedImage(
+      mobile, tablet, desktop, fallback, alt,
+      false, // priority = false para lazy loading
+      768, 1024, // mobile dimensions
+      1024, 1365, // tablet dimensions
+      1920, 1280 // desktop dimensions
     );
   }
 }

@@ -1,4 +1,4 @@
-// Configuración de imágenes responsive generada automáticamente
+// Configuración de imágenes responsive optimizada para LCP
 export const IMAGE_CONFIG = {
   "hero": {
     "mobile": "/assets/hero-bg-mobile.webp",
@@ -6,13 +6,13 @@ export const IMAGE_CONFIG = {
     "desktop": "/assets/hero-bg.webp",
     "fallback": "/assets/hero-bg.webp",
     "alt": "Hero Background",
+    "priority": true, // LCP element
     "mobileWidth": 768,
-    "mobileHeight": 512, // 768 / 1.50 = 512
+    "mobileHeight": 1024,
     "tabletWidth": 1024,
-    "tabletHeight": 683, // 1024 / 1.50 = 683
+    "tabletHeight": 1365,
     "desktopWidth": 1920,
-    "desktopHeight": 1280, // 1920 / 1.50 = 1280
-    "priority": true // Solo el hero es LCP element
+    "desktopHeight": 1280
   },
   "pricing": {
     "mobile": "/assets/pricing-bg-mobile.webp",
@@ -20,27 +20,27 @@ export const IMAGE_CONFIG = {
     "desktop": "/assets/pricing-bg.webp",
     "fallback": "/assets/pricing-bg.webp",
     "alt": "Pricing Background",
+    "priority": false,
     "mobileWidth": 768,
-    "mobileHeight": 512, // 768 / 1.50 = 512
+    "mobileHeight": 1024,
     "tabletWidth": 1024,
-    "tabletHeight": 683, // 1024 / 1.50 = 683
+    "tabletHeight": 1365,
     "desktopWidth": 1920,
-    "desktopHeight": 1280, // 1920 / 1.50 = 1280
-    "priority": false // Pricing NO es LCP element
+    "desktopHeight": 1280
   },
   "logo": {
-    "mobile": "/assets/logo-mobile.png",
-    "tablet": "/assets/logo-tablet.png",
-    "desktop": "/assets/logo.png",
-    "fallback": "/assets/logo.png",
+    "mobile": "/assets/logo-mobile.webp",
+    "tablet": "/assets/logo-tablet.webp",
+    "desktop": "/assets/logo.webp",
+    "fallback": "/assets/logo.webp",
     "alt": "Start Companies Logo",
-    "mobileWidth": 200,
+    "priority": true, // Critical for above-the-fold
+    "mobileWidth": 60,
     "mobileHeight": 60,
-    "tabletWidth": 250,
-    "tabletHeight": 75,
-    "desktopWidth": 300,
-    "desktopHeight": 90,
-    "priority": false // Logo NO es LCP element
+    "tabletWidth": 70,
+    "tabletHeight": 70,
+    "desktopWidth": 70,
+    "desktopHeight": 70
   }
 };
 
@@ -50,11 +50,11 @@ export interface ImageConfig {
   desktop: string;
   fallback: string;
   alt: string;
-  mobileWidth?: number;
-  mobileHeight?: number;
-  tabletWidth?: number;
-  tabletHeight?: number;
-  desktopWidth?: number;
-  desktopHeight?: number;
-  priority?: boolean;
+  priority: boolean;
+  mobileWidth: number;
+  mobileHeight: number;
+  tabletWidth: number;
+  tabletHeight: number;
+  desktopWidth: number;
+  desktopHeight: number;
 }

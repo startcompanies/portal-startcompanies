@@ -16,10 +16,10 @@ export class PricingPlanesComponent {
 
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {
-    mobile: "/assets/hero-bg-mobile.jpg",
-    tablet: "/assets/hero-bg-tablet.jpg",
-    desktop: "/assets/hero-bg.jpg",
-    fallback: "/assets/hero-bg.jpg",
+    mobile: "/assets/hero-bg-mobile.webp",
+    tablet: "/assets/hero-bg-tablet.webp",
+    desktop: "/assets/hero-bg.webp",
+    fallback: "/assets/hero-bg.webp",
     alt: "Planes y Precios Hero Background",
     priority: true
   };

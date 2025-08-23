@@ -46,7 +46,7 @@ export class ImagePreloaderComponent implements OnInit {
     // Imágenes críticas que deben precargarse
     this.criticalImages = [
       { src: '/assets/logo.png', alt: 'Logo Start Companies', loaded: false },
-      { src: '/assets/hero-bg.jpg', alt: 'Hero Background', loaded: false },
+      { src: '/assets/hero-bg.webp', alt: 'Hero Background', loaded: false },
       { src: '/assets/pricing-bg.jpg', alt: 'Pricing Background', loaded: false }
     ];
 
