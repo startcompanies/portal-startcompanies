@@ -84,8 +84,21 @@ export function app(): express.Express {
       })
       .catch((err) => {
         console.error(`❌ Error renderizando ${originalUrl}:`, err);
-        next(err);
+        
+        // Si es un error 404, redirigir a /error-404
+        if (err.message && err.message.includes('404')) {
+          console.log(`🔄 Redirigiendo 404 a /error-404`);
+          res.redirect(302, '/error-404');
+        } else {
+          next(err);
+        }
       });
+  });
+
+  // Manejo específico de rutas no encontradas (404)
+  server.use('*', (req, res) => {
+    console.log(`🚫 Ruta no encontrada: ${req.originalUrl}`);
+    res.redirect(302, '/error-404');
   });
 
   return server;
