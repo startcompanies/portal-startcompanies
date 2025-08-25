@@ -37,12 +37,36 @@ import { Subject } from 'rxjs';
       object-fit: cover;
       object-position: center;
       transition: opacity 0.3s ease;
+      /* Estilos específicos para Safari */
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+      -webkit-appearance: none;
+      /* Asegurar que Safari respete las dimensiones */
+      max-width: none;
+      max-height: none;
     }
     
     /* Estilos específicos para logos */
     :host.logo img {
       object-fit: contain;
       object-position: center;
+      /* Estilos adicionales para logos en Safari */
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      /* Prevenir que Safari cambie el aspect-ratio */
+      aspect-ratio: auto;
+    }
+    
+    /* Estilos específicos para Safari */
+    @supports (-webkit-appearance: none) {
+      :host.logo img {
+        /* Forzar dimensiones en Safari */
+        width: 70px !important;
+        height: 70px !important;
+        /* Asegurar que Safari no aplique estilos por defecto */
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+      }
     }
     
     img.loading {
