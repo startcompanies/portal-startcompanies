@@ -1,0 +1,65 @@
+.sc-post-hero {
+  position: relative;
+  /* Elimina cualquier propiedad de fondo aquí, ya que app-responsive-image lo maneja */
+  overflow: hidden;
+}
+
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+.sc-post-hero-content {
+  min-height: 600px; /* Asegura una altura mínima para el hero */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra el contenido verticalmente */
+  position: relative;
+  z-index: 1; /* Asegura que el contenido esté sobre el fondo */
+}
+
+.sc-post-path {
+  font-size: 1.2rem;
+  color: var(--color-fondo-claro);
+  font-weight: 200;
+  margin-bottom: 0; /* Elimina cualquier espaciado inferior no deseado */
+}
+
+/* El contenedor principal de la imagen del post */
+.sc-post-main-image-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  /* Centra la imagen y la desplaza hacia arriba la mitad de su altura para la superposición */
+  transform: translate(-50%, 50%);
+  width: 90%; /* Ancho de la imagen en móviles */
+  max-width: 800px;
+  z-index: 2;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 1rem;
+}
+
+.sc-post-main-image-wrapper img {
+    border-radius: 1rem;
+    width: 100%;
+    height: auto;
+}
+
+/* Ajustes para pantallas de escritorio */
+@media (min-width: 768px) {
+    .sc-post-hero-content {
+        min-height: 700px; /* Aumenta la altura del hero en escritorio */
+    }
+    .sc-post-path {
+        font-size: 1.5rem; /* El path un poco más grande en escritorio */
+    }
+    .sc-post-main-image-wrapper {
+        transform: translate(-50%, 50%); /* El transform se mantiene */
+        width: 80%; /* Ancho de la imagen en escritorio */
+    }
+}

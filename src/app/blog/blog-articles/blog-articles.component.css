@@ -27,7 +27,6 @@
 
 /* Estilos de la sección de categorías */
 .category-section {
-  
   height: 100%;
 }
 
@@ -64,33 +63,51 @@
   background-color: var(--color-fondo-gris);
 }
 
-
 .horizontal-card img {
   height: 100%;
   object-fit: cover;
 }
 
-
 .horizontal-card .card-body {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   padding: 1rem;
 }
 
-
-.horizontal-card .card-title {
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+.row {
+  align-items: stretch;
 }
 
+.horizontal-card .card-title {
+  /*font-size: 1rem;
+  margin-bottom: 0.25rem;*/
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.horizontal-card .card-text {
+  flex-grow: 1; /* Permite que el excerpt ocupe el espacio vertical restante */
+
+  /* Limita el texto a un máximo de 2 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* El número de líneas que quieres mostrar */
+  line-clamp: 2; /* Propiedad estándar para compatibilidad */
+  -webkit-box-orient: vertical;
+  overflow: hidden; /* Oculta el texto que sobrepasa las 2 líneas */
+  text-overflow: ellipsis; /* Añade ... al final del texto truncado */
+}
 
 .horizontal-card .btn-sm {
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
 }
 .categories-column {
-    display: flex;
+  display: flex;
 }
 @media (max-width: 780px) {
   .categories-column {

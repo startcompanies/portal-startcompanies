@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { title } from 'process';
 
 export const routes: Routes = [
   // Redirecciones 301 para mantener SEO (solo URLs que no existen)
@@ -250,6 +251,28 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./blog/blog-home/blog-home.component').then(
         (m) => m.BlogHomeComponent
+      ),
+    data: {
+      seo: {
+        title: 'Categoría de Blog - Start Companies LLC',
+        description:
+          'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+        keywords:
+          'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+        ogTitle: 'Categoría de Blog - Start Companies LLC',
+        ogDescription:
+          'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
+      },
+    },
+  },
+  {
+    path: 'blog/:slug',
+    loadComponent: () =>
+      import('./blog/blog-post/blog-post.component').then(
+        (m) => m.BlogPostComponent
       ),
     data: {
       seo: {

@@ -16,4 +16,18 @@ export class BlogService {
       .toPromise()
       .then((res) => res ?? []);
   }
+
+  getAllPosts(): Promise<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/posts/get-from-portal`)
+      .toPromise()
+      .then((res) => res ?? []);
+  }
+
+  getPostsBySlug(slug: string): Promise<any[]> {
+    return this.http
+      .get<any[]>(`${this.apiUrl}/posts/get-from-portal/${slug}`)
+      .toPromise()
+      .then((res) => res ?? []);
+  }
 }

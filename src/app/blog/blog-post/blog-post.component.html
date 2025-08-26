@@ -1,4 +1,28 @@
 <!-- SEO Base Component -->
 <app-seo-base routeKey="blog-post"></app-seo-base>
 <app-sc-header></app-sc-header>
+<section class="sc-post-hero py-5">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+  <div class="container sc-post-hero-content">
+    <div class="row">
+      <div class="col-12 text-start">
+        <p class="sc-post-path">
+          Blog / Abrir tu LLC / ¿Cuál es el Mejor Estado para Abrir tu LLC en
+          Estados Unidos?
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="sc-post-main-image-wrapper">
+    <picture>
+      <img src="assets/blog/img_image_4.png" alt="Imagen principal del post" class="img-fluid rounded-3" />
+    </picture>
+  </div>
+</section>
 <app-sc-footer></app-sc-footer>
