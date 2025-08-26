@@ -4,6 +4,7 @@ import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { BlogService } from '../../services/blog.service';
+import { BlogComponent } from "../../sections/blog/blog.component";
 
 @Component({
   selector: 'app-blog-post',
@@ -13,7 +14,8 @@ import { BlogService } from '../../services/blog.service';
     ScFooterComponent,
     SeoBaseComponent,
     ResponsiveImageComponent,
-  ],
+    BlogComponent
+],
   templateUrl: './blog-post.component.html',
   styleUrl: './blog-post.component.css',
 })
