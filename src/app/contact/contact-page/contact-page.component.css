@@ -28,7 +28,7 @@
   background: var(--color-secundario-tecnico);
   width: 9rem;
 }
-.form-label{
+.form-label {
   color: var(--color-fondo-claro);
   font-size: 1.5rem;
   font-weight: 400;
@@ -36,18 +36,40 @@
   line-height: 1;
   letter-spacing: 0;
 }
-.text-body-emphasis{
+.text-body-emphasis {
   color: var(--color-fondo-claro) !important;
   font-size: 3.5rem;
 }
-.lead{
+.lead {
   color: var(--color-fondo-claro) !important;
   font-size: 1.5rem;
 }
+/* Estilo del botón "Agendar llamada" */
+.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico);
+  /* Color verde */
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  /* Relleno */
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  /* Para alinear texto e icono */
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+@media (min-width: 991.98px) {
+  .boton-flotante-oculto {
+    display: none !important;
+  }
+}
 @media (max-width: 480px) {
-  .text-body-emphasis{
+  .text-body-emphasis {
     font-size: 2.5rem;
-  }  
+  }
 }
 
 .sc-hero-bg {
