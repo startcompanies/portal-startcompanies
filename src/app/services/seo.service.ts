@@ -58,7 +58,7 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: data.twitterTitle || data.title });
     this.meta.updateTag({ name: 'twitter:description', content: data.twitterDescription || data.description });
-    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || 'https://dev.startcompanies.us/assets/logo.png' });
+    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || 'https://startcompanies.us/assets/logo.png' });
     
     // Twitter Site (nuevo)
     if (data.twitterSite) {
