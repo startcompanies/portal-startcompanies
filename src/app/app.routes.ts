@@ -2,17 +2,14 @@ import { Routes } from '@angular/router';
 import { title } from 'process';
 
 export const routes: Routes = [
-  // Redirecciones 301 para mantener SEO (solo URLs que no existen)
+  // ===== REDIRECCIONES 301 PARA SEO =====
+  
+  // Redirecciones de servicios (ya implementadas)
   {
     path: 'servicios',
     redirectTo: '/',
     pathMatch: 'full',
   },
-  /*{
-        path: 'blog',
-        redirectTo: '/',
-        pathMatch: 'full'
-    },*/
   {
     path: 'agenda-tu-consulta-gratis',
     redirectTo: '/contacto',
@@ -24,7 +21,133 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 
-  // Rutas existentes con SEO completo
+  // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
+  {
+    path: 'que-es-etbus-en-ee-uu-ventajas-fiscales-para-tu-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-crear-una-llc-en-nuevo-mexico-2',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'recibir-euros-en-argentina-con-payoneer-usando-tu-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'cual-es-el-mejor-estado-para-abrir-una-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'recibe-pagos-en-euros-en-latam-a-traves-de-tu-llc-con-payoneer',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-abrir-una-llc-en-ee-uu-desde-argentina-guia-completa',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-abrir-una-llc-siendo-no-residente-en-ee-uu',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-una-llc-en-ee-uu-puede-solucionar-sus-problemas-de-impuestos-y-fondos-no-declarados',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+
+  // ===== REDIRECCIONES DE CATEGORÍAS DE BLOG =====
+  {
+    path: 'category/tu-llc-a-nivel-local',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/ventajas-de-un-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/gestionar-una-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/abrir-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/proteccion-de-activos-y-ahorros',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/noticias-y-actualizaciones-sobre-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/casos-de-uso-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/formacion-de-llc-en-eeuu',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/estrategias-empresariales',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+
+  // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
+  {
+    path: 'contrato-oferta',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'presentacion',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'masterclass-thank-you',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'thank-you',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'formulario-de-apertura-de-llc-y-cuenta-bancaria',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'formulario-renovacion-llc',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'masterclass-gratuita',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+
+  // ===== RUTAS EXISTENTES CON SEO COMPLETO =====
   {
     path: '',
     loadComponent: () =>
@@ -41,9 +164,9 @@ export const routes: Routes = [
         ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
         ogDescription:
           'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us',
+        canonical: 'https://startcompanies.us',
       },
     },
   },
@@ -62,9 +185,9 @@ export const routes: Routes = [
         ogTitle: 'Nosotros - Start Companies LLC',
         ogDescription:
           'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/nosotros',
+        canonical: 'https://startcompanies.us/nosotros',
       },
     },
   },
@@ -84,9 +207,9 @@ export const routes: Routes = [
         ogTitle: 'Contacto - Start Companies LLC',
         ogDescription:
           'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/contacto',
+        canonical: 'https://startcompanies.us/contacto',
       },
     },
   },
@@ -106,9 +229,9 @@ export const routes: Routes = [
         ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
         ogDescription:
           'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/abre-tu-llc',
+        canonical: 'https://startcompanies.us/abre-tu-llc',
       },
     },
   },
@@ -128,9 +251,9 @@ export const routes: Routes = [
         ogTitle: 'Apertura de Banco Relay - Start Companies LLC',
         ogDescription:
           'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/apertura-banco-relay',
+        canonical: 'https://startcompanies.us/apertura-banco-relay',
       },
     },
   },
@@ -150,9 +273,9 @@ export const routes: Routes = [
         ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
         ogDescription:
           'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/apertura-llc',
+        canonical: 'https://startcompanies.us/apertura-llc',
       },
     },
   },
@@ -172,9 +295,9 @@ export const routes: Routes = [
         ogTitle: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
         ogDescription:
           'Renovamos tu LLC en Estados Unidos antes de que expire.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/renovar-llc',
+        canonical: 'https://startcompanies.us/renovar-llc',
       },
     },
   },
@@ -194,9 +317,9 @@ export const routes: Routes = [
         ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
         ogDescription:
           'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/form-apertura-relay',
+        canonical: 'https://startcompanies.us/form-apertura-relay',
       },
     },
   },
@@ -217,9 +340,9 @@ export const routes: Routes = [
         ogTitle: 'Planes y Precios - Start Companies LLC',
         ogDescription:
           'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/planes',
+        canonical: 'https://startcompanies.us/planes',
       },
     },
   },
@@ -240,9 +363,9 @@ export const routes: Routes = [
         ogTitle: 'Blog - Start Companies LLC',
         ogDescription:
           'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/blog',
+        canonical: 'https://startcompanies.us/blog',
       },
     },
   },
@@ -306,9 +429,9 @@ export const routes: Routes = [
         ogTitle: 'Error 404 - Página No Encontrada | Start Companies LLC',
         ogDescription:
           'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
-        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
-        canonical: 'https://dev.startcompanies.us/error-404',
+        canonical: 'https://startcompanies.us/error-404',
       },
     },
   },

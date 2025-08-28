@@ -121,14 +121,15 @@
       <div class="container my-3 my-md-5">
         <app-testimonials-carousel></app-testimonials-carousel>
       </div>
-      <a href="#" class="btn btn-primary qualifications-buttons mt-5">
+      <a href="#" class="btn btn-primary qualifications-buttons mt-5" (click)="onServiceButtonClick()">
         Quiero que lo hagan por mí ($99 USD)
         <i class="bi bi-arrow-right ms-2"></i>
       </a>
       <app-video-grid-section
         title="Lo que dicen nuestros"
         titleHighlight="clientes"
-      ></app-video-grid-section>
+        (testimonialsInteraction)="onTestimonialsInteraction()">
+      </app-video-grid-section>
     </div>
   </div>
 </section>

@@ -18,14 +18,18 @@
       </div>
     </div>
   </div>
-  <app-calendly-section></app-calendly-section>
+  <app-calendly-section (calendlyClick)="onCalendlyClick()"></app-calendly-section>
 </section>
+
 <!-- Key Benefits Section -->
 <app-key-benefits-section></app-key-benefits-section>
+
 <!-- Steps Section -->
 <app-steps-section></app-steps-section>
+
 <!-- Testimonials -->
 <app-testimonials></app-testimonials>
+
 <!-- Relay, un banco -->
 <app-video-section
   title="Relay, un banco"
@@ -34,15 +38,17 @@
   videoId="g5w4pudrrb"
   videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
   videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
-></app-video-section>
+  (videoPlay)="onVideoPlay('Relay Banking Service')">
+</app-video-section>
+
 <!-- Video Grid Section -->
 <section class="video-grid-section">
-  <app-video-grid-section
-    title="Escucha a la comunidad"
-    titleHighlight="¡Creación LLC!"
-    description="Mira lo que nuestros clientes tienen que decir  nosotros"
-    [videos]="videoTestimonials"
-  ></app-video-grid-section>
+        <app-video-grid-section
+        title="Escucha a la comunidad"
+        titleHighlight="¡Creación LLC!"
+        description="Mira lo que nuestros clientes tienen que decir de nosotros"
+        [videos]="videoTestimonials">
+      </app-video-grid-section>
 </section>
 
 <!-- FAQ -->
