@@ -1,17 +1,14 @@
 import { Routes } from '@angular/router';
 
 export const routes: Routes = [
-  // Redirecciones 301 para mantener SEO (solo URLs que no existen)
+  // ===== REDIRECCIONES 301 PARA SEO =====
+  
+  // Redirecciones de servicios (ya implementadas)
   {
     path: 'servicios',
     redirectTo: '/',
     pathMatch: 'full',
   },
-  /*{
-        path: 'blog',
-        redirectTo: '/',
-        pathMatch: 'full'
-    },*/
   {
     path: 'agenda-tu-consulta-gratis',
     redirectTo: '/contacto',
@@ -23,7 +20,133 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
 
-  // Rutas existentes con SEO completo
+  // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
+  {
+    path: 'que-es-etbus-en-ee-uu-ventajas-fiscales-para-tu-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-crear-una-llc-en-nuevo-mexico-2',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'recibir-euros-en-argentina-con-payoneer-usando-tu-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'cual-es-el-mejor-estado-para-abrir-una-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'recibe-pagos-en-euros-en-latam-a-traves-de-tu-llc-con-payoneer',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-abrir-una-llc-en-ee-uu-desde-argentina-guia-completa',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-abrir-una-llc-siendo-no-residente-en-ee-uu',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'como-una-llc-en-ee-uu-puede-solucionar-sus-problemas-de-impuestos-y-fondos-no-declarados',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+
+  // ===== REDIRECCIONES DE CATEGORÍAS DE BLOG =====
+  {
+    path: 'category/tu-llc-a-nivel-local',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/ventajas-de-un-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/gestionar-una-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/abrir-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/proteccion-de-activos-y-ahorros',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/noticias-y-actualizaciones-sobre-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/casos-de-uso-llc',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/formacion-de-llc-en-eeuu',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+  {
+    path: 'category/estrategias-empresariales',
+    redirectTo: '/blog',
+    pathMatch: 'full',
+  },
+
+  // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
+  {
+    path: 'contrato-oferta',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'presentacion',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'masterclass-thank-you',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'thank-you',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'formulario-de-apertura-de-llc-y-cuenta-bancaria',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'formulario-renovacion-llc',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+  {
+    path: 'masterclass-gratuita',
+    redirectTo: '/',
+    pathMatch: 'full',
+  },
+
+  // ===== RUTAS EXISTENTES CON SEO COMPLETO =====
   {
     path: '',
     loadComponent: () =>
