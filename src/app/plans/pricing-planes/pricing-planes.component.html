@@ -1,12 +1,13 @@
 <app-sc-header></app-sc-header>
 <section class="sc-plans-hero py-5">
-  <app-responsive-image 
-    [images]="heroImages" 
-    context="hero" 
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
     loading="eager"
-    cssClass="sc-hero-bg">
+    cssClass="sc-hero-bg"
+  >
   </app-responsive-image>
-  
+
   <div class="container py-5">
     <div class="row align-items-center g-5 py-5">
       <div class="col-lg-6">
@@ -31,3 +32,17 @@
   <app-comparison-table></app-comparison-table>
 </section>
 <app-sc-footer></app-sc-footer>
+<!-- Botón flotante central inferior -->
+<div
+  class="fixed-bottom d-flex justify-content-center mb-4 boton-flotante-oculto"
+>
+  <button
+    data-cal-link="startcompanies-businessenusa/agendaorganica"
+    data-cal-namespace="agendaorganica"
+    data-cal-config='{"layout":"month_view","theme":"light"}'
+    type="button"
+    class="btn sc-btn-accent px-4 py-3 shadow-lg"
+  >
+    Agendar llamada <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+</div>
