@@ -98,6 +98,20 @@
     <priority>0.8</priority>
   </url>
 
+  <url>
+    <loc>https://startcompanies.us/fixcal</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://startcompanies.us/abotax</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ===== PLANES Y PRECIOS ===== -->
   <url>
     <loc>https://startcompanies.us/planes</loc>
