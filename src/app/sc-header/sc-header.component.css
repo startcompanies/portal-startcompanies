@@ -235,6 +235,13 @@
     margin-top: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1032;
+  }
+  
+  /* Asegurar que el menú abierto tenga prioridad */
+  .sc-navbar .navbar-collapse.show {
+    z-index: 1033;
   }
 
   /* Alinear los elementos de navegación al centro en móvil */
