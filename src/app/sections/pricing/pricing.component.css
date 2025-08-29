@@ -325,9 +325,9 @@
         padding: 10px;
     }
 
-    #pricingCarouselMobile .pricing-card {
+    /*#pricingCarouselMobile .pricing-card {
         min-height: 750px;
-    }
+    }*/
 
     .pricing-cards {
         display: none !important;

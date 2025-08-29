@@ -47,7 +47,7 @@
   max-width: 800px;
   margin: 0 auto;
   aspect-ratio: 16/9;
-  background-color: #000;
+  background-color: var(--color-texto-oscuro);
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
@@ -64,8 +64,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--color-texto-oscuro);
+  color: var(--color-fondo-claro);
   font-size: 1.2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -95,7 +95,7 @@
 
 @media (max-width: 480px) {
   .main-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
   }
 
   .subtitle {

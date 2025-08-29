@@ -69,6 +69,7 @@
   max-width: 100%;
   height: 45px;
   border: none !important;
+  background: transparent;
 }
 .partner-logo {
   /* Asegura una transición suave para cualquier cambio de propiedad */

@@ -106,8 +106,8 @@
               [class.active]="i === 0"
             >
               <div class="row justify-content-center">
-                <div class="d-flex co-md-4">
-                  <div class="testimonial-card w-100 h-100">
+                <div class="col-12 d-flex">
+                  <div class="testimonial-card w-100">
                     <img
                       [src]="
                         review.author_pic
@@ -122,13 +122,13 @@
                       {{ review.author_country_name }}
                     </p>
                     <p class="testimonial-text">
-                      <strong>{{ review.review_title }}</strong>
-                      {{ review.review_text }}
+                      <span>{{ review.review_title }}</span
+                      >{{ review.review_text }}
                     </p>
                     <div class="rating d-flex justify-content-center">
                       <i
-                        class="bi bi-star-fill star-icon"
                         *ngFor="let star of [].constructor(review.rating)"
+                        class="bi bi-star-fill star-icon"
                       ></i>
                     </div>
                   </div>

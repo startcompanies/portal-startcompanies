@@ -93,7 +93,10 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   min-height: 400px;
 }
-
+.testimonials-carousel-container .testimonial-card {
+  max-width: 380px; /* Ajusta este valor a tu gusto */
+  margin: 0 auto; /* Centrar horizontalmente */
+}
 .testimonial-avatar {
   width: 64px;
   height: 64px;
@@ -202,7 +205,7 @@
   }
 
   .testimonial-card {
-    min-height: 300px;
+    min-height: 550px;
     padding: 20px;
     border-radius: 40px;
   }
