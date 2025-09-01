@@ -1,13 +1,13 @@
-.highlight{
+.highlight {
   color: var(--color-secundario-tecnico);
 }
 .recommended-card {
   border-radius: 2rem !important;
-  border: 1px solid var(--color-primario) !important;
+  border: 2px solid var(--color-primario) !important;
 }
 .pack-card {
   border-radius: 2rem !important;
-  border-radius: 1px solid var(--color-texto-oscuro);
+  border: 2px solid var(--color-texto-oscuro);
 }
 .recommended-badge {
   background-color: var(--color-secundario-tecnico);
@@ -32,7 +32,7 @@
 .btn-primary,
 .btn-secondary {
   border-radius: 2.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.3rem 4.5rem;
   font-size: 1rem;
   text-decoration: none;
 }
@@ -80,4 +80,24 @@
 
 .pricing-tabs .nav-link:hover:not(.active) {
   color: var(--color-degradado);
+}
+@media (max-width: 1050px) {
+  .card-body {
+    font-size: 0.6rem !important;
+  }
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.6rem;
+  }
+}
+@media (max-width: 750px) {
+  .pricing-title{
+    font-size: 1.3rem;
+  }  
+}
+@media (max-width: 900px) {
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.3rem 1.5rem;
+  }
 }
