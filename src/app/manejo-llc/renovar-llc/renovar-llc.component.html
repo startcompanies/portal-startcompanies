@@ -3,8 +3,8 @@
 
 <!--<app-sc-header></app-sc-header>-->
 <app-header-manejo></app-header-manejo>
-<section class="mt-5 pt-3">
-  <div class="container">
+<section class="mt-5 mb-5 pt-3">
+  <div class="container pt-5">
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="iframe-container">
@@ -23,13 +23,14 @@
   class="expert-section text-center text-white d-flex align-items-center justify-content-center py-5"
 >
   <!-- Imagen de fondo optimizada con NgOptimizedImage -->
-  <app-responsive-image 
-      [images]="heroImages" 
-      context="hero" 
-      loading="lazy"
-      cssClass="expert-bg">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="lazy"
+    cssClass="expert-bg"
+  >
   </app-responsive-image>
-  
+
   <div class="container">
     <div class="row">
       <div class="col-12">

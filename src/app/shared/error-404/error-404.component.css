@@ -27,11 +27,40 @@
   padding: 0.5rem 2rem;
   border: none;
 }
-.error-404-title{
-    color: var(--color-fondo-claro) !important;
-    font-size: 3.5rem;
+.error-404-title {
+  color: var(--color-fondo-claro) !important;
+  font-size: 3.5rem;
 }
-.error-404-description{
-    color: var(--color-fondo-claro) !important;
-    font-size: 1.5rem;
+.error-404-description {
+  color: var(--color-fondo-claro) !important;
+  font-size: 1.1rem;
+}
+/* Ajustes específicos para móviles */
+@media (max-width: 576px) {
+  .error-404-title {
+    font-size: 2rem;
+  }
+
+  .error-404-description {
+    font-size: 0.9rem;
+  }
+
+  .sc-error-hero .card {
+    padding: 0.5rem;
+    max-width: 140px; /* evita que sean gigantes */
+    margin: 0 auto; /* centra dentro de su col */
+  }
+
+  .sc-error-hero .card-body {
+    padding: 0.75rem;
+  }
+
+  .sc-error-hero .card i {
+    font-size: 1.25rem; /* íconos más pequeños */
+  }
+
+  .sc-error-hero .card-text {
+    font-size: 0.75rem; /* texto más compacto */
+    margin-top: 0.25rem;
+  }
 }
