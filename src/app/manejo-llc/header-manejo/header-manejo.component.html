@@ -3,11 +3,12 @@
     class="container d-flex flex-wrap align-items-center justify-content-between mb-2"
   >
     <a class="navbar-brand me-auto" href="/">
-      <app-responsive-image 
-        [images]="logoImages" 
-        context="logo" 
+      <app-responsive-image
+        [images]="logoImages"
+        context="logo"
         loading="eager"
-        cssClass="sc-navbar-logo">
+        cssClass="sc-navbar-logo"
+      >
       </app-responsive-image>
     </a>
 
@@ -23,7 +24,8 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-
+  </div>
+  <div class="container" style="padding-bottom: 1rem; padding-bottom: 1rem">
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/nosotros') }">
@@ -45,12 +47,9 @@
           >
         </li>
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
-          <a
-            aria-current="page"
-            class="nav-link"
-            href="/blog"
-            >{{ "NAVBAR.blog" | transloco }}</a
-          >
+          <a aria-current="page" class="nav-link" href="/blog">{{
+            "NAVBAR.blog" | transloco
+          }}</a>
         </li>
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
           <a class="nav-link" href="/contacto">{{
