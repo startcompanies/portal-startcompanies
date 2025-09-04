@@ -14,7 +14,7 @@ export class VideoSectionComponent{
   @Input() title: string = '';
   @Input() titleHighlight: string = '';
   @Input() description: string = '';
-  @Input() videoUrl: string = '';
+  //@Input() videoUrl: string = '';
   @Input() videoTitle: string = 'Video';
   @Input() videoId: string = '';
 }

@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 declare global {
   interface Window {
@@ -15,14 +16,17 @@ export class FacebookPixelService {
   private pixel2Id = '1055049486479771';
   private isInitialized = false;
 
-  constructor() { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   /**
    * Inicializa el pixel de Facebook según la página
    * @param pageType - Tipo de página ('llc' o 'relay')
    */
   initializePixel(pageType: 'llc' | 'relay'): void {
-    if (this.isInitialized) return;
+    // Solo inicializa el píxel si estamos en el navegador
+    if (!isPlatformBrowser(this.platformId) || this.isInitialized) {
+      return;
+    }
 
     const pixelId = pageType === 'llc' ? this.pixel1Id : this.pixel2Id;
     
@@ -57,23 +61,14 @@ export class FacebookPixelService {
     this.isInitialized = true;
   }
 
-  /**
-   * Trackea un evento de conversión
-   * @param eventName - Nombre del evento
-   * @param parameters - Parámetros del evento
-   */
+  // Las otras funciones (trackEvent, trackLead, etc.) ya tienen la verificación
+  // `typeof window !== 'undefined'`, por lo que no necesitan cambios.
   trackEvent(eventName: string, parameters?: any): void {
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('track', eventName, parameters);
     }
   }
 
-  /**
-   * Trackea un lead
-   * @param contentName - Nombre del contenido
-   * @param contentCategory - Categoría del contenido
-   * @param value - Valor del lead
-   */
   trackLead(contentName: string, contentCategory: string, value: number = 0): void {
     this.trackEvent('Lead', {
       content_name: contentName,
@@ -83,11 +78,6 @@ export class FacebookPixelService {
     });
   }
 
-  /**
-   * Trackea vista de contenido
-   * @param contentName - Nombre del contenido
-   * @param contentCategory - Categoría del contenido
-   */
   trackViewContent(contentName: string, contentCategory: string): void {
     this.trackEvent('ViewContent', {
       content_name: contentName,
@@ -95,12 +85,6 @@ export class FacebookPixelService {
     });
   }
 
-  /**
-   * Trackea inicio de checkout
-   * @param contentName - Nombre del contenido
-   * @param contentCategory - Categoría del contenido
-   * @param value - Valor del servicio
-   */
   trackInitiateCheckout(contentName: string, contentCategory: string, value: number): void {
     this.trackEvent('InitiateCheckout', {
       content_name: contentName,
@@ -110,12 +94,6 @@ export class FacebookPixelService {
     });
   }
 
-  /**
-   * Trackea click en botón CTA
-   * @param buttonName - Nombre del botón
-   * @param pageLocation - Ubicación de la página
-   * @param serviceType - Tipo de servicio
-   */
   trackCTAClick(buttonName: string, pageLocation: string, serviceType: string): void {
     this.trackEvent('Lead', {
       content_name: `${buttonName} - ${pageLocation}`,
@@ -125,11 +103,6 @@ export class FacebookPixelService {
     });
   }
 
-  /**
-   * Trackea scroll profundo
-   * @param pageName - Nombre de la página
-   * @param scrollDepth - Porcentaje de scroll
-   */
   trackDeepScroll(pageName: string, scrollDepth: number): void {
     this.trackEvent('ViewContent', {
       content_name: `${pageName} - Deep Engagement`,
@@ -138,12 +111,6 @@ export class FacebookPixelService {
     });
   }
 
-  /**
-   * Trackea reproducción de video
-   * @param videoTitle - Título del video
-   * @param videoType - Tipo de video
-   * @param pageLocation - Ubicación de la página
-   */
   trackVideoPlay(videoTitle: string, videoType: string, pageLocation: string): void {
     this.trackEvent('ViewContent', {
       content_name: `${videoTitle} - ${videoType}`,
