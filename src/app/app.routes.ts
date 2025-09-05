@@ -116,11 +116,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'presentacion',
-    redirectTo: '/',
-    pathMatch: 'full',
-  },
-  {
     path: 'masterclass-thank-you',
     redirectTo: '/',
     pathMatch: 'full',
