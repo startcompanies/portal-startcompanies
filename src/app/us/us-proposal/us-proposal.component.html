@@ -1,45 +1,36 @@
-<section class="proposal-section">
-  <div class="container">
-    <div class="proposal-header">
-      <h2 class="proposal-title">
-        {{ "US.proposal.title" | transloco }}
-        <span class="title-accent">{{ "US.proposal.title2" | transloco }}</span>
-      </h2>
-    </div>
-
-    <!--<div class="container">-->
-      <div class="row">
-        <div
-          class="col-md-4 mb-3 d-flex align-items-stretch"
-        >
-          <div class="proposal-card">
-            <div class="card-number">1</div>
-            <h3 class="card-title">
+<section>
+  <div class="container p-3">
+    <h3 class="proposal-title text-center mb-4">
+      {{ "US.proposal.title" | transloco }}
+      <span class="title-accent">{{ "US.proposal.title2" | transloco }}</span>
+    </h3>
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-12 col-lg-4 col-md-4">
+          <div class="proposal-card h-100">
+            <p class="card-number">1</p>
+            <h1 class="card-title">
               {{ "US.proposal.description.1.title" | transloco }}
-            </h3>
+            </h1>
             <p class="card-description">
               {{ "US.proposal.description.1.description" | transloco }}
             </p>
           </div>
         </div>
-        <div
-          class="col-md-4 mb-3 d-flex align-items-stretch"
-        >
-          <div class="proposal-card">
-            <div class="card-number">2</div>
-            <h3 class="card-title">
+        <div class="col-12 col-lg-4 col-md-4">
+          <div class="proposal-card h-100">
+            <p class="card-number">2</p>
+            <h2 class="card-title">
               {{ "US.proposal.description.2.title" | transloco }}
-            </h3>
+            </h2>
             <p class="card-description">
               {{ "US.proposal.description.2.description" | transloco }}
             </p>
           </div>
         </div>
-        <div
-          class="col-md-4 mb-3 d-flex align-items-stretch"
-        >
-          <div class="proposal-card">
-            <div class="card-number">3</div>
+        <div class="col-12 col-lg-4 col-md-4">
+          <div class="proposal-card h-100">
+            <p class="card-number">3</p>
             <h3 class="card-title">
               {{ "US.proposal.description.3.title" | transloco }}
             </h3>
@@ -49,26 +40,6 @@
           </div>
         </div>
       </div>
-    <!--</div>-->
-
-    <!--<div class="proposal-cards">
-      <div class="proposal-card">
-        <div class="card-number">1</div>
-        <h3 class="card-title">{{ 'US.proposal.description.1.title' | transloco }}</h3>
-        <p class="card-description">{{ 'US.proposal.description.1.description' | transloco }}</p>
-      </div>
-
-      <div class="proposal-card">
-        <div class="card-number">2</div>
-        <h3 class="card-title">{{ 'US.proposal.description.2.title' | transloco }}</h3>
-        <p class="card-description">{{ 'US.proposal.description.2.description' | transloco }}</p>
-      </div>
-
-      <div class="proposal-card">
-        <div class="card-number">3</div>
-        <h3 class="card-title">{{ 'US.proposal.description.3.title' | transloco }}</h3>
-        <p class="card-description">{{ 'US.proposal.description.3.description' | transloco }}</p>
-      </div>
-    </div>-->
+    </div>
   </div>
 </section>
