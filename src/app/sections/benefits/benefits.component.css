@@ -2,8 +2,12 @@
    BENEFITS SECTION
    ========================= */
 .benefits-section {
-  padding: 80px 16px;
+  /*padding: 80px 16px;*/
   background-color: #ffffff;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 80px;
+  padding-top: 80px;
 }
 
 .benefits-content {
@@ -69,6 +73,7 @@
   max-width: 100%;
   height: 45px;
   border: none !important;
+  background: transparent;
 }
 .partner-logo {
   /* Asegura una transición suave para cualquier cambio de propiedad */
@@ -94,8 +99,9 @@
    PARTNERS CAROUSEL
    ========================= */
 .partners-carousel-container {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    /*width: 100vw;*/
+    width: 100%;
+    /*margin-left: calc(-50vw + 50%);*/
     overflow: hidden;
     background-color: #f8f9fa;
     padding: 40px 0;

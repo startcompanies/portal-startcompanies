@@ -3,13 +3,14 @@
 
 <app-sc-header></app-sc-header>
 <section class="py-5 sc-hero" #heroSection>
-  <app-responsive-image 
-    [images]="heroImages" 
-    context="hero" 
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
     loading="eager"
-    cssClass="sc-hero-bg">
+    cssClass="sc-hero-bg"
+  >
   </app-responsive-image>
-  
+
   <div
     id="carouselExampleIndicators"
     class="carousel slide"
@@ -38,11 +39,12 @@
           <div class="mission-card row align-items-center my-5 g-5 py-5">
             <div class="col-lg-6">
               <div class="mission-image-container">
-                <app-responsive-image 
-                  [images]="carouselImages.mission" 
-                  context="content" 
+                <app-responsive-image
+                  [images]="carouselImages.mission"
+                  context="content"
                   loading="lazy"
-                  cssClass="mission-image img-fluid">
+                  cssClass="mission-image img-fluid"
+                >
                 </app-responsive-image>
               </div>
             </div>
@@ -65,11 +67,12 @@
           <div class="mission-card row align-items-center my-5 g-5 py-5">
             <div class="col-lg-6">
               <div class="mission-image-container">
-                <app-responsive-image 
-                  [images]="carouselImages.vision" 
-                  context="content" 
+                <app-responsive-image
+                  [images]="carouselImages.vision"
+                  context="content"
                   loading="lazy"
-                  cssClass="mission-image img-fluid">
+                  cssClass="mission-image img-fluid"
+                >
                 </app-responsive-image>
               </div>
             </div>
@@ -89,12 +92,11 @@
     </div>
   </div>
 </section>
-<!--<app-us-strategies></app-us-strategies>-->
 <app-video-section
   title="Estrategía empresarial"
   titleHighlight="efectiva"
   description="Descubre cómo hacemos realidad negocios exitosos"
-  videoUrl="https://www.youtube.com/embed/0CivIEY-Cl0"
+  videoId="m3nb8767sm"
   videoTitle="¿Qué hace Start Companies LLC ? | Soluciones en Contabilidad, Impuestos y Tecnología para tu LLC"
 ></app-video-section>
 <app-us-potential></app-us-potential>

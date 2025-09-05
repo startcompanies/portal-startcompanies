@@ -30,7 +30,7 @@
 
       <!-- Carrusel de Bootstrap para testimonios -->
       <div class="testimonials-carousel-container">
-        <!-- Carrusel para tablets y escritorio (3 cards por slide) -->
+        <!-- Carrusel para escritorio (3 card por slide) -->
         <div
           id="testimonialsCarouselDesktop"
           class="carousel slide d-none d-md-block"
@@ -38,81 +38,40 @@
           data-bs-interval="5000"
         >
           <div class="carousel-inner">
-            <!-- Slide 1 -->
-            <div class="carousel-item active">
+            <div
+              class="carousel-item"
+              *ngFor="let chunk of chunkedReviews; let i = index"
+              [class.active]="i === 0"
+            >
               <div class="row g-4 justify-content-center">
-                <!-- Testimonio 1 -->
-                <div class="col-12 col-md-4 d-flex">
+                <div
+                  class="col-12 col-md-4 d-flex"
+                  *ngFor="let testimonial of chunk"
+                >
                   <div class="testimonial-card w-100 h-100">
                     <img
-                      src="assets/testimonials/img_outdoor_shot_yo.png"
-                      alt="Boris Rivas"
+                      [src]="
+                        testimonial.author_pic
+                          ? testimonial.author_pic
+                          : 'assets/testimonials/img_young_bearded_m.png'
+                      "
+                      [alt]="testimonial.author_name"
                       class="testimonial-avatar rounded-circle img-fluid"
                     />
-                    <h4 class="testimonial-name">Boris Rivas</h4>
-                    <p class="testimonial-location">Argentina</p>
+                    <h4 class="testimonial-name">
+                      {{ testimonial.author_name }}
+                    </h4>
+                    <p class="testimonial-location">
+                      {{ testimonial.author_country_name }}
+                    </p>
                     <p class="testimonial-text">
-                      <strong>Todo perfecto.</strong> Un 10 en atención y
-                      servicio durante todo el proceso de creación LLC. Lo
-                      recomiendo 100% a quienes quieran emprender en EE.UU. sin
-                      complicaciones.
+                      {{ testimonial.review_text }}
                     </p>
                     <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                    </div>
-                  </div>
-                </div>
-                <!-- Testimonio 2 -->
-                <div class="col-12 col-md-4 d-flex">
-                  <div class="testimonial-card w-100 h-100">
-                    <img
-                      src="assets/testimonials/img_young_bearded_m.png"
-                      alt="Luis Mosquera"
-                      class="testimonial-avatar rounded-circle img-fluid"
-                    />
-                    <h4 class="testimonial-name">Luis Mosquera</h4>
-                    <p class="testimonial-location">Ecuador</p>
-                    <p class="testimonial-text">
-                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
-                      fui rechazado. Vi una publicidad en Instagram, los
-                      contacté y me ayudaron con todo el proceso. Gracias a su
-                      asistencia, lograron que mi cuenta fuera aprobada.
-                    </p>
-                    <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                    </div>
-                  </div>
-                </div>
-                <!-- Testimonio 3 -->
-                <div class="col-12 col-md-4 d-flex">
-                  <div class="testimonial-card w-100 h-100">
-                    <img
-                      src="assets/testimonials/img_young_bearded_m_64x64.png"
-                      alt="Luis Mosquera"
-                      class="testimonial-avatar rounded-circle img-fluid"
-                    />
-                    <h4 class="testimonial-name">Luis Mosquera</h4>
-                    <p class="testimonial-location">Ecuador</p>
-                    <p class="testimonial-text">
-                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
-                      fui rechazado. Vi una publicidad en Instagram, los
-                      contacté y me ayudaron con todo el proceso. Gracias a su
-                      asistencia, lograron que mi cuenta fuera aprobada.
-                    </p>
-                    <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
+                      <i
+                        *ngFor="let star of [].constructor(testimonial.rating)"
+                        class="bi bi-star-fill star-icon"
+                      ></i>
                     </div>
                   </div>
                 </div>
@@ -120,15 +79,14 @@
             </div>
           </div>
 
-          <!-- Indicadores para desktop -->
           <div class="carousel-indicators testimonials-carousel-indicators">
             <button
               type="button"
               data-bs-target="#testimonialsCarouselDesktop"
-              data-bs-slide-to="0"
-              class="active"
-              aria-current="true"
-              aria-label="Slide 1"
+              *ngFor="let chunk of chunkedReviews; let i = index"
+              [attr.data-bs-slide-to]="i"
+              [class.active]="i === 0"
+              [attr.aria-label]="'Slide ' + (i + 1)"
             ></button>
           </div>
         </div>
@@ -141,90 +99,37 @@
           data-bs-interval="5000"
         >
           <div class="carousel-inner">
-            <!-- Slide 1 -->
-            <div class="carousel-item active">
+            <!--Slides-->
+            <div
+              class="carousel-item"
+              *ngFor="let review of reviews; let i = index"
+              [class.active]="i === 0"
+            >
               <div class="row justify-content-center">
                 <div class="col-12 d-flex">
                   <div class="testimonial-card w-100">
                     <img
-                      src="assets/testimonials/img_outdoor_shot_yo.png"
-                      alt="Boris Rivas"
+                      [src]="
+                        review.author_pic
+                          ? review.author_pic
+                          : 'assets/testimonials/img_young_bearded_m.png'
+                      "
+                      [alt]="review.author_name"
                       class="testimonial-avatar rounded-circle img-fluid"
                     />
-                    <h4 class="testimonial-name">Boris Rivas</h4>
-                    <p class="testimonial-location">Argentina</p>
+                    <h4 class="testimonial-name">{{ review.author_name }}</h4>
+                    <p class="testimonial-location">
+                      {{ review.author_country_name }}
+                    </p>
                     <p class="testimonial-text">
-                      <strong>Todo perfecto.</strong> Un 10 en atención y
-                      servicio durante todo el proceso de creación LLC. Lo
-                      recomiendo 100% a quienes quieran emprender en EE.UU. sin
-                      complicaciones.
+                      <span>{{ review.review_title }}</span
+                      >{{ review.review_text }}
                     </p>
                     <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 2 -->
-            <div class="carousel-item">
-              <div class="row justify-content-center">
-                <div class="col-12 d-flex">
-                  <div class="testimonial-card w-100">
-                    <img
-                      src="assets/testimonials/img_young_bearded_m.png"
-                      alt="Luis Mosquera"
-                      class="testimonial-avatar rounded-circle img-fluid"
-                    />
-                    <h4 class="testimonial-name">Luis Mosquera</h4>
-                    <p class="testimonial-location">Ecuador</p>
-                    <p class="testimonial-text">
-                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
-                      fui rechazado. Vi una publicidad en Instagram, los
-                      contacté y me ayudaron con todo el proceso. Gracias a su
-                      asistencia, lograron que mi cuenta fuera aprobada.
-                    </p>
-                    <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="carousel-item">
-              <div class="row justify-content-center">
-                <div class="col-12 d-flex">
-                  <div class="testimonial-card w-100">
-                    <img
-                      src="assets/testimonials/img_young_bearded_m_64x64.png"
-                      alt="Luis Mosquera"
-                      class="testimonial-avatar rounded-circle img-fluid"
-                    />
-                    <h4 class="testimonial-name">Luis Mosquera</h4>
-                    <p class="testimonial-location">Ecuador</p>
-                    <p class="testimonial-text">
-                      Intenté abrir una cuenta bancaria en EE. UU. con mi LLC y
-                      fui rechazado. Vi una publicidad en Instagram, los
-                      contacté y me ayudaron con todo el proceso. Gracias a su
-                      asistencia, lograron que mi cuenta fuera aprobada.
-                    </p>
-                    <div class="rating d-flex justify-content-center">
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
-                      <i class="bi bi-star-fill star-icon"></i>
+                      <i
+                        *ngFor="let star of [].constructor(review.rating)"
+                        class="bi bi-star-fill star-icon"
+                      ></i>
                     </div>
                   </div>
                 </div>
@@ -237,22 +142,11 @@
             <button
               type="button"
               data-bs-target="#testimonialsCarouselMobile"
-              data-bs-slide-to="0"
-              class="active"
-              aria-current="true"
-              aria-label="Slide 1"
-            ></button>
-            <button
-              type="button"
-              data-bs-target="#testimonialsCarouselMobile"
-              data-bs-slide-to="1"
-              aria-label="Slide 2"
-            ></button>
-            <button
-              type="button"
-              data-bs-target="#testimonialsCarouselMobile"
-              data-bs-slide-to="2"
-              aria-label="Slide 3"
+              *ngFor="let review of reviews; let i = index"
+              [attr.data-bs-slide-to]="i"
+              [class.active]="i === 0"
+              [attr.aria-current]="i === 0 ? 'true' : null"
+              [attr.aria-label]="'Slide ' + (i + 1)"
             ></button>
           </div>
         </div>

@@ -61,6 +61,8 @@
   align-items: center;
   transition: background-color 0.3s ease;
 }
+
+/* Oculta el botón en pantallas de 768px o más */
 @media (min-width: 991.98px) {
   .boton-flotante-oculto {
     display: none !important;

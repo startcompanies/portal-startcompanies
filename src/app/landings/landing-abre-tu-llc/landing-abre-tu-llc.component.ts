@@ -21,6 +21,7 @@ import { Subscription } from 'rxjs';
 import { ScrollService } from '../../services/scroll.service';
 import { ResponsiveImage } from '../../services/responsive-image.service';
 import { FacebookPixelService } from '../../services/facebook-pixel.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-landing-abre-tu-llc',
@@ -34,8 +35,8 @@ import { FacebookPixelService } from '../../services/facebook-pixel.service';
     VideoGridSectionComponent,
     StepsSectionComponent,
     KeyBenefitsSectionComponent,
-    ResponsiveImageComponent
-],
+    ResponsiveImageComponent,
+  ],
   templateUrl: './landing-abre-tu-llc.component.html',
   styleUrl: './landing-abre-tu-llc.component.css',
 })
@@ -54,7 +55,7 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     desktop: '/assets/hero-bg-desktop.webp',
     fallback: '/assets/hero-bg.webp',
     alt: 'Hero Background',
-    priority: true
+    priority: true,
   };
 
   // Video testimonials
@@ -63,14 +64,14 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
       id: 'testimonial1',
       url: 'https://www.youtube.com/embed/VIDEO_ID_1',
       title: 'Testimonio Cliente 1',
-      thumbnail: '/assets/testimonials/img_outdoor_shot_yo.webp'
+      thumbnail: '/assets/testimonials/img_outdoor_shot_yo.webp',
     },
     {
       id: 'testimonial2',
       url: 'https://www.youtube.com/embed/VIDEO_ID_2',
       title: 'Testimonio Cliente 2',
-      thumbnail: '/assets/testimonials/img_young_bearded_m_64x64.webp'
-    }
+      thumbnail: '/assets/testimonials/img_young_bearded_m_64x64.webp',
+    },
   ];
 
   constructor(
@@ -82,12 +83,18 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
   ngOnInit(): void {
     // Inicializar Facebook Pixel para página LLC
     this.facebookPixelService.initializePixel('llc');
-    
+
     // Trackear vista de página
-    this.facebookPixelService.trackViewContent('Abre tu LLC Landing', 'LLC Services');
-    
+    this.facebookPixelService.trackViewContent(
+      'Abre tu LLC Landing',
+      'LLC Services'
+    );
+
     // Trackear scroll inicial
-    this.checkScrollDepth();
+    //this.checkScrollDepth();
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkScrollDepth();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -98,7 +105,12 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     );
 
     // Agregar listener de scroll para el botón flotante
-    if (typeof window !== 'undefined') {
+    /*if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', () => {
+        this.checkScrollForFloatingButton();
+      });
+    }*/
+    if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', () => {
         this.checkScrollForFloatingButton();
       });
@@ -109,31 +121,38 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     // Buscar las secciones en el DOM
     const heroSection = document.querySelector('.hero-section');
     const calendlySection = document.querySelector('.calendly-cta-section');
-    
+
     if (heroSection && calendlySection) {
       const heroRect = heroSection.getBoundingClientRect();
       const calendlyRect = calendlySection.getBoundingClientRect();
-      
+
       // Mostrar botón cuando ambas secciones (hero y calendly) estén fuera de vista
       const isHeroOutOfView = heroRect.bottom < 0;
       const isCalendlyOutOfView = calendlyRect.bottom < 0;
-      
+
       // Mostrar botón solo en mobile y cuando ambas secciones estén fuera de vista
-      this.showFloatingButton = window.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
+      this.showFloatingButton =
+        window.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
     }
   }
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    this.checkScrollDepth();
-    this.checkFloatingButton();
+    /*this.checkScrollDepth();
+    this.checkFloatingButton();*/
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkScrollDepth();
+      this.checkFloatingButton();
+    }
   }
 
   private checkScrollDepth(): void {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
     const documentHeight = document.documentElement.scrollHeight;
-    const scrollPercentage = Math.round((scrollTop / (documentHeight - windowHeight)) * 100);
+    const scrollPercentage = Math.round(
+      (scrollTop / (documentHeight - windowHeight)) * 100
+    );
 
     // Trackear scroll profundo en puntos clave
     if (scrollPercentage >= 25 && this.scrollDepth < 25) {
@@ -155,9 +174,9 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
 
   scrollToCalendly(): void {
     if (this.calendlySection) {
-      this.calendlySection.nativeElement.scrollIntoView({ 
+      this.calendlySection.nativeElement.scrollIntoView({
         behavior: 'smooth',
-        block: 'start'
+        block: 'start',
       });
     }
   }
@@ -183,7 +202,7 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     this.facebookPixelService.trackLead(
       'Calendly CTA - Abre tu LLC',
       'LLC Services',
-      0.00
+      0.0
     );
   }
 

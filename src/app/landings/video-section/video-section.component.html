@@ -19,6 +19,11 @@
     </p>
 
     <!-- Contenedor del video -->
-    <app-wistia-player ngSkipHydration [mediaId]="videoId"></app-wistia-player>
+    <div class="container px-5">
+      <app-wistia-player
+        ngSkipHydration
+        [mediaId]="videoId"
+      ></app-wistia-player>
+    </div>
   </div>
 </section>

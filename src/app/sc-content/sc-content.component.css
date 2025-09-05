@@ -16,7 +16,7 @@
   top: 0;
   left: 0;
   z-index: 1;
-  min-height: 600px; /* Altura mínima */
+  min-height: 600px;
 }
 
 /* Asegurar que el contenedor de la imagen tenga dimensiones */
@@ -107,7 +107,7 @@
 
 /* Hero Titles & Description */
 .hero-title {
-  font-size: 3.8rem;
+  font-size: 3.4rem;
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-fondo-claro);
@@ -187,7 +187,7 @@
 }
 
 .sc-services-card {
-  background-color: var(--color-fondo-claro);
+  background-color: var(--color-fondo-gris);
   border-radius: 1.5rem;
   border: none;
   padding: 3rem 2.5rem;
@@ -229,7 +229,12 @@
   position: relative;
   padding: 80px 16px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.6); /* Overlay oscuro para mejorar legibilidad */
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.6
+  ); /* Overlay oscuro para mejorar legibilidad */
   /* background-color: var(--color-primario); Removido para que se vea la imagen de fondo */
 }
 
@@ -359,10 +364,14 @@
 }
 @media (max-width: 575.98px) {
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+  .hero-description{
+    font-size: 1.1rem;
   }
   .hero-btn-primary,
   .hero-btn-secondary {
     font-size: 0.7rem;
+    padding: 0.3rem 1.5rem;
   }
 }

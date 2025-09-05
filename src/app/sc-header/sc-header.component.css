@@ -186,6 +186,29 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
+  
+  /* Centrar el logo en mobile */
+  .sc-navbar .navbar-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1030;
+    padding-top: 0.5rem;
+  }
+  
+  /* Posicionar el botón hamburguesa a la derecha */
+  .sc-navbar .navbar-toggler {
+    position: relative;
+    z-index: 1031;
+    margin-left: auto;
+    order: 2;
+  }
+  
+  /* Ajustar el contenedor para distribuir elementos correctamente */
+  .sc-navbar .container {
+    position: relative;
+    justify-content: space-between;
+  }
 
   .sc-navbar-light {
     background-color: var(--color-fondo-claro);
@@ -212,6 +235,13 @@
     margin-top: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1032;
+  }
+  
+  /* Asegurar que el menú abierto tenga prioridad */
+  .sc-navbar .navbar-collapse.show {
+    z-index: 1033;
   }
 
   /* Alinear los elementos de navegación al centro en móvil */
@@ -273,6 +303,29 @@
     align-items: center !important;
     justify-content: center !important;
   }
+  
+  /* Asegurar que el logo esté centrado perfectamente */
+  .sc-navbar .navbar-brand {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1030 !important;
+    margin: 0 !important;
+    padding-top: 0.75rem !important;
+  }
+  
+  /* Ajustar el contenedor del navbar para mobile */
+  .sc-navbar .container {
+    position: relative;
+    justify-content: space-between;
+  }
+  
+  /* Posicionar botón hamburguesa a la derecha en mobile */
+  .sc-navbar .navbar-toggler {
+    margin-left: auto !important;
+    order: 2 !important;
+    z-index: 1031 !important;
+  }
 
   .sc-navbar-logo app-responsive-image {
     height: 60px !important;
@@ -328,5 +381,21 @@
   .sc-navbar {
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
+  }
+  
+  /* Asegurar centrado perfecto en dispositivos muy pequeños */
+  .sc-navbar .navbar-brand {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1030 !important;
+    padding-top: 1rem !important;
+  }
+  
+  /* Botón hamburguesa a la derecha en dispositivos pequeños */
+  .sc-navbar .navbar-toggler {
+    margin-left: auto !important;
+    order: 2 !important;
+    z-index: 1031 !important;
   }
 }

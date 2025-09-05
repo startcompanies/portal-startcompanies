@@ -324,6 +324,50 @@ export const routes: Routes = [
     },
   },
   {
+    path: 'fixcal',
+    loadComponent: () =>
+      import(
+        './manejo-llc/form-apertura-fixcal/form-apertura-fixcal.component'
+      ).then((m) => m.FormAperturaFixcalComponent),
+    data: {
+      seo: {
+        title: 'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
+        description:
+          'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
+        keywords:
+          'cuenta bancaria Relay Fixcal, apertura cuenta Fixcal, banco Fixcal USA, Start Companies',
+        ogTitle: 'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
+        ogDescription:
+          'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos.',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://startcompanies.us/fixcal',
+      },
+    },
+  },
+  {
+    path: 'abotax',
+    loadComponent: () =>
+      import(
+        './manejo-llc/form-apertura-abotax/form-apertura-abotax.component'
+      ).then((m) => m.FormAperturaAbotaxComponent),
+    data: {
+      seo: {
+        title: 'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
+        description:
+          'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
+        keywords:
+          'cuenta bancaria Relay Abotax, apertura cuenta Abotax, banco Abotax USA, Start Companies',
+        ogTitle: 'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
+        ogDescription:
+          'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos.',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://startcompanies.us/abotax',
+      },
+    },
+  },
+  {
     path: 'planes',
     loadComponent: () =>
       import('./plans/pricing-planes/pricing-planes.component').then(

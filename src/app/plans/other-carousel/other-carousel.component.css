@@ -1,10 +1,10 @@
 .recommended-card {
   border-radius: 2rem !important;
-  border: 1px solid var(--color-primario) !important;
+  border: 2px solid var(--color-primario) !important;
 }
 .pack-card {
   border-radius: 2rem !important;
-  border-radius: 1px solid var(--color-texto-oscuro);
+  border: 2px solid var(--color-texto-oscuro);
 }
 .recommended-badge {
   background-color: var(--color-secundario-tecnico);
@@ -29,8 +29,8 @@
 .btn-primary,
 .btn-secondary {
   border-radius: 2.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.3rem 4.5rem;
+  font-size: 0.6rem;
   text-decoration: none;
 }
 .btn-primary {
@@ -101,10 +101,11 @@
   background-color: rgba(2, 202, 227, 0.7);
   border-color: rgba(2, 202, 227, 0.7);
 }
-#pricingCarouselMobile .card {
+#otherPricingCarouselMobile .card {
     margin: 0;
     height: auto;
-    min-height: 800px;
+    min-height: 500px;
     display: flex;
     flex-direction: column;
+    font-size: 0.6rem;
 }

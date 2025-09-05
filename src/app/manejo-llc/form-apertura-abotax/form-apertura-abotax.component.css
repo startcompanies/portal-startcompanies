@@ -6,7 +6,7 @@
        El valor 1500px está basado en la altura original del iframe (1500px).
        Puedes ajustar este valor si el formulario cambia de tamaño. */
   padding-top: 1500px;
-  height: 1789px;
+  height: 1900px;
 }
 
 .iframe-container iframe {
@@ -56,30 +56,28 @@
   color: var(--color-fondo-claro);
   border-radius: 2rem;
 }
-@media (max-width: 1300px) {
-  .iframe-container {
-    height: 1860px;
-  }
+
+.divider {
+  background: #f8f9fa;
+  min-height: 50px;
 }
+
 @media (max-width: 480px) {
   .header-section {
     min-height: 15vh;
   }
-  .display-4{
+  .display-4 {
     font-size: 1.7rem;
   }
   .lead {
     font-size: 1.1rem !important;
   }
-  .wp-button{
+  .wp-button {
     font-size: 0.7rem;
   }
 }
-@media (max-width: 350px) {
-  .iframe-container {
-    height: 1975px;
-  }
-  .display-4{
-    font-size: 1.5rem;
-  }  
+@media (max-width: 320px) {
+    .iframe-container{
+        height: 233vh;
+    }
 }
