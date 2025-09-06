@@ -3,7 +3,8 @@
     [images]="heroImages"
     context="hero"
     loading="eager"
-    cssClass="sc-hero-bg">
+    cssClass="sc-hero-bg"
+  >
   </app-responsive-image>
   <app-hero-section></app-hero-section>
 </section>
@@ -14,11 +15,16 @@
     <div class="row">
       <div class="col-12 text-center">
         <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
-        <p class="calendly-subtitle">Reserva 30 minutos para resolver todas tus dudas sobre la apertura de tu LLC en EE.UU.</p>
+        <p class="calendly-subtitle">
+          Reserva 30 minutos para resolver todas tus dudas sobre la apertura de
+          tu LLC en EE.UU.
+        </p>
       </div>
     </div>
   </div>
-  <app-calendly-section (calendlyClick)="onCalendlyClick()"></app-calendly-section>
+  <app-calendly-section
+    (calendlyClick)="onCalendlyClick()"
+  ></app-calendly-section>
 </section>
 
 <!-- Key Benefits Section -->
@@ -38,17 +44,18 @@
   videoId="g5w4pudrrb"
   videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
   videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
-  (videoPlay)="onVideoPlay('Relay Banking Service')">
+  (videoPlay)="onVideoPlay('Relay Banking Service')"
+>
 </app-video-section>
 
 <!-- Video Grid Section -->
 <section class="video-grid-section">
-        <app-video-grid-section
-        title="Escucha a la comunidad"
-        titleHighlight="¡Creación LLC!"
-        description="Mira lo que nuestros clientes tienen que decir de nosotros"
-        [videos]="videoTestimonials">
-      </app-video-grid-section>
+  <app-video-grid-section
+    title="Escucha a la comunidad"
+    titleHighlight="¡Creación LLC!"
+    description="Mira lo que nuestros clientes tienen que decir de nosotros"
+  >
+  </app-video-grid-section>
 </section>
 
 <!-- FAQ -->
@@ -57,9 +64,11 @@
 </section>
 
 <!-- Botón flotante para mobile -->
-<button class="floating-cta-button" 
-        [class.show]="showFloatingButton"
-        (click)="scrollToCalendly()">
+<button
+  class="floating-cta-button"
+  [class.show]="showFloatingButton"
+  (click)="scrollToCalendly()"
+>
   Empezar con una reunión gratuita
 </button>
 

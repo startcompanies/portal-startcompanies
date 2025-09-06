@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   // ===== REDIRECCIONES 301 PARA SEO =====
-  
+
   // Redirecciones de servicios (ya implementadas)
   {
     path: 'servicios',
@@ -212,6 +212,7 @@ export const routes: Routes = [
       },
     },
   },
+  /**Landings */
   {
     path: 'abre-tu-llc',
     loadComponent: () =>
@@ -256,6 +257,26 @@ export const routes: Routes = [
       },
     },
   },
+  {
+    path: 'agendar',
+    loadComponent: () =>
+      import('./landings/landing-agendar/landing-agendar.component').then(
+        (m) => m.LandingAgendarComponent
+      ),
+    data: {
+      seo: {
+        title: '',
+        description: '',
+        keywords: '',
+        ogTitle: 'Agendar',
+        ogDescription: '',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://startcompanies.us/apertura-banco-relay',
+      },
+    },
+  },
+  /** Forms */
   {
     path: 'apertura-llc',
     loadComponent: () =>
@@ -335,7 +356,8 @@ export const routes: Routes = [
           'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
         keywords:
           'cuenta bancaria Relay Fixcal, apertura cuenta Fixcal, banco Fixcal USA, Start Companies',
-        ogTitle: 'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
+        ogTitle:
+          'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
         ogDescription:
           'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos.',
         ogImage: 'https://startcompanies.us/assets/logo.png',
@@ -357,7 +379,8 @@ export const routes: Routes = [
           'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
         keywords:
           'cuenta bancaria Relay Abotax, apertura cuenta Abotax, banco Abotax USA, Start Companies',
-        ogTitle: 'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
+        ogTitle:
+          'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
         ogDescription:
           'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos.',
         ogImage: 'https://startcompanies.us/assets/logo.png',

@@ -1,0 +1,71 @@
+<section class="hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+  <div class="container col-xxl-8 px-4 py-3 py-md-5">
+    <div class="row">
+      <div class="col-12 text-center mb-3 mb-md-4">
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="img-fluid"
+        >
+        </app-responsive-image>
+      </div>
+      <div class="col-12 text-center pb-3 pb-md-5">
+        <h1
+          class="display-6 display-md-5 fw-bold text-body-emphasis lh-1 mb-2 mb-md-3 hero-title"
+        >
+          ¡Gracias por registrarte!
+        </h1>
+        <p class="lead hero-description">Ya recibimos tu información.</p>
+        <p class="lead hero-description">
+          El siguiente paso para abrir tu LLC es agendar tu llamada gratuita con
+          un experto.
+        </p>
+      </div>
+      <!--<div class="d-flex hero-btn-container">
+        <div class="row">
+          <div class="d-grid col-6">
+            <button
+              class="btn hero-btn-primary"
+              type="button"
+              (click)="navigateToCalendlySection()"
+            >
+              Agendar llamada
+              <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+        </div>
+      </div>-->
+    </div>
+  </div>
+</section>
+<!-- Calendly inline widget -->
+<section #calendly class="calendly-cta-section py-5">
+  <div class="container pb-3">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
+        <p class="calendly-subtitle">
+          Reserva 30 minutos para resolver todas tus dudas sobre la apertura de
+          tu LLC en EE.UU.
+        </p>
+      </div>
+    </div>
+  </div>
+  <app-calendly-section
+    (calendlyClick)="onCalendlyClick()"
+  ></app-calendly-section>
+</section>
+<!--Testimonials-->
+<app-testimonials></app-testimonials>
+<!--FAQ-->
+<section class="py-3 py-md-5 pt-3 pt-md-5">
+  <app-faq></app-faq>
+</section>
