@@ -116,11 +116,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'presentacion',
-    redirectTo: '/',
-    pathMatch: 'full',
-  },
-  {
     path: 'masterclass-thank-you',
     redirectTo: '/',
     pathMatch: 'full',
@@ -224,6 +219,28 @@ export const routes: Routes = [
         title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
         description:
           'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
+        keywords:
+          'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
+        ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+        ogDescription:
+          'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
+        ogImage: 'https://startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://startcompanies.us/abre-tu-llc',
+      },
+    },
+  },
+  {
+    path: 'presentacion',
+    loadComponent: () =>
+      import(
+        './landings/landing-abre-tu-llc/landing-abre-tu-llc.component'
+      ).then((m) => m.LandingAbreTuLlcComponent),
+    data: {
+      seo: {
+        title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+        description:
+          'Abrimos tu LLC en Estados Unidos de forma segura y rápida. Servicio completo con acompañamiento paso a paso.',
         keywords:
           'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
         ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
