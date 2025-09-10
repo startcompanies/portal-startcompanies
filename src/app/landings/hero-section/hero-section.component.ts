@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ScrollService } from '../../services/scroll.service';
 import { WistiaPlayerComponent } from '../wistia-player/wistia-player.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { WistiaVerticalPlayerComponent } from "../wistia-vertical-player/wistia-vertical-player.component";
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule, WistiaPlayerComponent, ResponsiveImageComponent],
+  imports: [CommonModule, WistiaPlayerComponent, ResponsiveImageComponent, WistiaVerticalPlayerComponent],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })

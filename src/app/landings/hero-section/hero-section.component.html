@@ -11,12 +11,25 @@
     </div>
   </div>
   <div class="row align-items-center g-5 py-3 px-4">
-    <div class="col-lg-6">
-      <!-- Contenedor del video -->
+    <!--<div class="col-lg-6">
       <app-wistia-player
         ngSkipHydration
         mediaId="o9xq5e1pus"
       ></app-wistia-player>
+    </div>-->
+    <!--Visible en pantalla de escritorio y tablet-->
+    <div class="col-lg-6 d-none d-md-block">
+      <app-wistia-player
+        ngSkipHydration
+        mediaId="292ls35b52"
+      ></app-wistia-player>
+    </div>
+    <!--Visible en pantalla de movil-->
+    <div class="col-lg-12 d-md-none">
+      <app-wistia-vertical-player
+        ngSkipHydration
+        mediaId="depoj0tz9m"
+      ></app-wistia-vertical-player>
     </div>
     <div class="col-lg-6">
       <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
@@ -43,15 +56,6 @@
           </div>
         </div>
       </div>
-      <!--<div>
-        <button
-          class="btn btn-outline-secondary btn-lg px-4 hero-btn-primary"
-          (click)="navigateToCalendlySection()"
-        >
-          Empezar mi proceso de LLC
-          <i class="bi bi-arrow-right ms-2"></i>
-        </button>
-      </div>-->
     </div>
   </div>
 </div>
