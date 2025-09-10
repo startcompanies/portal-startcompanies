@@ -1,24 +1,47 @@
 .whatsapp-float {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  background-color: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  animation: pulse 2s infinite;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  width: 60px !important;
+  height: 60px !important;
+  background-color: #25D366 !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4) !important;
+  transition: all 0.3s ease !important;
+  z-index: 9999 !important;
+  animation: pulse 2s infinite !important;
+  /* Mejorar interacción táctil */
+  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Asegurar que sea clickeable */
+  touch-action: manipulation;
+  pointer-events: auto;
+  /* Debug: borde rojo para verificar visibilidad - REMOVIDO */
 }
 
-.whatsapp-float:hover {
+.whatsapp-float:hover,
+.whatsapp-float:active,
+.whatsapp-float:focus {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+  outline: none;
+}
+
+.whatsapp-float:active {
+  transform: scale(0.95);
+  background-color: #20c55a;
+}
+
+.whatsapp-float:focus {
+  outline: 3px solid rgba(37, 211, 102, 0.5);
+  outline-offset: 2px;
 }
 
 .whatsapp-icon {
@@ -26,6 +49,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .whatsapp-tooltip {
@@ -55,7 +79,8 @@
   border-left-color: #333;
 }
 
-.whatsapp-float:hover .whatsapp-tooltip {
+.whatsapp-float:hover .whatsapp-tooltip,
+.whatsapp-float:focus .whatsapp-tooltip {
   opacity: 1;
   visibility: visible;
 }
@@ -79,11 +104,50 @@
     right: 15px;
     width: 55px;
     height: 55px;
+    /* Asegurar interacción táctil en móvil */
+    min-width: 44px;
+    min-height: 44px;
+    /* Mejorar área de toque */
+    padding: 0;
+    margin: 0;
+  }
+  
+  .whatsapp-float:active {
+    transform: scale(0.9);
+    background-color: #20c55a;
   }
   
   .whatsapp-tooltip {
-    right: 65px;
-    font-size: 12px;
-    padding: 6px 10px;
+    /* En móvil, ocultar completamente el tooltip */
+    display: none;
+  }
+}
+
+/* Mejoras para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .whatsapp-float {
+    width: 58px;
+    height: 58px;
+  }
+  
+  .whatsapp-tooltip {
+    right: 68px;
+    font-size: 13px;
+  }
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .whatsapp-float {
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .whatsapp-tooltip {
+    right: 60px;
+    font-size: 11px;
+    padding: 5px 8px;
   }
 }

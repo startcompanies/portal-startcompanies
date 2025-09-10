@@ -16,7 +16,7 @@ export class WhatsappFloatComponent implements OnInit {
   defaultMessage = whatsappConfig.defaultMessage;
   tooltipText = whatsappConfig.tooltipText;
 
-  constructor(private router: Router) {}
+  constructor(public router: Router) {}
 
   ngOnInit(): void {
     this.checkCurrentRoute();
