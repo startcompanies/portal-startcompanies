@@ -129,13 +129,13 @@
         p(cal, ar);
       };
     })(window, "https://app.cal.com/embed/embed.js", "init");
-    Cal("init", "agendaorganica", { origin: "https://app.cal.com" });
+    Cal("init", "agenda-organica", { origin: "https://app.cal.com" });
 
     // Important: Please add the following attributes to the element that should trigger the calendar to open upon clicking.
-    // `data-cal-link="startcompanies-businessenusa/agendaorganica"`
-    // data-cal-namespace="agendaorganica"
+    // `data-cal-link="startcompanies-businessenusa/agenda-organica"`
+    // data-cal-namespace="agenda-organica"
     // `data-cal-config='{"layout":"month_view","theme":"light"}'`
-    Cal.ns.agendaorganica("ui", { "theme": "light", "cssVarsPerTheme": { "light": { "cal-brand": "#006AFE" }, "dark": { "cal-brand": "#fafafa" } }, "hideEventTypeDetails": false, "layout": "month_view" });
+    Cal.ns["agenda-organica"]("ui", { "theme": "light", "cssVarsPerTheme": { "light": { "cal-brand": "#006AFE" }, "dark": { "cal-brand": "#fafafa" } }, "hideEventTypeDetails": false, "layout": "month_view" });
   </script>
 </body>
 
