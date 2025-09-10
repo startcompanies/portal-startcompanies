@@ -142,13 +142,10 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
   private updateImageForBreakpoint() {
     if (this.isMobile) {
       this.currentImageSrc = this.images.mobile;
-      this.currentSizes = '(max-width: 768px) 100vw';
     } else if (this.isTablet) {
       this.currentImageSrc = this.images.tablet;
-      this.currentSizes = '(max-width: 1024px) 100vw';
     } else {
       this.currentImageSrc = this.images.desktop;
-      this.currentSizes = '100vw';
     }
   }
 
@@ -178,6 +175,9 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
     
     // Establecer dimensiones estáticas basadas en el contexto
     this.setImageDimensions();
+    
+    // Establecer sizes estático para evitar el error de NgOptimizedImage
+    this.currentSizes = '(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 100vw';
     
     // Actualizar solo la fuente de la imagen según el breakpoint
     this.updateImageForBreakpoint();

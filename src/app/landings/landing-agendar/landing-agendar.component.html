@@ -1,0 +1,86 @@
+<section class="hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+  <div class="container col-xxl-8 px-4 py-3 py-md-5">
+    <div class="row">
+      <div class="col-12 text-center mb-3 mb-md-4">
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="img-fluid"
+        >
+        </app-responsive-image>
+      </div>
+      <div class="col-12 text-center pb-3 pb-md-5">
+        <h1
+          class="display-6 display-md-5 fw-bold text-body-emphasis lh-1 mb-2 mb-md-3 hero-title"
+        >
+          ¡Gracias por tu interés!
+        </h1>
+        <p class="lead hero-description">Hemos recibido tu solicitud y nuestro equipo está listo para ayudarte.</p>
+        <p class="lead hero-description">
+          El siguiente paso es agendar tu consulta gratuita de 30 minutos con uno de nuestros expertos.
+        </p>
+      </div>
+      <!--<div class="d-flex hero-btn-container">
+        <div class="row">
+          <div class="d-grid col-6">
+            <button
+              class="btn hero-btn-primary"
+              type="button"
+              (click)="navigateToCalendlySection()"
+            >
+              Agendar llamada
+              <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+        </div>
+      </div>-->
+    </div>
+  </div>
+</section>
+<!-- Calendly inline widget -->
+<section #calendly class="calendly-cta-section py-5">
+  <div class="container pb-3">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
+        <p class="calendly-subtitle">
+          Reserva 30 minutos para resolver todas tus dudas sobre la apertura de tu LLC en EE.UU. 
+          Nuestro experto te guiará paso a paso en el proceso.
+        </p>
+      </div>
+    </div>
+  </div>
+  <!-- Cal.com inline embed -->
+  <div style="width:100%;height:100%;overflow:scroll" id="my-cal-inline-agendaformmeta"></div>
+</section>
+
+<!-- Urgency section -->
+<section class="urgency-section py-4">
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <div class="urgency-box p-4 rounded-3">
+          <h3 class="urgency-title mb-3">⏰ ¡No pierdas esta oportunidad!</h3>
+          <p class="urgency-text mb-0">
+            Las consultas gratuitas son limitadas. Agenda tu cita ahora para asegurar tu sesión personalizada 
+            y comenzar el proceso de apertura de tu LLC en Estados Unidos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Testimonials-->
+<app-testimonials></app-testimonials>
+<!--FAQ-->
+<section class="py-3 py-md-5 pt-3 pt-md-5">
+  <app-faq></app-faq>
+</section>

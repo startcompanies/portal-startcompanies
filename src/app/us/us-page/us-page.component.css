@@ -258,28 +258,8 @@
   align-items: center;
   transition: background-color 0.3s ease;
 }
-<<<<<<< HEAD
-/* Estilo del botón "Agendar llamada" */
-.sc-btn-accent {
-  background-color: var(--color-secundario-tecnico);
-  /* Color verde */
-  color: var(--color-fondo-claro);
-  border: none;
-  border-radius: 2.5rem;
-  /* Bordes muy redondeados */
-  padding: 0.75rem 1.5rem;
-  /* Relleno */
-  font-weight: 600;
-  font-size: 1rem;
-  display: inline-flex;
-  /* Para alinear texto e icono */
-  align-items: center;
-  transition: background-color 0.3s ease;
-}
-=======
 
 /* Oculta el botón en pantallas de 768px o más */
->>>>>>> f2de6aa4e1fe9810b46bd7ff037406d88d7e553c
 @media (min-width: 991.98px) {
   .boton-flotante-oculto {
     display: none !important;

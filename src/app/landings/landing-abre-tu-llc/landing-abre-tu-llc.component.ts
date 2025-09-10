@@ -58,22 +58,6 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     priority: true,
   };
 
-  // Video testimonials
-  videoTestimonials = [
-    {
-      id: 'testimonial1',
-      url: 'https://www.youtube.com/embed/VIDEO_ID_1',
-      title: 'Testimonio Cliente 1',
-      thumbnail: '/assets/testimonials/img_outdoor_shot_yo.webp',
-    },
-    {
-      id: 'testimonial2',
-      url: 'https://www.youtube.com/embed/VIDEO_ID_2',
-      title: 'Testimonio Cliente 2',
-      thumbnail: '/assets/testimonials/img_young_bearded_m_64x64.webp',
-    },
-  ];
-
   constructor(
     private scrollService: ScrollService,
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -103,13 +87,6 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
         this.scrollTargetSection(sectionId);
       }
     );
-
-    // Agregar listener de scroll para el botón flotante
-    /*if (typeof window !== 'undefined') {
-      window.addEventListener('scroll', () => {
-        this.checkScrollForFloatingButton();
-      });
-    }*/
     if (isPlatformBrowser(this.platformId)) {
       window.addEventListener('scroll', () => {
         this.checkScrollForFloatingButton();
@@ -138,8 +115,6 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    /*this.checkScrollDepth();
-    this.checkFloatingButton();*/
     if (isPlatformBrowser(this.platformId)) {
       this.checkScrollDepth();
       this.checkFloatingButton();

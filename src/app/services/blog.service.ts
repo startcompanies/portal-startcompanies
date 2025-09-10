@@ -12,7 +12,7 @@ export class BlogService {
 
   getCategories(): Promise<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}/categories/get-from-portal`)
+      .get<any[]>(`${this.apiUrl}/categories/with-posts-count`)
       .toPromise()
       .then((res) => res ?? []);
   }
