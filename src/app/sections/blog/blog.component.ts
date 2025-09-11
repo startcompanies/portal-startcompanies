@@ -26,7 +26,6 @@ export class BlogComponent implements OnInit {
   setAllPosts() {
     this.blogService.getAllPosts().then((posts) => {
       this.allPosts = posts;
-      console.log(this.allPosts);
       this.chunkPostsForCarousels();
     }).catch((error) => {
       console.log('Error al obtener los posts:',error);

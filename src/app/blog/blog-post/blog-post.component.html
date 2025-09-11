@@ -9,15 +9,14 @@
     cssClass="sc-hero-bg"
   >
   </app-responsive-image>
-  <div class="container sc-post-hero-content">
+  <div class="container sc-post-hero-content" *ngIf="postArticle">
     <div class="row">
       <div class="col-12 text-start">
         <p class="sc-post-path">
-          Blog / Abrir tu LLC / ¿Cuál es el Mejor Estado para Abrir tu LLC en
-          Estados Unidos?
+          Blog / {{ postArticle.categories[0].name }} / {{ postArticle.title }}
         </p>
         <h1 class="sc-post-title">
-          ¿Cuál es el Mejor Estado para Abrir tu LLC en Estados Unidos?
+          {{ postArticle.title }}
         </h1>
       </div>
     </div>

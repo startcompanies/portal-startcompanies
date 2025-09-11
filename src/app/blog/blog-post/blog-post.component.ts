@@ -5,6 +5,9 @@ import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.comp
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { BlogService } from '../../services/blog.service';
 import { BlogComponent } from "../../sections/blog/blog.component";
+import { ActivatedRoute } from '@angular/router';
+import { Post } from '../../shared/models/post.model';
+import { SharedModule } from '../../shared/shared/shared.module';
 
 @Component({
   selector: 'app-blog-post',
@@ -14,7 +17,8 @@ import { BlogComponent } from "../../sections/blog/blog.component";
     ScFooterComponent,
     SeoBaseComponent,
     ResponsiveImageComponent,
-    BlogComponent
+    BlogComponent,
+    SharedModule
 ],
   templateUrl: './blog-post.component.html',
   styleUrl: './blog-post.component.css',
@@ -31,10 +35,21 @@ export class BlogPostComponent implements OnInit {
     alt: 'Blog Hero Background',
     priority: true,
   };
+  postArticle!: Post;
 
-  constructor(){}
+  constructor(private route: ActivatedRoute){}
 
   ngOnInit(): void {
-      
+    const slug = this.route.snapshot.paramMap.get('slug');
+    this.setArticle(slug);
+  }
+  
+  setArticle(slug: string | null) {
+    if (slug) {
+      this.blogService.getPostsBySlug(slug).then((post) => {
+        console.log(post);
+        this.postArticle = post;
+      });
+    }
   }
 }

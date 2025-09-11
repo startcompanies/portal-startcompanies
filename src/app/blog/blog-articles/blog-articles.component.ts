@@ -23,16 +23,16 @@ export class BlogArticlesComponent implements OnInit {
     const slug = this.route.snapshot.paramMap.get('slug');
 
     if (slug) {
-      this.blogService
-        .getPostsBySlug(slug)
-        .then((posts) => {
+      this.blogService.getPostsByCategorySlug(slug).subscribe(
+        (posts) => {
           // Manejar los posts filtrados por slug aquí
           this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
           this.mainArticles = posts.slice(0, 4); // Ejemplo: tomar los primeros 4 artículos
-        })
-        .catch((error) => {
+        },
+        (error) => {
           console.error('Error fetching posts by slug:', error);
-        });
+        }
+      );
     } else {
       this.blogService
         .getAllPosts()

@@ -1,5 +1,6 @@
 import { Category } from './category.model';
 import { Tag } from './tag.model';
+import { User } from './user.model';
 
 export interface Post {
   id: number;
@@ -10,7 +11,7 @@ export interface Post {
   image_url: string;
   published_at: string; // O Date, si planeas parsearlo
   is_published: boolean;
-  user_id: number;
+  user_id: User;
   categories: Category[];
   tags: Tag[];
 }
