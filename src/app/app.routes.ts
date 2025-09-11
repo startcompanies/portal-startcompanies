@@ -19,6 +19,11 @@ export const routes: Routes = [
     redirectTo: '/abre-tu-llc',
     pathMatch: 'full',
   },
+  {
+    path: 'apertura-relay',
+    redirectTo: '/apertura-banco-relay',
+    pathMatch: 'full',
+  },
 
   // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
   {
