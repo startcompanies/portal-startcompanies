@@ -63,7 +63,7 @@
 .sc-navbar .navbar-nav .nav-link {
   color: var(--color-primario);
   font-weight: 500;
-  margin-right: 1.5rem;
+  /*margin-right: 1.5rem;*/
   transition: color 0.2s ease;
   position: relative;
 }
