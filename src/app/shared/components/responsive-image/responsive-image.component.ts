@@ -147,6 +147,11 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
     } else {
       this.currentImageSrc = this.images.desktop;
     }
+    
+    // Mantener priority para imágenes hero en todos los breakpoints
+    if (this.context === 'hero' && this.images.priority) {
+      this.isPriority = true;
+    }
   }
 
   private getDefaultWidth(breakpoint: 'mobile' | 'tablet' | 'desktop'): number {
@@ -181,13 +186,19 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
     
     // Actualizar solo la fuente de la imagen según el breakpoint
     this.updateImageForBreakpoint();
+    
+    // Para imágenes hero, mantener priority en todos los breakpoints
+    if (this.context === 'hero' && this.images.priority) {
+      this.isPriority = true;
+    }
   }
 
   private setImageDimensions() {
     switch (this.context) {
       case 'hero':
-        this.currentWidth = 1920;
-        this.currentHeight = 1280;
+        // Dimensiones más apropiadas para hero responsive
+        this.currentWidth = 1200;
+        this.currentHeight = 800;
         break;
       case 'content':
         this.currentWidth = 800;
@@ -198,12 +209,12 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
         this.currentHeight = 200;
         break;
       case 'logo':
-        this.currentWidth = 70;
-        this.currentHeight = 70;
+        this.currentWidth = 100;
+        this.currentHeight = 100;
         break;
       case 'logo-footer':
-        this.currentWidth = 120;
-        this.currentHeight = 120;
+        this.currentWidth = 150;
+        this.currentHeight = 150;
         break;
       case 'tabs':
         this.currentWidth = 570;

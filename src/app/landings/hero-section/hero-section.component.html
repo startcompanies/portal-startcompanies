@@ -19,17 +19,21 @@
     </div>-->
     <!--Visible en pantalla de escritorio y tablet-->
     <div class="col-lg-6 d-none d-md-block">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="292ls35b52"
-      ></app-wistia-player>
+      <div class="desktop-video-container">
+        <app-wistia-player
+          ngSkipHydration
+          mediaId="292ls35b52"
+        ></app-wistia-player>
+      </div>
     </div>
     <!--Visible en pantalla de movil-->
     <div class="col-lg-12 d-md-none">
-      <app-wistia-vertical-player
-        ngSkipHydration
-        mediaId="depoj0tz9m"
-      ></app-wistia-vertical-player>
+      <div class="mobile-video-container">
+        <app-wistia-vertical-player
+          ngSkipHydration
+          mediaId="depoj0tz9m"
+        ></app-wistia-vertical-player>
+      </div>
     </div>
     <div class="col-lg-6">
       <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
