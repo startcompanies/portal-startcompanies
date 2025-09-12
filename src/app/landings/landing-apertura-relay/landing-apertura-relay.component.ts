@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { FaqComponent } from "../../sections/faq/faq.component";
 import { VideoGridSectionComponent } from "../video-grid-section/video-grid-section.component";
 import { VideoSectionComponent } from "../video-section/video-section.component";
@@ -10,6 +10,7 @@ import { WistiaPlayerComponent } from "../wistia-player/wistia-player.component"
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { ResponsiveImage } from '../../services/responsive-image.service';
 import { FacebookPixelService } from '../../services/facebook-pixel.service';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-landing-apertura-relay',
@@ -41,7 +42,10 @@ export class LandingAperturaRelayComponent implements OnInit {
     priority: true
   };
 
-  constructor(private facebookPixelService: FacebookPixelService) { }
+  constructor(
+    private facebookPixelService: FacebookPixelService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   ngOnInit(): void {
     // Inicializar Facebook Pixel para página Relay
@@ -50,13 +54,17 @@ export class LandingAperturaRelayComponent implements OnInit {
     // Trackear vista de página
     this.facebookPixelService.trackViewContent('Apertura Relay Landing', 'Banking Services');
     
-    // Trackear scroll inicial
-    this.checkScrollDepth();
+    // Trackear scroll inicial solo en el navegador
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkScrollDepth();
+    }
   }
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    this.checkScrollDepth();
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkScrollDepth();
+    }
   }
 
   private checkScrollDepth(): void {
