@@ -8,6 +8,7 @@ import { BlogComponent } from "../../sections/blog/blog.component";
 import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
 import { SharedModule } from '../../shared/shared/shared.module';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog-post',
@@ -37,7 +38,10 @@ export class BlogPostComponent implements OnInit {
   };
   postArticle!: Post;
 
-  constructor(private route: ActivatedRoute){}
+  postContent: string = '';
+  sanitizedContent!: SafeHtml;
+
+  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer){}
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
@@ -47,8 +51,8 @@ export class BlogPostComponent implements OnInit {
   setArticle(slug: string | null) {
     if (slug) {
       this.blogService.getPostsBySlug(slug).then((post) => {
-        console.log(post);
         this.postArticle = post;
+        this.sanitizedContent = post != undefined ? this.sanitizer.bypassSecurityTrustHtml(post.content) : '';
       });
     }
   }
