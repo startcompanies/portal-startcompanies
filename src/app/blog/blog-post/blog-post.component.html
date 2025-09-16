@@ -23,14 +23,19 @@
   </div>
 </section>
 <!-- Image Post Section -->
-<section class="mb-5">
+<section *ngIf="postArticle" class="mb-5">
   <div class="col-12 image-post-container d-flex justify-content-center">
     <picture>
       <img
-        src="assets/blog/img_image_4.png"
+        src="{{postArticle.image_url}}"
         alt="Imagen principal del post"
         class="img-fluid rounded-3"
       />
+      <!--<img
+        src="assets/blog/img_image_4.png"
+        alt="Imagen principal del post"
+        class="img-fluid rounded-3"
+      />-->
     </picture>
   </div>
 </section>
