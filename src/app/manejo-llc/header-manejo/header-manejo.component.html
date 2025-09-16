@@ -1,13 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top sc-navbar">
   <div
-    class="container d-flex flex-wrap align-items-center justify-content-between pt-3 mb-2"
+    class="container d-flex flex-wrap align-items-center justify-content-between mb-2"
   >
-    <a class="navbar-brand me-auto" href="#">
-      <img
-        src="assets/logo-dark.png"
-        alt="Start Companies Logo"
-        class="sc-navbar-logo"
-      />
+    <a class="navbar-brand me-auto" href="/">
+      <app-responsive-image
+        [images]="logoImages"
+        context="logo"
+        loading="eager"
+        cssClass="sc-navbar-logo"
+      >
+      </app-responsive-image>
     </a>
 
     <button
@@ -22,7 +24,8 @@
     >
       <span class="navbar-toggler-icon"></span>
     </button>
-
+  </div>
+  <div class="container" style="padding-bottom: 1rem; padding-bottom: 1rem">
     <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/nosotros') }">
@@ -43,6 +46,11 @@
             >{{ "NAVBAR.plans" | transloco }}</a
           >
         </li>
+        <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
+          <a aria-current="page" class="nav-link" href="/blog">{{
+            "NAVBAR.blog" | transloco
+          }}</a>
+        </li>
         <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
           <a class="nav-link" href="/contacto">{{
             "NAVBAR.contact" | transloco
@@ -53,8 +61,8 @@
 
     <div class="d-none d-lg-block">
       <button
-        data-cal-link="startcompanies-businessenusa/agendaorganica"
-        data-cal-namespace="agendaorganica"
+        data-cal-link="startcompanies-businessenusa/agenda-organica"
+        data-cal-namespace="agenda-organica"
         data-cal-config='{"layout":"month_view","theme":"light"}'
         type="button"
         class="btn sc-btn-accent"

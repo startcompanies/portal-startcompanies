@@ -1,23 +1,26 @@
-<div class="potential-container h-100">
-  <div class="potential-content">
-    <h1 class="potential-title">
-      <span class="title-main">{{ "US.potential.title" | transloco }}</span>
+<section class="my-5">
+  <div class="container">
+    <h1 class="potential-title text-center">
+      {{ "US.potential.title" | transloco }}
       <span class="title-accent">{{ "US.potential.title2" | transloco }}</span>
     </h1>
-    <p class="potential-subtitle">
+    <p class="potential-subtitle text-center">
       {{ "US.potential.description" | transloco }}
     </p>
     <div class="cta-buttons">
-      <!--<a href="/ruta-destino" class="cta-button primary">
+      <a
+        href="https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0"
+        target="_blank"
+        class="cta-button primary"
+      >
         {{ "US.potential.cta-primary" | transloco }}
         <span class="arrow">→</span>
-      </a>-->
+      </a>
 
-      <!-- Segundo botón -->
       <a href="/planes" class="cta-button secondary">
         {{ "US.potential.cta-secondary" | transloco }}
         <span class="arrow">→</span>
       </a>
     </div>
   </div>
-</div>
+</section>

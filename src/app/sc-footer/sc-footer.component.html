@@ -8,21 +8,12 @@
         <div
           class="col-12 col-md-4 col-lg-3 d-flex flex-column align-items-center align-items-md-start"
         >
-          <img
-            src="assets/footer/img_footer_logo.png"
-            alt="Start Companies Logo"
-            class="footer-logo"
-          />
-          <!--<div class="footer-social d-flex gap-3 mb-4">
-                        <a href="#" class="social-icon-link"><img src="assets/footer/img_10_linkedin.svg"
-                                alt="LinkedIn" class="social-icon" /></a>
-                        <a href="#" class="social-icon-link"><img src="assets/footer/img_f.svg" alt="Facebook"
-                                class="social-icon" /></a>
-                        <a href="#" class="social-icon-link"><img src="assets/footer/img_group_white_a700.svg"
-                                alt="Twitter" class="social-icon" /></a>
-                        <a href="#" class="social-icon-link"><img src="assets/footer/img_vector_white_a700.svg"
-                                alt="Instagram" class="social-icon" /></a>
-                    </div>-->
+          <app-responsive-image 
+            [images]="footerLogoImages" 
+            context="logo-footer" 
+            loading="eager"
+            cssClass="footer-logo">
+          </app-responsive-image>
         </div>
 
         <!-- Contenedor de Acceso Rápido y Categorías (para mantenerlos juntos en móvil/tablet) -->
@@ -77,7 +68,14 @@
               />
               <span>administracion&#64;startcompanies.us</span>
             </div>
-            <div class="contact-item d-flex align-items-start gap-2">
+            <div
+              class="contact-item d-flex align-items-start gap-2"
+              (click)="
+                openUrl(
+                  'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0'
+                )
+              "
+            >
               <img
                 src="assets/footer/img_phone.svg"
                 alt="Phone"

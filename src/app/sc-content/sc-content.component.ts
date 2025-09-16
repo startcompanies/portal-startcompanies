@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  OnDestroy,
   PLATFORM_ID,
   ViewChild,
 } from '@angular/core';
@@ -16,6 +17,11 @@ import { TestimonialsComponent } from '../sections/testimonials/testimonials.com
 import { FaqComponent } from '../sections/faq/faq.component';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { SeoBaseComponent } from '../shared/components/seo-base/seo-base.component';
+import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
+import { IMAGE_CONFIG, ImageConfig } from '../config/image-config';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-sc-content',
@@ -27,24 +33,22 @@ import { isPlatformBrowser } from '@angular/common';
     SectionsModule,
     TestimonialsComponent,
     FaqComponent,
+    SeoBaseComponent,
+    ResponsiveImageComponent,
   ],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',
 })
-export class ScContentComponent implements AfterViewInit {
-  /*@ViewChild('heroSection') heroSection!: ElementRef;
-  @ViewChild('servicesSection') servicesSection!: ElementRef;
-  @ViewChild('howToLlcSection') howToLlcSection!: ElementRef;*/
-  /*@ViewChild('pricingSection') pricingSection!: ElementRef;*/
-  /*@ViewChild('benefitsSection') benefitsSection!: ElementRef;
-  @ViewChild('testimonialsSection') testimonialsSection!: ElementRef;
-  @ViewChild('blogSection') blogSection!: ElementRef;
-  @ViewChild('faqSection') faqSection!: ElementRef;
-  @ViewChild('footerSection') footerSection!: ElementRef;*/
+export class ScContentComponent implements AfterViewInit, OnDestroy {
   @ViewChild('pricingSection', { static: false })
   pricingSection!: ElementRef<HTMLElement>;
 
+  // Configuración de imágenes responsive
+  heroImages: ImageConfig = IMAGE_CONFIG['hero']!;
+  pricingImages: ImageConfig = IMAGE_CONFIG['pricing']!;
+
   private scrollSubscription!: Subscription;
+  private carousel: any;
 
   constructor(
     private scrollService: ScrollService,
@@ -59,9 +63,37 @@ export class ScContentComponent implements AfterViewInit {
       }
     );
 
+    // Inicializar el carrusel de Bootstrap
+    if (isPlatformBrowser(this.platformId)) {
+      this.initializeCarousel();
+    }
+
     // Si se entra directamente a /planes, hacer scroll a pricingSection
     if (isPlatformBrowser(this.platformId) && this.router.url === '/planes') {
       requestAnimationFrame(() => this.scrollToTargetSection('pricingSection'));
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.scrollSubscription) {
+      this.scrollSubscription.unsubscribe();
+    }
+    
+    // Limpiar el carrusel
+    if (this.carousel) {
+      this.carousel.dispose();
+    }
+  }
+
+  private initializeCarousel() {
+    const carouselElement = document.getElementById('carouselExampleIndicators');
+    if (carouselElement && typeof bootstrap !== 'undefined') {
+      this.carousel = new bootstrap.Carousel(carouselElement, {
+        interval: 5000, // Cambiar cada 5 segundos
+        wrap: true, // Loop infinito
+        keyboard: true, // Navegación con teclado
+        pause: 'hover' // Pausar al hacer hover
+      });
     }
   }
 
@@ -72,56 +104,5 @@ export class ScContentComponent implements AfterViewInit {
     } else {
       console.warn('pricingSection no es un HTMLElement válido:', element);
     }
-    /*switch (sectionId) {
-      case 'heroSection':
-        element = this.heroSection?.nativeElement;
-        break;
-      case 'servicesSection':
-        element = this.servicesSection?.nativeElement;
-        break;
-      case 'howToLlcSection':
-        element = this.howToLlcSection?.nativeElement;
-        break;
-      case 'pricingSection':
-        element = this.pricingSection?.nativeElement;
-        break;
-      case 'benefitsSection':
-        element = this.benefitsSection?.nativeElement;
-        break;
-      case 'testimonialsSection':
-        element = this.testimonialsSection?.nativeElement;
-        break;
-      case 'blogSection':
-        element = this.blogSection?.nativeElement;
-        break;
-      case 'faqSection':
-        // Para el componente FAQ, necesitamos acceder al elemento nativo del componente
-        element = this.faqSection?.nativeElement;
-        break;
-      case 'footerSection': // Para el enlace de "Contacto" que apunta al footer
-        element = this.footerSection?.nativeElement;
-        break;
-      default:
-        console.warn(
-          `Sección con ID "${sectionId}" no encontrada o no mapeada.`
-        );
-        break;
-    }*/
-
-    /*if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      console.warn(
-        `Elemento para sección "${sectionId}" no encontrado o no es un HTMLElement.`
-      );
-    }*/
-  }
-
-  ngOnDestroy() {
-    if (this.scrollSubscription) {
-      this.scrollSubscription.unsubscribe();
-    }
-    // Evita scrolls pendientes al salir
-    this.scrollService.clearTarget();
   }
 }

@@ -61,8 +61,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/img_usa_flag_waving.png" class="img-fluid rounded-4 shadow-sm"
-                            alt="Edificio Empire State para LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.llc" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -92,8 +96,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/account_bank.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Edificio Empire State para LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.bank" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -120,8 +128,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/renew_llc.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Renueva tu LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.renew" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -151,8 +163,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/declaration_taxes.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Declaración de impuestos" />
+                        <app-responsive-image 
+                            [images]="tabImages.taxes" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -167,7 +183,7 @@
                                 {{'CONTENT.tabs.taxes_content.list.2' | transloco}}
                             </li>
                         </ul>
-                        <a href="#" class="btn sc-btn-primary">
+                        <a href="/abotax" class="btn sc-btn-primary">
                             {{'CONTENT.tabs.taxes_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -182,8 +198,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/img_usa_flag_waving.png" class="img-fluid rounded-4 shadow-sm"
-                            alt="Edificio Empire State para LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.llc" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -201,7 +221,7 @@
                                 {{'CONTENT.tabs.llc_content.list.3' | transloco}}
                             </li>
                         </ul>
-                        <a href="#" class="btn sc-btn-primary">
+                        <a href="/apertura-llc" class="btn sc-btn-primary">
                             {{'CONTENT.tabs.llc_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -213,8 +233,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/account_bank.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Edificio Empire State para LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.bank" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -229,7 +253,7 @@
                                 {{'CONTENT.tabs.bank_content.list.2' | transloco}}
                             </li>
                         </ul>
-                        <a href="#" class="btn sc-btn-primary">
+                        <a href="/form-apertura-relay" class="btn sc-btn-primary">
                             {{'CONTENT.tabs.bank_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -241,8 +265,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/renew_llc.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Renueva tu LLC" />
+                        <app-responsive-image 
+                            [images]="tabImages.renew" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -260,7 +288,7 @@
                                 {{'CONTENT.tabs.renew_content.list.3' | transloco}}
                             </li>
                         </ul>
-                        <a href="#" class="btn sc-btn-primary">
+                        <a href="/renovar-llc" class="btn sc-btn-primary">
                             {{'CONTENT.tabs.renew_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>
@@ -272,8 +300,12 @@
                 <div class="row align-items-center sc-tab-pane-content">
                     <!-- Columna de la Imagen -->
                     <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <img src="assets/tabs/declaration_taxes.jpg" class="img-fluid rounded-4 shadow-sm"
-                            alt="Declaración de impuestos" />
+                        <app-responsive-image 
+                            [images]="tabImages.taxes" 
+                            context="tabs" 
+                            loading="lazy"
+                            cssClass="img-fluid rounded-4 shadow-sm">
+                        </app-responsive-image>
                     </div>
                     <!-- Columna del Texto y Botón -->
                     <div class="col-12 col-md-6">
@@ -288,7 +320,7 @@
                                 {{'CONTENT.tabs.taxes_content.list.2' | transloco}}
                             </li>
                         </ul>
-                        <a href="#" class="btn sc-btn-primary">
+                        <a href="/abotax" class="btn sc-btn-primary">
                             {{'CONTENT.tabs.taxes_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     </div>

@@ -1,52 +1,64 @@
-<div class="container col-xxl-8 px-4 py-5">
+<div class="container py-5">
   <div class="row">
-    <div class="col-12 text-center mb-4">
-      <img src="assets/logo.png" alt="Start Companies Logo" class="img-fluid" />
+    <div class="col-12 text-center">
+      <app-responsive-image
+        [images]="logoImages"
+        context="logo"
+        loading="eager"
+        cssClass="img-fluid"
+      >
+      </app-responsive-image>
     </div>
   </div>
-  <div class="row align-items-center g-5 py-5">
-    <div class="col-lg-6">
-      <!-- Contenedor del video -->
-      <div class="video-container" *ngIf="videoId; else noVideo">
-        <app-youtube-player
-          [videoId]="videoId"
-          [title]="videoTitle"
-        ></app-youtube-player>
+  <div class="row align-items-center g-5 py-3 px-4">
+    <!--<div class="col-lg-6">
+      <app-wistia-player
+        ngSkipHydration
+        mediaId="o9xq5e1pus"
+      ></app-wistia-player>
+    </div>-->
+    <!--Visible en pantalla de escritorio y tablet-->
+    <div class="col-lg-6 d-none d-md-block">
+      <div class="desktop-video-container">
+        <app-wistia-player
+          ngSkipHydration
+          mediaId="292ls35b52"
+        ></app-wistia-player>
       </div>
-
-      <ng-template #noVideo>
-        <div class="video-placeholder">
-          <div class="placeholder-content">
-            <span>Video placeholder</span>
-          </div>
-        </div>
-      </ng-template>
-      <!--<iframe [src]="getSafeUrl('https://www.youtube.com/embed/A0xywPD8FDE')"
-                title="VIDEO VSL START COMPANIES" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen class="hero-iframe">
-            </iframe>-->
+    </div>
+    <!--Visible en pantalla de movil-->
+    <div class="col-lg-12 d-md-none">
+      <div class="mobile-video-container">
+        <app-wistia-vertical-player
+          ngSkipHydration
+          mediaId="depoj0tz9m"
+        ></app-wistia-vertical-player>
+      </div>
     </div>
     <div class="col-lg-6">
       <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-        ¡Lanza tu LLC en EE.UU. en menos de 7 días!
+        Sin adelantos: pagas después de tener tu LLC y cuenta bancaria
       </h1>
       <p class="lead hero-description">
-        Crea tu empresa y tu cuenta en EE.UU. de forma simple, online y con
-        ayuda experta.
+        Abre tu empresa en EE.UU. en menos de 7 días, 100% online y con
+        acompañamiento experto.
       </p>
-      <p class="lead hero-description">¡Vende al mundo sin fronteras!</p>
       <p class="lead hero-description">
-        ¡No pagas hasta tener tu cuenta de banco y empresa abierta!
+        Evita comisiones e impuestos innecesarios con nuestra gestión integral.
       </p>
-      <div>
-        <button
-          class="btn btn-outline-secondary btn-lg px-4 hero-btn-primary"
-          (click)="navigateToCalendlySection()"
-        >
-          Empezar con una reunión gratuita
-          <i class="bi bi-arrow-right ms-2"></i>
-        </button>
+      <div class="d-flex hero-btn-container">
+        <div class="row">
+          <div class="d-grid col-6">
+            <button
+              class="btn hero-btn-primary"
+              type="button"
+              (click)="navigateToCalendlySection()"
+            >
+              Empezar mi proceso de LLC
+              <i class="bi bi-arrow-right ms-2"></i>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

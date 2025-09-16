@@ -1,0 +1,111 @@
+.recommended-card {
+  border-radius: 2rem !important;
+  border: 2px solid var(--color-primario) !important;
+}
+.pack-card {
+  border-radius: 2rem !important;
+  border: 2px solid var(--color-texto-oscuro) !important;
+}
+.recommended-badge {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border-radius: 1rem;
+  font-size: 0.7rem;
+  padding: 4px 24px;
+}
+.card-title {
+  font-size: 1.3rem;
+  color: var(--color-texto-oscuro);
+}
+.card-price {
+  font-size: 1.5rem;
+  color: var(--color-secundario-tecnico);
+}
+.card-price-pack {
+  font-size: 1.3rem;
+  color: var(--color-texto-oscuro);
+}
+/*Buttons*/
+.btn-primary,
+.btn-secondary {
+  border-radius: 2.5rem;
+  padding: 0.3rem 4.5rem;
+  font-size: 0.6rem;
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+}
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-texto-oscuro);
+  border: 1px solid var(--color-texto-oscuro);
+}
+/* Pricing Tabs */
+.pricing-tabs {
+  gap: 32px;
+  margin-bottom: 60px;
+}
+
+.pricing-tabs .nav-link {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  position: relative;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0 0.5rem 8px 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.pricing-tabs .nav-link.active {
+  color: var(--color-texto-oscuro);
+  background-color: transparent;
+}
+
+.pricing-tabs .nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--color-primario);
+  border-radius: 2px;
+}
+
+.pricing-tabs .nav-link:hover:not(.active) {
+  color: var(--color-degradado);
+}
+
+.carousel-indicators {
+  bottom: -30px;
+  margin-bottom: 0;
+}
+.carousel-indicators button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-texto-oscuro);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  margin: 0 4px;
+  transition: all 0.3s ease;
+}
+.carousel-indicators button.active {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+  transform: scale(1.2);
+}
+.carousel-indicators button:hover {
+  background-color: rgba(2, 202, 227, 0.7);
+  border-color: rgba(2, 202, 227, 0.7);
+}
+#pricingCarouselMobile .card {
+  margin: 0;
+  height: auto;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.6rem;
+}

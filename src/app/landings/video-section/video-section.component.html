@@ -1,33 +1,4 @@
-<!--<section class="video-section">
-    <div class="container">
-        <div class="subtitle" *ngIf="subtitle">
-            {{ subtitle }}
-        </div>
-
-        <h1 class="main-title" *ngIf="title">
-            <span class="title-part">{{ title }}</span>
-            <span class="title-highlight" *ngIf="titleHighlight">{{ titleHighlight }}</span>
-        </h1>
-
-        <p class="description" *ngIf="description">
-            {{ description }}
-        </p>
-
-        <div class="video-container">
-            <iframe *ngIf="videoUrl" [src]="getSafeUrl(videoUrl)" [title]="videoTitle"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy">
-            </iframe>
-            <div class="video-placeholder" *ngIf="!videoUrl">
-                <div class="placeholder-content">
-                    <span>Video placeholder</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>-->
-<section class="video-section">
+<section class="video-section my-5">
   <div class="container">
     <!-- Subtítulo -->
     <div class="subtitle" *ngIf="subtitle">
@@ -48,19 +19,11 @@
     </p>
 
     <!-- Contenedor del video -->
-    <div class="video-container" *ngIf="videoId; else noVideo">
-      <app-youtube-player
-        [videoId]="videoId"
-        [title]="videoTitle"
-      ></app-youtube-player>
+    <div class="container px-5">
+      <app-wistia-player
+        ngSkipHydration
+        [mediaId]="videoId"
+      ></app-wistia-player>
     </div>
-
-    <ng-template #noVideo>
-      <div class="video-placeholder">
-        <div class="placeholder-content">
-          <span>Video placeholder</span>
-        </div>
-      </div>
-    </ng-template>
   </div>
 </section>

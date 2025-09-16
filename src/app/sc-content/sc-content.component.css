@@ -2,32 +2,75 @@
    HERO SECTION
    ========================= */
 .sc-hero {
-  background-image: url("../../assets/hero-bg.jpg");
-  background-size: cover;
-  background-position: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+  /*height: 100vh;  Asegurar altura completa */
+}
+
+/* Configuración para NgOptimizedImage con fill mode */
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  min-height: 600px;
+}
+
+/* Asegurar que el contenedor de la imagen tenga dimensiones */
+.sc-hero-bg app-responsive-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 600px; /* Altura mínima */
 }
 
 .sc-hero #carouselExampleIndicators {
-  width: 100%;
-  height: 100%;
   position: relative;
+  z-index: 2;
+  height: 100%;
 }
 
 .sc-hero .carousel-inner {
-  height: auto;
-}
-.sc-hero .carousel-item {
-  min-height: 500px;
+  height: 100%;
 }
 
-.sc-slide {
+.sc-hero .carousel-item {
   height: 100%;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 80px 15px;
-  max-width: 1200px;
-  margin: 0 auto;
+  align-items: center;
+}
+
+/* Bootstrap Carousel Fix - Ocultar slides inactivos */
+.sc-hero .carousel-item:not(.active) {
+  display: none !important;
+}
+
+.sc-hero .carousel-item.active {
+  display: flex !important;
+}
+
+/* Asegurar que el carrusel funcione correctamente */
+.sc-hero .carousel-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.sc-hero .carousel-item {
+  position: relative;
+  float: left;
+  width: 100%;
+  height: 100%;
+  margin-right: -100%;
+  backface-visibility: hidden;
+}
+
+.sc-hero .carousel-item .container {
+  position: relative;
+  z-index: 3;
 }
 
 /* Carousel Indicators */
@@ -64,7 +107,7 @@
 
 /* Hero Titles & Description */
 .hero-title {
-  font-size: 3.8rem;
+  font-size: 3.4rem;
   font-weight: 700;
   line-height: 1.2;
   color: var(--color-fondo-claro);
@@ -144,7 +187,7 @@
 }
 
 .sc-services-card {
-  background-color: var(--color-fondo-claro);
+  background-color: var(--color-fondo-gris);
   border-radius: 1.5rem;
   border: none;
   padding: 3rem 2.5rem;
@@ -186,12 +229,69 @@
   position: relative;
   padding: 80px 16px;
   overflow: hidden;
-  background-color: var(--color-primario);
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.6
+  ); /* Overlay oscuro para mejorar legibilidad */
+  /* background-color: var(--color-primario); Removido para que se vea la imagen de fondo */
 }
 
-/* =========================
-   MEDIA QUERIES
-   ========================= */
+.pricing-section .container {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sc-pricing-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  min-height: 500px; /* Altura mínima */
+}
+
+/* Asegurar que el contenedor de la imagen tenga dimensiones */
+.sc-pricing-bg app-responsive-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 500px; /* Altura mínima */
+}
+
+/*FAQ Section*/
+.faq-section {
+  background-color: var(--color-fondo-claro);
+  padding: 80px 16px;
+}
+/* Estilo del botón "Agendar llamada" */
+.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico);
+  /* Color verde */
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  /* Relleno */
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  /* Para alinear texto e icono */
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Oculta el botón en pantallas de 768px o más */
+@media (min-width: 991.98px) {
+  .boton-flotante-oculto {
+    display: none !important;
+  }
+}
 @media (max-width: 991.8px) {
   .sc-slide h2 {
     font-size: 2.5rem;
@@ -231,36 +331,6 @@
     font-size: 3rem !important;
   }
 }
-
-/*FAQ Section*/
-.faq-section {
-  background-color: var(--color-fondo-claro);
-  padding: 80px 16px;
-}
-/* Estilo del botón "Agendar llamada" */
-.sc-btn-accent {
-  background-color: var(--color-secundario-tecnico);
-  /* Color verde */
-  color: var(--color-fondo-claro);
-  border: none;
-  border-radius: 2.5rem;
-  /* Bordes muy redondeados */
-  padding: 0.75rem 1.5rem;
-  /* Relleno */
-  font-weight: 600;
-  font-size: 1rem;
-  display: inline-flex;
-  /* Para alinear texto e icono */
-  align-items: center;
-  transition: background-color 0.3s ease;
-}
-
-/* Oculta el botón en pantallas de 768px o más */
-@media (min-width: 991.98px) {
-  .boton-flotante-oculto {
-    display: none !important;
-  }
-}
 @media (max-width: 767.98px) {
   .sc-slide h2 {
     font-size: 1.5rem;
@@ -294,10 +364,14 @@
 }
 @media (max-width: 575.98px) {
   .hero-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+  .hero-description{
+    font-size: 1.1rem;
   }
   .hero-btn-primary,
   .hero-btn-secondary {
     font-size: 0.7rem;
+    padding: 0.3rem 1.5rem;
   }
 }

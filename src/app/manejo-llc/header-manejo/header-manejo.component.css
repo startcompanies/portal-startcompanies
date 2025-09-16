@@ -1,3 +1,5 @@
+/* style.css o un archivo .scss para el navbar */
+
 /* Estilo general del Navbar */
 .sc-navbar {
   background-color: var(--color-fondo-claro);
@@ -5,7 +7,56 @@
 
 /* Estilo del logo */
 .sc-navbar-logo {
-  height: 45px;
+  height: 70px;
+  width: auto;
+}
+
+/* Estilos para app-responsive-image en el header-manejo */
+.sc-navbar-logo app-responsive-image {
+  height: 70px;
+  width: auto;
+  display: block;
+}
+
+.sc-navbar-logo app-responsive-image img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  /* Estilos específicos para Safari */
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-appearance: none;
+  /* Asegurar que Safari respete las dimensiones */
+  max-width: none;
+  max-height: none;
+  min-width: 70px;
+  min-height: 70px;
+}
+
+/* Estilos específicos para Safari */
+@supports (-webkit-appearance: none) {
+  .sc-navbar-logo app-responsive-image img {
+    /* Forzar el tamaño en Safari */
+    width: 70px !important;
+    height: 70px !important;
+    /* Asegurar que Safari no aplique estilos por defecto */
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    /* Prevenir que Safari cambie el aspect-ratio */
+    aspect-ratio: auto;
+  }
+}
+
+/* Estilos adicionales para el logo en Safari */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .sc-navbar-logo app-responsive-image img {
+    /* Estilos específicos para webkit (Safari/Chrome) */
+    display: block;
+    vertical-align: top;
+    /* Asegurar que el logo mantenga sus proporciones */
+    object-fit: contain;
+    object-position: center;
+  }
 }
 
 /* Estilo de los elementos de navegación (links) */
@@ -141,5 +192,20 @@
   .sc-btn-accent {
     width: auto !important;
     font-size: 0.7rem;
+  }
+}
+@media (max-width: 768px) {
+  .sc-navbar .navbar-brand {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1030 !important;
+    margin: 0 !important;
+    padding-top: 0.75rem !important;
+  }
+  .sc-navbar .navbar-toggler {
+    margin-left: auto !important;
+    order: 2 !important;
+    z-index: 1031 !important;
   }
 }

@@ -1,0 +1,39 @@
+.sc-blog-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.sc-blog-hero .container {
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.text-body-emphasis {
+  color: var(--color-fondo-claro) !important;
+  font-size: 3.5rem;
+}
+.lead {
+  color: var(--color-fondo-claro) !important;
+  font-size: 1.5rem;
+}
+
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+@media (max-width: 480px) {
+  .text-body-emphasis {
+    font-size: 2.5rem;
+  }
+  
+}

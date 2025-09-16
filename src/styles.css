@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('bootstrap/dist/css/bootstrap.min.css');
 @import url('./app/shared/styles/optimized-images.css');
+@import url('./app/shared/styles/responsive-images.css');
 
 :root{
     --color-fondo-claro: #FDFFFE;
@@ -8,4 +9,43 @@
     --color-primario: #0068BD;
     --color-texto-oscuro: #283A48;
     --color-degradado:  linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
+    --color-fondo-gris: #f8f9fa;
+}
+
+/* Estilos específicos para Safari para corregir problemas con imágenes */
+@supports (-webkit-appearance: none) {
+  /* Asegurar que Safari respete las dimensiones de las imágenes */
+  img {
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-appearance: none;
+    /* Prevenir que Safari aplique estilos por defecto no deseados */
+    max-width: none;
+    max-height: none;
+  }
+  
+  /* Estilos específicos para logos en Safari */
+  .sc-navbar-logo img,
+  .sc-navbar-logo app-responsive-image img {
+    /* Forzar dimensiones específicas en Safari */
+    width: 70px !important;
+    height: 70px !important;
+    /* Asegurar que Safari no cambie el aspect-ratio */
+    aspect-ratio: auto;
+    /* Prevenir estilos por defecto de Safari */
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+  }
+}
+
+/* Media query específica para Safari */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .sc-navbar-logo img,
+  .sc-navbar-logo app-responsive-image img {
+    /* Estilos adicionales para webkit */
+    display: block;
+    vertical-align: top;
+    object-fit: contain;
+    object-position: center;
+  }
 }

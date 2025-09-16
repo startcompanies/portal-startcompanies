@@ -1,9 +1,9 @@
+<!-- SEO Base Component -->
+<app-seo-base routeKey="form-apertura-relay"></app-seo-base>
+
 <!--<app-sc-header></app-sc-header>-->
 <app-header-manejo></app-header-manejo>
-<section class="header-section h-100">
-  <div class="container"></div>
-</section>
-<section class="mt-5 pt-3">
+<section class="mt-5 mb-5 pt-3">
   <div class="container pt-5">
     <div class="row justify-content-center">
       <div class="col-lg-8">
@@ -25,6 +25,14 @@
 <section
   class="expert-section text-center text-white d-flex align-items-center justify-content-center py-5"
 >
+  <!-- Imagen de fondo optimizada con NgOptimizedImage -->
+  <app-responsive-image 
+      [images]="heroImages" 
+      context="hero" 
+      loading="lazy"
+      cssClass="expert-bg">
+  </app-responsive-image>
+  
   <div class="container">
     <div class="row">
       <div class="col-12">

@@ -1,0 +1,60 @@
+.sc-plans-hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.sc-plans-hero .container {
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.text-body-emphasis {
+  color: var(--color-fondo-claro) !important;
+  font-size: 3.5rem;
+}
+.lead {
+  color: var(--color-fondo-claro) !important;
+  font-size: 1.5rem;
+}
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+/* Estilo del botón "Agendar llamada" */
+.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico);
+  /* Color verde */
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  /* Relleno */
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  /* Para alinear texto e icono */
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Oculta el botón en pantallas de 768px o más */
+@media (min-width: 991.98px) {
+  .boton-flotante-oculto {
+    display: none !important;
+  }
+}
+@media (max-width: 480px) {
+  .text-body-emphasis {
+    font-size: 2.5rem;
+  }
+}

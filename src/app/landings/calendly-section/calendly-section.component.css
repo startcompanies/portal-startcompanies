@@ -1,22 +1,104 @@
 /* src/app/components/cal-embed/cal-embed.component.css */
 .cal-embed-container {
-  padding: 20px;
   box-sizing: border-box;
+  width: 100%;
+  overflow: visible;
+  position: relative;
 }
 
 .cal-widget {
   max-width: 800px;
   margin: 0 auto;
+  width: 100%;
+  overflow: visible;
 }
 
 #my-cal-inline {
   /* Cal.com maneja el tamaño interno del widget, pero puedes dar un min-height si es necesario */
   min-height: 600px; /* Valor de ejemplo, ajusta según la altura deseada del calendario */
+  width: 100%;
+  max-width: 100%;
+  overflow: visible;
 }
+
 /* Estilos para resoluciones de pantalla de móvil (hasta 767px) */
 @media (max-width: 769px) {
-  #my-cal-inline {
-    max-height: 400px;
-    overflow-y: auto;
+  .cal-embed-container {
+    padding: 0 10px;
+    overflow: visible;
+    width: calc(100% - 20px);
   }
+  
+  .cal-widget {
+    max-width: 100%;
+    margin: 0;
+    overflow: visible;
+  }
+  
+  #my-cal-inline {
+    min-height: 700px; /* Aumentar altura para mobile */
+    overflow: visible;
+    width: 100%;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Estilos para mobile muy pequeño */
+@media (max-width: 480px) {
+  .cal-embed-container {
+    padding: 0 5px;
+    width: calc(100% - 10px);
+  }
+  
+  #my-cal-inline {
+    min-height: 800px; /* Aumentar más altura para mobile pequeño */
+  }
+}
+
+/* Estilos específicos para el iframe de Calendly */
+#my-cal-inline iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  border: none !important;
+  min-height: inherit !important;
+}
+
+/* Permitir que el contenido se expanda naturalmente */
+.cal-embed-container *,
+.cal-widget *,
+#my-cal-inline * {
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+/* Estilos adicionales para asegurar visibilidad completa */
+@media (max-width: 1024px) {
+  #my-cal-inline {
+    min-height: 650px;
+  }
+}
+
+@media (max-width: 768px) {
+  #my-cal-inline {
+    min-height: 750px;
+  }
+}
+
+@media (max-width: 480px) {
+  #my-cal-inline {
+    min-height: 850px;
+  }
+}
+
+/* Asegurar que el contenedor padre permita el contenido completo */
+.calendly-cta-section {
+  overflow: visible !important;
+}
+
+/* Forzar que el iframe de Calendly tenga la altura correcta */
+#my-cal-inline iframe {
+  height: auto !important;
+  min-height: inherit !important;
 }

@@ -1,0 +1,103 @@
+.highlight {
+  color: var(--color-secundario-tecnico);
+}
+.recommended-card {
+  border-radius: 2rem !important;
+  border: 2px solid var(--color-primario) !important;
+}
+.pack-card {
+  border-radius: 2rem !important;
+  border: 2px solid var(--color-texto-oscuro);
+}
+.recommended-badge {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  border-radius: 1rem;
+  font-size: 0.7rem;
+  padding: 4px 24px;
+}
+.card-title {
+  font-size: 1.3rem;
+  color: var(--color-texto-oscuro);
+}
+.card-price {
+  font-size: 1.5rem;
+  color: var(--color-secundario-tecnico);
+}
+.card-price-pack {
+  font-size: 1.3rem;
+  color: var(--color-texto-oscuro);
+}
+/*Buttons*/
+.btn-primary,
+.btn-secondary {
+  border-radius: 2.5rem;
+  padding: 0.3rem 4.5rem;
+  font-size: 1rem;
+  text-decoration: none;
+}
+.btn-primary {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+}
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-texto-oscuro);
+  border: 1px solid var(--color-texto-oscuro);
+}
+/* Pricing Tabs */
+.pricing-tabs {
+  gap: 32px;
+  margin-bottom: 60px;
+}
+
+.pricing-tabs .nav-link {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  position: relative;
+  background-color: transparent;
+  border-radius: 0;
+  padding: 0 0.5rem 8px 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.pricing-tabs .nav-link.active {
+  color: var(--color-texto-oscuro);
+  background-color: transparent;
+}
+
+.pricing-tabs .nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: var(--color-primario);
+  border-radius: 2px;
+}
+
+.pricing-tabs .nav-link:hover:not(.active) {
+  color: var(--color-degradado);
+}
+@media (max-width: 1050px) {
+  .card-body {
+    font-size: 0.6rem !important;
+  }
+  .btn-primary,
+  .btn-secondary {
+    font-size: 0.6rem;
+  }
+}
+@media (max-width: 750px) {
+  .pricing-title{
+    font-size: 1.3rem;
+  }  
+}
+@media (max-width: 900px) {
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.3rem 1.5rem;
+  }
+}

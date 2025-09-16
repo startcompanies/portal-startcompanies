@@ -2,17 +2,28 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
+import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-header-manejo',
   standalone: true,
-  imports: [CommonModule, TranslocoModule],
+  imports: [CommonModule, TranslocoModule, ResponsiveImageComponent],
   templateUrl: './header-manejo.component.html',
   styleUrl: './header-manejo.component.css',
 })
 export class HeaderManejoComponent {
   isOpen: boolean = false;
   currentRoute: string = '';
+
+  // Configuración de imágenes del logo para NgOptimizedImage
+  logoImages = {
+    mobile: "/assets/logo-dark-mobile.png",
+    tablet: "/assets/logo-dark-tablet.png",
+    desktop: "/assets/logo-dark.png",
+    fallback: "/assets/logo-dark.png",
+    alt: "Start Companies Logo",
+    priority: true
+  };
 
   constructor(private router: Router) {}
 

@@ -1,4 +1,10 @@
 <section class="steps-section py-4">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="lazy"
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
   <div class="container">
     <!-- Título principal -->
     <h1 class="display-4 text-center main-title">{{ title }}</h1>
@@ -12,6 +18,13 @@
         <div class="step-content">
           <h3 class="step-title">{{ step.title }}</h3>
           <p class="step-description">{{ step.description }}</p>
+          <!-- CTA solo para el primer paso y solo en desktop -->
+          <button *ngIf="step.hasCta" 
+                  class="step-cta-btn desktop-only"
+                  (click)="scrollToCalendly()">
+            Agendar llamada
+            <i class="bi bi-calendar-check ms-2"></i>
+          </button>
         </div>
       </div>
       <div class="step-line"></div>

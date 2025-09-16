@@ -1,0 +1,75 @@
+<section class="hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+  <app-hero-section></app-hero-section>
+</section>
+
+<!-- Calendly inline widget -->
+<section #calendly class="calendly-cta-section">
+  <div class="container pb-3">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
+        <p class="calendly-subtitle">
+          Reserva 30 minutos para resolver todas tus dudas sobre la apertura de
+          tu LLC en EE.UU.
+        </p>
+      </div>
+    </div>
+  </div>
+  <app-calendly-section
+    (calendlyClick)="onCalendlyClick()"
+  ></app-calendly-section>
+</section>
+
+<!-- Key Benefits Section -->
+<app-key-benefits-section></app-key-benefits-section>
+
+<!-- Steps Section -->
+<app-steps-section></app-steps-section>
+
+<!-- Testimonials -->
+<app-testimonials></app-testimonials>
+
+<!-- Relay, un banco -->
+<app-video-section
+  title="Relay, un banco"
+  titleHighlight="seguro y confiable"
+  description="Mira aquí abajo lo que dicen de nosotros"
+  videoId="g5w4pudrrb"
+  videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
+  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
+  (videoPlay)="onVideoPlay('Relay Banking Service')"
+>
+</app-video-section>
+
+<!-- Video Grid Section -->
+<section class="video-grid-section">
+  <app-video-grid-section
+    title="Escucha a la comunidad"
+    titleHighlight="¡Creación LLC!"
+    description="Mira lo que nuestros clientes tienen que decir de nosotros"
+  >
+  </app-video-grid-section>
+</section>
+
+<!-- FAQ -->
+<section class="py-5 pt-5">
+  <app-faq></app-faq>
+</section>
+
+<!-- Botón flotante para mobile -->
+<button
+  class="floating-cta-button"
+  [class.show]="showFloatingButton"
+  (click)="scrollToCalendly()"
+>
+  Empezar con una reunión gratuita
+</button>
+
+<!--<app-sc-footer></app-sc-footer>-->

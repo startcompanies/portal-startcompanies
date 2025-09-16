@@ -1,16 +1,15 @@
+<!-- SEO Base Component -->
+<app-seo-base routeKey="apertura-llc"></app-seo-base>
+
 <!--<app-sc-header></app-sc-header>-->
 <app-header-manejo></app-header-manejo>
-<section class="header-section h-100">
-    <div class="container">
-    </div>
-</section>
 <section class="mt-5 pt-3">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="iframe-container">
                     <iframe aria-label='Formulario para Apertura de LLC' frameborder="0"
-                        src='https://forms.startcompanies.us/startcompanies/form/FormularioparaAperturadeLLCBancosSM/formperma/Vky3VZXeD8qTy3QNHSIyCbCA0auwnpL2efwRzAz1kWQ'
+                        src='https://forms.zohopublic.com/startcompanies/form/FormularioparaAperturadeLLCBancosSM/formperma/Vky3VZXeD8qTy3QNHSIyCbCA0auwnpL2efwRzAz1kWQ?zf_lang=es'
                         style="width:100%; height: 100%; border:none;"></iframe>
                 </div>
             </div>
@@ -18,6 +17,14 @@
     </div>
 </section>
 <section class="expert-section text-center text-white d-flex align-items-center justify-content-center py-5">
+    <!-- Imagen de fondo optimizada con NgOptimizedImage -->
+    <app-responsive-image 
+        [images]="heroImages" 
+        context="hero" 
+        loading="lazy"
+        cssClass="expert-bg">
+    </app-responsive-image>
+    
     <div class="container">
         <div class="row">
             <div class="col-12">

@@ -14,6 +14,55 @@
 .sc-navbar-logo {
   /*height: 45px;*/
   height: 70px;
+  width: auto;
+}
+
+/* Estilos para app-responsive-image en el header */
+.sc-navbar-logo app-responsive-image {
+  height: 70px;
+  width: auto;
+  display: block;
+}
+
+.sc-navbar-logo app-responsive-image img {
+  height: 70px;
+  width: auto;
+  object-fit: contain;
+  /* Estilos específicos para Safari */
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-appearance: none;
+  /* Asegurar que Safari respete las dimensiones */
+  max-width: none;
+  max-height: none;
+  min-width: 70px;
+  min-height: 70px;
+}
+
+/* Estilos específicos para Safari */
+@supports (-webkit-appearance: none) {
+  .sc-navbar-logo app-responsive-image img {
+    /* Forzar el tamaño en Safari */
+    width: 70px !important;
+    height: 70px !important;
+    /* Asegurar que Safari no aplique estilos por defecto */
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    /* Prevenir que Safari cambie el aspect-ratio */
+    aspect-ratio: auto;
+  }
+}
+
+/* Estilos adicionales para el logo en Safari */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  .sc-navbar-logo app-responsive-image img {
+    /* Estilos específicos para webkit (Safari/Chrome) */
+    display: block;
+    vertical-align: top;
+    /* Asegurar que el logo mantenga sus proporciones */
+    object-fit: contain;
+    object-position: center;
+  }
 }
 
 /* Estilo de los elementos de navegación (links) */
@@ -119,7 +168,12 @@
 }
 
 .sc-navbar .navbar-toggler-icon {
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255%2C 255%2C 255%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Sandwich menu azul cuando el navbar cambia de estado */
+.sc-navbar-light .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C 106%2C 254%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /* ========================================================================= */
@@ -131,6 +185,29 @@
     /*background: var(--color-fondo-claro);*/
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+  
+  /* Centrar el logo en mobile */
+  .sc-navbar .navbar-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1030;
+    padding-top: 0.5rem;
+  }
+  
+  /* Posicionar el botón hamburguesa a la derecha */
+  .sc-navbar .navbar-toggler {
+    position: relative;
+    z-index: 1031;
+    margin-left: auto;
+    order: 2;
+  }
+  
+  /* Ajustar el contenedor para distribuir elementos correctamente */
+  .sc-navbar .container {
+    position: relative;
+    justify-content: space-between;
   }
 
   .sc-navbar-light {
@@ -158,6 +235,13 @@
     margin-top: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    z-index: 1032;
+  }
+  
+  /* Asegurar que el menú abierto tenga prioridad */
+  .sc-navbar .navbar-collapse.show {
+    z-index: 1033;
   }
 
   /* Alinear los elementos de navegación al centro en móvil */
@@ -194,10 +278,6 @@
     width: 100%;
   }
 
-  .sc-navbar .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280%2C 106%2C 254%2C 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-  }
-
   .sc-btn-accent {
     width: auto !important;
     font-size: 0.7rem;
@@ -208,5 +288,114 @@
   }
   .sc-navbar .navbar-nav .nav-item.active .nav-link::after {
     content: none;
+  }
+}
+
+/* ========================================================================= */
+/* Estilos específicos para mobile y iPhone */
+/* ========================================================================= */
+@media (max-width: 768px) {
+  /* Optimizar logo para mobile */
+  .sc-navbar-logo {
+    height: 60px !important; /* Logo más pequeño en mobile */
+    width: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  
+  /* Asegurar que el logo esté centrado perfectamente */
+  .sc-navbar .navbar-brand {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1030 !important;
+    margin: 0 !important;
+    padding-top: 0.75rem !important;
+  }
+  
+  /* Ajustar el contenedor del navbar para mobile */
+  .sc-navbar .container {
+    position: relative;
+    justify-content: space-between;
+  }
+  
+  /* Posicionar botón hamburguesa a la derecha en mobile */
+  .sc-navbar .navbar-toggler {
+    margin-left: auto !important;
+    order: 2 !important;
+    z-index: 1031 !important;
+  }
+
+  .sc-navbar-logo app-responsive-image {
+    height: 60px !important;
+    width: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .sc-navbar-logo app-responsive-image img {
+    height: 60px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    /* Optimizaciones específicas para iPhone */
+    -webkit-transform: translateZ(0) !important; /* Forzar hardware acceleration */
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important; /* Evitar glitches */
+    backface-visibility: hidden !important;
+    -webkit-perspective: 1000 !important; /* Mejorar renderizado */
+    perspective: 1000 !important;
+  }
+
+  /* Ajustar navbar para mobile */
+  .sc-navbar {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+}
+
+/* ========================================================================= */
+/* Estilos específicos para iPhone y dispositivos de alta densidad */
+/* ========================================================================= */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .sc-navbar-logo img {
+    image-rendering: -webkit-optimize-contrast !important;
+    image-rendering: crisp-edges !important;
+  }
+}
+
+/* ========================================================================= */
+/* Estilos para dispositivos muy pequeños */
+/* ========================================================================= */
+@media (max-width: 480px) {
+  .sc-navbar-logo {
+    height: 50px !important; /* Logo aún más pequeño en mobile muy pequeño */
+  }
+
+  .sc-navbar-logo app-responsive-image,
+  .sc-navbar-logo app-responsive-image img {
+    height: 50px !important;
+  }
+
+  .sc-navbar {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  /* Asegurar centrado perfecto en dispositivos muy pequeños */
+  .sc-navbar .navbar-brand {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1030 !important;
+    padding-top: 1rem !important;
+  }
+  
+  /* Botón hamburguesa a la derecha en dispositivos pequeños */
+  .sc-navbar .navbar-toggler {
+    margin-left: auto !important;
+    order: 2 !important;
+    z-index: 1031 !important;
   }
 }
