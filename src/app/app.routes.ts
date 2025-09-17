@@ -27,7 +27,7 @@ export const routes: Routes = [
   },
 
   // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
-  {
+  /*{
     path: 'que-es-etbus-en-ee-uu-ventajas-fiscales-para-tu-llc',
     redirectTo: '/blog',
     pathMatch: 'full',
@@ -66,10 +66,10 @@ export const routes: Routes = [
     path: 'como-una-llc-en-ee-uu-puede-solucionar-sus-problemas-de-impuestos-y-fondos-no-declarados',
     redirectTo: '/blog',
     pathMatch: 'full',
-  },
+  },*/
 
   // ===== REDIRECCIONES DE CATEGORÍAS DE BLOG =====
-  {
+ /* {
     path: 'category/tu-llc-a-nivel-local',
     redirectTo: '/blog',
     pathMatch: 'full',
@@ -113,7 +113,7 @@ export const routes: Routes = [
     path: 'category/estrategias-empresariales',
     redirectTo: '/blog',
     pathMatch: 'full',
-  },
+  },*/
 
   // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
   {
