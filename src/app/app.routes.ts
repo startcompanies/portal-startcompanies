@@ -459,7 +459,8 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'blog/categoria/:slug',
+    /*path: 'blog/categoria/:slug',*/
+    path: 'category/:slug',
     loadComponent: () =>
       import('./blog/blog-home/blog-home.component').then(
         (m) => m.BlogHomeComponent
@@ -481,7 +482,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: 'blog/:slug',
+    path: ':slug',
     loadComponent: () =>
       import('./blog/blog-post/blog-post.component').then(
         (m) => m.BlogPostComponent
