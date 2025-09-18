@@ -3,6 +3,7 @@ import { BlogService } from '../../services/blog.service';
 import { BlogSeoService } from '../../services/blog-seo.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog-articles',
@@ -18,7 +19,10 @@ export class BlogArticlesComponent implements OnInit {
   topArticles: any[] = [];
   mainArticles: any[] = [];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.setCategories();
@@ -64,5 +68,36 @@ export class BlogArticlesComponent implements OnInit {
       .catch((error) => {
         console.error('Error fetching categories:', error);
       });
+  }
+
+  /**
+   * Convierte HTML a texto plano para mostrar en excerpt
+   * @param htmlString - String HTML a convertir
+   * @returns String de texto plano
+   */
+  stripHtmlTags(htmlString: string): string {
+    if (!htmlString) return '';
+    
+    // Crear un elemento temporal para parsear el HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString;
+    
+    // Extraer solo el texto
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Limitar a 150 caracteres y agregar puntos suspensivos si es necesario
+    return textContent.length > 150 
+      ? textContent.substring(0, 150).trim() + '...' 
+      : textContent.trim();
+  }
+
+  /**
+   * Sanitiza HTML para renderizado seguro
+   * @param htmlString - String HTML a sanitizar
+   * @returns SafeHtml para usar con innerHTML
+   */
+  sanitizeHtml(htmlString: string): SafeHtml {
+    if (!htmlString) return this.sanitizer.bypassSecurityTrustHtml('');
+    return this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
 }

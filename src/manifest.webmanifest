@@ -14,7 +14,7 @@
       "type": "image/x-icon"
     },
     {
-      "src": "assets/logo-dark-192x192.png",
+      "src": "assets/logo-gray-mobile.webp",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "maskable any"

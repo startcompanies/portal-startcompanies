@@ -22,9 +22,9 @@
                                                     {{ post.title }}
                                                 </h3>
                                                 <p class="blog-excerpt">
-                                                    {{ post.excerpt }}
+                                                    {{ stripHtmlTags(post.excerpt) }}
                                                 </p>
-                                                <a href="/post/{{post.slug}}" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                                <a href="/post/{{post.slug}}" class="blog-read-more mt-auto">Leer más</a>
                                             </div>
                                         </article>
                                     </div>
@@ -67,9 +67,9 @@
                                                     {{ postSlide[0].title }}
                                                 </h3>
                                                 <p class="blog-excerpt">
-                                                    {{ postSlide[0].excerpt }}
+                                                    {{ stripHtmlTags(postSlide[0].excerpt) }}
                                                 </p>
-                                                <a href="/post/{{postSlide[0].slug}}" class="blog-read-more mt-auto">{{'CONTENT.blog.button' | transloco}}</a>
+                                                <a href="/post/{{postSlide[0].slug}}" class="blog-read-more mt-auto">Leer más</a>
                                             </div>
                                         </article>
                                     </div>

@@ -32,7 +32,7 @@
                     <a
                       href="/post/{{topArticle.slug}}"
                       class="btn btn-light rounded-pill mt-3"
-                      >Gestionar tu LLC</a
+                      >Leer más</a
                     >
                   </div>
                 </div>
@@ -82,7 +82,7 @@
             <div class="card-body">
               <h5 class="card-title">{{ mainArticle.title }}</h5>
               <p class="card-text small text-muted">
-                {{ mainArticle.excerpt }}
+                {{ stripHtmlTags(mainArticle.excerpt) }}
               </p>
               <div class="container">
                 <!--<a
@@ -93,7 +93,7 @@
                 <a
                   href="/post/{{mainArticle.slug}}"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
-                  >Gestionar tu LLC</a
+                  >Leer más</a
                 >
               </div>
             </div>

@@ -3,6 +3,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { BlogService } from '../../services/blog.service';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { Post } from '../../shared/models/post.model';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog',
@@ -17,7 +18,7 @@ export class BlogComponent implements OnInit {
   desktopCarouselSlides: Post[][] = [];
   mobileCarouselSlides: Post[][] = [];
 
-  constructor() {}
+  constructor(private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     this.setAllPosts();
@@ -49,5 +50,36 @@ export class BlogComponent implements OnInit {
       chunks.push(array.slice(i, i + chunkSize));
     }
     return chunks;
+  }
+
+  /**
+   * Convierte HTML a texto plano para mostrar en excerpt
+   * @param htmlString - String HTML a convertir
+   * @returns String de texto plano
+   */
+  stripHtmlTags(htmlString: string): string {
+    if (!htmlString) return '';
+    
+    // Crear un elemento temporal para parsear el HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlString;
+    
+    // Extraer solo el texto
+    const textContent = tempDiv.textContent || tempDiv.innerText || '';
+    
+    // Limitar a 120 caracteres y agregar puntos suspensivos si es necesario
+    return textContent.length > 120 
+      ? textContent.substring(0, 120).trim() + '...' 
+      : textContent.trim();
+  }
+
+  /**
+   * Sanitiza HTML para renderizado seguro
+   * @param htmlString - String HTML a sanitizar
+   * @returns SafeHtml para usar con innerHTML
+   */
+  sanitizeHtml(htmlString: string): SafeHtml {
+    if (!htmlString) return this.sanitizer.bypassSecurityTrustHtml('');
+    return this.sanitizer.bypassSecurityTrustHtml(htmlString);
   }
 }
