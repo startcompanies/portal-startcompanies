@@ -96,10 +96,10 @@ export function app(): express.Express {
   });
 
   // Manejo específico de rutas no encontradas (404)
-  /*server.use('*', (req, res) => {
+  server.use('*', (req, res) => {
     console.log(`🚫 Ruta no encontrada: ${req.originalUrl}`);
     res.redirect(302, '/error-404');
-  });*/
+  });
 
   return server;
 }
