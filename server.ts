@@ -24,9 +24,9 @@ export function app(): express.Express {
     res.redirect(301, '/');
   });
 
-  server.get('/blog', (req, res) => {
+  /*server.get('/blog', (req, res) => {
     res.redirect(301, '/');
-  });
+  });*/
 
   server.get('/agenda-tu-consulta-gratis', (req, res) => {
     res.redirect(301, '/contacto');
