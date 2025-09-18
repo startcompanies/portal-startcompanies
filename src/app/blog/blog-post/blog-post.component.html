@@ -1,6 +1,5 @@
 <app-seo-base routeKey="blog-post"></app-seo-base>
 
-<!-- Mostrar navbar solo en navegador -->
 <app-sc-header *ngIf="isBrowser"></app-sc-header>
 
 <section class="sc-post-hero py-5">
@@ -8,8 +7,8 @@
     [images]="heroImages"
     context="hero"
     loading="eager"
-    cssClass="sc-hero-bg"
-  ></app-responsive-image>
+    cssClass="sc-hero-bg">
+  </app-responsive-image>
 
   <div class="container sc-post-hero-content" *ngIf="postArticle">
     <div class="row">
@@ -17,7 +16,9 @@
         <p class="sc-post-path">
           Blog / {{ postArticle.categories[0].name }} / {{ postArticle.title }}
         </p>
-        <h1 class="mt-4 mb-4 sc-post-title">{{ postArticle.title }}</h1>
+        <h1 class="mt-4 mb-4 sc-post-title">
+          {{ postArticle.title }}
+        </h1>
       </div>
     </div>
   </div>
@@ -28,22 +29,15 @@
     <picture>
       <img
         [src]="postArticle.image_url"
-        alt="Imagen principal del post"
+        [alt]="postArticle.title"
         class="img-fluid rounded-3"
       />
     </picture>
   </div>
 </section>
 
-<section class="sc-blog-post-content py-5">
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="mt-5 col-12 col-md-10 col-lg-8" [innerHTML]="sanitizedContent"></div>
-    </div>
-  </div>
-</section>
+<!-- Renderizado de contenido dinámico SOLO en navegador -->
+<app-post-content *ngIf="isBrowser" [blocks]="contentBlocks"></app-post-content>
 
-<!-- Carrusel de posts relacionados -->
 <app-blog></app-blog>
-
 <app-sc-footer></app-sc-footer>
