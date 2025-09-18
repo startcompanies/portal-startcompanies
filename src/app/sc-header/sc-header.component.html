@@ -1,4 +1,5 @@
 <nav
+  #navbar
   class="navbar navbar-expand-lg navbar-dark fixed-top sc-navbar"
   [ngClass]="{ 'sc-navbar-light': isOpen || isNavbarShrunk }"
 >
@@ -63,14 +64,14 @@
             >
           </li>
           <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
-          <a
-            [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
-            aria-current="page"
-            class="nav-link"
-            href="/blog"
-            >{{ "NAVBAR.blog" | transloco }}</a
-          >
-        </li>
+            <a
+              [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
+              aria-current="page"
+              class="nav-link"
+              href="/blog"
+              >{{ "NAVBAR.blog" | transloco }}</a
+            >
+          </li>
           <li
             class="nav-item"
             [ngClass]="{ active: isRouteActive('/contacto') }"
@@ -86,7 +87,10 @@
       </div>
     </div>
 
-    <div class="container justify-content-end" style="display: flex; padding-top: 1rem; padding-bottom: 1rem">
+    <div
+      class="container justify-content-end"
+      style="display: flex; padding-top: 1rem; padding-bottom: 1rem"
+    >
       <div class="d-none d-lg-block">
         <button
           data-cal-link="startcompanies-businessenusa/agenda-organica"
