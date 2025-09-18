@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ScHeaderComponent } from '../../sc-header/sc-header.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-blog-post',
@@ -26,7 +27,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrl: './blog-post.component.css',
 })
 export class BlogPostComponent implements OnInit {
-
+  isBrowser = false;
   blogService = inject(BlogService);
   blogSeoService = inject(BlogSeoService);
   
@@ -44,7 +45,9 @@ export class BlogPostComponent implements OnInit {
   postContent: string = '';
   sanitizedContent!: SafeHtml;
 
-  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer){}
+  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer, @Inject(PLATFORM_ID) private platformId: Object){
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
