@@ -10,6 +10,7 @@ export interface SeoData {
   ogDescription?: string;
   ogImage?: string;
   ogUrl?: string;
+  ogType?: string;
   canonical?: string;
   twitterCard?: string;
   twitterTitle?: string;

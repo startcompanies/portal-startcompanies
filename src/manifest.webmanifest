@@ -1,0 +1,33 @@
+{
+  "name": "Start Companies LLC",
+  "short_name": "Start Companies",
+  "theme_color": "#006AFE",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "description": "Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía.",
+  "icons": [
+    {
+      "src": "assets/fav-icon/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "assets/logo-dark-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/logo-dark-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["business", "finance", "productivity"],
+  "lang": "es",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false
+}

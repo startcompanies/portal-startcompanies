@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
+import { BlogSeoService } from '../../services/blog-seo.service';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class BlogArticlesComponent implements OnInit {
   blogService = inject(BlogService);
+  blogSeoService = inject(BlogSeoService);
   categories: any[] = [];
   topArticles: any[] = [];
   mainArticles: any[] = [];
@@ -28,6 +30,12 @@ export class BlogArticlesComponent implements OnInit {
           // Manejar los posts filtrados por slug aquí
           this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
           this.mainArticles = posts.slice(0, 4); // Ejemplo: tomar los primeros 4 artículos
+          
+          // Configurar SEO para la categoría
+          if (posts.length > 0 && posts[0].categories && posts[0].categories.length > 0) {
+            const category = posts[0].categories[0];
+            this.blogSeoService.setCategorySeo(category.name, category.slug, posts.length);
+          }
         },
         (error) => {
           console.error('Error fetching posts by slug:', error);

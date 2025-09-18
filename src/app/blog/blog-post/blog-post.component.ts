@@ -3,7 +3,9 @@ import { ScHeaderComponent } from '../../sc-header/sc-header.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { SeoPreviewComponent } from '../../shared/components/seo-preview/seo-preview.component';
 import { BlogService } from '../../services/blog.service';
+import { BlogSeoService } from '../../services/blog-seo.service';
 import { BlogComponent } from "../../sections/blog/blog.component";
 import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
@@ -18,6 +20,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     ScFooterComponent,
     SeoBaseComponent,
     ResponsiveImageComponent,
+    SeoPreviewComponent,
     BlogComponent,
     SharedModule
 ],
@@ -27,6 +30,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class BlogPostComponent implements OnInit {
 
   blogService = inject(BlogService);
+  blogSeoService = inject(BlogSeoService);
+  
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {
     mobile: '/assets/hero-bg-mobile.webp',
@@ -53,6 +58,11 @@ export class BlogPostComponent implements OnInit {
       this.blogService.getPostsBySlug(slug).then((post) => {
         this.postArticle = post;
         this.sanitizedContent = post != undefined ? this.sanitizer.bypassSecurityTrustHtml(post.content) : '';
+        
+        // Configurar SEO dinámico para el post
+        if (post) {
+          this.blogSeoService.setPostSeo(post);
+        }
       });
     }
   }

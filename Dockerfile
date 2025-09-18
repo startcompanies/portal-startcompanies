@@ -28,7 +28,7 @@ RUN ng version && ng config --global cli.warnings.versionMismatch false
 # 1. Validar y generar solo las imágenes responsive faltantes
 # 2. Build de producción con todas las optimizaciones
 RUN npm run validate:images && \
-    npm run build:production:minified
+    npm run build:production:pwa
 
 # Verificar que se generaron las imágenes responsive
 RUN echo "Verificando imágenes responsive generadas:" && \
@@ -80,7 +80,7 @@ EXPOSE 4000
 USER nodejs
 
 # Comando para iniciar la aplicación (como en tu configuración original)
-CMD ["npm", "run", "serve:ssr:portal-startcompanies"]
+CMD ["npm", "run", "serve:ssr"]
 
 # Dockerfile optimizado para imágenes responsive
 # Incluye: Sharp, optimización de imágenes, generación responsive, build optimizado
