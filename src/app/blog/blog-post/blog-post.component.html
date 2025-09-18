@@ -7,7 +7,8 @@
     [images]="heroImages"
     context="hero"
     loading="eager"
-    cssClass="sc-hero-bg">
+    cssClass="sc-hero-bg"
+  >
   </app-responsive-image>
 
   <div class="container sc-post-hero-content" *ngIf="postArticle">
@@ -37,7 +38,12 @@
 </section>
 
 <!-- Renderizado de contenido dinámico SOLO en navegador -->
-<app-post-content *ngIf="isBrowser" [blocks]="contentBlocks"></app-post-content>
+<div *ngIf="postArticle">
+  <app-post-content
+    *ngIf="isBrowser"
+    [html]="postArticle.content"
+  ></app-post-content>
+</div>
 
 <app-blog></app-blog>
 <app-sc-footer></app-sc-footer>
