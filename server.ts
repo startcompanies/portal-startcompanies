@@ -45,9 +45,9 @@ export function app(): express.Express {
     res.redirect(301, '/');
   });*/
 
-  //server.get('/*/page/*', (req, res) => {
-  /*  res.redirect(301, '/');
-  });*/
+  server.get('/*/page/*', (req, res) => {
+   res.redirect(301, '/');
+  });
 
   // Serve static files from /browser with advanced cache busting
   server.get('**', express.static(browserDistFolder, {
