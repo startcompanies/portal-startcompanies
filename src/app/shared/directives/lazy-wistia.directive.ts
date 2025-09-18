@@ -108,9 +108,7 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
     wistiaPlayer.setAttribute('media-id', this.appLazyWistia);
     wistiaPlayer.setAttribute('aspect', this.aspectRatio.toString());
     
-    if (this.vertical) {
-      wistiaPlayer.style.paddingTop = '177.78%'; // 9:16 aspect ratio
-    }
+    // No aplicar padding-top manual; Wistia calculará el alto según 'aspect'
 
     // Agregar estilos para el placeholder
     const style = document.createElement('style');

@@ -20,7 +20,7 @@
       "purpose": "maskable any"
     },
     {
-      "src": "assets/logo-dark-512x512.png",
+      "src": "assets/logo-gray-mobile.webp",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable any"

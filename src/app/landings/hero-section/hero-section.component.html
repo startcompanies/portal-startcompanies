@@ -1,6 +1,6 @@
 <div class="container py-5">
-  <div class="row">
-    <div class="col-12 text-center">
+  <div class="row d-none d-md-block">
+    <div class="col-12 text-center d-none d-md-block">
       <app-responsive-image
         [images]="logoImages"
         context="logo"
@@ -34,6 +34,17 @@
           mediaId="depoj0tz9m"
         ></app-wistia-vertical-player>
       </div>
+      <!-- CTA específico para mobile debajo del video -->
+      <div class="mt-3 d-md-none text-center">
+        <button
+          class="btn hero-btn-primary mobile-cta-btn"
+          type="button"
+          (click)="navigateToCalendlySection()"
+        >
+          Agenda tu consulta gratuita
+          <i class="bi bi-arrow-right ms-2"></i>
+        </button>
+      </div>
     </div>
     <div class="col-lg-6">
       <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
@@ -46,7 +57,7 @@
       <p class="lead hero-description">
         Evita comisiones e impuestos innecesarios con nuestra gestión integral.
       </p>
-      <div class="d-flex hero-btn-container">
+      <div class="d-flex hero-btn-container d-none d-md-flex">
         <div class="row">
           <div class="d-grid col-6">
             <button
