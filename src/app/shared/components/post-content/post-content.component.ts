@@ -5,7 +5,13 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   selector: 'app-post-content',
   imports: [CommonModule],
   standalone: true,
-  template: `<div *ngIf="isBrowser" [innerHTML]="sanitizedHtml"></div>`
+  template: `<div class="row justify-content-center">
+    <div
+      class="mt-5 col-12 col-md-10 col-lg-8"
+      *ngIf="isBrowser"
+      [innerHTML]="sanitizedHtml"
+    ></div>
+  </div>`,
 })
 export class PostContentComponent {
   @Input() html: string = '';
