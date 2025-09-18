@@ -7,40 +7,41 @@
   border: 2px solid var(--color-texto-oscuro) !important;
 }
 .recommended-badge {
-  background-color: var(--color-secundario-tecnico);
-  color: var(--color-fondo-claro);
+  background-color: #ffc107;
+  color: #1f2a37;
   border-radius: 1rem;
   font-size: 0.7rem;
   padding: 4px 24px;
 }
 .card-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: var(--color-texto-oscuro);
 }
 .card-price {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--color-secundario-tecnico);
 }
 .card-price-pack {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--color-texto-oscuro);
 }
 /*Buttons*/
 .btn-primary,
 .btn-secondary {
   border-radius: 2.5rem;
-  padding: 0.3rem 4.5rem;
-  font-size: 0.6rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-decoration: none;
 }
 .btn-primary {
-  background-color: var(--color-secundario-tecnico);
-  color: var(--color-fondo-claro);
+  background-color: var(--color-primario, #006afe);
+  color: #ffffff;
 }
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-texto-oscuro);
-  border: 1px solid var(--color-texto-oscuro);
+  color: var(--color-texto-oscuro, #1f2a37);
+  border: 2px solid var(--color-texto-oscuro, #1f2a37);
 }
 /* Pricing Tabs */
 .pricing-tabs {
@@ -104,8 +105,9 @@
 #pricingCarouselMobile .card {
   margin: 0;
   height: auto;
-  min-height: 600px;
+  min-height: 650px;
   display: flex;
   flex-direction: column;
-  font-size: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }

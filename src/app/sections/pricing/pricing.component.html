@@ -13,8 +13,9 @@
       <span class="fw-bold">{{ "CONTENT.pricing.title2" | transloco }}</span>
     </h2>
 
+    <!-- Tabs solo en desktop -->
     <div
-      class="pricing-tabs nav nav-pills justify-content-center mb-5"
+      class="pricing-tabs nav nav-pills justify-content-center mb-5 d-none d-md-flex"
       id="pricingTabs"
       role="tablist"
     >
@@ -28,9 +29,9 @@
         aria-controls="llc-plans-content"
         aria-selected="true"
       >
-        {{ "CONTENT.pricing.tabs.plans" | transloco }}
+        Planes LLCs
       </button>
-      <!--<button
+      <button
         class="pricing-tab nav-link"
         id="other-plans-tab"
         data-bs-toggle="pill"
@@ -40,8 +41,8 @@
         aria-controls="other-plans-content"
         aria-selected="false"
       >
-        {{ "CONTENT.pricing.tabs.others" | transloco }}
-      </button>-->
+        Otros Planes
+      </button>
     </div>
 
     <div class="tab-content" id="pricingTabsContent">
@@ -151,7 +152,7 @@
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
                 href="/apertura-llc"
-                class="btn-secondary mt-auto d-flex align-items-center justify-content-center"
+                class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "CONTENT.pricing.elite_pack.button" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
@@ -162,10 +163,28 @@
                 </h6>
                 <ul>
                   <li>
-                    {{ "CONTENT.pricing.elite_pack.includes.1" | transloco }}
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.1" | transloco }}
                   </li>
                   <li>
-                    {{ "CONTENT.pricing.elite_pack.includes.2" | transloco }}
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.2" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.3" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.4" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.5" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.6" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.7" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.8" | transloco }}
                   </li>
                 </ul>
               </div>
@@ -189,7 +208,7 @@
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
                 href="/apertura-llc"
-                class="btn-secondary mt-auto d-flex align-items-center justify-content-center"
+                class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "CONTENT.pricing.premium_pack.button" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
@@ -202,11 +221,38 @@
                 </h6>
                 <ul>
                   <li>
-                    {{ "CONTENT.pricing.premium_pack.includes.1" | transloco }}
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.1" | transloco }}
                   </li>
                   <li>
-                    {{ "CONTENT.pricing.premium_pack.includes.2" | transloco }}
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.2" | transloco }}
                   </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.3" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.4" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.5" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.6" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.7" | transloco }}
+                  </li>
+                  <li>
+                    {{ "CONTENT.pricing.entrepreneur_pack.includes.8" | transloco }}
+                  </li>
+                </ul>
+                
+                <h6 class="mt-3">
+                  ¿Renovación automática que incluye?
+                </h6>
+                <ul>
+                  <li>Pago de fee al Estado (cumplimiento federal)</li>
+                  <li>Renovación de Registered Agent</li>
+                  <li>Presentación de Form 1120+5472 o 1065</li>
                 </ul>
               </div>
             </div>
@@ -328,7 +374,7 @@
                   </p>
                   <a
                     href="/apertura-llc"
-                    class="btn-secondary mt-auto d-flex align-items-center justify-content-center"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "CONTENT.pricing.elite_pack.button" | transloco }}
                     <i class="bi bi-arrow-right ms-2"></i>
@@ -342,12 +388,42 @@
                     <ul>
                       <li>
                         {{
-                          "CONTENT.pricing.elite_pack.includes.1" | transloco
+                          "CONTENT.pricing.entrepreneur_pack.includes.1" | transloco
                         }}
                       </li>
                       <li>
                         {{
-                          "CONTENT.pricing.elite_pack.includes.2" | transloco
+                          "CONTENT.pricing.entrepreneur_pack.includes.2" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.3" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.4" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.5" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.6" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.7" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.8" | transloco
                         }}
                       </li>
                     </ul>
@@ -373,7 +449,7 @@
                   </p>
                   <a
                     href="/apertura-llc"
-                    class="btn-secondary mt-auto d-flex align-items-center justify-content-center"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "CONTENT.pricing.premium_pack.button" | transloco }}
                     <i class="bi bi-arrow-right ms-2"></i>
@@ -388,14 +464,53 @@
                     <ul>
                       <li>
                         {{
-                          "CONTENT.pricing.premium_pack.includes.1" | transloco
+                          "CONTENT.pricing.entrepreneur_pack.includes.1" | transloco
                         }}
                       </li>
                       <li>
                         {{
-                          "CONTENT.pricing.premium_pack.includes.2" | transloco
+                          "CONTENT.pricing.entrepreneur_pack.includes.2" | transloco
                         }}
                       </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.3" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.4" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.5" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.6" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.7" | transloco
+                        }}
+                      </li>
+                      <li>
+                        {{
+                          "CONTENT.pricing.entrepreneur_pack.includes.8" | transloco
+                        }}
+                      </li>
+                    </ul>
+                    
+                    <h6 class="mt-3">
+                      ¿Renovación automática que incluye?
+                    </h6>
+                    <ul>
+                      <li>Pago de fee al Estado (cumplimiento federal)</li>
+                      <li>Renovación de Registered Agent</li>
+                      <li>Presentación de Form 1120+5472 o 1065</li>
                     </ul>
                   </div>
                 </div>
@@ -429,16 +544,214 @@
         </div>
       </div>
 
-      <!-- Contenido de la segunda pestaña: Otros (vacío por ahora) -->
+      <!-- Contenido de la segunda pestaña: Otros Planes -->
       <div
         class="tab-pane fade"
         id="other-plans-content"
         role="tabpanel"
         aria-labelledby="other-plans-tab"
       >
-        <div class="p-4 bg-light rounded-3 text-center">
-          <h4>Contenido para Otros Planes</h4>
-          <p>Aquí irá la información sobre otros planes o servicios.</p>
+        <!-- Vista de tablets y escritorio: Grid normal -->
+        <div class="row pricing-cards g-4 d-none d-md-block">
+          <!-- Plan Banco -->
+          <div class="col-12 col-lg-4 d-flex">
+            <div class="pricing-card common w-100">
+              <h3 class="card-title text-center">Banco</h3>
+              <div class="card-price text-center">$150</div>
+              <p class="card-description text-center">
+                Ideal para LLCs ya constituidas sin banco o buscando otro banco como alternativa.
+              </p>
+              <a
+                href="/apertura-banco-relay"
+                class="btn-primarymt-auto d-flex align-items-center justify-content-center"
+              >
+                Abrir Cuenta Bancaria
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+              <div class="card-features">
+                <h6>¿Qué incluye?</h6>
+                <ul>
+                  <li>Apertura 100% garantizada a distancia en bancos como Relay o Mercury</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Renovación -->
+          <div class="col-12 col-lg-4 d-flex">
+            <div class="pricing-card common w-100">
+              <h3 class="card-title text-center">Renovación</h3>
+              <div class="card-price text-center">$600</div>
+              <p class="card-description text-center">
+                Ideal para LLC que quiere mudar el servicio de renovación con nosotros.
+              </p>
+              <a
+                href="/renovar-llc"
+                class="btn-primary mt-auto d-flex align-items-center justify-content-center"
+              >
+                Renovar LLC
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+              <div class="card-features">
+                <h6>Incluye:</h6>
+                <ul>
+                  <li>Pago de fee al Estado (cumplimiento federal)</li>
+                  <li>Renovación de R.A.</li>
+                  <li>Presentación de Form 1120+5472 o 1065</li>
+                  <li>Asistencia mensual por cualquier consulta</li>
+                  <li>Posibilidad de mudar servicios de otro proveedor con nosotros</li>
+                </ul>
+                <div class="alert alert-info mt-3 p-2">
+                  <small><strong>Nota:</strong> Si es Delaware, se suman $300 USD al precio.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Plan Multas -->
+          <div class="col-12 col-lg-4 d-flex">
+            <div class="pricing-card common w-100">
+              <h3 class="card-title text-center">Multas</h3>
+              <div class="card-price text-center">$300 USD</div>
+              <p class="card-description text-center">
+                <strong>Nota:</strong> +3% del valor de la multa.
+              </p>
+              <a
+                href="https://wa.me/+17869354213?text=Hola, vengo de Start Companies. Necesito ayuda con multas de mi LLC."
+                target="_blank"
+                class="btn-primary mt-auto d-flex align-items-center justify-content-center"
+              >
+                Consultar Multas
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+              <div class="card-features">
+                <h6>Incluye:</h6>
+                <ul>
+                  <li>Levantamos tu multa 100% garantizado si no presentaste nunca declaraciones informativas</li>
+                  <li>Reducción de la multa hasta un 50%</li>
+                  <li>Planes de pago</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vista de móviles: Carrusel para otros planes -->
+        <div class="pricing-carousel-container d-md-none">
+          <div
+            id="otherPlansCarouselMobile"
+            class="carousel slide"
+            data-bs-ride="carousel"
+            data-bs-interval="5000"
+          >
+            <div class="carousel-inner">
+              <!-- Slide 1: Plan Banco -->
+              <div class="carousel-item active">
+                <div class="pricing-card common w-100">
+                  <h3 class="card-title text-center">Banco</h3>
+                  <div class="card-price text-center">$150</div>
+                  <p class="card-description text-center">
+                    Ideal para LLCs ya constituidas sin banco o buscando otro banco como alternativa.
+                  </p>
+                  <a
+                    href="/apertura-banco-relay"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
+                  >
+                    Abrir Cuenta Bancaria
+                    <i class="bi bi-arrow-right ms-2"></i>
+                  </a>
+                  <div class="card-features">
+                    <h6>¿Qué incluye?</h6>
+                    <ul>
+                      <li>Apertura 100% garantizada a distancia en bancos como Relay o Mercury</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 2: Plan Renovación -->
+              <div class="carousel-item">
+                <div class="pricing-card common w-100">
+                  <h3 class="card-title text-center">Renovación</h3>
+                  <div class="card-price text-center">$600</div>
+                  <p class="card-description text-center">
+                    Ideal para LLC que quiere mudar el servicio de renovación con nosotros.
+                  </p>
+                  <a
+                    href="/renovar-llc"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
+                  >
+                    Renovar LLC
+                    <i class="bi bi-arrow-right ms-2"></i>
+                  </a>
+                  <div class="card-features">
+                    <h6>Incluye:</h6>
+                    <ul>
+                      <li>Pago de fee al Estado (cumplimiento federal)</li>
+                      <li>Renovación de R.A.</li>
+                      <li>Presentación de Form 1120+5472 o 1065</li>
+                      <li>Asistencia mensual por cualquier consulta</li>
+                      <li>Posibilidad de mudar servicios de otro proveedor con nosotros</li>
+                    </ul>
+                    <div class="alert alert-info mt-3 p-2">
+                      <small><strong>Nota:</strong> Si es Delaware, se suman $300 USD al precio.</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Slide 3: Plan Multas -->
+              <div class="carousel-item">
+                <div class="pricing-card common w-100">
+                  <h3 class="card-title text-center">Multas</h3>
+                  <div class="card-price text-center">$300 USD</div>
+                  <p class="card-description text-center">
+                    <strong>Nota:</strong> +3% del valor de la multa.
+                  </p>
+                  <a
+                    href="https://wa.me/+17869354213?text=Hola, vengo de Start Companies. Necesito ayuda con multas de mi LLC."
+                    target="_blank"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
+                  >
+                    Consultar Multas
+                    <i class="bi bi-arrow-right ms-2"></i>
+                  </a>
+                  <div class="card-features">
+                    <h6>Incluye:</h6>
+                    <ul>
+                      <li>Levantamos tu multa 100% garantizado si no presentaste nunca declaraciones informativas</li>
+                      <li>Reducción de la multa hasta un 50%</li>
+                      <li>Planes de pago</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Indicadores para móvil -->
+            <div class="carousel-indicators pricing-carousel-indicators">
+              <button
+                type="button"
+                data-bs-target="#otherPlansCarouselMobile"
+                data-bs-slide-to="0"
+                class="active"
+                aria-current="true"
+                aria-label="Slide 1"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#otherPlansCarouselMobile"
+                data-bs-slide-to="1"
+                aria-label="Slide 2"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#otherPlansCarouselMobile"
+                data-bs-slide-to="2"
+                aria-label="Slide 3"
+              ></button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
