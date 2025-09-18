@@ -53,6 +53,7 @@ export class BlogPostComponent implements OnInit {
 
   ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);
+    console.log(this.isBrowser);
     const slug = this.route.snapshot.paramMap.get('slug');
     this.setArticle(slug);
   }
