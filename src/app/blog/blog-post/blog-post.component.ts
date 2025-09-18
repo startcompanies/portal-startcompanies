@@ -5,7 +5,7 @@ import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.comp
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { BlogService } from '../../services/blog.service';
 import { BlogSeoService } from '../../services/blog-seo.service';
-import { BlogComponent } from '../../sections/blog/blog.component';
+import { BlogComponent } from "../../sections/blog/blog.component";
 import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
 import { SharedModule } from '../../shared/shared/shared.module';
@@ -21,17 +21,16 @@ import { isPlatformBrowser } from '@angular/common';
     SeoBaseComponent,
     ResponsiveImageComponent,
     BlogComponent,
-    SharedModule,
+    SharedModule
   ],
   templateUrl: './blog-post.component.html',
-  styleUrl: './blog-post.component.css',
+  styleUrls: ['./blog-post.component.css'],
 })
 export class BlogPostComponent implements OnInit {
   isBrowser = false;
   blogService = inject(BlogService);
   blogSeoService = inject(BlogSeoService);
 
-  // Configuración de imágenes para NgOptimizedImage
   heroImages = {
     mobile: '/assets/hero-bg-mobile.webp',
     tablet: '/assets/hero-bg-tablet.webp',
@@ -40,75 +39,68 @@ export class BlogPostComponent implements OnInit {
     alt: 'Blog Hero Background',
     priority: true,
   };
-  postArticle!: Post;
 
-  postContent: string = '';
+  postArticle!: Post;
   sanitizedContent!: SafeHtml;
 
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    console.log(this.isBrowser);
     const slug = this.route.snapshot.paramMap.get('slug');
-    this.setArticle(slug);
+    this.loadPost(slug);
   }
 
-  setArticle(slug: string | null) {
-    if (slug) {
-      this.blogService.getPostsBySlug(slug).then((post) => {
-        this.postArticle = post;
+  private loadPost(slug: string | null) {
+    if (!slug) return;
 
-        // Limpiar y formatear el contenido HTML
-        if (post && post.content) {
-          const cleanedContent = this.cleanHtmlContent(post.content);
-          this.sanitizedContent =
-            this.sanitizer.bypassSecurityTrustHtml(cleanedContent);
-        } else {
-          this.sanitizedContent = '';
-        }
+    this.blogService.getPostsBySlug(slug).then((post) => {
+      if (!post) return;
 
-        // Configurar SEO dinámico para el post
-        if (post) {
-          this.blogSeoService.setPostSeo(post);
-        }
-      });
-    }
+      this.postArticle = post;
+
+      // Sanitizar el contenido HTML de manera básica
+      this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(
+        this.cleanHtmlContent(post.content)
+      );
+
+      // Configurar SEO dinámico
+      this.blogSeoService.setPostSeo(post);
+    });
   }
 
+  /**
+   * Limpieza básica del HTML del post
+   */
   private cleanHtmlContent(content: string): string {
     if (!content) return '';
 
-    // Reemplazar caracteres de escape de newlines
-    let cleaned = content.replace(/\\n\\n/g, '\n\n');
-    cleaned = cleaned.replace(/\\n/g, '\n');
+    let cleaned = content;
 
-    // Limpiar HTML mal formateado
-    cleaned = cleaned.replace(/<p><\/p>/g, ''); // Eliminar párrafos vacíos
-    cleaned = cleaned.replace(/\n\s*\n/g, '\n'); // Eliminar líneas vacías múltiples
+    // Eliminar cualquier <script> para evitar errores SSR
+    cleaned = cleaned.replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
 
-    // Asegurar que los enlaces tengan target="_blank" y rel="noopener"
+    // Eliminar párrafos vacíos
+    cleaned = cleaned.replace(/<p>\s*<\/p>/g, '');
+
+    // Normalizar saltos de línea
+    cleaned = cleaned.replace(/\n\s*\n/g, '\n');
+
+    // Opcional: agregar target="_blank" a links de YouTube
     cleaned = cleaned.replace(
       /<a\s+href="([^"]*)"([^>]*)>/g,
-      (match, href, attributes) => {
+      (match, href, attrs) => {
         if (href.includes('youtu.be') || href.includes('youtube.com')) {
-          return `<a href="${href}" target="_blank" rel="noopener noreferrer"${attributes}>`;
+          return `<a href="${href}" target="_blank" rel="noopener noreferrer"${attrs}>`;
         }
         return match;
       }
     );
-
-    // Formatear párrafos correctamente
-    cleaned = cleaned.replace(/\n\n/g, '</p><p>');
-    cleaned = '<p>' + cleaned + '</p>';
-
-    // Limpiar párrafos vacíos al inicio y final
-    cleaned = cleaned.replace(/^<p>\s*<\/p>/, '');
-    cleaned = cleaned.replace(/<p>\s*<\/p>$/, '');
 
     return cleaned;
   }

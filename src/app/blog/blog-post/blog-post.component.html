@@ -1,54 +1,49 @@
-<!-- SEO Base Component -->
 <app-seo-base routeKey="blog-post"></app-seo-base>
+
+<!-- Mostrar navbar solo en navegador -->
 <app-sc-header *ngIf="isBrowser"></app-sc-header>
+
 <section class="sc-post-hero py-5">
   <app-responsive-image
     [images]="heroImages"
     context="hero"
     loading="eager"
     cssClass="sc-hero-bg"
-  >
-  </app-responsive-image>
+  ></app-responsive-image>
+
   <div class="container sc-post-hero-content" *ngIf="postArticle">
     <div class="row">
       <div class="col-12 text-start">
         <p class="sc-post-path">
           Blog / {{ postArticle.categories[0].name }} / {{ postArticle.title }}
         </p>
-        <h1 class="mt-4 mb-4 sc-post-title">
-          {{ postArticle.title }}
-        </h1>
+        <h1 class="mt-4 mb-4 sc-post-title">{{ postArticle.title }}</h1>
       </div>
     </div>
   </div>
 </section>
-<!-- Image Post Section -->
+
 <section *ngIf="postArticle" class="mb-5">
   <div class="mt-5 col-12 image-post-container d-flex justify-content-center">
     <picture>
       <img
-        src="{{postArticle.image_url}}"
+        [src]="postArticle.image_url"
         alt="Imagen principal del post"
         class="img-fluid rounded-3"
       />
-      <!--<img
-        src="assets/blog/img_image_4.png"
-        alt="Imagen principal del post"
-        class="img-fluid rounded-3"
-      />-->
     </picture>
   </div>
 </section>
-<!--Article body-->
+
 <section class="sc-blog-post-content py-5">
   <div class="container mt-5">
     <div class="row justify-content-center">
-      <div class="mt-5 col-12 col-md-10 col-lg-8" [innerHTML]="sanitizedContent">
-      </div>
+      <div class="mt-5 col-12 col-md-10 col-lg-8" [innerHTML]="sanitizedContent"></div>
     </div>
-    
   </div>
 </section>
-<!--Blog Carrusel-->
+
+<!-- Carrusel de posts relacionados -->
 <app-blog></app-blog>
+
 <app-sc-footer></app-sc-footer>
