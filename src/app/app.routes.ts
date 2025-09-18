@@ -482,7 +482,7 @@ export const routes: Routes = [
     },
   },
   {
-    path: ':slug',
+    path: 'post/:slug',
     loadComponent: () =>
       import('./blog/blog-post/blog-post.component').then(
         (m) => m.BlogPostComponent
