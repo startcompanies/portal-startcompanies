@@ -24,6 +24,10 @@
   margin: 0 auto 0.5rem auto;
   display: block;
 }
+/* Ocultar logo en mobile */
+@media (max-width: 768px) {
+  .col-12.text-center { display: none; }
+}
 
 /* Centrar el logo en su contenedor */
 .col-12.text-center {
@@ -120,9 +124,15 @@
     padding: 1rem;
   }
   
-  .mobile-video-container {
-    max-width: 250px;
-    min-height: 140px;
+  .mobile-video-container { max-width: 320px; }
+}
+
+/* CTA mobile debajo del video */
+@media (max-width: 768px) {
+  .mobile-cta-btn {
+    margin-top: 0.75rem;
+    width: 100%;
+    max-width: 320px;
   }
 }
 
@@ -144,10 +154,7 @@
 }
 
 @media (max-width: 480px) {
-  .mobile-video-container {
-    max-width: 220px;
-    min-height: 120px;
-  }
+  .mobile-video-container { max-width: 300px; }
 }
 
 @media (min-width: 992px) {

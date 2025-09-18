@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ScHeaderComponent } from "../../sc-header/sc-header.component";
 import { ScFooterComponent } from "../../sc-footer/sc-footer.component";
 import { BlogComponent } from "../../sections/blog/blog.component";
@@ -6,6 +6,7 @@ import { BlogArticlesComponent } from "../blog-articles/blog-articles.component"
 import { BlogQuestionsComponent } from "../blog-questions/blog-questions.component";
 import { SeoBaseComponent } from "../../shared/components/seo-base/seo-base.component";
 import { ResponsiveImageComponent } from "../../shared/components/responsive-image/responsive-image.component";
+import { BlogSeoService } from "../../services/blog-seo.service";
 
 @Component({
   selector: 'app-blog-home',
@@ -14,7 +15,9 @@ import { ResponsiveImageComponent } from "../../shared/components/responsive-ima
   templateUrl: './blog-home.component.html',
   styleUrl: './blog-home.component.css'
 })
-export class BlogHomeComponent {
+export class BlogHomeComponent implements OnInit {
+
+  blogSeoService = inject(BlogSeoService);
 
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {
@@ -25,5 +28,10 @@ export class BlogHomeComponent {
     alt: "Blog Hero Background",
     priority: true
   };
+
+  ngOnInit(): void {
+    // Configurar SEO para la página principal del blog
+    this.blogSeoService.setBlogHomeSeo();
+  }
 
 }

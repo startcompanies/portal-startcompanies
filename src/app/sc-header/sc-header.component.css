@@ -69,7 +69,6 @@
 .sc-navbar .navbar-nav .nav-link {
   color: var(--color-fondo-claro);
   font-weight: 500;
-  margin-right: 1.5rem;
   transition: color 0.2s ease;
   position: relative;
 }

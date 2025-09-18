@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { title } from 'process';
 
 export const routes: Routes = [
   // ===== REDIRECCIONES 301 PARA SEO =====
@@ -26,7 +27,7 @@ export const routes: Routes = [
   },
 
   // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
-  {
+  /*{
     path: 'que-es-etbus-en-ee-uu-ventajas-fiscales-para-tu-llc',
     redirectTo: '/blog',
     pathMatch: 'full',
@@ -65,10 +66,10 @@ export const routes: Routes = [
     path: 'como-una-llc-en-ee-uu-puede-solucionar-sus-problemas-de-impuestos-y-fondos-no-declarados',
     redirectTo: '/blog',
     pathMatch: 'full',
-  },
+  },*/
 
   // ===== REDIRECCIONES DE CATEGORÍAS DE BLOG =====
-  {
+ /* {
     path: 'category/tu-llc-a-nivel-local',
     redirectTo: '/blog',
     pathMatch: 'full',
@@ -112,7 +113,7 @@ export const routes: Routes = [
     path: 'category/estrategias-empresariales',
     redirectTo: '/blog',
     pathMatch: 'full',
-  },
+  },*/
 
   // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
   {
@@ -454,6 +455,51 @@ export const routes: Routes = [
         ogImage: 'https://startcompanies.us/assets/logo.png',
         twitterSite: '@startcompaniess',
         canonical: 'https://startcompanies.us/blog',
+      },
+    },
+  },
+  {
+    /*path: 'blog/categoria/:slug',*/
+    path: 'category/:slug',
+    loadComponent: () =>
+      import('./blog/blog-home/blog-home.component').then(
+        (m) => m.BlogHomeComponent
+      ),
+    data: {
+      seo: {
+        title: 'Categoría de Blog - Start Companies LLC',
+        description:
+          'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+        keywords:
+          'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+        ogTitle: 'Categoría de Blog - Start Companies LLC',
+        ogDescription:
+          'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
+      },
+    },
+  },
+  {
+    path: 'post/:slug',
+    loadComponent: () =>
+      import('./blog/blog-post/blog-post.component').then(
+        (m) => m.BlogPostComponent
+      ),
+    data: {
+      seo: {
+        title: 'Categoría de Blog - Start Companies LLC',
+        description:
+          'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+        keywords:
+          'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+        ogTitle: 'Categoría de Blog - Start Companies LLC',
+        ogDescription:
+          'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+        ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+        twitterSite: '@startcompaniess',
+        canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
       },
     },
   },

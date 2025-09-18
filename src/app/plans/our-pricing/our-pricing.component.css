@@ -10,8 +10,8 @@
   border: 2px solid var(--color-texto-oscuro);
 }
 .recommended-badge {
-  background-color: var(--color-secundario-tecnico);
-  color: var(--color-fondo-claro);
+  background-color: #ffc107;
+  color: #1f2a37;
   border-radius: 1rem;
   font-size: 0.7rem;
   padding: 4px 24px;
@@ -37,13 +37,13 @@
   text-decoration: none;
 }
 .btn-primary {
-  background-color: var(--color-secundario-tecnico);
-  color: var(--color-fondo-claro);
+  background-color: var(--color-primario, #006afe);
+  color: #ffffff;
 }
 .btn-secondary {
   background-color: transparent;
-  color: var(--color-texto-oscuro);
-  border: 1px solid var(--color-texto-oscuro);
+  color: var(--color-texto-oscuro, #1f2a37);
+  border: 1px solid var(--color-texto-oscuro, #1f2a37);
 }
 /* Pricing Tabs */
 .pricing-tabs {
