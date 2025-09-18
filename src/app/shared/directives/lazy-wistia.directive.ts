@@ -9,6 +9,7 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
   @Input() appLazyWistia!: string;
   @Input() aspectRatio: number = 1.7777777777777777; // 16:9 por defecto
   @Input() vertical: boolean = false;
+  @Input() popover: boolean = false; // usar popover nativo de Wistia
 
   private observer: IntersectionObserver | null = null;
   private scriptsLoaded = false;
@@ -107,6 +108,9 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
     const wistiaPlayer = document.createElement('wistia-player');
     wistiaPlayer.setAttribute('media-id', this.appLazyWistia);
     wistiaPlayer.setAttribute('aspect', this.aspectRatio.toString());
+    if (this.popover) {
+      wistiaPlayer.setAttribute('wistia-popover', 'true');
+    }
     
     // No aplicar padding-top manual; Wistia calculará el alto según 'aspect'
 

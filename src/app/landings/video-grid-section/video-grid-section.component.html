@@ -13,36 +13,16 @@
   </p>
 
   <!-- Cuadrícula de videos -->
-  <div class="video-grid">
-    <div class="video-item">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="1gfm7c0y9h"
-      ></app-wistia-player>
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <div class="video-container">
+        <div appLazyWistia [appLazyWistia]="'b5xb8pkpzj'" [aspectRatio]="0.5625" [vertical]="true" [popover]="isMobile"></div>
+      </div>
     </div>
-    <!--<div class="video-item">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="4umvha5zak"
-      ></app-wistia-player>
-    </div>-->
-    <div class="video-item">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="b5xb8pkpzj"
-      ></app-wistia-player>
-    </div>
-    <!--<div class="video-item">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="1gfm7c0y9h"
-      ></app-wistia-player>
-    </div>-->
-    <div class="video-item">
-      <app-wistia-player
-        ngSkipHydration
-        mediaId="i3qiul9gc8"
-      ></app-wistia-player>
+    <div class="col-6">
+      <div class="video-container">
+        <div appLazyWistia [appLazyWistia]="'i3qiul9gc8'" [aspectRatio]="0.5625" [vertical]="true" [popover]="isMobile"></div>
+      </div>
     </div>
   </div>
 </div>
