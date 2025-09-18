@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
 import { BlogSeoService } from '../../services/blog-seo.service';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -21,7 +21,8 @@ export class BlogArticlesComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +78,11 @@ export class BlogArticlesComponent implements OnInit {
    */
   stripHtmlTags(htmlString: string): string {
     if (!htmlString) return '';
+    
+    // Durante SSR, usar regex simple para extraer texto
+    if (!isPlatformBrowser(this.platformId)) {
+      return htmlString.replace(/<[^>]*>/g, '').substring(0, 150).trim() + '...';
+    }
     
     // Crear un elemento temporal para parsear el HTML
     const tempDiv = document.createElement('div');

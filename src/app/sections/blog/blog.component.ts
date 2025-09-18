@@ -1,9 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { BlogService } from '../../services/blog.service';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { Post } from '../../shared/models/post.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-blog',
@@ -18,7 +19,10 @@ export class BlogComponent implements OnInit {
   desktopCarouselSlides: Post[][] = [];
   mobileCarouselSlides: Post[][] = [];
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(
+    private sanitizer: DomSanitizer,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngOnInit(): void {
     this.setAllPosts();
@@ -59,6 +63,11 @@ export class BlogComponent implements OnInit {
    */
   stripHtmlTags(htmlString: string): string {
     if (!htmlString) return '';
+    
+    // Durante SSR, usar regex simple para extraer texto
+    if (!isPlatformBrowser(this.platformId)) {
+      return htmlString.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...';
+    }
     
     // Crear un elemento temporal para parsear el HTML
     const tempDiv = document.createElement('div');
