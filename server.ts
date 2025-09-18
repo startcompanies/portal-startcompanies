@@ -37,9 +37,9 @@ export function app(): express.Express {
   });
 
   // Redirecciones de blog y categorías
-  server.get('/category/*', (req, res) => {
+  /*server.get('/category/*', (req, res) => {
     res.redirect(301, '/');
-  });
+  });*/
 
   server.get('/como-*', (req, res) => {
     res.redirect(301, '/');
