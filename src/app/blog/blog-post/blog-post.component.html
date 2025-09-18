@@ -1,6 +1,6 @@
 <app-seo-base routeKey="blog-post"></app-seo-base>
 
-<app-sc-header *ngIf="isBrowser"></app-sc-header>
+<app-sc-header></app-sc-header>
 
 <section class="sc-post-hero py-5">
   <app-responsive-image
@@ -40,7 +40,6 @@
 <!-- Renderizado de contenido dinámico SOLO en navegador -->
 <div *ngIf="postArticle">
   <app-post-content
-    *ngIf="isBrowser"
     [html]="postArticle.content"
   ></app-post-content>
 </div>
