@@ -25,28 +25,27 @@
 <!-- Image Post Section -->
 <section *ngIf="postArticle" class="mb-5">
   <div class="mt-5 col-12 image-post-container d-flex justify-content-center">
-    <picture>
+    <!-- Temporal -->
+    <img [src]="postArticle.image_url" alt="img" class="img-fluid rounded-3" />
+
+    <!--<picture>
       <img
         src="{{postArticle.image_url}}"
         alt="Imagen principal del post"
         class="img-fluid rounded-3"
       />
-      <!--<img
-        src="assets/blog/img_image_4.png"
-        alt="Imagen principal del post"
-        class="img-fluid rounded-3"
-      />-->
-    </picture>
+    </picture>-->
   </div>
 </section>
 <!--Article body-->
 <section class="sc-blog-post-content py-5">
   <div class="container mt-5">
     <div class="row justify-content-center">
-      <div class="mt-5 col-12 col-md-10 col-lg-8" [innerHTML]="sanitizedContent">
-      </div>
+      <!--<div
+        class="mt-5 col-12 col-md-10 col-lg-8"
+        [innerHTML]="sanitizedContent"
+      ></div>-->
     </div>
-    
   </div>
 </section>
 <!--Blog Carrusel-->
