@@ -3,7 +3,10 @@
     <div class="col-md-12 col-lg-8">
       <div class="article-section">
         <h2 class="article-title">
-          {{ 'BLOG.articles' | transloco }} <span class="highlighted-text">{{ 'BLOG.featured' | transloco }}</span>
+          {{ "BLOG.articles" | transloco }}
+          <span class="highlighted-text">{{
+            "BLOG.featured" | transloco
+          }}</span>
         </h2>
         <div class="row">
           <div class="col-12 mb-4">
@@ -15,8 +18,8 @@
                 <div
                   class="col-md-5 d-flex align-items-center justify-content-center"
                 >
-                <img
-                    src="{{topArticle.image_url}}"
+                  <img
+                    src="{{ topArticle.image_url }}"
                     class="img-fluid"
                     alt="Imagen del artículo"
                   />
@@ -25,9 +28,9 @@
                   <div class="card-body">
                     <h3 class="card-title">{{ topArticle.title }}</h3>
                     <a
-                      href="/post/{{topArticle.slug}}"
+                      href="/post/{{ topArticle.slug }}"
                       class="btn btn-light rounded-pill mt-3"
-                      >{{ 'CONTENT.blog.button' | transloco }}</a
+                      >{{ "CONTENT.blog.button" | transloco }}</a
                     >
                   </div>
                 </div>
@@ -40,18 +43,14 @@
 
     <div class="col-md-4 categories-column">
       <div class="category-section p-4 rounded">
-        <h4 class="category-title">Categorías</h4>
+        <h4 class="category-title">{{ "BLOG.categories" | transloco }}</h4>
         <ul class="list-unstyled mb-0 category-list">
           <li *ngFor="let category of categories">
             <!--<a href="/blog/categoria/{{ category.slug }}">{{
               category.name
             }}</a>-->
-            <a href="/category/{{ category.slug }}">{{
-              category.name
-            }}</a>
-            <span class="badge text-secondary"
-              >({{ category.count }})</span
-            >
+            <a href="/category/{{ category.slug }}">{{ category.name }}</a>
+            <span class="badge text-secondary">({{ category.count }})</span>
           </li>
         </ul>
       </div>
@@ -63,7 +62,7 @@
         <div class="row g-0">
           <div class="col-4">
             <img
-              src="{{mainArticle.image_url}}"
+              src="{{ mainArticle.image_url }}"
               class="img-fluid rounded-start"
               alt="Artículo pequeño"
             />
@@ -76,9 +75,9 @@
               </p>
               <div class="container">
                 <a
-                  href="/post/{{mainArticle.slug}}"
+                  href="/post/{{ mainArticle.slug }}"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
-                  >{{ 'CONTENT.blog.button' | transloco }}</a
+                  >{{ "CONTENT.blog.button" | transloco }}</a
                 >
               </div>
             </div>

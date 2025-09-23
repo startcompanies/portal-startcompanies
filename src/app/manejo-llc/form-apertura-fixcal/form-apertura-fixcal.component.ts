@@ -5,6 +5,7 @@ import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.comp
 import { HeaderManejoComponent } from '../header-manejo/header-manejo.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-form-apertura-fixcal',
@@ -15,7 +16,8 @@ import { ResponsiveImageComponent } from '../../shared/components/responsive-ima
     SeoBaseComponent,
     HeaderManejoComponent,
     ScFooterComponent,
-    ResponsiveImageComponent
+    ResponsiveImageComponent,
+    TranslocoPipe
   ],
   templateUrl: './form-apertura-fixcal.component.html',
   styleUrl: './form-apertura-fixcal.component.css'

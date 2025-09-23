@@ -141,6 +141,12 @@
                     "title": "Incluye",
                     "1": "Todo en Pack Elite",
                     "2": "Renovación automática al año"
+                },
+                "automaticRenewal": "¿Renovación automática que incluye?",
+                "automaticRenewalIncludes": {
+                    "1": "Pago de fee al Estado (cumplimiento federal)",
+                    "2": "Renovación de Registered Agent",
+                    "3": "Presentación de Form 1120+5472 o 1065"
                 }
             }
         },
@@ -211,7 +217,7 @@
             "description": "Descubre cómo cumplir con las normativas legales para vender internacionalmente con tu LLC",
             "cta-primary": "Consulta con un experto",
             "cta-secondary": "Planes y precios"
-        },  
+        },
         "proposal": {
             "title": "Propuesta de valor",
             "title2": " distintiva",
@@ -242,7 +248,7 @@
             "title": "Tu asesoría",
             "title2": " gratuita ",
             "title3": "en minutos",
-            "description": "Contáctanos para resolver todas tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo está listo para acompañarte en cada paso del proceso.Expandir tu negocio internacionalmente nunca fue tan fácil. Agenda una llamada gratuita con nuestros expertos y aclara todas tus dudas en minutos.",
+            "description": "Expandir tu negocio internacionalmente nunca fue tan fácil. Agenda una llamada gratuita con nuestros expertos y aclara todas tus dudas en minutos.",
             "button1": "Agenda tu llamada",
             "button2": "Planes y precios"
         }
@@ -273,6 +279,202 @@
         "lead_hero": "Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos. Ideal para freelancers, startups y negocios digitales que buscan crecer sin complicaciones.",
         "help_title": "¿Quieres abrir y hacer crecer tu LLC sin complicaciones?",
         "can_help_you": "Podemos ayudarte",
-        "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero"
+        "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero",
+        "your_questions": "¿Tienes preguntas?",
+        "categories": "Categorías",
+        "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores"
+    },
+    "LLC": {
+        "heroSection": {
+            "title": "Apertura LLC",
+            "subtitle": "Completa nuestro formulario apertura LLC y crea tu empresa en Estados Unidos de forma sencilla. Asesoría gratuita y proceso 100% en línea."
+        },
+        "expertSection": {
+            "buttonText": "Consulta con un experto ahora"
+        },
+        "iframe": {
+            "ariaLabel": "Formulario para Apertura de LLC"
+        },
+        "renewLLC": {
+            "heroSection": {
+                "title": "¿Cómo Renovar LLC?",
+                "subtitle": "¿Necesitas renovar tu LLC en USA? Hazlo en minutos con nuestro formulario en línea. Asesoría personalizada y proceso 100 % digital."
+            },
+            "iframe": {
+                "ariaLabel": "Formulario para Renovación de LLC"
+            }
+        },
+        "relayForm": {
+            "heroSection": {
+                "title": "Formulario apertura Relay",
+                "subtitle": "Necesitas una cuenta bancaria en Estados Unidos, escríbenos ahora. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consulta con un experto ahora"
+            },
+            "iframe": {
+                "ariaLabel": "Formulario para Apertura de Relay"
+            }
+        },
+        "relayAbotaxForm": {
+            "heroSection": {
+                "title": "Formulario apertura Relay Abotax",
+                "subtitle": "Necesitas una cuenta bancaria en Estados Unidos, escríbenos ahora. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consulta con un experto ahora"
+            },
+            "iframe": {
+                "ariaLabel": "Formulario para Apertura de Relay Abotax"
+            }
+        },
+        "relayFixcalForm": {
+            "heroSection": {
+                "title": "Relay Fixcal Opening Form",
+                "subtitle": "Need a bank account in the United States, write to us now. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for Relay Fixcal Opening"
+            }
+        }
+    },
+    "PLANS": {
+        "intro": {
+            "title": "Expande Tu Negocio: abre tu LLC en EE.UU.",
+            "subtitle": "Crea tu empresa en Estados Unidos y accede a tu cuenta bancaria sin residencia. Start Companies te ofrece todo lo que necesitas para operar globalmente, sin complicaciones."
+        },
+        "header": {
+            "title": "Comparación detallada de",
+            "titleSpan": " planes",
+            "subtitle": "Todos nuestros planes incluyen los servicios esenciales para crear y gestionar tu LLC de manera exitosa."
+        },
+        "table": {
+            "columns": {
+                "features": "Características",
+                "entrepreneur": "Emprendedor",
+                "elite": "Elite",
+                "premium": "Premium",
+                "bank": "Banco",
+                "renewal": "Renovación",
+                "fines": "Multas"
+            },
+            "rows": {
+                "price": "Precio",
+                "idealFor": "Ideal para",
+                "llcFormation": "Constitución de LLC",
+                "bankAccountOpening": "Apertura de cuenta bancaria",
+                "fiscalAddress": "Dirección fiscal y social para apertura bancaria",
+                "physicalLocation": "Disponible sin importar tu ubicación física",
+                "registeredAgent": "Representante legal (Registered Agent)",
+                "automaticRenewal": "Renovación automática",
+                "fullDocumentation": "Documentación completa",
+                "paymentSystems": "Asesoría en sistemas de pago Stripe/ventas",
+                "shareIssuance": "Asesoría en emisión de acciones",
+                "taxPlanning": "Consulta de planificación fiscal",
+                "borReport": "Reporte BOR obligatorio para cumplimiento legal",
+                "ebook": "E-book sobre LLCs",
+                "choosePlan": "Elegir plan",
+                "idealForEntrepreneur": "Freelancers, agencias y startups sin presencia física en EEUU.",
+                "idealForElite": "Empresas / Emprendedores con presencia física en EEUU.",
+                "idealForPremium": "Emprendedores que buscan una solución integral.",
+                "idealForBank": "LLCs ya constituidas sin banco o buscando alternativa.",
+                "idealForRenewal": "LLC que quiere mudar el servicio de renovación con nosotros.",
+                "idealForFines": "Levantamiento/reducción de multas y planes de pago.",
+                "llcFormationEntrepreneur": "En Nuevo México",
+                "llcFormationElite": "En cualquier estado",
+                "llcFormationPremium": "En cualquier estado",
+                "bankAccountOpeningBank": "A distancia (Relay/Mercury)"
+            }
+        }
+    },
+    "MOBILE_PLANS": {
+        "bank": {
+            "title": "Banco",
+            "price": "$150",
+            "ideal": "Ideal para LLCs ya constituidas sin banco o buscando otro banco como alternativa.",
+            "cta": "Abrir Cuenta Bancaria",
+            "featuresTitle": "¿Qué incluye?",
+            "features": {
+                "0": "Apertura 100% garantizada a distancia en bancos como Relay o Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renovación",
+            "price": "$600",
+            "ideal": "Ideal para LLC que quiere mudar el servicio de renovación con nosotros.",
+            "cta": "Renovar LLC",
+            "featuresTitle": "Incluye:",
+            "features": {
+                "0": "Pago de fee al Estado (cumplimiento federal)",
+                "1": "Renovación de R.A.",
+                "2": "Presentación de Form 1120+5472 o 1065",
+                "3": "Asistencia mensual por cualquier consulta",
+                "4": "Posibilidad de mudar servicios de otro proveedor con nosotros"
+            },
+            "note": "Si es Delaware, se suman $300 USD al precio."
+        },
+        "fines": {
+            "title": "Multas",
+            "price": "$300 USD",
+            "note": "Nota: +3% del valor de la multa.",
+            "cta": "Consultar Multas",
+            "featuresTitle": "Incluye:",
+            "features": {
+                "0": "Levantamos tu multa 100% garantizado si no presentaste nunca declaraciones informativas",
+                "1": "Reducción de la multa hasta un 50%",
+                "2": "Planes de pago"
+            }
+        }
+    },
+    "TABS": {
+        "plane": "Planes",
+        "others": "Otros",
+        "llc-planes": "LLC Plans",
+        "other-planes": "Other Planes"
+    },
+    "OTHER_PLANS_NEW": {
+        "bank": {
+            "title": "Banco",
+            "price": "$150",
+            "description": "Ideal para LLCs ya constituidas sin banco o buscando otro banco como alternativa.",
+            "cta": "Abrir Cuenta Bancaria",
+            "featuresTitle": "¿Qué incluye?",
+            "features": {
+                "0": "Apertura 100% garantizada a distancia en bancos como Relay o Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renovación",
+            "price": "$600",
+            "description": "Ideal para LLC que quiere mudar el servicio de renovación con nosotros.",
+            "cta": "Renovar LLC",
+            "featuresTitle": "Incluye:",
+            "features": {
+                "0": "Pago de fee al Estado (cumplimiento federal)",
+                "1": "Renovación de Registered Agent (R.A.)",
+                "2": "Presentación de Form 1120 + 5472 o 1065",
+                "3": "Asistencia mensual por cualquier consulta",
+                "4": "Posibilidad de mudar servicios de otro proveedor con nosotros"
+            },
+            "delawareNote": "Si es Delaware, se suman $300 USD al precio."
+        },
+        "fines": {
+            "title": "Multas",
+            "price": "$300 USD",
+            "description": "Nota: +3% del valor de la multa.",
+            "cta": "Consultar Multas",
+            "featuresTitle": "Incluye:",
+            "features": {
+                "0": "Levantamos tu multa 100% garantizado si no presentaste declaraciones informativas",
+                "1": "Reducción de la multa hasta un 50%",
+                "2": "Planes de pago"
+            }
+        }
+    },
+    "COMMON": {
+        "note": "Nota:"
     }
 }

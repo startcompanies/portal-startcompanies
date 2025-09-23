@@ -136,6 +136,9 @@ export class ScHeaderComponent implements OnInit {
   changeLanguage(lang: string) {
     this.translocoService.setActiveLang(lang);
     this.translocoService.setDefaultLang(lang);
-    this.currentLang = lang;
+    this.translocoService.load(lang).subscribe(() => {
+      this.currentLang = lang;
+      this.cdr.detectChanges();
+    });
   }
 }

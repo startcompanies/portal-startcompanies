@@ -141,6 +141,12 @@
                     "title": "Includes",
                     "1": "Everything in Elite Pack",
                     "2": "Automatic renewal annually"
+                },
+                "automaticRenewal": "¿Automatic renewal includes?",
+                "automaticRenewalIncludes": {
+                    "1": "Payment of state fee (federal compliance)",
+                    "2": "Renewal of Registered Agent",
+                    "3": "Submission of Form 1120+5472 or 1065"
                 }
             }
         },
@@ -242,7 +248,7 @@
             "title": "Your free advice",
             "title2": "in minutes",
             "title3": "with an expert",
-            "description": "Contact us to resolve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.Expanding your business internationally has never been easier. Schedule a free call with our experts and clear all your doubts in minutes.",
+            "description": "Expand your business internationally has never been so easy. Schedule a free call with our experts and clarify all your doubts in minutes.",
             "button1": "Schedule your call",
             "button2": "Plans and prices"
         }
@@ -273,6 +279,205 @@
         "lead_hero": "Discover tips, guides, and strategies to open and manage your LLC in the United States. Ideal for freelancers, startups, and digital businesses looking to grow without complications.",
         "help_title": "Do you want to open and grow your LLC without complications?",
         "can_help_you": "We can help you",
-        "help_subtitle": "We simplify the management of your company abroad"
+        "help_subtitle": "We simplify the management of your company abroad",
+        "your_questions": "Do you have questions?",
+        "categories": "Categories",
+        "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors"
+    },
+    "LLC": {
+        "heroSection": {
+            "title": "LLC Formation",
+            "subtitle": "Complete our LLC formation form and create your company in the United States easily. Free consultation and 100% online process."
+        },
+        "expertSection": {
+            "buttonText": "Consult with an expert now"
+        },
+        "iframe": {
+            "ariaLabel": "Form for LLC Formation"
+        },
+        "renewLLC": {
+            "heroSection": {
+                "title": "How to Renew LLC?",
+                "subtitle": "Need to renew your LLC in the USA? Do it in minutes with our online form. Personalized advice and a 100% digital process."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for LLC Renewal"
+            }
+        },
+        "relayForm": {
+            "heroSection": {
+                "title": "Relay Opening Form",
+                "subtitle": "Need a bank account in the United States, write to us now. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for Relay Opening"
+            }
+        },
+        "relayAbotaxForm": {
+            "heroSection": {
+                "title": "Relay Abotax Opening Form",
+                "subtitle": "Need a bank account in the United States, write to us now. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for Relay Abotax Opening"
+            }
+        },
+        "relayFixcalForm": {
+            "heroSection": {
+                "title": "Formulario apertura Relay Fixcal",
+                "subtitle": "Necesitas una cuenta bancaria en Estados Unidos, escríbenos ahora. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consulta con un experto ahora"
+            },
+            "iframe": {
+                "ariaLabel": "Formulario para Apertura de Relay Fixcal"
+            }
+        }
+    },
+    "PLANS": {
+        "intro": {
+            "title": "Expand Your Business: Open your LLC in the U.S.",
+            "subtitle": "Create your company in the United States and access your bank account without residency. Start Companies offers you everything you need to operate globally, hassle-free."
+        },
+        "header": {
+            "title": "Detailed comparison between",
+            "titleSpan": " plans",
+            "subtitle": "All our plans include the essential services to successfully create and manage your LLC."
+        },
+        "table": {
+            "columns": {
+                "features": "Features",
+                "entrepreneur": "Entrepreneur",
+                "elite": "Elite",
+                "premium": "Premium",
+                "bank": "Bank",
+                "renewal": "Renewal",
+                "fines": "Fines"
+            },
+            "rows": {
+                "price": "Price",
+                "idealFor": "Ideal for",
+                "llcFormation": "LLC Formation",
+                "bankAccountOpening": "Bank account opening",
+                "fiscalAddress": "Fiscal and social address for bank opening",
+                "physicalLocation": "Available regardless of your physical location",
+                "registeredAgent": "Registered Agent",
+                "automaticRenewal": "Automatic renewal",
+                "fullDocumentation": "Full documentation",
+                "paymentSystems": "Stripe/sales payment systems consultation",
+                "shareIssuance": "Share issuance consultation",
+                "taxPlanning": "Tax planning consultation",
+                "borReport": "Mandatory BOR report for legal compliance",
+                "ebook": "E-book about LLCs",
+                "choosePlan": "Choose plan",
+                "idealForEntrepreneur": "Freelancers, agencies, and startups without a physical presence in the USA.",
+                "idealForElite": "Companies / Entrepreneurs with a physical presence in the USA.",
+                "idealForPremium": "Entrepreneurs seeking a comprehensive solution.",
+                "idealForBank": "LLCs already incorporated without a bank or looking for an alternative.",
+                "idealForRenewal": "LLC that wants to move the renewal service with us.",
+                "idealForFines": "Fine lifting/reduction and payment plans.",
+                "llcFormationEntrepreneur": "In New Mexico",
+                "llcFormationElite": "In any state",
+                "llcFormationPremium": "In any state",
+                "bankAccountOpeningBank": "Remotely (Relay/Mercury)"
+            }
+        }
+    },
+    "MOBILE_PLANS": {
+        "bank": {
+            "title": "Bank",
+            "price": "$150",
+            "ideal": "Ideal for LLCs already incorporated without a bank or looking for another bank as an alternative.",
+            "cta": "Open Bank Account",
+            "featuresTitle": "What’s included?",
+            "features": {
+                "0": "100% guaranteed remote opening in banks like Relay or Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renewal",
+            "price": "$600",
+            "ideal": "Ideal for LLCs that want to move their renewal service with us.",
+            "cta": "Renew LLC",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "Payment of state fee (federal compliance)",
+                "1": "Registered Agent renewal",
+                "2": "Submission of Form 1120+5472 or 1065",
+                "3": "Monthly support for any inquiry",
+                "4": "Possibility to migrate services from another provider with us"
+            },
+            "note": "If Delaware, add $300 USD to the price."
+        },
+        "fines": {
+            "title": "Fines",
+            "price": "$300 USD",
+            "note": "Note: +3% of the fine amount.",
+            "cta": "Consult Fines",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "We lift your fine 100% guaranteed if you never filed informative returns",
+                "1": "Fine reduction up to 50%",
+                "2": "Payment plans"
+            }
+        }
+    },
+    "TABS": {
+        "plane": "Plans",
+        "others": "Others",
+        "llc-planes": "LLC Plans",
+        "other-planes": "Other Planes"
+    },
+    "OTHER_PLANS_NEW": {
+        "bank": {
+            "title": "Bank",
+            "price": "$150",
+            "description": "Ideal for LLCs already incorporated without a bank or looking for another bank as an alternative.",
+            "cta": "Open Bank Account",
+            "featuresTitle": "What’s included?",
+            "features": {
+                "0": "100% guaranteed remote opening in banks such as Relay or Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renewal",
+            "price": "$600",
+            "description": "Ideal for LLCs that want to migrate their renewal service to us.",
+            "cta": "Renew LLC",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "Payment of state fee (federal compliance)",
+                "1": "Registered Agent renewal",
+                "2": "Submission of Form 1120 + 5472 or 1065",
+                "3": "Monthly support for any inquiry",
+                "4": "Possibility to migrate services from another provider with us"
+            },
+            "delawareNote": "If Delaware, add $300 USD to the price."
+        },
+        "fines": {
+            "title": "Fines",
+            "price": "$300 USD",
+            "description": "Note: +3% of the fine amount.",
+            "cta": "Consult Fines",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "We lift your fine 100% guaranteed if you never filed informative returns",
+                "1": "Fine reduction up to 50%",
+                "2": "Payment plans"
+            }
+        }
+    },
+    "COMMON": {
+        "note": "Note:"
     }
 }
