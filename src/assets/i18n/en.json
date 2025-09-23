@@ -264,5 +264,15 @@
         },
         "contact_us": "Contact us",
         "description": "Ebizboost LLC acts as an intermediary in the facilitation of legal and banking procedures in the United States. It is not part of government entities and does not have banking alliances. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the necessary information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
+    },
+    "BLOG": {
+        "articles": "Articles",
+        "featured": "Featured",
+        "read_more": "Read more",
+        "title_hero": "Start Companies Blog: Your Roadmap to Entrepreneurship in the U.S.",
+        "lead_hero": "Discover tips, guides, and strategies to open and manage your LLC in the United States. Ideal for freelancers, startups, and digital businesses looking to grow without complications.",
+        "help_title": "Do you want to open and grow your LLC without complications?",
+        "can_help_you": "We can help you",
+        "help_subtitle": "We simplify the management of your company abroad"
     }
 }

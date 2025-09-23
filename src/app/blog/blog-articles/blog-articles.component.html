@@ -3,7 +3,7 @@
     <div class="col-md-12 col-lg-8">
       <div class="article-section">
         <h2 class="article-title">
-          Artículos <span class="highlighted-text">destacados</span>
+          {{ 'BLOG.articles' | transloco }} <span class="highlighted-text">{{ 'BLOG.featured' | transloco }}</span>
         </h2>
         <div class="row">
           <div class="col-12 mb-4">
@@ -20,11 +20,6 @@
                     class="img-fluid"
                     alt="Imagen del artículo"
                   />
-                  <!--<img
-                    src="/assets/blog/article.webp"
-                    class="img-fluid"
-                    alt="Imagen del artículo"
-                  />-->
                 </div>
                 <div class="col-md-7 d-flex flex-column justify-content-center">
                   <div class="card-body">
@@ -32,7 +27,7 @@
                     <a
                       href="/post/{{topArticle.slug}}"
                       class="btn btn-light rounded-pill mt-3"
-                      >Leer más</a
+                      >{{ 'CONTENT.blog.button' | transloco }}</a
                     >
                   </div>
                 </div>
@@ -72,11 +67,6 @@
               class="img-fluid rounded-start"
               alt="Artículo pequeño"
             />
-            <!--<img
-              src="/assets/blog/article-small.webp"
-              class="img-fluid rounded-start"
-              alt="Artículo pequeño"
-            />-->
           </div>
           <div class="col-8">
             <div class="card-body">
@@ -85,15 +75,10 @@
                 {{ stripHtmlTags(mainArticle.excerpt) }}
               </p>
               <div class="container">
-                <!--<a
-                  href="/apertura-llc"
-                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
-                  >Gestionar tu LLC</a
-                >-->
                 <a
                   href="/post/{{mainArticle.slug}}"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
-                  >Leer más</a
+                  >{{ 'CONTENT.blog.button' | transloco }}</a
                 >
               </div>
             </div>

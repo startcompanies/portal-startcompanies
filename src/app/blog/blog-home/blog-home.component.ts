@@ -9,6 +9,7 @@ import { ResponsiveImageComponent } from '../../shared/components/responsive-ima
 import { BlogSeoService } from '../../services/blog-seo.service';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-blog-home',
@@ -22,6 +23,7 @@ import { isPlatformBrowser } from '@angular/common';
     SeoBaseComponent,
     ResponsiveImageComponent,
     SharedModule,
+    TranslocoPipe
   ],
   templateUrl: './blog-home.component.html',
   styleUrl: './blog-home.component.css',

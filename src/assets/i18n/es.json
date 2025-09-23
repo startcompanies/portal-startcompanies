@@ -264,5 +264,15 @@
         },
         "contact_us": "Contáctanos",
         "description": "Ebizboost LLC actúa como intermediario en la facilitación de trámites legales y bancarios en los EE. UU. No forma parte de entidades gubernamentales ni tiene alianzas con bancos. No se hace responsable por el uso indebido de cuentas ni por información incorrecta. Al agendar una llamada y aceptar los requisitos enviados, el usuario acepta la cláusula de no reembolso. Además, Ebizboost LLC compartirá únicamente la información indispensable relacionada con los requisitos explicados y enviados luego de la conversación. El usuario acepta implícitamente, ya sea de manera verbal o a través de algún canal oficial de contacto, que la información proporcionada es correcta y completa."
+    },
+    "BLOG": {
+        "articles": "Artículos",
+        "featured": "Destacados",
+        "read_more": "Leer más",
+        "title_hero": "Blog de Start Companies: Tu Ruta para Emprender en EE.UU.",
+        "lead_hero": "Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos. Ideal para freelancers, startups y negocios digitales que buscan crecer sin complicaciones.",
+        "help_title": "¿Quieres abrir y hacer crecer tu LLC sin complicaciones?",
+        "can_help_you": "Podemos ayudarte",
+        "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero"
     }
 }

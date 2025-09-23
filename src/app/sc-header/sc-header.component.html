@@ -101,16 +101,29 @@
         >
           {{ "NAVBAR.call" | transloco }} <i class="bi bi-arrow-right"></i>
         </button>
-        <!--<div class="dropdown">
-          <button class="btn sc-btn-language dropdown-toggle" type="button" id="dropdownMenuButton1"
-            data-bs-toggle="dropdown" aria-expanded="false">
-            {{ currentLang === 'es' ? 'ES' : 'EN' }}
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#" (click)="changeLanguage('en')">EN</a></li>
-            <li><a class="dropdown-item" href="#" (click)="changeLanguage('es')">ES</a></li>
-          </ul>
-        </div>-->
+      </div>
+      <div class="dropdown">
+        <button
+          class="btn sc-btn-language dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {{ currentLang === "es" ? "ES" : "EN" }}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li>
+            <a class="dropdown-item" href="#" (click)="changeLanguage('en')"
+              >EN</a
+            >
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" (click)="changeLanguage('es')"
+              >ES</a
+            >
+          </li>
+        </ul>
       </div>
     </div>
   </div>
