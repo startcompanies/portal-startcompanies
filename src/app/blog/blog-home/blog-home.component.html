@@ -1,7 +1,7 @@
 <!-- SEO Base Component -->
 <app-seo-base routeKey="blog"></app-seo-base>
 
-<app-sc-header></app-sc-header>
+<app-sc-header *ngIf="isBrowser"></app-sc-header>
 <section class="sc-blog-hero py-5">
   <app-responsive-image 
     [images]="heroImages" 

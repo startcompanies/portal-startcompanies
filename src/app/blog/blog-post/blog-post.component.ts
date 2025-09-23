@@ -1,15 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
+
 import { ScHeaderComponent } from '../../sc-header/sc-header.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { BlogComponent } from '../../sections/blog/blog.component';
+import { SharedModule } from '../../shared/shared/shared.module';
+import { PostContentComponent } from '../../shared/components/post-content/post-content.component';
+
 import { BlogService } from '../../services/blog.service';
 import { BlogSeoService } from '../../services/blog-seo.service';
-import { BlogComponent } from "../../sections/blog/blog.component";
-import { ActivatedRoute } from '@angular/router';
 import { Post } from '../../shared/models/post.model';
-import { SharedModule } from '../../shared/shared/shared.module';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog-post',
@@ -20,17 +23,17 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     SeoBaseComponent,
     ResponsiveImageComponent,
     BlogComponent,
+    PostContentComponent,
     SharedModule
-],
+  ],
   templateUrl: './blog-post.component.html',
   styleUrl: './blog-post.component.css',
 })
 export class BlogPostComponent implements OnInit {
+  isBrowser = false;
+  postArticle!: Post;
+  contentBlocks: any[] = [];
 
-  blogService = inject(BlogService);
-  blogSeoService = inject(BlogSeoService);
-  
-  // Configuración de imágenes para NgOptimizedImage
   heroImages = {
     mobile: '/assets/hero-bg-mobile.webp',
     tablet: '/assets/hero-bg-tablet.webp',
@@ -39,66 +42,58 @@ export class BlogPostComponent implements OnInit {
     alt: 'Blog Hero Background',
     priority: true,
   };
-  postArticle!: Post;
 
-  postContent: string = '';
-  sanitizedContent!: SafeHtml;
-
-  constructor(private route: ActivatedRoute, private sanitizer: DomSanitizer){}
+  constructor(
+    private route: ActivatedRoute,
+    private blogService: BlogService,
+    private blogSeoService: BlogSeoService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {
+    this.isBrowser = isPlatformBrowser(this.platformId);
+  }
 
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
-    this.setArticle(slug);
+    this.loadPost(slug);
   }
-  
-  setArticle(slug: string | null) {
-    if (slug) {
-      this.blogService.getPostsBySlug(slug).then((post) => {
-        this.postArticle = post;
-        
-        // Limpiar y formatear el contenido HTML
-        if (post && post.content) {
-          const cleanedContent = this.cleanHtmlContent(post.content);
-          this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(cleanedContent);
-        } else {
-          this.sanitizedContent = '';
-        }
-        
-        // Configurar SEO dinámico para el post
-        if (post) {
-          this.blogSeoService.setPostSeo(post);
-        }
-      });
+
+  private async loadPost(slug: string | null) {
+    if (!slug) return;
+
+    this.postArticle = await this.blogService.getPostsBySlug(slug);
+    if (!this.postArticle) return;
+
+    this.blogSeoService.setPostSeo(this.postArticle);
+
+    // SOLO parseamos HTML en navegador
+    if (this.isBrowser) {
+      this.contentBlocks = this.parseHtmlContent(this.postArticle.content);
     }
   }
 
-  private cleanHtmlContent(content: string): string {
-    if (!content) return '';
-    
-    // Reemplazar caracteres de escape de newlines
-    let cleaned = content.replace(/\\n\\n/g, '\n\n');
-    cleaned = cleaned.replace(/\\n/g, '\n');
-    
-    // Limpiar HTML mal formateado
-    cleaned = cleaned.replace(/<p><\/p>/g, ''); // Eliminar párrafos vacíos
-    cleaned = cleaned.replace(/\n\s*\n/g, '\n'); // Eliminar líneas vacías múltiples
-    
-    // Asegurar que los enlaces tengan target="_blank" y rel="noopener"
-    cleaned = cleaned.replace(/<a\s+href="([^"]*)"([^>]*)>/g, (match, href, attributes) => {
-      if (href.includes('youtu.be') || href.includes('youtube.com')) {
-        return `<a href="${href}" target="_blank" rel="noopener noreferrer"${attributes}>`;
+  // Función que convierte HTML en bloques simples para PostContentComponent
+  private parseHtmlContent(content: string): any[] {
+    const blocks: any[] = [];
+    const container = document.createElement('div');
+    container.innerHTML = content;
+
+    Array.from(container.childNodes).forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.textContent?.trim()) {
+          blocks.push({ type: 'p', content: node.textContent.trim() });
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = node as HTMLElement;
+        if (el.tagName === 'P') {
+          blocks.push({ type: 'p', content: el.innerText.trim() });
+        } else if (el.tagName === 'IMG') {
+          blocks.push({ type: 'img', src: el.getAttribute('src'), alt: el.getAttribute('alt') || '' });
+        } else if (el.tagName === 'A') {
+          blocks.push({ type: 'a', href: el.getAttribute('href'), text: el.innerText.trim() });
+        }
       }
-      return match;
     });
-    
-    // Formatear párrafos correctamente
-    cleaned = cleaned.replace(/\n\n/g, '</p><p>');
-    cleaned = '<p>' + cleaned + '</p>';
-    
-    // Limpiar párrafos vacíos al inicio y final
-    cleaned = cleaned.replace(/^<p>\s*<\/p>/, '');
-    cleaned = cleaned.replace(/<p>\s*<\/p>$/, '');
-    
-    return cleaned;
+
+    return blocks;
   }
 }

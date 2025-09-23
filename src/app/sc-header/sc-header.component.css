@@ -38,7 +38,12 @@
   min-width: 70px;
   min-height: 70px;
 }
-
+.sc-header-container {
+  margin-top: 0px;
+}
+.sc-menu-container {
+  margin-top: 0px;
+}
 /* Estilos específicos para Safari */
 @supports (-webkit-appearance: none) {
   .sc-navbar-logo app-responsive-image img {
@@ -185,7 +190,7 @@
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
-  
+
   /* Centrar el logo en mobile */
   .sc-navbar .navbar-brand {
     position: absolute;
@@ -194,7 +199,7 @@
     z-index: 1030;
     padding-top: 0.5rem;
   }
-  
+
   /* Posicionar el botón hamburguesa a la derecha */
   .sc-navbar .navbar-toggler {
     position: relative;
@@ -202,7 +207,7 @@
     margin-left: auto;
     order: 2;
   }
-  
+
   /* Ajustar el contenedor para distribuir elementos correctamente */
   .sc-navbar .container {
     position: relative;
@@ -237,7 +242,7 @@
     position: relative;
     z-index: 1032;
   }
-  
+
   /* Asegurar que el menú abierto tenga prioridad */
   .sc-navbar .navbar-collapse.show {
     z-index: 1033;
@@ -288,6 +293,12 @@
   .sc-navbar .navbar-nav .nav-item.active .nav-link::after {
     content: none;
   }
+  .sc-header-container {
+    margin-top: 1rem;
+  }
+  .sc-menu-container {
+    margin-top: 1.5rem;
+  }
 }
 
 /* ========================================================================= */
@@ -302,7 +313,7 @@
     align-items: center !important;
     justify-content: center !important;
   }
-  
+
   /* Asegurar que el logo esté centrado perfectamente */
   .sc-navbar .navbar-brand {
     position: absolute !important;
@@ -312,13 +323,13 @@
     margin: 0 !important;
     padding-top: 0.75rem !important;
   }
-  
+
   /* Ajustar el contenedor del navbar para mobile */
   .sc-navbar .container {
     position: relative;
     justify-content: space-between;
   }
-  
+
   /* Posicionar botón hamburguesa a la derecha en mobile */
   .sc-navbar .navbar-toggler {
     margin-left: auto !important;
@@ -339,7 +350,9 @@
     width: auto !important;
     object-fit: contain !important;
     /* Optimizaciones específicas para iPhone */
-    -webkit-transform: translateZ(0) !important; /* Forzar hardware acceleration */
+    -webkit-transform: translateZ(
+      0
+    ) !important; /* Forzar hardware acceleration */
     transform: translateZ(0) !important;
     -webkit-backface-visibility: hidden !important; /* Evitar glitches */
     backface-visibility: hidden !important;
@@ -381,7 +394,7 @@
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
   }
-  
+
   /* Asegurar centrado perfecto en dispositivos muy pequeños */
   .sc-navbar .navbar-brand {
     position: absolute !important;
@@ -390,7 +403,7 @@
     z-index: 1030 !important;
     padding-top: 1rem !important;
   }
-  
+
   /* Botón hamburguesa a la derecha en dispositivos pequeños */
   .sc-navbar .navbar-toggler {
     margin-left: auto !important;

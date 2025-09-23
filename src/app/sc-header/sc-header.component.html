@@ -1,10 +1,11 @@
 <nav
+  #navbar
   class="navbar navbar-expand-lg navbar-dark fixed-top sc-navbar"
   [ngClass]="{ 'sc-navbar-light': isOpen || isNavbarShrunk }"
 >
   <div class="container">
     <div
-      class="container d-flex flex-wrap align-items-center justify-content-between"
+      class="container d-flex flex-wrap align-items-center justify-content-between sc-header-container"
     >
       <a class="navbar-brand me-auto" href="/">
         <app-responsive-image
@@ -30,7 +31,7 @@
       </button>
     </div>
 
-    <div class="container">
+    <div class="container sc-menu-container">
       <div
         class="collapse navbar-collapse justify-content-center"
         id="navbarNav"
@@ -63,14 +64,14 @@
             >
           </li>
           <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
-          <a
-            [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
-            aria-current="page"
-            class="nav-link"
-            href="/blog"
-            >{{ "NAVBAR.blog" | transloco }}</a
-          >
-        </li>
+            <a
+              [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
+              aria-current="page"
+              class="nav-link"
+              href="/blog"
+              >{{ "NAVBAR.blog" | transloco }}</a
+            >
+          </li>
           <li
             class="nav-item"
             [ngClass]="{ active: isRouteActive('/contacto') }"
@@ -86,7 +87,10 @@
       </div>
     </div>
 
-    <div class="container justify-content-end" style="display: flex; padding-top: 1rem; padding-bottom: 1rem">
+    <div
+      class="container justify-content-end"
+      style="display: flex; padding-top: 1rem; padding-bottom: 1rem"
+    >
       <div class="d-none d-lg-block">
         <button
           data-cal-link="startcompanies-businessenusa/agenda-organica"
