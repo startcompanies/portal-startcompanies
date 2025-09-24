@@ -484,8 +484,8 @@
             "featuresTitle": "Incluye:",
             "features": {
                 "0": "Pago de fee al Estado (cumplimiento federal)",
-                "1": "Renovación de Registered Agent (R.A.)",
-                "2": "Presentación de Form 1120 + 5472 o 1065",
+                "1": "Renovación de R.A.",
+                "2": "Presentación de Form 1120+5472 o 1065",
                 "3": "Asistencia mensual por cualquier consulta",
                 "4": "Posibilidad de mudar servicios de otro proveedor con nosotros"
             },
@@ -498,7 +498,7 @@
             "cta": "Consultar Multas",
             "featuresTitle": "Incluye:",
             "features": {
-                "0": "Levantamos tu multa 100% garantizado si no presentaste declaraciones informativas",
+                "0": "Levantamos tu multa 100% garantizado si no presentaste nunca declaraciones informativas",
                 "1": "Reducción de la multa hasta un 50%",
                 "2": "Planes de pago"
             }
