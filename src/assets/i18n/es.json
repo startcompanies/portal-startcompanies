@@ -188,13 +188,43 @@
         "faq": {
             "title1": "Preguntas",
             "title2": "Frecuentes",
-            "question1": "¿Qué garantías me dan del servicio y cuándo puedo pagar?",
-            "question2": "¿En cuantos días puedo tener mi LLC abierta?",
-            "question3": "¿Cómo transferir dinero a Estados Unidos legalmente desde Argentina  o Latinoamérica?",
-            "question4": "¿Cuales son los requisitos para abrir una LLC en Estados Unidos?",
-            "question5": "¿Cuanto cuesta el servicio de apertura de una LLC en Estados Unidos?",
-            "question6": "¿Qué impuestos se deben pagar con una LLC en Estados Unidos?",
-            "question7": "¿Por qué elegir nuestros servicios para abrir una LLC en Estados Unidos?"
+            "question1": "¿Qué garantía me ofrece Start Companies?",
+            "answer1": "Te ofrecemos una garantía de satisfacción: si no estás conforme con el trabajo realizado, te devolvemos tu dinero. Además, puedes pagar después de que tu LLC esté creada y funcionando correctamente. Nuestro objetivo es brindarte tranquilidad durante todo el proceso.",
+            "button": "¡Haz clic aquí y contáctanos!",
+            "question2": "¿En cuánto tiempo abren las LLC?",
+            "answer2": "Las abrimos en 7 a 10 días hábiles. Nos enfocamos en ofrecer un proceso sin complicaciones, transparente y con el máximo soporte para garantizar una experiencia eficiente.",
+            "question3": "¿Cómo puedo transferir dinero a Estados Unidos legalmente?",
+            "answer3": "Transferir dinero a Estados Unidos legalmente es un proceso sencillo si se cumplen las normativas del país de origen y destino. Puedes utilizar plataformas como Wise, Binance o Dólar App para gestionar tus fondos.",
+            "question4": "¿Qué requisitos necesito para abrir una LLC?",
+            "answer4": "Para abrir una LLC necesitas:",
+            "answer4List": {
+                "1": " Pasaporte vigente",
+                "2": "Dirección de residencia comprobable (comprobable con una factura de servicio).",
+                "3": "Elección del estado donde registrarás la LLC.",
+                "4": "Objeto al que se dedicará la empresa.",
+                "5": "Pago de los costos estatales y de servicio. Nuestro equipo te guiará en cada paso del proceso para asegurarte de que todo esté en orden."
+            },
+            "question5": "¿Cuánto cuesta abrir una LLC?",
+            "answer5": "El costo depende del estado seleccionado. En Start Companies, ofrecemos servicios desde $499 en Nuevo México hasta $600 en estados como Delaware, Wyoming o Florida. Este precio incluye:",
+            "answer5List": {
+                "1": "Registro oficial de la LLC",
+                "2": "Reporte BOI",
+                "3": "Artículos de Organización",
+                "4": "Operating Agreement",
+                "5": "Asesoría personalizada"
+            },
+            "question6": "¿Qué impuestos debo pagar en EE.UU. con mi LLC?",
+            "answer6": "Si tu LLC no tiene presencia física en EE.UU. ni nexo vinculante, solo deberás presentar formularios (1120+5472 o 1065). Si tienes nexo, deberás pagar impuestos, solicitar ITIN y cumplir con las presentaciones fiscales requeridas.",
+            "question7": "¿Por qué elegir Start Companies?",
+            "answer7": "En Start Companies somos expertos en la formación de LLCs para extranjeros. Ofrecemos:",
+            "answer7List": {
+                "1": "Proceso rápido y sin complicaciones.",
+                "2": "Asesoría personalizada en tu idioma.",
+                "3": "Documentación lista para abrir una cuenta bancaria.",
+                "4": "Precios competitivos y sin costos ocultos.",
+                "5": "Garantía de satisfacción: Si no estás conforme, te devolvemos el dinero.",
+                "6": "Flexibilidad de pago: Puedes pagar después de finalizado el proceso."
+            }
         }
     },
     "US": {
@@ -476,5 +506,128 @@
     },
     "COMMON": {
         "note": "Nota:"
+    },
+    "LANDINGS": {
+        "schedule_consultation": "Asesoría personalizada en tu idioma.",
+        "no_advance_payments": "Sin adelantos: pagas después de tener tu LLC y cuenta bancaria",
+        "open_your_llc": "Abre tu empresa en EE.UU. en menos de 7 días, 100% online y con acompañamiento experto.",
+        "skip_commissions": "Evita comisiones e impuestos innecesarios con nuestra gestión integral.",
+        "start_my_llc_process": "Empezar mi proceso de LLC",
+        "description": "Nos encargamos de la burocracia para que tú te enfoques en crecer.",
+        "discover_why": "Descubre porqué más de",
+        "200_clients": "200 clientes",
+        "calificate_us": "nos califican como",
+        "excellent": "Excelente",
+        "startcompanies_benefits": "Beneficios de elegir ",
+        "startcompanies_hightlight": "Start Companies",
+        "benefit1": {
+            "title": "Asesoría fiscal GRATUITA",
+            "description": "Te acompañamos desde el inicio y solo pagas cuando entregamos la documentación."
+        },
+        "benefit2": {
+            "title": "Pagas al final",
+            "description": "Solo pagas una vez que te entregamos toda la documentación de tu empresa."
+        },
+        "benefit3": {
+            "title": "Opera Globalmente",
+            "description": "Vende en Amazon, cobra con Stripe y accede a mercados internacionales sin restricciones."
+        },
+        "benefit4": {
+            "title": "100% Remoto",
+            "description": "No necesitas viajar ni ser residente. Gestiona todo el proceso desde la comodidad de tu hogar."
+        },
+        "hero": {
+            "title": "¡Gracias por tu interés!",
+            "description1": "Hemos recibido tu solicitud y nuestro equipo está listo para ayudarte.",
+            "description2": "El siguiente paso es agendar tu consulta gratuita de 30 minutos con uno de nuestros expertos."
+        },
+        "calendly": {
+            "title": "¡Agenda tu consulta gratuita ahora!",
+            "subtitle": "Reserva 30 minutos para resolver todas tus dudas sobre la apertura de tu LLC en EE.UU. Nuestro experto te guiará paso a paso en el proceso."
+        },
+        "urgency": {
+            "title": "⏰ ¡No pierdas esta oportunidad!",
+            "text": "Las consultas gratuitas son limitadas. Agenda tu cita ahora para asegurar tu sesión personalizada y comenzar el proceso de apertura de tu LLC en Estados Unidos."
+        },
+        "steps": {
+            "bottomStatement": "¡Simple, rápido y sin complicaciones!",
+            "title": "Tu LLC en menos de 7 días en 4 Pasos sencillos",
+            "scheduleCall": "Agendar llamada",
+            "step1": {
+                "title": "Agenda una llamada",
+                "description": "Agenda una llamada hoy mismo."
+            },
+            "step2": {
+                "title": "Elige tu Plan",
+                "description": "Selecciona el paquete de servicios que necesitas."
+            },
+            "step3": {
+                "title": "Completa el Formulario",
+                "description": "Bríndanos la información de tu empresa en 5 minutos."
+            },
+            "step4": {
+                "title": "Paga cuando esté todo listo",
+                "description": "Solo pagas cuando tengas tu cuenta de banco y empresa funcionando."
+            }
+        },
+        "support": {
+            "title": "¿Quierés que nos",
+            "title2": " encarguemos ",
+            "title3": "por tí?",
+            "list": {
+                "item1": "Revisión de documentos",
+                "item2": "Carga completa en Relay",
+                "item3": "Acompañamiento paso a paso",
+                "item4": "Soporte por WhatsApp",
+                "item5Bold": "Garantía 100%",
+                "item5": " si la cuenta es rechazada"
+            },
+            "cta": "Que me acompañen paso a paso ($99 USD)"
+        },
+        "relay_landing": {
+            "hero": {
+                "title": "¿Tienés tu LLC en EE.UU. pero todavía no abriste tu cuenta bancaria?",
+                "description": "Aprovechá ahora y abrela GRATIS, 100% online y sin comisiones con la esencial Apertura Relay!"
+            },
+            "video_section": {
+                "title": "Relay un banco",
+                "title_highlight": " seguro y confiable ",
+                "description": "mira aquí abajo lo que dicen de nosotros"
+            },
+            "testimonials": {
+                "qualifications_text": "4.8 estrellas, 100 reseñas, \"Excellent\".",
+                "header": "Más de 200 emprendedores ya confiaron en Start Companies y nos califican como",
+                "header_highlight": " \"Excelente\".",
+                "description": "Descubre por qué somos la opción elegida para abrir tu cuenta bancaria para LLC en EE.UU. de forma rápida, segura, confiable y 100% online. Leé sus experiencias reales y conocé cómo los ayudamos a simplificar la apertura Relay, optimizar su gestión financiera y hacer crecer sus negocios desde cualquier parte del mundo.",
+                "button_cta": "Quiero que lo hagan por mí ($99 USD)"
+            },
+            "video_grid_section": {
+                "title": "Lo que dicen nuestros",
+                "title_highlight": " clientes"
+            }
+        },
+        "pricing_options": {
+            "card_free": {
+                "cta": "Aplicar gratis",
+                "title": "Completo el formulario por mi cuenta",
+                "list": {
+                    "item1": "Completás el formulario",
+                    "item2": "Procesamos tus datos",
+                    "item3": "Recibís el link de verificación facial",
+                    "item4": "Activás tu cuenta",
+                    "item5": "100% online y sin costo"
+                }
+            },
+            "card_paid": {
+                "cta": "Aplicar por $ 99 USD",
+                "title": "Quiero que Start Companies lo complete",
+                "list": {
+                    "item1": "Revisamos y cargamos todo por tí",
+                    "item2": "Te acompañamos por WhatsApp",
+                    "item3": "Seguimiento directo con Relay",
+                    "item4": "Garantía 100% si la cuenta es rechazada"
+                }
+            }
+        }
     }
 }

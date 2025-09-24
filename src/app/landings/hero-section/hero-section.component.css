@@ -101,7 +101,7 @@
 }
 @media (max-width: 768px) {
   .hero-btn-primary {
-    font-size: 1rem;
+    font-size: 0.7rem;
     padding: 0.8rem 2rem;
   }
 

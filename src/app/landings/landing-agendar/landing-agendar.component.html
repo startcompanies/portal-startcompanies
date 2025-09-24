@@ -21,11 +21,11 @@
         <h1
           class="display-6 display-md-5 fw-bold text-body-emphasis lh-1 mb-2 mb-md-3 hero-title"
         >
-          ¡Gracias por tu interés!
+          {{ 'LANDINGS.hero.title' | transloco }}
         </h1>
-        <p class="lead hero-description">Hemos recibido tu solicitud y nuestro equipo está listo para ayudarte.</p>
+        <p class="lead hero-description">{{ 'LANDINGS.hero.description1' | transloco }}</p>
         <p class="lead hero-description">
-          El siguiente paso es agendar tu consulta gratuita de 30 minutos con uno de nuestros expertos.
+          {{ 'LANDINGS.hero.description2' | transloco }}
         </p>
       </div>
       <!--<div class="d-flex hero-btn-container">
@@ -50,11 +50,8 @@
   <div class="container pb-3">
     <div class="row">
       <div class="col-12 text-center">
-        <h2 class="calendly-title">¡Agenda tu consulta gratuita ahora!</h2>
-        <p class="calendly-subtitle">
-          Reserva 30 minutos para resolver todas tus dudas sobre la apertura de tu LLC en EE.UU. 
-          Nuestro experto te guiará paso a paso en el proceso.
-        </p>
+        <h2 class="calendly-title">{{ 'LANDINGS.calendly.title' | transloco }}</h2>
+        <p class="calendly-subtitle">{{ 'LANDINGS.calendly.subtitle' | transloco }}</p>
       </div>
     </div>
   </div>
@@ -68,11 +65,8 @@
     <div class="row">
       <div class="col-12 text-center">
         <div class="urgency-box p-4 rounded-3">
-          <h3 class="urgency-title mb-3">⏰ ¡No pierdas esta oportunidad!</h3>
-          <p class="urgency-text mb-0">
-            Las consultas gratuitas son limitadas. Agenda tu cita ahora para asegurar tu sesión personalizada 
-            y comenzar el proceso de apertura de tu LLC en Estados Unidos.
-          </p>
+          <h3 class="urgency-title mb-3">{{ 'LANDINGS.urgency.title' | transloco }}</h3>
+          <p class="urgency-text mb-0">{{ 'LANDINGS.urgency.text' | transloco }}</p>
         </div>
       </div>
     </div>

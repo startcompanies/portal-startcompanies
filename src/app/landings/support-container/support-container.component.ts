@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { ResponsiveImage } from '../../services/responsive-image.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-support-container',
   standalone: true,
-  imports: [ResponsiveImageComponent],
+  imports: [ResponsiveImageComponent, TranslocoPipe],
   templateUrl: './support-container.component.html',
   styleUrl: './support-container.component.css'
 })

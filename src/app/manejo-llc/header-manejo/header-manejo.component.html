@@ -66,6 +66,31 @@
               "NAVBAR.contact" | transloco
             }}</a>
           </li>
+          <!-- 👇 Nuevo dropdown SOLO visible en móvil/tablet -->
+          <li class="nav-item dropdown d-lg-none">
+            <a
+              class="nav-link dropdown-toggle"
+              [ngClass]="{ 'nav-link-dark': isOpen}"
+              href="javascript:void(0)"
+              id="navbarLangDropdownMobile"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              {{ currentLang === "es" ? "ES" : "EN" }}
+            </a>
+            <ul
+              class="dropdown-menu mb-2 mb-lg-0"
+              aria-labelledby="navbarLangDropdownMobile"
+            >
+              <li class="nav-item">
+                <a class="dropdown-item" (click)="changeLanguage('en')">EN</a>
+              </li>
+              <li class="nav-item">
+                <a class="dropdown-item" (click)="changeLanguage('es')">ES</a>
+              </li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -73,7 +98,7 @@
       class="container justify-content-end"
       style="display: flex; padding-top: 1rem; padding-bottom: 1rem"
     >
-      <div class="d-none d-lg-block">
+      <div class="d-none d-lg-block" style="margin: 0 6px">
         <button
           data-cal-link="startcompanies-businessenusa/agenda-organica"
           data-cal-namespace="agenda-organica"
@@ -83,6 +108,25 @@
         >
           {{ "NAVBAR.call" | transloco }} <i class="bi bi-arrow-right"></i>
         </button>
+      </div>
+      <div class="dropdown d-none d-lg-block">
+        <button
+          class="btn sc-btn-language dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          {{ currentLang === "es" ? "ES" : "EN" }}
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li>
+            <a class="dropdown-item" (click)="changeLanguage('en')">EN</a>
+          </li>
+          <li>
+            <a class="dropdown-item" (click)="changeLanguage('es')">ES</a>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

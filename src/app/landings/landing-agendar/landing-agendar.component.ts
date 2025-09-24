@@ -8,6 +8,7 @@ import { FaqComponent } from '../../sections/faq/faq.component';
 import { ScrollService } from '../../services/scroll.service';
 import { Subscription } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-landing-agendar',
@@ -16,6 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
     ResponsiveImageComponent,
     TestimonialsComponent,
     FaqComponent,
+    TranslocoPipe
   ],
   templateUrl: './landing-agendar.component.html',
   styleUrl: './landing-agendar.component.css',

@@ -6,7 +6,7 @@ import {
   PLATFORM_ID,
   ChangeDetectorRef,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
@@ -69,14 +69,15 @@ export class ScHeaderComponent implements OnInit {
     private scrollService: ScrollService,
     public translocoService: TranslocoService,
     private router: Router,
-    private cdr: ChangeDetectorRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {    
     if (isPlatformBrowser(this.platformId)) {
       this.navbarScroll();
     }
     this.getCurrentRoute();
+    this.currentLang = this.translocoService.getActiveLang();
   }
 
   private getCurrentRoute(): void {
@@ -93,9 +94,7 @@ export class ScHeaderComponent implements OnInit {
   }
 
   public isRouteActive(route: string): boolean {
-    return (
-      this.currentRoute === route || this.currentRoute.startsWith(route)
-    );
+    return this.currentRoute === route || this.currentRoute.startsWith(route);
   }
 
   @HostListener('window:scroll', [])
@@ -136,9 +135,6 @@ export class ScHeaderComponent implements OnInit {
   changeLanguage(lang: string) {
     this.translocoService.setActiveLang(lang);
     this.translocoService.setDefaultLang(lang);
-    this.translocoService.load(lang).subscribe(() => {
-      this.currentLang = lang;
-      this.cdr.detectChanges();
-    });
+    this.currentLang = lang;
   }
 }
