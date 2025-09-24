@@ -511,6 +511,12 @@
         "schedule_consultation": "Asesoría personalizada en tu idioma.",
         "no_advance_payments": "Sin adelantos: pagas después de tener tu LLC y cuenta bancaria",
         "open_your_llc": "Abre tu empresa en EE.UU. en menos de 7 días, 100% online y con acompañamiento experto.",
+        "open_your_llc_video": {
+            "hear_comunity": "Escucha a la comunidad",
+            "comunity_name": "¡Creación LLC!",
+            "what_they_say": "Mira lo que nuestros clientes tienen que decir de nosotros"
+        },
+        "start_free_meeting":"Start with a free meeting",
         "skip_commissions": "Evita comisiones e impuestos innecesarios con nuestra gestión integral.",
         "start_my_llc_process": "Empezar mi proceso de LLC",
         "description": "Nos encargamos de la burocracia para que tú te enfoques en crecer.",
@@ -590,7 +596,7 @@
                 "description": "Aprovechá ahora y abrela GRATIS, 100% online y sin comisiones con la esencial Apertura Relay!"
             },
             "video_section": {
-                "title": "Relay un banco",
+                "title": "Relay, un banco",
                 "title_highlight": " seguro y confiable ",
                 "description": "mira aquí abajo lo que dicen de nosotros"
             },
