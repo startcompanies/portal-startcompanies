@@ -265,6 +265,11 @@
                     "description": "Facilitamos la apertura de empresas y cuentas bancarias sin necesidad de residencia en EE.UU., eliminando barreras geográficas y permitiendo que su negocio acceda a nuevos mercados internacionales."
                 }
             }
+        },
+        "video_section": {
+            "title": "Estrategía empresarial",
+            "title_highlight": "efectiva",
+            "description": "Descubre cómo hacemos realidad negocios exitosos"
         }
     },
     "CONTACT": {
