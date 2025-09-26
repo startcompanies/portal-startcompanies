@@ -6,6 +6,33 @@
         "contact": "Contacto",
         "call": "Agendar llamada"
     },
+    "SEO": {
+        "home": {
+            "title": "Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.",
+            "description": "Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.",
+            "keywords": "LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros"
+        },
+        "nosotros": {
+            "title": "Nosotros - Start Companies LLC | Experiencia en Servicios Financieros",
+            "description": "Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.",
+            "keywords": "Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores"
+        },
+        "contacto": {
+            "title": "Contacto - Start Companies LLC | Habla con Nuestros Expertos",
+            "description": "Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.",
+            "keywords": "contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria"
+        },
+        "planes": {
+            "title": "Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.",
+            "description": "Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.",
+            "keywords": "planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA"
+        },
+        "blog": {
+            "title": "Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.",
+            "description": "Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.",
+            "keywords": "blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog"
+        }
+    },
     "CONTENT": {
         "expand_your_freedom": "Expande Tu Libertad, abre tu LLC en estados unidos",
         "create_your_llc": "Crea tu LLC",
@@ -521,7 +548,7 @@
             "comunity_name": "¡Creación LLC!",
             "what_they_say": "Mira lo que nuestros clientes tienen que decir de nosotros"
         },
-        "start_free_meeting":"Start with a free meeting",
+        "start_free_meeting":"Empezar con una reunión gratuita",
         "skip_commissions": "Evita comisiones e impuestos innecesarios con nuestra gestión integral.",
         "start_my_llc_process": "Empezar mi proceso de LLC",
         "description": "Nos encargamos de la burocracia para que tú te enfoques en crecer.",

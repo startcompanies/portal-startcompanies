@@ -6,11 +6,38 @@
         "contact": "Contact us",
         "call": "Schedule a call"
     },
+    "SEO": {
+        "home": {
+            "title": "Start Companies LLC - US Bank Account Opening Services",
+            "description": "We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.",
+            "keywords": "LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services"
+        },
+        "nosotros": {
+            "title": "About Us - Start Companies LLC | Financial Services Experience",
+            "description": "Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.",
+            "keywords": "Start Companies team, financial services experience, about us, entrepreneur trust"
+        },
+        "contacto": {
+            "title": "Contact - Start Companies LLC | Talk to Our Experts",
+            "description": "Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.",
+            "keywords": "Start Companies contact, LLC support, financial services experts, bank account help"
+        },
+        "planes": {
+            "title": "Plans and Pricing - Start Companies LLC | US LLC Services",
+            "description": "Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.",
+            "keywords": "US LLC plans, bank account pricing, Start Companies services, LLC formation USA"
+        },
+        "blog": {
+            "title": "Blog - Start Companies LLC | News and Tips for US LLCs",
+            "description": "Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.",
+            "keywords": "US LLC blog, bank account tips, financial news, Start Companies blog"
+        }
+    },
     "CONTENT": {
         "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
         "create_your_llc": "Create your LLC",
         "renew_your_llc": "Renew your LLC",
-        "start_free_meeting": "Empezar con una reunión gratuita",
+        "start_free_meeting": "Start with a free meeting",
         "expand_your_freedom_description": "We solve your doubts about creating your LLC, opening bank accounts and other services. Our team is ready to accompany you in each step of the process.",
         "open_your_bank_account": "Open your bank account in the United States with your active LLC",
         "open_your_bank_account_button": "OPEN BANK ACCOUNT",

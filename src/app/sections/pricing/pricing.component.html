@@ -14,9 +14,9 @@
       <span class="fw-bold">{{ "CONTENT.pricing.title2" | transloco }}</span>
     </h2>
 
-    <!-- Tabs solo en desktop -->
+    <!-- Tabs para desktop y móvil -->
     <div
-      class="pricing-tabs nav nav-pills justify-content-center mb-5 d-none d-md-flex"
+      class="pricing-tabs nav nav-pills justify-content-center mb-5"
       id="pricingTabs"
       role="tablist"
     >
@@ -651,7 +651,7 @@
               </p>
               <a
                 [langRouterLink]="'apertura-banco-relay'"
-                class="btn-primarymt-auto d-flex align-items-center justify-content-center"
+                class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "OTHER_PLANS_NEW.bank.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
@@ -770,7 +770,7 @@
                   </p>
                   <a
                     [langRouterLink]="'apertura-banco-relay'"
-                    class="btn-primarymt-auto d-flex align-items-center justify-content-center"
+                    class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "OTHER_PLANS_NEW.bank.cta" | transloco }}
                     <i class="bi bi-arrow-right ms-2"></i>

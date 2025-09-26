@@ -72,29 +72,142 @@ export class LanguageService {
     const normalized = (commands || [])
       .filter((c) => c !== undefined && c !== null)
       .map((c) => (typeof c === 'string' ? c.replace(/^\/+/, '') : c));
-    return this.router.navigate(['/', lang, ...normalized], extras);
+    
+    // Mapear rutas según el idioma
+    const mappedCommands = this.mapCommandsForLanguage(normalized, lang);
+    return this.router.navigate(['/', lang, ...mappedCommands], extras);
+  }
+
+  /**
+   * Mapea comandos de navegación según el idioma
+   */
+  private mapCommandsForLanguage(commands: any[], lang: string): any[] {
+    if (lang === 'en') {
+      return commands.map(cmd => {
+        if (typeof cmd === 'string') {
+          const routeMapping: { [key: string]: string } = {
+            'nosotros': 'about-us',
+            'contacto': 'contact',
+            'planes': 'plans',
+            'blog': 'blog',
+            'apertura-llc': 'llc-opening',
+            'renovar-llc': 'llc-renewal',
+            'form-apertura-relay': 'relay-opening-form',
+            'abre-tu-llc': 'llc-formation',
+            'presentacion': 'presentation',
+            'apertura-banco-relay': 'relay-account-opening',
+            'agendar': 'schedule',
+            'fixcal': 'fixcal',
+            'abotax': 'abotax',
+            'category': 'category',
+            'post': 'post'
+          };
+          return routeMapping[cmd] || cmd;
+        }
+        return cmd;
+      });
+    }
+    return commands;
   }
 
   replaceLangInUrl(lang: string): Promise<boolean> {
     const url = this.router.url || '/';
+    console.log('[LanguageService] replaceLangInUrl - Current URL:', url, 'Target lang:', lang);
+    
     const tree = this.router.parseUrl(url);
     const primary = tree.root.children['primary'];
     const segs = primary ? primary.segments.map((s) => s.path) : [];
+    
+    console.log('[LanguageService] URL segments:', segs);
 
     if (segs.length === 0) {
-      return this.router.navigate(['/', lang]);
+      // Si no hay segmentos, redirigir a la página principal del idioma
+      const targetUrl = ['/', lang, lang === 'es' ? 'inicio' : 'home'];
+      console.log('[LanguageService] No segments, navigating to:', targetUrl);
+      return this.router.navigate(targetUrl);
     }
 
+    // Si el primer segmento es un idioma, reemplazarlo
     if (this.availableLangs.includes(segs[0])) {
       segs[0] = lang;
+      
+      // Si solo queda el idioma (sin página específica), agregar página principal
+      if (segs.length === 1) {
+        segs.push(lang === 'es' ? 'inicio' : 'home');
+      } else {
+        // Mapear la ruta actual al idioma de destino
+        const currentRoute = segs[1];
+        const mappedRoute = this.mapRouteForLanguage(currentRoute, lang);
+        segs[1] = mappedRoute;
+      }
     } else {
+      // Si no hay idioma en la URL, agregarlo al inicio
       segs.unshift(lang);
+      
+      // Si solo hay un segmento después del idioma, mapearlo
+      if (segs.length === 2) {
+        const currentRoute = segs[1];
+        const mappedRoute = this.mapRouteForLanguage(currentRoute, lang);
+        segs[1] = mappedRoute;
+      }
     }
 
-    return this.router.navigate(['/', ...segs], {
+    const targetUrl = ['/', ...segs];
+    console.log('[LanguageService] Final navigation to:', targetUrl);
+    
+    return this.router.navigate(targetUrl, {
       queryParams: tree.queryParams,
       fragment: tree.fragment ?? undefined,
     });
+  }
+
+  /**
+   * Mapea una ruta específica al idioma de destino
+   */
+  private mapRouteForLanguage(route: string, targetLang: string): string {
+    if (targetLang === 'es') {
+      // Mapear de inglés a español
+      const englishToSpanish: { [key: string]: string } = {
+        'home': 'inicio',
+        'about-us': 'nosotros',
+        'contact': 'contacto',
+        'plans': 'planes',
+        'blog': 'blog',
+        'llc-formation': 'abre-tu-llc',
+        'presentation': 'presentacion',
+        'relay-account-opening': 'apertura-banco-relay',
+        'schedule': 'agendar',
+        'llc-opening': 'apertura-llc',
+        'llc-renewal': 'renovar-llc',
+        'relay-opening-form': 'form-apertura-relay',
+        'fixcal': 'fixcal',
+        'abotax': 'abotax',
+        'category': 'category',
+        'post': 'post'
+      };
+      return englishToSpanish[route] || route;
+    } else {
+      // Mapear de español a inglés
+      const spanishToEnglish: { [key: string]: string } = {
+        'inicio': 'home',
+        'nosotros': 'about-us',
+        'contacto': 'contact',
+        'planes': 'plans',
+        'blog': 'blog',
+        'abre-tu-llc': 'llc-formation',
+        'presentacion': 'presentation',
+        'apertura-banco-relay': 'relay-account-opening',
+        'agendar': 'schedule',
+        'apertura-llc': 'llc-opening',
+        'renovar-llc': 'llc-renewal',
+        'form-apertura-relay': 'relay-opening-form',
+        'fixcal': 'fixcal',
+        'abotax': 'abotax',
+        'category': 'category',
+        'post': 'post'
+      };
+      return spanishToEnglish[route] || route;
+    }
   }
 
   getLangFromUrl(url?: string): string | null {

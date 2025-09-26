@@ -56,7 +56,11 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
   private updateHref() {
     const lang = this.transloco.getActiveLang() || 'es';
     const normalized = this.normalizeCommands(this.commands || []);
-    this.urlTree = this.router.createUrlTree(['/', lang, ...normalized], {
+    
+    // Mapear rutas según el idioma
+    const mappedCommands = this.mapCommandsForLanguage(normalized, lang);
+    
+    this.urlTree = this.router.createUrlTree(['/', lang, ...mappedCommands], {
       queryParams: this.queryParams,
       fragment: this.fragment,
     });
@@ -68,6 +72,64 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
     } catch {
       // no hacer nada si el host no acepta atributos
     }
+  }
+
+  /**
+   * Mapea comandos de navegación según el idioma
+   */
+  private mapCommandsForLanguage(commands: any[], lang: string): any[] {
+    if (lang === 'en') {
+      return commands.map(cmd => {
+        if (typeof cmd === 'string') {
+          const routeMapping: { [key: string]: string } = {
+            'inicio': 'home',
+            'nosotros': 'about-us',
+            'contacto': 'contact',
+            'planes': 'plans',
+            'blog': 'blog',
+            'apertura-llc': 'llc-opening',
+            'renovar-llc': 'llc-renewal',
+            'form-apertura-relay': 'relay-opening-form',
+            'abre-tu-llc': 'llc-formation',
+            'presentacion': 'presentation',
+            'apertura-banco-relay': 'relay-account-opening',
+            'agendar': 'schedule',
+            'fixcal': 'fixcal',
+            'abotax': 'abotax',
+            'category': 'category',
+            'post': 'post'
+          };
+          return routeMapping[cmd] || cmd;
+        }
+        return cmd;
+      });
+    } else if (lang === 'es') {
+      return commands.map(cmd => {
+        if (typeof cmd === 'string') {
+          const routeMapping: { [key: string]: string } = {
+            'home': 'inicio',
+            'about-us': 'nosotros',
+            'contact': 'contacto',
+            'plans': 'planes',
+            'blog': 'blog',
+            'llc-opening': 'apertura-llc',
+            'llc-renewal': 'renovar-llc',
+            'relay-opening-form': 'form-apertura-relay',
+            'llc-formation': 'abre-tu-llc',
+            'presentation': 'presentacion',
+            'relay-account-opening': 'apertura-banco-relay',
+            'schedule': 'agendar',
+            'fixcal': 'fixcal',
+            'abotax': 'abotax',
+            'category': 'category',
+            'post': 'post'
+          };
+          return routeMapping[cmd] || cmd;
+        }
+        return cmd;
+      });
+    }
+    return commands;
   }
 
   @HostListener('click', ['$event'])

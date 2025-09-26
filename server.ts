@@ -25,16 +25,62 @@ export function app(): express.Express {
       // Generar sitemap básico sin dependencias de Angular
       const baseUrl = 'https://startcompanies.us';
       const staticUrls = [
+        // Página principal (redirección)
         { url: '/', priority: '1.0', changefreq: 'weekly' },
-        { url: '/blog', priority: '0.9', changefreq: 'weekly' },
-        { url: '/planes', priority: '0.9', changefreq: 'monthly' },
-        { url: '/contacto', priority: '0.8', changefreq: 'monthly' },
-        { url: '/nosotros', priority: '0.7', changefreq: 'monthly' },
+        
+        // Rutas principales en español
+        { url: '/es/inicio', priority: '1.0', changefreq: 'weekly' },
+        { url: '/es/nosotros', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/contacto', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/planes', priority: '0.9', changefreq: 'monthly' },
+        
+        // Rutas principales en inglés
+        { url: '/en/home', priority: '1.0', changefreq: 'weekly' },
+        { url: '/en/about-us', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/contact', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/plans', priority: '0.9', changefreq: 'monthly' },
+        
+        // Landing pages en español
+        { url: '/es/abre-tu-llc', priority: '0.9', changefreq: 'monthly' },
+        { url: '/es/presentacion', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/apertura-banco-relay', priority: '0.9', changefreq: 'monthly' },
+        { url: '/es/agendar', priority: '0.8', changefreq: 'monthly' },
+        
+        // Landing pages en inglés
+        { url: '/en/llc-formation', priority: '0.9', changefreq: 'monthly' },
+        { url: '/en/presentation', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/relay-account-opening', priority: '0.9', changefreq: 'monthly' },
+        { url: '/en/schedule', priority: '0.8', changefreq: 'monthly' },
+        
+        // Formularios en español
+        { url: '/es/apertura-llc', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/renovar-llc', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/form-apertura-relay', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/fixcal', priority: '0.8', changefreq: 'monthly' },
+        { url: '/es/abotax', priority: '0.8', changefreq: 'monthly' },
+        
+        // Formularios en inglés
+        { url: '/en/llc-opening', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/llc-renewal', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/relay-opening-form', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/fixcal', priority: '0.8', changefreq: 'monthly' },
+        { url: '/en/abotax', priority: '0.8', changefreq: 'monthly' },
+        
+        // Blog (redirecciones)
+        { url: '/es/blog', priority: '0.9', changefreq: 'daily' },
+        { url: '/en/blog', priority: '0.9', changefreq: 'daily' },
+        
+        // Rutas de campañas (redirecciones)
         { url: '/abre-tu-llc', priority: '0.9', changefreq: 'monthly' },
+        { url: '/presentacion', priority: '0.8', changefreq: 'monthly' },
         { url: '/apertura-banco-relay', priority: '0.9', changefreq: 'monthly' },
+        { url: '/agenda', priority: '0.8', changefreq: 'monthly' },
         { url: '/agendar', priority: '0.8', changefreq: 'monthly' },
         { url: '/apertura-llc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/renovar-llc', priority: '0.8', changefreq: 'monthly' }
+        { url: '/renovar-llc', priority: '0.8', changefreq: 'monthly' },
+        { url: '/form-apertura-relay', priority: '0.8', changefreq: 'monthly' },
+        { url: '/fixcal', priority: '0.8', changefreq: 'monthly' },
+        { url: '/abotax', priority: '0.8', changefreq: 'monthly' }
       ];
 
       const staticEntries = staticUrls.map(page => `
@@ -66,9 +112,34 @@ export function app(): express.Express {
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>${baseUrl}/blog</loc>
-    <changefreq>weekly</changefreq>
+    <loc>${baseUrl}/es/blog</loc>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/en/blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/es/category/llc-formation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/en/category/llc-formation</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/es/category/bank-accounts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/en/category/bank-accounts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>`;
       
