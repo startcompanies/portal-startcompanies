@@ -25,14 +25,14 @@
                 {{ "FOOTER.access_quick.us" | transloco }}
               </h4>
               <div class="footer-links d-flex flex-column gap-2">
-                <a href="/nosotros">{{
+                <a [langRouterLink] ="'nosotros'">{{
                   "FOOTER.access_quick.us" | transloco
                 }}</a>
-                <a href="/planes">{{
+                <a [langRouterLink]="'planes'">{{
                   "FOOTER.access_quick.plans" | transloco
                 }}</a>
                 <!--<a href="#">{{ "FOOTER.access_quick.blog" | transloco }}</a>-->
-                <a href="/contacto">{{
+                <a [langRouterLink]="'contacto'">{{
                   "FOOTER.access_quick.contact" | transloco
                 }}</a>
               </div>
@@ -44,11 +44,11 @@
                 {{ "FOOTER.categories.manage" | transloco }}
               </h4>
               <div class="footer-links d-flex flex-column gap-2">
-                <a href="/apertura-llc">{{
+                <a [langRouterLink]="'apertura-llc'">{{
                   "FOOTER.categories.llc" | transloco
                 }}</a>
-                <a href="/renovar-llc">Renueva tu LLC</a>
-                <a href="/form-apertura-relay">Abrir cuenta</a>
+                <a [langRouterLink]="'renovar-llc'">Renueva tu LLC</a>
+                <a [langRouterLink]="'form-apertura-relay'">Abrir cuenta</a>
               </div>
             </div>
           </div>

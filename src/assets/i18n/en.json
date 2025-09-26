@@ -6,10 +6,38 @@
         "contact": "Contact us",
         "call": "Schedule a call"
     },
+    "SEO": {
+        "home": {
+            "title": "Start Companies LLC - US Bank Account Opening Services",
+            "description": "We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.",
+            "keywords": "LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services"
+        },
+        "nosotros": {
+            "title": "About Us - Start Companies LLC | Financial Services Experience",
+            "description": "Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.",
+            "keywords": "Start Companies team, financial services experience, about us, entrepreneur trust"
+        },
+        "contacto": {
+            "title": "Contact - Start Companies LLC | Talk to Our Experts",
+            "description": "Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.",
+            "keywords": "Start Companies contact, LLC support, financial services experts, bank account help"
+        },
+        "planes": {
+            "title": "Plans and Pricing - Start Companies LLC | US LLC Services",
+            "description": "Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.",
+            "keywords": "US LLC plans, bank account pricing, Start Companies services, LLC formation USA"
+        },
+        "blog": {
+            "title": "Blog - Start Companies LLC | News and Tips for US LLCs",
+            "description": "Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.",
+            "keywords": "US LLC blog, bank account tips, financial news, Start Companies blog"
+        }
+    },
     "CONTENT": {
         "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
         "create_your_llc": "Create your LLC",
         "renew_your_llc": "Renew your LLC",
+        "start_free_meeting": "Start with a free meeting",
         "expand_your_freedom_description": "We solve your doubts about creating your LLC, opening bank accounts and other services. Our team is ready to accompany you in each step of the process.",
         "open_your_bank_account": "Open your bank account in the United States with your active LLC",
         "open_your_bank_account_button": "OPEN BANK ACCOUNT",
@@ -141,6 +169,12 @@
                     "title": "Includes",
                     "1": "Everything in Elite Pack",
                     "2": "Automatic renewal annually"
+                },
+                "automaticRenewal": "¿Automatic renewal includes?",
+                "automaticRenewalIncludes": {
+                    "1": "Payment of state fee (federal compliance)",
+                    "2": "Renewal of Registered Agent",
+                    "3": "Submission of Form 1120+5472 or 1065"
                 }
             }
         },
@@ -182,13 +216,43 @@
         "faq": {
             "title1": "Frequently",
             "title2": "Asked Questions",
-            "question1": "What guarantees do you give me for the service and when can I pay?",
-            "question2": "How many days can I have my LLC open?",
-            "question3": "How can I transfer money legally from Argentina or Latin America to the United States?",
-            "question4": "What are the requirements to open an LLC in the United States?",
-            "question5": "How much does it cost to open an LLC in the United States?",
-            "question6": "What taxes must be paid with an LLC in the United States?",
-            "question7": "Why choose our services to open an LLC in the United States?"
+            "question1": "What guarantee does Start Companies offer?",
+            "answer1": "We offer a satisfaction guarantee: if you are not satisfied with the work performed, we refund your money. You can also pay after your LLC is created and fully operational. Our goal is to give you peace of mind throughout the process.",
+            "button": "Click here and contact us!",
+            "question2": "How long does it take to open an LLC?",
+            "answer2": "We open them within 7 to 10 business days. We focus on offering a hassle-free, transparent process with maximum support for an efficient experience.",
+            "question3": "How can I transfer money legally to the U.S.?",
+            "answer3": "Transferring money to the U.S. is simple if you comply with local and U.S. regulations. You can use platforms such as Wise, Binance, or Dólar App. A good combination is Wise for personal transfers and Binance for converting funds to USDT.",
+            "question4": "What requirements are needed to open an LLC?",
+            "answer4": "To open an LLC you need:",
+            "answer4List": {
+                "1": " Valid passport",
+                "2": "Proof of residence address (verifiable with a utility bill).",
+                "3": "Choice of state where you will register the LLC.",
+                "4": "Purpose of the company.",
+                "5": "Payment of state and service costs. Our team will guide you through each step of the process to ensure everything is in order."
+            },
+            "question5": "How much does it cost to open an LLC?",
+            "answer5": "The cost depends on the selected state. At Start Companies, we offer services starting at $499 in New Mexico up to $600 in states like Delaware, Wyoming, or Florida. This price includes:",
+            "answer5List": {
+                "1": "Official LLC registration",
+                "2": "BOI report",
+                "3": "Articles of Organization",
+                "4": "Operating Agreement",
+                "5": "Personalized advice"
+            },
+            "question6": "What taxes do I need to pay in the U.S. with my LLC?",
+            "answer6": "If your LLC has no physical presence or nexus in the U.S., you only need to file forms (1120+5472 or 1065). If you do have nexus, you must pay taxes, request an ITIN, and comply with U.S. tax filings.",
+            "question7": "Why choose Start Companies?",
+            "answer7": "At Start Companies, we are experts in forming LLCs for foreigners. We offer:",
+            "answer7List": {
+                "1": "Fast and hassle-free process.",
+                "2": "Personalized advice in your language.",
+                "3": "Documentation ready to open a bank account.",
+                "4": "Competitive prices with no hidden costs.",
+                "5": "Satisfaction guarantee: If you are not satisfied, we refund your money.",
+                "6": "Flexible payment: You can pay after the process is completed."
+            }
         }
     },
     "US": {
@@ -229,6 +293,11 @@
                     "description": "We facilitate the opening of businesses and bank accounts without the need to reside in the United States, eliminating geographical barriers and allowing your business to access new international markets."
                 }
             }
+        },
+        "video_section": {
+            "title": "Effective business",
+            "title_highlight": "strategy",
+            "description": "Discover how we make successful businesses a reality"
         }
     },
     "CONTACT": {
@@ -242,7 +311,7 @@
             "title": "Your free advice",
             "title2": "in minutes",
             "title3": "with an expert",
-            "description": "Contact us to resolve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.Expanding your business internationally has never been easier. Schedule a free call with our experts and clear all your doubts in minutes.",
+            "description": "Expand your business internationally has never been so easy. Schedule a free call with our experts and clarify all your doubts in minutes.",
             "button1": "Schedule your call",
             "button2": "Plans and prices"
         }
@@ -264,5 +333,349 @@
         },
         "contact_us": "Contact us",
         "description": "Ebizboost LLC acts as an intermediary in the facilitation of legal and banking procedures in the United States. It is not part of government entities and does not have banking alliances. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the necessary information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
+    },
+    "BLOG": {
+        "articles": "Articles",
+        "featured": "Featured",
+        "read_more": "Read more",
+        "title_hero": "Start Companies Blog: Your Roadmap to Entrepreneurship in the U.S.",
+        "lead_hero": "Discover tips, guides, and strategies to open and manage your LLC in the United States. Ideal for freelancers, startups, and digital businesses looking to grow without complications.",
+        "help_title": "Do you want to open and grow your LLC without complications?",
+        "can_help_you": "We can help you",
+        "help_subtitle": "We simplify the management of your company abroad",
+        "your_questions": "Do you have questions?",
+        "categories": "Categories",
+        "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors"
+    },
+    "LLC": {
+        "heroSection": {
+            "title": "LLC Formation",
+            "subtitle": "Complete our LLC formation form and create your company in the United States easily. Free consultation and 100% online process."
+        },
+        "expertSection": {
+            "buttonText": "Consult with an expert now"
+        },
+        "iframe": {
+            "ariaLabel": "Form for LLC Formation"
+        },
+        "renewLLC": {
+            "heroSection": {
+                "title": "How to Renew LLC?",
+                "subtitle": "Need to renew your LLC in the USA? Do it in minutes with our online form. Personalized advice and a 100% digital process."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for LLC Renewal"
+            }
+        },
+        "relayForm": {
+            "heroSection": {
+                "title": "Relay Opening Form",
+                "subtitle": "Need a bank account in the United States, write to us now. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for Relay Opening"
+            }
+        },
+        "relayAbotaxForm": {
+            "heroSection": {
+                "title": "Relay Abotax Opening Form",
+                "subtitle": "Need a bank account in the United States, write to us now. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consult with an expert now"
+            },
+            "iframe": {
+                "ariaLabel": "Form for Relay Abotax Opening"
+            }
+        },
+        "relayFixcalForm": {
+            "heroSection": {
+                "title": "Formulario apertura Relay Fixcal",
+                "subtitle": "Necesitas una cuenta bancaria en Estados Unidos, escríbenos ahora. 100% digital."
+            },
+            "expertSection": {
+                "buttonText": "Consulta con un experto ahora"
+            },
+            "iframe": {
+                "ariaLabel": "Formulario para Apertura de Relay Fixcal"
+            }
+        }
+    },
+    "PLANS": {
+        "intro": {
+            "title": "Expand Your Business: Open your LLC in the U.S.",
+            "subtitle": "Create your company in the United States and access your bank account without residency. Start Companies offers you everything you need to operate globally, hassle-free."
+        },
+        "header": {
+            "title": "Detailed comparison between",
+            "titleSpan": " plans",
+            "subtitle": "All our plans include the essential services to successfully create and manage your LLC."
+        },
+        "table": {
+            "columns": {
+                "features": "Features",
+                "entrepreneur": "Entrepreneur",
+                "elite": "Elite",
+                "premium": "Premium",
+                "bank": "Bank",
+                "renewal": "Renewal",
+                "fines": "Fines"
+            },
+            "rows": {
+                "price": "Price",
+                "idealFor": "Ideal for",
+                "llcFormation": "LLC Formation",
+                "bankAccountOpening": "Bank account opening",
+                "fiscalAddress": "Fiscal and social address for bank opening",
+                "physicalLocation": "Available regardless of your physical location",
+                "registeredAgent": "Registered Agent",
+                "automaticRenewal": "Automatic renewal",
+                "fullDocumentation": "Full documentation",
+                "paymentSystems": "Stripe/sales payment systems consultation",
+                "shareIssuance": "Share issuance consultation",
+                "taxPlanning": "Tax planning consultation",
+                "borReport": "Mandatory BOR report for legal compliance",
+                "ebook": "E-book about LLCs",
+                "choosePlan": "Choose plan",
+                "idealForEntrepreneur": "Freelancers, agencies, and startups without a physical presence in the USA.",
+                "idealForElite": "Companies / Entrepreneurs with a physical presence in the USA.",
+                "idealForPremium": "Entrepreneurs seeking a comprehensive solution.",
+                "idealForBank": "LLCs already incorporated without a bank or looking for an alternative.",
+                "idealForRenewal": "LLC that wants to move the renewal service with us.",
+                "idealForFines": "Fine lifting/reduction and payment plans.",
+                "llcFormationEntrepreneur": "In New Mexico",
+                "llcFormationElite": "In any state",
+                "llcFormationPremium": "In any state",
+                "bankAccountOpeningBank": "Remotely (Relay/Mercury)"
+            }
+        }
+    },
+    "MOBILE_PLANS": {
+        "bank": {
+            "title": "Bank",
+            "price": "$150",
+            "ideal": "Ideal for LLCs already incorporated without a bank or looking for another bank as an alternative.",
+            "cta": "Open Bank Account",
+            "featuresTitle": "What’s included?",
+            "features": {
+                "0": "100% guaranteed remote opening in banks like Relay or Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renewal",
+            "price": "$600",
+            "ideal": "Ideal for LLCs that want to move their renewal service with us.",
+            "cta": "Renew LLC",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "Payment of state fee (federal compliance)",
+                "1": "Renewwal of R.A.",
+                "2": "Submission of Form 1120+5472 or 1065",
+                "3": "Monthly support for any inquiry",
+                "4": "Possibility to migrate services from another provider with us"
+            },
+            "note": "If Delaware, add $300 USD to the price."
+        },
+        "fines": {
+            "title": "Fines",
+            "price": "$300 USD",
+            "note": "Note: +3% of the fine amount.",
+            "cta": "Consult Fines",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "We lift your fine 100% guaranteed if you never filed informative returns",
+                "1": "Fine reduction up to 50%",
+                "2": "Payment plans"
+            }
+        }
+    },
+    "TABS": {
+        "plane": "Plans",
+        "others": "Others",
+        "llc-planes": "LLC Plans",
+        "other-planes": "Other Planes"
+    },
+    "OTHER_PLANS_NEW": {
+        "bank": {
+            "title": "Bank",
+            "price": "$150",
+            "description": "Ideal for LLCs already incorporated without a bank or looking for another bank as an alternative.",
+            "cta": "Open Bank Account",
+            "featuresTitle": "What’s included?",
+            "features": {
+                "0": "100% guaranteed remote opening in banks such as Relay or Mercury"
+            }
+        },
+        "renewal": {
+            "title": "Renewal",
+            "price": "$600",
+            "description": "Ideal for LLCs that want to migrate their renewal service to us.",
+            "cta": "Renew LLC",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "Payment of state fee (federal compliance)",
+                "1": "Registered Agent renewal",
+                "2": "Submission of Form 1120 + 5472 or 1065",
+                "3": "Monthly support for any inquiry",
+                "4": "Possibility to migrate services from another provider with us"
+            },
+            "delawareNote": "If Delaware, add $300 USD to the price."
+        },
+        "fines": {
+            "title": "Fines",
+            "price": "$300 USD",
+            "description": "Note: +3% of the fine amount.",
+            "cta": "Consult Fines",
+            "featuresTitle": "Includes:",
+            "features": {
+                "0": "We lift your fine 100% guaranteed if you never filed informative returns",
+                "1": "Fine reduction up to 50%",
+                "2": "Payment plans"
+            }
+        }
+    },
+    "COMMON": {
+        "note": "Note:"
+    },
+    "LANDINGS": {
+        "schedule_consultation": "Schedule your free consultation.",
+        "no_advance_payments": "No advance payments: you pay after having your LLC and bank account",
+        "open_your_llc": "Open your company in the U.S. in less than 7 days, 100% online and with expert support.",
+        "open_your_llc_video": {
+            "hear_comunity": "Hear from the community",
+            "comunity_name": "LLC Creation!",
+            "what_they_say": "See what our clients have to say about us"
+        },
+        "skip_commissions": "Avoid unnecessary fees and taxes with our comprehensive management.",
+        "start_my_llc_process": "Start my LLC process",
+        "description": "We take care of the bureaucracy so you can focus on growing.",
+        "discover_why": "Discover why more than",
+        "200_clients": "2000 clients",
+        "calificate_us": "rate us as",
+        "excellent": "Excellent",
+        "startcompanies_benefits": "Benefits of choosing ",
+        "startcompanies_hightlight": "Start Companies",
+        "benefit1": {
+            "title": "FREE tax advice",
+            "description": "We'll be with you from the start, and you only pay when we submit the documentation."
+        },
+        "benefit2": {
+            "title": "You pay at the end",
+            "description": "You only pay once we submit all your company's documentation."
+        },
+        "benefit3": {
+            "title": "Operate Globally",
+            "description": "Sell on Amazon, get paid with Stripe, and access international markets without restrictions."
+        },
+        "benefit4": {
+            "title": "100% Remote",
+            "description": "You don't need to travel or be a resident. Manage the entire process from the comfort of your home."
+        },
+        "hero": {
+            "title": "Thank you for your interest!",
+            "description1": "We have received your request and our team is ready to help you.",
+            "description2": "The next step is to schedule your free 30-minute consultation with one of our experts."
+        },
+        "calendly": {
+            "title": "Schedule your free consultation now!",
+            "subtitle": "Book 30 minutes to resolve all your questions about opening your LLC in the U.S. Our expert will guide you step by step through the process."
+        },
+        "urgency": {
+            "title": "⏰ Don't miss this opportunity!",
+            "text": "Free consultations are limited. Book your appointment now to secure your personalized session and start the process of opening your LLC in the United States."
+        },
+        "steps": {
+            "bottomStatement": "Simple, easy and without complications!",
+            "title": "Your LLC in less than 7 days in 4 Simple Steps",
+            "scheduleCall": "Schedule call",
+            "step1": {
+                "title": "Schedule a Call",
+                "description": "Schedule a call today."
+            },
+            "step2": {
+                "title": "Choose Your Plan",
+                "description": "Select the service package you need."
+            },
+            "step3": {
+                "title": "Complete the Form",
+                "description": "Provide us with your company information in 5 minutes."
+            },
+            "step4": {
+                "title": "Pay When Everything is Ready",
+                "description": "You only pay when your bank account and company are up and running."
+            }
+        },
+        "support": {
+            "title": "Do you want us",
+            "title2": " to take care of it ",
+            "title3": "for you?",
+            "list": {
+                "item1": "Document review",
+                "item2": "Full upload to Relay",
+                "item3": "Step-by-step guidance",
+                "item4": "WhatsApp support",
+                "item5Bold": "100% guarantee",
+                "item5": " if the account is rejected"
+            },
+            "cta": "Guide me step-by-step ($99 USD)"
+        },
+        "relay_landing": {
+            "hero": {
+                "title": "Do you have your LLC in the U.S. but haven't opened a bank account yet?",
+                "description": "Take advantage now and open it for FREE, 100% online and with no commissions with the essential Relay Opening!"
+            },
+            "video_section": {
+                "title": "Relay a",
+                "title_highlight": " safe and reliable bank.",
+                "description": "Check out what they say about us below"
+            },
+            "testimonials": {
+                "qualifications_text": "4.8 stars, 100 reviews, \"Excellent\".",
+                "header": "More than 200 entrepreneurs have already trusted Start Companies and rate us as",
+                "header_highlight": " \"Excellent\".",
+                "description": "Discover why we are the chosen option to open your bank account for your LLC in the U.S. quickly, safely, reliably, and 100% online. Read their real experiences and learn how we helped them simplify the Relay opening, optimize their financial management, and grow their businesses from anywhere in the world.",
+                "button_cta": "I want you to do it for me ($99 USD)"
+            },
+            "video_grid_section": {
+                "title": "What our clients",
+                "title_highlight": " are saying"
+            }
+        },
+        "pricing_options": {
+            "card_free": {
+                "cta": "Apply for free",
+                "title": "I complete the form on my own",
+                "list": {
+                    "item1": "You complete the form",
+                    "item2": "We process your data",
+                    "item3": "You receive the facial verification link",
+                    "item4": "You activate your account",
+                    "item5": "100% online and free of charge"
+                }
+            },
+            "card_paid": {
+                "cta": "Apply for $99 USD",
+                "title": "I want Start Companies to complete it",
+                "list": {
+                    "item1": "We review and upload everything for you",
+                    "item2": "We guide you via WhatsApp",
+                    "item3": "Direct follow-up with Relay",
+                    "item4": "100% guarantee if the account is rejected"
+                }
+            }
+        }
+    },
+    "ERROR-404": {
+        "title": "Oops!",
+        "description": "We've lost you! We don't know what happened... But where have you been? Quick, come back to us.",
+        "subtitle": "Were you looking for something specific?",
+        "about_us": "About Us",
+        "help": "Help"
     }
 }

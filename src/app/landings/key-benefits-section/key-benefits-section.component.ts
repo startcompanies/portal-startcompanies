@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 interface Benefit {
   id: number;
@@ -12,17 +13,17 @@ interface Benefit {
 @Component({
   selector: 'app-key-benefits-section',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslocoPipe],
   templateUrl: './key-benefits-section.component.html',
   styleUrl: './key-benefits-section.component.css'
 })
 export class KeyBenefitsSectionComponent {
   // Contenido estático del componente
-  readonly title = 'Beneficios de elegir Start Companies';
+  /*readonly title = 'Beneficios de elegir Start Companies';
   readonly titleHighlight = 'Start Companies';
   readonly description = 'Nos encargamos de la burocracia para que tú te enfoques en crecer.';
   readonly subtitle = 'Descubre por qué más de 200 clientes nos califican como excelente.';
-  readonly subtitleHighlights = ['200 clientes', 'excelente'];
+  readonly subtitleHighlights = ['200 clientes', 'excelente'];*/
   
   readonly benefits: Benefit[] = [
     {

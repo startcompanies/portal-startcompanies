@@ -17,9 +17,10 @@ import { TestimonialsComponent } from '../sections/testimonials/testimonials.com
 import { FaqComponent } from '../sections/faq/faq.component';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
-import { SeoBaseComponent } from '../shared/components/seo-base/seo-base.component';
+import { MultilingualSeoComponent } from '../shared/components/multilingual-seo/multilingual-seo.component';
 import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
 import { IMAGE_CONFIG, ImageConfig } from '../config/image-config';
+import { LangRouterLinkDirective } from '../shared/directives/lang-router-link.directive';
 
 declare var bootstrap: any;
 
@@ -33,8 +34,9 @@ declare var bootstrap: any;
     SectionsModule,
     TestimonialsComponent,
     FaqComponent,
-    SeoBaseComponent,
+    MultilingualSeoComponent,
     ResponsiveImageComponent,
+    LangRouterLinkDirective
   ],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',

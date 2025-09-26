@@ -1,5 +1,5 @@
-<!-- SEO Base Component -->
-<app-seo-base routeKey="home"></app-seo-base>
+<!-- SEO Multilingüe Component -->
+<app-multilingual-seo routeKey="inicio"></app-multilingual-seo>
 
 <app-sc-header></app-sc-header>
 <!--Section Hero-->
@@ -46,7 +46,7 @@
                 class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-start"
               >
                 <a
-                  href="/apertura-llc"
+                  [langRouterLink]="'apertura-llc'"
                   class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.create_your_llc" | transloco }}
@@ -54,7 +54,7 @@
                 </a>
 
                 <a
-                  href="/renovar-llc"
+                  [langRouterLink]="'renovar-llc'"
                   class="btn hero-btn-secondary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.renew_your_llc" | transloco }}
@@ -81,7 +81,7 @@
                 class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-start mt-4 mb-4"
               >
                 <a
-                  href="/apertura-llc"
+                  [langRouterLink]="'apertura-llc'"
                   class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.create_your_llc" | transloco }}
@@ -89,7 +89,7 @@
                 </a>
 
                 <a
-                  href="/renovar-llc"
+                  [langRouterLink]="'renovar-llc'"
                   class="btn hero-btn-secondary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.renew_your_llc" | transloco }}
@@ -110,7 +110,7 @@
               </h1>
               <div class="hero-buttons d-flex gap-3 justify-content-start">
                 <a
-                  href="/form-apertura-relay"
+                  [langRouterLink]="'form-apertura-relay'"
                   class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.open_your_bank_account_button" | transloco }}
@@ -144,7 +144,7 @@
                 class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-start mt-4 mb-4"
               >
                 <a
-                  href="/form-apertura-relay"
+                  [langRouterLink]="'form-apertura-relay'"
                   class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
                 >
                   {{ "CONTENT.open_your_bank_account_button" | transloco }}
@@ -262,6 +262,6 @@
     type="button"
     class="btn sc-btn-accent px-4 py-3 shadow-lg"
   >
-    Agendar llamada <i class="bi bi-arrow-right ms-2"></i>
+    {{'NAVBAR.call' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
   </button>
 </div>

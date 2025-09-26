@@ -1,13 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { LangRouterLinkDirective } from '../../shared/directives/lang-router-link.directive';
+import { LanguageService } from '../../services/language.service';
+import { ScrollService } from '../../services/scroll.service';
 
 @Component({
   selector: 'app-header-manejo',
   standalone: true,
-  imports: [CommonModule, TranslocoModule, ResponsiveImageComponent],
+  imports: [
+    CommonModule,
+    TranslocoModule,
+    ResponsiveImageComponent,
+    LangRouterLinkDirective,
+  ],
   templateUrl: './header-manejo.component.html',
   styleUrl: './header-manejo.component.css',
 })
@@ -15,20 +23,28 @@ export class HeaderManejoComponent {
   isOpen: boolean = false;
   currentRoute: string = '';
 
+  currentLang = 'es';
+
   // Configuración de imágenes del logo para NgOptimizedImage
   logoImages = {
-    mobile: "/assets/logo-dark-mobile.png",
-    tablet: "/assets/logo-dark-tablet.png",
-    desktop: "/assets/logo-dark.png",
-    fallback: "/assets/logo-dark.png",
-    alt: "Start Companies Logo",
-    priority: true
+    mobile: '/assets/logo-dark-mobile.png',
+    tablet: '/assets/logo-dark-tablet.png',
+    desktop: '/assets/logo-dark.png',
+    fallback: '/assets/logo-dark.png',
+    alt: 'Start Companies Logo',
+    priority: true,
   };
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private scrollService: ScrollService,
+    public translocoService: TranslocoService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.getCurrentRoute();
+    this.currentLang = this.translocoService.getActiveLang();
   }
 
   /**
@@ -59,11 +75,23 @@ export class HeaderManejoComponent {
   }
 
   navigateToPlansSection() {
-    this.router.navigate(['/planes']).then(() => {
+    /*this.router.navigate(['/planes']).then(() => {
       // Damos un pequeño delay para que Angular pinte el DOM
       setTimeout(() => {
         // Aquí puedes agregar la lógica para hacer scroll si es necesario
       }, 50);
+    });*/
+    // Usamos languageService.navigate para mantener /:lang/planes
+    this.languageService.navigate(['planes']).then(() => {
+      setTimeout(() => {
+        this.scrollService.scrollTo('pricingSection');
+      }, 50);
     });
+  }
+
+  changeLanguage(lang: string) {
+    this.translocoService.setActiveLang(lang);
+    this.translocoService.setDefaultLang(lang);
+    this.currentLang = lang;
   }
 }

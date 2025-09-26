@@ -6,76 +6,99 @@
     data-bs-interval="5000"
   >
     <div class="carousel-inner d-flex h-100">
+      <!-- BANK -->
       <div class="carousel-item active h-100">
         <div class="card pack-card h-100">
           <div class="card-body d-flex flex-column">
-            <h3 class="card-title text-center fw-700 mb-3">Banco</h3>
-            <p class="card-price-pack fw-bold text-center">$150</p>
+            <h3 class="card-title text-center fw-700 mb-3">
+              {{ "MOBILE_PLANS.bank.title" | transloco }}
+            </h3>
+            <p class="card-price-pack fw-bold text-center">
+              {{ "MOBILE_PLANS.bank.price" | transloco }}
+            </p>
             <ul>
-              <li>Ideal para LLCs ya constituidas sin banco o buscando otro banco como alternativa.</li>
+              <li>{{ "MOBILE_PLANS.bank.ideal" | transloco }}</li>
             </ul>
             <div
               class="d-flex flex-column justify-content-center align-items-center"
             >
               <a
-                href="/apertura-banco-relay"
+                [langRouterLink]="'apertura-banco-relay'"
                 class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
               >
-                Abrir Cuenta Bancaria
+                {{ "MOBILE_PLANS.bank.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
             <div class="card-features">
-              <h6>¿Qué incluye?</h6>
+              <h6>{{ "MOBILE_PLANS.bank.featuresTitle" | transloco }}</h6>
               <ul>
-                <li>Apertura 100% garantizada a distancia en bancos como Relay o Mercury</li>
+                <li>{{ "MOBILE_PLANS.bank.features.0" | transloco }}</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- RENEWAL -->
       <div class="carousel-item h-100">
         <div class="card pack-card h-100">
           <div class="card-body d-flex flex-column">
-            <h3 class="card-title text-center fw-700 mb-3">Renovación</h3>
-            <p class="card-price-pack fw-bold text-center">$600</p>
+            <h3 class="card-title text-center fw-700 mb-3">
+              {{ "MOBILE_PLANS.renewal.title" | transloco }}
+            </h3>
+            <p class="card-price-pack fw-bold text-center">
+              {{ "MOBILE_PLANS.renewal.price" | transloco }}
+            </p>
             <ul>
-              <li>Ideal para LLC que quiere mudar el servicio de renovación con nosotros.</li>
+              <li>{{ "MOBILE_PLANS.renewal.ideal" | transloco }}</li>
             </ul>
             <div
               class="d-flex flex-column justify-content-center align-items-center"
             >
               <a
-                href="/renovar-llc"
+                [langRouterLink]="'renovar-llc'"
                 class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
               >
-                Renovar LLC
+                {{ "MOBILE_PLANS.renewal.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
             <div class="card-features">
-              <h6>Incluye:</h6>
+              <h6>{{ "MOBILE_PLANS.renewal.featuresTitle" | transloco }}</h6>
               <ul>
-                <li>Pago de fee al Estado (cumplimiento federal)</li>
-                <li>Renovación de R.A.</li>
-                <li>Presentación de Form 1120+5472 o 1065</li>
-                <li>Asistencia mensual por cualquier consulta</li>
-                <li>Posibilidad de mudar servicios de otro proveedor con nosotros</li>
+                <li>{{ "MOBILE_PLANS.renewal.features.0" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.renewal.features.1" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.renewal.features.2" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.renewal.features.3" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.renewal.features.4" | transloco }}</li>
               </ul>
               <div class="alert alert-info mt-3 p-2">
-                <small><strong>Nota:</strong> Si es Delaware, se suman $300 USD al precio.</small>
+                <small>
+                  <strong>Nota:</strong>
+                  {{ "MOBILE_PLANS.renewal.note" | transloco }}
+                </small>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- FINES -->
       <div class="carousel-item h-100">
         <div class="card pack-card h-100">
           <div class="card-body d-flex flex-column">
-            <h3 class="card-title text-center fw-700 mb-3">Multas</h3>
-            <p class="card-price-pack fw-bold text-center">$300 USD</p>
+            <h3 class="card-title text-center fw-700 mb-3">
+              {{ "MOBILE_PLANS.fines.title" | transloco }}
+            </h3>
+            <p class="card-price-pack fw-bold text-center">
+              {{ "MOBILE_PLANS.fines.price" | transloco }}
+            </p>
             <ul>
-              <li><strong>Nota:</strong> +3% del valor de la multa.</li>
+              <li>
+                <strong>Nota:</strong>
+                {{ "MOBILE_PLANS.fines.note" | transloco }}
+              </li>
             </ul>
             <div
               class="d-flex flex-column justify-content-center align-items-center"
@@ -85,22 +108,23 @@
                 target="_blank"
                 class="btn-secondary d-flex align-items-center justify-content-center fw-600 mb-2"
               >
-                Consultar Multas
+                {{ "MOBILE_PLANS.fines.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
             <div class="card-features">
-              <h6>Incluye:</h6>
+              <h6>{{ "MOBILE_PLANS.fines.featuresTitle" | transloco }}</h6>
               <ul>
-                <li>Levantamos tu multa 100% garantizado si no presentaste nunca declaraciones informativas</li>
-                <li>Reducción de la multa hasta un 50%</li>
-                <li>Planes de pago</li>
+                <li>{{ "MOBILE_PLANS.fines.features.0" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.fines.features.1" | transloco }}</li>
+                <li>{{ "MOBILE_PLANS.fines.features.2" | transloco }}</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <div class="carousel-indicators pricing-carousel-indicators">
       <button
         type="button"

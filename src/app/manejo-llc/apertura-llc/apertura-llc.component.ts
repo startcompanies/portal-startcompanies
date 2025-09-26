@@ -3,11 +3,12 @@ import { ScFooterComponent } from "../../sc-footer/sc-footer.component";
 import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 import { SeoBaseComponent } from "../../shared/components/seo-base/seo-base.component";
 import { ResponsiveImageComponent } from "../../shared/components/responsive-image/responsive-image.component";
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-apertura-llc',
   standalone: true,
-  imports: [ScFooterComponent, HeaderManejoComponent, SeoBaseComponent, ResponsiveImageComponent],
+  imports: [ScFooterComponent, HeaderManejoComponent, SeoBaseComponent, ResponsiveImageComponent, TranslocoPipe],
   templateUrl: './apertura-llc.component.html',
   styleUrl: './apertura-llc.component.css'
 })

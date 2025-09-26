@@ -4,11 +4,13 @@ import { BlogSeoService } from '../../services/blog-seo.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { LangRouterLinkDirective } from "../../shared/directives/lang-router-link.directive";
 
 @Component({
   selector: 'app-blog-articles',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslocoPipe, LangRouterLinkDirective],
   templateUrl: './blog-articles.component.html',
   styleUrl: './blog-articles.component.css',
 })

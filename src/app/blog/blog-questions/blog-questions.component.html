@@ -1,14 +1,14 @@
 <div class="container">
   <h2 class="title-question text-center fw-bold">
-    ¿Quieres abrir y hacer crecer tu LLC sin complicaciones?
+    {{ "BLOG.help_title" | transloco }}
   </h2>
-  <h3 class="subtitle text-center">Podemos ayudarte</h3>
+  <h3 class="subtitle text-center">{{ "BLOG.can_help_you" | transloco }}</h3>
   <p class="description text-center">
-    Simplificamos la gestión de tu empresa en el extranjero
+    {{ "BLOG.help_subtitle" | transloco }}
   </p>
-  <p class="description text-center">¿Tienes preguntas?</p>
+  <p class="description text-center">{{ "BLOG.your_questions" | transloco }}</p>
   <p class="description text-center">
-    Resuélvelas en una consulta gratuita con nuestro equipo de asesores
+    {{ "BLOG.solve_your_doubts" | transloco }}
   </p>
   <div
     class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mt-4"
@@ -18,16 +18,16 @@
       target="_blank"
       class="btn-light btn btn-primary d-flex align-items-center"
     >
-      Consulta con un experto
+      {{ "US.potential.cta-primary" | transloco }}
       <span class="ms-2">
         <i class="bi bi-arrow-right"></i>
       </span>
     </a>
     <a
-      href="/planes"
+      [langRouterLink]="'planes'"
       class="btn-dark btn btn-outline-primary d-flex align-items-center"
     >
-      Planes y precios
+      {{ "NAVBAR.plans" | transloco }}
       <span class="ms-2">
         <i class="bi bi-arrow-right"></i>
       </span>

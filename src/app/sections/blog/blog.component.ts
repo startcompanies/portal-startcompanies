@@ -5,11 +5,12 @@ import { SharedModule } from '../../shared/shared/shared.module';
 import { Post } from '../../shared/models/post.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { isPlatformBrowser } from '@angular/common';
+import { LangRouterLinkDirective } from '../../shared/directives/lang-router-link.directive';
 
 @Component({
   selector: 'app-blog',
   standalone: true,
-  imports: [TranslocoPipe, SharedModule],
+  imports: [TranslocoPipe, SharedModule, LangRouterLinkDirective],
   templateUrl: './blog.component.html',
   styleUrl: './blog.component.css',
 })

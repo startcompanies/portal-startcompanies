@@ -6,20 +6,22 @@ import {
   PLATFORM_ID,
   ChangeDetectorRef,
   ElementRef,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared.module';
 import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../services/scroll.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
 import { BehaviorSubject } from 'rxjs';
+import { LanguageService } from '../services/language.service';
+import { LangRouterLinkDirective } from '../shared/directives/lang-router-link.directive';
 
 @Component({
   selector: 'app-sc-header',
   standalone: true,
-  imports: [SharedModule, TranslocoPipe, ResponsiveImageComponent],
+  imports: [SharedModule, TranslocoPipe, ResponsiveImageComponent, RouterModule, LangRouterLinkDirective],
   templateUrl: './sc-header.component.html',
   styleUrl: './sc-header.component.css',
 })
@@ -70,6 +72,7 @@ export class ScHeaderComponent implements OnInit {
     public translocoService: TranslocoService,
     private router: Router,
     private cdr: ChangeDetectorRef,
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +80,11 @@ export class ScHeaderComponent implements OnInit {
       this.navbarScroll();
     }
     this.getCurrentRoute();
+    this.currentLang = this.languageService.currentLang;
+    this.translocoService.langChanges$.subscribe((l) => {
+      this.currentLang = l;
+      this.cdr.markForCheck();
+    });
   }
 
   private getCurrentRoute(): void {
@@ -93,9 +101,7 @@ export class ScHeaderComponent implements OnInit {
   }
 
   public isRouteActive(route: string): boolean {
-    return (
-      this.currentRoute === route || this.currentRoute.startsWith(route)
-    );
+    return this.currentRoute === route || this.currentRoute.includes(route);
   }
 
   @HostListener('window:scroll', [])
@@ -126,7 +132,13 @@ export class ScHeaderComponent implements OnInit {
   }
 
   navigateToPlansSection() {
-    this.router.navigate(['/planes']).then(() => {
+    /*this.router.navigate(['/planes']).then(() => {
+      setTimeout(() => {
+        this.scrollService.scrollTo('pricingSection');
+      }, 50);
+    });*/
+    // Usamos languageService.navigate para mantener /:lang/planes
+    this.languageService.navigate(['planes']).then(() => {
       setTimeout(() => {
         this.scrollService.scrollTo('pricingSection');
       }, 50);
@@ -134,8 +146,14 @@ export class ScHeaderComponent implements OnInit {
   }
 
   changeLanguage(lang: string) {
-    this.translocoService.setActiveLang(lang);
+    /*this.translocoService.setActiveLang(lang);
     this.translocoService.setDefaultLang(lang);
-    this.currentLang = lang;
+    this.currentLang = lang;*/
+    // usa setLanguage que además reemplaza la URL
+    this.languageService.setLanguage(lang, true).then(() => {
+      this.currentLang = lang;
+      // markForCheck si estás en OnPush o para seguridad visual
+      this.cdr.markForCheck();
+    });
   }
 }

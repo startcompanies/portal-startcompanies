@@ -22,6 +22,7 @@ import { ScrollService } from '../../services/scroll.service';
 import { ResponsiveImage } from '../../services/responsive-image.service';
 import { FacebookPixelService } from '../../services/facebook-pixel.service';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-landing-abre-tu-llc',
@@ -36,6 +37,7 @@ import { isPlatformBrowser } from '@angular/common';
     StepsSectionComponent,
     KeyBenefitsSectionComponent,
     ResponsiveImageComponent,
+    TranslocoPipe
   ],
   templateUrl: './landing-abre-tu-llc.component.html',
   styleUrl: './landing-abre-tu-llc.component.css',

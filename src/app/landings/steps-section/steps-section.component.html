@@ -3,32 +3,80 @@
     [images]="heroImages"
     context="hero"
     loading="lazy"
-    cssClass="sc-hero-bg">
+    cssClass="sc-hero-bg"
+  >
   </app-responsive-image>
   <div class="container">
     <!-- Título principal -->
-    <h1 class="display-4 text-center main-title">{{ title }}</h1>
+    <h1 class="display-4 text-center main-title">
+      {{ "LANDINGS.steps.title" | transloco }}
+    </h1>
 
     <!-- Pasos del proceso -->
     <div class="steps-wrapper">
-      <div class="{{step.class}}" *ngFor="let step of steps">
+      <div class="step-one">
         <div class="step-icon">
-          <span>{{ step.id }}</span>
+          <span>1</span>
         </div>
         <div class="step-content">
-          <h3 class="step-title">{{ step.title }}</h3>
-          <p class="step-description">{{ step.description }}</p>
-          <!-- CTA solo para el primer paso y solo en desktop -->
-          <button *ngIf="step.hasCta" 
-                  class="step-cta-btn desktop-only"
-                  (click)="scrollToCalendly()">
-            Agendar llamada
+          <h3 class="step-title">
+            {{ "LANDINGS.steps.step1.title" | transloco }}
+          </h3>
+          <p class="step-description">
+            {{ "LANDINGS.steps.step1.description" | transloco }}
+          </p>
+          <button
+            class="step-cta-btn desktop-only"
+            (click)="scrollToCalendly()"
+          >
+            {{ "LANDINGS.steps.scheduleCall" | transloco }}
             <i class="bi bi-calendar-check ms-2"></i>
           </button>
         </div>
       </div>
+      <div class="step-two">
+        <div class="step-icon">
+          <span>2</span>
+        </div>
+        <div class="step-content">
+          <h3 class="step-title">
+            {{ "LANDINGS.steps.step2.title" | transloco }}
+          </h3>
+          <p class="step-description">
+            {{ "LANDINGS.steps.step2.description" | transloco }}
+          </p>
+        </div>
+      </div>
+      <div class="step-three">
+        <div class="step-icon">
+          <span>3</span>
+        </div>
+        <div class="step-content">
+          <h3 class="step-title">
+            {{ "LANDINGS.steps.step3.title" | transloco }}
+          </h3>
+          <p class="step-description">
+            {{ "LANDINGS.steps.step3.description" | transloco }}
+          </p>
+        </div>
+      </div>
+      <div class="step-four">
+        <div class="step-icon">
+          <span>4</span>
+        </div>
+        <div class="step-content">
+          <h3 class="step-title">
+            {{ "LANDINGS.steps.step4.title" | transloco }}
+          </h3>
+          <p class="step-description">
+            {{ "LANDINGS.steps.step4.description" | transloco }}
+          </p>
+        </div>
+      </div>
       <div class="step-line"></div>
     </div>
-    <p class="lead text-center">{{ bottomStatement }}</p>
+    <p class="lead text-center">
+      {{ "LANDINGS.steps.bottomStatement" | transloco }}
+    </p>
   </div>
 </section>

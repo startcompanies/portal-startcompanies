@@ -4,11 +4,12 @@ import { ScrollService } from '../../services/scroll.service';
 import { WistiaPlayerComponent } from '../wistia-player/wistia-player.component';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { WistiaVerticalPlayerComponent } from "../wistia-vertical-player/wistia-vertical-player.component";
+import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-hero-section',
   standalone: true,
-  imports: [CommonModule, WistiaPlayerComponent, ResponsiveImageComponent, WistiaVerticalPlayerComponent],
+  imports: [CommonModule, WistiaPlayerComponent, ResponsiveImageComponent, WistiaVerticalPlayerComponent, TranslocoPipe],
   templateUrl: './hero-section.component.html',
   styleUrl: './hero-section.component.css',
 })

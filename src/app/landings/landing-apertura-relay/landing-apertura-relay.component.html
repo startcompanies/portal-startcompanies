@@ -18,11 +18,10 @@
       </div>
       <div class="col-12 text-center pb-3 pb-md-5">
         <h1 class="display-6 display-md-5 fw-bold text-body-emphasis lh-1 mb-2 mb-md-3 hero-title">
-          ¿Tienés tu LLC en EE.UU. pero todavía no abriste tu cuenta bancaria?
+          {{'LANDINGS.relay_landing.hero.title' | transloco }}
         </h1>
         <p class="lead hero-description">
-          Aprovechá ahora y abrela GRATIS, 100% online y sin comisiones con la
-          esencial Apertura Relay!
+          {{'LANDINGS.relay_landing.hero.description' | transloco }}
         </p>
       </div>
       
@@ -54,9 +53,9 @@
 </section>
 
 <app-video-section
-  title="Relay un banco"
-  titleHighlight="seguro y confiable"
-  description="mira aquí abajo lo que dicen de nosotros"
+  title="{{'LANDINGS.relay_landing.video_section.title' | transloco }}"
+  titleHighlight="{{'LANDINGS.relay_landing.video_section.title_highlight' | transloco }}"
+  description="{{'LANDINGS.relay_landing.video_section.description' | transloco }}"
   videoUrl="https://www.youtube.com/embed/3UAGKlrvh9Y"
   videoId="g5w4pudrrb"
   videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
@@ -83,9 +82,7 @@
 
         <div class="qualifications-title text-start text-center text-md-start">
           <p class="fw-bold mb-0">Start Companies</p>
-          <p class="mb-1 text-muted">
-            4.8 estrellas, 100 reseñas, "Excellent".
-          </p>
+          <p class="mb-1 text-muted">{{'LANDINGS.relay_landing.testimonials.qualifications_text' | transloco }}</p>
           <div class="d-flex justify-content-start justify-content-center justify-content-md-start text-primary gap-1">
             <i class="bi bi-star-fill"></i>
             <i class="bi bi-star-fill"></i>
@@ -98,28 +95,20 @@
 
       <!-- Párrafos centrados -->
       <div class="paraphs">
-        <p class="paraphs-header">
-          Más de 200 emprendedores ya confiaron en Start Companies y nos
-          califican como <span class="paraphs-hightlight">"Excelente".</span>
+        <p class="paraphs-header">{{'LANDINGS.relay_landing.testimonials.header' | transloco }}<span class="paraphs-hightlight">{{'LANDINGS.relay_landing.testimonials.header_highlight' | transloco }}</span>
         </p>
-        <p class="paraphs-description">
-          Descubre por qué somos la opción elegida para abrir tu cuenta bancaria
-          para LLC en EE.UU. de forma rápida, segura, confiable y 100% online.
-          Leé sus experiencias reales y conocé cómo los ayudamos a simplificar
-          la apertura Relay, optimizar su gestión financiera y hacer crecer sus
-          negocios desde cualquier parte del mundo.
-        </p>
+        <p class="paraphs-description">{{'LANDINGS.relay_landing.testimonials.description' | transloco }}</p>
       </div>
       <div class="container my-3 my-md-5">
         <app-testimonials-carousel></app-testimonials-carousel>
       </div>
-      <a href="#" class="btn btn-primary qualifications-buttons mt-5" (click)="onServiceButtonClick()">
-        Quiero que lo hagan por mí ($99 USD)
+      <a class="btn btn-primary qualifications-buttons mt-5" (click)="onServiceButtonClick()">
+        {{'LANDINGS.relay_landing.testimonials.button_cta' | transloco }}
         <i class="bi bi-arrow-right ms-2"></i>
       </a>
       <app-video-grid-section
-        title="Lo que dicen nuestros"
-        titleHighlight="clientes"
+        title="{{'LANDINGS.relay_landing.video_grid_section.title' | transloco }}"
+        titleHighlight="{{'LANDINGS.relay_landing.video_grid_section.title_highlight' | transloco }}"
         (testimonialsInteraction)="onTestimonialsInteraction()">
       </app-video-grid-section>
     </div>
