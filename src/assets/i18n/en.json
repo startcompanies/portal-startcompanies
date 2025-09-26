@@ -10,11 +10,6 @@
         "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
         "create_your_llc": "Create your LLC",
         "renew_your_llc": "Renew your LLC",
-        "open_your_llc_video": {
-            "hear_comunity": "Hear from the community",
-            "comunity_name": "LLC Creation!",
-            "what_they_say": "See what our clients have to say about us"
-        },
         "start_free_meeting": "Empezar con una reunión gratuita",
         "expand_your_freedom_description": "We solve your doubts about creating your LLC, opening bank accounts and other services. Our team is ready to accompany you in each step of the process.",
         "open_your_bank_account": "Open your bank account in the United States with your active LLC",
@@ -525,6 +520,11 @@
         "schedule_consultation": "Schedule your free consultation.",
         "no_advance_payments": "No advance payments: you pay after having your LLC and bank account",
         "open_your_llc": "Open your company in the U.S. in less than 7 days, 100% online and with expert support.",
+        "open_your_llc_video": {
+            "hear_comunity": "Hear from the community",
+            "comunity_name": "LLC Creation!",
+            "what_they_say": "See what our clients have to say about us"
+        },
         "skip_commissions": "Avoid unnecessary fees and taxes with our comprehensive management.",
         "start_my_llc_process": "Start my LLC process",
         "description": "We take care of the bureaucracy so you can focus on growing.",

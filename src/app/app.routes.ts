@@ -1,15 +1,23 @@
 import { Routes } from '@angular/router';
 import { title } from 'process';
+import { languageGuard } from './shared/guards/language.guard';
 
 export const routes: Routes = [
-  {
+  /*{
     path: '',
     pathMatch: 'full',
     redirectTo: '/es',
-  },
+  },*/
   // ===== REDIRECCIONES 301 PARA SEO =====
   {
-    path: ':lang',
+    path: '',
+    canActivate: [languageGuard],
+    children: [{
+      path:'',
+      pathMatch: 'full',
+      redirectTo: '/es'
+    },
+    {path: ':lang',
     children: [
       // Redirecciones de servicios (ya implementadas)
       {
@@ -461,6 +469,6 @@ export const routes: Routes = [
         pathMatch: 'full',
       },*/
       { path: '**', redirectTo: 'error-404' }, // 👈 relativo al lang
-    ],
+    ],}]
   },
 ];

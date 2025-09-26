@@ -3,6 +3,7 @@ import {
   provideZoneChangeDetection,
   isDevMode,
   PLATFORM_ID,
+  APP_INITIALIZER,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -18,6 +19,7 @@ import { provideTransloco } from '@jsverse/transloco';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeBootstrapComponents } from './shared/bootstrap-imports';
+import { LanguageService } from './services/language.service';
 /*import { isPlatformBrowser } from '@angular/common';*/
 
 export const appConfig: ApplicationConfig = {
@@ -37,6 +39,15 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader,
     }),
+    // Añadir APP_INITIALIZER al final (o donde quieras en el array)
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (ls: LanguageService) => {
+        return () => ls.init();
+      },
+      deps: [LanguageService],
+      multi: true,
+    },
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
