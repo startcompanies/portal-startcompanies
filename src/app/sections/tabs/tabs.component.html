@@ -1,331 +1,417 @@
 <section class="sc-tabs-section py-5" #servicesSection>
-    <div class="container">
-        <!-- Navegación de las Pestañas - Desktop (Bootstrap nav-pills) -->
-        <ul class="nav nav-pills mb-5 justify-content-center sc-desktop-tabs" id="serviceTabsDesktop" role="tablist">
-            <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="llc-tab-desktop" data-bs-toggle="pill" data-bs-target="#llc-content-desktop"
-                    role="tab" aria-controls="llc-content-desktop" aria-selected="true">
-                    {{'CONTENT.tabs.llc' | transloco}}
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="bank-tab-desktop" data-bs-toggle="pill" data-bs-target="#bank-content-desktop"
-                    role="tab" aria-controls="bank-content-desktop" aria-selected="false">
-                    {{'CONTENT.tabs.bank' | transloco}}
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="renew-tab-desktop" data-bs-toggle="pill" data-bs-target="#renew-content-desktop"
-                    role="tab" aria-controls="renew-content-desktop" aria-selected="false">
-                    {{'CONTENT.tabs.renew' | transloco}}
-                </a>
-            </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="taxes-tab-desktop" data-bs-toggle="pill" data-bs-target="#taxes-content-desktop"
-                    role="tab" aria-controls="taxes-content-desktop" aria-selected="false">
-                    {{'CONTENT.tabs.taxes' | transloco}}
-                </a>
-            </li>
-        </ul>
+  <div class="container">
+    <!-- Navegación de las Pestañas - Desktop (Bootstrap nav-pills) -->
+    <ul
+      class="nav nav-pills mb-5 justify-content-center sc-desktop-tabs"
+      id="serviceTabsDesktop"
+      role="tablist"
+    >
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link active"
+          id="llc-tab-desktop"
+          data-bs-toggle="pill"
+          data-bs-target="#llc-content-desktop"
+          role="tab"
+          aria-controls="llc-content-desktop"
+          aria-selected="true"
+        >
+          {{ "CONTENT.tabs.llc" | transloco }}
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link"
+          id="bank-tab-desktop"
+          data-bs-toggle="pill"
+          data-bs-target="#bank-content-desktop"
+          role="tab"
+          aria-controls="bank-content-desktop"
+          aria-selected="false"
+        >
+          {{ "CONTENT.tabs.bank" | transloco }}
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link"
+          id="renew-tab-desktop"
+          data-bs-toggle="pill"
+          data-bs-target="#renew-content-desktop"
+          role="tab"
+          aria-controls="renew-content-desktop"
+          aria-selected="false"
+        >
+          {{ "CONTENT.tabs.renew" | transloco }}
+        </a>
+      </li>
+      <li class="nav-item" role="presentation">
+        <a
+          class="nav-link"
+          id="taxes-tab-desktop"
+          data-bs-toggle="pill"
+          data-bs-target="#taxes-content-desktop"
+          role="tab"
+          aria-controls="taxes-content-desktop"
+          aria-selected="false"
+        >
+          {{ "CONTENT.tabs.taxes" | transloco }}
+        </a>
+      </li>
+    </ul>
 
-        <!-- Navegación de las Pestañas - Tablet/Móvil (Nuevo diseño) -->
-        <div class="sc-tabs-container mb-5 sc-mobile-tabs">
-            <div class="sc-tabs-wrapper">
-                <button class="sc-tab-item" 
-                        [class.active]="isMobileTabActive('llc')"
-                        (click)="setActiveMobileTab('llc')">
-                    <span class="sc-tab-text">{{'CONTENT.tabs.llc' | transloco}}</span>
-                </button>
-                <button class="sc-tab-item" 
-                        [class.active]="isMobileTabActive('bank')"
-                        (click)="setActiveMobileTab('bank')">
-                    <span class="sc-tab-text">{{'CONTENT.tabs.bank' | transloco}}</span>
-                </button>
-                <button class="sc-tab-item" 
-                        [class.active]="isMobileTabActive('renew')"
-                        (click)="setActiveMobileTab('renew')">
-                    <span class="sc-tab-text">{{'CONTENT.tabs.renew' | transloco}}</span>
-                </button>
-                <button class="sc-tab-item" 
-                        [class.active]="isMobileTabActive('taxes')"
-                        (click)="setActiveMobileTab('taxes')">
-                    <span class="sc-tab-text">{{'CONTENT.tabs.taxes' | transloco}}</span>
-                </button>
-            </div>
-        </div>
-
-        <!-- Contenido de las Pestañas - Desktop -->
-        <div class="tab-content sc-desktop-content" id="serviceTabsContentDesktop">
-            <!-- Contenido de la primera pestaña: LLC en Estados Unidos -->
-            <div class="tab-pane fade show active" id="llc-content-desktop" role="tabpanel" aria-labelledby="llc-tab-desktop">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.llc" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.llc_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.2' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.3' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/apertura-llc" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.llc_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la segunda pestaña: Cuentas bancarias en USA -->
-            <div class="tab-pane fade" id="bank-content-desktop" role="tabpanel" aria-labelledby="bank-tab-desktop">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.bank" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.bank_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.bank_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.bank_content.list.2' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/form-apertura-relay" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.bank_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la tercera pestaña: Renueva tu LLC -->
-            <div class="tab-pane fade" id="renew-content-desktop" role="tabpanel" aria-labelledby="renew-tab-desktop">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.renew" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.renew_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.2' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.3' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/renovar-llc" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.renew_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la cuarta pestaña: Declaración de impuestos -->
-            <div class="tab-pane fade" id="taxes-content-desktop" role="tabpanel" aria-labelledby="taxes-tab-desktop">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.taxes" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.taxes_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.taxes_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.taxes_content.list.2' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/abotax" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.taxes_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Contenido de las Pestañas - Mobile/Tablet -->
-        <div class="sc-mobile-content" id="serviceTabsContentMobile">
-            <!-- Contenido de la primera pestaña: LLC en Estados Unidos -->
-            <div class="sc-tab-pane" *ngIf="isMobileTabActive('llc')">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.llc" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.llc_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.2' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.llc_content.list.3' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/apertura-llc" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.llc_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la segunda pestaña: Cuentas bancarias en USA -->
-            <div class="sc-tab-pane" *ngIf="isMobileTabActive('bank')">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.bank" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.bank_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.bank_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.bank_content.list.2' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/form-apertura-relay" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.bank_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la tercera pestaña: Renueva tu LLC -->
-            <div class="sc-tab-pane" *ngIf="isMobileTabActive('renew')">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.renew" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.renew_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.2' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.renew_content.list.3' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/renovar-llc" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.renew_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Contenido de la cuarta pestaña: Declaración de impuestos -->
-            <div class="sc-tab-pane" *ngIf="isMobileTabActive('taxes')">
-                <div class="row align-items-center sc-tab-pane-content">
-                    <!-- Columna de la Imagen -->
-                    <div class="col-12 col-md-6 mb-4 mb-md-0">
-                        <app-responsive-image 
-                            [images]="tabImages.taxes" 
-                            context="tabs" 
-                            loading="lazy"
-                            cssClass="img-fluid rounded-4 shadow-sm">
-                        </app-responsive-image>
-                    </div>
-                    <!-- Columna del Texto y Botón -->
-                    <div class="col-12 col-md-6">
-                        <p class="mb-4">
-                            {{'CONTENT.tabs.taxes_content.title' | transloco}}
-                        </p>
-                        <ul class="mb-4">
-                            <li>
-                                {{'CONTENT.tabs.taxes_content.list.1' | transloco}}
-                            </li>
-                            <li>
-                                {{'CONTENT.tabs.taxes_content.list.2' | transloco}}
-                            </li>
-                        </ul>
-                        <a href="/abotax" class="btn sc-btn-primary">
-                            {{'CONTENT.tabs.taxes_content.button' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <!-- Navegación de las Pestañas - Tablet/Móvil (Nuevo diseño) -->
+    <div class="sc-tabs-container mb-5 sc-mobile-tabs">
+      <div class="sc-tabs-wrapper">
+        <button
+          class="sc-tab-item"
+          [class.active]="isMobileTabActive('llc')"
+          (click)="setActiveMobileTab('llc')"
+        >
+          <span class="sc-tab-text">{{ "CONTENT.tabs.llc" | transloco }}</span>
+        </button>
+        <button
+          class="sc-tab-item"
+          [class.active]="isMobileTabActive('bank')"
+          (click)="setActiveMobileTab('bank')"
+        >
+          <span class="sc-tab-text">{{ "CONTENT.tabs.bank" | transloco }}</span>
+        </button>
+        <button
+          class="sc-tab-item"
+          [class.active]="isMobileTabActive('renew')"
+          (click)="setActiveMobileTab('renew')"
+        >
+          <span class="sc-tab-text">{{
+            "CONTENT.tabs.renew" | transloco
+          }}</span>
+        </button>
+        <button
+          class="sc-tab-item"
+          [class.active]="isMobileTabActive('taxes')"
+          (click)="setActiveMobileTab('taxes')"
+        >
+          <span class="sc-tab-text">{{
+            "CONTENT.tabs.taxes" | transloco
+          }}</span>
+        </button>
+      </div>
     </div>
+
+    <!-- Contenido de las Pestañas - Desktop -->
+    <div class="tab-content sc-desktop-content" id="serviceTabsContentDesktop">
+      <!-- Contenido de la primera pestaña: LLC en Estados Unidos -->
+      <div
+        class="tab-pane fade show active"
+        id="llc-content-desktop"
+        role="tabpanel"
+        aria-labelledby="llc-tab-desktop"
+      >
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.llc"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.llc_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.2" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.3" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'apertura-llc'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.llc_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la segunda pestaña: Cuentas bancarias en USA -->
+      <div
+        class="tab-pane fade"
+        id="bank-content-desktop"
+        role="tabpanel"
+        aria-labelledby="bank-tab-desktop"
+      >
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.bank"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.bank_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.bank_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.bank_content.list.2" | transloco }}
+              </li>
+            </ul>
+            <a
+              [langRouterLink]="'form-apertura-relay'"
+              class="btn sc-btn-primary"
+            >
+              {{ "CONTENT.tabs.bank_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la tercera pestaña: Renueva tu LLC -->
+      <div
+        class="tab-pane fade"
+        id="renew-content-desktop"
+        role="tabpanel"
+        aria-labelledby="renew-tab-desktop"
+      >
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.renew"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.renew_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.2" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.3" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'renovar-llc'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.renew_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la cuarta pestaña: Declaración de impuestos -->
+      <div
+        class="tab-pane fade"
+        id="taxes-content-desktop"
+        role="tabpanel"
+        aria-labelledby="taxes-tab-desktop"
+      >
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.taxes"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.taxes_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.taxes_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.taxes_content.list.2" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'abotax'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.taxes_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido de las Pestañas - Mobile/Tablet -->
+    <div class="sc-mobile-content" id="serviceTabsContentMobile">
+      <!-- Contenido de la primera pestaña: LLC en Estados Unidos -->
+      <div class="sc-tab-pane" *ngIf="isMobileTabActive('llc')">
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.llc"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.llc_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.2" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.llc_content.list.3" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'apertura-llc'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.llc_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la segunda pestaña: Cuentas bancarias en USA -->
+      <div class="sc-tab-pane" *ngIf="isMobileTabActive('bank')">
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.bank"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.bank_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.bank_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.bank_content.list.2" | transloco }}
+              </li>
+            </ul>
+            <a
+              [langRouterLink]="'form-apertura-relay'"
+              class="btn sc-btn-primary"
+            >
+              {{ "CONTENT.tabs.bank_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la tercera pestaña: Renueva tu LLC -->
+      <div class="sc-tab-pane" *ngIf="isMobileTabActive('renew')">
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.renew"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.renew_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.2" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.renew_content.list.3" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'renovar-llc'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.renew_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contenido de la cuarta pestaña: Declaración de impuestos -->
+      <div class="sc-tab-pane" *ngIf="isMobileTabActive('taxes')">
+        <div class="row align-items-center sc-tab-pane-content">
+          <!-- Columna de la Imagen -->
+          <div class="col-12 col-md-6 mb-4 mb-md-0">
+            <app-responsive-image
+              [images]="tabImages.taxes"
+              context="tabs"
+              loading="lazy"
+              cssClass="img-fluid rounded-4 shadow-sm"
+            >
+            </app-responsive-image>
+          </div>
+          <!-- Columna del Texto y Botón -->
+          <div class="col-12 col-md-6">
+            <p class="mb-4">
+              {{ "CONTENT.tabs.taxes_content.title" | transloco }}
+            </p>
+            <ul class="mb-4">
+              <li>
+                {{ "CONTENT.tabs.taxes_content.list.1" | transloco }}
+              </li>
+              <li>
+                {{ "CONTENT.tabs.taxes_content.list.2" | transloco }}
+              </li>
+            </ul>
+            <a [langRouterLink]="'abotax'" class="btn sc-btn-primary">
+              {{ "CONTENT.tabs.taxes_content.button" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

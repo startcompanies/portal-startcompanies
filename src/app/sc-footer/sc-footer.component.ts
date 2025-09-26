@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
+import { LangRouterLinkDirective } from "../shared/directives/lang-router-link.directive";
 
 @Component({
   selector: 'app-sc-footer',
   standalone: true,
-  imports: [TranslocoPipe, ResponsiveImageComponent],
+  imports: [TranslocoPipe, ResponsiveImageComponent, LangRouterLinkDirective],
   templateUrl: './sc-footer.component.html',
   styleUrl: './sc-footer.component.css',
 })

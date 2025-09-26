@@ -76,6 +76,7 @@
   font-weight: 500;
   transition: color 0.2s ease;
   position: relative;
+  cursor: pointer;
 }
 
 .nav-link {

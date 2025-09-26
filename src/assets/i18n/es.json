@@ -467,8 +467,8 @@
     "TABS": {
         "plane": "Planes",
         "others": "Otros",
-        "llc-planes": "LLC Plans",
-        "other-planes": "Other Planes"
+        "llc-planes": "Planes LLC",
+        "other-planes": "Otros Planes"
     },
     "OTHER_PLANS_NEW": {
         "bank": {
@@ -606,7 +606,7 @@
                 "description": "mira aquí abajo lo que dicen de nosotros"
             },
             "testimonials": {
-                "qualifications_text": "4.8 estrellas, 100 reseñas, \"Excellent\".",
+                "qualifications_text": "4.8 estrellas, 100 reseñas, \"Excelente\".",
                 "header": "Más de 200 emprendedores ya confiaron en Start Companies y nos califican como",
                 "header_highlight": " \"Excelente\".",
                 "description": "Descubre por qué somos la opción elegida para abrir tu cuenta bancaria para LLC en EE.UU. de forma rápida, segura, confiable y 100% online. Leé sus experiencias reales y conocé cómo los ayudamos a simplificar la apertura Relay, optimizar su gestión financiera y hacer crecer sus negocios desde cualquier parte del mundo.",
@@ -640,5 +640,12 @@
                 }
             }
         }
+    },
+    "ERROR-404": {
+        "title": "¡Ooops!",
+        "description": "¡Te hemos perdido! No sabemos qué ha podido pasar... ¿Pero, dónde te has metido? Rápido, vuelve con nosotros.",
+        "subtitle": "¿Buscabas algo específico?",
+        "about_us": "Sobre Nosotros",
+        "help": "Ayuda"
     }
 }

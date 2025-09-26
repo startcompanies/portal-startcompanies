@@ -20,6 +20,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { SeoBaseComponent } from '../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../shared/components/responsive-image/responsive-image.component';
 import { IMAGE_CONFIG, ImageConfig } from '../config/image-config';
+import { LangRouterLinkDirective } from '../shared/directives/lang-router-link.directive';
 
 declare var bootstrap: any;
 
@@ -35,6 +36,7 @@ declare var bootstrap: any;
     FaqComponent,
     SeoBaseComponent,
     ResponsiveImageComponent,
+    LangRouterLinkDirective
   ],
   templateUrl: './sc-content.component.html',
   styleUrl: './sc-content.component.css',

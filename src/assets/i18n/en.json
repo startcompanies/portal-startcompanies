@@ -15,7 +15,7 @@
             "comunity_name": "LLC Creation!",
             "what_they_say": "See what our clients have to say about us"
         },
-        "start_free_meeting":"Empezar con una reunión gratuita",
+        "start_free_meeting": "Empezar con una reunión gratuita",
         "expand_your_freedom_description": "We solve your doubts about creating your LLC, opening bank accounts and other services. Our team is ready to accompany you in each step of the process.",
         "open_your_bank_account": "Open your bank account in the United States with your active LLC",
         "open_your_bank_account_button": "OPEN BANK ACCOUNT",
@@ -643,5 +643,12 @@
                 }
             }
         }
+    },
+    "ERROR-404": {
+        "title": "Oops!",
+        "description": "We've lost you! We don't know what happened... But where have you been? Quick, come back to us.",
+        "subtitle": "Were you looking for something specific?",
+        "about_us": "About Us",
+        "help": "Help"
     }
 }

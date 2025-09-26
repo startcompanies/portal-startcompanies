@@ -3,11 +3,19 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { LangRouterLinkDirective } from '../../shared/directives/lang-router-link.directive';
+import { LanguageService } from '../../services/language.service';
+import { ScrollService } from '../../services/scroll.service';
 
 @Component({
   selector: 'app-header-manejo',
   standalone: true,
-  imports: [CommonModule, TranslocoModule, ResponsiveImageComponent],
+  imports: [
+    CommonModule,
+    TranslocoModule,
+    ResponsiveImageComponent,
+    LangRouterLinkDirective,
+  ],
   templateUrl: './header-manejo.component.html',
   styleUrl: './header-manejo.component.css',
 })
@@ -27,7 +35,12 @@ export class HeaderManejoComponent {
     priority: true,
   };
 
-  constructor(private router: Router,public translocoService: TranslocoService,) {}
+  constructor(
+    private router: Router,
+    private scrollService: ScrollService,
+    public translocoService: TranslocoService,
+    private languageService: LanguageService
+  ) {}
 
   ngOnInit(): void {
     this.getCurrentRoute();
@@ -62,10 +75,16 @@ export class HeaderManejoComponent {
   }
 
   navigateToPlansSection() {
-    this.router.navigate(['/planes']).then(() => {
+    /*this.router.navigate(['/planes']).then(() => {
       // Damos un pequeño delay para que Angular pinte el DOM
       setTimeout(() => {
         // Aquí puedes agregar la lógica para hacer scroll si es necesario
+      }, 50);
+    });*/
+    // Usamos languageService.navigate para mantener /:lang/planes
+    this.languageService.navigate(['planes']).then(() => {
+      setTimeout(() => {
+        this.scrollService.scrollTo('pricingSection');
       }, 50);
     });
   }

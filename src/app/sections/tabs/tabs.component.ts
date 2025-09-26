@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { CommonModule } from '@angular/common';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
+import { LangRouterLinkDirective } from '../../shared/directives/lang-router-link.directive';
 
 @Component({
   selector: 'app-tabs',
   standalone: true,
-  imports: [TranslocoPipe, CommonModule, ResponsiveImageComponent],
+  imports: [TranslocoPipe, CommonModule, ResponsiveImageComponent, LangRouterLinkDirective],
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css'
 })

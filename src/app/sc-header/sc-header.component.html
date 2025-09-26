@@ -7,7 +7,7 @@
     <div
       class="container d-flex flex-wrap align-items-center justify-content-between sc-header-container"
     >
-      <a class="navbar-brand me-auto" href="/">
+      <a class="navbar-brand me-auto" [langRouterLink]="''">
         <app-responsive-image
           [images]="(logoImages$ | async)!"
           context="logo"
@@ -45,7 +45,7 @@
               [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
               class="nav-link"
               aria-current="page"
-              href="/nosotros"
+              [langRouterLink]="'nosotros'"
               >{{ "NAVBAR.us" | transloco }}</a
             >
           </li>
@@ -68,7 +68,7 @@
               [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
               aria-current="page"
               class="nav-link"
-              href="/blog"
+              [langRouterLink]="'blog'"
               >{{ "NAVBAR.blog" | transloco }}</a
             >
           </li>
@@ -79,7 +79,7 @@
             <a
               [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }"
               class="nav-link"
-              href="/contacto"
+              [langRouterLink]="'contacto'"
               >{{ "NAVBAR.contact" | transloco }}</a
             >
           </li>

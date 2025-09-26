@@ -27,8 +27,13 @@
                 <div class="col-md-7 d-flex flex-column justify-content-center">
                   <div class="card-body">
                     <h3 class="card-title">{{ topArticle.title }}</h3>
-                    <a
+                    <!--<a
                       href="/post/{{ topArticle.slug }}"
+                      class="btn btn-light rounded-pill mt-3"
+                      >{{ "CONTENT.blog.button" | transloco }}</a
+                    >-->
+                    <a
+                      [langRouterLink]="['/post', topArticle.slug]"
                       class="btn btn-light rounded-pill mt-3"
                       >{{ "CONTENT.blog.button" | transloco }}</a
                     >
@@ -46,10 +51,10 @@
         <h4 class="category-title">{{ "BLOG.categories" | transloco }}</h4>
         <ul class="list-unstyled mb-0 category-list">
           <li *ngFor="let category of categories">
-            <!--<a href="/blog/categoria/{{ category.slug }}">{{
+            <!--<a href="/category/{{ category.slug }}">{{ category.name }}</a>-->
+            <a [langRouterLink]="['/category', category.slug]">{{
               category.name
-            }}</a>-->
-            <a href="/category/{{ category.slug }}">{{ category.name }}</a>
+            }}</a>
             <span class="badge text-secondary">({{ category.count }})</span>
           </li>
         </ul>
@@ -74,8 +79,13 @@
                 {{ stripHtmlTags(mainArticle.excerpt) }}
               </p>
               <div class="container">
-                <a
+                <!--<a
                   href="/post/{{ mainArticle.slug }}"
+                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
+                  >{{ "CONTENT.blog.button" | transloco }}</a
+                >-->
+                <a
+                  [langRouterLink]="['/post', mainArticle.slug]"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
                   >{{ "CONTENT.blog.button" | transloco }}</a
                 >
