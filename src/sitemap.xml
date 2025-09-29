@@ -53,6 +53,20 @@
   </url>
 
   <url>
+    <loc>https://startcompanies.us/es/aviso-de-privacidad</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://startcompanies.us/es/terminos-y-condiciones</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
     <loc>https://startcompanies.us/es/planes</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
@@ -94,6 +108,20 @@
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://startcompanies.us/en/privacy-policy</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://startcompanies.us/en/terms-and-conditions</loc>
+    <lastmod>2025-09-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
   <url>
