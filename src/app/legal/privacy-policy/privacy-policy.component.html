@@ -1,0 +1,117 @@
+<app-header-manejo></app-header-manejo>
+
+<section class="legal-container py-5">
+  <div class="container">
+    <h1 class="mb-4">{{ 'LEGAL.PRIVACY.title' | transloco }}</h1>
+
+    <p class="mb-4" [innerHTML]="('LEGAL.PRIVACY.intro' | transloco)"></p>
+
+    <div class="alert alert-info mb-4">
+      <p class="mb-0">
+        <strong>Navegación rápida:</strong> 
+        <a (click)="scrollToSection('eliminaciondedatos')" class="text-decoration-none" style="cursor: pointer;">Ir a Eliminación de datos de usuario</a>
+      </p>
+    </div>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.controller.title' | transloco }}</h2>
+  <p [innerHTML]="('LEGAL.PRIVACY.sections.controller.body' | transloco)"></p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.data.title' | transloco }}</h2>
+  <ul>
+    <li>{{ 'LEGAL.PRIVACY.sections.data.items.1' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.data.items.2' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.data.items.3' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.data.items.4' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.data.items.5' | transloco }}</li>
+  </ul>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.sources.title' | transloco }}</h2>
+  <ul>
+    <li>{{ 'LEGAL.PRIVACY.sections.sources.items.1' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.sources.items.2' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.sources.items.3' | transloco }}</li>
+  </ul>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.purposes.title' | transloco }}</h2>
+  <ul>
+    <li>{{ 'LEGAL.PRIVACY.sections.purposes.items.1' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.purposes.items.2' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.purposes.items.3' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.purposes.items.4' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.purposes.items.5' | transloco }}</li>
+  </ul>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.cookies.title' | transloco }}</h2>
+  <p [innerHTML]="('LEGAL.PRIVACY.sections.cookies.body' | transloco)"></p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.sharing.title' | transloco }}</h2>
+  <ul>
+    <li>{{ 'LEGAL.PRIVACY.sections.sharing.items.1' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.sharing.items.2' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.sharing.items.3' | transloco }}</li>
+  </ul>
+  <p>{{ 'LEGAL.PRIVACY.sections.sharing.note' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.transfers.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.transfers.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.retention.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.retention.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.rights.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.rights.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.security.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.security.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.minors.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.minors.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.updates.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.updates.body' | transloco }}</p>
+
+  <h2 class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.contact.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.contact.body' | transloco }}</p>
+
+  <h2 id="eliminaciondedatos" class="h4 mt-5 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.title' | transloco }}</h2>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.body' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.meta_compliance.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.meta_compliance.content' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.bot_interaction.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.bot_interaction.content' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.deletion_process.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.deletion_process.content' | transloco }}</p>
+  <ul>
+    <li>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.deletion_process.methods.1' | transloco }}</li>
+    <li>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.deletion_process.methods.2' | transloco }}</li>
+  </ul>
+  <p><strong>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.deletion_process.verification' | transloco }}</strong></p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.retention_period.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.retention_period.content' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.automatic_deletion.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.automatic_deletion.content' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.security_measures.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.security_measures.content' | transloco }}</p>
+
+  <h3 class="h5 mt-4 mb-3">{{ 'LEGAL.PRIVACY.sections.user_data_deletion.verification.title' | transloco }}</h3>
+  <p>{{ 'LEGAL.PRIVACY.sections.user_data_deletion.verification.content' | transloco }}</p>
+
+  <div class="alert alert-warning mt-5">
+    <h3 class="alert-heading">{{ 'LEGAL.PRIVACY.sections.intermediary.title' | transloco }}</h3>
+    <p class="mb-0" [innerHTML]="('LEGAL.PRIVACY.sections.intermediary.body' | transloco)"></p>
+  </div>
+
+  <hr class="my-5" />
+  <p class="text-muted mb-0">{{ 'LEGAL.common.last_update' | transloco }}: 26/09/2025</p>
+  </div>
+</section>
+
+<app-sc-footer></app-sc-footer>
+
+

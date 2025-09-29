@@ -403,6 +403,16 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'aviso-de-privacidad',
+        loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { seo: { canonical: 'https://startcompanies.us/es/aviso-de-privacidad', title: 'Aviso de Privacidad - Start Companies LLC', description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.' } }
+      },
+      {
+        path: 'terminos-y-condiciones',
+        loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
+        data: { seo: { canonical: 'https://startcompanies.us/es/terminos-y-condiciones', title: 'Términos y Condiciones - Start Companies LLC', description: 'Términos y condiciones del sitio de Start Companies LLC.' } }
+      },
+      {
         path: 'planes',
         loadComponent: () =>
           import('./plans/pricing-planes/pricing-planes.component').then(
@@ -609,6 +619,16 @@ export const routes: Routes = [
             canonical: 'https://startcompanies.us/en/plans',
           },
         },
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { seo: { canonical: 'https://startcompanies.us/en/privacy-policy', title: 'Privacy Policy - Start Companies LLC', description: 'Learn how Start Companies LLC collects and uses your data.' } }
+      },
+      {
+        path: 'terms-and-conditions',
+        loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
+        data: { seo: { canonical: 'https://startcompanies.us/en/terms-and-conditions', title: 'Terms and Conditions - Start Companies LLC', description: 'Terms and conditions of Start Companies LLC website.' } }
       },
       {
         path: 'blog',

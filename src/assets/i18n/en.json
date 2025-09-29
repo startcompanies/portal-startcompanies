@@ -321,7 +321,9 @@
             "us": "About us",
             "plans": "Plans and Prices",
             "blog": "Blog",
-            "contact": "Contact us"
+            "contact": "Contact us",
+            "privacy_policy": "Privacy Policy",
+            "terms_conditions": "Terms and Conditions"
         },
         "categories": {
             "llc": "Open LLC",
@@ -677,5 +679,184 @@
         "subtitle": "Were you looking for something specific?",
         "about_us": "About Us",
         "help": "Help"
+  },
+  "LEGAL": {
+    "common": {
+      "last_update": "Last update"
+    },
+    "PRIVACY": {
+      "title": "Privacy Policy",
+      "intro": "At <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\", \"we\"), we respect your privacy and are committed to protecting the personal data you provide to us. This Privacy Policy explains what data we collect, for what purpose, for how long we keep it, with whom we share it and what your rights are. It applies to the entire website <strong>startcompanies.us</strong>, our landing pages and the forms associated with our services for <strong>LLC</strong> formation and <strong>bank account opening</strong> in the United States.",
+      "sections": {
+        "controller": {
+          "title": "1. Data controller",
+          "body": "Ebizboost LLC (legal name), commercially operating as Start Companies. Website: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. If you have privacy questions, please use the contact channels published on the site."
+        },
+        "data": {
+          "title": "2. Data we collect",
+          "items": {
+            "1": "Identification and contact: name, email, phone, country/city.",
+            "2": "Basic business information related to LLC formation and management.",
+            "3": "Language and content preferences.",
+            "4": "Technical and usage data: IP, device/browser type, pages viewed, referrals.",
+            "5": "Form data (e.g., LLC opening, renewal, Relay, Fixcal, Abotax)."
+          }
+        },
+        "sources": {
+          "title": "3. How we obtain the data",
+          "items": {
+            "1": "Directly from you when you complete forms or schedule a call.",
+            "2": "Automatically through cookies and similar analytics and performance technologies.",
+            "3": "Through third-party integrations necessary to provide our services (e.g., scheduling or communication tools)."
+          }
+        },
+        "purposes": {
+          "title": "4. Purposes and legal basis",
+          "items": {
+            "1": "Respond to inquiries and provide initial advice (legitimate interest and/or pre-contractual performance).",
+            "2": "Provide the requested services (contract performance).",
+            "3": "Improve the site, the experience and our processes (legitimate interest).",
+            "4": "Operational and/or informative communications related to the services (legitimate interest/contract).",
+            "5": "Comply with applicable legal obligations."
+          }
+        },
+        "cookies": {
+          "title": "5. Cookies and analytics",
+          "body": "We use cookies necessary for the operation of the site and, where appropriate, performance/analytics cookies to understand usage and optimize content. You can control the use of cookies from your browser settings. By continuing to browse, you agree to their use as described in this Policy."
+        },
+        "sharing": {
+          "title": "6. With whom we share data",
+          "items": {
+            "1": "Technology providers that help us operate the site and forms.",
+            "2": "Scheduling/communication tools necessary to coordinate meetings and provide support.",
+            "3": "When required by law, competent authorities."
+          },
+          "note": "We do not sell your personal data. We only share what is necessary to provide and improve services, or due to legal requirements."
+        },
+        "transfers": {
+          "title": "7. International transfers",
+          "body": "Since we provide services in the United States, your data may be hosted or processed in infrastructures located outside your country. We take reasonable measures to protect them in accordance with appropriate security and privacy standards."
+        },
+        "retention": {
+          "title": "8. Retention periods",
+          "body": "We retain data as long as necessary for the stated purposes, the provision of the service, legal compliance or until you request its deletion where appropriate."
+        },
+        "rights": {
+          "title": "9. Your rights",
+          "body": "Depending on your jurisdiction, you may exercise rights such as access, rectification, update, objection, portability or deletion. To exercise them, contact us through the means published on the site, indicating your request and proving your identity."
+        },
+        "security": {
+          "title": "10. Security",
+          "body": "We implement reasonable technical and organizational measures to protect your data against unauthorized access, loss or alteration. However, no system is 100% secure."
+        },
+        "minors": {
+          "title": "11. Minors",
+          "body": "Our services are aimed at adults. We do not knowingly collect data from minors without verifiable consent from their legal representatives."
+        },
+        "updates": {
+          "title": "12. Updates to this Policy",
+          "body": "We may update this Policy to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+        },
+        "contact": {
+          "title": "13. Contact",
+          "body": "If you have questions about privacy or the processing of your data, contact us through the official channels published on the site."
+        },
+        "user_data_deletion": {
+          "title": "14. User data deletion",
+          "body": "In compliance with Meta Platform Terms and privacy best practices, we handle data deletion requests originating from any of our channels and services (website, forms, CRM, email, messaging/Meta and operational records). Deletion applies to contact data, form-submitted content, interaction histories and preferences, unless there is a legal obligation to retain data (e.g., tax, accounting or fraud prevention). Below we outline general guidelines and Meta-bot specifics:",
+          "meta_compliance": {
+            "title": "14.1 Compliance with Meta Platform Terms",
+            "content": "Our WhatsApp/Meta bot strictly complies with Meta Platform Terms, including: (a) We do not process Platform Data without valid user consent to build profiles; (b) We do not attempt to decode, circumvent, re-identify, de-anonymize, unscramble, unencrypt, or reverse hash Platform Data; (c) We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access; (d) We maintain a clear and accessible privacy policy that explains how we collect, use and share data."
+          },
+          "bot_interaction": {
+            "title": "14.2 Bot interaction data",
+            "content": "Data collected through interactions with our WhatsApp/Meta bot includes: sent messages, information provided during conversations, user preferences, and contact data. This data is processed solely to provide the requested service and improve user experience, always with explicit user consent."
+          },
+          "deletion_process": {
+            "title": "14.3 Deletion process",
+            "content": "Users can request deletion of their data through the following methods:",
+            "methods": {
+              "1": "Contacting our support team directly",
+              "2": "Sending a request by email to administracion@starcompanies.us"
+            },
+            "verification": "All deletion requests require identity verification to protect user privacy."
+          },
+          "retention_period": {
+            "title": "14.4 Retention period",
+            "content": "Bot interaction data is retained for a maximum period of 12 months from the last interaction, after which it is automatically deleted from our systems, unless legal obligations require longer retention. This period complies with Meta Platform Terms standards."
+          },
+          "automatic_deletion": {
+            "title": "14.5 Automatic deletion",
+            "content": "We implement automated processes that delete user data after the established retention period. Deleted data includes: conversation history, shared personal information, user preferences, and any identifiable data associated with the user's Meta account. Data is deleted securely and irreversibly."
+          },
+          "security_measures": {
+            "title": "14.6 Security measures",
+            "content": "We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access, including: data encryption in transit and at rest, role-based access controls, regular security audits, and compliance with Meta security standards."
+          },
+          "verification": {
+            "title": "14.7 Deletion verification",
+            "content": "Once the deletion request is processed, we will confirm to the user that their data has been deleted from our systems. This confirmation will be sent through the same channel used for the request (bot, email, or direct support). We maintain deletion records for audit and compliance purposes."
+          }
+        },
+        "intermediary": {
+          "title": "Scope of service and disclaimer",
+          "body": "<strong>Ebizboost LLC</strong> acts as an intermediary in the facilitation of legal and banking procedures in the U.S. It is not part of government entities and has no alliances with banks. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the essential information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
+        }
+      }
+    },
+    "TERMS": {
+      "title": "Terms and Conditions",
+      "intro": "These Terms and Conditions (\"Terms\") govern access to and use of the <strong>startcompanies.us</strong> website and the services offered by <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\"). By using the site or contracting our services, you accept these Terms.",
+      "sections": {
+        "services": {
+          "title": "1. Services",
+          "body": "We provide services related to the <strong>formation</strong> and <strong>management</strong> of LLCs in the United States, as well as advice and support for <strong>bank account opening</strong> (e.g., Relay) and related procedures. The information published is for informational purposes and does not constitute legal or tax advice."
+        },
+        "site_use": {
+          "title": "2. Use of the site",
+          "items": {
+            "1": "You must provide truthful and updated information in forms and communications.",
+            "2": "Use of the site for unlawful purposes or to harm third parties is prohibited.",
+            "3": "We may modify, suspend or limit access to the site for maintenance or operational reasons."
+          }
+        },
+        "contracting": {
+          "title": "3. Contracting and payments",
+          "body": "Before contracting, we will inform you of the scope of the service, estimated times and applicable costs. Payments will be made through the enabled means and may be subject to refund policies detailed in the specific proposal or contract."
+        },
+        "liability": {
+          "title": "4. Responsibilities",
+          "items": {
+            "1": "Your responsibility: provide correct data and the required documentation in a timely manner.",
+            "2": "Our responsibility: perform the contracted services with diligence and good faith.",
+            "3": "Limitation: we do not guarantee results beyond our control (e.g., banking or state decisions)."
+          }
+        },
+        "ip": {
+          "title": "5. Intellectual property",
+          "body": "The content of the site (texts, trademarks, graphics, images and code) is owned by Start Companies or its authors and is protected by applicable laws. Unauthorized reproduction is prohibited."
+        },
+        "privacy": {
+          "title": "6. Personal data and privacy",
+          "body": "The processing of personal data is governed by our <a href=\"/en/privacy-policy\">Privacy Policy</a>. By using the site or our services, you confirm that you have read it and accept its content."
+        },
+        "third_party": {
+          "title": "7. Third-party links and tools",
+          "body": "The site may include links or third-party integrations (e.g., scheduling, messaging and analytics). We do not control their content or policies; we recommend reviewing their terms and privacy notices."
+        },
+        "modifications": {
+          "title": "8. Modifications",
+          "body": "We may update these Terms to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+        },
+        "law": {
+          "title": "9. Governing law",
+          "body": "These Terms will be interpreted in accordance with the applicable laws in the jurisdiction where we operate. In case of dispute, we will seek to resolve it in good faith; if not possible, it will be submitted to the competent courts."
+        },
+        "contact": {
+          "title": "10. Contact",
+          "body": "For inquiries related to these Terms, use the contact methods published on the site."
+        }
+      }
     }
+  }
 }
