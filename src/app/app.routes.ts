@@ -70,22 +70,22 @@ export const routes: Routes = [
       // Redirecciones de servicios (ya implementadas)
       {
         path: 'servicios',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'agenda-tu-consulta-gratis',
-        redirectTo: '/contacto',
+        redirectTo: '/es/contacto',
         pathMatch: 'full',
       },
       {
         path: 'abrir-llc',
-        redirectTo: '/abre-tu-llc',
+        redirectTo: '/es/abre-tu-llc',
         pathMatch: 'full',
       },
       {
         path: 'apertura-relay',
-        redirectTo: '/apertura-banco-relay',
+        redirectTo: '/es/apertura-banco-relay',
         pathMatch: 'full',
       },
 
@@ -94,32 +94,32 @@ export const routes: Routes = [
       // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
       {
         path: 'contrato-oferta',
-        redirectTo: '/',
+        redirectTo: '/es/apertura-llc',
         pathMatch: 'full',
       },
       {
         path: 'masterclass-thank-you',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'thank-you',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'formulario-de-apertura-de-llc-y-cuenta-bancaria',
-        redirectTo: '/',
+        redirectTo: '/es/apertura-llc',
         pathMatch: 'full',
       },
       {
         path: 'formulario-renovacion-llc',
-        redirectTo: '/',
+        redirectTo: '/es/renovar-llc',
         pathMatch: 'full',
       },
       {
         path: 'masterclass-gratuita',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
 
