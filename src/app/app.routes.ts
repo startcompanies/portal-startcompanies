@@ -55,6 +55,11 @@ export const routes: Routes = [
     canActivate: [CampaignRedirectGuard],
     loadComponent: () => import('./manejo-llc/form-apertura-abotax/form-apertura-abotax.component').then(m => m.FormAperturaAbotaxComponent)
   },
+  {
+    path: 'rescate-relay',
+    canActivate: [CampaignRedirectGuard],
+    loadComponent: () => import('./landings/landing-rescate-relay/landing-rescate-relay.component').then(m => m.LandingRescateRelayComponent)
+  },
   // ===== REDIRECCIONES 301 PARA SEO =====
   {
     path: '',
@@ -264,6 +269,28 @@ export const routes: Routes = [
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/apertura-banco-relay',
+          },
+        },
+      },
+      {
+        path: 'rescate-relay',
+        loadComponent: () =>
+          import(
+            './landings/landing-rescate-relay/landing-rescate-relay.component'
+          ).then((m) => m.LandingRescateRelayComponent),
+        data: {
+          seo: {
+            title: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
+            description:
+              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
+            keywords:
+              'completar formulario Relay, apertura cuenta bancaria, LLC Estados Unidos, cuenta bancaria USA',
+            ogTitle: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
+            ogDescription:
+              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
+            ogImage: 'https://startcompanies.us/assets/logo.png',
+            twitterSite: '@startcompaniess',
+            canonical: 'https://startcompanies.us/es/rescate-relay',
           },
         },
       },

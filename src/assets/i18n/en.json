@@ -649,6 +649,34 @@
                 "title_highlight": " are saying"
             }
         },
+        "relay_rescue": {
+            "hero": {
+                "title": "Complete your Relay account opening",
+                "description": "You're one step away from opening your bank account. Complete the form and follow the step-by-step guide.",
+                "cta_button": "Complete the form now"
+            },
+            "next_steps": {
+                "title": "Next step: Complete the form",
+                "description": "The form is quick and easy to fill out. We'll guide you step by step so you can open your Relay bank account without complications.",
+                "cta_button": "Complete the form now"
+            },
+            "video_section": {
+                "title": "How does it work?",
+                "title_highlight": " Opening your Relay account",
+                "description": "We explain step by step how to open your Relay bank account quickly and easily."
+            },
+            "testimonials": {
+                "qualifications_text": "Company specialized in LLC opening and bank accounts",
+                "header": "More than ",
+                "header_highlight": "500+ satisfied clients",
+                "description": "We have helped hundreds of entrepreneurs open their LLCs and bank accounts in the United States. Our team of experts will guide you through every step of the process.",
+                "button_cta": "Complete the form now"
+            },
+            "video_grid_section": {
+                "title": "What our ",
+                "title_highlight": "clients say"
+            }
+        },
         "pricing_options": {
             "card_free": {
                 "cta": "Apply for free",

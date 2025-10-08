@@ -16,7 +16,8 @@ export class CampaignRedirectGuard implements CanActivate {
     'renovar-llc': '/es/renovar-llc',
     'form-apertura-relay': '/es/form-apertura-relay',
     'fixcal': '/es/fixcal',
-    'abotax': '/es/abotax'
+    'abotax': '/es/abotax',
+    'rescate-relay': '/es/rescate-relay'
   };
 
   constructor(private router: Router) {}
