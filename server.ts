@@ -184,7 +184,7 @@ Crawl-delay: 1`;
 
   // Redirecciones 301 para mantener SEO (solo URLs que no existen)
   server.get('/servicios', (req, res) => {
-    res.redirect(301, '/');
+    res.redirect(301, '/es/inicio');
   });
 
   /*server.get('/blog', (req, res) => {
@@ -192,11 +192,55 @@ Crawl-delay: 1`;
   });*/
 
   server.get('/agenda-tu-consulta-gratis', (req, res) => {
-    res.redirect(301, '/contacto');
+    res.redirect(301, '/es/contacto');
   });
 
   server.get('/abrir-llc', (req, res) => {
-    res.redirect(301, '/abre-tu-llc');
+    res.redirect(301, '/es/abre-tu-llc');
+  });
+
+  server.get('/apertura-relay', (req, res) => {
+    res.redirect(301, '/es/apertura-banco-relay');
+  });
+
+  server.get('/contrato-oferta', (req, res) => {
+    res.redirect(301, '/es/apertura-llc');
+  });
+
+  server.get('/masterclass-thank-you', (req, res) => {
+    res.redirect(301, '/es/inicio');
+  });
+
+  server.get('/thank-you', (req, res) => {
+    res.redirect(301, '/es/inicio');
+  });
+
+  server.get('/formulario-de-apertura-de-llc-y-cuenta-bancaria', (req, res) => {
+    res.redirect(301, '/es/apertura-llc');
+  });
+
+  server.get('/formulario-renovacion-llc', (req, res) => {
+    res.redirect(301, '/es/renovar-llc');
+  });
+
+  server.get('/masterclass-gratuita', (req, res) => {
+    res.redirect(301, '/es/inicio');
+  });
+
+  server.get('/form-apertura-fixcal', (req, res) => {
+    res.redirect(301, '/es/fixcal');
+  });
+
+  server.get('/form-apertura-abotax', (req, res) => {
+    res.redirect(301, '/es/abotax');
+  });
+
+  server.get('/relay-fixcal', (req, res) => {
+    res.redirect(301, '/es/fixcal');
+  });
+
+  server.get('/relay-abotax', (req, res) => {
+    res.redirect(301, '/es/abotax');
   });
 
   // Redirecciones de blog y categorías

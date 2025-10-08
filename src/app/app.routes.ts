@@ -55,6 +55,11 @@ export const routes: Routes = [
     canActivate: [CampaignRedirectGuard],
     loadComponent: () => import('./manejo-llc/form-apertura-abotax/form-apertura-abotax.component').then(m => m.FormAperturaAbotaxComponent)
   },
+  {
+    path: 'rescate-relay',
+    canActivate: [CampaignRedirectGuard],
+    loadComponent: () => import('./landings/landing-rescate-relay/landing-rescate-relay.component').then(m => m.LandingRescateRelayComponent)
+  },
   // ===== REDIRECCIONES 301 PARA SEO =====
   {
     path: '',
@@ -70,22 +75,22 @@ export const routes: Routes = [
       // Redirecciones de servicios (ya implementadas)
       {
         path: 'servicios',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'agenda-tu-consulta-gratis',
-        redirectTo: '/contacto',
+        redirectTo: '/es/contacto',
         pathMatch: 'full',
       },
       {
         path: 'abrir-llc',
-        redirectTo: '/abre-tu-llc',
+        redirectTo: '/es/abre-tu-llc',
         pathMatch: 'full',
       },
       {
         path: 'apertura-relay',
-        redirectTo: '/apertura-banco-relay',
+        redirectTo: '/es/apertura-banco-relay',
         pathMatch: 'full',
       },
 
@@ -94,32 +99,32 @@ export const routes: Routes = [
       // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
       {
         path: 'contrato-oferta',
-        redirectTo: '/',
+        redirectTo: '/es/apertura-llc',
         pathMatch: 'full',
       },
       {
         path: 'masterclass-thank-you',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'thank-you',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
       {
         path: 'formulario-de-apertura-de-llc-y-cuenta-bancaria',
-        redirectTo: '/',
+        redirectTo: '/es/apertura-llc',
         pathMatch: 'full',
       },
       {
         path: 'formulario-renovacion-llc',
-        redirectTo: '/',
+        redirectTo: '/es/renovar-llc',
         pathMatch: 'full',
       },
       {
         path: 'masterclass-gratuita',
-        redirectTo: '/',
+        redirectTo: '/es/inicio',
         pathMatch: 'full',
       },
 
@@ -264,6 +269,28 @@ export const routes: Routes = [
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/apertura-banco-relay',
+          },
+        },
+      },
+      {
+        path: 'rescate-relay',
+        loadComponent: () =>
+          import(
+            './landings/landing-rescate-relay/landing-rescate-relay.component'
+          ).then((m) => m.LandingRescateRelayComponent),
+        data: {
+          seo: {
+            title: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
+            description:
+              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
+            keywords:
+              'completar formulario Relay, apertura cuenta bancaria, LLC Estados Unidos, cuenta bancaria USA',
+            ogTitle: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
+            ogDescription:
+              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
+            ogImage: 'https://startcompanies.us/assets/logo.png',
+            twitterSite: '@startcompaniess',
+            canonical: 'https://startcompanies.us/es/rescate-relay',
           },
         },
       },

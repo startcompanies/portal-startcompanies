@@ -646,6 +646,34 @@
                 "title_highlight": " clientes"
             }
         },
+        "relay_rescue": {
+            "hero": {
+                "title": "Completa tu apertura de cuenta Relay",
+                "description": "Estás a un paso de abrir tu cuenta bancaria. Completa el formulario y sigue la guía paso a paso.",
+                "cta_button": "Completa el formulario ahora"
+            },
+            "next_steps": {
+                "title": "Siguiente paso: Completar el formulario",
+                "description": "El formulario es rápido y fácil de llenar. Te guiaremos paso a paso para que puedas abrir tu cuenta bancaria Relay sin complicaciones.",
+                "cta_button": "Completa el formulario ahora"
+            },
+            "video_section": {
+                "title": "¿Cómo funciona?",
+                "title_highlight": " Abrir tu cuenta con Relay",
+                "description": "Te explicamos paso a paso cómo abrir tu cuenta bancaria con Relay de forma rápida y sencilla."
+            },
+            "testimonials": {
+                "qualifications_text": "Empresa especializada en apertura de LLC y cuentas bancarias",
+                "header": "Más de ",
+                "header_highlight": "500+ clientes satisfechos",
+                "description": "Hemos ayudado a cientos de emprendedores a abrir sus LLC y cuentas bancarias en Estados Unidos. Nuestro equipo de expertos te guiará en cada paso del proceso.",
+                "button_cta": "Completa el formulario ahora"
+            },
+            "video_grid_section": {
+                "title": "Lo que dicen nuestros ",
+                "title_highlight": "clientes"
+            }
+        },
         "pricing_options": {
             "card_free": {
                 "cta": "Aplicar gratis",
