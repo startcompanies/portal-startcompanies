@@ -13,7 +13,7 @@ export const routes: Routes = [
   {
     path: 'presentacion',
     canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
+    loadComponent: () => import('./landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
   },
   {
     path: 'apertura-banco-relay',
@@ -232,21 +232,21 @@ export const routes: Routes = [
         path: 'presentacion',
         loadComponent: () =>
           import(
-            './landings/landing-abre-tu-llc/landing-abre-tu-llc.component'
-          ).then((m) => m.LandingAbreTuLlcComponent),
+            './landings/landing-presentacion/landing-presentacion.component'
+          ).then((m) => m.LandingPresentacionComponent),
         data: {
           seo: {
-            title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+            title: 'Presentación de Servicios LLC - Start Companies LLC',
             description:
-              'Abrimos tu LLC en Estados Unidos de forma segura y rápida. Servicio completo con acompañamiento paso a paso.',
+              'Descubre nuestros servicios para LLC en Estados Unidos. Presentación completa de apertura de empresas y cuentas bancarias.',
             keywords:
-              'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-            ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+              'presentación LLC Estados Unidos, servicios LLC USA, Start Companies presentación, apertura empresa USA',
+            ogTitle: 'Presentación de Servicios LLC - Start Companies LLC',
             ogDescription:
-              'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
+              'Descubre nuestros servicios para LLC en Estados Unidos. Presentación completa de apertura de empresas.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/abre-tu-llc',
+            canonical: 'https://startcompanies.us/presentacion',
           },
         },
       },
@@ -696,18 +696,18 @@ export const routes: Routes = [
         path: 'presentation',
         loadComponent: () =>
           import(
-            './landings/landing-abre-tu-llc/landing-abre-tu-llc.component'
-          ).then((m) => m.LandingAbreTuLlcComponent),
+            './landings/landing-presentacion/landing-presentacion.component'
+          ).then((m) => m.LandingPresentacionComponent),
         data: {
           seo: {
-            title: 'Open your LLC in the United States - Start Companies LLC',
-            description: 'We open your LLC in the United States safely and quickly. Complete service with step-by-step support.',
-            keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
-            ogTitle: 'Open your LLC in the United States - Start Companies LLC',
-            ogDescription: 'We open your LLC in the United States quickly and safely.',
+            title: 'LLC Services Presentation - Start Companies LLC',
+            description: 'Discover our LLC services in the United States. Complete presentation of business formation and bank accounts.',
+            keywords: 'LLC services presentation United States, LLC USA services, Start Companies presentation, US business formation',
+            ogTitle: 'LLC Services Presentation - Start Companies LLC',
+            ogDescription: 'Discover our LLC services in the United States. Complete presentation of business formation.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/llc-formation',
+            canonical: 'https://startcompanies.us/en/presentation',
           },
         },
       },
