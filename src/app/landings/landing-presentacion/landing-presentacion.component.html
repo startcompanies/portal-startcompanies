@@ -1,0 +1,149 @@
+<section class="hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+
+  <div class="container py-5">
+    <div class="row d-none d-md-block">
+      <div class="col-12 text-center d-none d-md-block">
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="img-fluid"
+        >
+        </app-responsive-image>
+      </div>
+    </div>
+    <div class="row align-items-center g-5 py-3 px-4">
+      <!--Visible en pantalla de escritorio y tablet-->
+      <div class="col-lg-6 d-none d-md-block">
+        <div class="desktop-video-container">
+          <app-wistia-player
+            mediaId="n1xklnyrgg"
+          ></app-wistia-player>
+        </div>
+      </div>
+      <!--Visible en pantalla de movil-->
+      <div class="col-lg-12 d-md-none">
+        <div class="mobile-video-container">
+          <app-wistia-vertical-player
+            mediaId="a6kkomh6ix"
+          ></app-wistia-vertical-player>
+        </div>
+        <!-- CTA específico para mobile debajo del video -->
+        <div class="mt-3 d-md-none text-center">
+          <button
+            class="btn hero-btn-primary mobile-cta-btn"
+            type="button"
+            (click)="navigateToCalendlySection()"
+          >
+            {{'LANDINGS.schedule_consultation' | transloco}}
+            <i class="bi bi-arrow-right ms-2"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
+          {{'LANDINGS.no_advance_payments' | transloco}}
+        </h1>
+        <p class="lead hero-description">
+          {{'LANDINGS.open_your_llc' | transloco}}
+        </p>
+        <p class="lead hero-description">
+          {{'LANDINGS.skip_commissions' | transloco}}
+        </p>
+        <div class="d-flex hero-btn-container d-none d-md-flex">
+          <div class="row">
+            <div class="d-grid col-6">
+              <button
+                class="btn hero-btn-primary"
+                type="button"
+                (click)="navigateToCalendlySection()"
+              >
+                {{'LANDINGS.start_my_llc_process' | transloco}}
+                <i class="bi bi-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>
+
+<!-- Calendly inline widget -->
+<section #calendly class="calendly-cta-section">
+  <div class="container pb-3">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">
+          {{ "LANDINGS.calendly.title" | transloco }}
+        </h2>
+        <p class="calendly-subtitle">
+          {{ "LANDINGS.calendly.subtitle" | transloco }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <app-calendly-section
+    (calendlyClick)="onCalendlyClick()"
+  ></app-calendly-section>
+</section>
+
+<!-- Key Benefits Section -->
+<app-key-benefits-section></app-key-benefits-section>
+
+<!-- Steps Section -->
+<app-steps-section></app-steps-section>
+
+<!-- Testimonials -->
+<app-testimonials></app-testimonials>
+
+<!-- Relay, un banco -->
+<app-video-section
+  title="{{ 'LANDINGS.relay_landing.video_section.title' | transloco }}"
+  titleHighlight="{{
+    'LANDINGS.relay_landing.video_section.title_highlight' | transloco
+  }}"
+  description="{{
+    'LANDINGS.relay_landing.video_section.description' | transloco
+  }}"
+  videoId="y6ofymeow3"
+  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies LLC te ayudamos a realizarlo."
+  (videoPlay)="onVideoPlay('Relay Banking Service')"
+>
+</app-video-section>
+
+<!-- Video Grid Section -->
+<section class="video-grid-section">
+  <app-video-grid-section
+    title="{{ 'LANDINGS.open_your_llc_video.hear_comunity' | transloco }}"
+    titleHighlight="{{
+      'LANDINGS.open_your_llc_video.comunity_name' | transloco
+    }}"
+    description="{{ 'LANDINGS.open_your_llc_video.what_they_say' | transloco }}"
+  >
+  </app-video-grid-section>
+</section>
+
+<!-- FAQ -->
+<section class="py-5 pt-5">
+  <app-faq></app-faq>
+</section>
+
+<!-- Botón flotante para mobile -->
+<button
+  class="floating-cta-button"
+  [class.show]="showFloatingButton"
+  (click)="scrollToCalendly()"
+>
+  {{ "LANDINGS.start_free_meeting" | transloco }}
+</button>
+
+<!--<app-sc-footer></app-sc-footer>-->
