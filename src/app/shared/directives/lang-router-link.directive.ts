@@ -99,7 +99,8 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'fixcal': 'fixcal',
             'abotax': 'abotax',
             'category': 'category',
-            'post': 'post'
+            'post': 'post',
+            'registro-cliente': 'client-register'
           };
           return routeMapping[cmd] || cmd;
         }

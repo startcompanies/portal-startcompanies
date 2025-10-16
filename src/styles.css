@@ -1,15 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-@import url('bootstrap/dist/css/bootstrap.min.css');
-@import url('./app/shared/styles/optimized-images.css');
-@import url('./app/shared/styles/responsive-images.css');
+@import url("bootstrap/dist/css/bootstrap.min.css");
+@import url("./app/shared/styles/optimized-images.css");
+@import url("./app/shared/styles/responsive-images.css");
 
-:root{
-    --color-fondo-claro: #FDFFFE;
-    --color-secundario-tecnico: #01C9E2;
-    --color-primario: #0068BD;
-    --color-texto-oscuro: #283A48;
-    --color-degradado:  linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
-    --color-fondo-gris: #f8f9fa;
+:root {
+  --color-fondo-claro: #fdfffe;
+  --color-secundario-tecnico: #01c9e2;
+  --color-primario: #0068bd;
+  --color-texto-oscuro: #283a48;
+  --color-degradado: linear-gradient(135deg, #01c9e2 0%, #0068bd 100%);
+  --color-fondo-gris: #f8f9fa;
 }
 
 /* Estilos específicos para Safari para corregir problemas con imágenes */
@@ -23,7 +23,7 @@
     max-width: none;
     max-height: none;
   }
-  
+
   /* Estilos específicos para logos en Safari */
   .sc-navbar-logo img,
   .sc-navbar-logo app-responsive-image img {
@@ -47,5 +47,188 @@
     vertical-align: top;
     object-fit: contain;
     object-position: center;
+  }
+}
+
+/** Esilos de botones ngx-form-wizard */
+/* Contenedor de botones */
+.wizard-action {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Botón previous */
+.wizard-action-btn.prev-btn {
+  background-color: var(--color-secundario-tecnico); /* Azul Bootstrap */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease-in-out;
+}
+.wizard-action-btn.prev-btn:hover:not(:disabled) {
+  background-color: var(--color-primario);
+  transform: translateY(-1px);
+}
+/* Botón "Next" */
+.wizard-action-btn.next-btn {
+  background-color: var(--color-primario); /* Azul Bootstrap */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.wizard-action-btn.next-btn:hover:not(:disabled) {
+  background-color: var(--color-secundario-tecnico);
+  transform: translateY(-1px);
+}
+
+/* Botón "Cancel" */
+.wizard-action-btn.cancel-btn {
+  background-color: transparent;
+  color: var(--color-secundario-tecnico);
+  border: 1px solid var(--color-secundario-tecnico);
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.wizard-action-btn.cancel-btn:hover {
+  background-color: var(--color-secundario-tecnico);
+  color: white;
+}
+/* === Wizard Finish Button Custom Style === */
+.wizard-action-btn.finish-btn {
+  background: linear-gradient(135deg, #007bff, #0056d2); /* azul degradado */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 10px rgba(0, 91, 234, 0.2);
+}
+
+/* Hover */
+.wizard-action-btn.finish-btn:hover {
+  background: linear-gradient(135deg, #0056d2, #0042a8);
+  box-shadow: 0 6px 14px rgba(0, 91, 234, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Focus/Active */
+.wizard-action-btn.finish-btn:focus,
+.wizard-action-btn.finish-btn:active {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 91, 234, 0.4);
+  transform: translateY(0);
+}
+
+/* Disabled state (por si se usa en validaciones de steps) */
+.wizard-action-btn.finish-btn:disabled {
+  background: #a0c3ff;
+  color: #f1f1f1;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 🔘 Ajuste opcional: separarlo del botón Cancel/Next */
+.wizard-action-btn.finish-btn {
+  margin-left: 0.75rem;
+}
+
+/* Botones deshabilitados */
+.wizard-action-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* === ESTILOS DEL STEPPER === */
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: stretch;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  gap: 0.5rem;
+}
+
+/* Cada paso */
+.step {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-secundario-tecnico);
+  border-bottom: 3px solid transparent;
+  padding: 0.5rem 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 130px;
+}
+
+/* Círculo de número */
+.step span:first-child {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #dee2e6;
+  color: #495057;
+  font-weight: bold;
+  margin-right: 0.4rem;
+}
+
+/* Activo */
+.step.active {
+  color: #0d6efd;
+  border-bottom-color: #0d6efd;
+}
+
+.step.active span:first-child {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+/* Hover */
+.step:hover {
+  color: #0a58ca;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .stepper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    border-left: 4px solid transparent;
+    border-bottom: none;
+    padding: 0.75rem;
+  }
+
+  .step.active {
+    border-left-color: #0d6efd;
+    background-color: #e9f2ff;
+    border-bottom: none;
+  }
+
+  .step span:first-child {
+    margin-right: 0.75rem;
   }
 }
