@@ -116,7 +116,7 @@ export class LandingRescateRelayComponent implements OnInit {
     );
     
     // Redirigir al formulario
-    this.router.navigate(['/es/form-apertura-relay']);
+    this.router.navigate(['/form-apertura-relay']);
   }
 
   // Método para trackear reproducción de video Wistia
