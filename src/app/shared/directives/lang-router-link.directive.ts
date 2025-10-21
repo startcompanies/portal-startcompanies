@@ -60,10 +60,20 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
     // Mapear rutas según el idioma
     const mappedCommands = this.mapCommandsForLanguage(normalized, lang);
     
-    this.urlTree = this.router.createUrlTree(['/', lang, ...mappedCommands], {
-      queryParams: this.queryParams,
-      fragment: this.fragment,
-    });
+    // Para español (raíz), no agregar prefijo de idioma
+    if (lang === 'es') {
+      this.urlTree = this.router.createUrlTree(['/', ...mappedCommands], {
+        queryParams: this.queryParams,
+        fragment: this.fragment,
+      });
+    } else {
+      // Para inglés, agregar prefijo /en/
+      this.urlTree = this.router.createUrlTree(['/', lang, ...mappedCommands], {
+        queryParams: this.queryParams,
+        fragment: this.fragment,
+      });
+    }
+    
     this.href = this.router.serializeUrl(this.urlTree);
 
     // Fija href en el <a> para que funcione copiar/abrir en nueva pestaña

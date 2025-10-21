@@ -128,7 +128,7 @@ export class RegisterClientComponent implements OnInit {
       .reduce((acc, step) => ({ ...acc, [`step${step.id}`]: step.data }), {});
     console.log('✅ Datos finales del wizard:', allData);
     this.currentLang === 'es'
-      ? this.router.navigate(['/es'])
+      ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
   }
 
@@ -137,7 +137,7 @@ export class RegisterClientComponent implements OnInit {
    */
   onCancel() {
     this.currentLang === 'es'
-      ? this.router.navigate(['/es'])
+      ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
   }
 }

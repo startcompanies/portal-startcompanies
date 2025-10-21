@@ -646,6 +646,34 @@
                 "title_highlight": " clientes"
             }
         },
+        "relay_rescue": {
+            "hero": {
+                "title": "Completa tu apertura de cuenta Relay",
+                "description": "Estás a un paso de abrir tu cuenta bancaria. Completa el formulario y sigue la guía paso a paso.",
+                "cta_button": "Completa el formulario ahora"
+            },
+            "next_steps": {
+                "title": "Siguiente paso: Completar el formulario",
+                "description": "El formulario es rápido y fácil de llenar. Te guiaremos paso a paso para que puedas abrir tu cuenta bancaria Relay sin complicaciones.",
+                "cta_button": "Completa el formulario ahora"
+            },
+            "video_section": {
+                "title": "¿Cómo funciona?",
+                "title_highlight": " Abrir tu cuenta con Relay",
+                "description": "Te explicamos paso a paso cómo abrir tu cuenta bancaria con Relay de forma rápida y sencilla."
+            },
+            "testimonials": {
+                "qualifications_text": "Empresa especializada en apertura de LLC y cuentas bancarias",
+                "header": "Más de ",
+                "header_highlight": "500+ clientes satisfechos",
+                "description": "Hemos ayudado a cientos de emprendedores a abrir sus LLC y cuentas bancarias en Estados Unidos. Nuestro equipo de expertos te guiará en cada paso del proceso.",
+                "button_cta": "Completa el formulario ahora"
+            },
+            "video_grid_section": {
+                "title": "Lo que dicen nuestros ",
+                "title_highlight": "clientes"
+            }
+        },
         "pricing_options": {
             "card_free": {
                 "cta": "Aplicar gratis",
@@ -917,7 +945,26 @@
         },
         "zoho_step": {
             "title": "Enviar a Zoho CRM",
-            "subtitle": "Revisaremos los datos antes de enviarlos al CRM."
+            "subtitle": "Revisaremos los datos antes de enviarlos al CRM."},
+        "privacy": {
+          "title": "6. Datos personales y privacidad",
+          "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
+        },
+        "third_party": {
+          "title": "7. Enlaces y herramientas de terceros",
+          "body": "El sitio puede incluir enlaces o integraciones de terceros (p. ej., agenda, mensajería y analítica). No controlamos su contenido o políticas; te recomendamos revisar sus términos y avisos de privacidad."
+        },
+        "modifications": {
+          "title": "8. Modificaciones",
+          "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+        },
+        "law": {
+          "title": "9. Ley aplicable",
+          "body": "Estos Términos se interpretarán conforme a las leyes aplicables en la jurisdicción donde operamos. En caso de controversia, procuraremos resolverla de buena fe; si no fuera posible, se someterá a los tribunales competentes."
+        },
+        "contact": {
+          "title": "10. Contacto",
+          "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
         }
     }
 }

@@ -7,16 +7,17 @@ import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot } from
 export class CampaignRedirectGuard implements CanActivate {
   
   private readonly campaignRedirects: { [key: string]: string } = {
-    'abre-tu-llc': '/es/abre-tu-llc',
-    'presentacion': '/es/presentacion',
-    'apertura-banco-relay': '/es/apertura-banco-relay',
-    'agenda': '/es/agendar',
-    'agendar': '/es/agendar',
-    'apertura-llc': '/es/apertura-llc',
-    'renovar-llc': '/es/renovar-llc',
-    'form-apertura-relay': '/es/form-apertura-relay',
-    'fixcal': '/es/fixcal',
-    'abotax': '/es/abotax'
+    'abre-tu-llc': '/abre-tu-llc',
+    'presentacion': '/presentacion',
+    'apertura-banco-relay': '/apertura-banco-relay',
+    'agenda': '/agendar',
+    'agendar': '/agendar',
+    'apertura-llc': '/apertura-llc',
+    'renovar-llc': '/renovar-llc',
+    'form-apertura-relay': '/form-apertura-relay',
+    'fixcal': '/fixcal',
+    'abotax': '/abotax',
+    'rescate-relay': '/rescate-relay'
   };
 
   constructor(private router: Router) {}
