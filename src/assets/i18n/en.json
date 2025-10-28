@@ -211,7 +211,8 @@
         "blog": {
             "title1": "Do you",
             "title2": "want to know more?",
-            "button": "Read more"
+            "button": "Read more",
+            "no_posts": "No posts available."
         },
         "faq": {
             "title1": "Frequently",
