@@ -1,113 +1,148 @@
 <app-sc-header></app-sc-header>
 <section class="sc-post-hero">
-    <app-responsive-image [images]="heroImages" context="hero" loading="eager"
-        cssClass="sc-hero-bg"></app-responsive-image>
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  ></app-responsive-image>
 
-    <div class="container sc-post-hero-content py-5 mt-5" *ngIf="postArticle">
-        <h1 class="sc-post-title">{{ postArticle.title }}</h1>
+  <div class="container sc-post-hero-content py-5 mt-5" *ngIf="postArticle">
+    <h1 class="sc-post-title">{{ postArticle.title }}</h1>
 
-        <div class="sc-post-meta">
-            <div>
-                <i class="bi bi-calendar3"></i>
-                {{ postArticle.published_at | date: 'longDate' }}
-            </div>
-            <div class="meta-divider"></div>
-            <div>
-                <i class="bi bi-person-circle"></i>
-                {{ (postArticle.user.first_name || 'Jhon') + ' ' + (postArticle.user.last_name || 'Smith') }}
-            </div>
-        </div>
+    <div class="sc-post-meta">
+      <div>
+        <i class="bi bi-calendar3"></i>
+        {{ postArticle.published_at | date : "longDate" }}
+      </div>
+      <div class="meta-divider"></div>
+      <div>
+        <i class="bi bi-person-circle"></i>
+        {{
+          (postArticle.user.first_name || "Jhon") +
+            " " +
+            (postArticle.user.last_name || "Smith")
+        }}
+      </div>
     </div>
+  </div>
 </section>
 
-
 <div class="container my-5">
-    <div class="row">
-        <main class="col-lg-8" *ngIf="postArticle && postArticle.content; else noArticle">
-            <app-post-content [html]="postArticle.content"></app-post-content>
-        </main>
+  <div class="row">
+    <main
+      class="col-lg-8"
+      *ngIf="postArticle && postArticle.content; else noArticle"
+    >
+      <app-post-content [html]="postArticle.content"></app-post-content>
+    </main>
 
-        <ng-template #noArticle>
-            <main class="col-lg-8">
-                <div class="alert alert-info">Artículo no disponible o cargando...</div>
-            </main>
-        </ng-template>
+    <ng-template #noArticle>
+      <main class="col-lg-8">
+        <div class="alert alert-info">Artículo no disponible o cargando...</div>
+      </main>
+    </ng-template>
 
-        <aside class="col-lg-4 d-none d-lg-block">
-            <div class="card sc-this-post mb-4">
-                <div class="card-header pt-4 sc-header">
-                    <p class="text-center">En este articulo</p>
-                </div>
-                <div class="card-body sc-body">
-                    <ul class="list-group sc-post-toc">
-                        <li class="list-group-item">Pasos a seguir para renovar tu LLC Online</li>
-                        <li class="list-group-item">¿Qué es un reporte anual?</li>
-                        <li class="list-group-item">¿Qué información incluye el reporte anual?</li>
-                        <li class="list-group-item">Pasos para renovar tu LLC por Correo Postal</li>
-                        <li class="list-group-item">No olvides renovar tu agente registrado</li>
-                        <li class="list-group-item">Conclusión</li>
-                    </ul>
-                </div>
-            </div>
+    <aside class="col-lg-4 d-none d-lg-block">
+      <div class="card sc-this-post mb-4">
+        <div class="card-header pt-4 sc-header">
+          <p class="text-center">En este articulo</p>
+        </div>
+        <div class="card-body sc-body">
+          <ul class="list-group sc-post-toc">
+            <li class="list-group-item">
+              Pasos a seguir para renovar tu LLC Online
+            </li>
+            <li class="list-group-item">¿Qué es un reporte anual?</li>
+            <li class="list-group-item">
+              ¿Qué información incluye el reporte anual?
+            </li>
+            <li class="list-group-item">
+              Pasos para renovar tu LLC por Correo Postal
+            </li>
+            <li class="list-group-item">
+              No olvides renovar tu agente registrado
+            </li>
+            <li class="list-group-item">Conclusión</li>
+          </ul>
+        </div>
+      </div>
 
-            <div class="card open-llc-card p-4 mb-4">
-                <h3 class="title text-center">
-                    Abre tu LLC
-                </h3>
-                <h3 class="title title-hightlight text-center">al mejor precio</h3>
-                <ul class="mt-4">
-                    <li>Lista bajo 10 días</li>
-                    <li>A partir de $459 USD</li>
-                    <li>Pagas post entrega</li>
-                </ul>
-                <button data-cal-link="startcompanies-businessenusa/agenda-organica"
-                    data-cal-namespace="agenda-organica" data-cal-config='{"layout":"month_view","theme":"light"}'
-                    type="button" class="btn sc-btn-accent px-4 py-3 shadow-lg">
-                    Agendar consulta gratis
-                </button>
-            </div>
+      <div class="card open-llc-card p-4 mb-4">
+        <h3 class="title text-center">Abre tu LLC</h3>
+        <h3 class="title title-hightlight text-center">al mejor precio</h3>
+        <ul class="mt-4">
+          <li>Lista bajo 10 días</li>
+          <li>A partir de $459 USD</li>
+          <li>Pagas post entrega</li>
+        </ul>
+        <button
+          data-cal-link="startcompanies-businessenusa/agenda-organica"
+          data-cal-namespace="agenda-organica"
+          data-cal-config='{"layout":"month_view","theme":"light"}'
+          type="button"
+          class="btn sc-btn-accent px-4 py-3 shadow-lg"
+        >
+          Agendar consulta gratis
+        </button>
+      </div>
 
-            <div class="text-center mb-4">
-                <h6 class="text-muted fw-bold" style="font-size: 1.5rem !important;">Compartir articulo</h6>
-                <div class="d-flex justify-content-evenly">
-                    <i class="bi bi-whatsapp" style="color: green; font-size: 2rem;"></i>
-                    <i class="bi bi-linkedin" style="color: blue; font-size: 2rem;"></i>
-                    <i class="bi bi-facebook" style="color: blue; font-size: 2rem;"></i>
-                </div>
-            </div>
+      <div class="text-center mb-4">
+        <h6 class="text-muted fw-bold" style="font-size: 1.5rem !important">
+          Compartir articulo
+        </h6>
+        <div class="d-flex justify-content-evenly">
+          <i class="bi bi-whatsapp" style="color: green; font-size: 2rem"></i>
+          <i class="bi bi-linkedin" style="color: blue; font-size: 2rem"></i>
+          <i class="bi bi-facebook" style="color: blue; font-size: 2rem"></i>
+        </div>
+      </div>
 
-            <div class="card author-info-card">
-                <div class="card-body">
-                    <p class="text-center">Autor</p>
-                    <h5 class="card-title text-center">Ignacio Navarro</h5>
-                    <p class="card-text small text-center">
-                        <ng-container *ngIf="postArticle?.user?.profile_image; else noProfileImage"> <img
-                                [src]="postArticle.user.profile_image" class="rounded-circle mb-3" alt="Autor"
-                                width="80" height="80"> </ng-container> <ng-template #noProfileImage> <i
-                                class="bi bi-person-circle rounded-circle mb-3"
-                                style="font-size:80px; line-height:1; color:#6c757d;" aria-hidden="true"></i>
-                        </ng-template>
-                    </p>
-                    <p class="text-justify mb-3">
-                        Ignacio Navarro es Contador Público, graduado en 2020 de la Universidad Nacional de Tucumán.
-                        Fundador de Start Companies desde 2023, asesora a clientes de todo el mundo en la apertura de
-                        LLC en Estados Unidos y en la correcta declaración de impuestos. Su experiencia combina
-                        conocimiento legal, fiscal y práctico, ofreciendo un servicio integral que abarca desde la
-                        constitución de la sociedad hasta la apertura bancaria e integración de plataformas de ventas.
-                    </p>
+      <div class="card author-info-card">
+        <div class="card-body">
+          <p class="text-center">Autor</p>
+          <h5 class="card-title text-center">Ignacio Navarro</h5>
+          <p class="card-text small text-center">
+            <ng-container
+              *ngIf="postArticle?.user?.profile_image; else noProfileImage"
+            >
+              <img
+                [src]="postArticle.user.profile_image"
+                class="rounded-circle mb-3"
+                alt="Autor"
+                width="80"
+                height="80"
+              />
+            </ng-container>
+            <ng-template #noProfileImage>
+              <i
+                class="bi bi-person-circle rounded-circle mb-3"
+                style="font-size: 80px; line-height: 1; color: #6c757d"
+                aria-hidden="true"
+              ></i>
+            </ng-template>
+          </p>
+          <p class="text-justify mb-3">
+            Ignacio Navarro es Contador Público, graduado en 2020 de la
+            Universidad Nacional de Tucumán. Fundador de Start Companies desde
+            2023, asesora a clientes de todo el mundo en la apertura de LLC en
+            Estados Unidos y en la correcta declaración de impuestos. Su
+            experiencia combina conocimiento legal, fiscal y práctico,
+            ofreciendo un servicio integral que abarca desde la constitución de
+            la sociedad hasta la apertura bancaria e integración de plataformas
+            de ventas.
+          </p>
 
-                    <a href="#" class="btn-linkedin-profile btn">
-                        <i class="bi bi-linkedin"></i> Sigueme en Linkedin
-                    </a>
-                </div>
-            </div>
-
-        </aside>
-    </div>
-
+          <a href="#" class="btn-linkedin-profile btn">
+            <i class="bi bi-linkedin"></i> Sigueme en Linkedin
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <section>
-    <app-blog-section-v2></app-blog-section-v2>
+  <app-blog-section-v2></app-blog-section-v2>
 </section>
 <app-sc-footer></app-sc-footer>

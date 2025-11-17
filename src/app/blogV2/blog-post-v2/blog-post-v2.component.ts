@@ -1,6 +1,5 @@
 import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
-import { BlogComponent } from '../../sections/blog/blog.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
 import { BlogService } from '../../services/blog.service';
 import { Post } from '../../shared/models/post.model';
@@ -11,6 +10,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { PostContentComponent } from '../../shared/components/post-content/post-content.component';
 import { ScHeaderComponent } from '../../sc-header/sc-header.component';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -18,11 +18,10 @@ import { ScHeaderComponent } from '../../sc-header/sc-header.component';
   imports: [
     SharedModule,
     ScFooterComponent,
-    BlogComponent,
     BlogSectionV2Component,
     ResponsiveImageComponent,
     PostContentComponent,
-    ScHeaderComponent
+    ScHeaderComponent,
   ],
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
@@ -46,14 +45,19 @@ export class BlogPostV2Component implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private sanitizer: DomSanitizer
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
   }
 
   ngOnInit(): void {
-    const slug = this.route.snapshot.paramMap.get('slug');
-    if (slug) this.loadPost(slug);
+    /*const slug = this.route.snapshot.paramMap.get('slug');
+    if (slug) this.loadPost(slug);*/
+    this.route.paramMap.subscribe((params) => {
+      const slug = params.get('slug');
+      if (slug) this.loadPost(slug);
+    });
   }
 
   private async loadPost(slug: string): Promise<void> {
@@ -62,6 +66,7 @@ export class BlogPostV2Component implements OnInit {
       if (!post) return;
 
       this.postArticle = post;
+      if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
       // ✅ Reemplaza dinámicamente las imágenes del hero con la del post
       const imageUrl = post.image_url || '/assets/hero-bg.webp';
