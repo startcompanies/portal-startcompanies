@@ -1,4 +1,4 @@
-import { Component, Input, Inject, PLATFORM_ID, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, Input, Inject, PLATFORM_ID, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
@@ -12,14 +12,9 @@ declare global {
   selector: 'app-post-content',
   imports: [CommonModule],
   standalone: true,
-  template: `<div class="row justify-content-center">
-    <div
-      #contentContainer
-      class="mt-5 col-12 col-md-10 col-lg-8"
-      *ngIf="isBrowser"
-      [innerHTML]="sanitizedHtml"
-    ></div>
-  </div>`,
+  templateUrl: './post-content.component.html',
+  styleUrl: './post-content.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() html: string = '';
