@@ -28,7 +28,7 @@
 .app-post-content .abre-corp-list,
 .abre-corp-list {
   color: #ffffff !important;
-  font-size: clamp(1rem, 2.5vw, 1.25rem) !important;
+  font-size: 1.5rem !important;
   line-height: 1.8 !important;
   padding-left: 0 !important;
   margin: 0 !important;
@@ -286,7 +286,7 @@
 .app-post-content .ayuda-profesional-list,
 .ayuda-profesional-list {
   color: #ffffff;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: 1.5rem;
   line-height: 1.8;
   padding-left: 0;
 }
@@ -339,23 +339,23 @@
 
 .app-post-content .costos-florida-section-title,
 .costos-florida-section-title {
-  color: #ffffff;
-  font-size: clamp(1.25rem, 3vw, 1.75rem);
+  color: #293B49;
+  font-size: 1.1rem;
   font-weight: 800;
 }
 
 .app-post-content .costos-florida-main-price,
 .costos-florida-main-price {
   color: #ffffff;
-  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-size: 1.8rem;
   font-weight: 800;
   line-height: 1;
 }
 
 .app-post-content .costos-florida-subtitle,
 .costos-florida-subtitle {
-  color: #ffffff;
-  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: #293B49;
+  font-size: 1.1rem;
 }
 
 .app-post-content .costos-florida-option-card,
@@ -365,22 +365,22 @@
 
 .app-post-content .costos-florida-option-label,
 .costos-florida-option-label {
-  color: #ffffff;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  color: #293B49;
+  font-size: 1.1rem;
 }
 
 .app-post-content .costos-florida-option-price,
 .costos-florida-option-price {
   color: #ffffff;
-  font-size: clamp(2rem, 6vw, 3rem);
+  font-size: 1.8rem;
   font-weight: 800;
   line-height: 1;
 }
 
 .app-post-content .costos-florida-option-time,
 .costos-florida-option-time {
-  color: #ffffff;
-  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: #293B49;
+  font-size: 1.1rem;
 }
 
 .app-post-content .costos-florida-btn,
@@ -388,10 +388,15 @@
   background-color: #2d3748;
   color: #ffffff;
   border: none;
-  font-size: clamp(1rem, 2.5vw, 1.1rem);
+  font-size: 1rem;
   max-width: 100%;
 }
-
+@media (max-width: 768px) {
+  .app-post-content .costos-florida-btn,
+  .costos-florida-btn {
+    font-size: 0.8rem;
+  }
+}
 /* Estilos para preguntas-frecuentes-card */
 .app-post-content .preguntas-frecuentes-card,
 .preguntas-frecuentes-card {
@@ -434,7 +439,7 @@
 .app-post-content .preguntas-frecuentes-icon,
 .preguntas-frecuentes-icon {
   color: #00bcd4;
-  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-size: 1.5rem;
   flex-shrink: 0;
   margin-left: 1rem;
 }
