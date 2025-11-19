@@ -30,12 +30,6 @@ RUN ng version && ng config --global cli.warnings.versionMismatch false
 RUN npm run validate:images && \
     npm run build:production:pwa
 
-# Verificar que se generaron las imágenes responsive
-RUN echo "Verificando imágenes responsive generadas:" && \
-    ls -la src/assets/*-mobile.* && \
-    ls -la src/assets/*-tablet.* && \
-    ls -la src/assets/*-desktop.*
-
 # Stage final de producción
 FROM node:18-alpine AS production
 

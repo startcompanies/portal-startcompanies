@@ -22,7 +22,7 @@
 
   <!-- ===== RUTAS PRINCIPALES EN ESPAÑOL ===== -->
   <url>
-    <loc>https://startcompanies.us/es/inicio</loc>
+    <loc>https://startcompanies.us/inicio</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -34,7 +34,7 @@
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/nosotros</loc>
+    <loc>https://startcompanies.us/nosotros</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -46,28 +46,28 @@
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/contacto</loc>
+    <loc>https://startcompanies.us/contacto</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/aviso-de-privacidad</loc>
+    <loc>https://startcompanies.us/aviso-de-privacidad</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/terminos-y-condiciones</loc>
+    <loc>https://startcompanies.us/terminos-y-condiciones</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/planes</loc>
+    <loc>https://startcompanies.us/planes</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -138,7 +138,7 @@
 
   <!-- ===== LANDING PAGES EN ESPAÑOL ===== -->
   <url>
-    <loc>https://startcompanies.us/es/abre-tu-llc</loc>
+    <loc>https://startcompanies.us/abre-tu-llc</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -150,14 +150,14 @@
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/presentacion</loc>
+    <loc>https://startcompanies.us/presentacion</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/apertura-banco-relay</loc>
+    <loc>https://startcompanies.us/apertura-banco-relay</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
@@ -169,7 +169,7 @@
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/agendar</loc>
+    <loc>https://startcompanies.us/agendar</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -216,35 +216,35 @@
 
   <!-- ===== FORMULARIOS EN ESPAÑOL ===== -->
   <url>
-    <loc>https://startcompanies.us/es/apertura-llc</loc>
+    <loc>https://startcompanies.us/apertura-llc</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/renovar-llc</loc>
+    <loc>https://startcompanies.us/renovar-llc</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/form-apertura-relay</loc>
+    <loc>https://startcompanies.us/form-apertura-relay</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/fixcal</loc>
+    <loc>https://startcompanies.us/fixcal</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/abotax</loc>
+    <loc>https://startcompanies.us/abotax</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -288,7 +288,7 @@
 
   <!-- ===== BLOG EN ESPAÑOL (REDIRECCIONES) ===== -->
   <url>
-    <loc>https://startcompanies.us/es/blog</loc>
+    <loc>https://startcompanies.us/blog</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -300,21 +300,21 @@
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/category/llc-formation</loc>
+    <loc>https://startcompanies.us/category/llc-formation</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/category/bank-accounts</loc>
+    <loc>https://startcompanies.us/category/bank-accounts</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
-    <loc>https://startcompanies.us/es/category/taxes</loc>
+    <loc>https://startcompanies.us/category/taxes</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -356,7 +356,7 @@
 
   <!-- ===== PÁGINAS DE ERROR ===== -->
   <url>
-    <loc>https://startcompanies.us/es/error-404</loc>
+    <loc>https://startcompanies.us/error-404</loc>
     <lastmod>2025-09-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.1</priority>
