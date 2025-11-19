@@ -104,6 +104,20 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
+    // Reemplazar el src de la imagen con id="img-ayuda"
+    content = content.replace(/<img\s+([^>]*?)id\s*=\s*["']img-ayuda["']([^>]*?)>/gi, (match, beforeId, afterId) => {
+      const allAttrs = beforeId + afterId;
+      // Buscar si ya tiene un atributo src
+      const hasSrc = /src\s*=\s*["'][^"']*["']/i.test(allAttrs);
+      if (hasSrc) {
+        // Reemplazar el src existente, preservando el resto de atributos
+        return match.replace(/src\s*=\s*["'][^"']*["']/i, 'src="/assets/tabs/renew_llc.webp"');
+      } else {
+        // Agregar el src si no existe, preservando todos los atributos existentes
+        return `<img ${beforeId}id="img-ayuda"${afterId} src="/assets/tabs/renew_llc.webp">`;
+      }
+    });
+    
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
