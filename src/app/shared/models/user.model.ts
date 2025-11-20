@@ -10,4 +10,5 @@ export interface User {
   bio: string;
   createdAt: Date;
   updatedAt: Date;
+  profile_image: string;
 }

@@ -130,10 +130,11 @@ export const routes: Routes = [
       },
       {
         path: 'post/:slug',
-        loadComponent: () =>
+        /*loadComponent: () =>
           import('./blog/blog-post/blog-post.component').then(
             (m) => m.BlogPostComponent
-          ),
+          ),*/
+        loadComponent: () => import('./blogV2/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
         data: {
           seo: {
             title: 'Artículo de Blog - Start Companies LLC',
@@ -150,23 +151,23 @@ export const routes: Routes = [
       {
         path: 'aviso-de-privacidad',
         loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
-        data: { 
-          seo: { 
-            canonical: 'https://startcompanies.us/aviso-de-privacidad', 
-            title: 'Aviso de Privacidad - Start Companies LLC', 
-            description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.' 
-          } 
+        data: {
+          seo: {
+            canonical: 'https://startcompanies.us/aviso-de-privacidad',
+            title: 'Aviso de Privacidad - Start Companies LLC',
+            description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.'
+          }
         }
       },
       {
         path: 'terminos-y-condiciones',
         loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
-        data: { 
-          seo: { 
-            canonical: 'https://startcompanies.us/terminos-y-condiciones', 
-            title: 'Términos y Condiciones - Start Companies LLC', 
-            description: 'Términos y condiciones del sitio de Start Companies LLC.' 
-          } 
+        data: {
+          seo: {
+            canonical: 'https://startcompanies.us/terminos-y-condiciones',
+            title: 'Términos y Condiciones - Start Companies LLC',
+            description: 'Términos y condiciones del sitio de Start Companies LLC.'
+          }
         }
       },
       // ===== RUTAS DE CAMPAÑAS (SIN GUARD) =====
@@ -234,13 +235,15 @@ export const routes: Routes = [
         },
       },
       // Solo capturar rutas que NO empiecen con /en/
-      { matcher: (segments) => {
-        // Si la ruta empieza con 'en', no capturar aquí
-        if (segments.length > 0 && segments[0].path === 'en') {
-          return null;
-        }
-        return { consumed: segments };
-      }, redirectTo: 'error-404' }
+      {
+        matcher: (segments) => {
+          // Si la ruta empieza con 'en', no capturar aquí
+          if (segments.length > 0 && segments[0].path === 'en') {
+            return null;
+          }
+          return { consumed: segments };
+        }, redirectTo: 'error-404'
+      }
     ]
   },
   // ===== RUTAS INGLESAS CON PREFIJO /en =====

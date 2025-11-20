@@ -1,0 +1,9 @@
+<div class="row justify-content-center">
+  <div
+    #contentContainer
+    class="mt-5 col-12 col-md-10 col-lg-8 app-post-content"
+    *ngIf="isBrowser"
+    [innerHTML]="sanitizedHtml"
+  ></div>
+</div>
+

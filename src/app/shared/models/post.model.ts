@@ -11,7 +11,7 @@ export interface Post {
   image_url: string;
   published_at: string; // O Date, si planeas parsearlo
   is_published: boolean;
-  user_id: User;
+  user: User;
   categories: Category[];
   tags: Tag[];
 }
