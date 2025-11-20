@@ -104,6 +104,43 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
+    // Agregar iconos de estrellas después del span con clase veredicto-rating-number
+    // Buscar todos los spans completos con veredicto-rating-number y añadir iconos después si no existen
+    const ratingSpanRegex = /<span\s+[^>]*?class\s*=\s*["'][^"']*veredicto-rating-number[^"']*["'][^>]*>([^<]*?)<\/span>/gi;
+    let lastIndex = 0;
+    const starsHtml = `<i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-empty bi bi-star"></i>`;
+    let newContent = '';
+    let match;
+    
+    while ((match = ratingSpanRegex.exec(content)) !== null) {
+      // Añadir el contenido antes del match
+      newContent += content.substring(lastIndex, match.index);
+      
+      // Verificar si ya tiene iconos después del span (en los siguientes 200 caracteres)
+      const contextEnd = Math.min(content.length, ratingSpanRegex.lastIndex + 200);
+      const contextAfter = content.substring(ratingSpanRegex.lastIndex, contextEnd);
+      
+      // Si no tiene iconos, añadirlos después del span
+      if (!contextAfter.includes('veredicto-star-filled') && !contextAfter.includes('veredicto-star-empty')) {
+        // Añadir el span completo y luego los iconos
+        newContent += match[0] + starsHtml;
+      } else {
+        // Si ya tiene iconos, solo añadir el span
+        newContent += match[0];
+      }
+      lastIndex = ratingSpanRegex.lastIndex;
+    }
+    
+    // Añadir el resto del contenido
+    if (lastIndex < content.length) {
+      newContent += content.substring(lastIndex);
+    }
+    
+    // Si se encontraron matches, usar el nuevo contenido
+    if (newContent) {
+      content = newContent;
+    }
+    
     // Reemplazar el src de la imagen con id="img-ayuda"
     content = content.replace(/<img\s+([^>]*?)id\s*=\s*["']img-ayuda["']([^>]*?)>/gi, (match, beforeId, afterId) => {
       const allAttrs = beforeId + afterId;
