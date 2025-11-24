@@ -45,7 +45,7 @@ export class LanguageService {
     const initialLang = this.getLangFromUrl(initialUrl) || this.defaultLang;
 
     // Logs temporales para debug — elimina en producción
-    // console.log('[LanguageService] init url:', initialUrl, 'detected lang:', initialLang);
+    console.log('[LanguageService] init url:', initialUrl, 'detected lang:', initialLang);
 
     // Aseguramos default + active antes del render
     this.transloco.setDefaultLang(initialLang);
@@ -75,6 +75,13 @@ export class LanguageService {
     
     // Mapear rutas según el idioma
     const mappedCommands = this.mapCommandsForLanguage(normalized, lang);
+    
+    // Para español (raíz), no agregar prefijo de idioma
+    if (lang === 'es') {
+      return this.router.navigate(['/', ...mappedCommands], extras);
+    }
+    
+    // Para inglés, agregar prefijo /en/
     return this.router.navigate(['/', lang, ...mappedCommands], extras);
   }
 
@@ -121,46 +128,69 @@ export class LanguageService {
     const segs = primary ? primary.segments.map((s) => s.path) : [];
     
     console.log('[LanguageService] URL segments:', segs);
+    console.log('[LanguageService] Available langs:', this.availableLangs);
+    console.log('[LanguageService] Current lang:', this.currentLang);
 
     if (segs.length === 0) {
       // Si no hay segmentos, redirigir a la página principal del idioma
-      const targetUrl = ['/', lang, lang === 'es' ? 'inicio' : 'home'];
+      const targetUrl = lang === 'es' ? ['/', 'inicio'] : ['/', lang, 'home'];
       console.log('[LanguageService] No segments, navigating to:', targetUrl);
       return this.router.navigate(targetUrl);
     }
 
     // Si el primer segmento es un idioma, reemplazarlo
     if (this.availableLangs.includes(segs[0])) {
-      segs[0] = lang;
-      
       // Si solo queda el idioma (sin página específica), agregar página principal
       if (segs.length === 1) {
-        segs.push(lang === 'es' ? 'inicio' : 'home');
+        const targetUrl = lang === 'es' ? ['/', 'inicio'] : ['/', lang, 'home'];
+        console.log('[LanguageService] Only language segment, navigating to:', targetUrl);
+        return this.router.navigate(targetUrl);
       } else {
         // Mapear la ruta actual al idioma de destino
         const currentRoute = segs[1];
         const mappedRoute = this.mapRouteForLanguage(currentRoute, lang);
-        segs[1] = mappedRoute;
+        
+        if (lang === 'es') {
+          // Para español, usar raíz sin prefijo
+          const targetUrl = ['/', mappedRoute];
+          console.log('[LanguageService] Spanish route, navigating to:', targetUrl);
+          return this.router.navigate(targetUrl, {
+            queryParams: tree.queryParams,
+            fragment: tree.fragment ?? undefined,
+          });
+        } else {
+          // Para inglés, usar prefijo /en/
+          const targetUrl = ['/', lang, mappedRoute];
+          console.log('[LanguageService] English route, navigating to:', targetUrl);
+          return this.router.navigate(targetUrl, {
+            queryParams: tree.queryParams,
+            fragment: tree.fragment ?? undefined,
+          });
+        }
       }
     } else {
-      // Si no hay idioma en la URL, agregarlo al inicio
-      segs.unshift(lang);
+      // Si no hay idioma en la URL, es una ruta española en la raíz
+      const currentRoute = segs[0];
+      const mappedRoute = this.mapRouteForLanguage(currentRoute, lang);
       
-      // Si solo hay un segmento después del idioma, mapearlo
-      if (segs.length === 2) {
-        const currentRoute = segs[1];
-        const mappedRoute = this.mapRouteForLanguage(currentRoute, lang);
-        segs[1] = mappedRoute;
+      if (lang === 'es') {
+        // Mantener en la raíz
+        const targetUrl = ['/', mappedRoute];
+        console.log('[LanguageService] Spanish root route, navigating to:', targetUrl);
+        return this.router.navigate(targetUrl, {
+          queryParams: tree.queryParams,
+          fragment: tree.fragment ?? undefined,
+        });
+      } else {
+        // Agregar prefijo /en/
+        const targetUrl = ['/', lang, mappedRoute];
+        console.log('[LanguageService] English route from root, navigating to:', targetUrl);
+        return this.router.navigate(targetUrl, {
+          queryParams: tree.queryParams,
+          fragment: tree.fragment ?? undefined,
+        });
       }
     }
-
-    const targetUrl = ['/', ...segs];
-    console.log('[LanguageService] Final navigation to:', targetUrl);
-    
-    return this.router.navigate(targetUrl, {
-      queryParams: tree.queryParams,
-      fragment: tree.fragment ?? undefined,
-    });
   }
 
   /**

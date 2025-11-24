@@ -4,131 +4,16 @@ import { languageGuard } from './shared/guards/language.guard';
 import { CampaignRedirectGuard } from './shared/guards/campaign-redirect.guard';
 
 export const routes: Routes = [
-  // ===== REDIRECCIONES PARA CAMPAÑAS (SIN PREFIJO DE IDIOMA) =====
-  {
-    path: 'abre-tu-llc',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-abre-tu-llc/landing-abre-tu-llc.component').then(m => m.LandingAbreTuLlcComponent)
-  },
-  {
-    path: 'presentacion',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
-  },
-  {
-    path: 'apertura-banco-relay',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent)
-  },
-  {
-    path: 'agenda',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
-  },
-  {
-    path: 'agendar',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
-  },
-  {
-    path: 'apertura-llc',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./manejo-llc/apertura-llc/apertura-llc.component').then(m => m.AperturaLlcComponent)
-  },
-  {
-    path: 'renovar-llc',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./manejo-llc/renovar-llc/renovar-llc.component').then(m => m.RenovarLlcComponent)
-  },
-  {
-    path: 'form-apertura-relay',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./manejo-llc/form-apertura-relay/form-apertura-relay.component').then(m => m.FormAperturaRelayComponent)
-  },
-  {
-    path: 'fixcal',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./manejo-llc/form-apertura-fixcal/form-apertura-fixcal.component').then(m => m.FormAperturaFixcalComponent)
-  },
-  {
-    path: 'abotax',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./manejo-llc/form-apertura-abotax/form-apertura-abotax.component').then(m => m.FormAperturaAbotaxComponent)
-  },
-  {
-    path: 'rescate-relay',
-    canActivate: [CampaignRedirectGuard],
-    loadComponent: () => import('./landings/landing-rescate-relay/landing-rescate-relay.component').then(m => m.LandingRescateRelayComponent)
-  },
-  // ===== REDIRECCIONES 301 PARA SEO =====
+  // ===== RUTAS ESPAÑOLAS SIN PREFIJO (RAÍZ) =====
   {
     path: '',
     canActivate: [languageGuard],
-    children: [{
-      path:'',
-      pathMatch: 'full',
-      redirectTo: '/es/inicio'
-    },
-    // ===== RUTAS ESPAÑOLAS =====
-    {path: 'es',
     children: [
-      // Redirecciones de servicios (ya implementadas)
       {
-        path: 'servicios',
-        redirectTo: '/es/inicio',
+        path: '',
         pathMatch: 'full',
+        redirectTo: '/inicio'
       },
-      {
-        path: 'agenda-tu-consulta-gratis',
-        redirectTo: '/es/contacto',
-        pathMatch: 'full',
-      },
-      {
-        path: 'abrir-llc',
-        redirectTo: '/es/abre-tu-llc',
-        pathMatch: 'full',
-      },
-      {
-        path: 'apertura-relay',
-        redirectTo: '/es/apertura-banco-relay',
-        pathMatch: 'full',
-      },
-
-      // ===== REDIRECCIONES DE ARTÍCULOS DE BLOG =====
-
-      // ===== REDIRECCIONES DE FORMULARIOS Y THANK YOU =====
-      {
-        path: 'contrato-oferta',
-        redirectTo: '/es/apertura-llc',
-        pathMatch: 'full',
-      },
-      {
-        path: 'masterclass-thank-you',
-        redirectTo: '/es/inicio',
-        pathMatch: 'full',
-      },
-      {
-        path: 'thank-you',
-        redirectTo: '/es/inicio',
-        pathMatch: 'full',
-      },
-      {
-        path: 'formulario-de-apertura-de-llc-y-cuenta-bancaria',
-        redirectTo: '/es/apertura-llc',
-        pathMatch: 'full',
-      },
-      {
-        path: 'formulario-renovacion-llc',
-        redirectTo: '/es/renovar-llc',
-        pathMatch: 'full',
-      },
-      {
-        path: 'masterclass-gratuita',
-        redirectTo: '/es/inicio',
-        pathMatch: 'full',
-      },
-
-      // ===== RUTAS EXISTENTES CON SEO COMPLETO =====
       {
         path: 'inicio',
         loadComponent: () =>
@@ -137,27 +22,16 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title:
-              'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
-            description:
-              'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
-            keywords:
-              'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
-            ogTitle:
-              'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
-            ogDescription:
-              'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
+            title: 'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
+            description: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
+            keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
+            ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
+            ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/es/inicio',
+            canonical: 'https://startcompanies.us/inicio',
           },
         },
-      },
-      // Redirección desde la raíz de español
-      {
-        path: '',
-        redirectTo: 'inicio',
-        pathMatch: 'full'
       },
       {
         path: 'nosotros',
@@ -167,15 +41,11 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title:
-              'Nosotros - Start Companies LLC | Experiencia en Servicios Financieros',
-            description:
-              'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.',
-            keywords:
-              'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
+            title: 'Nosotros - Start Companies LLC | Experiencia en Servicios Financieros',
+            description: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.',
+            keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
             ogTitle: 'Nosotros - Start Companies LLC',
-            ogDescription:
-              'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
+            ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/nosotros',
@@ -190,254 +60,16 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title:
-              'Contacto - Start Companies LLC | Habla con Nuestros Expertos',
-            description:
-              'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.',
-            keywords:
-              'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
+            title: 'Contacto - Start Companies LLC | Habla con Nuestros Expertos',
+            description: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.',
+            keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
             ogTitle: 'Contacto - Start Companies LLC',
-            ogDescription:
-              'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
+            ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/contacto',
           },
         },
-      },
-      /**Landings */
-      {
-        path: 'abre-tu-llc',
-        loadComponent: () =>
-          import(
-            './landings/landing-abre-tu-llc/landing-abre-tu-llc.component'
-          ).then((m) => m.LandingAbreTuLlcComponent),
-        data: {
-          seo: {
-            title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
-            description:
-              'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
-            keywords:
-              'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-            ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/abre-tu-llc',
-          },
-        },
-      },
-      {
-        path: 'presentacion',
-        loadComponent: () =>
-          import(
-            './landings/landing-presentacion/landing-presentacion.component'
-          ).then((m) => m.LandingPresentacionComponent),
-        data: {
-          seo: {
-            title: 'Presentación de Servicios LLC - Start Companies LLC',
-            description:
-              'Descubre nuestros servicios para LLC en Estados Unidos. Presentación completa de apertura de empresas y cuentas bancarias.',
-            keywords:
-              'presentación LLC Estados Unidos, servicios LLC USA, Start Companies presentación, apertura empresa USA',
-            ogTitle: 'Presentación de Servicios LLC - Start Companies LLC',
-            ogDescription:
-              'Descubre nuestros servicios para LLC en Estados Unidos. Presentación completa de apertura de empresas.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/presentacion',
-          },
-        },
-      },
-      {
-        path: 'apertura-banco-relay',
-        loadComponent: () =>
-          import(
-            './landings/landing-apertura-relay/landing-apertura-relay.component'
-          ).then((m) => m.LandingAperturaRelayComponent),
-        data: {
-          seo: {
-            title: 'Apertura de Banco Relay - Start Companies LLC',
-            description:
-              'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Proceso simple y 100% online.',
-            keywords:
-              'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-            ogTitle: 'Apertura de Banco Relay - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/apertura-banco-relay',
-          },
-        },
-      },
-      {
-        path: 'rescate-relay',
-        loadComponent: () =>
-          import(
-            './landings/landing-rescate-relay/landing-rescate-relay.component'
-          ).then((m) => m.LandingRescateRelayComponent),
-        data: {
-          seo: {
-            title: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
-            description:
-              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
-            keywords:
-              'completar formulario Relay, apertura cuenta bancaria, LLC Estados Unidos, cuenta bancaria USA',
-            ogTitle: 'Completa tu apertura de cuenta Relay - Start Companies LLC',
-            ogDescription:
-              'Completa el formulario para abrir tu cuenta bancaria Relay. Guía paso a paso.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/es/rescate-relay',
-          },
-        },
-      },
-      {
-        path: 'agendar',
-        loadComponent: () =>
-          import('./landings/landing-agendar/landing-agendar.component').then(
-            (m) => m.LandingAgendarComponent
-          ),
-        data: {
-          seo: {
-            title: '',
-            description: '',
-            keywords: '',
-            ogTitle: 'Agendar',
-            ogDescription: '',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/apertura-banco-relay',
-          },
-        },
-      },
-      /** Forms */
-      {
-        path: 'apertura-llc',
-        loadComponent: () =>
-          import('./manejo-llc/apertura-llc/apertura-llc.component').then(
-            (m) => m.AperturaLlcComponent
-          ),
-        data: {
-          seo: {
-            title: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
-            description:
-              'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
-            keywords:
-              'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-            ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/apertura-llc',
-          },
-        },
-      },
-      {
-        path: 'renovar-llc',
-        loadComponent: () =>
-          import('./manejo-llc/renovar-llc/renovar-llc.component').then(
-            (m) => m.RenovarLlcComponent
-          ),
-        data: {
-          seo: {
-            title: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
-            description:
-              'Renovamos tu LLC en Estados Unidos antes de que expire. Evita multas y mantén tu empresa activa.',
-            keywords:
-              'renovación LLC Estados Unidos, renovar LLC USA, mantener LLC activa, Start Companies',
-            ogTitle:
-              'Renovación de LLC en Estados Unidos - Start Companies LLC',
-            ogDescription:
-              'Renovamos tu LLC en Estados Unidos antes de que expire.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/renovar-llc',
-          },
-        },
-      },
-      {
-        path: 'form-apertura-relay',
-        loadComponent: () =>
-          import(
-            './manejo-llc/form-apertura-relay/form-apertura-relay.component'
-          ).then((m) => m.FormAperturaRelayComponent),
-        data: {
-          seo: {
-            title: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
-            description:
-              'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
-            keywords:
-              'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-            ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/form-apertura-relay',
-          },
-        },
-      },
-      {
-        path: 'fixcal',
-        loadComponent: () =>
-          import(
-            './manejo-llc/form-apertura-fixcal/form-apertura-fixcal.component'
-          ).then((m) => m.FormAperturaFixcalComponent),
-        data: {
-          seo: {
-            title:
-              'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
-            description:
-              'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
-            keywords:
-              'cuenta bancaria Relay Fixcal, apertura cuenta Fixcal, banco Fixcal USA, Start Companies',
-            ogTitle:
-              'Apertura de Cuenta Bancaria Relay Fixcal - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu cuenta bancaria Relay Fixcal para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/fixcal',
-          },
-        },
-      },
-      {
-        path: 'abotax',
-        loadComponent: () =>
-          import(
-            './manejo-llc/form-apertura-abotax/form-apertura-abotax.component'
-          ).then((m) => m.FormAperturaAbotaxComponent),
-        data: {
-          seo: {
-            title:
-              'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
-            description:
-              'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
-            keywords:
-              'cuenta bancaria Relay Abotax, apertura cuenta Abotax, banco Abotax USA, Start Companies',
-            ogTitle:
-              'Apertura de Cuenta Bancaria Relay Abotax - Start Companies LLC',
-            ogDescription:
-              'Abrimos tu cuenta bancaria Relay Abotax para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/abotax',
-          },
-        },
-      },
-      {
-        path: 'aviso-de-privacidad',
-        loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
-        data: { seo: { canonical: 'https://startcompanies.us/es/aviso-de-privacidad', title: 'Aviso de Privacidad - Start Companies LLC', description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.' } }
-      },
-      {
-        path: 'terminos-y-condiciones',
-        loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
-        data: { seo: { canonical: 'https://startcompanies.us/es/terminos-y-condiciones', title: 'Términos y Condiciones - Start Companies LLC', description: 'Términos y condiciones del sitio de Start Companies LLC.' } }
       },
       {
         path: 'planes',
@@ -447,15 +79,11 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title:
-              'Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.',
-            description:
-              'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.',
-            keywords:
-              'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
+            title: 'Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.',
+            description: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.',
+            keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
             ogTitle: 'Planes y Precios - Start Companies LLC',
-            ogDescription:
-              'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
+            ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/planes',
@@ -470,15 +98,11 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title:
-              'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
-            description:
-              'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
-            keywords:
-              'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
+            title: 'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
+            description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
+            keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
             ogTitle: 'Blog - Start Companies LLC',
-            ogDescription:
-              'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+            ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/blog',
@@ -486,7 +110,6 @@ export const routes: Routes = [
         },
       },
       {
-        /*path: 'blog/categoria/:slug',*/
         path: 'category/:slug',
         loadComponent: () =>
           import('./blog/blog-home/blog-home.component').then(
@@ -495,16 +118,13 @@ export const routes: Routes = [
         data: {
           seo: {
             title: 'Categoría de Blog - Start Companies LLC',
-            description:
-              'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            keywords:
-              'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+            description: 'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+            keywords: 'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
             ogTitle: 'Categoría de Blog - Start Companies LLC',
-            ogDescription:
-              'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+            ogDescription: 'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+            ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
-            canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
+            canonical: 'https://startcompanies.us/category/:slug',
           },
         },
       },
@@ -516,19 +136,83 @@ export const routes: Routes = [
           ),
         data: {
           seo: {
-            title: 'Categoría de Blog - Start Companies LLC',
-            description:
-              'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            keywords:
-              'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
-            ogTitle: 'Categoría de Blog - Start Companies LLC',
-            ogDescription:
-              'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: 'https://dev.startcompanies.us/assets/logo.png',
+            title: 'Artículo de Blog - Start Companies LLC',
+            description: 'Lee nuestros artículos sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+            keywords: 'artículo blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+            ogTitle: 'Artículo de Blog - Start Companies LLC',
+            ogDescription: 'Lee nuestros artículos sobre LLC y servicios financieros en Estados Unidos.',
+            ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
-            canonical: 'https://dev.startcompanies.us/blog/categoria/:slug',
+            canonical: 'https://startcompanies.us/post/:slug',
           },
         },
+      },
+      {
+        path: 'aviso-de-privacidad',
+        loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
+        data: { 
+          seo: { 
+            canonical: 'https://startcompanies.us/aviso-de-privacidad', 
+            title: 'Aviso de Privacidad - Start Companies LLC', 
+            description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.' 
+          } 
+        }
+      },
+      {
+        path: 'terminos-y-condiciones',
+        loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
+        data: { 
+          seo: { 
+            canonical: 'https://startcompanies.us/terminos-y-condiciones', 
+            title: 'Términos y Condiciones - Start Companies LLC', 
+            description: 'Términos y condiciones del sitio de Start Companies LLC.' 
+          } 
+        }
+      },
+      // ===== RUTAS DE CAMPAÑAS (SIN GUARD) =====
+      {
+        path: 'abre-tu-llc',
+        loadComponent: () => import('./landings/landing-abre-tu-llc/landing-abre-tu-llc.component').then(m => m.LandingAbreTuLlcComponent)
+      },
+      {
+        path: 'presentacion',
+        loadComponent: () => import('./landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
+      },
+      {
+        path: 'apertura-banco-relay',
+        loadComponent: () => import('./landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent)
+      },
+      {
+        path: 'agenda',
+        loadComponent: () => import('./landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
+      },
+      {
+        path: 'agendar',
+        loadComponent: () => import('./landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
+      },
+      {
+        path: 'apertura-llc',
+        loadComponent: () => import('./manejo-llc/apertura-llc/apertura-llc.component').then(m => m.AperturaLlcComponent)
+      },
+      {
+        path: 'renovar-llc',
+        loadComponent: () => import('./manejo-llc/renovar-llc/renovar-llc.component').then(m => m.RenovarLlcComponent)
+      },
+      {
+        path: 'form-apertura-relay',
+        loadComponent: () => import('./manejo-llc/form-apertura-relay/form-apertura-relay.component').then(m => m.FormAperturaRelayComponent)
+      },
+      {
+        path: 'fixcal',
+        loadComponent: () => import('./manejo-llc/form-apertura-fixcal/form-apertura-fixcal.component').then(m => m.FormAperturaFixcalComponent)
+      },
+      {
+        path: 'abotax',
+        loadComponent: () => import('./manejo-llc/form-apertura-abotax/form-apertura-abotax.component').then(m => m.FormAperturaAbotaxComponent)
+      },
+      {
+        path: 'rescate-relay',
+        loadComponent: () => import('./landings/landing-rescate-relay/landing-rescate-relay.component').then(m => m.LandingRescateRelayComponent)
       },
       {
         path: 'error-404',
@@ -539,32 +223,31 @@ export const routes: Routes = [
         data: {
           seo: {
             title: 'Error 404 - Página No Encontrada | Start Companies LLC',
-            description:
-              'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
-            keywords:
-              'error 404, página no encontrada, Start Companies, servicios LLC',
+            description: 'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
+            keywords: 'error 404, página no encontrada, Start Companies, servicios LLC',
             ogTitle: 'Error 404 - Página No Encontrada | Start Companies LLC',
-            ogDescription:
-              'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
+            ogDescription: 'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
             ogImage: 'https://startcompanies.us/assets/logo.png',
             twitterSite: '@startcompaniess',
             canonical: 'https://startcompanies.us/error-404',
           },
         },
       },
-
-      // Catch-all para URLs de blog y contenido no implementado
-      /*{
-        path: '**',
-        redirectTo: '/error-404',
-        pathMatch: 'full',
-      },*/
-      { path: '**', redirectTo: 'error-404' }, // 👈 relativo al es
-    ]},
-    // ===== RUTAS INGLESAS =====
-    {path: 'en',
+      // Solo capturar rutas que NO empiecen con /en/
+      { matcher: (segments) => {
+        // Si la ruta empieza con 'en', no capturar aquí
+        if (segments.length > 0 && segments[0].path === 'en') {
+          return null;
+        }
+        return { consumed: segments };
+      }, redirectTo: 'error-404' }
+    ]
+  },
+  // ===== RUTAS INGLESAS CON PREFIJO /en =====
+  {
+    path: 'en',
     children: [
-      // ===== RUTAS EXISTENTES CON SEO COMPLETO EN INGLÉS =====
+      // ===== RUTAS EXISTENTES CON SEO COMPLETO =====
       {
         path: 'home',
         loadComponent: () =>
@@ -659,17 +342,17 @@ export const routes: Routes = [
       },
       {
         path: 'blog',
-        redirectTo: '/es/blog',
+        redirectTo: '/blog',
         pathMatch: 'full'
       },
       {
         path: 'category/:slug',
-        redirectTo: '/es/category/:slug',
+        redirectTo: '/category/:slug',
         pathMatch: 'full'
       },
       {
         path: 'post/:slug',
-        redirectTo: '/es/post/:slug',
+        redirectTo: '/post/:slug',
         pathMatch: 'full'
       },
       /**Landings en inglés */
@@ -808,44 +491,6 @@ export const routes: Routes = [
         },
       },
       {
-        path: 'fixcal',
-        loadComponent: () =>
-          import(
-            './manejo-llc/form-apertura-fixcal/form-apertura-fixcal.component'
-          ).then((m) => m.FormAperturaFixcalComponent),
-        data: {
-          seo: {
-            title: 'Relay Fixcal Bank Account Opening - Start Companies LLC',
-            description: 'We open your Relay Fixcal bank account for LLCs in the United States. Simple form and 100% online process.',
-            keywords: 'Relay Fixcal bank account, Fixcal account opening, Fixcal bank USA, Start Companies',
-            ogTitle: 'Relay Fixcal Bank Account Opening - Start Companies LLC',
-            ogDescription: 'We open your Relay Fixcal bank account for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/fixcal',
-          },
-        },
-      },
-      {
-        path: 'abotax',
-        loadComponent: () =>
-          import(
-            './manejo-llc/form-apertura-abotax/form-apertura-abotax.component'
-          ).then((m) => m.FormAperturaAbotaxComponent),
-        data: {
-          seo: {
-            title: 'Relay Abotax Bank Account Opening - Start Companies LLC',
-            description: 'We open your Relay Abotax bank account for LLCs in the United States. Simple form and 100% online process.',
-            keywords: 'Relay Abotax bank account, Abotax account opening, Abotax bank USA, Start Companies',
-            ogTitle: 'Relay Abotax Bank Account Opening - Start Companies LLC',
-            ogDescription: 'We open your Relay Abotax bank account for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
-            twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/abotax',
-          },
-        },
-      },
-      {
         path: 'error-404',
         loadComponent: () =>
           import('./shared/error-404/error-404.component').then(
@@ -865,6 +510,6 @@ export const routes: Routes = [
         },
       },
       { path: '**', redirectTo: 'error-404' }, // 👈 relativo al en
-    ]}]
+    ]
   },
 ];

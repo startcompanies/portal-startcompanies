@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
@@ -39,7 +39,8 @@ export class HeaderManejoComponent {
     private router: Router,
     private scrollService: ScrollService,
     public translocoService: TranslocoService,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -90,8 +91,11 @@ export class HeaderManejoComponent {
   }
 
   changeLanguage(lang: string) {
-    this.translocoService.setActiveLang(lang);
-    this.translocoService.setDefaultLang(lang);
-    this.currentLang = lang;
+    // usa setLanguage que además reemplaza la URL
+    this.languageService.setLanguage(lang, true).then(() => {
+      this.currentLang = lang;
+      // markForCheck si estás en OnPush o para seguridad visual
+      this.cdr.markForCheck();
+    });
   }
 }

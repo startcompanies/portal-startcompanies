@@ -28,23 +28,26 @@ export function app(): express.Express {
         // Página principal (redirección)
         { url: '/', priority: '1.0', changefreq: 'weekly' },
         
-        // Rutas principales en español
-        { url: '/es/inicio', priority: '1.0', changefreq: 'weekly' },
-        { url: '/es/nosotros', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/contacto', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/planes', priority: '0.9', changefreq: 'monthly' },
+        // Rutas principales en español (ahora en raíz)
+        { url: '/inicio', priority: '1.0', changefreq: 'weekly' },
+        { url: '/nosotros', priority: '0.8', changefreq: 'monthly' },
+        { url: '/contacto', priority: '0.8', changefreq: 'monthly' },
+        { url: '/planes', priority: '0.9', changefreq: 'monthly' },
+        { url: '/blog', priority: '0.9', changefreq: 'daily' },
         
         // Rutas principales en inglés
         { url: '/en/home', priority: '1.0', changefreq: 'weekly' },
         { url: '/en/about-us', priority: '0.8', changefreq: 'monthly' },
         { url: '/en/contact', priority: '0.8', changefreq: 'monthly' },
         { url: '/en/plans', priority: '0.9', changefreq: 'monthly' },
+        { url: '/en/blog', priority: '0.9', changefreq: 'daily' },
         
-        // Landing pages en español
-        { url: '/es/abre-tu-llc', priority: '0.9', changefreq: 'monthly' },
-        { url: '/es/presentacion', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/apertura-banco-relay', priority: '0.9', changefreq: 'monthly' },
-        { url: '/es/agendar', priority: '0.8', changefreq: 'monthly' },
+        // Landing pages en español (ahora en raíz)
+        { url: '/abre-tu-llc', priority: '0.9', changefreq: 'monthly' },
+        { url: '/presentacion', priority: '0.8', changefreq: 'monthly' },
+        { url: '/apertura-banco-relay', priority: '0.9', changefreq: 'monthly' },
+        { url: '/agendar', priority: '0.8', changefreq: 'monthly' },
+        { url: '/rescate-relay', priority: '0.7', changefreq: 'monthly' },
         
         // Landing pages en inglés
         { url: '/en/llc-formation', priority: '0.9', changefreq: 'monthly' },
@@ -52,12 +55,12 @@ export function app(): express.Express {
         { url: '/en/relay-account-opening', priority: '0.9', changefreq: 'monthly' },
         { url: '/en/schedule', priority: '0.8', changefreq: 'monthly' },
         
-        // Formularios en español
-        { url: '/es/apertura-llc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/renovar-llc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/form-apertura-relay', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/fixcal', priority: '0.8', changefreq: 'monthly' },
-        { url: '/es/abotax', priority: '0.8', changefreq: 'monthly' },
+        // Formularios en español (ahora en raíz)
+        { url: '/apertura-llc', priority: '0.8', changefreq: 'monthly' },
+        { url: '/renovar-llc', priority: '0.8', changefreq: 'monthly' },
+        { url: '/form-apertura-relay', priority: '0.8', changefreq: 'monthly' },
+        { url: '/fixcal', priority: '0.8', changefreq: 'monthly' },
+        { url: '/abotax', priority: '0.8', changefreq: 'monthly' },
         
         // Formularios en inglés
         { url: '/en/llc-opening', priority: '0.8', changefreq: 'monthly' },
@@ -66,21 +69,17 @@ export function app(): express.Express {
         { url: '/en/fixcal', priority: '0.8', changefreq: 'monthly' },
         { url: '/en/abotax', priority: '0.8', changefreq: 'monthly' },
         
-        // Blog (redirecciones)
-        { url: '/es/blog', priority: '0.9', changefreq: 'daily' },
-        { url: '/en/blog', priority: '0.9', changefreq: 'daily' },
+        // Páginas legales en español
+        { url: '/aviso-de-privacidad', priority: '0.6', changefreq: 'yearly' },
+        { url: '/terminos-y-condiciones', priority: '0.6', changefreq: 'yearly' },
         
-        // Rutas de campañas (redirecciones)
-        { url: '/abre-tu-llc', priority: '0.9', changefreq: 'monthly' },
-        { url: '/presentacion', priority: '0.8', changefreq: 'monthly' },
-        { url: '/apertura-banco-relay', priority: '0.9', changefreq: 'monthly' },
-        { url: '/agenda', priority: '0.8', changefreq: 'monthly' },
-        { url: '/agendar', priority: '0.8', changefreq: 'monthly' },
-        { url: '/apertura-llc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/renovar-llc', priority: '0.8', changefreq: 'monthly' },
-        { url: '/form-apertura-relay', priority: '0.8', changefreq: 'monthly' },
-        { url: '/fixcal', priority: '0.8', changefreq: 'monthly' },
-        { url: '/abotax', priority: '0.8', changefreq: 'monthly' }
+        // Páginas legales en inglés
+        { url: '/en/privacy-policy', priority: '0.6', changefreq: 'yearly' },
+        { url: '/en/terms-and-conditions', priority: '0.6', changefreq: 'yearly' },
+        
+        // Páginas de error
+        { url: '/error-404', priority: '0.1', changefreq: 'yearly' },
+        { url: '/en/error-404', priority: '0.1', changefreq: 'yearly' }
       ];
 
       const staticEntries = staticUrls.map(page => `
@@ -112,7 +111,7 @@ export function app(): express.Express {
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>${baseUrl}/es/blog</loc>
+    <loc>${baseUrl}/blog</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -122,7 +121,7 @@ export function app(): express.Express {
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>${baseUrl}/es/category/llc-formation</loc>
+    <loc>${baseUrl}/category/llc-formation</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -132,12 +131,32 @@ export function app(): express.Express {
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/es/category/bank-accounts</loc>
+    <loc>${baseUrl}/category/bank-accounts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>${baseUrl}/en/category/bank-accounts</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/category/business-strategy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/en/category/business-strategy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/category/tax-optimization</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>${baseUrl}/en/category/tax-optimization</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -167,8 +186,28 @@ Sitemap: ${baseUrl}/sitemap-blog.xml
 Disallow: /admin/
 Disallow: /api/
 
-# Allow blog
+# Allow blog and categories
 Allow: /blog/
+Allow: /category/
+Allow: /post/
+Allow: /en/blog/
+Allow: /en/category/
+Allow: /en/post/
+
+# Allow all landing pages and forms
+Allow: /abre-tu-llc
+Allow: /presentacion
+Allow: /apertura-banco-relay
+Allow: /agendar
+Allow: /apertura-llc
+Allow: /renovar-llc
+Allow: /form-apertura-relay
+Allow: /fixcal
+Allow: /abotax
+Allow: /rescate-relay
+
+# Allow English routes
+Allow: /en/
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1`;
@@ -182,78 +221,77 @@ Crawl-delay: 1`;
     }
   });
 
-  // Redirecciones 301 para mantener SEO (solo URLs que no existen)
+  // ===== REDIRECCIONES 301 PARA SEO =====
+  // Redirecciones de rutas antiguas a las nuevas sin prefijo /es
   server.get('/servicios', (req, res) => {
-    res.redirect(301, '/es/inicio');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/inicio' + query);
   });
-
-  /*server.get('/blog', (req, res) => {
-    res.redirect(301, '/');
-  });*/
-
   server.get('/agenda-tu-consulta-gratis', (req, res) => {
-    res.redirect(301, '/es/contacto');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/contacto' + query);
   });
-
   server.get('/abrir-llc', (req, res) => {
-    res.redirect(301, '/es/abre-tu-llc');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/abre-tu-llc' + query);
   });
-
   server.get('/apertura-relay', (req, res) => {
-    res.redirect(301, '/es/apertura-banco-relay');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/apertura-banco-relay' + query);
   });
-
   server.get('/contrato-oferta', (req, res) => {
-    res.redirect(301, '/es/apertura-llc');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/apertura-llc' + query);
   });
-
   server.get('/masterclass-thank-you', (req, res) => {
-    res.redirect(301, '/es/inicio');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/inicio' + query);
   });
-
   server.get('/thank-you', (req, res) => {
-    res.redirect(301, '/es/inicio');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/inicio' + query);
   });
-
   server.get('/formulario-de-apertura-de-llc-y-cuenta-bancaria', (req, res) => {
-    res.redirect(301, '/es/apertura-llc');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/apertura-llc' + query);
   });
-
   server.get('/formulario-renovacion-llc', (req, res) => {
-    res.redirect(301, '/es/renovar-llc');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/renovar-llc' + query);
   });
-
   server.get('/masterclass-gratuita', (req, res) => {
-    res.redirect(301, '/es/inicio');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/inicio' + query);
   });
-
   server.get('/form-apertura-fixcal', (req, res) => {
-    res.redirect(301, '/es/fixcal');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/fixcal' + query);
   });
-
   server.get('/form-apertura-abotax', (req, res) => {
-    res.redirect(301, '/es/abotax');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/abotax' + query);
   });
-
   server.get('/relay-fixcal', (req, res) => {
-    res.redirect(301, '/es/fixcal');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/fixcal' + query);
   });
-
   server.get('/relay-abotax', (req, res) => {
-    res.redirect(301, '/es/abotax');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/abotax' + query);
   });
-
-  // Redirecciones de blog y categorías
-  /*server.get('/category/*', (req, res) => {
-    res.redirect(301, '/');
-  });
-
-  server.get('/como-*', (req, res) => {
-    res.redirect(301, '/');
-  });*/
-
   server.get('/*/page/*', (req, res) => {
-   res.redirect(301, '/');
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/' + query);
+  }); // Catch-all for old paginated blog routes
+
+  // ===== REDIRECCIONES 301: Mover español sin prefijo. Todo /es/* -> /* equivalente =====
+  server.get('/es', (req, res) => {
+    const query = req.url.includes('?') ? req.url.substring(req.url.indexOf('?')) : '';
+    res.redirect(301, '/' + query);
+  });
+  server.get('/es/*', (req, res) => {
+    const target = req.originalUrl.replace(/^\/es\//, '/');
+    res.redirect(301, target);
   });
 
   // Serve static files from /browser with optimized caching
