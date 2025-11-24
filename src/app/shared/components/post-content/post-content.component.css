@@ -1,5 +1,23 @@
 /* Estilos para el contenido del post - aplicados globalmente debido a ViewEncapsulation.None */
 
+/* Estilos para landing page (contenido con secciones) */
+.landing-page-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.landing-page-row .app-post-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media (min-width: 992px) {
+  .landing-page-row .app-post-content {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
 /* Estilos para abre-corp-card */
 .app-post-content .abre-corp-card,
 .abre-corp-card {

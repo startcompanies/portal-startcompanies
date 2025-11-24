@@ -18,6 +18,7 @@ declare global {
 })
 export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() html: string = '';
+  @Input() isLandingPage = false;
   sanitizedHtml: SafeHtml = '';
   isBrowser = false;
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;

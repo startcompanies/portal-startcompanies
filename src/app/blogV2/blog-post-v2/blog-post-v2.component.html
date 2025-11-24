@@ -1,5 +1,5 @@
 <app-sc-header></app-sc-header>
-<section class="sc-post-hero">
+<section class="sc-post-hero" *ngIf="!hasSections">
   <app-responsive-image
     [images]="heroImages"
     context="hero"
@@ -28,22 +28,93 @@
   </div>
 </section>
 
-<div class="container my-5">
+<!-- Card de primera sección para landing page -->
+<section *ngIf="hasSections && postArticle" class="mb-5 py-5 sc-hero landing-hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+
+  <div class="container position-relative">
+    <div class="mission-card row align-items-center my-5 g-5 py-5">
+      <div class="col-lg-6">
+        <div class="mission-image-container">
+          <img
+            [src]="firstSectionImage || postArticle.image_url"
+            [alt]="postArticle.title"
+            class="mission-image img-fluid"
+          />
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="mission-content">
+          <h2 class="mission-title">{{ postArticle.title }}</h2>
+          <div class="mission-description" [innerHTML]="getSanitizedFirstSection()"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de compartir sociales -->
+    <div class="social-share-buttons">
+      <button
+        type="button"
+        class="social-share-btn whatsapp-btn"
+        (click)="shareOnWhatsApp()"
+        [attr.aria-label]="'Compartir en WhatsApp'"
+        title="Compartir en WhatsApp"
+      >
+        <i class="bi bi-whatsapp"></i>
+      </button>
+      <button
+        type="button"
+        class="social-share-btn linkedin-btn"
+        (click)="shareOnLinkedIn()"
+        [attr.aria-label]="'Compartir en LinkedIn'"
+        title="Compartir en LinkedIn"
+      >
+        <i class="bi bi-linkedin"></i>
+      </button>
+      <button
+        type="button"
+        class="social-share-btn facebook-btn"
+        (click)="shareOnFacebook()"
+        [attr.aria-label]="'Compartir en Facebook'"
+        title="Compartir en Facebook"
+      >
+        <i class="bi bi-facebook"></i>
+      </button>
+      <button
+        type="button"
+        class="social-share-btn share-btn"
+        (click)="shareNative()"
+        [attr.aria-label]="'Compartir'"
+        title="Compartir"
+      >
+        <i class="bi bi-share"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="container my-5" [ngClass]="{ 'landing-page-container': hasSections }">
   <div class="row">
     <main
-      class="col-lg-8"
+      [class]="hasSections ? 'col-12' : 'col-lg-8'"
       *ngIf="postArticle && postArticle.content; else noArticle"
     >
-      <app-post-content [html]="postArticle.content"></app-post-content>
+      <app-post-content [html]="hasSections ? remainingContent : postArticle.content" [isLandingPage]="hasSections"></app-post-content>
     </main>
 
     <ng-template #noArticle>
-      <main class="col-lg-8">
+      <main [class]="hasSections ? 'col-12' : 'col-lg-8'">
         <div class="alert alert-info">Artículo no disponible o cargando...</div>
       </main>
     </ng-template>
 
-    <aside class="col-lg-4 d-none d-lg-block">
+    <aside class="col-lg-4 d-none d-lg-block" *ngIf="!hasSections">
       <div class="card sc-this-post mb-4">
         <div class="card-header pt-4 sc-header">
           <p class="text-center">En este articulo</p>
