@@ -42,21 +42,155 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       // Esperar a que el contenido se renderice después del cambio
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
+        this.initializeAccordions();
       }, 200);
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
+      // Exponer toggleAccordion globalmente para que funcione con onclick en el HTML
+      (window as any).toggleAccordion = (id: string) => {
+        this.toggleAccordion(id);
+      };
+      
       // Esperar a que el contenido se renderice
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
+        this.initializeAccordions();
       }, 200);
     }
   }
 
   ngOnDestroy(): void {
-    // Limpiar si es necesario
+    // Limpiar la función global
+    if (this.isBrowser && (window as any).toggleAccordion) {
+      delete (window as any).toggleAccordion;
+    }
+  }
+
+  private initializeAccordions(): void {
+    if (!this.isBrowser) return;
+
+    // Buscar todos los botones de acordeón y añadir event listeners
+    const accordionButtons = document.querySelectorAll('.custom-accordion-button');
+    accordionButtons.forEach((button) => {
+      const buttonElement = button as HTMLElement;
+      // Verificar si ya tiene el listener para evitar duplicados
+      if (!buttonElement.dataset['accordionInitialized']) {
+        buttonElement.dataset['accordionInitialized'] = 'true';
+        buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          // Buscar el contenido del acordeón asociado
+          // Primero intentar por aria-controls
+          let contentId = buttonElement.getAttribute('aria-controls');
+          
+          // Si no, intentar por data-target
+          if (!contentId) {
+            const dataTarget = buttonElement.getAttribute('data-target');
+            if (dataTarget) {
+              contentId = dataTarget.replace('#', '');
+            }
+          }
+          
+          // Si no, buscar el siguiente elemento con clase custom-accordion-content
+          if (!contentId) {
+            const accordionItem = buttonElement.closest('.custom-accordion-item') || 
+                                 buttonElement.parentElement;
+            const contentElement = accordionItem?.querySelector('.custom-accordion-content') as HTMLElement;
+            if (contentElement) {
+              contentId = contentElement.id;
+            }
+          }
+          
+          // Si aún no hay ID, buscar el siguiente elemento hermano
+          if (!contentId) {
+            const nextSibling = buttonElement.nextElementSibling as HTMLElement;
+            if (nextSibling && nextSibling.classList.contains('custom-accordion-content')) {
+              contentId = nextSibling.id;
+            }
+          }
+          
+          if (contentId) {
+            this.toggleAccordion(contentId);
+          }
+        });
+      }
+    });
+  }
+
+  toggleAccordion(id: string): void {
+    if (!this.isBrowser) return;
+
+    const content = document.getElementById(id) as HTMLElement;
+    if (!content) return;
+
+    // Buscar el botón asociado
+    let button: HTMLElement | null = null;
+    
+    // Intentar encontrar el botón por previousElementSibling
+    const previousSibling = content.previousElementSibling as HTMLElement;
+    if (previousSibling) {
+      button = previousSibling.querySelector('button.custom-accordion-button') as HTMLElement;
+    }
+    
+    // Si no se encuentra, buscar en el elemento padre
+    if (!button) {
+      const parent = content.parentElement;
+      button = parent?.querySelector('button.custom-accordion-button') as HTMLElement;
+    }
+    
+    // Si aún no se encuentra, buscar por aria-controls
+    if (!button) {
+      button = document.querySelector(`button[aria-controls="${id}"], button[data-target="#${id}"]`) as HTMLElement;
+    }
+    
+    if (!button) return;
+
+    const icon = button.querySelector('.accordion-icon') as HTMLElement;
+
+    // Cerrar todos los demás acordeones
+    const allContents = document.querySelectorAll('.custom-accordion-content');
+    const allIcons = document.querySelectorAll('.accordion-icon');
+    const allButtons = document.querySelectorAll('.custom-accordion-button');
+
+    allContents.forEach((item) => {
+      const itemElement = item as HTMLElement;
+      if (itemElement.id !== id) {
+        itemElement.style.display = 'none';
+      }
+    });
+
+    allIcons.forEach((iconItem) => {
+      const iconElement = iconItem as HTMLElement;
+      // Solo rotar si no es el icono del acordeón actual
+      if (icon && iconElement !== icon) {
+        iconElement.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    allButtons.forEach((buttonItem) => {
+      const buttonElement = buttonItem as HTMLElement;
+      // Solo actualizar si no es el botón del acordeón actual
+      if (buttonElement !== button) {
+        buttonElement.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Toggle del acordeón actual
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      if (icon) {
+        icon.style.transform = 'rotate(90deg)';
+      }
+      button.setAttribute('aria-expanded', 'true');
+    } else {
+      content.style.display = 'none';
+      if (icon) {
+        icon.style.transform = 'rotate(0deg)';
+      }
+      button.setAttribute('aria-expanded', 'false');
+    }
   }
 
   private sanitizeHtml() {

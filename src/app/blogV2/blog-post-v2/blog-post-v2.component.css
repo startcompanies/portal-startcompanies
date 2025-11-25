@@ -307,25 +307,27 @@
 
 /* Estilos para landing page (contenido con secciones) */
 .landing-page-container {
-  max-width: 100%;
-  padding-left: 0;
-  padding-right: 0;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .landing-page-container .row {
-  margin-left: 0;
-  margin-right: 0;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
 .landing-page-container main {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 @media (min-width: 992px) {
   .landing-page-container {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 }
 

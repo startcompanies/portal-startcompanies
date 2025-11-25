@@ -99,7 +99,7 @@
   </div>
 </section>
 
-<div class="container my-5" [ngClass]="{ 'landing-page-container': hasSections }">
+<div [ngClass]="hasSections ? 'container-fluid my-5' : 'container my-5'" [class.landing-page-container]="hasSections">
   <div class="row">
     <main
       [class]="hasSections ? 'col-12' : 'col-lg-8'"

@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit, PLATFORM_ID, SecurityContext } from '@angular/core';
+import { Component, Inject, inject, OnInit, AfterViewInit, PLATFORM_ID, SecurityContext } from '@angular/core';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
 import { BlogService } from '../../services/blog.service';
@@ -26,7 +26,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
 })
-export class BlogPostV2Component implements OnInit {
+export class BlogPostV2Component implements OnInit, AfterViewInit {
   private blogService = inject(BlogService);
 
   postArticle!: Post;
@@ -64,6 +64,10 @@ export class BlogPostV2Component implements OnInit {
     });
   }
 
+  ngAfterViewInit(): void {
+    // La inicialización del TOC se hace después de cargar el post en loadPost
+  }
+
   private async loadPost(slug: string): Promise<void> {
     try {
       const post = await this.blogService.getPostsBySlug(slug);
@@ -84,6 +88,13 @@ export class BlogPostV2Component implements OnInit {
         if (this.hasSections) {
           this.extractFirstSection(post.content);
         }
+      }
+      
+      // Inicializar TOC después de que el contenido se renderice
+      if (this.isBrowser) {
+        setTimeout(() => {
+          this.initializeTOC();
+        }, 800);
       }
       //console.log(this.postArticle)
     } catch (error) {
@@ -208,6 +219,12 @@ export class BlogPostV2Component implements OnInit {
     // Remover títulos (h1, h2, h3) del contenido para evitar duplicación con el título del post
     firstSectionHtml = firstSectionHtml.replace(/<h[1-3][^>]*>[\s\S]*?<\/h[1-3]>/gi, '').trim();
 
+    // Remover el div completo que contiene "Fact Checked por nuestro experto legal" (data-id="4c70b4c0")
+    firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="4c70b4c0"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
+
+    // Remover el div completo que contiene "Sobre los autores" (data-id="65935626")
+    firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="65935626"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
+
     // Sanitizar el contenido de la primera sección
     this.firstSectionContent = this.sanitizeHtmlString(firstSectionHtml);
 
@@ -292,5 +309,57 @@ export class BlogPostV2Component implements OnInit {
     }).catch((error) => {
       console.log('Error al copiar:', error);
     });
+  }
+
+  private initializeTOC(): void {
+    if (!this.isBrowser) return;
+
+    // Buscar el card-header que contiene "Indice del artículo" o "Índice del artículo"
+    const cardHeaders = document.querySelectorAll('.card-header');
+    cardHeaders.forEach((header) => {
+      const h5 = header.querySelector('h5');
+      if (h5) {
+        const headerText = h5.textContent?.trim() || '';
+        // Buscar variaciones del texto
+        if (headerText.includes('Indice') || headerText.includes('Índice') || headerText.includes('indice')) {
+          const headerElement = header as HTMLElement;
+          
+          // Añadir el icono de toggle si no existe
+          if (!header.querySelector('#toc-toggle-icon')) {
+            const icon = document.createElement('i');
+            icon.id = 'toc-toggle-icon';
+            icon.className = 'bi bi-chevron-down';
+            icon.style.transition = 'transform 0.3s ease';
+            headerElement.style.cursor = 'pointer';
+            header.appendChild(icon);
+          }
+
+          // Añadir el evento click solo si no tiene ya un listener
+          if (!headerElement.dataset['tocInitialized']) {
+            headerElement.dataset['tocInitialized'] = 'true';
+            headerElement.addEventListener('click', () => {
+              this.toggleTOC();
+            });
+          }
+        }
+      }
+    });
+  }
+
+  toggleTOC(): void {
+    if (!this.isBrowser) return;
+    
+    const tocBody = document.getElementById('toc-body');
+    const toggleIcon = document.getElementById('toc-toggle-icon');
+    
+    if (tocBody && toggleIcon) {
+      if (tocBody.style.display === 'none' || tocBody.style.display === '') {
+        tocBody.style.display = 'block';
+        toggleIcon.style.transform = 'rotate(180deg)';
+      } else {
+        tocBody.style.display = 'none';
+        toggleIcon.style.transform = 'rotate(0deg)';
+      }
+    }
   }
 }
