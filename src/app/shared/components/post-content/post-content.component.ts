@@ -239,6 +239,68 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
+    // Agregar icono de LinkedIn a enlaces que contengan "Sígueme en LinkedIn" o "Sigueme en Linkedin"
+    // Buscar todos los enlaces que contengan el texto, sin importar mayúsculas/minúsculas o acentos
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Verificar si el contenido del enlace contiene el texto (case insensitive)
+      const hasLinkedInText = /s[ií]gueme en linkedin/i.test(linkContent);
+      // Verificar si el enlace ya tiene el icono de LinkedIn
+      const hasIcon = match.includes('bi-linkedin');
+      
+      if (hasLinkedInText && !hasIcon) {
+        // Limpiar espacios extra al inicio del contenido
+        const cleanedContent = linkContent.trim();
+        // Agregar el icono antes del contenido del enlace con un pequeño margen
+        return `<a ${beforeHref}href="${href}"${afterHref}><i class="bi bi-linkedin me-1"></i>${cleanedContent}</a>`;
+      }
+      return match;
+    });
+    
+    // Agregar iconos de flecha hacia abajo a los botones de acordeón que no los tengan
+    // El icono debe estar al final del botón (no después del span) para que justify-content: space-between funcione
+    content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {
+      // Verificar si el botón ya tiene un icono accordion-icon
+      if (!match.includes('accordion-icon')) {
+        // Crear el SVG de flecha hacia abajo (igual al ejemplo)
+        const arrowIcon = `<svg class="accordion-icon" style="width: 16px; height: 16px; transition: transform 0.3s;" viewBox="0 0 192 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"></path></svg>`;
+        // Asegurar que el botón tenga los estilos necesarios para el layout flex, pero SIN width: 100%
+        let styleAttr = afterClass.match(/style\s*=\s*["']([^"']*)["']/i);
+        let newAfterClass = afterClass;
+        
+        if (styleAttr) {
+          const existingStyle = styleAttr[1];
+          // Eliminar width: 100% si existe
+          let newStyle = existingStyle.replace(/width\s*:\s*100%\s*;?/gi, '').trim();
+          // Limpiar dobles espacios y puntos y comas extra
+          newStyle = newStyle.replace(/\s*;\s*;/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '');
+          
+          // Asegurar que tenga display: flex
+          if (!newStyle.includes('display:') && !newStyle.includes('display ')) {
+            newStyle = newStyle + (newStyle ? '; ' : '') + 'display: flex;';
+          }
+          
+          // Asegurar que tenga justify-content: space-between
+          if (!newStyle.includes('justify-content:')) {
+            newStyle = newStyle + (newStyle ? ' ' : '') + 'justify-content: space-between;';
+          }
+          
+          // Asegurar que tenga align-items: center
+          if (!newStyle.includes('align-items:')) {
+            newStyle = newStyle + (newStyle ? ' ' : '') + 'align-items: center;';
+          }
+          
+          newAfterClass = afterClass.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyle}"`);
+        } else {
+          // Si no tiene style, añadirlo completo SIN width: 100%
+          newAfterClass = afterClass + ' style="text-align: left; background: none; border: none; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"';
+        }
+        
+        // Añadir el icono al final del contenido del botón
+        return `<button ${beforeClass}class="${classAttr}"${newAfterClass}>${buttonContent}${arrowIcon}</button>`;
+      }
+      return match;
+    });
+    
     // Agregar iconos de estrellas después del span con clase veredicto-rating-number
     // Buscar todos los spans completos con veredicto-rating-number y añadir iconos después si no existen
     const ratingSpanRegex = /<span\s+[^>]*?class\s*=\s*["'][^"']*veredicto-rating-number[^"']*["'][^>]*>([^<]*?)<\/span>/gi;
