@@ -256,6 +256,75 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
+    // Agregar estilos e icono de flecha a enlaces que contengan "Abrir tu LLC"
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Limpiar el contenido del enlace para comparar (eliminar HTML interno y espacios)
+      const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
+      // Verificar si el contenido del enlace contiene el texto "Abrir tu LLC" (case insensitive)
+      const hasAbrirLLCText = /abrir\s+tu\s+llc/i.test(cleanContent);
+      // Verificar si el enlace ya tiene los estilos aplicados
+      const hasStyles = match.includes('abrir-llc-btn');
+      
+      if (hasAbrirLLCText && !hasStyles) {
+        // Obtener los atributos existentes de toda la etiqueta
+        const allAttrs = beforeHref + afterHref;
+        const classMatch = allAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
+        const styleMatch = allAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
+        
+        // Construir los nuevos estilos (reemplazando cualquier estilo existente)
+        const newStyles = 'background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1rem; display: inline-flex; align-items: center; transition: background-color 0.3s ease;';
+        
+        // Mantener las clases existentes y añadir abrir-llc-btn si no existe
+        let newClass = 'abrir-llc-btn';
+        if (classMatch) {
+          const existingClasses = classMatch[1];
+          if (!existingClasses.includes('abrir-llc-btn')) {
+            newClass = `${existingClasses} abrir-llc-btn`;
+          } else {
+            newClass = existingClasses;
+          }
+        }
+        
+        // Construir los nuevos atributos
+        let newBeforeHref = beforeHref;
+        let newAfterHref = afterHref;
+        
+        // Reemplazar o agregar style
+        if (styleMatch) {
+          // Reemplazar style existente
+          if (beforeHref.includes('style')) {
+            newBeforeHref = beforeHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyles}"`);
+          } else if (afterHref.includes('style')) {
+            newAfterHref = afterHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyles}"`);
+          }
+        } else {
+          // Agregar style nuevo
+          newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `style="${newStyles}"`;
+        }
+        
+        // Reemplazar o agregar class
+        if (classMatch) {
+          // Reemplazar class existente manteniendo las clases originales
+          if (beforeHref.includes('class')) {
+            newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClass}"`);
+          } else if (afterHref.includes('class')) {
+            newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClass}"`);
+          }
+        } else {
+          // Agregar class nuevo
+          newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `class="${newClass}"`;
+        }
+        
+        // Verificar si el contenido ya tiene el icono
+        const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
+        const iconHtml = hasIcon ? '' : '<i class="bi bi-arrow-right me-2"></i>';
+        
+        // Construir el nuevo enlace con el icono antes del contenido
+        return `<a ${newBeforeHref}href="${href}"${newAfterHref}>${iconHtml}${linkContent}</a>`;
+      }
+      return match;
+    });
+    
     // Agregar iconos de flecha hacia abajo a los botones de acordeón que no los tengan
     // El icono debe estar al final del botón (no después del span) para que justify-content: space-between funcione
     content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {

@@ -46,6 +46,27 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     priority: true,
   };
 
+  // Getter para obtener las imágenes del hero según el tipo de post
+  get postHeroImages() {
+    // Si es landing (hasSections), usar la imagen de fondo genérica
+    if (this.hasSections) {
+      return this.heroImages;
+    }
+    // Si no es landing, usar la imagen del post
+    if (this.postArticle?.image_url) {
+      return {
+        mobile: this.postArticle.image_url,
+        tablet: this.postArticle.image_url,
+        desktop: this.postArticle.image_url,
+        fallback: this.postArticle.image_url,
+        alt: this.postArticle.title || 'Post Image',
+        priority: true,
+      };
+    }
+    // Fallback a imagen genérica si no hay imagen del post
+    return this.heroImages;
+  }
+
   constructor(
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
@@ -73,6 +94,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       const post = await this.blogService.getPostsBySlug(slug);
       if (!post) return;
 
+      // Resetear hasSections antes de cargar el nuevo post
+      this.hasSections = false;
       this.postArticle = post;
       if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -83,6 +106,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (this.isBrowser && post.content) {
         this.contentBlocks = this.parseHtmlContent(post.content);
         // Detectar si el contenido tiene secciones <section></section>
+        // Solo considerar como landing si hay secciones al inicio del contenido
         this.hasSections = this.detectSections(post.content);
         // Si tiene secciones, extraer la primera sección
         if (this.hasSections) {
@@ -140,8 +164,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   private detectSections(content: string): boolean {
     if (!content) return false;
     // Buscar si hay etiquetas <section> en el contenido
+    // Solo considerar como landing si hay secciones al inicio del contenido (primeros 2000 caracteres)
+    // para evitar falsos positivos con secciones dentro del contenido del post
+    const contentStart = content.substring(0, 2000);
     const sectionRegex = /<section[^>]*>[\s\S]*?<\/section>/gi;
-    return sectionRegex.test(content);
+    return sectionRegex.test(contentStart);
   }
 
   private extractFirstSection(content: string): void {
