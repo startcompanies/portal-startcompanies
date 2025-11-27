@@ -36,6 +36,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   firstSectionContent = '';
   firstSectionImage = '';
   remainingContent = '';
+  tocLinks: Array<{ href: string; text: string }> = [];
 
   heroImages = {
     mobile: '/assets/hero-bg-mobile.webp',
@@ -114,11 +115,30 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         }
       }
       
+      // Extraer enlaces del contenido para el TOC (solo si no es landing)
+      if (this.isBrowser && !this.hasSections && post.content) {
+        this.tocLinks = this.extractTOCLinks(post.content);
+        // Asignar IDs a los encabezados después de que se renderice el contenido
+        setTimeout(() => {
+          this.assignHeadingIds();
+        }, 500);
+      } else {
+        this.tocLinks = [];
+      }
+      
       // Inicializar TOC después de que el contenido se renderice
       if (this.isBrowser) {
+        // Para posts tipo landing, esperar más tiempo para que el contenido se renderice completamente
+        const timeout = this.hasSections ? 1200 : 800;
         setTimeout(() => {
           this.initializeTOC();
-        }, 800);
+          // Para posts tipo landing, reintentar inicialización después de más tiempo
+          if (this.hasSections) {
+            setTimeout(() => {
+              this.initializeTOC();
+            }, 1000);
+          }
+        }, timeout);
       }
       //console.log(this.postArticle)
     } catch (error) {
@@ -368,6 +388,46 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
               this.toggleTOC();
             });
           }
+
+          // Inicializar navegación por scroll para los enlaces del índice (posts tipo landing)
+          const card = header.closest('.card');
+          if (card) {
+            const tocBody = card.querySelector('#toc-body');
+            if (tocBody && !tocBody.hasAttribute('data-scroll-initialized')) {
+              tocBody.setAttribute('data-scroll-initialized', 'true');
+              this.initializeTOCLinksNavigation(card);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Inicializa la navegación por scroll para los enlaces del índice en posts tipo landing
+   */
+  private initializeTOCLinksNavigation(tocCard: Element): void {
+    if (!this.isBrowser) return;
+
+    const tocBody = tocCard.querySelector('#toc-body');
+    if (!tocBody) return;
+
+    // Buscar todos los enlaces dentro del índice
+    const tocLinks = tocBody.querySelectorAll('a[href]');
+    
+    tocLinks.forEach((link) => {
+      const linkElement = link as HTMLAnchorElement;
+      const href = linkElement.getAttribute('href');
+      
+      if (href && href.startsWith('#')) {
+        // Verificar si ya tiene un listener para evitar duplicados
+        if (!linkElement.hasAttribute('data-toc-link-initialized')) {
+          linkElement.setAttribute('data-toc-link-initialized', 'true');
+          
+          linkElement.addEventListener('click', (event) => {
+            event.preventDefault();
+            this.scrollToSection(href, event);
+          });
         }
       }
     });
@@ -388,5 +448,400 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         toggleIcon.style.transform = 'rotate(0deg)';
       }
     }
+  }
+
+  /**
+   * Genera un ID único basado en el texto del encabezado
+   */
+  private generateHeadingId(text: string): string {
+    if (!text) return '';
+    // Convertir a minúsculas, eliminar acentos y caracteres especiales
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+      .replace(/[^a-z0-9\s-]/g, '') // Eliminar caracteres especiales
+      .trim()
+      .replace(/\s+/g, '-') // Reemplazar espacios con guiones
+      .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
+      .substring(0, 50); // Limitar longitud
+  }
+
+  /**
+   * Extrae los encabezados y enlaces del contenido HTML del post para generar el TOC
+   */
+  private extractTOCLinks(content: string): Array<{ href: string; text: string; isHeading?: boolean }> {
+    if (!content || !this.isBrowser) return [];
+
+    const links: Array<{ href: string; text: string; isHeading?: boolean }> = [];
+    const container = document.createElement('div');
+    container.innerHTML = content;
+
+    // Primero, buscar todos los encabezados (h1, h2, h3, h4, h5, h6)
+    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    headings.forEach((heading) => {
+      const headingElement = heading as HTMLElement;
+      const text = headingElement.textContent?.trim() || '';
+      
+      if (text) {
+        // Obtener o generar ID para el encabezado
+        let headingId = headingElement.id;
+        
+        if (!headingId) {
+          // Generar un ID basado en el texto
+          headingId = this.generateHeadingId(text);
+          // Asegurar que el ID sea único añadiendo un contador si es necesario
+          let uniqueId = headingId;
+          let counter = 1;
+          while (links.some(link => link.href === `#${uniqueId}`)) {
+            uniqueId = `${headingId}-${counter}`;
+            counter++;
+          }
+          headingId = uniqueId;
+        }
+        
+        links.push({ 
+          href: `#${headingId}`, 
+          text,
+          isHeading: true 
+        });
+      }
+    });
+
+    // También buscar enlaces con anclas internas (como respaldo)
+    const anchorElements = container.querySelectorAll('a[href]');
+    anchorElements.forEach((anchor) => {
+      const href = anchor.getAttribute('href');
+      const anchorElement = anchor as HTMLElement;
+      let text = anchor.textContent?.trim() || anchorElement.innerText?.trim() || '';
+
+      if (href && text) {
+        // Solo incluir enlaces que sean anclas internas (empiezan con #)
+        if (href.startsWith('#')) {
+          // Verificar que no esté ya en la lista
+          if (!links.some(link => link.href === href)) {
+            links.push({ href, text, isHeading: false });
+          }
+        } else if (href.startsWith('/')) {
+          // Enlaces internos del sitio que pueden tener anclas
+          const hashIndex = href.indexOf('#');
+          if (hashIndex !== -1) {
+            const anchorPart = href.substring(hashIndex);
+            if (!links.some(link => link.href === anchorPart)) {
+              links.push({ href: anchorPart, text, isHeading: false });
+            }
+          }
+        } else if (href.includes('#') && (href.includes(window.location.hostname) || !href.startsWith('http'))) {
+          // URLs absolutas o relativas con anclas
+          const hashIndex = href.indexOf('#');
+          if (hashIndex !== -1) {
+            const anchorPart = href.substring(hashIndex);
+            if (!links.some(link => link.href === anchorPart)) {
+              links.push({ href: anchorPart, text, isHeading: false });
+            }
+          }
+        }
+      }
+    });
+
+    return links;
+  }
+
+  /**
+   * Asigna IDs a los encabezados que no los tengan para permitir navegación
+   */
+  private assignHeadingIds(): void {
+    if (!this.isBrowser) return;
+
+    const contentContainer = document.querySelector('.app-post-content');
+    if (!contentContainer) return;
+
+    const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    headings.forEach((heading) => {
+      const headingElement = heading as HTMLElement;
+      
+      // Solo asignar ID si no tiene uno
+      if (!headingElement.id) {
+        const text = headingElement.textContent?.trim() || '';
+        if (text) {
+          const generatedId = this.generateHeadingId(text);
+          
+          // Asegurar que el ID sea único en el documento
+          let uniqueId = generatedId;
+          let counter = 1;
+          while (document.getElementById(uniqueId)) {
+            uniqueId = `${generatedId}-${counter}`;
+            counter++;
+          }
+          
+          headingElement.id = uniqueId;
+        }
+      }
+    });
+  }
+
+  /**
+   * Navega a la sección del contenido cuando se hace clic en un elemento del TOC
+   */
+  scrollToSection(href: string, event?: Event): void {
+    if (event) {
+      event.preventDefault();
+    }
+
+    if (!this.isBrowser || !href) return;
+
+    // Normalizar el href para asegurarse de que tenga el #
+    const normalizedHref = href.startsWith('#') ? href : `#${href}`;
+    const anchorId = normalizedHref.substring(1);
+
+    // Validar que el anchorId no esté vacío
+    if (!anchorId || anchorId.trim() === '') {
+      console.warn('El href está vacío o no es válido:', href);
+      return;
+    }
+
+    // Función auxiliar para hacer scroll
+    const performScroll = () => {
+      let targetElement: HTMLElement | null = null;
+      
+      // Para posts tipo landing, buscar en todo el documento
+      // Para posts no landing, buscar solo en el contenedor de contenido
+      const defaultContainer = this.hasSections 
+        ? document.body  // Para landing, buscar en todo el body
+        : document.querySelector('.app-post-content'); // Para no landing, solo en el contenido
+      
+      if (!defaultContainer && !this.hasSections) {
+        console.warn('No se encontró el contenedor de contenido');
+        return;
+      }
+
+      // Primero, asegurar que los encabezados tengan IDs asignados (solo para posts no landing)
+      if (!this.hasSections) {
+        const contentContainer = document.querySelector('.app-post-content');
+        if (contentContainer) {
+          this.assignHeadingIds();
+        }
+      }
+
+      // Estrategia 1: Buscar elemento por ID directamente
+      try {
+        targetElement = document.getElementById(anchorId);
+      } catch (e) {
+        // Ignorar errores de ID inválido
+      }
+
+      // Estrategia 2: Buscar dentro del contenedor por ID
+      if (!targetElement) {
+        try {
+          const escapedId = CSS.escape(anchorId);
+          // Para posts tipo landing, buscar en todo el contenido renderizado
+          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          if (searchContainer) {
+            targetElement = searchContainer.querySelector(`#${escapedId}`) as HTMLElement;
+          }
+        } catch (e) {
+          // Ignorar errores
+        }
+      }
+
+      // Estrategia 3: Buscar todos los elementos con ese ID (puede haber múltiples)
+      if (!targetElement) {
+        try {
+          const escapedId = CSS.escape(anchorId);
+          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          if (searchContainer) {
+            const allElements = searchContainer.querySelectorAll(`#${escapedId}`);
+            if (allElements.length > 0) {
+              targetElement = allElements[0] as HTMLElement;
+            }
+          }
+        } catch (e) {
+          // Ignorar errores
+        }
+      }
+
+      // Estrategia 3.5: Buscar encabezados por texto si no se encuentra por ID (solo para posts no landing)
+      if (!targetElement && !this.hasSections) {
+        const contentContainer = document.querySelector('.app-post-content');
+        if (contentContainer) {
+          // Primero asegurar que los encabezados tengan IDs
+          this.assignHeadingIds();
+          
+          // Buscar el enlace correspondiente en tocLinks para obtener el texto
+          const tocLink = this.tocLinks.find(link => link.href === normalizedHref || link.href === href);
+          if (tocLink) {
+            const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            for (let i = 0; i < headings.length; i++) {
+              const heading = headings[i] as HTMLElement;
+              const headingText = heading.textContent?.trim() || '';
+              // Comparar texto exacto o normalizado
+              if (headingText === tocLink.text || 
+                  headingText.toLowerCase().trim() === tocLink.text.toLowerCase().trim()) {
+                targetElement = heading;
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      // Estrategia 4: Buscar el enlace que apunta a este href
+      if (!targetElement) {
+        const searchContainer = this.hasSections ? document.body : defaultContainer;
+        if (searchContainer) {
+          const allLinks = searchContainer.querySelectorAll('a[href]');
+          
+          for (let i = 0; i < allLinks.length; i++) {
+            const link = allLinks[i] as HTMLElement;
+            const linkHref = link.getAttribute('href');
+            
+            // Comparar hrefs de manera flexible
+            if (linkHref) {
+              const linkHrefNormalized = linkHref.trim();
+              const compareHref = linkHrefNormalized === normalizedHref || 
+                                 linkHrefNormalized === href ||
+                                 linkHrefNormalized.endsWith(normalizedHref) ||
+                                 (linkHrefNormalized.includes('#') && linkHrefNormalized.split('#')[1] === anchorId);
+              
+              if (compareHref) {
+                // Encontramos el enlace, ahora buscar su destino
+                
+                // Primero buscar si hay un elemento con el ID objetivo en el documento completo
+                const possibleTarget = document.getElementById(anchorId);
+                if (possibleTarget) {
+                  targetElement = possibleTarget;
+                  break;
+                }
+
+                // Buscar el siguiente elemento significativo después del enlace
+                let searchElement: Element | null = link.nextElementSibling;
+                let searchDepth = 0;
+                
+                // Buscar en los siguientes 10 elementos hermanos
+                while (searchElement && searchDepth < 10) {
+                  const element = searchElement as HTMLElement;
+                  
+                  // Si tiene el ID que buscamos, usar ese
+                  if (element.id === anchorId) {
+                    targetElement = element;
+                    break;
+                  }
+                  
+                  // Si es un elemento de bloque significativo, usarlo
+                  if (element.tagName && 
+                      ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SECTION', 'DIV', 'ARTICLE', 'P'].includes(element.tagName)) {
+                    targetElement = element;
+                    break;
+                  }
+                  
+                  searchElement = searchElement.nextElementSibling;
+                  searchDepth++;
+                }
+
+                // Si no encontramos un siguiente elemento, buscar en el padre
+                if (!targetElement) {
+                  let parent = link.parentElement;
+                  while (parent && parent !== searchContainer) {
+                    if (parent.id === anchorId) {
+                      targetElement = parent;
+                      break;
+                    }
+                    if (parent.tagName && 
+                        ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SECTION', 'DIV', 'ARTICLE'].includes(parent.tagName)) {
+                      targetElement = parent;
+                      break;
+                    }
+                    parent = parent.parentElement;
+                  }
+                }
+
+                // Si aún no encontramos nada, usar el enlace mismo
+                if (!targetElement) {
+                  targetElement = link;
+                }
+                
+                break;
+              }
+            }
+          }
+        }
+      }
+
+      // Estrategia 5: Buscar por atributo name
+      if (!targetElement) {
+        try {
+          const escapedId = CSS.escape(anchorId);
+          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          if (searchContainer) {
+            targetElement = searchContainer.querySelector(`a[name="${escapedId}"], [name="${escapedId}"]`) as HTMLElement;
+          }
+        } catch (e) {
+          // Ignorar errores
+        }
+      }
+
+      // Hacer scroll al elemento si se encontró
+      if (targetElement) {
+        const headerOffset = 120;
+        
+        // Calcular posición
+        const elementTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const offsetPosition = elementTop - headerOffset;
+
+        // Usar scrollIntoView primero
+        targetElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+
+        // Ajustar manualmente después del scroll
+        setTimeout(() => {
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'auto'
+          });
+        }, 350);
+      } else {
+        // Estrategia final: Usar navegación nativa del navegador
+        try {
+          // Establecer el hash
+          window.location.hash = normalizedHref;
+          
+          // Después de un momento, intentar scroll suave si se encontró el elemento
+          setTimeout(() => {
+            const element = document.getElementById(anchorId);
+            if (element) {
+              const headerOffset = 120;
+              const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+              
+              element.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+              });
+              
+              setTimeout(() => {
+                window.scrollTo({
+                  top: elementTop - headerOffset,
+                  behavior: 'auto'
+                });
+              }, 350);
+            }
+          }, 150);
+        } catch (e) {
+          console.warn('No se pudo navegar al elemento:', anchorId, e);
+        }
+      }
+    };
+
+    // Esperar a que el contenido esté completamente renderizado
+    // Usar múltiples intentos si es necesario
+    requestAnimationFrame(() => {
+      setTimeout(performScroll, 150);
+      // Intentar de nuevo después de más tiempo por si el contenido aún se está cargando
+      setTimeout(performScroll, 500);
+    });
   }
 }

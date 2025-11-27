@@ -115,26 +115,20 @@
     </ng-template>
 
     <aside class="col-lg-4 d-none d-lg-block" *ngIf="!hasSections">
-      <div class="card sc-this-post mb-4">
+      <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
         <div class="card-header pt-4 sc-header">
           <p class="text-center">En este articulo</p>
         </div>
         <div class="card-body sc-body">
           <ul class="list-group sc-post-toc">
-            <li class="list-group-item">
-              Pasos a seguir para renovar tu LLC Online
+            <li 
+              class="list-group-item" 
+              *ngFor="let link of tocLinks"
+              [style.cursor]="'pointer'"
+              (click)="scrollToSection(link.href, $event)"
+            >
+              {{ link.text }}
             </li>
-            <li class="list-group-item">¿Qué es un reporte anual?</li>
-            <li class="list-group-item">
-              ¿Qué información incluye el reporte anual?
-            </li>
-            <li class="list-group-item">
-              Pasos para renovar tu LLC por Correo Postal
-            </li>
-            <li class="list-group-item">
-              No olvides renovar tu agente registrado
-            </li>
-            <li class="list-group-item">Conclusión</li>
           </ul>
         </div>
       </div>
@@ -163,9 +157,36 @@
           Compartir articulo
         </h6>
         <div class="d-flex justify-content-evenly">
-          <i class="bi bi-whatsapp" style="color: green; font-size: 2rem"></i>
-          <i class="bi bi-linkedin" style="color: blue; font-size: 2rem"></i>
-          <i class="bi bi-facebook" style="color: blue; font-size: 2rem"></i>
+          <button
+            type="button"
+            class="btn p-0 border-0 bg-transparent"
+            (click)="shareOnWhatsApp()"
+            [attr.aria-label]="'Compartir en WhatsApp'"
+            title="Compartir en WhatsApp"
+            style="cursor: pointer;"
+          >
+            <i class="bi bi-whatsapp" style="color: green; font-size: 2rem"></i>
+          </button>
+          <button
+            type="button"
+            class="btn p-0 border-0 bg-transparent"
+            (click)="shareOnLinkedIn()"
+            [attr.aria-label]="'Compartir en LinkedIn'"
+            title="Compartir en LinkedIn"
+            style="cursor: pointer;"
+          >
+            <i class="bi bi-linkedin" style="color: blue; font-size: 2rem"></i>
+          </button>
+          <button
+            type="button"
+            class="btn p-0 border-0 bg-transparent"
+            (click)="shareOnFacebook()"
+            [attr.aria-label]="'Compartir en Facebook'"
+            title="Compartir en Facebook"
+            style="cursor: pointer;"
+          >
+            <i class="bi bi-facebook" style="color: blue; font-size: 2rem"></i>
+          </button>
         </div>
       </div>
 
