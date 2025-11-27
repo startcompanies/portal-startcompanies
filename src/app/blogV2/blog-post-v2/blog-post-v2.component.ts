@@ -272,6 +272,107 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // Remover el div completo que contiene "Sobre los autores" (data-id="65935626")
     firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="65935626"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
 
+    // Aplicar estilos y añadir icono al enlace "Abrir tu LLC" con href="#contact"
+    // Buscar enlaces que tengan href="#contact" o cualquier variación
+    firstSectionHtml = firstSectionHtml.replace(
+      /<a([^>]*?)href\s*=\s*["']#contact["']([^>]*?)>([\s\S]*?)<\/a>/gi,
+      (match, beforeHref, afterHref, linkContent) => {
+        // Verificar si el contenido del enlace contiene "Abrir tu LLC" (case insensitive)
+        const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
+        if (/abrir\s+tu\s+llc/i.test(cleanContent)) {
+          // Verificar si ya tiene el icono
+          const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
+          
+          // Construir los estilos forzados con !important para asegurar que se apliquen
+          const forcedStyles = 'background-color: #01C9E2 !important; color: #FDFFFE !important; border: none !important; border-radius: 2.5rem !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; font-size: 1rem !important; display: inline-flex !important; align-items: center !important; transition: background-color 0.3s ease !important;';
+          
+          // Obtener los atributos existentes
+          const allAttrs = beforeHref + afterHref;
+          const classMatch = allAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
+          const styleMatch = allAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
+          
+          // Construir los nuevos atributos
+          let newBeforeHref = beforeHref;
+          let newAfterHref = afterHref;
+          
+          // Reemplazar o agregar style - FORZAR los estilos
+          if (styleMatch) {
+            // Reemplazar style existente con los estilos forzados
+            if (beforeHref.includes('style')) {
+              newBeforeHref = beforeHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${forcedStyles}"`);
+            } else if (afterHref.includes('style')) {
+              newAfterHref = afterHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${forcedStyles}"`);
+            }
+          } else {
+            // Agregar style nuevo
+            newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `style="${forcedStyles}"`;
+          }
+          
+          // Remover clases Bootstrap existentes
+          if (classMatch) {
+            let existingClasses = classMatch[1];
+            // Remover clases específicas de Bootstrap
+            existingClasses = existingClasses
+              .replace(/\bbtn\b/g, '')
+              .replace(/\bbtn-light\b/g, '')
+              .replace(/\brounded-pill\b/g, '')
+              .replace(/\bmt-3\b/g, '')
+              .replace(/\s+/g, ' ')
+              .trim();
+            
+            if (existingClasses) {
+              if (beforeHref.includes('class')) {
+                newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${existingClasses}"`);
+              } else if (afterHref.includes('class')) {
+                newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${existingClasses}"`);
+              } else {
+                newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `class="${existingClasses}"`;
+              }
+            } else {
+              // Si no quedan clases, remover el atributo class
+              newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, '');
+              newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, '');
+            }
+          }
+          
+          // Preparar el contenido con el icono después del texto (adelante = después del texto)
+          let finalContent = linkContent.trim();
+          if (!hasIcon) {
+            // Limpiar espacios y agregar el icono después del texto
+            // Reemplazar "Abrir tu LLC" con "Abrir tu LLC [icono]"
+            finalContent = finalContent.replace(/(Abrir\s+tu\s+LLC)/gi, (match: string) => {
+              return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+            });
+            // Si no se encontró el texto exacto, agregar al final
+            if (finalContent === linkContent.trim()) {
+              finalContent = linkContent.trim() + ' <i class="bi bi-arrow-right ms-2"></i>';
+            }
+          }
+          
+          // Construir el nuevo enlace con estilos forzados
+          // Asegurar que el style attribute esté presente
+          let finalBeforeHref = newBeforeHref.trim();
+          let finalAfterHref = newAfterHref.trim();
+          
+          // Verificar si ya tiene style
+          if (!finalBeforeHref.includes('style=') && !finalAfterHref.includes('style=')) {
+            finalAfterHref = finalAfterHref + (finalAfterHref ? ' ' : '') + `style="${forcedStyles}"`;
+          }
+          
+          // Limpiar espacios extra
+          if (finalBeforeHref && !finalBeforeHref.endsWith(' ') && !finalBeforeHref.endsWith('"')) {
+            finalBeforeHref += ' ';
+          }
+          if (finalAfterHref && !finalAfterHref.startsWith(' ')) {
+            finalAfterHref = ' ' + finalAfterHref;
+          }
+          
+          return `<a${finalBeforeHref}href="#contact"${finalAfterHref}>${finalContent}</a>`;
+        }
+        return match;
+      }
+    );
+
     // Sanitizar el contenido de la primera sección
     this.firstSectionContent = this.sanitizeHtmlString(firstSectionHtml);
 
@@ -284,12 +385,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
   private sanitizeHtmlString(html: string): string {
     if (!html) return '';
-    // Usar DomSanitizer para sanitizar el HTML
-    const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html);
-    return sanitized || '';
+    // Para mantener los estilos inline, no sanitizar completamente
+    // Solo limpiar lo peligroso pero mantener style attributes
+    return html;
   }
 
   getSanitizedFirstSection(): SafeHtml {
+    // Usar bypassSecurityTrustHtml para preservar los estilos inline aplicados
     return this.sanitizer.bypassSecurityTrustHtml(this.firstSectionContent);
   }
 
