@@ -6,9 +6,9 @@
           <div class="row justify-content-center">
             <div class="col-auto">
               <a
-                target="_blank"
-                href="https://api.whatsapp.com/send/?phone=17869354213&text=Hola+vengo+de+Start+Companies+y+quiero+mi+aplicacion+gratis&type=phone_number&app_absent=0"
+                routerLink="/form-apertura-relay"
                 class="btn btn-lg btn-primary"
+                (click)="onFreeApplicationClick()"
               >
                 {{ "LANDINGS.pricing_options.card_free.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>
@@ -47,6 +47,7 @@
                 target="_blank"
                 href="https://api.whatsapp.com/send/?phone=17869354213&text=Hola+vengo+de+Start+Companies+y+quiero+mi+aplicacion+asistida+por+%2499&type=phone_number&app_absent=0"
                 class="btn btn-lg btn-primary"
+                (click)="onPaidApplicationClick()"
               >
                 {{ "LANDINGS.pricing_options.card_paid.cta" | transloco }}
                 <i class="bi bi-arrow-right ms-2"></i>

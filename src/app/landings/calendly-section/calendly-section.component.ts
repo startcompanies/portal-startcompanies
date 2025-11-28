@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FacebookPixelService } from '../../services/facebook-pixel.service';
 
 declare global {
   interface Window {
@@ -15,7 +16,9 @@ declare global {
   styleUrl: './calendly-section.component.css',
 })
 export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
-  constructor() {}
+  @Output() calendlyClick = new EventEmitter<void>();
+
+  constructor(private facebookPixelService: FacebookPixelService) {}
 
   ngOnDestroy(): void {
     console.log('CalendlySectionComponent destroyed');
@@ -111,8 +114,60 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
         hideEventTypeDetails: false,
         layout: 'month_view',
       });
+
+      // Escuchar eventos de Cal.com para tracking
+      this.setupCalComEventListeners();
     } else {
       console.error('Cal.com script no se cargó correctamente.');
     }
+  }
+
+  /**
+   * Configura los event listeners de Cal.com para tracking
+   */
+  private setupCalComEventListeners(): void {
+    // Esperar a que Cal.com esté completamente cargado
+    const setupListeners = () => {
+      if (window.Cal && window.Cal.ns && window.Cal.ns['30min']) {
+        try {
+          // Evento cuando se inicia el proceso de booking
+          window.Cal.ns['30min'].on('bookingSuccessful', (event: any) => {
+            console.log('Cal.com: Cita confirmada exitosamente', event);
+            this.facebookPixelService.trackCalComBookingConfirmed('LLC Services', 30);
+            this.calendlyClick.emit();
+          });
+
+          // Evento cuando se abre el widget
+          window.Cal.ns['30min'].on('open', () => {
+            console.log('Cal.com: Widget abierto');
+            this.facebookPixelService.trackCalComBookingStarted();
+          });
+
+          // Evento cuando se selecciona una fecha/hora
+          window.Cal.ns['30min'].on('dateSelected', (event: any) => {
+            console.log('Cal.com: Fecha seleccionada', event);
+            // Opcional: trackear selección de fecha
+          });
+
+          // Evento cuando se completa el formulario de booking
+          window.Cal.ns['30min'].on('bookingFormSubmitted', (event: any) => {
+            console.log('Cal.com: Formulario de booking enviado', event);
+            // El evento bookingSuccessful se dispara después de esto
+          });
+
+          console.log('✅ Event listeners de Cal.com configurados');
+        } catch (error) {
+          console.warn('⚠️ Error configurando event listeners de Cal.com:', error);
+          // Reintentar después de un delay
+          setTimeout(setupListeners, 500);
+        }
+      } else {
+        // Si Cal.com aún no está listo, reintentar
+        setTimeout(setupListeners, 200);
+      }
+    };
+
+    // Iniciar configuración después de un breve delay para asegurar que Cal.com esté listo
+    setTimeout(setupListeners, 500);
   }
 }
