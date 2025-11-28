@@ -155,7 +155,32 @@ export class FacebookPixelService {
 
     const pixelId = pageType === 'llc' ? this.config.llcPixelId : this.config.relayPixelId;
 
-    this.debugLog(`🚀 Inicializando pixel ${pageType}`, { pixelId });
+    this.debugLog(`🚀 Verificando pixel ${pageType}`, { pixelId });
+
+    // PRIMERO: Verificar si Facebook ya está inicializando el pixel automáticamente
+    // Si hay script de configuración de Facebook, dejar que Facebook lo maneje completamente
+    const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+    const fbeventsScript = document.querySelector(`script[src*="fbevents.js"]`);
+    
+    if (configScript && fbeventsScript) {
+      // Facebook está inicializando el pixel automáticamente
+      // NO hacer nada, solo marcar como inicializado para que los métodos de tracking funcionen
+      this.debugLog(`✅ Facebook está auto-inicializando el pixel ${pixelId}, dejando que Facebook lo maneje`);
+      this.initializedPixels.add(pageType);
+      
+      // Esperar a que Facebook termine de inicializar y luego verificar
+      // No trackear PageView porque Facebook ya lo hace automáticamente
+      setTimeout(() => {
+        if (window.fbq) {
+          this.debugLog(`✅ Pixel ${pixelId} disponible para tracking (inicializado por Facebook)`);
+        }
+      }, 500);
+      
+      return; // No hacer nada más, Facebook lo maneja todo
+    }
+
+    // Si Facebook NO está inicializando automáticamente, entonces nosotros lo inicializamos
+    this.debugLog(`🔧 Facebook no está auto-inicializando, inicializando nosotros el pixel ${pageType}`, { pixelId });
 
     // Inicializar el script de Facebook Pixel si aún no existe
     if (!window.fbq) {
@@ -185,37 +210,13 @@ export class FacebookPixelService {
       })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js', undefined, undefined, undefined);
     }
 
-    // Inicializar el pixel específico
+    // Inicializar el pixel específico (solo si Facebook NO lo está haciendo)
     // El código de Facebook Pixel maneja la cola automáticamente
     const initPixel = () => {
       // Verificar que el pixel no haya sido inicializado ya
       if (this.initializedPixels.has(pageType)) {
         this.debugLog(`ℹ️ Pixel ${pageType} ya inicializado, omitiendo`);
         return;
-      }
-
-      // Verificar si Facebook ya auto-inicializó el pixel (desde el script de configuración)
-      // El script de configuración de Facebook puede auto-inicializar el pixel
-      const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
-      const fbeventsScript = document.querySelector(`script[src*="fbevents.js"]`);
-      const fbqLoaded = window.fbq && (window.fbq as any).loaded;
-      
-      // Si hay script de configuración y fbevents.js ya está cargado, Facebook puede haber auto-inicializado
-      // Verificar si el pixel ya está inicializado consultando la cola de eventos
-      if (configScript && fbeventsScript && fbqLoaded && (window as any)._fbq) {
-        // Verificar si el pixel ya fue inicializado consultando la cola
-        const fbqQueue = (window as any)._fbq?.queue || [];
-        const alreadyInitialized = fbqQueue.some((item: any) => 
-          item && item[0] === 'init' && item[1] === pixelId
-        );
-        
-        if (alreadyInitialized) {
-          // Facebook ya inicializó el pixel y probablemente ya trackeó PageView automáticamente
-          // NO trackear PageView de nuevo para evitar doble activación
-          this.debugLog(`ℹ️ Pixel ${pixelId} ya fue auto-inicializado por Facebook, omitiendo inicialización y PageView`);
-          this.initializedPixels.add(pageType);
-          return; // No hacer nada más, Facebook ya lo hizo
-        }
       }
 
       // Marcar el flag ANTES de inicializar para evitar condiciones de carrera
@@ -226,7 +227,7 @@ export class FacebookPixelService {
         try {
           window.fbq('init', pixelId);
           window.fbq('track', 'PageView');
-          this.debugLog(`✅ Pixel ${pageType} inicializado correctamente`);
+          this.debugLog(`✅ Pixel ${pageType} inicializado correctamente por nuestro código`);
         } catch (error) {
           // Si hay un error, remover el flag para permitir reintento
           this.initializedPixels.delete(pageType);
@@ -288,9 +289,8 @@ export class FacebookPixelService {
       }
     };
 
-    // Solo agregar noscript fallback si el pixel no fue auto-inicializado por Facebook
-    // Si Facebook ya inicializó el pixel, probablemente ya agregó su propio noscript
-    const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+    // Solo agregar noscript fallback si nosotros inicializamos el pixel
+    // Si Facebook está inicializando, ya maneja el noscript
     if (!configScript) {
       // Solo crear noscript si no hay script de configuración de Facebook
       // (Facebook puede agregar su propio noscript automáticamente)

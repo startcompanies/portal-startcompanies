@@ -124,50 +124,79 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Configura los event listeners de Cal.com para tracking
+   * Cal.com usa postMessage para comunicarse entre el iframe y la página padre
    */
   private setupCalComEventListeners(): void {
-    // Esperar a que Cal.com esté completamente cargado
-    const setupListeners = () => {
-      if (window.Cal && window.Cal.ns && window.Cal.ns['30min']) {
-        try {
-          // Evento cuando se inicia el proceso de booking
-          window.Cal.ns['30min'].on('bookingSuccessful', (event: any) => {
-            console.log('Cal.com: Cita confirmada exitosamente', event);
+    // Cal.com comunica eventos a través de postMessage
+    // Escuchar mensajes del iframe de Cal.com
+    const messageHandler = (event: MessageEvent) => {
+      // Verificar que el mensaje venga de Cal.com
+      if (event.origin !== 'https://app.cal.com' && event.origin !== 'https://cal.com') {
+        return;
+      }
+
+      try {
+        const data = event.data;
+        
+        // Cal.com envía eventos con estructura específica
+        if (data && typeof data === 'object') {
+          // Evento de booking exitoso
+          if (data.type === 'cal-booking-success' || 
+              data.event === 'bookingSuccessful' ||
+              (data.data && data.data.type === 'bookingSuccessful')) {
+            console.log('Cal.com: Cita confirmada exitosamente', data);
             this.facebookPixelService.trackCalComBookingConfirmed('LLC Services', 30);
             this.calendlyClick.emit();
-          });
-
+          }
+          
           // Evento cuando se abre el widget
-          window.Cal.ns['30min'].on('open', () => {
-            console.log('Cal.com: Widget abierto');
+          if (data.type === 'cal-open' || 
+              data.event === 'open' ||
+              (data.data && data.data.type === 'open')) {
+            console.log('Cal.com: Widget abierto', data);
             this.facebookPixelService.trackCalComBookingStarted();
-          });
-
-          // Evento cuando se selecciona una fecha/hora
-          window.Cal.ns['30min'].on('dateSelected', (event: any) => {
-            console.log('Cal.com: Fecha seleccionada', event);
+          }
+          
+          // Evento cuando se selecciona una fecha
+          if (data.type === 'cal-date-selected' || 
+              data.event === 'dateSelected' ||
+              (data.data && data.data.type === 'dateSelected')) {
+            console.log('Cal.com: Fecha seleccionada', data);
             // Opcional: trackear selección de fecha
-          });
-
-          // Evento cuando se completa el formulario de booking
-          window.Cal.ns['30min'].on('bookingFormSubmitted', (event: any) => {
-            console.log('Cal.com: Formulario de booking enviado', event);
-            // El evento bookingSuccessful se dispara después de esto
-          });
-
-          console.log('✅ Event listeners de Cal.com configurados');
-        } catch (error) {
-          console.warn('⚠️ Error configurando event listeners de Cal.com:', error);
-          // Reintentar después de un delay
-          setTimeout(setupListeners, 500);
+          }
         }
-      } else {
-        // Si Cal.com aún no está listo, reintentar
-        setTimeout(setupListeners, 200);
+      } catch (error) {
+        // Ignorar errores de parsing, pueden ser mensajes de otros orígenes
       }
     };
 
-    // Iniciar configuración después de un breve delay para asegurar que Cal.com esté listo
-    setTimeout(setupListeners, 500);
+    // Agregar listener de mensajes
+    window.addEventListener('message', messageHandler);
+    
+    // También escuchar eventos del DOM del iframe cuando esté disponible
+    const setupDOMListeners = () => {
+      const calIframe = document.querySelector('#my-cal-inline iframe') as HTMLIFrameElement;
+      if (calIframe) {
+        // El iframe puede disparar eventos cuando se carga
+        calIframe.addEventListener('load', () => {
+          console.log('Cal.com: Iframe cargado');
+          this.facebookPixelService.trackCalComBookingStarted();
+        });
+      } else {
+        // Reintentar si el iframe aún no está disponible
+        setTimeout(setupDOMListeners, 500);
+      }
+    };
+
+    // Esperar a que el DOM esté listo
+    setTimeout(setupDOMListeners, 1000);
+
+    // Limpiar listener cuando el componente se destruya
+    this.ngOnDestroy = () => {
+      window.removeEventListener('message', messageHandler);
+      console.log('CalendlySectionComponent destroyed');
+    };
+
+    console.log('✅ Event listeners de Cal.com configurados (postMessage)');
   }
 }
