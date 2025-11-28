@@ -1,5 +1,23 @@
 /* Estilos para el contenido del post - aplicados globalmente debido a ViewEncapsulation.None */
 
+/* Estilos para landing page (contenido con secciones) */
+.landing-page-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.landing-page-row .app-post-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 992px) {
+  .landing-page-row .app-post-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
 /* Estilos para abre-corp-card */
 .app-post-content .abre-corp-card,
 .abre-corp-card {
@@ -511,14 +529,14 @@
 .app-post-content .veredicto-main-title,
 .veredicto-main-title {
   color: #00bcd4;
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: 1.5rem;
   font-weight: 800;
 }
 
 .app-post-content .veredicto-text,
 .veredicto-text {
   color: #2d3748;
-  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-size: 0.95rem;
   line-height: 1.7;
 }
 
@@ -584,13 +602,13 @@
 .app-post-content .veredicto-star-filled,
 .veredicto-star-filled {
   color: #00bcd4;
-  font-size: 1.2em;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
 }
 
 .app-post-content .veredicto-star-empty,
 .veredicto-star-empty {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 1.2em;
+  font-size: clamp(1.25rem, 3vw, 1.5rem);
 }
 
 .app-post-content .veredicto-details,

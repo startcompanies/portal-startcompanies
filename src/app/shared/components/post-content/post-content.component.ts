@@ -18,6 +18,7 @@ declare global {
 })
 export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy {
   @Input() html: string = '';
+  @Input() isLandingPage = false;
   sanitizedHtml: SafeHtml = '';
   isBrowser = false;
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
@@ -41,21 +42,155 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       // Esperar a que el contenido se renderice después del cambio
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
+        this.initializeAccordions();
       }, 200);
     }
   }
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
+      // Exponer toggleAccordion globalmente para que funcione con onclick en el HTML
+      (window as any).toggleAccordion = (id: string) => {
+        this.toggleAccordion(id);
+      };
+      
       // Esperar a que el contenido se renderice
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
+        this.initializeAccordions();
       }, 200);
     }
   }
 
   ngOnDestroy(): void {
-    // Limpiar si es necesario
+    // Limpiar la función global
+    if (this.isBrowser && (window as any).toggleAccordion) {
+      delete (window as any).toggleAccordion;
+    }
+  }
+
+  private initializeAccordions(): void {
+    if (!this.isBrowser) return;
+
+    // Buscar todos los botones de acordeón y añadir event listeners
+    const accordionButtons = document.querySelectorAll('.custom-accordion-button');
+    accordionButtons.forEach((button) => {
+      const buttonElement = button as HTMLElement;
+      // Verificar si ya tiene el listener para evitar duplicados
+      if (!buttonElement.dataset['accordionInitialized']) {
+        buttonElement.dataset['accordionInitialized'] = 'true';
+        buttonElement.addEventListener('click', (event) => {
+          event.preventDefault();
+          // Buscar el contenido del acordeón asociado
+          // Primero intentar por aria-controls
+          let contentId = buttonElement.getAttribute('aria-controls');
+          
+          // Si no, intentar por data-target
+          if (!contentId) {
+            const dataTarget = buttonElement.getAttribute('data-target');
+            if (dataTarget) {
+              contentId = dataTarget.replace('#', '');
+            }
+          }
+          
+          // Si no, buscar el siguiente elemento con clase custom-accordion-content
+          if (!contentId) {
+            const accordionItem = buttonElement.closest('.custom-accordion-item') || 
+                                 buttonElement.parentElement;
+            const contentElement = accordionItem?.querySelector('.custom-accordion-content') as HTMLElement;
+            if (contentElement) {
+              contentId = contentElement.id;
+            }
+          }
+          
+          // Si aún no hay ID, buscar el siguiente elemento hermano
+          if (!contentId) {
+            const nextSibling = buttonElement.nextElementSibling as HTMLElement;
+            if (nextSibling && nextSibling.classList.contains('custom-accordion-content')) {
+              contentId = nextSibling.id;
+            }
+          }
+          
+          if (contentId) {
+            this.toggleAccordion(contentId);
+          }
+        });
+      }
+    });
+  }
+
+  toggleAccordion(id: string): void {
+    if (!this.isBrowser) return;
+
+    const content = document.getElementById(id) as HTMLElement;
+    if (!content) return;
+
+    // Buscar el botón asociado
+    let button: HTMLElement | null = null;
+    
+    // Intentar encontrar el botón por previousElementSibling
+    const previousSibling = content.previousElementSibling as HTMLElement;
+    if (previousSibling) {
+      button = previousSibling.querySelector('button.custom-accordion-button') as HTMLElement;
+    }
+    
+    // Si no se encuentra, buscar en el elemento padre
+    if (!button) {
+      const parent = content.parentElement;
+      button = parent?.querySelector('button.custom-accordion-button') as HTMLElement;
+    }
+    
+    // Si aún no se encuentra, buscar por aria-controls
+    if (!button) {
+      button = document.querySelector(`button[aria-controls="${id}"], button[data-target="#${id}"]`) as HTMLElement;
+    }
+    
+    if (!button) return;
+
+    const icon = button.querySelector('.accordion-icon') as HTMLElement;
+
+    // Cerrar todos los demás acordeones
+    const allContents = document.querySelectorAll('.custom-accordion-content');
+    const allIcons = document.querySelectorAll('.accordion-icon');
+    const allButtons = document.querySelectorAll('.custom-accordion-button');
+
+    allContents.forEach((item) => {
+      const itemElement = item as HTMLElement;
+      if (itemElement.id !== id) {
+        itemElement.style.display = 'none';
+      }
+    });
+
+    allIcons.forEach((iconItem) => {
+      const iconElement = iconItem as HTMLElement;
+      // Solo rotar si no es el icono del acordeón actual
+      if (icon && iconElement !== icon) {
+        iconElement.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    allButtons.forEach((buttonItem) => {
+      const buttonElement = buttonItem as HTMLElement;
+      // Solo actualizar si no es el botón del acordeón actual
+      if (buttonElement !== button) {
+        buttonElement.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Toggle del acordeón actual
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      if (icon) {
+        icon.style.transform = 'rotate(90deg)';
+      }
+      button.setAttribute('aria-expanded', 'true');
+    } else {
+      content.style.display = 'none';
+      if (icon) {
+        icon.style.transform = 'rotate(0deg)';
+      }
+      button.setAttribute('aria-expanded', 'false');
+    }
   }
 
   private sanitizeHtml() {
@@ -103,6 +238,174 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       }
       return match;
     });
+    
+    // Agregar icono de LinkedIn a enlaces que contengan "Sígueme en LinkedIn" o "Sigueme en Linkedin"
+    // Buscar todos los enlaces que contengan el texto, sin importar mayúsculas/minúsculas o acentos
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Verificar si el contenido del enlace contiene el texto (case insensitive)
+      const hasLinkedInText = /s[ií]gueme en linkedin/i.test(linkContent);
+      // Verificar si el enlace ya tiene el icono de LinkedIn
+      const hasIcon = match.includes('bi-linkedin');
+      
+      if (hasLinkedInText && !hasIcon) {
+        // Limpiar espacios extra al inicio del contenido
+        const cleanedContent = linkContent.trim();
+        // Agregar el icono antes del contenido del enlace con un pequeño margen
+        return `<a ${beforeHref}href="${href}"${afterHref}><i class="bi bi-linkedin me-1"></i>${cleanedContent}</a>`;
+      }
+      return match;
+    });
+    
+    // Agregar estilos e icono de flecha a enlaces que contengan "Abrir tu LLC"
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Limpiar el contenido del enlace para comparar (eliminar HTML interno y espacios)
+      const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
+      // Verificar si el contenido del enlace contiene el texto "Abrir tu LLC" (case insensitive)
+      const hasAbrirLLCText = /abrir\s+tu\s+llc/i.test(cleanContent);
+      // Verificar si el enlace ya tiene los estilos aplicados
+      const hasStyles = match.includes('abrir-llc-btn');
+      
+      if (hasAbrirLLCText && !hasStyles) {
+        // Obtener los atributos existentes de toda la etiqueta
+        const allAttrs = beforeHref + afterHref;
+        const classMatch = allAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
+        const styleMatch = allAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
+        
+        // Construir los nuevos estilos (reemplazando cualquier estilo existente)
+        const newStyles = 'background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1rem; display: inline-flex; align-items: center; transition: background-color 0.3s ease;';
+        
+        // Mantener las clases existentes y añadir abrir-llc-btn si no existe
+        let newClass = 'abrir-llc-btn';
+        if (classMatch) {
+          const existingClasses = classMatch[1];
+          if (!existingClasses.includes('abrir-llc-btn')) {
+            newClass = `${existingClasses} abrir-llc-btn`;
+          } else {
+            newClass = existingClasses;
+          }
+        }
+        
+        // Construir los nuevos atributos
+        let newBeforeHref = beforeHref;
+        let newAfterHref = afterHref;
+        
+        // Reemplazar o agregar style
+        if (styleMatch) {
+          // Reemplazar style existente
+          if (beforeHref.includes('style')) {
+            newBeforeHref = beforeHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyles}"`);
+          } else if (afterHref.includes('style')) {
+            newAfterHref = afterHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyles}"`);
+          }
+        } else {
+          // Agregar style nuevo
+          newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `style="${newStyles}"`;
+        }
+        
+        // Reemplazar o agregar class
+        if (classMatch) {
+          // Reemplazar class existente manteniendo las clases originales
+          if (beforeHref.includes('class')) {
+            newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClass}"`);
+          } else if (afterHref.includes('class')) {
+            newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClass}"`);
+          }
+        } else {
+          // Agregar class nuevo
+          newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `class="${newClass}"`;
+        }
+        
+        // Verificar si el contenido ya tiene el icono
+        const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
+        const iconHtml = hasIcon ? '' : '<i class="bi bi-arrow-right me-2"></i>';
+        
+        // Construir el nuevo enlace con el icono antes del contenido
+        return `<a ${newBeforeHref}href="${href}"${newAfterHref}>${iconHtml}${linkContent}</a>`;
+      }
+      return match;
+    });
+    
+    // Agregar iconos de flecha hacia abajo a los botones de acordeón que no los tengan
+    // El icono debe estar al final del botón (no después del span) para que justify-content: space-between funcione
+    content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {
+      // Verificar si el botón ya tiene un icono accordion-icon
+      if (!match.includes('accordion-icon')) {
+        // Crear el SVG de flecha hacia abajo (igual al ejemplo)
+        const arrowIcon = `<svg class="accordion-icon" style="width: 16px; height: 16px; transition: transform 0.3s;" viewBox="0 0 192 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"></path></svg>`;
+        // Asegurar que el botón tenga los estilos necesarios para el layout flex, pero SIN width: 100%
+        let styleAttr = afterClass.match(/style\s*=\s*["']([^"']*)["']/i);
+        let newAfterClass = afterClass;
+        
+        if (styleAttr) {
+          const existingStyle = styleAttr[1];
+          // Eliminar width: 100% si existe
+          let newStyle = existingStyle.replace(/width\s*:\s*100%\s*;?/gi, '').trim();
+          // Limpiar dobles espacios y puntos y comas extra
+          newStyle = newStyle.replace(/\s*;\s*;/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '');
+          
+          // Asegurar que tenga display: flex
+          if (!newStyle.includes('display:') && !newStyle.includes('display ')) {
+            newStyle = newStyle + (newStyle ? '; ' : '') + 'display: flex;';
+          }
+          
+          // Asegurar que tenga justify-content: space-between
+          if (!newStyle.includes('justify-content:')) {
+            newStyle = newStyle + (newStyle ? ' ' : '') + 'justify-content: space-between;';
+          }
+          
+          // Asegurar que tenga align-items: center
+          if (!newStyle.includes('align-items:')) {
+            newStyle = newStyle + (newStyle ? ' ' : '') + 'align-items: center;';
+          }
+          
+          newAfterClass = afterClass.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyle}"`);
+        } else {
+          // Si no tiene style, añadirlo completo SIN width: 100%
+          newAfterClass = afterClass + ' style="text-align: left; background: none; border: none; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"';
+        }
+        
+        // Añadir el icono al final del contenido del botón
+        return `<button ${beforeClass}class="${classAttr}"${newAfterClass}>${buttonContent}${arrowIcon}</button>`;
+      }
+      return match;
+    });
+    
+    // Agregar iconos de estrellas después del span con clase veredicto-rating-number
+    // Buscar todos los spans completos con veredicto-rating-number y añadir iconos después si no existen
+    const ratingSpanRegex = /<span\s+[^>]*?class\s*=\s*["'][^"']*veredicto-rating-number[^"']*["'][^>]*>([^<]*?)<\/span>/gi;
+    let lastIndex = 0;
+    const starsHtml = `<i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-filled bi bi-star-fill"></i><i class="veredicto-star-empty bi bi-star"></i>`;
+    let newContent = '';
+    let match;
+    
+    while ((match = ratingSpanRegex.exec(content)) !== null) {
+      // Añadir el contenido antes del match
+      newContent += content.substring(lastIndex, match.index);
+      
+      // Verificar si ya tiene iconos después del span (en los siguientes 200 caracteres)
+      const contextEnd = Math.min(content.length, ratingSpanRegex.lastIndex + 200);
+      const contextAfter = content.substring(ratingSpanRegex.lastIndex, contextEnd);
+      
+      // Si no tiene iconos, añadirlos después del span
+      if (!contextAfter.includes('veredicto-star-filled') && !contextAfter.includes('veredicto-star-empty')) {
+        // Añadir el span completo y luego los iconos
+        newContent += match[0] + starsHtml;
+      } else {
+        // Si ya tiene iconos, solo añadir el span
+        newContent += match[0];
+      }
+      lastIndex = ratingSpanRegex.lastIndex;
+    }
+    
+    // Añadir el resto del contenido
+    if (lastIndex < content.length) {
+      newContent += content.substring(lastIndex);
+    }
+    
+    // Si se encontraron matches, usar el nuevo contenido
+    if (newContent) {
+      content = newContent;
+    }
     
     // Reemplazar el src de la imagen con id="img-ayuda"
     content = content.replace(/<img\s+([^>]*?)id\s*=\s*["']img-ayuda["']([^>]*?)>/gi, (match, beforeId, afterId) => {
