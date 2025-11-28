@@ -274,3 +274,65 @@
   visibility: visible;
   transition: opacity 0.5s ease;
 }
+
+/* Estilos para la lista de características */
+.hero-features-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1rem;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-features-list li {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.hero-features-list li:hover {
+  transform: translateY(-2px);
+}
+
+.hero-features-list i {
+  color: var(--color-fondo-claro);
+  font-size: 0.95rem;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+.hero-features-list span {
+  color: var(--color-fondo-claro);
+}
+
+/* Ajustes para mobile */
+@media (max-width: 768px) {
+  .hero-features-list {
+    gap: 0.4rem 0.8rem;
+    justify-content: center;
+  }
+  
+  .hero-features-list li {
+    font-size: 0.75rem;
+  }
+  
+  .hero-features-list i {
+    font-size: 0.85rem;
+  }
+}
+
+/* Ajustes para desktop */
+@media (min-width: 769px) {
+  .hero-features-list {
+    justify-content: flex-start;
+    gap: 0.5rem 1.2rem;
+  }
+  
+  .hero-features-list li {
+    font-size: 0.9rem;
+  }
+}
