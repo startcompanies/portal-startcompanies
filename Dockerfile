@@ -12,7 +12,7 @@ ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
 ENV NODE_ENV=${NODE_ENV}
 
 # Instalar dependencias del sistema para compilación
-# Sharp se instala vía npm, no es un paquete de Alpine
+# Sharp necesita estas dependencias para compilarse correctamente en Alpine
 RUN apk add --no-cache python3 make g++ imagemagick
 
 WORKDIR /app
@@ -28,6 +28,12 @@ RUN pwd && ls -la && \
 
 # Instalar TODAS las dependencias (incluyendo devDependencies para el build)
 RUN npm install --legacy-peer-deps
+
+# Instalar sharp explícitamente para asegurar que esté disponible (requerido para optimize:images)
+# Sharp puede fallar durante npm install, así que lo instalamos explícitamente después
+RUN npm install sharp@^0.34.3 --legacy-peer-deps --save-dev && \
+    node -e "require('sharp')" && \
+    echo "✅ Sharp instalado correctamente"
 
 # Instalar Angular CLI globalmente
 RUN npm install -g @angular/cli@18
