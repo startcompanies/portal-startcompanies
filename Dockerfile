@@ -30,17 +30,18 @@ RUN pwd && ls -la && \
 # Instalar TODAS las dependencias (incluyendo devDependencies para el build)
 RUN npm install --legacy-peer-deps
 
-# Forzar reinstalación y compilación de sharp (requerido para optimize:images)
-# Sharp necesita compilarse nativamente en Alpine
-# Usamos --force para asegurar reinstalación y npm rebuild para compilar
-RUN npm uninstall sharp 2>/dev/null || true && \
-    rm -rf node_modules/sharp 2>/dev/null || true && \
-    npm cache clean --force 2>/dev/null || true && \
-    npm install sharp@^0.34.3 --legacy-peer-deps --save-dev --force && \
-    npm rebuild sharp --legacy-peer-deps --verbose && \
-    ls -la node_modules/sharp 2>/dev/null && \
-    node -e "const sharp = require('sharp'); console.log('Sharp version:', sharp.versions);" && \
-    echo "✅ Sharp instalado y compilado correctamente"
+# Intentar instalar sharp para optimización de imágenes (opcional)
+# Si sharp falla, el build continuará sin optimización de imágenes
+RUN echo "Intentando instalar sharp para optimización de imágenes..." && \
+    (npm uninstall sharp 2>/dev/null || true) && \
+    (rm -rf node_modules/sharp 2>/dev/null || true) && \
+    (npm cache clean --force 2>/dev/null || true) && \
+    (npm install sharp@^0.34.3 --legacy-peer-deps --save-dev --force && \
+     npm rebuild sharp --legacy-peer-deps --verbose && \
+     node -e "const sharp = require('sharp'); console.log('✅ Sharp instalado:', sharp.versions);" && \
+     echo "✅ Sharp instalado y compilado correctamente") || \
+    (echo "⚠️  Sharp no se pudo instalar, la optimización de imágenes se omitirá" && \
+     echo "   El build continuará normalmente sin optimización automática")
 
 # Instalar Angular CLI globalmente
 RUN npm install -g @angular/cli@18

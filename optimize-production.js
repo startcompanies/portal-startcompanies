@@ -1,8 +1,18 @@
 #!/usr/bin/env node
 
-const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
+
+// Intentar cargar sharp, si no está disponible, continuar sin optimizar
+let sharp;
+try {
+  sharp = require('sharp');
+} catch (error) {
+  console.warn('⚠️  Sharp no está disponible, saltando optimización de imágenes');
+  console.warn('   Las imágenes no se convertirán a WebP automáticamente');
+  console.warn('   El build continuará normalmente');
+  process.exit(0); // Salir exitosamente sin optimizar
+}
 
 console.log('🚀 Iniciando optimización de imágenes para producción...');
 
