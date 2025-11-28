@@ -4,7 +4,8 @@ import { environment } from '../../environments/environment';
 
 declare global {
   interface Window {
-    fbq: (...args: any[]) => void;
+    fbq?: (...args: any[]) => void;
+    _fbq?: any;
   }
 }
 
@@ -140,6 +141,81 @@ export class FacebookPixelService {
    * Inicializa el pixel de Facebook según la página
    * @param pageType - Tipo de página ('llc' o 'relay')
    */
+  /**
+   * Verifica si Facebook está auto-inicializando el pixel ESPECÍFICO que necesitamos
+   * Espera hasta que los scripts se carguen (hasta 3 segundos para dar tiempo a GTM)
+   * IMPORTANTE: Solo retorna true si Facebook está inicializando el pixel EXACTO que necesitamos
+   */
+  private async checkFacebookAutoInit(pixelId: string): Promise<boolean> {
+    const maxWaitTime = 3000; // 3 segundos máximo (GTM puede tardar más)
+    const checkInterval = 100; // Verificar cada 100ms
+    const maxChecks = maxWaitTime / checkInterval;
+    let checks = 0;
+
+    return new Promise((resolve) => {
+      const checkForScripts = () => {
+        checks++;
+        
+        // Verificar si los scripts de Facebook están presentes
+        // CRÍTICO: Verificar que el script de configuración sea para el pixel ESPECÍFICO que necesitamos
+        const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+        const fbeventsScript = document.querySelector(`script[src*="fbevents.js"]`);
+        
+        // Verificar también si hay scripts de otros pixels (para debug)
+        const llcConfigScript = document.querySelector(`script[src*="signals/config/${this.config.llcPixelId}"]`);
+        const relayConfigScript = document.querySelector(`script[src*="signals/config/${this.config.relayPixelId}"]`);
+        
+        // Si ambos scripts están presentes Y el script de configuración es para el pixel que necesitamos,
+        // entonces Facebook está auto-inicializando el pixel correcto
+        if (configScript && fbeventsScript) {
+          this.debugLog(`✅ Detectado: Facebook está auto-inicializando el pixel ${pixelId}`, {
+            configScript: true,
+            fbeventsScript: true,
+            checkNumber: checks,
+            waitTime: checks * checkInterval,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript
+          });
+          resolve(true);
+          return;
+        }
+
+        // Si hay scripts de Facebook pero NO para el pixel que necesitamos, Facebook NO está inicializando nuestro pixel
+        if (fbeventsScript && !configScript) {
+          // Facebook está cargando scripts, pero no para nuestro pixel específico
+          // Esto significa que debemos inicializar nosotros
+          this.debugLog(`ℹ️ Facebook está cargando scripts, pero NO para el pixel ${pixelId}`, {
+            fbeventsScript: true,
+            configScript: false,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript,
+            checkNumber: checks
+          });
+          // Continuar verificando por si acaso aparece el script correcto
+        }
+
+        // Si hemos alcanzado el máximo de verificaciones, asumir que Facebook no está inicializando nuestro pixel
+        if (checks >= maxChecks) {
+          this.debugLog(`⏱️ Tiempo de espera agotado (${maxWaitTime}ms), Facebook no está auto-inicializando el pixel ${pixelId}`, {
+            checks: checks,
+            configScript: !!configScript,
+            fbeventsScript: !!fbeventsScript,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript
+          });
+          resolve(false);
+          return;
+        }
+
+        // Continuar verificando
+        setTimeout(checkForScripts, checkInterval);
+      };
+
+      // Iniciar verificación
+      checkForScripts();
+    });
+  }
+
   initializePixel(pageType: PageType): void {
     // Solo inicializa el píxel si estamos en el navegador
     if (!isPlatformBrowser(this.platformId)) {
@@ -155,98 +231,205 @@ export class FacebookPixelService {
 
     const pixelId = pageType === 'llc' ? this.config.llcPixelId : this.config.relayPixelId;
 
-    this.debugLog(`🚀 Inicializando pixel ${pageType}`, { pixelId });
+    this.debugLog(`🚀 Verificando pixel ${pageType}`, { pixelId });
 
-    // Inicializar el script de Facebook Pixel si aún no existe
-    if (!window.fbq) {
-      // Ejecutar el código de Facebook Pixel directamente
-      (function(f: any, b: Document, e: string, v: string, n: any, t: any, s: any) {
-        if (f.fbq) return;
-        n = f.fbq = function() {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-        };
-        if (!f._fbq) f._fbq = n;
-        n.push = n;
-        n.loaded = true;
-        n.version = '2.0';
-        n.queue = [];
-        t = b.createElement(e) as HTMLScriptElement;
-        t.async = true;
-        t.src = v;
-        t.onerror = function() {
-          console.warn('Error cargando Facebook Pixel script. Esto puede ser normal si hay restricciones de red.');
-        };
-        s = b.getElementsByTagName(e)[0];
-        if (s && s.parentNode) {
-          s.parentNode.insertBefore(t, s);
-        } else {
-          b.head.appendChild(t);
-        }
-      })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js', undefined, undefined, undefined);
-    }
-
-    // Inicializar el pixel específico
-    // El código de Facebook Pixel maneja la cola automáticamente
-    const initPixel = () => {
-      // Verificar que el pixel no haya sido inicializado ya
-      if (this.initializedPixels.has(pageType)) {
-        this.debugLog(`ℹ️ Pixel ${pageType} ya inicializado, omitiendo`);
-        return;
+    // Verificar si Facebook está auto-inicializando el pixel (esperando hasta 2 segundos)
+    this.checkFacebookAutoInit(pixelId).then((isFacebookInitializing) => {
+      if (isFacebookInitializing) {
+        // Facebook está inicializando el pixel automáticamente
+        // NO hacer nada, solo marcar como inicializado para que los métodos de tracking funcionen
+        this.debugLog(`✅ Facebook está auto-inicializando el pixel ${pixelId}, dejando que Facebook lo maneje`);
+        this.initializedPixels.add(pageType);
+        
+        // IMPORTANTE: NO trackear PageView aquí porque Facebook ya lo hace automáticamente
+        // Solo verificar que fbq esté disponible para tracking futuro
+        setTimeout(() => {
+          if (window.fbq) {
+            this.debugLog(`✅ Pixel ${pixelId} disponible para tracking (inicializado por Facebook)`);
+          } else {
+            this.debugLog(`⚠️ Pixel ${pixelId} marcado como inicializado por Facebook, pero fbq aún no está disponible`);
+          }
+        }, 500);
+        
+        return; // No hacer nada más, Facebook lo maneja todo (incluyendo PageView)
       }
 
-      if (window.fbq) {
-        try {
-          window.fbq('init', pixelId);
-          window.fbq('track', 'PageView');
-          this.initializedPixels.add(pageType);
-          this.debugLog(`✅ Pixel ${pageType} inicializado correctamente`);
-        } catch (error) {
-          console.warn('Error inicializando Facebook Pixel:', error);
-          this.debugLog('❌ Error inicializando pixel', error);
-        }
-      }
-    };
+      // Si Facebook NO está auto-inicializando, entonces nosotros lo inicializamos
+      this.debugLog(`🔧 Facebook no está auto-inicializando, inicializando nosotros el pixel ${pageType}`, { pixelId });
 
-    // Intentar inicializar inmediatamente
-    initPixel();
-
-    // También intentar después de un breve delay para asegurar que el script externo esté listo
-    // Esto es necesario porque el script externo (fbevents.js) se carga de forma asíncrona
-    // Pero solo si aún no se ha inicializado
-    setTimeout(() => {
-      if (!this.initializedPixels.has(pageType)) {
-        initPixel();
-      }
-    }, 100);
-
-    // Crear noscript fallback solo si el body está disponible
-    const addNoscriptFallback = () => {
-      if (document.body) {
-        const existingNoscript = document.querySelector(`noscript[data-pixel-id="${pixelId}"]`);
-        if (!existingNoscript) {
-          const noscript = document.createElement('noscript');
-          noscript.setAttribute('data-pixel-id', pixelId);
-          const img = document.createElement('img');
-          img.height = 1;
-          img.width = 1;
-          img.style.display = 'none';
-          img.src = `https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`;
-          img.onerror = function() {
-            // Silenciar el error del noscript fallback
+      // Inicializar el script de Facebook Pixel si aún no existe
+      if (!window.fbq) {
+        // Ejecutar el código de Facebook Pixel directamente
+        (function(f: any, b: Document, e: string, v: string, n: any, t: any, s: any) {
+          if (f.fbq) return;
+          n = f.fbq = function() {
+            n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
           };
-          noscript.appendChild(img);
-          document.body.insertBefore(noscript, document.body.firstChild);
-        }
-      } else {
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', addNoscriptFallback);
-        } else {
-          setTimeout(addNoscriptFallback, 100);
-        }
+          if (!f._fbq) f._fbq = n;
+          n.push = n;
+          n.loaded = true;
+          n.version = '2.0';
+          n.queue = [];
+          t = b.createElement(e) as HTMLScriptElement;
+          t.async = true;
+          t.src = v;
+          t.onerror = function() {
+            console.warn('Error cargando Facebook Pixel script. Esto puede ser normal si hay restricciones de red.');
+          };
+          s = b.getElementsByTagName(e)[0];
+          if (s && s.parentNode) {
+            s.parentNode.insertBefore(t, s);
+          } else {
+            b.head.appendChild(t);
+          }
+        })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js', undefined, undefined, undefined);
       }
-    };
 
-    addNoscriptFallback();
+      // Inicializar el pixel específico (solo si Facebook NO lo está haciendo)
+      // El código de Facebook Pixel maneja la cola automáticamente
+      const initPixel = () => {
+        // Verificar que el pixel no haya sido inicializado ya
+        if (this.initializedPixels.has(pageType)) {
+          this.debugLog(`ℹ️ Pixel ${pageType} ya inicializado, omitiendo`);
+          return;
+        }
+
+        // Verificar una última vez si los scripts de Facebook aparecieron mientras esperábamos
+        const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+        const fbeventsScript = document.querySelector(`script[src*="fbevents.js"]`);
+        
+        if (configScript && fbeventsScript) {
+          this.debugLog(`✅ Scripts de Facebook detectados en el último momento, dejando que Facebook maneje el pixel`);
+          this.initializedPixels.add(pageType);
+          return;
+        }
+
+        // CRÍTICO: Verificar si Facebook ya inicializó el pixel
+        // Facebook puede inicializar el pixel incluso si no detectamos los scripts inmediatamente
+        // Verificamos si fbq ya tiene el pixel inicializado revisando la cola de eventos
+        if (window.fbq && (window as any)._fbq) {
+          // Si fbq está disponible y tiene una cola, es posible que Facebook ya lo haya inicializado
+          // Verificamos si hay eventos en la cola que indiquen que el pixel ya fue inicializado
+          const queue = (window as any)._fbq.queue || [];
+          const hasInitForThisPixel = queue.some((event: any[]) => {
+            return event && event[0] === 'init' && event[1] === pixelId;
+          });
+          
+          if (hasInitForThisPixel) {
+            this.debugLog(`✅ Pixel ${pixelId} ya fue inicializado por Facebook (detectado en cola), omitiendo nuestra inicialización`);
+            this.initializedPixels.add(pageType);
+            return;
+          }
+        }
+
+        // Marcar el flag ANTES de inicializar para evitar condiciones de carrera
+        // Esto previene que dos llamadas simultáneas inicialicen el pixel dos veces
+        this.initializedPixels.add(pageType);
+
+        if (window.fbq) {
+          try {
+            // Solo inicializar si realmente no ha sido inicializado
+            // Verificar una vez más justo antes de inicializar
+            const finalCheck = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+            if (finalCheck) {
+              this.debugLog(`✅ Script de Facebook detectado justo antes de inicializar, cancelando`);
+              this.initializedPixels.add(pageType);
+              return;
+            }
+
+            window.fbq('init', pixelId);
+            // IMPORTANTE: NO trackear PageView aquí porque:
+            // 1. Si Facebook está inicializando, ya trackea PageView automáticamente
+            // 2. Si nosotros inicializamos, fbq('init') ya puede haber trackeado PageView automáticamente
+            // 3. Trackear PageView dos veces causa el error "pixel activated 2 times"
+            // Solo trackear PageView si realmente es necesario (cuando nosotros inicializamos manualmente)
+            // Pero esperar un momento para verificar si Facebook ya lo hizo
+            setTimeout(() => {
+              // Verificar si Facebook está manejando el pixel
+              const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+              if (!configScript && window.fbq) {
+                // Solo trackear PageView si nosotros inicializamos y Facebook NO está manejando
+                // Pero verificar si ya fue trackeado revisando la cola
+                const queue = (window as any)._fbq?.queue || [];
+                const hasPageView = queue.some((event: any[]) => {
+                  return event && event[0] === 'track' && event[1] === 'PageView';
+                });
+                
+                if (!hasPageView) {
+                  window.fbq('track', 'PageView');
+                  this.debugLog(`✅ PageView trackeado para pixel ${pageType} (inicializado manualmente)`);
+                } else {
+                  this.debugLog(`ℹ️ PageView ya fue trackeado, omitiendo`);
+                }
+              } else {
+                this.debugLog(`ℹ️ PageView no trackeado (Facebook está manejando el pixel)`);
+              }
+            }, 200);
+            
+            this.debugLog(`✅ Pixel ${pageType} inicializado correctamente por nuestro código`);
+          } catch (error) {
+            // Si hay un error, remover el flag para permitir reintento
+            this.initializedPixels.delete(pageType);
+            console.warn('Error inicializando Facebook Pixel:', error);
+            this.debugLog('❌ Error inicializando pixel', error);
+          }
+        } else {
+          // Si fbq no está disponible, remover el flag para permitir reintento
+          this.initializedPixels.delete(pageType);
+          this.debugLog(`⚠️ fbq no disponible aún, se reintentará`);
+        }
+      };
+
+      // Intentar inicializar después de un breve delay para asegurar que el script externo esté listo
+      // Esto es necesario porque el script externo (fbevents.js) se carga de forma asíncrona
+      // PERO también esperamos un poco más para dar tiempo a que Facebook inicialice si está cargando
+      // IMPORTANTE: Ya esperamos 3 segundos en checkFacebookAutoInit, así que aquí solo esperamos un poco más
+      setTimeout(() => {
+        if (!this.initializedPixels.has(pageType)) {
+          initPixel();
+        }
+      }, 300); // Esperar 300ms adicionales después de la verificación de 3 segundos
+
+      // Crear noscript fallback solo si el body está disponible
+      // IMPORTANTE: El noscript solo se ejecuta si JavaScript está deshabilitado
+      // Si JavaScript está habilitado, el contenido del noscript NO se procesa
+      const addNoscriptFallback = () => {
+        if (document.body) {
+          // Verificar si ya existe un noscript con este pixel ID
+          const existingNoscript = document.querySelector(`noscript[data-pixel-id="${pixelId}"]`);
+          // También verificar si hay algún noscript con la misma imagen de Facebook
+          const existingFacebookNoscript = document.querySelector(`noscript img[src*="tr?id=${pixelId}"]`);
+          
+          if (!existingNoscript && !existingFacebookNoscript) {
+            const noscript = document.createElement('noscript');
+            noscript.setAttribute('data-pixel-id', pixelId);
+            const img = document.createElement('img');
+            img.height = 1;
+            img.width = 1;
+            img.style.display = 'none';
+            img.src = `https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`;
+            img.onerror = function() {
+              // Silenciar el error del noscript fallback
+            };
+            noscript.appendChild(img);
+            document.body.insertBefore(noscript, document.body.firstChild);
+            this.debugLog(`✅ Noscript fallback creado para pixel ${pixelId}`);
+          } else {
+            this.debugLog(`ℹ️ Noscript fallback ya existe para pixel ${pixelId}, omitiendo`);
+          }
+        } else {
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', addNoscriptFallback);
+          } else {
+            setTimeout(addNoscriptFallback, 100);
+          }
+        }
+      };
+
+      // Solo agregar noscript fallback si nosotros inicializamos el pixel
+      // Si Facebook está inicializando, ya maneja el noscript
+      addNoscriptFallback();
+    });
   }
 
   /**
