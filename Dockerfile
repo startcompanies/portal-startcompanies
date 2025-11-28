@@ -1,6 +1,16 @@
 # Multi-stage build para Angular SSR optimizado para producción
 FROM node:18-alpine AS builder
 
+# Build arguments - configuración dinámica
+# BUILD_CONFIGURATION: production, staging, development (default: production)
+# Permite construir diferentes entornos desde el mismo Dockerfile
+ARG BUILD_CONFIGURATION=production
+ARG NODE_ENV=production
+
+# Exponer como ENV para uso en runtime
+ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+ENV NODE_ENV=${NODE_ENV}
+
 # Instalar dependencias del sistema para compilación
 # Sharp se instala vía npm, no es un paquete de Alpine
 RUN apk add --no-cache python3 make g++ imagemagick
@@ -13,7 +23,8 @@ COPY . .
 # Verificar que estamos en el directorio correcto y que es un proyecto Angular
 RUN pwd && ls -la && \
     echo "Verificando archivos de Angular:" && \
-    ls -la angular.json package.json tsconfig.json
+    ls -la angular.json package.json tsconfig.json && \
+    echo "Build Configuration: ${BUILD_CONFIGURATION}"
 
 # Instalar TODAS las dependencias (incluyendo devDependencies para el build)
 RUN npm install --legacy-peer-deps
@@ -24,17 +35,33 @@ RUN npm install -g @angular/cli@18
 # Verificar que Angular CLI reconoce el proyecto
 RUN ng version && ng config --global cli.warnings.versionMismatch false
 
-# Pipeline optimizado de imágenes y build
+# Pipeline optimizado de imágenes y build dinámico
 # 1. Validar y generar solo las imágenes responsive faltantes
-# 2. Build de producción con todas las optimizaciones
+# 2. Build con la configuración especificada usando scripts npm
+# Nota: staging usa NODE_ENV=production (como producción) pero con environment.staging.ts
 RUN npm run validate:images && \
-    npm run build:production:pwa
+    if [ "$BUILD_CONFIGURATION" = "production" ]; then \
+        echo "Building for PRODUCTION..." && \
+        npm run build:production:pwa; \
+    elif [ "$BUILD_CONFIGURATION" = "staging" ]; then \
+        echo "Building for STAGING (NODE_ENV=production)..." && \
+        npm run build:staging:pwa; \
+    else \
+        echo "Building for DEVELOPMENT..." && \
+        ng build --configuration development --output-hashing=all && \
+        ng run portal-startcompanies:server:development; \
+    fi
 
 # Stage final de producción
 FROM node:18-alpine AS production
 
-# Establecer la variable de entorno NODE_ENV
-ENV NODE_ENV=production
+# Build arguments (necesarios también en esta etapa para mantener consistencia)
+ARG BUILD_CONFIGURATION=production
+ARG NODE_ENV=production
+
+# Establecer variables de entorno
+ENV NODE_ENV=${NODE_ENV}
+ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
 
 # Instalar nginx
 RUN apk add --no-cache nginx
