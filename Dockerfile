@@ -1,78 +1,76 @@
-##############################################
-# Stage 1 — BUILDER (compila Angular SSR)
-##############################################
+#syntax=docker/dockerfile:1.6
+
+###############################################
+# STAGE 1 — BUILDER (Angular SSR Compile)
+###############################################
 FROM node:18-alpine AS builder
 
-# Evitar que npm ignore devDependencies
+# Build-time vars (Dokploy las inyecta)
+ARG BUILD_CONFIGURATION=production
+ARG NODE_ENV=production
+
+# El builder siempre necesita devDependencies
 ENV NODE_ENV=development
 ENV NPM_CONFIG_PRODUCTION=false
 
-# Dependencias necesarias para compilación (sharp, Angular, SSR)
+# Dependencias necesarias para compilar Angular SSR
 RUN apk add --no-cache python3 make g++ imagemagick
 
 WORKDIR /app
-
-# Copiar todo el proyecto
 COPY . .
-
-# Mostrar archivos relevantes para debug
-RUN echo "Verificando estructura del proyecto..." && \
-    ls -la angular.json package.json tsconfig.json
 
 # Instalar dependencias (incluye devDependencies)
 RUN npm install --legacy-peer-deps
 
-# Instalar Angular CLI localmente vía npx (evita conflictos globales)
-RUN npx ng version && npx ng config --global cli.warnings.versionMismatch false
+# Angular CLI (local, vía npx)
+RUN npx ng version && \
+    npx ng config --global cli.warnings.versionMismatch false
 
-# Pipeline de imágenes responsive + build SSR
+# ---------- Build dinámico según BUILD_CONFIGURATION ----------
 RUN npm run validate:images && \
-    npm run optimize:images || echo "⚠ Sharp no disponible, imágenes no optimizadas" && \
-    npm run build:production:pwa
+    echo "🔧 Build Configuration: $BUILD_CONFIGURATION" && \
+    if [ "$BUILD_CONFIGURATION" = "production" ]; then \
+        echo "🚀 Ejecutando build:production:pwa"; \
+        npm run build:production:pwa; \
+    elif [ "$BUILD_CONFIGURATION" = "staging" ]; then \
+        echo "🚧 Ejecutando build:staging:pwa"; \
+        npm run build:staging:pwa; \
+    else \
+        echo "🛠 Ejecutando build de DEVELOPMENT"; \
+        npx ng build --configuration development --output-hashing=all && \
+        npx ng run portal-startcompanies:server:development; \
+    fi
+# ---------------------------------------------------------------
 
-##############################################
-# Stage 2 — PRODUCCIÓN (Node SSR + Nginx)
-##############################################
+###############################################
+# STAGE 2 — PRODUCCIÓN (Node SSR + Nginx)
+###############################################
 FROM node:18-alpine AS production
-
-# Ambiente seguro de producción
 ENV NODE_ENV=production
 
-# Instalar Nginx
 RUN apk add --no-cache nginx
 
 WORKDIR /app
 
-# Copiar package.json y lock
 COPY package*.json ./
-
-# Instalar solo dependencias necesarias para SSR
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Copiar el build final de SSR desde el builder
+# Copiar build final
 COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompanies
-
-# Copiar imágenes responsive generadas
 COPY --from=builder /app/src/assets /app/src/assets
 
-# Copiar configuración optimizada de Nginx
+# Configuración de nginx
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
-# Crear directorios usados por nginx
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run
 
-# Usuario no-root
+# Usuario sin privilegios
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-# Ajustar permisos
 RUN chown -R nodejs:nodejs /app /var/log/nginx /var/cache/nginx /var/run
 
-# Exponer puerto del SSR
 EXPOSE 4000
 
-# Cambiar usuario por seguridad
 USER nodejs
-
-# Comando final de ejecución
 CMD ["npm", "run", "serve:ssr"]
