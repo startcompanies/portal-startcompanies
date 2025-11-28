@@ -55,6 +55,79 @@
   text-align: center;
 }
 
+/* Estilos para la sección "¿Qué incluye tu llamada gratuita?" */
+.free-call-includes-section {
+  background-color: var(--color-fondo-claro);
+  padding: 3rem 2rem 1.5rem 2rem;
+}
+
+.free-call-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 2rem;
+}
+
+.free-call-list {
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 2rem;
+}
+
+.free-call-list li {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  font-size: 1.1rem;
+  color: var(--color-texto-oscuro);
+  line-height: 1.6;
+}
+
+.free-call-list i {
+  color: var(--color-secundario-tecnico);
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.free-call-list span {
+  flex: 1;
+}
+
+@media (min-width: 992px) {
+  .free-call-list {
+    grid-template-columns: repeat(3, 1fr);
+    justify-items: start;
+  }
+}
+
+@media (max-width: 768px) {
+  .free-call-includes-section {
+    padding: 2rem 1rem 1rem 1rem;
+  }
+
+  .free-call-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .free-call-list {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .free-call-list li {
+    font-size: 1rem;
+    padding: 0.75rem 0;
+  }
+
+  .free-call-list i {
+    font-size: 1.3rem;
+  }
+}
+
 /* Estilos para la sección CTA de Calendly */
 .calendly-cta-section {
   padding: 4rem 2rem 2rem 2rem;
@@ -65,13 +138,27 @@
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--color-texto-oscuro);
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.2;
 }
 
 .calendly-subtitle {
   font-size: 1.2rem;
   opacity: 0.9;
   margin-bottom: 0;
+  margin-top: 0;
   color: var(--color-texto-oscuro);
+  display: block !important;
+  width: 100% !important;
+  line-height: 1.5;
+}
+
+/* Asegurar que el contenedor siempre use flexbox en columna */
+.calendly-cta-section .col-12 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center;
 }
 
 .sc-hero-bg {
@@ -93,10 +180,15 @@
   
   .calendly-title {
     font-size: 2rem;
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 1rem;
   }
   
   .calendly-subtitle {
     font-size: 1rem;
+    display: block !important;
+    width: 100% !important;
   }
 
 }
@@ -455,5 +547,67 @@
     opacity: 1;
     visibility: visible;
     transition: opacity 0.5s ease;
+  }
+
+  /* Estilos para la lista de características */
+  .hero-features-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    padding: 0;
+    margin: 0;
+  }
+
+  .hero-features-list li {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .hero-features-list li:hover {
+    transform: translateY(-2px);
+  }
+
+  .hero-features-list i {
+    color: var(--color-fondo-claro);
+    font-size: 0.95rem;
+    opacity: 0.9;
+    flex-shrink: 0;
+  }
+
+  .hero-features-list span {
+    color: var(--color-fondo-claro);
+  }
+
+  /* Ajustes para mobile */
+  @media (max-width: 768px) {
+    .hero-features-list {
+      gap: 0.4rem 0.8rem;
+      justify-content: center;
+    }
+    
+    .hero-features-list li {
+      font-size: 0.75rem;
+    }
+    
+    .hero-features-list i {
+      font-size: 0.85rem;
+    }
+  }
+
+  /* Ajustes para desktop */
+  @media (min-width: 769px) {
+    .hero-features-list {
+      justify-content: flex-start;
+      gap: 0.5rem 1.2rem;
+    }
+    
+    .hero-features-list li {
+      font-size: 0.9rem;
+    }
   }
   

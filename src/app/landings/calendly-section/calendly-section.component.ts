@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, Output, EventEmitter } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FacebookPixelService } from '../../services/facebook-pixel.service';
 

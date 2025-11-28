@@ -24,15 +24,18 @@
       <div class="col-lg-6 d-none d-md-block">
         <div class="desktop-video-container">
           <app-wistia-player
-            mediaId="n1xklnyrgg"
+            mediaId="ty5yrdaz48"
           ></app-wistia-player>
         </div>
       </div>
       <!--Visible en pantalla de movil-->
       <div class="col-lg-12 d-md-none">
+        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
+          {{'LANDINGS.no_advance_payments_2' | transloco}}
+        </h1>
         <div class="mobile-video-container">
           <app-wistia-vertical-player
-            mediaId="a6kkomh6ix"
+            mediaId="y6ofymeow3"
           ></app-wistia-vertical-player>
         </div>
         <!-- CTA específico para mobile debajo del video -->
@@ -42,14 +45,34 @@
             type="button"
             (click)="navigateToCalendlySection()"
           >
-            {{'LANDINGS.schedule_consultation' | transloco}}
+            {{'LANDINGS.schedule_consultation_2' | transloco}}
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
         </div>
+        <div class="mt-3 text-center d-md-none">
+          <ul class="hero-features-list list-unstyled text-white mb-0">
+            <li>
+              <i class="bi bi-calendar-check-fill me-2"></i>
+              <span>7 días</span>
+            </li>
+            <li>
+              <i class="bi bi-laptop me-2"></i>
+              <span>100% remoto</span>
+            </li>
+            <li>
+              <i class="bi bi-credit-card me-2"></i>
+              <span>pagas después</span>
+            </li>
+            <li>
+              <i class="bi bi-people-fill me-2"></i>
+              <span>+400 clientes</span>
+            </li>
+          </ul>
+        </div>
       </div>
       <div class="col-lg-6">
-        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-          {{'LANDINGS.no_advance_payments' | transloco}}
+        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title d-none d-md-block">
+          {{'LANDINGS.no_advance_payments_2' | transloco}}
         </h1>
         <p class="lead hero-description">
           {{'LANDINGS.open_your_llc' | transloco}}
@@ -71,10 +94,69 @@
             </div>
           </div>
         </div>
+        <div class="mt-3 d-none d-md-block">
+          <ul class="hero-features-list list-unstyled text-white mb-0">
+            <li>
+              <i class="bi bi-calendar-check-fill me-2"></i>
+              <span>7 días</span>
+            </li>
+            <li>
+              <i class="bi bi-laptop me-2"></i>
+              <span>100% remoto</span>
+            </li>
+            <li>
+              <i class="bi bi-credit-card me-2"></i>
+              <span>pagas después</span>
+            </li>
+            <li>
+              <i class="bi bi-people-fill me-2"></i>
+              <span>+400 clientes</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-  
+
+</section>
+
+<!-- Sección: ¿Qué incluye tu llamada gratuita? -->
+<section class="free-call-includes-section">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-12 text-center mb-4">
+        <h2 class="free-call-title">
+          ¿Qué incluye tu llamada gratuita?
+        </h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <ul class="free-call-list list-unstyled">
+          <li>
+            <i class="bi bi-check-circle-fill me-3"></i>
+            <span>Qué tipo de LLC te conviene según tu país</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill me-3"></i>
+            <span>Revisión de impuestos y bancarización</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill me-3"></i>
+            <span>Explicación paso a paso del proceso</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill me-3"></i>
+            <span>Acompañamiento personal durante todo el trámite</span>
+          </li>
+          <li>
+            <i class="bi bi-check-circle-fill me-3"></i>
+            <span>100% gratis, sin compromiso</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Calendly inline widget -->
