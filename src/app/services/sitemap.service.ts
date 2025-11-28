@@ -7,7 +7,7 @@ import { Post } from '../shared/models/post.model';
   providedIn: 'root'
 })
 export class SitemapService {
-  private readonly baseUrl = 'https://startcompanies.us';
+  private readonly baseUrl = environment.baseUrl;
   private readonly apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) { }
