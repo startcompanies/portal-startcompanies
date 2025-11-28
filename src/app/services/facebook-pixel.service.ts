@@ -143,10 +143,10 @@ export class FacebookPixelService {
    */
   /**
    * Verifica si Facebook está auto-inicializando el pixel
-   * Espera hasta que los scripts se carguen (hasta 2 segundos)
+   * Espera hasta que los scripts se carguen (hasta 3 segundos para dar tiempo a GTM)
    */
   private async checkFacebookAutoInit(pixelId: string): Promise<boolean> {
-    const maxWaitTime = 2000; // 2 segundos máximo
+    const maxWaitTime = 3000; // 3 segundos máximo (GTM puede tardar más)
     const checkInterval = 100; // Verificar cada 100ms
     const maxChecks = maxWaitTime / checkInterval;
     let checks = 0;
@@ -216,7 +216,8 @@ export class FacebookPixelService {
         this.debugLog(`✅ Facebook está auto-inicializando el pixel ${pixelId}, dejando que Facebook lo maneje`);
         this.initializedPixels.add(pageType);
         
-        // Verificar que fbq esté disponible para tracking
+        // IMPORTANTE: NO trackear PageView aquí porque Facebook ya lo hace automáticamente
+        // Solo verificar que fbq esté disponible para tracking futuro
         setTimeout(() => {
           if (window.fbq) {
             this.debugLog(`✅ Pixel ${pixelId} disponible para tracking (inicializado por Facebook)`);
@@ -225,7 +226,7 @@ export class FacebookPixelService {
           }
         }, 500);
         
-        return; // No hacer nada más, Facebook lo maneja todo
+        return; // No hacer nada más, Facebook lo maneja todo (incluyendo PageView)
       }
 
       // Si Facebook NO está auto-inicializando, entonces nosotros lo inicializamos
@@ -278,14 +279,68 @@ export class FacebookPixelService {
           return;
         }
 
+        // CRÍTICO: Verificar si Facebook ya inicializó el pixel
+        // Facebook puede inicializar el pixel incluso si no detectamos los scripts inmediatamente
+        // Verificamos si fbq ya tiene el pixel inicializado revisando la cola de eventos
+        if (window.fbq && (window as any)._fbq) {
+          // Si fbq está disponible y tiene una cola, es posible que Facebook ya lo haya inicializado
+          // Verificamos si hay eventos en la cola que indiquen que el pixel ya fue inicializado
+          const queue = (window as any)._fbq.queue || [];
+          const hasInitForThisPixel = queue.some((event: any[]) => {
+            return event && event[0] === 'init' && event[1] === pixelId;
+          });
+          
+          if (hasInitForThisPixel) {
+            this.debugLog(`✅ Pixel ${pixelId} ya fue inicializado por Facebook (detectado en cola), omitiendo nuestra inicialización`);
+            this.initializedPixels.add(pageType);
+            return;
+          }
+        }
+
         // Marcar el flag ANTES de inicializar para evitar condiciones de carrera
         // Esto previene que dos llamadas simultáneas inicialicen el pixel dos veces
         this.initializedPixels.add(pageType);
 
         if (window.fbq) {
           try {
+            // Solo inicializar si realmente no ha sido inicializado
+            // Verificar una vez más justo antes de inicializar
+            const finalCheck = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+            if (finalCheck) {
+              this.debugLog(`✅ Script de Facebook detectado justo antes de inicializar, cancelando`);
+              this.initializedPixels.add(pageType);
+              return;
+            }
+
             window.fbq('init', pixelId);
-            window.fbq('track', 'PageView');
+            // IMPORTANTE: NO trackear PageView aquí porque:
+            // 1. Si Facebook está inicializando, ya trackea PageView automáticamente
+            // 2. Si nosotros inicializamos, fbq('init') ya puede haber trackeado PageView automáticamente
+            // 3. Trackear PageView dos veces causa el error "pixel activated 2 times"
+            // Solo trackear PageView si realmente es necesario (cuando nosotros inicializamos manualmente)
+            // Pero esperar un momento para verificar si Facebook ya lo hizo
+            setTimeout(() => {
+              // Verificar si Facebook está manejando el pixel
+              const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
+              if (!configScript && window.fbq) {
+                // Solo trackear PageView si nosotros inicializamos y Facebook NO está manejando
+                // Pero verificar si ya fue trackeado revisando la cola
+                const queue = (window as any)._fbq?.queue || [];
+                const hasPageView = queue.some((event: any[]) => {
+                  return event && event[0] === 'track' && event[1] === 'PageView';
+                });
+                
+                if (!hasPageView) {
+                  window.fbq('track', 'PageView');
+                  this.debugLog(`✅ PageView trackeado para pixel ${pageType} (inicializado manualmente)`);
+                } else {
+                  this.debugLog(`ℹ️ PageView ya fue trackeado, omitiendo`);
+                }
+              } else {
+                this.debugLog(`ℹ️ PageView no trackeado (Facebook está manejando el pixel)`);
+              }
+            }, 200);
+            
             this.debugLog(`✅ Pixel ${pageType} inicializado correctamente por nuestro código`);
           } catch (error) {
             // Si hay un error, remover el flag para permitir reintento
@@ -302,11 +357,13 @@ export class FacebookPixelService {
 
       // Intentar inicializar después de un breve delay para asegurar que el script externo esté listo
       // Esto es necesario porque el script externo (fbevents.js) se carga de forma asíncrona
+      // PERO también esperamos un poco más para dar tiempo a que Facebook inicialice si está cargando
+      // IMPORTANTE: Ya esperamos 3 segundos en checkFacebookAutoInit, así que aquí solo esperamos un poco más
       setTimeout(() => {
         if (!this.initializedPixels.has(pageType)) {
           initPixel();
         }
-      }, 200);
+      }, 300); // Esperar 300ms adicionales después de la verificación de 3 segundos
 
       // Crear noscript fallback solo si el body está disponible
       // IMPORTANTE: El noscript solo se ejecuta si JavaScript está deshabilitado
