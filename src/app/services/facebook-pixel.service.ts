@@ -142,8 +142,9 @@ export class FacebookPixelService {
    * @param pageType - Tipo de página ('llc' o 'relay')
    */
   /**
-   * Verifica si Facebook está auto-inicializando el pixel
+   * Verifica si Facebook está auto-inicializando el pixel ESPECÍFICO que necesitamos
    * Espera hasta que los scripts se carguen (hasta 3 segundos para dar tiempo a GTM)
+   * IMPORTANTE: Solo retorna true si Facebook está inicializando el pixel EXACTO que necesitamos
    */
   private async checkFacebookAutoInit(pixelId: string): Promise<boolean> {
     const maxWaitTime = 3000; // 3 segundos máximo (GTM puede tardar más)
@@ -156,27 +157,51 @@ export class FacebookPixelService {
         checks++;
         
         // Verificar si los scripts de Facebook están presentes
+        // CRÍTICO: Verificar que el script de configuración sea para el pixel ESPECÍFICO que necesitamos
         const configScript = document.querySelector(`script[src*="signals/config/${pixelId}"]`);
         const fbeventsScript = document.querySelector(`script[src*="fbevents.js"]`);
         
-        // Si ambos scripts están presentes, Facebook está auto-inicializando
+        // Verificar también si hay scripts de otros pixels (para debug)
+        const llcConfigScript = document.querySelector(`script[src*="signals/config/${this.config.llcPixelId}"]`);
+        const relayConfigScript = document.querySelector(`script[src*="signals/config/${this.config.relayPixelId}"]`);
+        
+        // Si ambos scripts están presentes Y el script de configuración es para el pixel que necesitamos,
+        // entonces Facebook está auto-inicializando el pixel correcto
         if (configScript && fbeventsScript) {
           this.debugLog(`✅ Detectado: Facebook está auto-inicializando el pixel ${pixelId}`, {
             configScript: true,
             fbeventsScript: true,
             checkNumber: checks,
-            waitTime: checks * checkInterval
+            waitTime: checks * checkInterval,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript
           });
           resolve(true);
           return;
         }
 
-        // Si hemos alcanzado el máximo de verificaciones, asumir que Facebook no está inicializando
+        // Si hay scripts de Facebook pero NO para el pixel que necesitamos, Facebook NO está inicializando nuestro pixel
+        if (fbeventsScript && !configScript) {
+          // Facebook está cargando scripts, pero no para nuestro pixel específico
+          // Esto significa que debemos inicializar nosotros
+          this.debugLog(`ℹ️ Facebook está cargando scripts, pero NO para el pixel ${pixelId}`, {
+            fbeventsScript: true,
+            configScript: false,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript,
+            checkNumber: checks
+          });
+          // Continuar verificando por si acaso aparece el script correcto
+        }
+
+        // Si hemos alcanzado el máximo de verificaciones, asumir que Facebook no está inicializando nuestro pixel
         if (checks >= maxChecks) {
-          this.debugLog(`⏱️ Tiempo de espera agotado (${maxWaitTime}ms), Facebook no está auto-inicializando`, {
+          this.debugLog(`⏱️ Tiempo de espera agotado (${maxWaitTime}ms), Facebook no está auto-inicializando el pixel ${pixelId}`, {
             checks: checks,
             configScript: !!configScript,
-            fbeventsScript: !!fbeventsScript
+            fbeventsScript: !!fbeventsScript,
+            llcScriptFound: !!llcConfigScript,
+            relayScriptFound: !!relayConfigScript
           });
           resolve(false);
           return;
