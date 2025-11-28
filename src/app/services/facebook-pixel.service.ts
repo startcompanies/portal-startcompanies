@@ -186,7 +186,14 @@ export class FacebookPixelService {
     }
 
     // Inicializar el pixel específico
+    // El código de Facebook Pixel maneja la cola automáticamente
     const initPixel = () => {
+      // Verificar que el pixel no haya sido inicializado ya
+      if (this.initializedPixels.has(pageType)) {
+        this.debugLog(`ℹ️ Pixel ${pageType} ya inicializado, omitiendo`);
+        return;
+      }
+
       if (window.fbq) {
         try {
           window.fbq('init', pixelId);
@@ -204,7 +211,13 @@ export class FacebookPixelService {
     initPixel();
 
     // También intentar después de un breve delay para asegurar que el script externo esté listo
-    setTimeout(initPixel, 100);
+    // Esto es necesario porque el script externo (fbevents.js) se carga de forma asíncrona
+    // Pero solo si aún no se ha inicializado
+    setTimeout(() => {
+      if (!this.initializedPixels.has(pageType)) {
+        initPixel();
+      }
+    }, 100);
 
     // Crear noscript fallback solo si el body está disponible
     const addNoscriptFallback = () => {
