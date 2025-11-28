@@ -1,5 +1,7 @@
 export const environment = {
   production: false,
   //apiUrl: 'http://localhost:5000',
-  apiUrl: 'https://api-web.startcompanies.us'
+  apiUrl: 'https://api-web.startcompanies.us',
+  baseUrl: 'https://startcompanies.us',
+  domain: 'startcompanies.us'
 };

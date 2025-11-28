@@ -16,6 +16,28 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
+  // Helper function para obtener baseUrl dinámicamente
+  const getBaseUrl = (req: express.Request): string => {
+    // Intentar obtener desde el header Host
+    const host = req.get('host') || req.headers.host || '';
+    const protocol = req.protocol || (req.get('x-forwarded-proto') || 'https').split(',')[0].trim();
+    
+    // Si el host contiene startcompanies.io, usar ese dominio
+    if (host.includes('startcompanies.io')) {
+      return `${protocol}://${host}`;
+    }
+    
+    // Si el host contiene startcompanies.us, usar ese dominio
+    if (host.includes('startcompanies.us')) {
+      return `${protocol}://${host}`;
+    }
+    
+    // Fallback: usar variable de entorno o valor por defecto
+    return process.env['BASE_URL'] || process.env['DOMAIN'] 
+      ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace('https://', '')}`
+      : 'https://startcompanies.us';
+  };
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
 
@@ -23,7 +45,7 @@ export function app(): express.Express {
   server.get('/sitemap.xml', async (req, res) => {
     try {
       // Generar sitemap básico sin dependencias de Angular
-      const baseUrl = 'https://startcompanies.us';
+      const baseUrl = getBaseUrl(req);
       const staticUrls = [
         // Página principal (redirección)
         { url: '/', priority: '1.0', changefreq: 'weekly' },
@@ -103,11 +125,248 @@ export function app(): express.Express {
     }
   });
 
+  // Endpoint para sitemap-index.xml dinámico
+  server.get('/sitemap-index.xml', async (req, res) => {
+    try {
+      const baseUrl = getBaseUrl(req);
+      const lastmod = new Date().toISOString().split('T')[0];
+      
+      const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ===== SITEMAP PRINCIPAL ===== -->
+  <sitemap>
+    <loc>${baseUrl}/sitemap.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
+  <!-- ===== SITEMAP DE IMÁGENES ===== -->
+  <sitemap>
+    <loc>${baseUrl}/sitemap-images.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
+  <!-- ===== SITEMAPS FUTUROS ===== -->
+  <!-- 
+  <sitemap>
+    <loc>${baseUrl}/sitemap-blog.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+  
+  <sitemap>
+    <loc>${baseUrl}/sitemap-services.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+  
+  <sitemap>
+    <loc>${baseUrl}/sitemap-pages.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+  -->
+
+</sitemapindex>`;
+      
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache por 1 hora
+      res.send(sitemapIndex);
+    } catch (error) {
+      console.error('Error generating sitemap-index:', error);
+      res.status(500).send('Error generating sitemap-index');
+    }
+  });
+
+  // Endpoint para sitemap-images.xml dinámico
+  server.get('/sitemap-images.xml', async (req, res) => {
+    try {
+      const baseUrl = getBaseUrl(req);
+      
+      const sitemapImages = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- ===== IMÁGENES PRINCIPALES DEL SITIO ===== -->
+  
+  <!-- Logo Principal -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/logo-dark-desktop.webp</image:loc>
+      <image:title>Start Companies LLC - Logo Principal</image:title>
+      <image:caption>Logo oficial de Start Companies LLC, empresa especializada en servicios financieros para LLC en Estados Unidos</image:caption>
+      <image:license>${baseUrl}/</image:license>
+    </image:image>
+  </url>
+
+  <!-- Logo Mobile -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/logo-dark-mobile.webp</image:loc>
+      <image:title>Start Companies LLC - Logo Mobile</image:title>
+      <image:caption>Logo optimizado para dispositivos móviles</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Logo Tablet -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/logo-dark-tablet.webp</image:loc>
+      <image:title>Start Companies LLC - Logo Tablet</image:title>
+      <image:caption>Logo optimizado para tablets</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Hero Background -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/hero-bg-desktop.webp</image:loc>
+      <image:title>Hero Background - Start Companies LLC</image:title>
+      <image:caption>Imagen de fondo principal del sitio web</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes de Beneficios -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/benefits/clock.svg</image:loc>
+      <image:title>Beneficio - Rapidez</image:title>
+      <image:caption>Icono representando rapidez en nuestros servicios</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/benefits/globe.svg</image:loc>
+      <image:title>Beneficio - Alcance Global</image:title>
+      <image:caption>Icono representando nuestro alcance global</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/benefits/idea.svg</image:loc>
+      <image:title>Beneficio - Innovación</image:title>
+      <image:caption>Icono representando innovación en servicios financieros</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes de Testimonios -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/testimonials/img_outdoor_shot_yo.webp</image:loc>
+      <image:title>Testimonio Cliente</image:title>
+      <image:caption>Cliente satisfecho con nuestros servicios</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/testimonials/img_young_bearded_m_64x64.webp</image:loc>
+      <image:title>Testimonio Cliente</image:title>
+      <image:caption>Cliente joven con experiencia positiva</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes de Servicios -->
+  <url>
+    <loc>${baseUrl}/apertura-banco-relay</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/relay/work-llc.webp</image:loc>
+      <image:title>Servicio de Apertura de Banco Relay</image:title>
+      <image:caption>Imagen representativa del servicio de apertura de cuentas bancarias Relay</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes del Blog -->
+  <url>
+    <loc>${baseUrl}/blog</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/blog/article.webp</image:loc>
+      <image:title>Blog - Start Companies LLC</image:title>
+      <image:caption>Imagen representativa de nuestro blog con consejos y noticias</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/blog</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/blog/article-small.webp</image:loc>
+      <image:title>Blog - Artículos Pequeños</image:title>
+      <image:caption>Vista previa de artículos del blog</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes de Nosotros -->
+  <url>
+    <loc>${baseUrl}/nosotros</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/us/mission-person.jpg</image:loc>
+      <image:title>Equipo Start Companies LLC</image:title>
+      <image:caption>Miembro de nuestro equipo comprometido con la excelencia</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/nosotros</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/us/vision.webp</image:loc>
+      <image:title>Visión de Start Companies LLC</image:title>
+      <image:caption>Representación visual de nuestra visión empresarial</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Imágenes de Tabs/Servicios -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/tabs/account_bank.webp</image:loc>
+      <image:title>Servicio de Cuenta Bancaria</image:title>
+      <image:caption>Imagen representativa de servicios bancarios</image:caption>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/tabs/declaration_taxes.webp</image:loc>
+      <image:title>Servicio de Declaración de Impuestos</image:title>
+      <image:caption>Imagen representativa de servicios fiscales</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Favicon -->
+  <url>
+    <loc>${baseUrl}/</loc>
+    <image:image>
+      <image:loc>${baseUrl}/assets/fav-icon/favicon.ico</image:loc>
+      <image:title>Favicon Start Companies LLC</image:title>
+      <image:caption>Icono oficial del sitio web</image:caption>
+    </image:image>
+  </url>
+
+</urlset>`;
+      
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache por 1 hora
+      res.send(sitemapImages);
+    } catch (error) {
+      console.error('Error generating sitemap-images:', error);
+      res.status(500).send('Error generating sitemap-images');
+    }
+  });
+
   // Endpoint para sitemap específico del blog
   server.get('/sitemap-blog.xml', async (req, res) => {
     try {
       // Sitemap básico del blog - se puede mejorar después
-      const baseUrl = 'https://startcompanies.us';
+      const baseUrl = getBaseUrl(req);
       const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -174,7 +433,7 @@ export function app(): express.Express {
   // Endpoint para robots.txt dinámico
   server.get('/robots.txt', async (req, res) => {
     try {
-      const baseUrl = 'https://startcompanies.us';
+      const baseUrl = getBaseUrl(req);
       const robotsTxt = `User-agent: *
 Allow: /
 
