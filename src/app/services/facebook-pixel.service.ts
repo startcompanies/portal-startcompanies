@@ -122,7 +122,7 @@ export class FacebookPixelService {
     // Validar contents (debe ser array de objetos con id y quantity)
     if (validated.contents && Array.isArray(validated.contents)) {
       validated.contents = validated.contents.filter(item => {
-        if (!item.id || typeof item.quantity !== 'number' || item.quantity < 0) {
+        if (!item.id || item.quantity < 0) {
           this.debugLog('⚠️ Item inválido en contents, removiendo', item);
           return false;
         }
@@ -154,7 +154,7 @@ export class FacebookPixelService {
     }
 
     const pixelId = pageType === 'llc' ? this.config.llcPixelId : this.config.relayPixelId;
-    
+
     this.debugLog(`🚀 Inicializando pixel ${pageType}`, { pixelId });
 
     // Inicializar el script de Facebook Pixel si aún no existe
@@ -184,7 +184,7 @@ export class FacebookPixelService {
         }
       })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js', undefined, undefined, undefined);
     }
-    
+
     // Inicializar el pixel específico
     const initPixel = () => {
       if (window.fbq) {
@@ -199,13 +199,13 @@ export class FacebookPixelService {
         }
       }
     };
-    
+
     // Intentar inicializar inmediatamente
     initPixel();
-    
+
     // También intentar después de un breve delay para asegurar que el script externo esté listo
     setTimeout(initPixel, 100);
-    
+
     // Crear noscript fallback solo si el body está disponible
     const addNoscriptFallback = () => {
       if (document.body) {
@@ -232,7 +232,7 @@ export class FacebookPixelService {
         }
       }
     };
-    
+
     addNoscriptFallback();
   }
 
@@ -248,7 +248,7 @@ export class FacebookPixelService {
     }
 
     const validatedParams = this.validateParameters(parameters);
-    
+
     try {
       window.fbq('track', eventName, validatedParams);
       this.debugLog(`📊 Evento trackeado: ${eventName}`, validatedParams);
@@ -269,7 +269,7 @@ export class FacebookPixelService {
     }
 
     const validatedParams = this.validateParameters(parameters);
-    
+
     try {
       window.fbq('trackCustom', eventName, validatedParams);
       this.debugLog(`📊 Evento personalizado trackeado: ${eventName}`, validatedParams);

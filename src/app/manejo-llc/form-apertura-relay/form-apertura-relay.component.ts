@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ScHeaderComponent } from '../../sc-header/sc-header.component';
 import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
 import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
@@ -16,7 +15,7 @@ import { FacebookPixelService } from '../../services/facebook-pixel.service';
   styleUrl: './form-apertura-relay.component.css',
 })
 export class FormAperturaRelayComponent implements OnInit {
-  
+
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {
     mobile: "/assets/hero-bg-mobile.webp",
@@ -39,7 +38,7 @@ export class FormAperturaRelayComponent implements OnInit {
         'Formulario Apertura Relay',
         'Banking Services'
       );
-      
+
       // También trackear como Lead ya que es un paso importante en el funnel
       this.facebookPixelService.trackLead(
         'Formulario Apertura Relay - Página Cargada',
