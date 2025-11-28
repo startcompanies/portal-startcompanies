@@ -28,16 +28,64 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     this.loadCalComWidget();
   }
 
+  /**
+   * Lee una cookie por su nombre
+   */
+  private getCookie(name: string): string | null {
+    if (typeof document === 'undefined') {
+      return null;
+    }
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  /**
+   * Obtiene el país del usuario basado en su IP
+   */
+  private async getCountryFromIP(): Promise<string | null> {
+    try {
+      // Usar ipapi.co que es gratuita y no requiere API key para uso básico
+      const response = await fetch('https://ipapi.co/json/');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.country_code) {
+          console.log('✅ País detectado:', data.country_code, data.country_name);
+          return data.country_code; // Retorna código de país ISO (ej: "US", "MX", "ES")
+        }
+      }
+    } catch (error) {
+      console.warn('Error obteniendo país desde IP:', error);
+      // Intentar con API alternativa si la primera falla
+      try {
+        const fallbackResponse = await fetch('https://ip-api.com/json/?fields=countryCode');
+        if (fallbackResponse.ok) {
+          const fallbackData = await fallbackResponse.json();
+          if (fallbackData.countryCode) {
+            console.log('✅ País detectado (fallback):', fallbackData.countryCode);
+            return fallbackData.countryCode;
+          }
+        }
+      } catch (fallbackError) {
+        console.warn('Error en API alternativa de geolocalización:', fallbackError);
+      }
+    }
+    return null;
+  }
+
   private async loadCalComWidget(): Promise<void> {
-    let userIp: string | null = null;
     if (typeof window === 'undefined') {
       // Prevent execution on the server
       return;
     }
-    const urlParams = new URLSearchParams(window.location.search);
-    const fbclid = urlParams.get('fbclid');
-    const userAgent = navigator.userAgent;
 
+    // Obtener IP del usuario (parámetro original)
+    let userIp: string | null = null;
     try {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
@@ -46,11 +94,50 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
       console.warn('Error fetching IP address:', error);
     }
 
+    // Obtener userAgent (parámetro original)
+    const userAgent = navigator.userAgent;
+
+    // Obtener fbclid de la URL (parámetro original)
+    const urlParams = new URLSearchParams(window.location.search);
+    const fbclid = urlParams.get('fbclid');
+
+    // Leer cookies de Facebook Pixel (nuevos parámetros)
+    const _fbc = this.getCookie('_fbc'); // Facebook Click ID
+    const _fbp = this.getCookie('_fbp'); // Facebook Browser ID
+
+    // Obtener país del usuario (nuevo parámetro)
+    const country = await this.getCountryFromIP();
+
     let calLink = 'startcompanies-businessenusa/30min';
     const queryParams = new URLSearchParams();
-    if (userIp) queryParams.set('ip', userIp);
-    if (userAgent) queryParams.set('userAgent', userAgent);
-    if (fbclid) queryParams.set('notes', `fbclid=${fbclid}`);
+    
+    // Parámetros originales (mantener)
+    if (userIp) {
+      queryParams.set('ip', userIp);
+    }
+    if (userAgent) {
+      queryParams.set('userAgent', userAgent);
+    }
+    if (fbclid) {
+      queryParams.set('fbclid', fbclid);
+    }
+    
+    // Nuevos parámetros de Facebook Pixel
+    if (_fbc) {
+      queryParams.set('_fbc', _fbc);
+      console.log('✅ _fbc enviado a Cal.com:', _fbc);
+    }
+    if (_fbp) {
+      queryParams.set('_fbp', _fbp);
+      console.log('✅ _fbp enviado a Cal.com:', _fbp);
+    }
+
+    // Nuevo parámetro de país
+    if (country) {
+      queryParams.set('pais', country);
+      console.log('✅ País enviado a Cal.com:', country);
+    }
+
     const finalQuery = queryParams.toString();
     if (finalQuery) calLink += `?${finalQuery}`;
 
