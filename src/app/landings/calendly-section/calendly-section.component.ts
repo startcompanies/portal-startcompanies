@@ -47,28 +47,39 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
   /**
    * Obtiene el país del usuario basado en su IP
+   * Retorna un objeto con el código y nombre del país en español
    */
-  private async getCountryFromIP(): Promise<string | null> {
+  private async getCountryFromIP(): Promise<{ code: string; name: string } | null> {
     try {
       // Usar ipapi.co que es gratuita y no requiere API key para uso básico
-      const response = await fetch('https://ipapi.co/json/');
+      // Especificar lang=es para obtener el nombre del país en español
+      const response = await fetch('https://ipapi.co/json/?lang=es');
       if (response.ok) {
         const data = await response.json();
-        if (data.country_code) {
+        if (data.country_code && data.country_name) {
           console.log('✅ País detectado:', data.country_code, data.country_name);
-          return data.country_code; // Retorna código de país ISO (ej: "US", "MX", "ES")
+          return {
+            code: data.country_code, // Código ISO (ej: "US", "MX", "ES")
+            name: data.country_name  // Nombre completo en español (ej: "Estados Unidos", "México", "España")
+          };
         }
       }
     } catch (error) {
       console.warn('Error obteniendo país desde IP:', error);
       // Intentar con API alternativa si la primera falla
+      // ip-api.com no soporta español directamente, así que usaremos un mapeo
       try {
-        const fallbackResponse = await fetch('https://ip-api.com/json/?fields=countryCode');
+        const fallbackResponse = await fetch('https://ip-api.com/json/?fields=countryCode,country');
         if (fallbackResponse.ok) {
           const fallbackData = await fallbackResponse.json();
-          if (fallbackData.countryCode) {
-            console.log('✅ País detectado (fallback):', fallbackData.countryCode);
-            return fallbackData.countryCode;
+          if (fallbackData.countryCode && fallbackData.country) {
+            // Mapear nombre en inglés a español para países comunes
+            const countryNameEs = this.translateCountryToSpanish(fallbackData.country);
+            console.log('✅ País detectado (fallback):', fallbackData.countryCode, countryNameEs);
+            return {
+              code: fallbackData.countryCode,
+              name: countryNameEs
+            };
           }
         }
       } catch (fallbackError) {
@@ -76,6 +87,57 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
       }
     }
     return null;
+  }
+
+  /**
+   * Traduce el nombre del país de inglés a español para países comunes
+   */
+  private translateCountryToSpanish(countryNameEn: string): string {
+    const countryMap: { [key: string]: string } = {
+      'United States': 'Estados Unidos',
+      'Mexico': 'México',
+      'Spain': 'España',
+      'Colombia': 'Colombia',
+      'Argentina': 'Argentina',
+      'Chile': 'Chile',
+      'Peru': 'Perú',
+      'Ecuador': 'Ecuador',
+      'Venezuela': 'Venezuela',
+      'Uruguay': 'Uruguay',
+      'Paraguay': 'Paraguay',
+      'Bolivia': 'Bolivia',
+      'Costa Rica': 'Costa Rica',
+      'Panama': 'Panamá',
+      'Dominican Republic': 'República Dominicana',
+      'Guatemala': 'Guatemala',
+      'Honduras': 'Honduras',
+      'El Salvador': 'El Salvador',
+      'Nicaragua': 'Nicaragua',
+      'Cuba': 'Cuba',
+      'Puerto Rico': 'Puerto Rico',
+      'Brazil': 'Brasil',
+      'Portugal': 'Portugal',
+      'France': 'Francia',
+      'Italy': 'Italia',
+      'Germany': 'Alemania',
+      'United Kingdom': 'Reino Unido',
+      'Canada': 'Canadá',
+      'Australia': 'Australia',
+      'New Zealand': 'Nueva Zelanda',
+      'Japan': 'Japón',
+      'China': 'China',
+      'India': 'India',
+      'South Korea': 'Corea del Sur',
+      'Singapore': 'Singapur',
+      'Philippines': 'Filipinas',
+      'Thailand': 'Tailandia',
+      'Vietnam': 'Vietnam',
+      'Indonesia': 'Indonesia',
+      'Malaysia': 'Malasia'
+    };
+
+    // Retornar traducción si existe, sino retornar el nombre original
+    return countryMap[countryNameEn] || countryNameEn;
   }
 
   private async loadCalComWidget(): Promise<void> {
@@ -106,7 +168,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     const _fbp = this.getCookie('_fbp'); // Facebook Browser ID
 
     // Obtener país del usuario (nuevo parámetro)
-    const country = await this.getCountryFromIP();
+    const countryData = await this.getCountryFromIP();
 
     let calLink = 'startcompanies-businessenusa/30min';
     const queryParams = new URLSearchParams();
@@ -132,10 +194,11 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
       console.log('✅ _fbp enviado a Cal.com:', _fbp);
     }
 
-    // Nuevo parámetro de país
-    if (country) {
-      queryParams.set('pais', country);
-      console.log('✅ País enviado a Cal.com:', country);
+    // Parámetros de país: nombre completo y código
+    if (countryData) {
+      queryParams.set('pais', countryData.name); // Nombre completo del país
+      queryParams.set('pais_cod', countryData.code); // Código ISO del país
+      console.log('✅ País enviado a Cal.com:', countryData.name, `(${countryData.code})`);
     }
 
     const finalQuery = queryParams.toString();
