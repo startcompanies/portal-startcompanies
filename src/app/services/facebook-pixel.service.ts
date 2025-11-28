@@ -4,7 +4,8 @@ import { environment } from '../../environments/environment';
 
 declare global {
   interface Window {
-    fbq: (...args: any[]) => void;
+    fbq?: (...args: any[]) => void;
+    _fbq?: any;
   }
 }
 
