@@ -305,6 +305,249 @@
   }
 }
 
+/* Estilos para landing page (contenido con secciones) */
+.landing-page-container {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.landing-page-container .row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.landing-page-container main {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+@media (min-width: 992px) {
+  .landing-page-container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Estilos para la card hero de landing page (similar a us-page) */
+.sc-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+}
+
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.sc-hero .container {
+  position: relative;
+  z-index: 3;
+}
+
+.mission-card {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.mission-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.mission-image {
+  width: 100%;
+  height: 280px;
+  display: block;
+  border-radius: 1.5rem;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.mission-content {
+  padding: 1rem 0;
+  color: #ffffff;
+}
+
+.mission-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.mission-description {
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #ffffff;
+  margin-bottom: 0;
+  opacity: 0.95;
+}
+
+.mission-description :deep(p) {
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.mission-description :deep(ul),
+.mission-description :deep(ol) {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  color: #ffffff;
+}
+
+.mission-description :deep(li) {
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+}
+
+/* Botones de compartir sociales */
+.landing-hero-section {
+  position: relative;
+}
+
+.social-share-buttons {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 10;
+}
+
+.social-share-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.social-share-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.whatsapp-btn {
+  background-color: #25D366;
+  color: #ffffff;
+}
+
+.whatsapp-btn:hover {
+  background-color: #20BA5A;
+}
+
+.linkedin-btn {
+  background-color: #0077B5;
+  color: #ffffff;
+}
+
+.linkedin-btn:hover {
+  background-color: #005885;
+}
+
+.facebook-btn {
+  background-color: #1877F2;
+  color: #ffffff;
+}
+
+.facebook-btn:hover {
+  background-color: #1465D1;
+}
+
+.share-btn {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
+.share-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Responsive styles for mission card */
+@media (max-width: 991.98px) {
+  .social-share-buttons {
+    position: static;
+    transform: none;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .mission-title {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .mission-description {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .mission-content {
+    padding: 1.5rem 0;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .mission-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .mission-description {
+    font-size: 1rem;
+  }
+
+  .mission-content {
+    padding: 1rem 0;
+  }
+
+  .mission-image-container {
+    border-radius: 1rem;
+  }
+
+  .mission-image {
+    border-radius: 1rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .mission-title {
+    font-size: 1.8rem;
+  }
+
+  .mission-description {
+    font-size: 0.95rem;
+  }
+}
+
 /* === RESPONSIVE AJUSTES === */
 @media (min-width: 768px) {
   .sc-post-hero {

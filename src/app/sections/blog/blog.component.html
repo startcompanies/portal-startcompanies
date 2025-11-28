@@ -39,7 +39,7 @@
                         class="blog-card-content d-flex flex-column flex-grow-1"
                       >
                         <div class="blog-category">
-                          {{ post.categories[0].name || "Categoría" }}
+                          {{ post.categories && post.categories.length > 0 ? post.categories[0].name : "Categoría" }}
                         </div>
                         <h3 class="blog-card-title">
                           {{ post.title }}
@@ -124,7 +124,7 @@
                         class="blog-card-content d-flex flex-column flex-grow-1"
                       >
                         <div class="blog-category">
-                          {{ postSlide[0].categories[0].name || "Categoría" }}
+                          {{ postSlide[0].categories && postSlide[0].categories.length > 0 ? postSlide[0].categories[0].name : "Categoría" }}
                         </div>
                         <h3 class="blog-card-title">
                           {{ postSlide[0].title }}
