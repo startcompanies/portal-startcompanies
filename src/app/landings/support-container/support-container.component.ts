@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { ResponsiveImage } from '../../services/responsive-image.service';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { FacebookPixelService } from '../../services/facebook-pixel.service';
 
 @Component({
   selector: 'app-support-container',
@@ -19,4 +20,13 @@ export class SupportContainerComponent {
     alt: 'Hombre trabajando en laptop',
     priority: false
   };
+
+  constructor(private facebookPixelService: FacebookPixelService) {}
+
+  /**
+   * Trackea cuando el usuario hace clic en el botón de soporte ($99 USD)
+   */
+  onSupportClick(): void {
+    this.facebookPixelService.trackWhatsAppPaidApplication('Banking Services');
+  }
 }
