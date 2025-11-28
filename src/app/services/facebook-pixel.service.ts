@@ -194,16 +194,25 @@ export class FacebookPixelService {
         return;
       }
 
+      // Marcar el flag ANTES de inicializar para evitar condiciones de carrera
+      // Esto previene que dos llamadas simultáneas inicialicen el pixel dos veces
+      this.initializedPixels.add(pageType);
+
       if (window.fbq) {
         try {
           window.fbq('init', pixelId);
           window.fbq('track', 'PageView');
-          this.initializedPixels.add(pageType);
           this.debugLog(`✅ Pixel ${pageType} inicializado correctamente`);
         } catch (error) {
+          // Si hay un error, remover el flag para permitir reintento
+          this.initializedPixels.delete(pageType);
           console.warn('Error inicializando Facebook Pixel:', error);
           this.debugLog('❌ Error inicializando pixel', error);
         }
+      } else {
+        // Si fbq no está disponible, remover el flag para permitir reintento
+        this.initializedPixels.delete(pageType);
+        this.debugLog(`⚠️ fbq no disponible aún, se reintentará`);
       }
     };
 
