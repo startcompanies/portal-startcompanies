@@ -1,107 +1,78 @@
-# Multi-stage build para Angular SSR optimizado para producción
+##############################################
+# Stage 1 — BUILDER (compila Angular SSR)
+##############################################
 FROM node:18-alpine AS builder
 
-# Build arguments - configuración dinámica
-# BUILD_CONFIGURATION: production, staging, development (default: production)
-# Permite construir diferentes entornos desde el mismo Dockerfile
-ARG BUILD_CONFIGURATION=production
-ARG NODE_ENV=production
+# Evitar que npm ignore devDependencies
+ENV NODE_ENV=development
+ENV NPM_CONFIG_PRODUCTION=false
 
-# Exponer como ENV para uso en runtime
-ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
-ENV NODE_ENV=${NODE_ENV}
-
-# Instalar dependencias del sistema para compilación
-# Sharp se instala vía npm, no es un paquete de Alpine
+# Dependencias necesarias para compilación (sharp, Angular, SSR)
 RUN apk add --no-cache python3 make g++ imagemagick
 
 WORKDIR /app
 
-# Copiar TODOS los archivos del proyecto primero
+# Copiar todo el proyecto
 COPY . .
 
-# Verificar que estamos en el directorio correcto y que es un proyecto Angular
-RUN pwd && ls -la && \
-    echo "Verificando archivos de Angular:" && \
-    ls -la angular.json package.json tsconfig.json && \
-    echo "Build Configuration: ${BUILD_CONFIGURATION}"
+# Mostrar archivos relevantes para debug
+RUN echo "Verificando estructura del proyecto..." && \
+    ls -la angular.json package.json tsconfig.json
 
-# Instalar TODAS las dependencias (incluyendo devDependencies para el build)
+# Instalar dependencias (incluye devDependencies)
 RUN npm install --legacy-peer-deps
 
-# Instalar Angular CLI globalmente
-RUN npm install -g @angular/cli@18
+# Instalar Angular CLI localmente vía npx (evita conflictos globales)
+RUN npx ng version && npx ng config --global cli.warnings.versionMismatch false
 
-# Verificar que Angular CLI reconoce el proyecto
-RUN ng version && ng config --global cli.warnings.versionMismatch false
-
-# Pipeline optimizado de imágenes y build dinámico
-# 1. Validar y generar solo las imágenes responsive faltantes
-# 2. Build con la configuración especificada usando scripts npm
-# Nota: staging usa NODE_ENV=production (como producción) pero con environment.staging.ts
+# Pipeline de imágenes responsive + build SSR
 RUN npm run validate:images && \
-    if [ "$BUILD_CONFIGURATION" = "production" ]; then \
-        echo "Building for PRODUCTION..." && \
-        npm run build:production:pwa; \
-    elif [ "$BUILD_CONFIGURATION" = "staging" ]; then \
-        echo "Building for STAGING (NODE_ENV=production)..." && \
-        npm run build:staging:pwa; \
-    else \
-        echo "Building for DEVELOPMENT..." && \
-        ng build --configuration development --output-hashing=all && \
-        ng run portal-startcompanies:server:development; \
-    fi
+    npm run optimize:images || echo "⚠ Sharp no disponible, imágenes no optimizadas" && \
+    npm run build:production:pwa
 
-# Stage final de producción
+##############################################
+# Stage 2 — PRODUCCIÓN (Node SSR + Nginx)
+##############################################
 FROM node:18-alpine AS production
 
-# Build arguments (necesarios también en esta etapa para mantener consistencia)
-ARG BUILD_CONFIGURATION=production
-ARG NODE_ENV=production
+# Ambiente seguro de producción
+ENV NODE_ENV=production
 
-# Establecer variables de entorno
-ENV NODE_ENV=${NODE_ENV}
-ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
-
-# Instalar nginx
+# Instalar Nginx
 RUN apk add --no-cache nginx
 
-# Crear directorios necesarios
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Copiar package.json y lock
 COPY package*.json ./
 
-# Instalar solo las dependencias de producción
+# Instalar solo dependencias necesarias para SSR
 RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
 
-# Copiar archivos compilados desde el builder
+# Copiar el build final de SSR desde el builder
 COPY --from=builder /app/dist/portal-startcompanies /app/dist/portal-startcompanies
 
 # Copiar imágenes responsive generadas
 COPY --from=builder /app/src/assets /app/src/assets
 
-# Copiar configuración de nginx
+# Copiar configuración optimizada de Nginx
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
-# Crear directorios para nginx
+# Crear directorios usados por nginx
 RUN mkdir -p /var/log/nginx /var/cache/nginx /var/run
 
-# Crear usuario no-root para seguridad
+# Usuario no-root
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
-# Cambiar permisos
+# Ajustar permisos
 RUN chown -R nodejs:nodejs /app /var/log/nginx /var/cache/nginx /var/run
 
-# Exponer solo el puerto 4000 (como en tu configuración original)
+# Exponer puerto del SSR
 EXPOSE 4000
 
-# Cambiar al usuario no-root
+# Cambiar usuario por seguridad
 USER nodejs
 
-# Comando para iniciar la aplicación (como en tu configuración original)
+# Comando final de ejecución
 CMD ["npm", "run", "serve:ssr"]
-
-# Dockerfile optimizado para imágenes responsive
-# Incluye: Sharp, optimización de imágenes, generación responsive, build optimizado
