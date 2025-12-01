@@ -408,7 +408,7 @@
   },
   "PLANS": {
     "intro": {
-      "title": "Expande Tu Negocio: abre tu LLC en EE.UU.",
+      "title": "Una pequeña inversión para grandes oportunidades.",
       "subtitle": "Crea tu empresa en Estados Unidos y accede a tu cuenta bancaria sin residencia. Start Companies te ofrece todo lo que necesitas para operar globalmente, sin complicaciones."
     },
     "header": {
@@ -479,12 +479,14 @@
         "3": "Asistencia mensual por cualquier consulta",
         "4": "Posibilidad de mudar servicios de otro proveedor con nosotros"
       },
-      "note": "Si es Delaware, se suman $300 USD al precio."
+      "note_label": "Nota:",
+      "note": "Aprende todo lo que necesitas saber sobre las LLC."
     },
     "fines": {
       "title": "Multas",
       "price": "$300 USD",
-      "note": "Nota: +3% del valor de la multa.",
+      "note_label": "Nota:",
+      "note": "Aprende todo lo que necesitas saber sobre las LLC.",
       "cta": "Consultar Multas",
       "featuresTitle": "Incluye:",
       "features": {

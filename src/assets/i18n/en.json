@@ -412,7 +412,7 @@
   },
   "PLANS": {
     "intro": {
-      "title": "Expand Your Business: Open your LLC in the U.S.",
+      "title": "A small investment for great opportunities.",
       "subtitle": "Create your company in the United States and access your bank account without residency. Start Companies offers you everything you need to operate globally, hassle-free."
     },
     "header": {
@@ -483,12 +483,14 @@
         "3": "Monthly support for any inquiry",
         "4": "Possibility to migrate services from another provider with us"
       },
-      "note": "If Delaware, add $300 USD to the price."
+      "note_label": "Note:",
+      "note": "Learn all you need to know about LLCs."
     },
     "fines": {
       "title": "Fines",
       "price": "$300 USD",
-      "note": "Note: +3% of the fine amount.",
+      "note_label": "Note:",
+      "note": "Learn all you need to know about LLCs.",
       "cta": "Consult Fines",
       "featuresTitle": "Includes:",
       "features": {

@@ -51,3 +51,11 @@
     object-position: center;
   }
 }
+
+/* Clase para h2 de notas con tamaño de fuente pequeño */
+h2.note-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.5;
+}
