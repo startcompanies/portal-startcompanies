@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
 import { BlogService } from '../../services/blog.service';
 import { BlogSeoService } from '../../services/blog-seo.service';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LangRouterLinkDirective } from "../../shared/directives/lang-router-link.directive";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-blog-articles',
@@ -14,12 +15,13 @@ import { LangRouterLinkDirective } from "../../shared/directives/lang-router-lin
   templateUrl: './blog-articles.component.html',
   styleUrl: './blog-articles.component.css',
 })
-export class BlogArticlesComponent implements OnInit {
+export class BlogArticlesComponent implements OnInit, OnDestroy {
   blogService = inject(BlogService);
   blogSeoService = inject(BlogSeoService);
   categories: any[] = [];
   topArticles: any[] = [];
   mainArticles: any[] = [];
+  private routeSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,14 +31,28 @@ export class BlogArticlesComponent implements OnInit {
 
   ngOnInit(): void {
     this.setCategories();
-    const slug = this.route.snapshot.paramMap.get('slug');
+    
+    // Suscribirse a los cambios de parámetros de la ruta
+    this.routeSubscription = this.route.paramMap.subscribe(params => {
+      const slug = params.get('slug');
+      this.loadPosts(slug);
+    });
+  }
 
+  ngOnDestroy(): void {
+    // Limpiar la suscripción para evitar memory leaks
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
+
+  private loadPosts(slug: string | null): void {
     if (slug) {
       this.blogService.getPostsByCategorySlug(slug).subscribe(
         (posts) => {
           // Manejar los posts filtrados por slug aquí
           this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
-          this.mainArticles = posts.slice(0, 4); // Ejemplo: tomar los primeros 4 artículos
+          this.mainArticles = posts.slice(2, 6); // Tomar los siguientes 4 artículos (después de los top 2)
           
           // Configurar SEO para la categoría
           if (posts.length > 0 && posts[0].categories && posts[0].categories.length > 0) {
@@ -53,8 +69,8 @@ export class BlogArticlesComponent implements OnInit {
         .getAllPosts()
         .then((posts) => {
           // Manejar todos los posts aquí
-          this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 3 artículos
-          this.mainArticles = posts.slice(0, 4); // Ejemplo: tomar los primeros 4 artículos
+          this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
+          this.mainArticles = posts.slice(2, 6); // Tomar los siguientes 4 artículos
         })
         .catch((error) => {
           console.error('Error fetching all posts:', error);

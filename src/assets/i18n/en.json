@@ -34,7 +34,7 @@
     }
   },
   "CONTENT": {
-    "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
+    "expand_your_freedom": "Expand your freedom: open your LLC in the United States",
     "create_your_llc": "Create your LLC",
     "renew_your_llc": "Renew your LLC",
     "start_free_meeting": "Start with a free meeting",
@@ -47,15 +47,15 @@
       "title1": "Our",
       "title2": "services",
       "service1": {
-        "title": "LLC formation in the United States",
+        "title": "LLC formation",
         "description": "Start your business in the United States with complete advice and personalized accompaniment from any country."
       },
       "service2": {
-        "title": "Bank account in the United States",
+        "title": "Bank account",
         "description": "Open your business account online and operate in dollars without leaving your country."
       },
       "service3": {
-        "title": "Tax management and business creation",
+        "title": "Taxes and creation",
         "description": "We organize the legal and tax structure of your company to comply with regulations and optimize your taxes."
       }
     },
@@ -67,11 +67,11 @@
         "description": "Explore your business needs with us. We will design a customized solution that fits your case."
       },
       "step2": {
-        "title": "Send your documentation online.",
+        "title": "Send your documentation",
         "description": "Upload your documents through our platform and our team will manage your LLC and the opening of your bank account in the United States."
       },
       "step3": {
-        "title": "Receive your documents in 10 business days",
+        "title": "Receive your documents",
         "description": "You will receive all the legal certificates and access to your bank account in a maximum of 10 business days."
       }
     },
@@ -211,7 +211,8 @@
     "blog": {
       "title1": "Do you",
       "title2": "want to know more?",
-      "button": "Read more"
+      "button": "Read more",
+      "no_posts": "No posts available"
     },
     "faq": {
       "title1": "Frequently",

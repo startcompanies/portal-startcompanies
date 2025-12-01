@@ -34,7 +34,7 @@
     }
   },
   "CONTENT": {
-    "expand_your_freedom": "Expande Tu Libertad, abre tu LLC en estados unidos",
+    "expand_your_freedom": "Expande Tu Libertad: abre tu LLC en Estados Unidos",
     "create_your_llc": "Crea tu LLC",
     "renew_your_llc": "Renueva tu LLC",
     "expand_your_freedom_description": "Resolvemos tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo esta listo para acompañarte en cada paso del proceso.",
@@ -46,15 +46,15 @@
       "title1": "Nuestros",
       "title2": "servicios",
       "service1": {
-        "title": "Constitución de LLC en Estados Unidos",
+        "title": "Constitución de LLC",
         "description": "Inicia tu empresa en EE.UU. con asesoría completa y acompañamiento personalizado desde cualquier país."
       },
       "service2": {
-        "title": "Cuenta bancaria en EE. UU.",
+        "title": "Cuenta bancaria",
         "description": "Abre tu cuenta empresarial en línea y opera en dólares sin salir de tu país."
       },
       "service3": {
-        "title": "Gestión de impuestos y creación de empresas",
+        "title": "Impuestos y creación",
         "description": "Organizamos la estructura legal y fiscal de tu empresa para que cumplas con las normas y optimices tus impuestos."
       }
     },
@@ -66,11 +66,11 @@
         "description": "Explora tus necesidades empresariales con nosotros. Diseñaremos una solución personalizada que se ajuste a tu caso."
       },
       "step2": {
-        "title": "Envía tu documentación en línea.",
+        "title": "Envía tu documentación",
         "description": "Sube tus documentos a través de nuestra plataforma y nuestro equipo se encargará gestionará tu LLC y la apertura de tu cuenta bancaria en EE.UU."
       },
       "step3": {
-        "title": "Recibe tus documentos en 10 días hábiles",
+        "title": "Recibe tus documentos",
         "description": "Obtendrás todos los certificados legales y accesos a tu cuenta bancaria en un plazo maximo de 10 días hábiles."
       }
     },
@@ -210,7 +210,8 @@
     "blog": {
       "title1": "¿Deseas",
       "title2": "conocer más?",
-      "button": "Leer más"
+      "button": "Leer más",
+      "no_posts": "No hay publicaciones disponibles"
     },
     "faq": {
       "title1": "Preguntas",
