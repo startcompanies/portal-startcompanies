@@ -1,0 +1,10 @@
+<div class="row justify-content-center" [ngClass]="{ 'landing-page-row': isLandingPage }">
+  <div
+    #contentContainer
+    class="mt-5 app-post-content"
+    [ngClass]="isLandingPage ? 'col-12' : 'col-12 col-md-10 col-lg-8'"
+    *ngIf="isBrowser"
+    [innerHTML]="sanitizedHtml"
+  ></div>
+</div>
+

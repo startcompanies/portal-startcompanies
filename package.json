@@ -12,7 +12,10 @@
     "validate:images": "node validate-responsive-images.js validate",
     "build:production": "ng build --configuration production --output-hashing=all && ng run portal-startcompanies:server:production",
     "build:production:pwa": "NODE_ENV=production npm run validate:images && npm run optimize:images && ng build --configuration production --output-hashing=all && ng run portal-startcompanies:server:production",
-    "docker:build": "npm run build:production:pwa && docker build -t portal-startcompanies ."
+    "build:staging": "ng build --configuration staging --output-hashing=all && ng run portal-startcompanies:server:staging",
+    "build:staging:pwa": "NODE_ENV=production npm run validate:images && npm run optimize:images && ng build --configuration staging --output-hashing=all && ng run portal-startcompanies:server:staging",
+    "docker:build": "npm run build:production:pwa && docker build -t portal-startcompanies .",
+    "docker:build:staging": "npm run build:staging:pwa && docker build --build-arg BUILD_CONFIGURATION=staging --build-arg NODE_ENV=production -t portal-startcompanies:staging ."
   },
   "private": true,
   "dependencies": {

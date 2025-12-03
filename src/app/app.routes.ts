@@ -2,6 +2,17 @@ import { Routes } from '@angular/router';
 import { title } from 'process';
 import { languageGuard } from './shared/guards/language.guard';
 import { CampaignRedirectGuard } from './shared/guards/campaign-redirect.guard';
+import { environment } from '../environments/environment';
+
+// Helper function para generar URLs canónicas dinámicamente
+const getCanonicalUrl = (path: string): string => {
+  return `${environment.baseUrl}${path}`;
+};
+
+// Helper function para generar URLs de imágenes
+const getImageUrl = (path: string): string => {
+  return `${environment.baseUrl}${path}`;
+};
 
 export const routes: Routes = [
   // ===== RUTAS ESPAÑOLAS SIN PREFIJO (RAÍZ) =====
@@ -27,9 +38,9 @@ export const routes: Routes = [
             keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
             ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
             ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/inicio',
+            canonical: getCanonicalUrl('/inicio'),
           },
         },
       },
@@ -46,9 +57,9 @@ export const routes: Routes = [
             keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
             ogTitle: 'Nosotros - Start Companies LLC',
             ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/nosotros',
+            canonical: getCanonicalUrl('/nosotros'),
           },
         },
       },
@@ -65,9 +76,9 @@ export const routes: Routes = [
             keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
             ogTitle: 'Contacto - Start Companies LLC',
             ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/contacto',
+            canonical: getCanonicalUrl('/contacto'),
           },
         },
       },
@@ -84,9 +95,9 @@ export const routes: Routes = [
             keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
             ogTitle: 'Planes y Precios - Start Companies LLC',
             ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/planes',
+            canonical: getCanonicalUrl('/planes'),
           },
         },
       },
@@ -103,9 +114,9 @@ export const routes: Routes = [
             keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
             ogTitle: 'Blog - Start Companies LLC',
             ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/blog',
+            canonical: getCanonicalUrl('/blog'),
           },
         },
       },
@@ -122,18 +133,19 @@ export const routes: Routes = [
             keywords: 'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
             ogTitle: 'Categoría de Blog - Start Companies LLC',
             ogDescription: 'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/category/:slug',
+            canonical: getCanonicalUrl('/category/:slug'),
           },
         },
       },
       {
         path: 'post/:slug',
-        loadComponent: () =>
+        /*loadComponent: () =>
           import('./blog/blog-post/blog-post.component').then(
             (m) => m.BlogPostComponent
-          ),
+          ),*/
+        loadComponent: () => import('./blogV2/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
         data: {
           seo: {
             title: 'Artículo de Blog - Start Companies LLC',
@@ -141,9 +153,9 @@ export const routes: Routes = [
             keywords: 'artículo blog LLC, blog Start Companies, noticias financieras, consejos LLC',
             ogTitle: 'Artículo de Blog - Start Companies LLC',
             ogDescription: 'Lee nuestros artículos sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/post/:slug',
+            canonical: getCanonicalUrl('/post/:slug'),
           },
         },
       },
@@ -152,7 +164,7 @@ export const routes: Routes = [
         loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
         data: {
           seo: {
-            canonical: 'https://startcompanies.us/aviso-de-privacidad',
+            canonical: getCanonicalUrl('/aviso-de-privacidad'),
             title: 'Aviso de Privacidad - Start Companies LLC',
             description: 'Conoce cómo Start Companies LLC recopila y usa tus datos.'
           }
@@ -163,7 +175,7 @@ export const routes: Routes = [
         loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
         data: {
           seo: {
-            canonical: 'https://startcompanies.us/terminos-y-condiciones',
+            canonical: getCanonicalUrl('/terminos-y-condiciones'),
             title: 'Términos y Condiciones - Start Companies LLC',
             description: 'Términos y condiciones del sitio de Start Companies LLC.'
           }
@@ -232,9 +244,9 @@ export const routes: Routes = [
             keywords: 'error 404, página no encontrada, Start Companies, servicios LLC',
             ogTitle: 'Error 404 - Página No Encontrada | Start Companies LLC',
             ogDescription: 'La página que buscas no existe. Regresa al inicio y descubre nuestros servicios para LLC en Estados Unidos.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/error-404',
+            canonical: getCanonicalUrl('/error-404'),
           },
         },
       },
@@ -268,9 +280,9 @@ export const routes: Routes = [
             keywords: 'LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services',
             ogTitle: 'Start Companies LLC - US Bank Account Services',
             ogDescription: 'We open bank accounts for LLCs in the United States. 100% online service with no fees.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/home',
+            canonical: getCanonicalUrl('/en/home'),
           },
         },
       },
@@ -293,9 +305,9 @@ export const routes: Routes = [
             keywords: 'Start Companies team, financial services experience, about us, entrepreneur trust',
             ogTitle: 'About Us - Start Companies LLC',
             ogDescription: 'Meet our team and experience in financial services for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/about-us',
+            canonical: getCanonicalUrl('/en/about-us'),
           },
         },
       },
@@ -312,9 +324,9 @@ export const routes: Routes = [
             keywords: 'Start Companies contact, LLC support, financial services experts, bank account help',
             ogTitle: 'Contact - Start Companies LLC',
             ogDescription: 'Contact our experts in financial services for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/contact',
+            canonical: getCanonicalUrl('/en/contact'),
           },
         },
       },
@@ -331,21 +343,21 @@ export const routes: Routes = [
             keywords: 'US LLC plans, bank account pricing, Start Companies services, LLC formation USA',
             ogTitle: 'Plans and Pricing - Start Companies LLC',
             ogDescription: 'Discover our plans for LLC formation and bank accounts in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/plans',
+            canonical: getCanonicalUrl('/en/plans'),
           },
         },
       },
       {
         path: 'privacy-policy',
         loadComponent: () => import('./legal/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent),
-        data: { seo: { canonical: 'https://startcompanies.us/en/privacy-policy', title: 'Privacy Policy - Start Companies LLC', description: 'Learn how Start Companies LLC collects and uses your data.' } }
+        data: { seo: { canonical: getCanonicalUrl('/en/privacy-policy'), title: 'Privacy Policy - Start Companies LLC', description: 'Learn how Start Companies LLC collects and uses your data.' } }
       },
       {
         path: 'terms-and-conditions',
         loadComponent: () => import('./legal/terms-and-conditions/terms-and-conditions.component').then(m => m.TermsAndConditionsComponent),
-        data: { seo: { canonical: 'https://startcompanies.us/en/terms-and-conditions', title: 'Terms and Conditions - Start Companies LLC', description: 'Terms and conditions of Start Companies LLC website.' } }
+        data: { seo: { canonical: getCanonicalUrl('/en/terms-and-conditions'), title: 'Terms and Conditions - Start Companies LLC', description: 'Terms and conditions of Start Companies LLC website.' } }
       },
       {
         path: 'blog',
@@ -381,9 +393,9 @@ export const routes: Routes = [
             keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
             ogTitle: 'Open your LLC in the United States - Start Companies LLC',
             ogDescription: 'We open your LLC in the United States quickly and safely.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/llc-formation',
+            canonical: getCanonicalUrl('/en/llc-formation'),
           },
         },
       },
@@ -400,9 +412,9 @@ export const routes: Routes = [
             keywords: 'LLC services presentation United States, LLC USA services, Start Companies presentation, US business formation',
             ogTitle: 'LLC Services Presentation - Start Companies LLC',
             ogDescription: 'Discover our LLC services in the United States. Complete presentation of business formation.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/presentation',
+            canonical: getCanonicalUrl('/en/presentation'),
           },
         },
       },
@@ -419,9 +431,9 @@ export const routes: Routes = [
             keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
             ogTitle: 'Relay Bank Opening - Start Companies LLC',
             ogDescription: 'We open your Relay bank account for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/relay-account-opening',
+            canonical: getCanonicalUrl('/en/relay-account-opening'),
           },
         },
       },
@@ -438,9 +450,9 @@ export const routes: Routes = [
             keywords: 'schedule consultation, Start Companies, expert advice',
             ogTitle: 'Schedule',
             ogDescription: 'Schedule a consultation with our experts.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/schedule',
+            canonical: getCanonicalUrl('/en/schedule'),
           },
         },
       },
@@ -458,9 +470,9 @@ export const routes: Routes = [
             keywords: 'LLC opening United States, create LLC USA, business formation USA, Start Companies',
             ogTitle: 'LLC Opening in the United States - Start Companies LLC',
             ogDescription: 'We open your LLC in the United States quickly and safely.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/llc-opening',
+            canonical: getCanonicalUrl('/en/llc-opening'),
           },
         },
       },
@@ -477,9 +489,9 @@ export const routes: Routes = [
             keywords: 'LLC renewal United States, renew LLC USA, keep LLC active, Start Companies',
             ogTitle: 'LLC Renewal in the United States - Start Companies LLC',
             ogDescription: 'We renew your LLC in the United States before it expires.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/llc-renewal',
+            canonical: getCanonicalUrl('/en/llc-renewal'),
           },
         },
       },
@@ -496,9 +508,9 @@ export const routes: Routes = [
             keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
             ogTitle: 'Relay Bank Account Opening - Start Companies LLC',
             ogDescription: 'We open your Relay bank account for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/relay-opening-form',
+            canonical: getCanonicalUrl('/en/relay-opening-form'),
           },
         },
       },
@@ -515,9 +527,9 @@ export const routes: Routes = [
             keywords: 'error 404, page not found, Start Companies, LLC services',
             ogTitle: 'Error 404 - Page Not Found | Start Companies LLC',
             ogDescription: 'The page you are looking for does not exist. Return to the homepage and discover our services for LLCs in the United States.',
-            ogImage: 'https://startcompanies.us/assets/logo.png',
+            ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: 'https://startcompanies.us/en/error-404',
+            canonical: getCanonicalUrl('/en/error-404'),
           },
         },
       },

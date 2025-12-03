@@ -1,6 +1,8 @@
+import { environment } from '../../environments/environment';
+
 export const blogSeoConfig = {
   // Configuración base del blog
-  baseUrl: 'https://startcompanies.us',
+  baseUrl: environment.baseUrl,
   siteName: 'Start Companies',
   defaultImage: '/assets/logo-dark.webp',
   
@@ -38,13 +40,13 @@ export const blogSeoConfig = {
   schemaOrg: {
     organization: {
       name: 'Start Companies',
-      url: 'https://startcompanies.us',
-      logo: 'https://startcompanies.us/assets/logo-dark.webp'
+      url: environment.baseUrl,
+      logo: `${environment.baseUrl}/assets/logo-dark.webp`
     },
     blog: {
       name: 'Blog de Start Companies',
       description: 'Guías completas para abrir tu LLC, obtener cuenta bancaria y emprender en Estados Unidos',
-      url: 'https://startcompanies.us/blog'
+      url: `${environment.baseUrl}/blog`
     }
   },
   
@@ -72,8 +74,8 @@ export const blogSeoConfig = {
     disallow: ['/admin/', '/api/'],
     crawlDelay: 1,
     sitemaps: [
-      'https://startcompanies.us/sitemap.xml',
-      'https://startcompanies.us/sitemap-blog.xml'
+      `${environment.baseUrl}/sitemap.xml`,
+      `${environment.baseUrl}/sitemap-blog.xml`
     ]
   }
 };

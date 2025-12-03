@@ -4,16 +4,17 @@
 @import url("./app/shared/styles/responsive-images.css");
 
 :root {
-  --color-fondo-claro: #fdfffe;
-  --color-secundario-tecnico: #01c9e2;
-  --color-primario: #0068bd;
-  --color-texto-oscuro: #283a48;
-  --color-degradado: linear-gradient(135deg, #01c9e2 0%, #0068bd 100%);
+  --color-fondo-claro: #FDFFFE;
+  --color-secundario-tecnico: #01C9E2;
+  --color-primario: #0068BD;
+  --color-texto-oscuro: #283A48;
+  --color-degradado: linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
   --color-fondo-gris: #f8f9fa;
 }
 
 /* Estilos específicos para Safari para corregir problemas con imágenes */
 @supports (-webkit-appearance: none) {
+
   /* Asegurar que Safari respete las dimensiones de las imágenes */
   img {
     -webkit-user-select: none;
@@ -40,6 +41,7 @@
 
 /* Media query específica para Safari */
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
+
   .sc-navbar-logo img,
   .sc-navbar-logo app-responsive-image img {
     /* Estilos adicionales para webkit */
