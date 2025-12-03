@@ -210,7 +210,8 @@
     "blog": {
       "title1": "¿Deseas",
       "title2": "conocer más?",
-      "button": "Leer más"
+      "button": "Leer más",
+      "no_posts": "No hay publicaciones disponibles"
     },
     "faq": {
       "title1": "Preguntas",
