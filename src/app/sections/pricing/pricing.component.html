@@ -77,7 +77,8 @@
               </p>
               <!-- Botón principal (usará el color #006afe de tu lista) -->
               <a
-                [langRouterLink]="'apertura-llc'"
+                [langRouterLink]="'registro-cliente'"
+                (click)="selectPlan('Pack Emprendedor')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "CONTENT.pricing.entrepreneur_pack.button" | transloco }}
@@ -152,7 +153,8 @@
               </p>
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
-                [langRouterLink]="'apertura-llc'"
+                [langRouterLink]="'registro-cliente'"
+                (click)="selectPlan('Pack Elite')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "CONTENT.pricing.elite_pack.button" | transloco }}
@@ -224,7 +226,8 @@
               </p>
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
-                [langRouterLink]="'apertura-llc'"
+                [langRouterLink]="'registro-cliente'"
+                (click)="selectPlan('Pack Premium')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "CONTENT.pricing.premium_pack.button" | transloco }}
@@ -341,7 +344,8 @@
                     }}
                   </p>
                   <a
-                    [langRouterLink]="'apertura-llc'"
+                    [langRouterLink]="'registro-cliente'"
+                    (click)="selectPlan('Pack Emprendedor')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "CONTENT.pricing.entrepreneur_pack.button" | transloco }}
@@ -423,7 +427,8 @@
                     {{ "CONTENT.pricing.elite_pack.description.2" | transloco }}
                   </p>
                   <a
-                    [langRouterLink]="'apertura-llc'"
+                    [langRouterLink]="'registro-cliente'"
+                    (click)="selectPlan('Pack Elite')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "CONTENT.pricing.elite_pack.button" | transloco }}
@@ -506,7 +511,8 @@
                     }}
                   </p>
                   <a
-                    [langRouterLink]="'apertura-llc'"
+                    [langRouterLink]="'registro-cliente'"
+                    (click)="selectPlan('Pack Premium')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "CONTENT.pricing.premium_pack.button" | transloco }}
