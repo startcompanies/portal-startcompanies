@@ -3,8 +3,8 @@ export const environment = {
   //apiUrl: 'http://localhost:5000',
   apiUrl: 'https://api-web.startcompanies.us',
   facebookPixel: {
-    llcPixelId: '703523572287021',
-    relayPixelId: '1055049486479771',
+    llcPixelId: '',
+    relayPixelId: '',
     debug: true // Modo debug activado en desarrollo
   },
   baseUrl: 'https://startcompanies.us',
