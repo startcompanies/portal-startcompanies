@@ -53,7 +53,9 @@
     margin: 0 auto;
     padding: 2rem;
 }
-
+.ngx-form-wizard .wizard-step-container{
+    height: 500px !important;
+}
 /* Responsive: móvil => panel blanco ocupa todo, sin borde */
 @media (max-width: 768px) {
     .wizard-layout {

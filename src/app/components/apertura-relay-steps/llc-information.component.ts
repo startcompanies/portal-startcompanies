@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   FormWizardService,
@@ -25,14 +25,13 @@ import { TranslocoPipe } from '@jsverse/transloco';
             id="businessType"
             class="form-control"
             formControlName="businessType"
+            (change)="form.get('customBusinessType')?.setValue('')"
           >
             <option value="">
               {{ 'RELAY_WIZARD.step1.select_business_type' | transloco }}
             </option>
-            <option value="retail">Retail</option>
-            <option value="services">Servicios</option>
-            <option value="technology">Tecnología</option>
-            <option value="consulting">Consultoría</option>
+            <option value="retail">LLC</option>
+            <option value="services">Corporation</option>
             <option value="other">Otro</option>
           </select>
           <div
@@ -43,6 +42,29 @@ import { TranslocoPipe } from '@jsverse/transloco';
             class="text-danger mt-1"
           >
             {{ 'RELAY_WIZARD.step1.business_type_required' | transloco }}
+          </div>
+        </div>
+
+        <!-- Tipo de negocio personalizado (cuando se selecciona "Otro") -->
+        <div class="form-group mb-3" *ngIf="form.get('businessType')?.value === 'other'">
+          <label for="customBusinessType">
+            {{ 'RELAY_WIZARD.step1.custom_business_type' | transloco }} *
+          </label>
+          <input
+            id="customBusinessType"
+            type="text"
+            class="form-control"
+            formControlName="customBusinessType"
+            [placeholder]="'RELAY_WIZARD.step1.custom_business_type_placeholder' | transloco"
+          />
+          <div
+            *ngIf="
+              form.get('customBusinessType')?.touched &&
+              form.get('customBusinessType')?.invalid
+            "
+            class="text-danger mt-1"
+          >
+            {{ 'RELAY_WIZARD.step1.custom_business_type_required' | transloco }}
           </div>
         </div>
 
@@ -261,10 +283,14 @@ import { TranslocoPipe } from '@jsverse/transloco';
     </div>
   `,
 })
-export class LlcInformationComponent extends FormWizardStepBaseComponent {
+export class LlcInformationComponent
+  extends FormWizardStepBaseComponent
+  implements OnInit
+{
   constructor(private wizardService: FormWizardService) {
     const formControls = {
       businessType: new FormControl('', Validators.required),
+      customBusinessType: new FormControl(''),
       legalName: new FormControl('', Validators.required),
       industry: new FormControl('', Validators.required),
       employees: new FormControl('', Validators.required),
@@ -283,6 +309,21 @@ export class LlcInformationComponent extends FormWizardStepBaseComponent {
     };
 
     super(1, wizardService.getSteps(), true, formControls);
+  }
+
+  ngOnInit(): void {
+    // Escuchar cambios en businessType para actualizar validaciones de customBusinessType
+    this.form.get('businessType')?.valueChanges.subscribe((value) => {
+      const customBusinessTypeControl = this.form.get('customBusinessType');
+      if (value === 'other') {
+        customBusinessTypeControl?.setValidators(Validators.required);
+        customBusinessTypeControl?.updateValueAndValidity();
+      } else {
+        customBusinessTypeControl?.clearValidators();
+        customBusinessTypeControl?.setValue('');
+        customBusinessTypeControl?.updateValueAndValidity();
+      }
+    });
   }
 
   onFileChange(event: any, controlName: string): void {

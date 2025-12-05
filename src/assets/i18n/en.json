@@ -1006,7 +1006,10 @@
       "ein_number_placeholder": "12-3456789",
       "ein_number_required": "EIN number is required",
       "articles_of_organization": "Attach Articles of Organization or Certificate of Formation",
-      "articles_of_organization_required": "You must attach the Articles of Organization"
+      "articles_of_organization_required": "You must attach the Articles of Organization",
+      "custom_business_type": "Other",
+      "custom_business_type_placeholder": "Enter the business type",
+      "custom_business_type_required": "The business type is required"
     },
     "step2": {
       "title": "Registered Agent Address",

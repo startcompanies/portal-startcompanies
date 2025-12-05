@@ -1023,7 +1023,10 @@
       "ein_number_placeholder": "12-3456789",
       "ein_number_required": "El número EIN es obligatorio",
       "articles_of_organization": "Adjuntar Artículos de Organización o Certificate of Formation",
-      "articles_of_organization_required": "Debes adjuntar los Artículos de Organización"
+      "articles_of_organization_required": "Debes adjuntar los Artículos de Organización",
+      "custom_business_type": "Otro",
+      "custom_business_type_placeholder": "Ingresa el tipo de negocio",
+      "custom_business_type_required": "El tipo de negocio es obligatorio"
     },
     "step2": {
       "title": "Dirección del Registered Agent",
