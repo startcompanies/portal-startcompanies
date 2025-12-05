@@ -717,179 +717,454 @@
     "common": {
       "last_update": "Última actualización"
     },
-    "PRIVACY": {
-      "title": "Aviso de Privacidad",
-      "intro": "En <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\", \"nosotros\"), respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporcionas. Este Aviso de Privacidad explica qué datos recopilamos, con qué finalidad, durante cuánto tiempo los conservamos, con quién los compartimos y cuáles son tus derechos. Aplica a todo el sitio web <strong>startcompanies.us</strong>, a nuestras páginas de destino y a los formularios asociados a nuestros servicios para la apertura y gestión de <strong>LLC</strong> y <strong>cuentas bancarias</strong> en Estados Unidos.",
-      "sections": {
-        "controller": {
-          "title": "1. Responsable del tratamiento",
-          "body": "Ebizboost LLC (nombre legal), operando comercialmente como Start Companies. Sitio: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. Si tienes consultas sobre privacidad, utiliza los canales de contacto publicados en el sitio."
-        },
-        "data": {
-          "title": "2. Datos que recopilamos",
-          "items": {
-            "1": "Identificación y contacto: nombre, correo, teléfono, país/ciudad.",
-            "2": "Información comercial básica relacionada con la apertura y manejo de una LLC.",
-            "3": "Preferencias de idioma y contenido.",
-            "4": "Datos técnicos y de uso: IP, tipo de dispositivo/navegador, páginas vistas, referencias.",
-            "5": "Datos de formularios (p. ej., apertura de LLC, renovación, Relay, Fixcal, Abotax)."
-          }
-        },
-        "sources": {
-          "title": "3. Cómo obtenemos los datos",
-          "items": {
-            "1": "Directamente de ti cuando completas formularios o agendas una llamada.",
-            "2": "Automáticamente mediante cookies y tecnologías similares de analítica y rendimiento.",
-            "3": "A través de integraciones de terceros necesarias para prestar nuestros servicios (p. ej., agenda o comunicación)."
-          }
-        },
-        "purposes": {
-          "title": "4. Finalidades y base legal",
-          "items": {
-            "1": "Responder consultas y brindar asesoría inicial (interés legítimo y/o ejecución precontractual).",
-            "2": "Prestar servicios solicitados (ejecución de contrato).",
-            "3": "Mejorar el sitio, la experiencia y nuestros procesos (interés legítimo).",
-            "4": "Comunicaciones operativas y/o informativas vinculadas a los servicios (interés legítimo/contrato).",
-            "5": "Cumplir obligaciones legales aplicables."
-          }
-        },
-        "cookies": {
-          "title": "5. Cookies y analítica",
-          "body": "Utilizamos cookies necesarias para el funcionamiento del sitio y, según corresponda, cookies de rendimiento/analítica para entender el uso y optimizar contenidos. Puedes controlar el uso de cookies desde la configuración de tu navegador. Al continuar navegando, aceptas su uso según este Aviso."
-        },
-        "sharing": {
-          "title": "6. Con quién compartimos datos",
-          "items": {
-            "1": "Proveedores tecnológicos que nos ayudan a operar el sitio y formularios.",
-            "2": "Herramientas de agenda/comunicación necesarias para coordinar reuniones y dar soporte.",
-            "3": "Cuando sea requerido por ley, autoridades competentes."
+    "LEGAL": {
+      "common": {
+        "last_update": "Última actualización"
+      },
+      "PRIVACY": {
+        "title": "Aviso de Privacidad",
+        "intro": "En <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\", \"nosotros\"), respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporcionas. Este Aviso de Privacidad explica qué datos recopilamos, con qué finalidad, durante cuánto tiempo los conservamos, con quién los compartimos y cuáles son tus derechos. Aplica a todo el sitio web <strong>startcompanies.us</strong>, a nuestras páginas de destino y a los formularios asociados a nuestros servicios para la apertura y gestión de <strong>LLC</strong> y <strong>cuentas bancarias</strong> en Estados Unidos.",
+        "sections": {
+          "controller": {
+            "title": "1. Responsable del tratamiento",
+            "body": "Ebizboost LLC (nombre legal), operando comercialmente como Start Companies. Sitio: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. Si tienes consultas sobre privacidad, utiliza los canales de contacto publicados en el sitio."
           },
-          "note": "No vendemos tus datos personales. Solo compartimos lo necesario para prestar y mejorar los servicios, o por exigencia legal."
-        },
-        "transfers": {
-          "title": "7. Transferencias internacionales",
-          "body": "Dado que prestamos servicios en Estados Unidos, es posible que tus datos se alojen o procesen en infraestructuras ubicadas fuera de tu país. Adoptamos medidas razonables para protegerlos conforme a estándares de seguridad y privacidad adecuados."
-        },
-        "retention": {
-          "title": "8. Plazos de conservación",
-          "body": "Conservamos los datos mientras sean necesarios para las finalidades indicadas, la prestación del servicio, el cumplimiento legal o hasta que solicites su supresión cuando proceda."
-        },
-        "rights": {
-          "title": "9. Tus derechos",
-          "body": "Dependiendo de tu jurisdicción, puedes ejercer derechos como acceso, rectificación, actualización, oposición, portabilidad o supresión. Para ejercerlos, contáctanos por los medios publicados en el sitio indicando tu solicitud y acreditando tu identidad."
-        },
-        "security": {
-          "title": "10. Seguridad",
-          "body": "Aplicamos medidas técnicas y organizativas razonables para proteger tus datos frente a accesos no autorizados, pérdida o alteración. Sin embargo, ningún sistema es 100% seguro."
-        },
-        "minors": {
-          "title": "11. Menores de edad",
-          "body": "Nuestros servicios están dirigidos a personas mayores de edad. No recopilamos deliberadamente datos de menores sin consentimiento verificable de sus representantes legales."
-        },
-        "updates": {
-          "title": "12. Actualizaciones de este Aviso",
-          "body": "Podremos actualizar este Aviso para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
-        },
-        "contact": {
-          "title": "13. Contacto",
-          "body": "Si tienes preguntas sobre privacidad o el tratamiento de tus datos, contáctanos mediante los canales oficiales publicados en el sitio."
-        },
-        "user_data_deletion": {
-          "title": "14. Eliminación de datos de usuario",
-          "body": "En cumplimiento con los Meta Platform Terms y las mejores prácticas de privacidad, atendemos solicitudes de eliminación de datos provenientes de cualquiera de nuestros canales y servicios (sitio web, formularios, CRM, correo, mensajería/Meta y registros operativos). La eliminación aplica a datos de contacto, contenido enviado en formularios, historiales de interacción y preferencias, salvo que exista una obligación legal de conservación (por ejemplo, fiscal, contable o de prevención de fraude). A continuación, detallamos lineamientos generales y específicos para bots de Meta:",
-          "meta_compliance": {
-            "title": "14.1 Cumplimiento con Meta Platform Terms",
-            "content": "Nuestro bot de WhatsApp/Meta cumple estrictamente con los Meta Platform Terms, incluyendo: (a) No procesamos Platform Data sin consentimiento válido del usuario para construir perfiles; (b) No intentamos decodificar, circunvalar, re-identificar o desanonimizar Platform Data; (c) Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger Platform Data contra acceso no autorizado; (d) Mantenemos una política de privacidad clara y accesible que explica cómo recopilamos, usamos y compartimos datos."
+          "data": {
+            "title": "2. Datos que recopilamos",
+            "items": {
+              "1": "Identificación y contacto: nombre, correo, teléfono, país/ciudad.",
+              "2": "Información comercial básica relacionada con la apertura y manejo de una LLC.",
+              "3": "Preferencias de idioma y contenido.",
+              "4": "Datos técnicos y de uso: IP, tipo de dispositivo/navegador, páginas vistas, referencias.",
+              "5": "Datos de formularios (p. ej., apertura de LLC, renovación, Relay, Fixcal, Abotax)."
+            }
           },
-          "bot_interaction": {
-            "title": "14.2 Datos de interacción con el bot",
-            "content": "Los datos recopilados a través de interacciones con nuestro bot de WhatsApp/Meta incluyen: mensajes enviados, información proporcionada durante conversaciones, preferencias de usuario y datos de contacto. Estos datos se procesan únicamente para brindar el servicio solicitado y mejorar la experiencia del usuario, siempre con el consentimiento explícito del usuario."
+          "sources": {
+            "title": "3. Cómo obtenemos los datos",
+            "items": {
+              "1": "Directamente de ti cuando completas formularios o agendas una llamada.",
+              "2": "Automáticamente mediante cookies y tecnologías similares de analítica y rendimiento.",
+              "3": "A través de integraciones de terceros necesarias para prestar nuestros servicios (p. ej., agenda o comunicación)."
+            }
           },
-          "deletion_process": {
-            "title": "14.3 Proceso de eliminación",
-            "content": "Los usuarios pueden solicitar la eliminación de sus datos de las siguientes maneras:",
-            "methods": {
-              "1": "Contactando directamente a nuestro equipo de soporte",
-              "2": "Enviando una solicitud por correo electrónico a administracion@starcompanies.us"
+          "purposes": {
+            "title": "4. Finalidades y base legal",
+            "items": {
+              "1": "Responder consultas y brindar asesoría inicial (interés legítimo y/o ejecución precontractual).",
+              "2": "Prestar servicios solicitados (ejecución de contrato).",
+              "3": "Mejorar el sitio, la experiencia y nuestros procesos (interés legítimo).",
+              "4": "Comunicaciones operativas y/o informativas vinculadas a los servicios (interés legítimo/contrato).",
+              "5": "Cumplir obligaciones legales aplicables."
+            }
+          },
+          "cookies": {
+            "title": "5. Cookies y analítica",
+            "body": "Utilizamos cookies necesarias para el funcionamiento del sitio y, según corresponda, cookies de rendimiento/analítica para entender el uso y optimizar contenidos. Puedes controlar el uso de cookies desde la configuración de tu navegador. Al continuar navegando, aceptas su uso según este Aviso."
+          },
+          "sharing": {
+            "title": "6. Con quién compartimos datos",
+            "items": {
+              "1": "Proveedores tecnológicos que nos ayudan a operar el sitio y formularios.",
+              "2": "Herramientas de agenda/comunicación necesarias para coordinar reuniones y dar soporte.",
+              "3": "Cuando sea requerido por ley, autoridades competentes."
             },
-            "verification": "Todas las solicitudes de eliminación requieren verificación de identidad para proteger la privacidad del usuario."
+            "note": "No vendemos tus datos personales. Solo compartimos lo necesario para prestar y mejorar los servicios, o por exigencia legal."
           },
-          "retention_period": {
-            "title": "14.4 Período de retención",
-            "content": "Los datos de interacción con el bot se conservan por un período máximo de 12 meses desde la última interacción, después del cual se eliminan automáticamente de nuestros sistemas, salvo que existan obligaciones legales que requieran una conservación más prolongada. Este período cumple con los estándares de Meta Platform Terms."
+          "transfers": {
+            "title": "7. Transferencias internacionales",
+            "body": "Dado que prestamos servicios en Estados Unidos, es posible que tus datos se alojen o procesen en infraestructuras ubicadas fuera de tu país. Adoptamos medidas razonables para protegerlos conforme a estándares de seguridad y privacidad adecuados."
           },
-          "automatic_deletion": {
-            "title": "14.5 Eliminación automática",
-            "content": "Implementamos procesos automatizados que eliminan datos de usuario después del período de retención establecido. Los datos eliminados incluyen: historial de conversaciones, información personal compartida, preferencias de usuario y cualquier dato identificable asociado a la cuenta de Meta del usuario. Los datos se eliminan de forma segura e irreversible."
+          "retention": {
+            "title": "8. Plazos de conservación",
+            "body": "Conservamos los datos mientras sean necesarios para las finalidades indicadas, la prestación del servicio, el cumplimiento legal o hasta que solicites su supresión cuando proceda."
           },
-          "security_measures": {
-            "title": "14.6 Medidas de seguridad",
-            "content": "Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger Platform Data contra acceso no autorizado, incluyendo: encriptación de datos en tránsito y en reposo, controles de acceso basados en roles, auditorías regulares de seguridad, y cumplimiento con estándares de seguridad de Meta."
+          "rights": {
+            "title": "9. Tus derechos",
+            "body": "Dependiendo de tu jurisdicción, puedes ejercer derechos como acceso, rectificación, actualización, oposición, portabilidad o supresión. Para ejercerlos, contáctanos por los medios publicados en el sitio indicando tu solicitud y acreditando tu identidad."
           },
-          "verification": {
-            "title": "14.7 Verificación de eliminación",
-            "content": "Una vez procesada la solicitud de eliminación, confirmaremos al usuario que sus datos han sido eliminados de nuestros sistemas. Esta confirmación se enviará a través del mismo canal utilizado para la solicitud (bot, email o soporte directo). Mantenemos registros de eliminación para fines de auditoría y cumplimiento."
+          "security": {
+            "title": "10. Seguridad",
+            "body": "Aplicamos medidas técnicas y organizativas razonables para proteger tus datos frente a accesos no autorizados, pérdida o alteración. Sin embargo, ningún sistema es 100% seguro."
+          },
+          "minors": {
+            "title": "11. Menores de edad",
+            "body": "Nuestros servicios están dirigidos a personas mayores de edad. No recopilamos deliberadamente datos de menores sin consentimiento verificable de sus representantes legales."
+          },
+          "updates": {
+            "title": "12. Actualizaciones de este Aviso",
+            "body": "Podremos actualizar este Aviso para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+          },
+          "contact": {
+            "title": "13. Contacto",
+            "body": "Si tienes preguntas sobre privacidad o el tratamiento de tus datos, contáctanos mediante los canales oficiales publicados en el sitio."
+          },
+          "user_data_deletion": {
+            "title": "14. Eliminación de datos de usuario",
+            "body": "En cumplimiento con los Meta Platform Terms y las mejores prácticas de privacidad, atendemos solicitudes de eliminación de datos provenientes de cualquiera de nuestros canales y servicios (sitio web, formularios, CRM, correo, mensajería/Meta y registros operativos). La eliminación aplica a datos de contacto, contenido enviado en formularios, historiales de interacción y preferencias, salvo que exista una obligación legal de conservación (por ejemplo, fiscal, contable o de prevención de fraude). A continuación, detallamos lineamientos generales y específicos para bots de Meta:",
+            "meta_compliance": {
+              "title": "14.1 Cumplimiento con Meta Platform Terms",
+              "content": "Nuestro bot de WhatsApp/Meta cumple estrictamente con los Meta Platform Terms, incluyendo: (a) No procesamos Platform Data sin consentimiento válido del usuario para construir perfiles; (b) No intentamos decodificar, circunvalar, re-identificar o desanonimizar Platform Data; (c) Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger Platform Data contra acceso no autorizado; (d) Mantenemos una política de privacidad clara y accesible que explica cómo recopilamos, usamos y compartimos datos."
+            },
+            "bot_interaction": {
+              "title": "14.2 Datos de interacción con el bot",
+              "content": "Los datos recopilados a través de interacciones con nuestro bot de WhatsApp/Meta incluyen: mensajes enviados, información proporcionada durante conversaciones, preferencias de usuario y datos de contacto. Estos datos se procesan únicamente para brindar el servicio solicitado y mejorar la experiencia del usuario, siempre con el consentimiento explícito del usuario."
+            },
+            "deletion_process": {
+              "title": "14.3 Proceso de eliminación",
+              "content": "Los usuarios pueden solicitar la eliminación de sus datos de las siguientes maneras:",
+              "methods": {
+                "1": "Contactando directamente a nuestro equipo de soporte",
+                "2": "Enviando una solicitud por correo electrónico a administracion@starcompanies.us"
+              },
+              "verification": "Todas las solicitudes de eliminación requieren verificación de identidad para proteger la privacidad del usuario."
+            },
+            "retention_period": {
+              "title": "14.4 Período de retención",
+              "content": "Los datos de interacción con el bot se conservan por un período máximo de 12 meses desde la última interacción, después del cual se eliminan automáticamente de nuestros sistemas, salvo que existan obligaciones legales que requieran una conservación más prolongada. Este período cumple con los estándares de Meta Platform Terms."
+            },
+            "automatic_deletion": {
+              "title": "14.5 Eliminación automática",
+              "content": "Implementamos procesos automatizados que eliminan datos de usuario después del período de retención establecido. Los datos eliminados incluyen: historial de conversaciones, información personal compartida, preferencias de usuario y cualquier dato identificable asociado a la cuenta de Meta del usuario. Los datos se eliminan de forma segura e irreversible."
+            },
+            "security_measures": {
+              "title": "14.6 Medidas de seguridad",
+              "content": "Implementamos medidas de seguridad técnicas y organizativas apropiadas para proteger Platform Data contra acceso no autorizado, incluyendo: encriptación de datos en tránsito y en reposo, controles de acceso basados en roles, auditorías regulares de seguridad, y cumplimiento con estándares de seguridad de Meta."
+            },
+            "verification": {
+              "title": "14.7 Verificación de eliminación",
+              "content": "Una vez procesada la solicitud de eliminación, confirmaremos al usuario que sus datos han sido eliminados de nuestros sistemas. Esta confirmación se enviará a través del mismo canal utilizado para la solicitud (bot, email o soporte directo). Mantenemos registros de eliminación para fines de auditoría y cumplimiento."
+            }
+          },
+          "intermediary": {
+            "title": "Alcance del servicio y exención de responsabilidad",
+            "body": "<strong>Ebizboost LLC</strong> actúa como intermediario en la facilitación de trámites legales y bancarios en los EE. UU. No forma parte de entidades gubernamentales ni tiene alianzas con bancos. No se hace responsable por el uso indebido de cuentas ni por información incorrecta. Al agendar una llamada y aceptar los requisitos enviados, el usuario acepta la cláusula de no reembolso. Además, Ebizboost LLC compartirá únicamente la información indispensable relacionada con los requisitos explicados y enviados luego de la conversación. El usuario acepta implícitamente, ya sea de manera verbal o a través de algún canal oficial de contacto, que la información proporcionada es correcta y completa."
           }
+        }
+      },
+      "TERMS": {
+        "title": "Términos y Condiciones",
+        "intro": "Estos Términos y Condiciones (\"Términos\") regulan el acceso y uso del sitio <strong>startcompanies.us</strong> y de los servicios ofrecidos por <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\"). Al utilizar el sitio o contratar nuestros servicios, aceptas estos Términos.",
+        "sections": {
+          "services": {
+            "title": "1. Servicios",
+            "body": "Brindamos servicios relacionados con la <strong>apertura</strong> y <strong>gestión</strong> de LLC en Estados Unidos, así como asesoría y acompañamiento para la <strong>apertura de cuentas bancarias</strong> (p. ej., Relay) y trámites asociados. La información publicada tiene fines informativos y no constituye asesoría legal o fiscal."
+          },
+          "site_use": {
+            "title": "2. Uso del sitio",
+            "items": {
+              "1": "Debes proporcionar información veraz y actualizada en formularios y comunicaciones.",
+              "2": "Está prohibido el uso del sitio para fines ilícitos o que perjudiquen a terceros.",
+              "3": "Podemos modificar, suspender o limitar el acceso al sitio por mantenimiento o razones operativas."
+            }
+          },
+          "contracting": {
+            "title": "3. Contratación y pagos",
+            "body": "Antes de contratar, te informaremos el alcance del servicio, tiempos estimados y costos aplicables. Los pagos se realizarán por los medios habilitados y podrán estar sujetos a políticas de reembolso detalladas en la propuesta o contrato específico."
+          },
+          "liability": {
+            "title": "4. Responsabilidades",
+            "items": {
+              "1": "Tu responsabilidad: proporcionar datos correctos y documentación requerida en tiempo y forma.",
+              "2": "Nuestra responsabilidad: ejecutar los servicios contratados con diligencia y buena fe.",
+              "3": "Limitación: no garantizamos resultados ajenos a nuestro control (p. ej., decisiones bancarias o estatales)."
+            }
+          },
+          "ip": {
+            "title": "5. Propiedad intelectual",
+            "body": "El contenido del sitio (textos, marcas, gráficos, imágenes y código) es titularidad de Start Companies o de sus autores y está protegido por leyes aplicables. Se prohíbe su reproducción no autorizada."
+          },
+          "privacy": {
+            "title": "6. Datos personales y privacidad",
+            "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/es/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
+          },
+          "third_party": {
+            "title": "7. Enlaces y herramientas de terceros",
+            "body": "El sitio puede incluir enlaces o integraciones de terceros (p. ej., agenda, mensajería y analítica). No controlamos su contenido o políticas; te recomendamos revisar sus términos y avisos de privacidad."
+          },
+          "modifications": {
+            "title": "8. Modificaciones",
+            "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+          },
+          "law": {
+            "title": "9. Ley aplicable",
+            "body": "Estos Términos se interpretarán conforme a las leyes aplicables en la jurisdicción donde operamos. En caso de controversia, procuraremos resolverla de buena fe; si no fuera posible, se someterá a los tribunales competentes."
+          },
+          "contact": {
+            "title": "10. Contacto",
+            "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
+          }
+        }
+      }
+    }
+  },
+  "WIZARD": {
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "cancel": "Cancelar",
+    "finish": "Finalizar",
+    "send": "Enviar",
+    "steps": {
+      "state": "Estado de contratación",
+      "register": "Registro básico",
+      "payment": "Pago",
+      "client": "Datos del cliente",
+      "review": "Revisión final",
+      "zoho": "Envío a Zoho CRM"
+    },
+    "password": "Contraseña",
+    "state": "Estado",
+    "select_state": "Selecciona el estado de contratación",
+    "checkout": {
+      "title": "Checkout / Pago",
+      "summary": "Resumen del servicio seleccionado:",
+      "service_label": "Servicio",
+      "state_label": "Estado",
+      "not_specified": "No especificado",
+      "not_selected": "No seleccionado",
+      "payment_method": "Método de pago",
+      "select_method": "Seleccione método",
+      "card": "Tarjeta de crédito / débito",
+      "paypal": "PayPal",
+      "required_method": "Seleccione un método de pago."
+    },
+    "client": {
+      "title": "Datos adicionales del cliente",
+      "full_name": "Nombre completo",
+      "full_name_placeholder": "Ej. Juan Pérez",
+      "full_name_required": "El nombre completo es obligatorio.",
+      "phone": "Teléfono",
+      "phone_placeholder": "Ej. +1 (305) 123-4567",
+      "phone_required": "El teléfono es obligatorio.",
+      "address": "Dirección",
+      "address_placeholder": "Ej. 123 Main St, Miami, FL",
+      "address_required": "La dirección es obligatoria."
+    },
+    "review": {
+      "title": "Revisión final",
+      "description": "Revisa cuidadosamente los datos ingresados. Marca la casilla de confirmación para continuar con el envío a Zoho CRM.",
+      "confirm_label": "Confirmo que los datos mostrados son correctos.",
+      "section_title": "Datos recopilados"
+    },
+    "state_step": {
+      "title": "Selecciona el estado de contratación",
+      "label": "Estado",
+      "placeholder": "Selecciona un estado",
+      "required": "El estado es obligatorio",
+      "options": {
+        "florida": "Florida",
+        "delaware": "Delaware",
+        "texas": "Texas",
+        "wyoming": "Wyoming"
+      }
+    },
+    "zoho_step": {
+      "title": "Enviar a Zoho CRM",
+      "subtitle": "Revisaremos los datos antes de enviarlos al CRM."
+    },
+    "privacy": {
+      "title": "6. Datos personales y privacidad",
+      "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
+    },
+    "third_party": {
+      "title": "7. Enlaces y herramientas de terceros",
+      "body": "El sitio puede incluir enlaces o integraciones de terceros (p. ej., agenda, mensajería y analítica). No controlamos su contenido o políticas; te recomendamos revisar sus términos y avisos de privacidad."
+    },
+    "modifications": {
+      "title": "8. Modificaciones",
+      "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+    },
+    "law": {
+      "title": "9. Ley aplicable",
+      "body": "Estos Términos se interpretarán conforme a las leyes aplicables en la jurisdicción donde operamos. En caso de controversia, procuraremos resolverla de buena fe; si no fuera posible, se someterá a los tribunales competentes."
+    },
+    "contact": {
+      "title": "10. Contacto",
+      "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
+    }
+  },
+  "CREATE_BANK_ACCOUNT": {
+    "steps": {
+      "llcInfo": "Información de la LLC",
+      "registeredAgent": "Dirección del Registered Agent",
+      "accountVerifier": "Información del Verificador",
+      "ownerAddress": "Dirección Personal del Propietario",
+      "llcType": "Tipo de LLC",
+      "finalReview": "Revisión Final",
+      "submit": "Envío Final"
+    }
+  },
+  "RELAY_WIZARD": {
+    "step1": {
+      "title": "SECCIÓN: INFORMACIÓN DE LA LLC",
+      "business_type": "Tipo de negocio",
+      "select_business_type": "Selecciona el tipo de negocio",
+      "business_type_required": "El tipo de negocio es obligatorio",
+      "legal_name": "Nombre legal del negocio",
+      "legal_name_placeholder": "Ej. Mi Empresa LLC",
+      "legal_name_hint": "Ingresa el nombre tal como aparece en el Artículo de Organización, incluyendo el sufijo \"LLC\".",
+      "legal_name_required": "El nombre legal es obligatorio",
+      "industry": "Industria / Rubro",
+      "industry_placeholder": "Ej. Tecnología, Consultoría, Retail",
+      "industry_required": "La industria es obligatoria",
+      "employees": "Cantidad de empleados",
+      "select_employees": "Selecciona la cantidad de empleados",
+      "employees_required": "La cantidad de empleados es obligatoria",
+      "description": "Descripción breve",
+      "description_placeholder": "Describe brevemente tu negocio",
+      "description_hint": "La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.",
+      "description_required": "La descripción es obligatoria",
+      "no_website": "No tengo sitio web",
+      "website": "Sitio web o red social",
+      "website_placeholder": "https://www.ejemplo.com",
+      "ein_letter": "Adjuntar EIN Letter",
+      "ein_letter_hint": "Adjunta la carta del IRS que contiene el número EIN asignado a la empresa.",
+      "ein_letter_required": "Debes adjuntar la carta EIN",
+      "ein_number": "Número de EIN",
+      "ein_number_placeholder": "12-3456789",
+      "ein_number_required": "El número EIN es obligatorio",
+      "articles_of_organization": "Adjuntar Artículos de Organización o Certificate of Formation",
+      "articles_of_organization_required": "Debes adjuntar los Artículos de Organización"
+    },
+    "step2": {
+      "title": "Dirección del Registered Agent",
+      "street": "Calle y número",
+      "street_placeholder": "Ej. 123 Main Street",
+      "street_required": "La calle es obligatoria",
+      "apt_suite": "Apto / Suite / PO Box",
+      "apt_suite_placeholder": "Ej. Suite 100",
+      "city": "Ciudad",
+      "city_placeholder": "Ej. Miami",
+      "city_required": "La ciudad es obligatoria",
+      "state": "Estado",
+      "state_placeholder": "Ej. Florida",
+      "state_required": "El estado es obligatorio",
+      "zip_code": "Postal / Zip Code",
+      "zip_code_placeholder": "Ej. 33101",
+      "zip_code_required": "El código postal es obligatorio",
+      "country": "País",
+      "address_hint": "Ingresa la dirección del Registered Agent tal como aparece en los Articles of Organization.",
+      "incorporation_state": "Estado de constitución",
+      "select_state": "Selecciona el estado",
+      "incorporation_state_required": "El estado de constitución es obligatorio",
+      "incorporation_date": "Mes y Año de Incorporación",
+      "incorporation_date_required": "La fecha de incorporación es obligatoria",
+      "business_countries": "Países donde haces negocios con tu LLC",
+      "business_countries_hint": "Mantén presionada la tecla Ctrl (Cmd en Mac) para seleccionar múltiples países",
+      "business_countries_required": "Debes seleccionar al menos un país"
+    },
+    "step3": {
+      "title": "Información de la persona que verificara la cuenta bancaria",
+      "member_name": "Miembro que validara la cuenta bancaria",
+      "member_name_placeholder": "Selecciona o agrega un miembro",
+      "member_name_required": "Debes seleccionar un miembro",
+      "add_member": "Agregar Miembro",
+      "position": "Cargo / Título / Ocupación",
+      "select_position": "Selecciona el cargo",
+      "position_required": "El cargo es obligatorio",
+      "income_source": "Fuente de ingreso personal",
+      "select_income_source": "Selecciona la fuente de ingreso",
+      "income_source_required": "La fuente de ingreso es obligatoria",
+      "annual_income": "¿Cuánto ganas en el año?",
+      "annual_income_placeholder": "0",
+      "annual_income_hint": "El monto será expresado en USD",
+      "annual_income_required": "El ingreso anual es obligatorio"
+    },
+    "step4": {
+      "title": "Dirección Personal del Propietario",
+      "street": "Calle y número",
+      "street_placeholder": "Ej. 123 Main Street",
+      "street_required": "La calle es obligatoria",
+      "suite_apt": "Suite / Apto",
+      "suite_apt_placeholder": "Ej. Apt 4B",
+      "city": "Ciudad",
+      "city_placeholder": "Ej. Ciudad de México",
+      "city_required": "La ciudad es obligatoria",
+      "state_province": "Estado / Provincia",
+      "state_province_placeholder": "Ej. CDMX",
+      "state_province_required": "El estado o provincia es obligatorio",
+      "zip_code": "Postal / Zip Code",
+      "zip_code_placeholder": "Ej. 01000",
+      "zip_code_required": "El código postal es obligatorio",
+      "country": "País",
+      "select_country": "Selecciona el país",
+      "country_required": "El país es obligatorio",
+      "service_bill": "Adjuntar factura de servicio",
+      "service_bill_hint1": "No debe tener más de 3 meses",
+      "service_bill_hint2": "Debe coincidir con esta dirección",
+      "service_bill_hint3": "Nombre y dirección deben verse claramente",
+      "service_bill_required": "Debes adjuntar una factura de servicio"
+    },
+    "step5": {
+      "title": "Tipo de LLC",
+      "question": "¿Tu LLC es Multi Member?",
+      "single_member": "LLC de un solo miembro (Single Member LLC)",
+      "multi_member": "LLC de múltiples miembros (Multi-Member LLC)",
+      "llc_type_required": "Debes seleccionar el tipo de LLC"
+    },
+    "step6": {
+      "title": "Revisión Final",
+      "description": "Revisa cuidadosamente todos los datos ingresados antes de continuar.",
+      "confirm_label": "Confirmo que toda la información proporcionada es correcta y completa.",
+      "confirm_required": "Debes confirmar que la información es correcta"
+    },
+    "step7": {
+      "title": "Confirmación y Términos",
+      "veracity_title": "Confirmación de Veracidad y Firma Electrónica",
+      "signature_placeholder": "Escribe tu nombre completo como firma electrónica",
+      "veracity_checkbox": "Acepto que toda la información proporcionada es verdadera y autorizo a Start Companies a utilizarla para la apertura de la cuenta bancaria y el registro de la LLC.",
+      "veracity_required": "Debes aceptar la confirmación de veracidad",
+      "terms_title": "Términos y Condiciones",
+      "terms_checkbox": "Acepto los Términos y Condiciones.",
+      "terms_required": "Debes aceptar los términos y condiciones",
+      "terms": {
+        "what_includes": {
+          "title": "¿Qué incluye este servicio?",
+          "item1": "Revisión de los documentos enviados",
+          "item2": "Carga correcta de la información en Relay",
+          "item3": "Comunicación con el banco si fuera necesario",
+          "item4": "Acompañamiento paso a paso hasta completar el proceso de verificación"
         },
-        "intermediary": {
-          "title": "Alcance del servicio y exención de responsabilidad",
-          "body": "<strong>Ebizboost LLC</strong> actúa como intermediario en la facilitación de trámites legales y bancarios en los EE. UU. No forma parte de entidades gubernamentales ni tiene alianzas con bancos. No se hace responsable por el uso indebido de cuentas ni por información incorrecta. Al agendar una llamada y aceptar los requisitos enviados, el usuario acepta la cláusula de no reembolso. Además, Ebizboost LLC compartirá únicamente la información indispensable relacionada con los requisitos explicados y enviados luego de la conversación. El usuario acepta implícitamente, ya sea de manera verbal o a través de algún canal oficial de contacto, que la información proporcionada es correcta y completa."
+        "what_not_includes": {
+          "title": "¿Qué no incluye?",
+          "item1": "La creación de la LLC ni obtención del EIN (si no están previamente disponibles)",
+          "item2": "El llenado del formulario si los documentos están incompletos o son inválidos",
+          "item3": "La verificación facial y confirmación final que debe realizar el cliente directamente con Relay"
+        },
+        "guarantee": {
+          "title": "Garantía de devolución del dinero",
+          "content": "Si el cliente eligió que Start Companies llene el formulario y Relay rechaza la apertura de la cuenta bancaria por razones ajenas al control del cliente (por ejemplo, problemas técnicos o errores en el proceso de carga), Start Companies reembolsará el monto pagado por el servicio de llenado del formulario."
         }
       }
     },
-    "TERMS": {
-      "title": "Términos y Condiciones",
-      "intro": "Estos Términos y Condiciones (\"Términos\") regulan el acceso y uso del sitio <strong>startcompanies.us</strong> y de los servicios ofrecidos por <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\"). Al utilizar el sitio o contratar nuestros servicios, aceptas estos Términos.",
-      "sections": {
-        "services": {
-          "title": "1. Servicios",
-          "body": "Brindamos servicios relacionados con la <strong>apertura</strong> y <strong>gestión</strong> de LLC en Estados Unidos, así como asesoría y acompañamiento para la <strong>apertura de cuentas bancarias</strong> (p. ej., Relay) y trámites asociados. La información publicada tiene fines informativos y no constituye asesoría legal o fiscal."
-        },
-        "site_use": {
-          "title": "2. Uso del sitio",
-          "items": {
-            "1": "Debes proporcionar información veraz y actualizada en formularios y comunicaciones.",
-            "2": "Está prohibido el uso del sitio para fines ilícitos o que perjudiquen a terceros.",
-            "3": "Podemos modificar, suspender o limitar el acceso al sitio por mantenimiento o razones operativas."
-          }
-        },
-        "contracting": {
-          "title": "3. Contratación y pagos",
-          "body": "Antes de contratar, te informaremos el alcance del servicio, tiempos estimados y costos aplicables. Los pagos se realizarán por los medios habilitados y podrán estar sujetos a políticas de reembolso detalladas en la propuesta o contrato específico."
-        },
-        "liability": {
-          "title": "4. Responsabilidades",
-          "items": {
-            "1": "Tu responsabilidad: proporcionar datos correctos y documentación requerida en tiempo y forma.",
-            "2": "Nuestra responsabilidad: ejecutar los servicios contratados con diligencia y buena fe.",
-            "3": "Limitación: no garantizamos resultados ajenos a nuestro control (p. ej., decisiones bancarias o estatales)."
-          }
-        },
-        "ip": {
-          "title": "5. Propiedad intelectual",
-          "body": "El contenido del sitio (textos, marcas, gráficos, imágenes y código) es titularidad de Start Companies o de sus autores y está protegido por leyes aplicables. Se prohíbe su reproducción no autorizada."
-        },
-        "privacy": {
-          "title": "6. Datos personales y privacidad",
-          "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
-        },
-        "third_party": {
-          "title": "7. Enlaces y herramientas de terceros",
-          "body": "El sitio puede incluir enlaces o integraciones de terceros (p. ej., agenda, mensajería y analítica). No controlamos su contenido o políticas; te recomendamos revisar sus términos y avisos de privacidad."
-        },
-        "modifications": {
-          "title": "8. Modificaciones",
-          "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
-        },
-        "law": {
-          "title": "9. Ley aplicable",
-          "body": "Estos Términos se interpretarán conforme a las leyes aplicables en la jurisdicción donde operamos. En caso de controversia, procuraremos resolverla de buena fe; si no fuera posible, se someterá a los tribunales competentes."
-        },
-        "contact": {
-          "title": "10. Contacto",
-          "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
-        }
-      }
+    "member_modal": {
+      "title": "Miembro que validara la cuenta bancaria",
+      "first_name": "Nombre(s)",
+      "first_name_required": "El nombre es obligatorio",
+      "last_name": "Apellidos",
+      "last_name_required": "Los apellidos son obligatorios",
+      "birth_date": "Fecha de Nacimiento",
+      "birth_date_required": "La fecha de nacimiento es obligatoria",
+      "nationality": "Nacionalidad",
+      "select_nationality": "Selecciona la nacionalidad",
+      "nationality_required": "La nacionalidad es obligatoria",
+      "citizenship": "Ciudadanía",
+      "select_citizenship": "Selecciona la ciudadanía",
+      "citizenship_required": "La ciudadanía es obligatoria",
+      "passport_number": "Número de pasaporte",
+      "passport_number_placeholder": "Como figura en el pasaporte, incluye letras y números",
+      "passport_number_required": "El número de pasaporte es obligatorio",
+      "passport_file": "Adjunta una copia escaneada o foto legible del pasaporte, asegurándote de que esté vigente.",
+      "passport_file_hint": "El pasaporte debe estar vigente y ser claramente legible",
+      "passport_file_required": "Debes adjuntar el pasaporte",
+      "work_email": "Email laboral",
+      "work_email_placeholder": "Este correo se usará para ingresar a Relay",
+      "phone": "Teléfono",
+      "phone_placeholder": "Debe tener capacidad de recibir SMS",
+      "us_resident": "¿Es residente en EE.UU.?",
+      "yes": "Si",
+      "no": "No",
+      "cancel": "Cancelar",
+      "save": "Listo"
     }
   }
 }
