@@ -9,19 +9,21 @@ import { Observable } from 'rxjs';
 })
 export class BlogService {
   apiUrl: string = environment.apiUrl;
+  postsEndpoint: string = environment.postsEndpoint ?? '/posts/get-from-portal';
+  categoriesEndpoint: string = environment.categoriesEndpoint ?? '/categories/with-posts-count';
 
   constructor(private http: HttpClient) {}
 
   getCategories(): Promise<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}/categories/with-posts-count`)
+      .get<any[]>(`${this.apiUrl}${this.categoriesEndpoint}`)
       .toPromise()
       .then((res) => res ?? []);
   }
 
   getAllPosts(): Promise<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}/posts/get-from-portal`)
+      .get<any[]>(`${this.apiUrl}${this.postsEndpoint}`)
       .toPromise()
       .then((res) => res ?? []);
   }
