@@ -49,6 +49,10 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
+      // Remover fbclid de la URL antes de cargar Cal.com
+      // para evitar que forwardQueryParams intente validarlo y falle
+      this.removeFbclidFromUrl();
+      
       // Exponer toggleAccordion globalmente para que funcione con onclick en el HTML
       (window as any).toggleAccordion = (id: string) => {
         this.toggleAccordion(id);
@@ -62,11 +66,58 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Remueve fbclid de la URL para evitar errores de validación en Cal.com
+   * El fbclid se pasará manualmente en calLink, pero no en la URL
+   * para que forwardQueryParams no intente validarlo
+   */
+  private removeFbclidFromUrl(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const fbclid = urlParams.get('fbclid');
+    
+    if (fbclid) {
+      // Guardar fbclid en sessionStorage antes de removerlo de la URL
+      sessionStorage.setItem('fbclid_temp', fbclid);
+      console.log('💾 [post-content] [fbclid] Guardado en sessionStorage antes de remover de URL:', {
+        value: fbclid,
+        length: fbclid.length
+      });
+      
+      // Remover de la URL
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('fbclid');
+      window.history.replaceState({}, '', currentUrl.toString());
+      console.log('🔧 [post-content] [fbclid] Removido de URL para evitar error de validación en Cal.com');
+      console.log('ℹ️ [post-content] [fbclid] Se pasará manualmente en calLink');
+    }
+  }
+
   ngOnDestroy(): void {
     // Limpiar la función global
     if (this.isBrowser && (window as any).toggleAccordion) {
       delete (window as any).toggleAccordion;
     }
+  }
+
+  /**
+   * Lee una cookie por su nombre
+   */
+  private getCookie(name: string): string | null {
+    if (typeof document === 'undefined') {
+      return null;
+    }
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
   }
 
   private initializeAccordions(): void {
@@ -456,10 +507,6 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     }
 
     let userIp: string | null = null;
-    const urlParams = new URLSearchParams(window.location.search);
-    const fbclid = urlParams.get('fbclid');
-    const userAgent = navigator.userAgent;
-
     try {
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
@@ -468,13 +515,98 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       console.warn('Error fetching IP address:', error);
     }
 
+    const userAgent = navigator.userAgent;
+    console.log('📋 [post-content] UserAgent:', userAgent);
+
+    // Obtener fbclid de sessionStorage (fue guardado antes de remover de URL)
+    // o de la URL si aún está ahí
+    let fbclid: string | null = null;
+    
+    // Intentar obtener de sessionStorage (lo guardamos antes de remover de URL)
+    const savedFbclid = sessionStorage.getItem('fbclid_temp');
+    if (savedFbclid) {
+      fbclid = savedFbclid;
+      console.log('✅ [post-content] [fbclid] Recuperado de sessionStorage:', {
+        value: fbclid,
+        length: fbclid.length
+      });
+    } else {
+      // Si no está en sessionStorage, intentar obtenerlo de la URL actual
+      const urlParams = new URLSearchParams(window.location.search);
+      fbclid = urlParams.get('fbclid');
+      if (fbclid) {
+        // Guardarlo en sessionStorage para la próxima vez
+        sessionStorage.setItem('fbclid_temp', fbclid);
+        console.log('✅ [post-content] [fbclid] Obtenido de URL y guardado en sessionStorage:', {
+          value: fbclid,
+          length: fbclid.length
+        });
+      }
+    }
+    
+    if (!fbclid) {
+      console.warn('⚠️ [post-content] [fbclid] No encontrado ni en sessionStorage ni en URL');
+    }
+
+    // Leer cookies de Facebook Pixel (nuevos parámetros)
+    const _fbc = this.getCookie('_fbc'); // Facebook Click ID
+    const _fbp = this.getCookie('_fbp'); // Facebook Browser ID
+    console.log('🍪 [post-content] [Cookies] Facebook Pixel:', {
+      _fbc: {
+        exists: !!_fbc,
+        value: _fbc,
+        length: _fbc?.length || 0
+      },
+      _fbp: {
+        exists: !!_fbp,
+        value: _fbp,
+        length: _fbp?.length || 0
+      },
+      allCookies: document.cookie
+    });
+
     let calLink = 'startcompanies-businessenusa/30min';
     const queryParams = new URLSearchParams();
-    if (userIp) queryParams.set('ip', userIp);
-    if (userAgent) queryParams.set('userAgent', userAgent);
-    if (fbclid) queryParams.set('notes', `fbclid=${fbclid}`);
+    
+    // Parámetros originales (mantener)
+    if (userIp) {
+      queryParams.set('ip', userIp);
+      console.log('✅ [post-content] [calLink] Agregado ip:', userIp);
+    }
+    if (userAgent) {
+      queryParams.set('userAgent', userAgent);
+      console.log('✅ [post-content] [calLink] Agregado userAgent');
+    }
+    if (fbclid) {
+      queryParams.set('fbclid', fbclid);
+      console.log('✅ [post-content] [calLink] Agregado fbclid:', {
+        value: fbclid,
+        length: fbclid.length,
+        encoded: encodeURIComponent(fbclid)
+      });
+    } else {
+      console.warn('⚠️ [post-content] [calLink] fbclid NO encontrado, no se agregará a calLink');
+    }
+    
+    // Nuevos parámetros de Facebook Pixel
+    if (_fbc) {
+      queryParams.set('_fbc', _fbc);
+      console.log('✅ [post-content] [calLink] Agregado _fbc:', _fbc);
+    }
+    if (_fbp) {
+      queryParams.set('_fbp', _fbp);
+      console.log('✅ [post-content] [calLink] Agregado _fbp:', _fbp);
+    }
+    
     const finalQuery = queryParams.toString();
     if (finalQuery) calLink += `?${finalQuery}`;
+    
+    console.log('🔗 [post-content] [calLink] Final construido:', {
+      calLink: calLink,
+      queryString: finalQuery,
+      params: Object.fromEntries(queryParams.entries()),
+      hasFbclid: queryParams.has('fbclid')
+    });
 
     // Inicializar el script de Cal.com si no está cargado
     (function (C: Window, A: string, L: string) {
@@ -517,13 +649,20 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       if (window.Cal) {
         window.Cal.config = window.Cal.config || {};
         window.Cal.config.forwardQueryParams = true;
+        console.log('⚙️ [post-content] [Cal.com] Configuración:', {
+          forwardQueryParams: window.Cal.config.forwardQueryParams,
+          currentUrl: window.location.href,
+          urlHasFbclid: new URLSearchParams(window.location.search).has('fbclid')
+        });
 
         window.Cal('init', '30min', { origin: 'https://cal.com' });
+        console.log('✅ [post-content] [Cal.com] Inicializado');
 
         window.Cal.ns['30min']('inline', {
           elementOrSelector: '#my-cal-inline',
           calLink: calLink,
         });
+        console.log('✅ [post-content] [Cal.com] Widget inline configurado con calLink:', calLink);
 
         window.Cal.ns['30min']('ui', {
           cssVarsPerTheme: {

@@ -25,7 +25,40 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    // Remover fbclid de la URL antes de cargar Cal.com
+    // para evitar que forwardQueryParams intente validarlo y falle
+    this.removeFbclidFromUrl();
     this.loadCalComWidget();
+  }
+
+  /**
+   * Remueve fbclid de la URL para evitar errores de validación en Cal.com
+   * El fbclid se pasará manualmente en calLink, pero no en la URL
+   * para que forwardQueryParams no intente validarlo
+   */
+  private removeFbclidFromUrl(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const fbclid = urlParams.get('fbclid');
+    
+    if (fbclid) {
+      // Guardar fbclid en sessionStorage antes de removerlo de la URL
+      sessionStorage.setItem('fbclid_temp', fbclid);
+      console.log('💾 [fbclid] Guardado en sessionStorage antes de remover de URL:', {
+        value: fbclid,
+        length: fbclid.length
+      });
+      
+      // Remover de la URL
+      const currentUrl = new URL(window.location.href);
+      currentUrl.searchParams.delete('fbclid');
+      window.history.replaceState({}, '', currentUrl.toString());
+      console.log('🔧 [fbclid] Removido de URL para evitar error de validación en Cal.com');
+      console.log('ℹ️ [fbclid] Se pasará manualmente en calLink');
+    }
   }
 
   /**
@@ -158,14 +191,57 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
     // Obtener userAgent (parámetro original)
     const userAgent = navigator.userAgent;
+    console.log('📋 UserAgent:', userAgent);
 
-    // Obtener fbclid de la URL (parámetro original)
-    const urlParams = new URLSearchParams(window.location.search);
-    const fbclid = urlParams.get('fbclid');
+    // Obtener fbclid de la URL original ANTES de que se removiera
+    // Guardamos el fbclid original desde sessionStorage o lo obtenemos de otra forma
+    // Nota: Ya fue removido de la URL en removeFbclidFromUrl(), así que necesitamos
+    // obtenerlo de otra manera. Usaremos sessionStorage para guardarlo temporalmente.
+    let fbclid: string | null = null;
+    
+    // Intentar obtener de sessionStorage (lo guardamos antes de remover de URL)
+    const savedFbclid = sessionStorage.getItem('fbclid_temp');
+    if (savedFbclid) {
+      fbclid = savedFbclid;
+      console.log('✅ [fbclid] Recuperado de sessionStorage:', {
+        value: fbclid,
+        length: fbclid.length
+      });
+    } else {
+      // Si no está en sessionStorage, intentar obtenerlo de la URL actual
+      // (aunque ya debería haberse removido)
+      const urlParams = new URLSearchParams(window.location.search);
+      fbclid = urlParams.get('fbclid');
+      if (fbclid) {
+        // Guardarlo en sessionStorage para la próxima vez
+        sessionStorage.setItem('fbclid_temp', fbclid);
+        console.log('✅ [fbclid] Obtenido de URL y guardado en sessionStorage:', {
+          value: fbclid,
+          length: fbclid.length
+        });
+      }
+    }
+    
+    if (!fbclid) {
+      console.warn('⚠️ [fbclid] No encontrado ni en sessionStorage ni en URL');
+    }
 
     // Leer cookies de Facebook Pixel (nuevos parámetros)
     const _fbc = this.getCookie('_fbc'); // Facebook Click ID
     const _fbp = this.getCookie('_fbp'); // Facebook Browser ID
+    console.log('🍪 [Cookies] Facebook Pixel:', {
+      _fbc: {
+        exists: !!_fbc,
+        value: _fbc,
+        length: _fbc?.length || 0
+      },
+      _fbp: {
+        exists: !!_fbp,
+        value: _fbp,
+        length: _fbp?.length || 0
+      },
+      allCookies: document.cookie
+    });
 
     // Obtener país del usuario (nuevo parámetro)
     const countryData = await this.getCountryFromIP();
@@ -176,33 +252,49 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     // Parámetros originales (mantener)
     if (userIp) {
       queryParams.set('ip', userIp);
+      console.log('✅ [calLink] Agregado ip:', userIp);
     }
     if (userAgent) {
       queryParams.set('userAgent', userAgent);
+      console.log('✅ [calLink] Agregado userAgent');
     }
     if (fbclid) {
       queryParams.set('fbclid', fbclid);
+      console.log('✅ [calLink] Agregado fbclid:', {
+        value: fbclid,
+        length: fbclid.length,
+        encoded: encodeURIComponent(fbclid)
+      });
+    } else {
+      console.warn('⚠️ [calLink] fbclid NO encontrado, no se agregará a calLink');
     }
     
     // Nuevos parámetros de Facebook Pixel
     if (_fbc) {
       queryParams.set('_fbc', _fbc);
-      console.log('✅ _fbc enviado a Cal.com:', _fbc);
+      console.log('✅ [calLink] Agregado _fbc:', _fbc);
     }
     if (_fbp) {
       queryParams.set('_fbp', _fbp);
-      console.log('✅ _fbp enviado a Cal.com:', _fbp);
+      console.log('✅ [calLink] Agregado _fbp:', _fbp);
     }
 
     // Parámetros de país: nombre completo y código
     if (countryData) {
       queryParams.set('pais', countryData.name); // Nombre completo del país
       queryParams.set('pais_cod', countryData.code); // Código ISO del país
-      console.log('✅ País enviado a Cal.com:', countryData.name, `(${countryData.code})`);
+      console.log('✅ [calLink] Agregado país:', countryData.name, `(${countryData.code})`);
     }
 
     const finalQuery = queryParams.toString();
     if (finalQuery) calLink += `?${finalQuery}`;
+    
+    console.log('🔗 [calLink] Final construido:', {
+      calLink: calLink,
+      queryString: finalQuery,
+      params: Object.fromEntries(queryParams.entries()),
+      hasFbclid: queryParams.has('fbclid')
+    });
 
     // Lógica de inicialización del script de Cal.com
     // Adaptado de la función IIFE (Immediately Invoked Function Expression) original
@@ -247,14 +339,21 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
       // Asegurarse de que Cal esté disponible
       window.Cal.config = window.Cal.config || {};
       window.Cal.config.forwardQueryParams = true;
+      console.log('⚙️ [Cal.com] Configuración:', {
+        forwardQueryParams: window.Cal.config.forwardQueryParams,
+        currentUrl: window.location.href,
+        urlHasFbclid: new URLSearchParams(window.location.search).has('fbclid')
+      });
 
       window.Cal('init', '30min', { origin: 'https://cal.com' });
+      console.log('✅ [Cal.com] Inicializado');
 
       window.Cal.ns['30min']('inline', {
         elementOrSelector: '#my-cal-inline',
         config: { layout: 'month_view', forwardQueryParams: true },
         calLink: calLink,
       });
+      console.log('✅ [Cal.com] Widget inline configurado con calLink:', calLink);
 
       window.Cal.ns['30min']('ui', {
         cssVarsPerTheme: {
