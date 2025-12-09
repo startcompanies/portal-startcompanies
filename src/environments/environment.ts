@@ -5,8 +5,8 @@ export const environment = {
   postsEndpoint: '/posts/get-from-portal',
   categoriesEndpoint: '/categories/whith-sandbox-posts-count',
   facebookPixel: {
-    llcPixelId: '703523572287021',
-    relayPixelId: '1055049486479771',
+    llcPixelId: '',
+    relayPixelId: '',
     debug: true // Modo debug activado en desarrollo
   },
   baseUrl: 'https://startcompanies.us',

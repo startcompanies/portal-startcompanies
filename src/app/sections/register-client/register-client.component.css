@@ -1,0 +1,87 @@
+/*.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}*/
+/* Sección completa */
+.wizard-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Fondo azul hero */
+.sc-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Layout principal: dos columnas horizontales */
+.wizard-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* Columna izquierda (fondo azul, 20%) */
+.wizard-left {
+  flex: 0 0 20%;
+  max-width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Columna derecha (panel blanco) */
+.wizard-right {
+  flex: 1 1 80%;
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 4px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  overflow-y: auto;
+  border-radius: 1rem 0rem 0rem 1rem;
+}
+
+/* Contenido del wizard */
+.wizard-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Responsive: móvil => panel blanco ocupa todo, sin borde */
+@media (max-width: 768px) {
+  .wizard-layout {
+    flex-direction: column;
+  }
+
+  .wizard-left {
+    display: none;
+  }
+
+  .wizard-right {
+    flex: 1 1 100%;
+    border-left: none;
+    height: auto;
+    justify-content: flex-start;
+    border-radius: 0;
+  }
+
+  .wizard-inner {
+    padding: 1rem;
+  }
+}

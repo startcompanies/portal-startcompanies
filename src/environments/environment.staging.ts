@@ -12,4 +12,3 @@ export const environment = {
   baseUrl: 'https://staging.startcompanies.io',
   domain: 'staging.startcompanies.io'
 };
-

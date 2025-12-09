@@ -181,6 +181,11 @@ export const routes: Routes = [
           }
         }
       },
+      // Ruta de registro de cliente para wizard
+      {
+        path: 'registro-cliente',
+        loadComponent: () => import('./sections/register-client/register-client.component').then(m => m.RegisterClientComponent),
+      },
       // ===== RUTAS DE CAMPAÑAS (SIN GUARD) =====
       {
         path: 'abre-tu-llc',
@@ -368,6 +373,11 @@ export const routes: Routes = [
         path: 'post/:slug',
         redirectTo: '/post/:slug',
         pathMatch: 'full'
+      },
+      /** Ruta registro clientes en ingles */
+      {
+        path: 'client-register',
+        loadComponent: () => import('./sections/register-client/register-client.component').then(m => m.RegisterClientComponent),
       },
       /**Landings en inglés */
       {
