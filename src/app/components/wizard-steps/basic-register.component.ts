@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import {
   FormWizardService,
@@ -32,7 +32,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   `,
 })
 export class BasicRegister extends FormWizardStepBaseComponent {
-  constructor(@Inject(FormWizardService) private wizardService: FormWizardService) {
+  constructor(private wizardService: FormWizardService) {
     const formControls = {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', Validators.required),
