@@ -148,6 +148,9 @@
             },
             "development": {
               "buildTarget": "portal-startcompanies:build:development"
+            },
+            "staging": {
+              "buildTarget": "portal-startcompanies:build:staging"
             }
           },
           "defaultConfiguration": "development"
