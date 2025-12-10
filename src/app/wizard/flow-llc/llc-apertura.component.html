@@ -1,0 +1,43 @@
+<app-wizard-base
+  *ngIf="flowConfig"
+  [totalSteps]="flowConfig.totalSteps"
+  [currentStepIndex]="currentStepIndex"
+  [stepTitles]="stepTitles"
+  [stepIcons]="stepIcons"
+  [steps]="flowConfig.steps"
+  (stepChanged)="onStepChanged($event)"
+  (finish)="onFinish()"
+  (cancel)="onCancel()"
+>
+  <mat-stepper 
+    #stepper
+    [linear]="false"
+    (selectionChange)="onStepChanged($event.selectedIndex)"
+    class="custom-stepper"
+  >
+    <!-- Paso 1: Registro Básico -->
+    <mat-step [label]="stepTitles[1] || ('WIZARD.steps.register' | transloco)">
+      <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
+    </mat-step>
+
+    <!-- Paso 2: Selección de Estado -->
+    <mat-step [label]="stepTitles[2] || ('WIZARD.steps.state' | transloco)">
+      <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
+    </mat-step>
+
+    <!-- Paso 3: Pago -->
+    <mat-step [label]="stepTitles[3] || ('WIZARD.steps.payment' | transloco)">
+      <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2"></app-wizard-payment-step>
+    </mat-step>
+
+    <!-- Paso 4: Formulario de Cliente (Específico de LLC) -->
+    <mat-step [label]="stepTitles[4] || ('WIZARD.steps.client' | transloco)">
+      <app-client-form-llc [stepNumber]="4"></app-client-form-llc>
+    </mat-step>
+
+    <!-- Paso 5: Revisión Final -->
+    <mat-step [label]="stepTitles[5] || ('WIZARD.steps.review' | transloco)">
+      <app-wizard-final-review-step [stepNumber]="5" [previousSteps]="[1, 2, 3, 4]"></app-wizard-final-review-step>
+    </mat-step>
+  </mat-stepper>
+</app-wizard-base>

@@ -1,0 +1,57 @@
+.final-review-step {
+  padding: 1rem 0;
+}
+
+.final-review-step h4 {
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.final-review-step .text-muted {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.final-review-step .border-bottom {
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.final-review-step h6 {
+  color: var(--color-primario, #0068BD);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.final-review-step pre {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+}
+
+.final-review-step .form-check {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.final-review-step .form-check-input {
+  margin-top: 0.25rem;
+  margin-right: 0.5rem;
+}
+
+.final-review-step .form-check-label {
+  cursor: pointer;
+  color: #374151;
+}
+
+.final-review-step .text-danger {
+  font-size: 0.875rem;
+  color: #dc2626;
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,66 @@
+.payment-step {
+  padding: 1rem 0;
+}
+
+.payment-step h4 {
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.payment-step p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.payment-step .list-group {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.payment-step .list-group-item {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+}
+
+.payment-step .list-group-item:not(:last-child) {
+  border-bottom: none;
+}
+
+.payment-step .list-group-item strong {
+  color: #374151;
+  margin-right: 0.5rem;
+}
+
+.payment-step .form-group {
+  margin-top: 1.5rem;
+}
+
+.payment-step .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.payment-step .form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+  background-color: #fff;
+}
+
+.payment-step .form-control:focus {
+  outline: none;
+  border-color: var(--color-primario, #0068BD);
+  box-shadow: 0 0 0 3px rgba(0, 104, 189, 0.1);
+}
+
+.payment-step .text-danger {
+  font-size: 0.875rem;
+  color: #dc2626;
+}

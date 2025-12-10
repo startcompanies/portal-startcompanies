@@ -1,0 +1,30 @@
+<div class="final-review-step">
+  <h4 class="mb-4">{{ 'WIZARD.review.title' | transloco }}</h4>
+
+  <p class="text-muted">
+    {{ 'WIZARD.review.description' | transloco }}
+  </p>
+
+  <div *ngFor="let step of previousStepsData; let i = index" class="mb-3 border-bottom pb-2">
+    <h6 class="text-primary">Paso {{ i + 1 }}</h6>
+    <pre class="bg-light p-2 rounded small">{{ step | json }}</pre>
+  </div>
+
+  <div [formGroup]="form" class="form-check mt-3">
+    <input
+      type="checkbox"
+      class="form-check-input"
+      id="confirmCheck"
+      formControlName="confirm"
+    />
+    <label class="form-check-label" for="confirmCheck">
+      {{ 'WIZARD.review.confirm_label' | transloco }}
+    </label>
+    <div
+      *ngIf="form.get('confirm')?.touched && form.get('confirm')?.invalid"
+      class="text-danger mt-1"
+    >
+      {{ 'WIZARD.review.confirm_required' | transloco }}
+    </div>
+  </div>
+</div>

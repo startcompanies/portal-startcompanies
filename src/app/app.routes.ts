@@ -181,10 +181,23 @@ export const routes: Routes = [
           }
         }
       },
-      // Ruta de registro de cliente para wizard
+      // Rutas de wizard - Flujos específicos
       {
-        path: 'registro-cliente',
-        loadComponent: () => import('./sections/register-client/register-client.component').then(m => m.RegisterClientComponent),
+        path: 'wizard/llc-apertura',
+        loadComponent: () => import('./wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),
+      },
+      {
+        path: 'wizard/llc-renovacion',
+        loadComponent: () => import('./wizard/flow-renovacion/llc-renovacion.component').then(m => m.LLCRenovacionComponent),
+      },
+      {
+        path: 'wizard/cuenta-bancaria',
+        loadComponent: () => import('./wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
+      },
+      {
+        path: 'wizard/cuenta-bancaria-con-pago',
+        loadComponent: () => import('./wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
+        data: { withPayment: true }
       },
       // ===== RUTAS DE CAMPAÑAS (SIN GUARD) =====
       {
@@ -374,10 +387,23 @@ export const routes: Routes = [
         redirectTo: '/post/:slug',
         pathMatch: 'full'
       },
-      /** Ruta registro clientes en ingles */
+      // Wizard routes - English
       {
-        path: 'client-register',
-        loadComponent: () => import('./sections/register-client/register-client.component').then(m => m.RegisterClientComponent),
+        path: 'wizard/llc-opening',
+        loadComponent: () => import('./wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),
+      },
+      {
+        path: 'wizard/llc-renewal',
+        loadComponent: () => import('./wizard/flow-renovacion/llc-renovacion.component').then(m => m.LLCRenovacionComponent),
+      },
+      {
+        path: 'wizard/bank-account',
+        loadComponent: () => import('./wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
+      },
+      {
+        path: 'wizard/bank-account-with-payment',
+        loadComponent: () => import('./wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
+        data: { withPayment: true }
       },
       /**Landings en inglés */
       {

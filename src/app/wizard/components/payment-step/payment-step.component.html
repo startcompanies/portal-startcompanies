@@ -1,0 +1,43 @@
+<div class="payment-step">
+  <h4 class="mb-3">{{ 'WIZARD.checkout.title' | transloco }}</h4>
+  <p>{{ 'WIZARD.checkout.summary' | transloco }}</p>
+
+  <ul class="list-group mb-4">
+    <li class="list-group-item">
+      <strong>{{ 'WIZARD.checkout.service_label' | transloco }}:</strong>
+      {{ previousStepData.service || ('WIZARD.checkout.not_specified' | transloco) }}
+    </li>
+    <li class="list-group-item">
+      <strong>{{ 'WIZARD.checkout.state_label' | transloco }}:</strong>
+      {{ previousStepData.state || ('WIZARD.checkout.not_selected' | transloco) }}
+    </li>
+  </ul>
+
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="paymentMethod">{{ 'WIZARD.checkout.payment_method' | transloco }}</label>
+      <select
+        id="paymentMethod"
+        class="form-control"
+        formControlName="paymentMethod"
+      >
+        <option value="">
+          {{ 'WIZARD.checkout.select_method' | transloco }}
+        </option>
+        <option value="card">
+          {{ 'WIZARD.checkout.card' | transloco }}
+        </option>
+        <option value="paypal">
+          {{ 'WIZARD.checkout.paypal' | transloco }}
+        </option>
+      </select>
+
+      <div
+        *ngIf="form.get('paymentMethod')?.touched && form.get('paymentMethod')?.invalid"
+        class="text-danger mt-1"
+      >
+        {{ 'WIZARD.checkout.required_method' | transloco }}
+      </div>
+    </div>
+  </form>
+</div>

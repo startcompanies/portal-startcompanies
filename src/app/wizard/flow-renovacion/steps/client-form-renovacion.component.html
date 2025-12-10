@@ -1,0 +1,86 @@
+<div class="client-form-renovacion">
+  <h4 class="mb-3">{{ 'WIZARD.client.title' | transloco }}</h4>
+
+  <form [formGroup]="form">
+    <div class="form-group mb-3">
+      <label for="fullName">{{ 'WIZARD.client.full_name' | transloco }}</label>
+      <input
+        id="fullName"
+        class="form-control"
+        formControlName="fullName"
+        [placeholder]="'WIZARD.client.full_name_placeholder' | transloco"
+      />
+      <div
+        *ngIf="form.get('fullName')?.touched && form.get('fullName')?.invalid"
+        class="text-danger mt-1"
+      >
+        {{ 'WIZARD.client.full_name_required' | transloco }}
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="phone">{{ 'WIZARD.client.phone' | transloco }}</label>
+      <input
+        id="phone"
+        class="form-control"
+        formControlName="phone"
+        [placeholder]="'WIZARD.client.phone_placeholder' | transloco"
+      />
+      <div
+        *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid"
+        class="text-danger mt-1"
+      >
+        {{ 'WIZARD.client.phone_required' | transloco }}
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="address">{{ 'WIZARD.client.address' | transloco }}</label>
+      <input
+        id="address"
+        class="form-control"
+        formControlName="address"
+        [placeholder]="'WIZARD.client.address_placeholder' | transloco"
+      />
+      <div
+        *ngIf="form.get('address')?.touched && form.get('address')?.invalid"
+        class="text-danger mt-1"
+      >
+        {{ 'WIZARD.client.address_required' | transloco }}
+      </div>
+    </div>
+
+    <!-- Campos específicos de renovación -->
+    <div class="form-group mb-3">
+      <label for="existingLLCNumber">Número de LLC Existente</label>
+      <input
+        id="existingLLCNumber"
+        class="form-control"
+        formControlName="existingLLCNumber"
+        placeholder="Número de registro de la LLC"
+      />
+      <div
+        *ngIf="form.get('existingLLCNumber')?.touched && form.get('existingLLCNumber')?.invalid"
+        class="text-danger mt-1"
+      >
+        El número de LLC es requerido
+      </div>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="renewalDate">Fecha de Renovación</label>
+      <input
+        id="renewalDate"
+        type="date"
+        class="form-control"
+        formControlName="renewalDate"
+      />
+      <div
+        *ngIf="form.get('renewalDate')?.touched && form.get('renewalDate')?.invalid"
+        class="text-danger mt-1"
+      >
+        La fecha de renovación es requerida
+      </div>
+    </div>
+  </form>
+</div>

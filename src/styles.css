@@ -2,6 +2,7 @@
 @import url("bootstrap/dist/css/bootstrap.min.css");
 @import url("./app/shared/styles/optimized-images.css");
 @import url("./app/shared/styles/responsive-images.css");
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 :root {
   --color-fondo-claro: #FDFFFE;
