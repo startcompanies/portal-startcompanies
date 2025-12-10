@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import {
-  IWizardStep,
-  FormWizardService,
-  FormWizardStepBaseComponent,
-} from 'ngx-form-wizard';
+// Comentado temporalmente - ngx-form-wizard incompatible con Angular 18
+// import {
+//   IWizardStep,
+//   FormWizardService,
+//   FormWizardStepBaseComponent,
+// } from 'ngx-form-wizard';
 import { FormControl, Validators } from '@angular/forms';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -37,18 +38,21 @@ import { TranslocoPipe } from '@jsverse/transloco';
     </div>
   </div> `,
 })
-export class FinalReviewComponent extends FormWizardStepBaseComponent {
-  prevSteps: IWizardStep[] = [];
+// export class FinalReviewComponent extends FormWizardStepBaseComponent { // Comentado temporalmente
+export class FinalReviewComponent {
+  form: any; // Temporal
+  prevSteps: any[] = []; // Temporal - IWizardStep[]
 
-  constructor(private wizardService: FormWizardService) {
+  constructor(/* private wizardService: FormWizardService */) { // Comentado temporalmente
     // ✅ Paso 5 con control reactivo formal dentro de los formcontrols
     const formcontrols = {
       confirm: new FormControl(false, [Validators.requiredTrue]),
     };
 
     // (stepNo, steps, isFormStep, formcontrols)
-    super(5, wizardService.getSteps(), true, formcontrols);
+    // super(5, wizardService.getSteps(), true, formcontrols); // Comentado temporalmente
+    this.form = formcontrols; // Temporal
 
-    this.prevSteps = this.steps.slice(0, this.stepNo - 1);
+    // this.prevSteps = this.steps.slice(0, this.stepNo - 1); // Comentado temporalmente
   }
 }

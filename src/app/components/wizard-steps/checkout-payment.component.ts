@@ -5,11 +5,12 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  FormWizardService,
-  FormWizardStepBaseComponent,
-  IWizardStep,
-} from 'ngx-form-wizard';
+// Comentado temporalmente - ngx-form-wizard incompatible con Angular 18
+// import {
+//   FormWizardService,
+//   FormWizardStepBaseComponent,
+//   IWizardStep,
+// } from 'ngx-form-wizard';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -73,19 +74,21 @@ import { TranslocoPipe } from '@jsverse/transloco';
     </div>
   `,
 })
-export class CheckoutPaymentComponent extends FormWizardStepBaseComponent {
-  prevSteps: IWizardStep[] = [];
+// export class CheckoutPaymentComponent extends FormWizardStepBaseComponent { // Comentado temporalmente
+export class CheckoutPaymentComponent {
+  form: any; // Temporal
+  prevSteps: any[] = []; // Temporal - IWizardStep[]
 
-  constructor(private wizardService: FormWizardService) {
+  constructor(/* private wizardService: FormWizardService */) { // Comentado temporalmente
     const formControls = {
       paymentMethod: new FormControl('', Validators.required),
     };
 
     // 🔹 El número del paso (por ejemplo 3) debe ser único y secuencial
-    super(3, wizardService.getSteps(), true, formControls);
+    // super(3, wizardService.getSteps(), true, formControls); // Comentado temporalmente
+    this.form = formControls; // Temporal
 
-    this.prevSteps = this.steps.slice(0, this.stepNo - 1);
-
-    console.log(this.prevSteps);
+    // this.prevSteps = this.steps.slice(0, this.stepNo - 1); // Comentado temporalmente
+    // console.log(this.prevSteps); // Comentado temporalmente
   }
 }

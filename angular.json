@@ -35,7 +35,8 @@
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "server": "src/main.server.ts",
-            "prerender": true,
+            // prerender se mueve solo a configuraciones de producción/staging
+            // No en opciones base para evitar que ng serve intente ejecutar SSR
             "ssr": {
               "entry": "server.ts"
             }
@@ -74,7 +75,8 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "prerender": true
+              "prerender": false,
+              "ssr": false
             },
             "staging": {
               "fileReplacements": [

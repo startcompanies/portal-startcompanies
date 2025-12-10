@@ -15,7 +15,8 @@
     <!-- Columna derecha (panel blanco que cubre toda la altura) -->
     <div class="wizard-right">
       <div class="wizard-inner">
-        <ngx-form-wizard
+        <!-- Comentado temporalmente - ngx-form-wizard incompatible con Angular 18 -->
+        <!-- <ngx-form-wizard
           [steps]="steps"
           [stepperOptions]="stepperOptions"
           finishActionBtnLabel="{{ 'WIZARD.finish' | transloco }}"
@@ -25,7 +26,10 @@
           (finished)="onFinish()"
           (cancelled)="onCancel()"
         >
-      </ngx-form-wizard>
+      </ngx-form-wizard> -->
+        <div class="p-4 text-center">
+          <p class="text-muted">Wizard temporalmente deshabilitado - Migración a ng-wizard pendiente</p>
+        </div>
       </div>
     </div>
   </div>

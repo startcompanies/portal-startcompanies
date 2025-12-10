@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { SharedModule } from '../../shared/shared/shared.module';
-import {
-  FormWizardModule,
-  FormWizardService,
-  IStepperOptions,
-  IWizardStep,
-} from 'ngx-form-wizard';
+// Comentado temporalmente - ngx-form-wizard incompatible con Angular 18
+// import {
+//   FormWizardModule,
+//   FormWizardService,
+//   IStepperOptions,
+//   IWizardStep,
+// } from 'ngx-form-wizard';
 import { BasicRegister } from '../../components/wizard-steps/basic-register.component';
 import { ClientFormComponent } from '../../components/wizard-steps/client-form.component';
 import { FinalReviewComponent } from '../../components/wizard-steps/final-review.component';
@@ -24,7 +25,7 @@ import { SafeStorageService } from '../../services/safe-storage.service';
   standalone: true,
   imports: [
     SharedModule,
-    FormWizardModule,
+    // FormWizardModule, // Comentado temporalmente
     ResponsiveImageComponent,
     TranslocoPipe,
   ],
@@ -42,24 +43,24 @@ export class RegisterClientComponent implements OnInit {
     priority: true,
   };
 
-  steps: IWizardStep[] = [];
+  // steps: IWizardStep[] = []; // Comentado temporalmente
 
-  stepperOptions: IStepperOptions = {
-    position: 'top',
-    custom: false,
-  };
+  // stepperOptions: IStepperOptions = { // Comentado temporalmente
+  //   position: 'top',
+  //   custom: false,
+  // };
   currentLang = 'es';
 
   constructor(
     private transloco: TranslocoService,
-    private wizardService: FormWizardService,
+    // private wizardService: FormWizardService, // Comentado temporalmente
     private languageService: LanguageService,
     public translocoService: TranslocoService,
     private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.initializeSteps();
+    // this.initializeSteps(); // Comentado temporalmente
     this.currentLang = this.languageService.currentLang;
     this.translocoService.langChanges$.subscribe((l) => {
       this.currentLang = l;
@@ -69,75 +70,75 @@ export class RegisterClientComponent implements OnInit {
   /**
    * Crea los pasos del wizard con títulos traducidos
    */
-  private initializeSteps(): void {
-    combineLatest([
-      this.transloco.selectTranslate('WIZARD.steps.state'),
-      this.transloco.selectTranslate('WIZARD.steps.register'),
-      this.transloco.selectTranslate('WIZARD.steps.payment'),
-      this.transloco.selectTranslate('WIZARD.steps.client'),
-      this.transloco.selectTranslate('WIZARD.steps.review'),
-      this.transloco.selectTranslate('WIZARD.steps.zoho'),
-    ]).subscribe(([state, register, payment, client, review, zoho]) => {
-      this.steps = [
-        {
-          id: 1,
-          title: state,
-          description: '',
-          component: StateSelectionComponent,
-        },
-        {
-          id: 2,
-          title: register,
-          description: '',
-          component: BasicRegister,
-        },
-        {
-          id: 3,
-          title: payment,
-          description: '',
-          component: CheckoutPaymentComponent,
-        },
-        {
-          id: 4,
-          title: client,
-          description: '',
-          component: ClientFormComponent,
-        },
-        {
-          id: 5,
-          title: review,
-          description: '',
-          component: FinalReviewComponent,
-        },
-        {
-          id: 6,
-          title: zoho,
-          description: '',
-          component: ZohoSubmitComponent,
-        },
-      ];
-    });
-  }
+  // private initializeSteps(): void { // Comentado temporalmente
+  //   combineLatest([
+  //     this.transloco.selectTranslate('WIZARD.steps.state'),
+  //     this.transloco.selectTranslate('WIZARD.steps.register'),
+  //     this.transloco.selectTranslate('WIZARD.steps.payment'),
+  //     this.transloco.selectTranslate('WIZARD.steps.client'),
+  //     this.transloco.selectTranslate('WIZARD.steps.review'),
+  //     this.transloco.selectTranslate('WIZARD.steps.zoho'),
+  //   ]).subscribe(([state, register, payment, client, review, zoho]) => {
+  //     this.steps = [
+  //       {
+  //         id: 1,
+  //         title: state,
+  //         description: '',
+  //         component: StateSelectionComponent,
+  //       },
+  //       {
+  //         id: 2,
+  //         title: register,
+  //         description: '',
+  //         component: BasicRegister,
+  //       },
+  //       {
+  //         id: 3,
+  //         title: payment,
+  //         description: '',
+  //         component: CheckoutPaymentComponent,
+  //       },
+  //       {
+  //         id: 4,
+  //         title: client,
+  //         description: '',
+  //         component: ClientFormComponent,
+  //       },
+  //       {
+  //         id: 5,
+  //         title: review,
+  //         description: '',
+  //         component: FinalReviewComponent,
+  //       },
+  //       {
+  //         id: 6,
+  //         title: zoho,
+  //         description: '',
+  //         component: ZohoSubmitComponent,
+  //       },
+  //     ];
+  //   });
+  // }
 
   /**
    * Acción al finalizar el wizard
    */
-  onFinish() {
-    const allData = this.wizardService
-      .getSteps()
-      .reduce((acc, step) => ({ ...acc, [`step${step.id}`]: step.data }), {});
-    console.log('✅ Datos finales del wizard:', allData);
-    this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
-  }
+  // onFinish() { // Comentado temporalmente
+  //   const allData = this.wizardService
+  //     .getSteps()
+  //     .reduce((acc, step) => ({ ...acc, [`step${step.id}`]: step.data }), {});
+  //   console.log('✅ Datos finales del wizard:', allData);
+  //   this.currentLang === 'es'
+  //     ? this.router.navigate(['/'])
+  //     : this.router.navigate(['/en']);
+  // }
 
   /**
    * Acción al cancelar el wizard
    */
-  onCancel() {
-    this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
-  }
+  // onCancel() { // Comentado temporalmente
+  //   this.currentLang === 'es'
+  //     ? this.router.navigate(['/'])
+  //     : this.router.navigate(['/en']);
+  // }
 }

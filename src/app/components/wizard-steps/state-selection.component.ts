@@ -5,10 +5,11 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  FormWizardService,
-  FormWizardStepBaseComponent,
-} from 'ngx-form-wizard';
+// Comentado temporalmente - ngx-form-wizard incompatible con Angular 18
+// import {
+//   FormWizardService,
+//   FormWizardStepBaseComponent,
+// } from 'ngx-form-wizard';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SafeStorageService } from '../../services/safe-storage.service';
@@ -46,15 +47,13 @@ import { SafeStorageService } from '../../services/safe-storage.service';
     </div>
   `,
 })
-export class StateSelectionComponent
-  extends FormWizardStepBaseComponent
-  implements OnInit
-{
-  //form: FormGroup;
+// export class StateSelectionComponent extends FormWizardStepBaseComponent implements OnInit { // Comentado temporalmente
+export class StateSelectionComponent implements OnInit {
+  form: any; // Temporal
   states = ['Florida', 'Delaware', 'Texas', 'Wyoming'];
 
   constructor(
-    private wizardService: FormWizardService,
+    // private wizardService: FormWizardService, // Comentado temporalmente
     private storage: SafeStorageService
   ) {
     const formControls = {
@@ -63,7 +62,8 @@ export class StateSelectionComponent
     };
 
     // 🔹 Super importante: aquí pasamos el índice del paso y los controles
-    super(1, wizardService.getSteps(), true, formControls);
+    // super(1, wizardService.getSteps(), true, formControls); // Comentado temporalmente
+    this.form = formControls; // Temporal
   }
 
   ngOnInit(): void {

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
-import {
-  FormWizardService,
-  FormWizardStepBaseComponent,
-} from 'ngx-form-wizard';
+// Comentado temporalmente - ngx-form-wizard incompatible con Angular 18
+// import {
+//   FormWizardService,
+//   FormWizardStepBaseComponent,
+// } from 'ngx-form-wizard';
 import { SharedModule } from '../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -67,10 +68,10 @@ import { TranslocoPipe } from '@jsverse/transloco';
     </form>
   </div> `,
 })
-export class ClientFormComponent extends FormWizardStepBaseComponent {
-  //form: FormGroup;
-
-  constructor(private wizardService: FormWizardService) {
+// export class ClientFormComponent extends FormWizardStepBaseComponent { // Comentado temporalmente
+export class ClientFormComponent {
+  form: any; // Temporal
+  constructor(/* private wizardService: FormWizardService */) { // Comentado temporalmente
     const formControls = {
       fullName: new FormControl('', Validators.required),
       phone: new FormControl('', Validators.required),
@@ -78,6 +79,7 @@ export class ClientFormComponent extends FormWizardStepBaseComponent {
     };
 
     // 🔹 stepId: 4 (o el número correspondiente en tu secuencia)
-    super(4, wizardService.getSteps(), true, formControls);
+    // super(4, wizardService.getSteps(), true, formControls); // Comentado temporalmente
+    this.form = formControls; // Temporal
   }
 }
