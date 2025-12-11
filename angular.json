@@ -54,7 +54,8 @@
                 }
               ],
               "outputHashing": "all",
-              "prerender": true,
+              "prerender": false,
+              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
@@ -97,6 +98,7 @@
               ],
               "outputHashing": "all",
               "prerender": false,
+              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
