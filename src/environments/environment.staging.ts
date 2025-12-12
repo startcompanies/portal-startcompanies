@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   //apiUrl: 'http://localhost:5000',
   apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/posts/get-sandbox-posts',

@@ -1,0 +1,89 @@
+<div class="client-dashboard-container">
+  <div class="dashboard-header">
+    <h2>Bienvenido{{ isPartner ? ', Partner' : '' }}</h2>
+    <p class="text-muted">Resumen de tus procesos</p>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Resumen de Procesos -->
+    <div class="process-summary-grid">
+      <div class="summary-card" *ngFor="let summary of processSummary">
+        <div class="summary-icon" [class]="'bg-' + summary.type">
+          <i [class]="getProcessTypeIcon(summary.type)"></i>
+        </div>
+        <div class="summary-content">
+          <h3>{{ getProcessTypeLabel(summary.type) }}</h3>
+          <div class="summary-stats">
+            <div class="stat-item">
+              <span class="stat-label">Total:</span>
+              <span class="stat-value">{{ summary.total }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">En Proceso:</span>
+              <span class="stat-value text-info">{{ summary.inProgress }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Completadas:</span>
+              <span class="stat-value text-success">{{ summary.completed }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Pendientes:</span>
+              <span class="stat-value text-warning">{{ summary.pending }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Solicitudes Recientes -->
+    <div class="recent-requests-section">
+      <div class="section-header">
+        <h3>Solicitudes Recientes</h3>
+        <a routerLink="/panel/my-requests" class="btn btn-sm btn-outline-primary">
+          Ver Todas
+        </a>
+      </div>
+
+      <div *ngIf="recentRequests.length === 0" class="empty-state-small">
+        <p class="text-muted">No tienes solicitudes recientes</p>
+        <a *ngIf="isPartner" routerLink="/panel/new-request" class="btn btn-primary mt-2">
+          <i class="bi bi-plus-circle me-2"></i>
+          Crear Nueva Solicitud
+        </a>
+      </div>
+
+      <div *ngIf="recentRequests.length > 0" class="recent-requests-list">
+        <!-- Lista de solicitudes recientes -->
+      </div>
+    </div>
+
+    <!-- Acciones Rápidas -->
+    <div class="quick-actions-section">
+      <h3>Acciones Rápidas</h3>
+      <div class="quick-actions">
+        <a routerLink="/panel/my-requests" class="action-card">
+          <i class="bi bi-file-earmark-text"></i>
+          <span>Ver Mis Solicitudes</span>
+        </a>
+        <a *ngIf="isPartner" routerLink="/panel/new-request" class="action-card">
+          <i class="bi bi-plus-circle"></i>
+          <span>Nueva Solicitud</span>
+        </a>
+        <a routerLink="/panel/my-requests" class="action-card">
+          <i class="bi bi-folder"></i>
+          <span>Mis Documentos</span>
+        </a>
+        <a routerLink="/panel/settings" class="action-card">
+          <i class="bi bi-person"></i>
+          <span>Mi Perfil</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

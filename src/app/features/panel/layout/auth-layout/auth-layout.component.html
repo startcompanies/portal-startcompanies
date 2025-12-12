@@ -1,0 +1,15 @@
+<div class="auth-layout">
+  <div class="auth-container">
+    <div class="auth-header">
+      <a routerLink="/inicio" class="auth-logo-link">
+        <app-responsive-image [images]="logoImages" context="logo" loading="eager" cssClass="auth-logo">
+        </app-responsive-image>
+      </a>
+    </div>
+    <div class="auth-content">
+      <app-login *ngIf="isLogin"></app-login>
+      <app-register *ngIf="isRegister"></app-register>
+      <app-reset-password *ngIf="isResetPassword"></app-reset-password>
+    </div>
+  </div>
+</div>

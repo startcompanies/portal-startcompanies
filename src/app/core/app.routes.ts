@@ -3,6 +3,8 @@ import { title } from 'process';
 import { languageGuard } from '../shared/guards/language.guard';
 import { CampaignRedirectGuard } from '../shared/guards/campaign-redirect.guard';
 import { environment } from '../../environments/environment';
+import { authGuard } from '../features/panel/guards/auth.guard';
+import { roleGuard } from '../features/panel/guards/role.guard';
 
 // Helper function para generar URLs canónicas dinámicamente
 const getCanonicalUrl = (path: string): string => {
@@ -263,15 +265,274 @@ export const routes: Routes = [
           },
         },
       },
-      // Solo capturar rutas que NO empiecen con /en/
+      // Solo capturar rutas que NO empiecen con /en/ o /panel/
       {
         matcher: (segments) => {
-          // Si la ruta empieza con 'en', no capturar aquí
-          if (segments.length > 0 && segments[0].path === 'en') {
+          // Si la ruta empieza con 'en' o 'panel', no capturar aquí
+          if (segments.length > 0 && (segments[0].path === 'en' || segments[0].path === 'panel')) {
             return null;
           }
           return { consumed: segments };
         }, redirectTo: 'error-404'
+      }
+    ]
+  },
+  // ===== RUTAS DEL PANEL =====
+  {
+    path: 'panel',
+    children: [
+      {
+        path: '',
+        redirectTo: 'login',
+        pathMatch: 'full'
+      },
+      {
+        path: 'home',
+        canActivate: [authGuard],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => {
+              // Redirigir según el tipo de usuario
+              return import('../features/panel/layout/panel-layout/panel-layout.component').then(m => {
+                // La lógica de redirección se manejará en el componente
+                return m.PanelLayoutComponent;
+              });
+            }
+          }
+        ]
+      },
+      // Rutas de autenticación con layout de auth
+      {
+        path: 'login',
+        loadComponent: () => import('../features/panel/layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        data: {
+          seo: {
+            title: 'Iniciar Sesión - Panel Start Companies',
+            description: 'Accede al panel administrativo de Start Companies'
+          }
+        }
+      },
+      {
+        path: 'register',
+        loadComponent: () => import('../features/panel/layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        data: {
+          seo: {
+            title: 'Registro - Panel Start Companies',
+            description: 'Crea una cuenta en el panel de Start Companies'
+          }
+        }
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () => import('../features/panel/layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        data: {
+          seo: {
+            title: 'Restablecer Contraseña - Panel Start Companies',
+            description: 'Restablece tu contraseña del panel de Start Companies'
+          }
+        }
+      },
+      // Rutas del panel con layout principal (requieren autenticación)
+      {
+        path: 'dashboard',
+        canActivate: [authGuard, roleGuard(['admin'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Dashboard - Panel Start Companies',
+            description: 'Panel administrativo de Start Companies'
+          }
+        }
+      },
+      {
+        path: 'requests',
+        canActivate: [authGuard, roleGuard(['admin'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/admin-requests/admin-requests.component').then(m => m.AdminRequestsComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Gestión de Solicitudes - Panel Start Companies',
+            description: 'Administra todas las solicitudes del sistema'
+          }
+        }
+      },
+      {
+        path: 'clients',
+        canActivate: [authGuard, roleGuard(['admin'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/clients/clients.component').then(m => m.ClientsComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Clientes - Panel Start Companies',
+            description: 'Gestión de clientes'
+          }
+        }
+      },
+      {
+        path: 'partners',
+        canActivate: [authGuard, roleGuard(['admin'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/partners/partners.component').then(m => m.PartnersComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('../features/panel/pages/partner-detail/partner-detail.component').then(m => m.PartnerDetailComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Gestión de Partners - Panel Start Companies',
+            description: 'Administra los partners y sus clientes'
+          }
+        }
+      },
+      {
+        path: 'my-requests',
+        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/my-requests/my-requests.component').then(m => m.MyRequestsComponent)
+          },
+          {
+            path: ':id',
+            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Mis Solicitudes - Panel Start Companies',
+            description: 'Seguimiento de tus solicitudes'
+          }
+        }
+      },
+      {
+        path: 'client-dashboard',
+        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/client-dashboard/client-dashboard.component').then(m => m.ClientDashboardComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Dashboard - Panel Start Companies',
+            description: 'Resumen de tus procesos'
+          }
+        }
+      },
+      {
+        path: 'new-request',
+        canActivate: [authGuard, roleGuard(['partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Nueva Solicitud - Panel Start Companies',
+            description: 'Crea una nueva solicitud para un cliente'
+          }
+        }
+      },
+      {
+        path: 'my-clients',
+        canActivate: [authGuard, roleGuard(['partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/my-clients/my-clients.component').then(m => m.MyClientsComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Mis Clientes - Panel Start Companies',
+            description: 'Gestiona los clientes asociados a tu cuenta'
+          }
+        }
+      },
+      {
+        path: 'notifications',
+        canActivate: [authGuard],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/notifications/notifications-page.component').then(m => m.NotificationsPageComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Notificaciones - Panel Start Companies',
+            description: 'Tus notificaciones y actualizaciones'
+          }
+        }
+      },
+      {
+        path: 'partner-reports',
+        canActivate: [authGuard, roleGuard(['admin'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/partner-reports/partner-reports.component').then(m => m.PartnerReportsComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Reportes de Partners - Panel Start Companies',
+            description: 'Análisis y métricas de rendimiento de partners'
+          }
+        }
+      },
+      {
+        path: 'settings',
+        canActivate: [authGuard],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/settings/settings.component').then(m => m.SettingsComponent)
+          }
+        ],
+        data: {
+          seo: {
+            title: 'Configuración - Panel Start Companies',
+            description: 'Gestiona tu perfil, preferencias y configuraciones'
+          }
+        }
       }
     ]
   },

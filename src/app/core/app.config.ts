@@ -9,7 +9,8 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 // provideClientHydration se agrega solo en main.ts (browser), no aquí para evitar conflictos SSR
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '../features/panel/interceptors/auth.interceptor';
 import { TranslocoHttpLoader } from '../transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
 /*import {
@@ -28,7 +29,10 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     // provideClientHydration() se agrega solo en main.ts (browser) con withEventReplay()
     // withFetch() habilita el uso de la API Fetch nativa del navegador para mejor rendimiento
-    provideHttpClient(withFetch()),
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor])
+    ),
     provideAnimations(),
     provideTransloco({
       config: {

@@ -1,0 +1,209 @@
+<div class="new-request-container">
+  <div class="request-header">
+    <h2>Nueva Solicitud</h2>
+    <p class="text-muted">Crea una nueva solicitud para un cliente</p>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="steps-indicator">
+    <div class="step-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+      <div class="step-number">1</div>
+      <div class="step-label">Tipo de Servicio</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+      <div class="step-number">2</div>
+      <div class="step-label">Información del Cliente</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+      <div class="step-number">3</div>
+      <div class="step-label">Detalles</div>
+    </div>
+  </div>
+
+  <form [formGroup]="requestForm" (ngSubmit)="onSubmit()">
+    <!-- Paso 1: Tipo de Servicio -->
+    <div *ngIf="currentStep === 1" class="form-step">
+      <h3>Selecciona el Tipo de Servicio</h3>
+      <div class="service-types-grid">
+        <div 
+          *ngFor="let service of serviceTypes" 
+          class="service-type-card"
+          [class.selected]="serviceType?.value === service.value"
+          (click)="serviceType?.setValue(service.value)"
+        >
+          <input
+            type="radio"
+            [id]="'service-' + service.value"
+            [value]="service.value"
+            formControlName="serviceType"
+            class="service-radio"
+          />
+          <label [for]="'service-' + service.value" class="service-label">
+            <h4>{{ service.label }}</h4>
+            <p>{{ service.description }}</p>
+          </label>
+        </div>
+      </div>
+      <div class="step-actions">
+        <a routerLink="/panel/my-requests" class="btn btn-outline-secondary">Cancelar</a>
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!serviceType?.valid">
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 2: Información del Cliente -->
+    <div *ngIf="currentStep === 2" class="form-step">
+      <h3>Información del Cliente</h3>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="clientFirstName" class="form-label">Nombre <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="clientFirstName"
+            class="form-control"
+            formControlName="clientFirstName"
+            [class.is-invalid]="clientFirstName?.invalid && clientFirstName?.touched"
+            placeholder="Juan"
+          />
+          <div class="invalid-feedback" *ngIf="clientFirstName?.invalid && clientFirstName?.touched">
+            El nombre es requerido
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="clientLastName" class="form-label">Apellido <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="clientLastName"
+            class="form-control"
+            formControlName="clientLastName"
+            [class.is-invalid]="clientLastName?.invalid && clientLastName?.touched"
+            placeholder="Pérez"
+          />
+          <div class="invalid-feedback" *ngIf="clientLastName?.invalid && clientLastName?.touched">
+            El apellido es requerido
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="clientEmail" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+          <input
+            type="email"
+            id="clientEmail"
+            class="form-control"
+            formControlName="clientEmail"
+            [class.is-invalid]="clientEmail?.invalid && clientEmail?.touched"
+            placeholder="cliente@example.com"
+          />
+          <div class="invalid-feedback" *ngIf="clientEmail?.invalid && clientEmail?.touched">
+            <span *ngIf="clientEmail?.errors?.['required']">El correo es requerido</span>
+            <span *ngIf="clientEmail?.errors?.['email']">Ingresa un correo válido</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="clientPhone" class="form-label">Teléfono</label>
+          <input
+            type="tel"
+            id="clientPhone"
+            class="form-control"
+            formControlName="clientPhone"
+            placeholder="+1 (555) 123-4567"
+          />
+        </div>
+      </div>
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">Anterior</button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!validateStep2()">
+          Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 3: Detalles Específicos -->
+    <div *ngIf="currentStep === 3" class="form-step">
+      <h3>Detalles del Servicio</h3>
+      
+      <!-- Detalles para Apertura LLC -->
+      <div *ngIf="getSelectedServiceType() === 'apertura-llc'">
+        <div class="mb-3">
+          <label for="llcType" class="form-label">Tipo de LLC <span class="text-danger">*</span></label>
+          <select id="llcType" class="form-select" formControlName="llcType" required>
+            <option value="">Selecciona...</option>
+            <option *ngFor="let type of llcTypes" [value]="type.value">
+              {{ type.label }} - {{ type.description }}
+            </option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label for="llcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="llcName"
+            class="form-control"
+            formControlName="llcName"
+            placeholder="Mi Empresa LLC"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Detalles para Renovación LLC -->
+      <div *ngIf="getSelectedServiceType() === 'renovacion-llc'">
+        <div class="mb-3">
+          <label for="existingLLCNumber" class="form-label">Número de LLC Existente <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="existingLLCNumber"
+            class="form-control"
+            formControlName="existingLLCNumber"
+            placeholder="LLC-123456"
+            required
+          />
+        </div>
+      </div>
+
+      <!-- Detalles para Cuenta Bancaria -->
+      <div *ngIf="getSelectedServiceType() === 'cuenta-bancaria'">
+        <div class="mb-3">
+          <label for="bankAccountType" class="form-label">Tipo de Cuenta <span class="text-danger">*</span></label>
+          <select id="bankAccountType" class="form-select" formControlName="bankAccountType" required>
+            <option value="">Selecciona...</option>
+            <option value="relay">Relay</option>
+            <option value="mercury">Mercury</option>
+            <option value="other">Otra</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="notes" class="form-label">Notas Adicionales</label>
+        <textarea
+          id="notes"
+          class="form-control"
+          rows="4"
+          formControlName="notes"
+          placeholder="Información adicional sobre la solicitud..."
+        ></textarea>
+      </div>
+
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="isLoading">
+          Anterior
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading || requestForm.invalid">
+          <span *ngIf="!isLoading">
+            <i class="bi bi-check-circle me-2"></i>
+            Crear Solicitud
+          </span>
+          <span *ngIf="isLoading">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Creando...
+          </span>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

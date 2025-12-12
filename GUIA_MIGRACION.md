@@ -16,7 +16,7 @@ Esta guía te ayudará a migrar la estructura actual a la nueva organización pr
 - [ ] Crear carpeta `features/`
 - [ ] Crear carpeta `features/public/`
 - [ ] Crear carpeta `features/wizard/`
-- [ ] Crear carpeta `features/dashboard/`
+- [ ] Crear carpeta `features/panel/`
 - [ ] Crear subcarpetas dentro de `features/public/`
 - [ ] Crear subcarpetas dentro de `features/wizard/`
 
@@ -78,9 +78,9 @@ Esta guía te ayudará a migrar la estructura actual a la nueva organización pr
 - [ ] Actualizar rutas
 - [ ] Actualizar imports
 
-### Fase 6: Preparar Dashboard
+### Fase 6: Preparar Panel
 
-- [ ] Crear estructura base de `features/dashboard/`
+- [ ] Crear estructura base de `features/panel/`
 - [ ] Crear layout básico
 - [ ] Crear guards de autenticación
 - [ ] Preparar rutas protegidas (comentadas por ahora)
@@ -203,7 +203,7 @@ Marca tu progreso aquí:
 - [ ] Fase 3: Shared migrado
 - [ ] Fase 4: Features públicas migradas
 - [ ] Fase 5: Wizard migrado
-- [ ] Fase 6: Dashboard preparado
+- [ ] Fase 6: Panel preparado
 - [ ] Fase 7: Limpieza completada
 - [ ] Testing completado
 - [ ] Code review

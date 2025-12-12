@@ -1,0 +1,176 @@
+<div class="clients-container">
+  <!-- Header -->
+  <div class="clients-header">
+    <div>
+      <h2>Clientes</h2>
+      <p class="text-muted">Gestión de clientes del sistema</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNewClientModal()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Nuevo Cliente
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Buscar</label>
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Nombre, email, empresa..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()"
+        >
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Estado</label>
+        <select class="form-select" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Partner</label>
+        <select class="form-select" [(ngModel)]="selectedPartner" (change)="onPartnerChange()">
+          <option value="all">Todos</option>
+          <option value="none">Sin Partner</option>
+          <option *ngFor="let partner of partners" [value]="partner.id.toString()">
+            {{ partner.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">&nbsp;</label>
+        <div class="d-flex align-items-end h-100">
+          <span class="badge bg-primary">{{ filteredClients.length }} clientes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Clientes -->
+  <div class="clients-section">
+    <div *ngIf="filteredClients.length === 0 && !isLoading" class="empty-state">
+      <i class="bi bi-people" style="font-size: 4rem; color: #ccc;"></i>
+      <h3>No hay clientes</h3>
+      <p class="text-muted">No se encontraron clientes con los filtros aplicados</p>
+    </div>
+
+    <div *ngIf="filteredClients.length > 0" class="clients-grid">
+      <div *ngFor="let client of filteredClients" class="client-card">
+        <div class="client-header">
+          <div class="client-avatar">
+            <i class="bi bi-person-circle"></i>
+          </div>
+          <div class="client-info">
+            <h4>{{ client.name }}</h4>
+            <p class="text-muted mb-0">{{ client.email }}</p>
+            <span [class]="getStatusClass(client.status)">
+              {{ getStatusLabel(client.status) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="client-body">
+          <div class="client-details">
+            <div *ngIf="client.company" class="detail-item">
+              <i class="bi bi-building me-2"></i>
+              <span>{{ client.company }}</span>
+            </div>
+            <div *ngIf="client.phone" class="detail-item">
+              <i class="bi bi-telephone me-2"></i>
+              <span>{{ client.phone }}</span>
+            </div>
+            <div *ngIf="client.partnerName" class="detail-item">
+              <i class="bi bi-handshake me-2"></i>
+              <span>Partner: {{ client.partnerName }}</span>
+            </div>
+          </div>
+
+          <div class="client-stats">
+            <div class="stat-item">
+              <div class="stat-value">{{ client.totalRequests }}</div>
+              <div class="stat-label">Total Solicitudes</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value text-info">{{ client.activeRequests }}</div>
+              <div class="stat-label">Activas</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value text-success">{{ client.completedRequests }}</div>
+              <div class="stat-label">Completadas</div>
+            </div>
+          </div>
+
+          <div class="client-footer">
+            <small class="text-muted">
+              <i class="bi bi-calendar3 me-1"></i>
+              Creado: {{ client.createdAt | date:'short' }}
+            </small>
+            <div class="client-actions">
+              <button 
+                class="btn btn-sm btn-outline-secondary"
+                (click)="toggleClientStatus(client)"
+                [title]="client.status === 'active' ? 'Desactivar' : 'Activar'"
+              >
+                <i [class]="client.status === 'active' ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Nuevo Cliente -->
+  <div *ngIf="showNewClientModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nuevo Cliente</h5>
+          <button type="button" class="btn-close" (click)="closeNewClientModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="createError" class="alert alert-danger">
+            {{ createError }}
+          </div>
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Nombre <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="newClient.name" name="name" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" [(ngModel)]="newClient.email" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" [(ngModel)]="newClient.phone" name="phone">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Empresa</label>
+              <input type="text" class="form-control" [(ngModel)]="newClient.company" name="company">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeNewClientModal()">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="createClient()" [disabled]="isCreating">
+            <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2"></span>
+            Crear Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+</div>

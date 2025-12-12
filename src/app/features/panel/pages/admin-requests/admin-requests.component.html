@@ -1,0 +1,120 @@
+<div class="admin-requests-container">
+  <div class="requests-header">
+    <h2>Gestión de Solicitudes</h2>
+    <p class="text-muted">Administra todas las solicitudes del sistema</p>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label for="search" class="form-label">Buscar</label>
+          <input
+            type="text"
+            id="search"
+            class="form-control"
+            placeholder="Nombre, email o partner..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="statusFilter" class="form-label">Estado</label>
+          <select
+            id="statusFilter"
+            class="form-select"
+            [(ngModel)]="selectedStatus"
+            (change)="onStatusChange()"
+          >
+            <option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label for="typeFilter" class="form-label">Tipo de Servicio</label>
+          <select
+            id="typeFilter"
+            class="form-select"
+            [(ngModel)]="selectedType"
+            (change)="onTypeChange()"
+          >
+            <option *ngFor="let option of typeOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Solicitudes -->
+    <div class="requests-section">
+      <div class="section-header">
+        <h3>Solicitudes ({{ filteredRequests.length }})</h3>
+      </div>
+
+      <div *ngIf="filteredRequests.length === 0" class="empty-state">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+        <h3>No se encontraron solicitudes</h3>
+        <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+      </div>
+
+      <div *ngIf="filteredRequests.length > 0" class="requests-table">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Tipo</th>
+                <th>Cliente</th>
+                <th>Partner</th>
+                <th>Estado</th>
+                <th>Etapa Actual</th>
+                <th>Fecha Creación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let request of filteredRequests">
+                <td>#{{ request.id }}</td>
+                <td>
+                  <span class="request-type-badge">{{ getRequestTypeLabel(request.type) }}</span>
+                </td>
+                <td>
+                  <div class="client-info">
+                    <strong>{{ request.clientName }}</strong>
+                    <small class="text-muted d-block">{{ request.clientEmail }}</small>
+                  </div>
+                </td>
+                <td>
+                  <span *ngIf="request.partnerName" class="badge bg-info">{{ request.partnerName }}</span>
+                  <span *ngIf="!request.partnerName" class="text-muted">-</span>
+                </td>
+                <td>
+                  <span [class]="getStatusClass(request.status)">
+                    {{ getStatusLabel(request.status) }}
+                  </span>
+                </td>
+                <td>{{ request.currentStep }}</td>
+                <td>{{ request.createdAt | date:'short' }}</td>
+                <td>
+                  <a [routerLink]="['/panel/requests', request.id]" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye me-1"></i>
+                    Ver
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

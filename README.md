@@ -38,7 +38,7 @@ src/app/
       flow-cuenta-bancaria/ # Flujo de cuenta bancaria
       services/           # Servicios del wizard
 
-    dashboard/            # Panel administrativo (en desarrollo)
+    panel/            # Panel administrativo (en desarrollo)
       layout/
       pages/
       guards/

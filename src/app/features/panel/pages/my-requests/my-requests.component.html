@@ -1,0 +1,64 @@
+<div class="my-requests-container">
+  <div class="my-requests-header">
+    <div>
+      <h2>Mis Solicitudes</h2>
+      <p class="text-muted">Sigue el estado de tus procesos</p>
+    </div>
+    <a *ngIf="isPartner && requests.length > 0" routerLink="/panel/new-request" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-2"></i>
+      Nueva Solicitud
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && requests.length === 0" class="empty-state">
+    <div class="empty-state-content">
+      <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+      <h3>No tienes solicitudes</h3>
+      <p class="text-muted">Aún no has iniciado ningún proceso</p>
+      <a *ngIf="isPartner" routerLink="/panel/new-request" class="btn btn-primary mt-3">
+        <i class="bi bi-plus-circle me-2"></i>
+        Crear Nueva Solicitud
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && requests.length > 0" class="requests-list">
+    <div class="request-card" *ngFor="let request of requests">
+      <div class="request-header">
+        <div class="request-info">
+          <h4>{{ getRequestTypeLabel(request.type) }}</h4>
+          <span [class]="getStatusClass(request.status)">
+            {{ getStatusLabel(request.status) }}
+          </span>
+        </div>
+        <div class="request-meta">
+          <small class="text-muted">
+            Creada: {{ request.createdAt | date:'short' }}
+          </small>
+        </div>
+      </div>
+      
+      <div class="request-body">
+        <div class="request-step">
+          <i class="bi bi-check-circle-fill text-success me-2"></i>
+          <span>Etapa actual: {{ request.currentStep }}</span>
+        </div>
+        <p *ngIf="isPartner && request.clientName" class="text-muted mb-0">
+          Cliente: {{ request.clientName }}
+        </p>
+      </div>
+
+      <div class="request-footer">
+        <a [routerLink]="['/panel/my-requests', request.id]" class="btn btn-sm btn-outline-primary">
+          Ver Detalles
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

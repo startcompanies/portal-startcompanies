@@ -40,9 +40,11 @@
 }
 .sc-header-container {
   margin-top: 0px;
+  margin-bottom: 0.5rem;
 }
 .sc-menu-container {
   margin-top: 0px;
+  margin-bottom: 0.5rem;
 }
 /* Estilos específicos para Safari */
 @supports (-webkit-appearance: none) {
@@ -109,23 +111,71 @@
   background-color: var(--color-primario);
 }
 
+/* Contenedor de botones */
+.sc-buttons-container {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.sc-button-wrapper {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* Estilo del botón "Iniciar sesión" */
+.sc-btn-login {
+  background-color: transparent;
+  color: var(--color-fondo-claro);
+  border: 2px solid var(--color-fondo-claro);
+  border-radius: 2.5rem;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.sc-btn-login:hover {
+  background-color: var(--color-fondo-claro);
+  color: var(--color-primario);
+}
+
+/* Estilo del botón "Iniciar sesión" cuando el navbar está en modo claro */
+.sc-navbar-light .sc-btn-login {
+  color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.sc-navbar-light .sc-btn-login:hover {
+  background-color: var(--color-primario);
+  color: var(--color-fondo-claro);
+}
+
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
   background-color: var(--color-secundario-tecnico);
   color: var(--color-fondo-claro);
   border: none;
   border-radius: 2.5rem;
-  padding: 0.75rem 1.5rem;
+  padding: 0.6rem 1.2rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   display: inline-flex;
   align-items: center;
   transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .sc-btn-accent i.bi {
-  margin-left: 0.75rem;
-  font-size: 1.1rem;
+  margin-left: 0.5rem;
+  font-size: 1rem;
 }
 
 /* Estilo del botón de idioma */
@@ -134,10 +184,11 @@
   color: var(--color-fondo-claro);
   border: none;
   border-radius: 2.5rem;
-  padding: 0.75rem 1.25rem;
+  padding: 0.6rem 1rem;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: background-color 0.3s ease, color 0.3s ease;
+  white-space: nowrap;
 }
 
 .sc-btn-language:hover {
@@ -316,6 +367,11 @@
     font-size: 0.7rem;
   }
 
+  .sc-btn-login {
+    width: auto !important;
+    font-size: 0.7rem;
+  }
+
   .dropdown {
     width: auto !important;
   }
@@ -323,10 +379,17 @@
     content: none;
   }
   .sc-header-container {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
   }
   .sc-menu-container {
-    margin-top: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .sc-buttons-container {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
   }
 }
 

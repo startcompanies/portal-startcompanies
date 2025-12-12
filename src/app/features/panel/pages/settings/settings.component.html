@@ -1,0 +1,324 @@
+<div class="settings-container">
+  <div class="settings-header">
+    <h2>Configuración</h2>
+    <p class="text-muted">Gestiona tu perfil, preferencias y configuraciones</p>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs mb-4" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'profile'"
+        (click)="setActiveTab('profile')"
+        type="button"
+      >
+        <i class="bi bi-person me-2"></i>
+        Perfil
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'preferences'"
+        (click)="setActiveTab('preferences')"
+        type="button"
+      >
+        <i class="bi bi-gear me-2"></i>
+        Preferencias
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'security'"
+        (click)="setActiveTab('security')"
+        type="button"
+      >
+        <i class="bi bi-shield-lock me-2"></i>
+        Seguridad
+      </button>
+    </li>
+    <li *ngIf="isAdmin" class="nav-item" role="presentation">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'processes'"
+        (click)="setActiveTab('processes')"
+        type="button"
+      >
+        <i class="bi bi-sliders me-2"></i>
+        Procesos
+      </button>
+    </li>
+  </ul>
+
+  <!-- Messages -->
+  <div *ngIf="saveSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    Cambios guardados exitosamente
+    <button type="button" class="btn-close" (click)="saveSuccess = false" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="saveError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ saveError }}
+    <button type="button" class="btn-close" (click)="saveError = null" aria-label="Close"></button>
+  </div>
+
+  <!-- Tab Content: Profile -->
+  <div *ngIf="activeTab === 'profile'" class="tab-content">
+    <div class="settings-card">
+      <h4>Información Personal</h4>
+      <p class="text-muted">Actualiza tu información de perfil</p>
+
+      <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control"
+              [class.is-invalid]="profileForm.get('first_name')?.invalid && profileForm.get('first_name')?.touched"
+              formControlName="first_name"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(profileForm, 'first_name') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Apellido <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control"
+              [class.is-invalid]="profileForm.get('last_name')?.invalid && profileForm.get('last_name')?.touched"
+              formControlName="last_name"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(profileForm, 'last_name') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email <span class="text-danger">*</span></label>
+            <input 
+              type="email" 
+              class="form-control"
+              [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+              formControlName="email"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(profileForm, 'email') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Teléfono</label>
+            <input type="tel" class="form-control" formControlName="phone">
+          </div>
+          <div class="col-md-12" *ngIf="isAdmin || currentUser?.type === 'partner'">
+            <label class="form-label">Empresa</label>
+            <input type="text" class="form-control" formControlName="company">
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
+            Guardar Cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tab Content: Preferences -->
+  <div *ngIf="activeTab === 'preferences'" class="tab-content">
+    <div class="settings-card">
+      <h4>Preferencias de Usuario</h4>
+      <p class="text-muted">Personaliza tu experiencia en el panel</p>
+
+      <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Idioma</label>
+            <select class="form-select" formControlName="language">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Tema</label>
+            <select class="form-select" formControlName="theme">
+              <option value="light">Claro</option>
+              <option value="dark">Oscuro</option>
+              <option value="auto">Automático</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">Zona Horaria</label>
+            <select class="form-select" formControlName="timezone">
+              <option *ngFor="let tz of timezones" [value]="tz.value">
+                {{ tz.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="my-4">
+
+        <h5>Notificaciones</h5>
+        <div formGroupName="notifications" class="row g-3">
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="email" id="notifEmail">
+              <label class="form-check-label" for="notifEmail">
+                Notificaciones por Email
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="push" id="notifPush">
+              <label class="form-check-label" for="notifPush">
+                Notificaciones Push
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="requestUpdates" id="notifRequest">
+              <label class="form-check-label" for="notifRequest">
+                Actualizaciones de Solicitudes
+              </label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="documentUploads" id="notifDocs">
+              <label class="form-check-label" for="notifDocs">
+                Carga de Documentos
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
+            Guardar Preferencias
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tab Content: Security -->
+  <div *ngIf="activeTab === 'security'" class="tab-content">
+    <div class="settings-card">
+      <h4>Cambiar Contraseña</h4>
+      <p class="text-muted">Actualiza tu contraseña para mantener tu cuenta segura</p>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label">Contraseña Actual <span class="text-danger">*</span></label>
+            <input 
+              type="password" 
+              class="form-control"
+              [class.is-invalid]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched"
+              formControlName="currentPassword"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'currentPassword') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
+            <input 
+              type="password" 
+              class="form-control"
+              [class.is-invalid]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
+              formControlName="newPassword"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'newPassword') }}
+            </div>
+            <small class="form-text text-muted">Mínimo 8 caracteres</small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
+            <input 
+              type="password" 
+              class="form-control"
+              [class.is-invalid]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched"
+              formControlName="confirmPassword"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(passwordForm, 'confirmPassword') }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-key me-2"></i>
+            Cambiar Contraseña
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tab Content: Process Config (Admin Only) -->
+  <div *ngIf="activeTab === 'processes' && isAdmin" class="tab-content">
+    <div class="settings-card">
+      <h4>Configuración de Procesos</h4>
+      <p class="text-muted">Gestiona la configuración general de los procesos</p>
+
+      <form [formGroup]="processConfigForm" (ngSubmit)="saveProcessConfig()">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="autoAdvanceSteps" id="autoAdvance">
+              <label class="form-check-label" for="autoAdvance">
+                Avance Automático de Etapas
+              </label>
+              <small class="form-text text-muted d-block">
+                Las etapas avanzarán automáticamente cuando se completen
+              </small>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="requireApproval" id="requireApproval">
+              <label class="form-check-label" for="requireApproval">
+                Requerir Aprobación para Cambios
+              </label>
+              <small class="form-text text-muted d-block">
+                Los cambios importantes requerirán aprobación antes de aplicarse
+              </small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Responsable por Defecto</label>
+            <input type="text" class="form-control" formControlName="defaultAssignee" placeholder="Usuario o equipo">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Retraso de Notificaciones (horas)</label>
+            <input type="number" class="form-control" formControlName="notificationDelay" min="0" max="168">
+            <small class="form-text text-muted">Tiempo antes de enviar recordatorios</small>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
+            Guardar Configuración
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

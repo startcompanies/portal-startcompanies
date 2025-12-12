@@ -1,0 +1,131 @@
+.admin-requests-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.requests-header {
+  margin-bottom: 2rem;
+}
+
+.requests-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+/* Filters Section */
+.filters-section {
+  background: var(--color-fondo-claro);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.filters-section .form-label {
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.filters-section .form-control,
+.filters-section .form-select {
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+}
+
+.filters-section .form-control:focus,
+.filters-section .form-select:focus {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 0.2rem rgba(1, 201, 226, 0.25);
+}
+
+/* Requests Section */
+.requests-section {
+  background: var(--color-fondo-claro);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin: 0;
+}
+
+/* Table */
+.requests-table {
+  overflow-x: auto;
+}
+
+.table {
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background: var(--color-fondo-gris);
+  color: var(--color-texto-oscuro);
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  padding: 1rem;
+}
+
+.table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover {
+  background: var(--color-fondo-gris);
+}
+
+.request-type-badge {
+  background: var(--color-degradado);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.client-info strong {
+  color: var(--color-texto-oscuro);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-state h3 {
+  color: var(--color-texto-oscuro);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .filters-section .row {
+    flex-direction: column;
+  }
+
+  .requests-table {
+    font-size: 0.875rem;
+  }
+
+  .table thead th,
+  .table tbody td {
+    padding: 0.75rem 0.5rem;
+  }
+}
