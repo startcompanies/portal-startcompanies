@@ -1,8 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { mergeApplicationConfig, ApplicationConfig, isDevMode } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { appConfig } from './app/app.config';
-import { AppComponent } from './app/app.component';
+import { appConfig } from './app/core/app.config';
+import { AppComponent } from './app/core/app.component';
 
 // Agregar provideClientHydration solo para browser (no para SSR)
 // withEventReplay() captura eventos del usuario antes de que complete la hidratación
