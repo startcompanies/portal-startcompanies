@@ -59,7 +59,34 @@
       </div>
 
       <div *ngIf="recentRequests.length > 0" class="recent-requests-list">
-        <!-- Lista de solicitudes recientes -->
+        <div class="request-item" *ngFor="let request of recentRequests">
+          <div class="request-item-header">
+            <div class="request-item-info">
+              <h4>{{ getProcessTypeLabel(request.type) }}</h4>
+              <span [class]="getStatusClass(request.status)">
+                {{ getStatusLabel(request.status) }}
+              </span>
+            </div>
+            <small class="text-muted">
+              {{ request.createdAt | date:'short' }}
+            </small>
+          </div>
+          <div class="request-item-body">
+            <p class="mb-0">
+              <i class="bi bi-arrow-right-circle me-2"></i>
+              <strong>Etapa actual:</strong> {{ request.currentStep }}
+            </p>
+            <p *ngIf="isPartner && request.clientName" class="text-muted mb-0 mt-1">
+              <i class="bi bi-person me-2"></i>
+              Cliente: {{ request.clientName }}
+            </p>
+          </div>
+          <div class="request-item-footer">
+            <a [routerLink]="['/panel/my-requests', request.id]" class="btn btn-sm btn-outline-primary">
+              Ver Detalles
+            </a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -87,3 +114,4 @@
     </div>
   </div>
 </div>
+

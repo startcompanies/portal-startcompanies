@@ -122,3 +122,4 @@ export class NotificationsService {
     this.unreadCountSubject.next(unreadCount);
   }
 }
+

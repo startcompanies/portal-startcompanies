@@ -272,3 +272,4 @@ export class PartnerReportsComponent implements OnInit {
     console.log('Exportar reporte');
   }
 }
+

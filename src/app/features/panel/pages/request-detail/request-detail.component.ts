@@ -99,67 +99,86 @@ export class RequestDetailComponent implements OnInit {
     this.isLoading = true;
     // TODO: Cargar solicitud desde el backend
     setTimeout(() => {
-      // Datos mockup para maquetación
+      const requestId = parseInt(this.requestId || '1');
+      
+      // Ejemplo realista de solicitud de Apertura LLC
       this.request = {
-        id: parseInt(this.requestId || '1'),
+        id: requestId,
         type: 'apertura-llc',
         status: 'en-proceso',
+        clientName: this.isPartner ? 'Juan Pérez' : undefined,
         createdAt: new Date('2024-01-15'),
         updatedAt: new Date('2024-01-20'),
         documents: [
           {
             id: 1,
-            name: 'Certificado de Formación LLC',
+            name: 'Articles of Organization',
             type: 'certificate',
             url: '#',
             uploadedAt: new Date('2024-01-18'),
             size: 245678,
-            description: 'Certificado oficial de formación de la LLC'
+            description: 'Artículos de Organización de la LLC - Estado de Delaware'
           },
           {
             id: 2,
-            name: 'EIN Confirmation Letter',
+            name: 'EIN Confirmation Letter (CP 575)',
             type: 'document',
             url: '#',
             uploadedAt: new Date('2024-01-19'),
             size: 189234,
-            description: 'Carta de confirmación del EIN'
+            description: 'Carta de confirmación del EIN emitida por el IRS'
+          },
+          {
+            id: 3,
+            name: 'Operating Agreement',
+            type: 'document',
+            url: '#',
+            uploadedAt: new Date('2024-01-20'),
+            size: 312456,
+            description: 'Acuerdo Operativo de la LLC'
           }
         ],
         steps: [
           {
             id: 1,
             name: 'Solicitud Recibida',
-            description: 'Tu solicitud ha sido recibida y está en revisión',
+            description: 'Tu solicitud de apertura de LLC ha sido recibida y está en revisión inicial',
             status: 'completed',
-            date: new Date('2024-01-15'),
+            date: new Date('2024-01-15T10:30:00'),
             completedBy: 'Sistema'
           },
           {
             id: 2,
             name: 'Revisión de Documentos',
-            description: 'Estamos revisando la documentación proporcionada',
+            description: 'Revisión de la documentación proporcionada y validación de información',
             status: 'completed',
-            date: new Date('2024-01-16'),
+            date: new Date('2024-01-16T14:20:00'),
             completedBy: 'Equipo Legal'
           },
           {
             id: 3,
-            name: 'Procesamiento',
-            description: 'Tu solicitud está siendo procesada',
+            name: 'Procesamiento en Estado',
+            description: 'Envío de documentación al estado de Delaware para registro de la LLC',
             status: 'current',
-            date: new Date('2024-01-18')
+            date: new Date('2024-01-18T09:15:00'),
+            completedBy: 'Equipo Administrativo'
           },
           {
             id: 4,
-            name: 'Aprobación',
-            description: 'Esperando aprobación final',
+            name: 'Obtención de EIN',
+            description: 'Solicitud y obtención del EIN (Employer Identification Number) del IRS',
             status: 'pending'
           },
           {
             id: 5,
+            name: 'Preparación de Documentos',
+            description: 'Preparación de documentos finales: Operating Agreement y certificados',
+            status: 'pending'
+          },
+          {
+            id: 6,
             name: 'Completado',
-            description: 'Proceso completado y documentos listos',
+            description: 'Proceso completado. Todos los documentos están listos para descarga',
             status: 'pending'
           }
         ]
@@ -399,3 +418,4 @@ export class RequestDetailComponent implements OnInit {
     console.log('Asignar responsable:', responsible, 'al paso:', step.name);
   }
 }
+

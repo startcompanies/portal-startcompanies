@@ -205,3 +205,4 @@ export class AuthService {
     return this.hasRole('client');
   }
 }
+

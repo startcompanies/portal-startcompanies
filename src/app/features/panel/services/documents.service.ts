@@ -47,3 +47,4 @@ export class DocumentsService {
     return this.http.delete(`${this.apiUrl}/${documentId}`);
   }
 }
+

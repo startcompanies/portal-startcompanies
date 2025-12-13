@@ -171,3 +171,4 @@ export class PartnersComponent implements OnInit {
     return status === 'active' ? 'Activo' : 'Inactivo';
   }
 }
+

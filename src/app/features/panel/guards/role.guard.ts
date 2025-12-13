@@ -29,3 +29,4 @@ export const roleGuard = (allowedRoles: ('client' | 'partner' | 'admin')[]): Can
     return false;
   };
 };
+

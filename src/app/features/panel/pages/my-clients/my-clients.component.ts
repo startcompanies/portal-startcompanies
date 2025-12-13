@@ -211,3 +211,4 @@ export class MyClientsComponent implements OnInit {
     return this.filteredClients.reduce((sum, c) => sum + c.totalRequests, 0);
   }
 }
+

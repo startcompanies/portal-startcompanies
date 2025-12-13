@@ -38,10 +38,33 @@ export class MyRequestsComponent implements OnInit {
 
   loadRequests(): void {
     this.isLoading = true;
-    // Simulación de carga
+    // TODO: Cargar solicitudes desde el backend
     setTimeout(() => {
       this.requests = [
-        // Datos de ejemplo
+        {
+          id: 1,
+          type: 'apertura-llc',
+          status: 'en-proceso',
+          currentStep: 'Procesamiento',
+          createdAt: new Date('2024-01-15'),
+          clientName: this.isPartner ? 'Juan Pérez' : undefined
+        },
+        {
+          id: 2,
+          type: 'renovacion-llc',
+          status: 'pendiente',
+          currentStep: 'Revisión de Documentos',
+          createdAt: new Date('2024-01-18'),
+          clientName: this.isPartner ? 'María García' : undefined
+        },
+        {
+          id: 3,
+          type: 'apertura-llc',
+          status: 'completada',
+          currentStep: 'Completada',
+          createdAt: new Date('2023-12-10'),
+          clientName: this.isPartner ? 'Carlos Rodríguez' : undefined
+        }
       ];
       this.isLoading = false;
     }, 1000);
@@ -76,3 +99,4 @@ export class MyRequestsComponent implements OnInit {
     return classes[status] || 'badge bg-secondary';
   }
 }
+

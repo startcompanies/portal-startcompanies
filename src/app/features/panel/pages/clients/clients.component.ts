@@ -214,3 +214,4 @@ export class ClientsComponent implements OnInit {
     return status === 'active' ? 'Activo' : 'Inactivo';
   }
 }
+

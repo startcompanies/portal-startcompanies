@@ -151,3 +151,4 @@ export class PartnerDetailComponent implements OnInit {
     this.activeTab = tab;
   }
 }
+

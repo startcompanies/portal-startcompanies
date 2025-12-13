@@ -91,3 +91,4 @@ export class NotificationsPageComponent implements OnInit {
     return classes[type] || '';
   }
 }
+

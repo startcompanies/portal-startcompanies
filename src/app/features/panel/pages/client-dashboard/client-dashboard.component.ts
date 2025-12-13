@@ -41,11 +41,20 @@ export class ClientDashboardComponent implements OnInit {
     // TODO: Cargar datos desde el backend
     setTimeout(() => {
       this.processSummary = [
-        { type: 'apertura-llc', total: 0, inProgress: 0, completed: 0, pending: 0 },
+        { type: 'apertura-llc', total: 1, inProgress: 1, completed: 0, pending: 0 },
         { type: 'renovacion-llc', total: 0, inProgress: 0, completed: 0, pending: 0 },
         { type: 'cuenta-bancaria', total: 0, inProgress: 0, completed: 0, pending: 0 }
       ];
-      this.recentRequests = [];
+      this.recentRequests = [
+        {
+          id: 1,
+          type: 'apertura-llc',
+          status: 'en-proceso',
+          currentStep: 'Procesamiento en Estado',
+          createdAt: new Date('2024-01-15'),
+          clientName: this.isPartner ? 'Juan Pérez' : undefined
+        }
+      ];
       this.isLoading = false;
     }, 1000);
   }
@@ -67,4 +76,25 @@ export class ClientDashboardComponent implements OnInit {
     };
     return icons[type] || 'bi-file-earmark';
   }
+
+  getStatusLabel(status: string): string {
+    const statuses: { [key: string]: string } = {
+      'pendiente': 'Pendiente',
+      'en-proceso': 'En Proceso',
+      'completada': 'Completada',
+      'rechazada': 'Rechazada'
+    };
+    return statuses[status] || status;
+  }
+
+  getStatusClass(status: string): string {
+    const classes: { [key: string]: string } = {
+      'pendiente': 'badge bg-warning',
+      'en-proceso': 'badge bg-info',
+      'completada': 'badge bg-success',
+      'rechazada': 'badge bg-danger'
+    };
+    return classes[status] || 'badge bg-secondary';
+  }
 }
+

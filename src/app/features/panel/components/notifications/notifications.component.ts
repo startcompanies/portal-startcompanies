@@ -86,3 +86,4 @@ export class NotificationsComponent implements OnInit {
     return classes[type] || '';
   }
 }
+

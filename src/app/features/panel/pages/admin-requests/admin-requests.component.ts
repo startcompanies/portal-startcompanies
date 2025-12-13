@@ -147,3 +147,4 @@ export class AdminRequestsComponent implements OnInit {
     return classes[status] || 'badge bg-secondary';
   }
 }
+
