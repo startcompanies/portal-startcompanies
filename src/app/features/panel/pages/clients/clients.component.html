@@ -38,7 +38,7 @@
           <option value="all">Todos</option>
           <option value="none">Sin Partner</option>
           <option *ngFor="let partner of partners" [value]="partner.id.toString()">
-            {{ partner.name }}
+            {{ (partner.first_name || partner.last_name) ? (partner.first_name + ' ' + partner.last_name).trim() : partner.username }}
           </option>
         </select>
       </div>
@@ -66,7 +66,7 @@
             <i class="bi bi-person-circle"></i>
           </div>
           <div class="client-info">
-            <h4>{{ client.name }}</h4>
+            <h4>{{ getClientName(client) }}</h4>
             <p class="text-muted mb-0">{{ client.email }}</p>
             <span [class]="getStatusClass(client.status)">
               {{ getStatusLabel(client.status) }}
@@ -112,11 +112,18 @@
             </small>
             <div class="client-actions">
               <button 
+                class="btn btn-sm btn-outline-primary me-2"
+                (click)="openEditClientModal(client)"
+                title="Editar"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button 
                 class="btn btn-sm btn-outline-secondary"
                 (click)="toggleClientStatus(client)"
-                [title]="client.status === 'active' ? 'Desactivar' : 'Activar'"
+                [title]="client.status ? 'Desactivar' : 'Activar'"
               >
-                <i [class]="client.status === 'active' ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
+                <i [class]="client.status ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
               </button>
             </div>
           </div>
@@ -138,6 +145,10 @@
             {{ createError }}
           </div>
           <form>
+            <div class="alert alert-info mb-3">
+              <i class="bi bi-info-circle me-2"></i>
+              <strong>Nota:</strong> Se generará automáticamente una contraseña temporal y se enviará un email de invitación al cliente con un link para establecer su contraseña.
+            </div>
             <div class="mb-3">
               <label class="form-label">Nombre <span class="text-danger">*</span></label>
               <input type="text" class="form-control" [(ngModel)]="newClient.name" name="name" required>
@@ -161,6 +172,49 @@
           <button type="button" class="btn btn-primary" (click)="createClient()" [disabled]="isCreating">
             <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2"></span>
             Crear Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Cliente -->
+  <div *ngIf="showEditClientModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Cliente</h5>
+          <button type="button" class="btn-close" (click)="closeEditClientModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="updateError" class="alert alert-danger">
+            {{ updateError }}
+          </div>
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Nombre <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" [(ngModel)]="editClient.name" name="editName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" class="form-control" [(ngModel)]="editClient.email" name="editEmail" required disabled>
+              <small class="text-muted">El email no se puede modificar</small>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Teléfono</label>
+              <input type="tel" class="form-control" [(ngModel)]="editClient.phone" name="editPhone">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Empresa</label>
+              <input type="text" class="form-control" [(ngModel)]="editClient.company" name="editCompany">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditClientModal()" [disabled]="isUpdating">Cancelar</button>
+          <button type="button" class="btn btn-primary" (click)="updateClient()" [disabled]="isUpdating || !editClient.name || !editClient.email">
+            <span *ngIf="isUpdating" class="spinner-border spinner-border-sm me-2"></span>
+            Guardar Cambios
           </button>
         </div>
       </div>

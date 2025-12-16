@@ -334,6 +334,16 @@ export const routes: Routes = [
           }
         }
       },
+      {
+        path: 'set-password',
+        loadComponent: () => import('../features/panel/layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        data: {
+          seo: {
+            title: 'Establecer Contraseña - Panel Start Companies',
+            description: 'Establece tu contraseña para acceder al panel de Start Companies'
+          }
+        }
+      },
       // Rutas del panel con layout principal (requieren autenticación)
       {
         path: 'dashboard',

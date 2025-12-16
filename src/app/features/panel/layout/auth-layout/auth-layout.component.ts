@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../../auth/login/login.component';
 import { RegisterComponent } from '../../auth/register/register.component';
 import { ResetPasswordComponent } from '../../auth/reset-password/reset-password.component';
+import { SetPasswordComponent } from '../../auth/set-password/set-password.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [CommonModule, LoginComponent, RegisterComponent, ResetPasswordComponent, RouterLink, ResponsiveImageComponent],
+  imports: [CommonModule, LoginComponent, RegisterComponent, ResetPasswordComponent, SetPasswordComponent, RouterLink, ResponsiveImageComponent],
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.css'
 })
@@ -41,6 +42,10 @@ export class AuthLayoutComponent {
   }
 
   get isResetPassword() {
-    return this.currentRoute.includes('/reset-password');
+    return this.currentRoute.includes('/reset-password') && !this.currentRoute.includes('/set-password');
+  }
+
+  get isSetPassword() {
+    return this.currentRoute.includes('/set-password');
   }
 }

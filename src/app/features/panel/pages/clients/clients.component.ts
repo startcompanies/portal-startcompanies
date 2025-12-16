@@ -2,19 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { UsersService, User, CreateUserDto } from '../../services/users.service';
 
-interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  status: 'active' | 'inactive';
-  totalRequests: number;
-  activeRequests: number;
-  completedRequests: number;
-  createdAt: Date;
-  lastActivity?: Date;
+interface Client extends User {
+  totalRequests?: number;
+  activeRequests?: number;
+  completedRequests?: number;
+  lastActivity?: string;
   partnerId?: number;
   partnerName?: string;
 }
@@ -38,14 +32,24 @@ export class ClientsComponent implements OnInit {
   
   // Modal de nuevo cliente
   showNewClientModal = false;
+  showEditClientModal = false;
+  editingClient: Client | null = null;
   newClient = {
     name: '',
     email: '',
     phone: '',
     company: ''
   };
+  editClient = {
+    name: '',
+    email: '',
+    phone: '',
+    company: ''
+  };
   isCreating = false;
+  isUpdating = false;
   createError: string | null = null;
+  updateError: string | null = null;
 
   statusOptions = [
     { value: 'all', label: 'Todos' },
@@ -53,89 +57,59 @@ export class ClientsComponent implements OnInit {
     { value: 'inactive', label: 'Inactivos' }
   ];
 
-  partners = [
-    { id: 1, name: 'Partner ABC' },
-    { id: 2, name: 'Partner XYZ' },
-    { id: 3, name: 'Partner DEF' }
-  ];
+  partners: User[] = [];
+
+  constructor(private usersService: UsersService) {}
 
   ngOnInit(): void {
+    this.loadPartners();
     this.loadClients();
+  }
+
+  loadPartners(): void {
+    this.usersService.getPartners().subscribe({
+      next: (partners) => {
+        this.partners = partners;
+      },
+      error: (error) => {
+        console.error('Error al cargar partners:', error);
+      }
+    });
   }
 
   loadClients(): void {
     this.isLoading = true;
-    // TODO: Cargar clientes desde el backend
-    setTimeout(() => {
-      this.clients = [
-        {
-          id: 1,
-          name: 'Juan Pérez',
-          email: 'juan@example.com',
-          phone: '+1 555-0101',
-          status: 'active',
-          totalRequests: 3,
-          activeRequests: 1,
-          completedRequests: 2,
-          createdAt: new Date('2024-01-05'),
-          lastActivity: new Date('2024-01-18'),
-          partnerId: 1,
-          partnerName: 'Partner ABC'
-        },
-        {
-          id: 2,
-          name: 'María García',
-          email: 'maria@example.com',
-          phone: '+1 555-0102',
-          company: 'García Corp',
-          status: 'active',
-          totalRequests: 5,
-          activeRequests: 2,
-          completedRequests: 3,
-          createdAt: new Date('2024-01-10'),
-          lastActivity: new Date('2024-01-19'),
-          partnerId: 1,
-          partnerName: 'Partner ABC'
-        },
-        {
-          id: 3,
-          name: 'Carlos Rodríguez',
-          email: 'carlos@example.com',
-          status: 'active',
-          totalRequests: 2,
-          activeRequests: 0,
-          completedRequests: 2,
-          createdAt: new Date('2023-12-15'),
-          lastActivity: new Date('2024-01-10')
-        },
-        {
-          id: 4,
-          name: 'Ana Martínez',
-          email: 'ana@example.com',
-          phone: '+1 555-0104',
-          status: 'inactive',
-          totalRequests: 1,
-          activeRequests: 0,
-          completedRequests: 1,
-          createdAt: new Date('2023-11-20'),
-          lastActivity: new Date('2023-12-05'),
-          partnerId: 2,
-          partnerName: 'Partner XYZ'
-        }
-      ];
-      this.applyFilters();
-      this.isLoading = false;
-    }, 1000);
+    this.usersService.getClients().subscribe({
+      next: (users) => {
+        this.clients = users.map(user => ({
+          ...user,
+          totalRequests: 0, // TODO: Calcular desde requests
+          activeRequests: 0, // TODO: Calcular desde requests
+          completedRequests: 0, // TODO: Calcular desde requests
+          createdAt: user.createdAt || new Date().toISOString(),
+          lastActivity: user.updatedAt || undefined
+        } as Client));
+        this.applyFilters();
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar clientes:', error);
+        this.createError = 'Error al cargar los clientes. Intenta nuevamente.';
+        this.isLoading = false;
+      }
+    });
   }
 
   applyFilters(): void {
     this.filteredClients = this.clients.filter(client => {
+      const fullName = `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.username;
       const matchesSearch = !this.searchTerm || 
-        client.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        fullName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         (client.company && client.company.toLowerCase().includes(this.searchTerm.toLowerCase()));
       
-      const matchesStatus = this.selectedStatus === 'all' || client.status === this.selectedStatus;
+      const clientStatus = client.status ? 'active' : 'inactive';
+      const matchesStatus = this.selectedStatus === 'all' || clientStatus === this.selectedStatus;
       
       const matchesPartner = this.selectedPartner === 'all' || 
         (this.selectedPartner === 'none' && !client.partnerId) ||
@@ -178,40 +152,126 @@ export class ClientsComponent implements OnInit {
     this.isCreating = true;
     this.createError = null;
 
-    // TODO: Llamar al backend para crear el cliente
-    setTimeout(() => {
-      const newClient: Client = {
-        id: this.clients.length + 1,
-        name: this.newClient.name,
-        email: this.newClient.email,
-        phone: this.newClient.phone || undefined,
-        company: this.newClient.company || undefined,
-        status: 'active',
-        totalRequests: 0,
-        activeRequests: 0,
-        completedRequests: 0,
-        createdAt: new Date()
-      };
+    const nameParts = this.newClient.name.split(' ');
+    // No enviar password - se generará automáticamente y se enviará por email
+    const createUserDto: CreateUserDto = {
+      username: this.newClient.email.split('@')[0],
+      email: this.newClient.email,
+      password: '', // Se generará automáticamente en el backend
+      first_name: nameParts[0] || '',
+      last_name: nameParts.slice(1).join(' ') || '',
+      type: 'client',
+      phone: this.newClient.phone || undefined,
+      company: this.newClient.company || undefined
+    };
 
-      this.clients.push(newClient);
-      this.applyFilters();
-      this.isCreating = false;
-      this.closeNewClientModal();
-    }, 1000);
+    this.usersService.createUser(createUserDto).subscribe({
+      next: (user) => {
+        const newClient: Client = {
+          ...user,
+          totalRequests: 0,
+          activeRequests: 0,
+          completedRequests: 0,
+          createdAt: user.createdAt || new Date().toISOString()
+        };
+        this.clients.push(newClient);
+        this.applyFilters();
+        this.isCreating = false;
+        this.closeNewClientModal();
+      },
+      error: (error) => {
+        console.error('Error al crear cliente:', error);
+        this.createError = error.error?.message || 'Error al crear el cliente. Intenta nuevamente.';
+        this.isCreating = false;
+      }
+    });
   }
 
   toggleClientStatus(client: Client): void {
-    // TODO: Implementar cambio de estado en el backend
-    client.status = client.status === 'active' ? 'inactive' : 'active';
-    this.applyFilters();
+    this.usersService.toggleUserStatus(client.id).subscribe({
+      next: (updatedUser) => {
+        const index = this.clients.findIndex(c => c.id === client.id);
+        if (index !== -1) {
+          this.clients[index] = { ...this.clients[index], status: updatedUser.status };
+          this.applyFilters();
+        }
+      },
+      error: (error) => {
+        console.error('Error al cambiar estado del cliente:', error);
+        this.createError = error.error?.message || 'Error al cambiar el estado. Intenta nuevamente.';
+      }
+    });
   }
 
-  getStatusClass(status: string): string {
-    return status === 'active' ? 'badge bg-success' : 'badge bg-secondary';
+  getStatusClass(status: boolean | string): string {
+    const isActive = typeof status === 'boolean' ? status : status === 'active';
+    return isActive ? 'badge bg-success' : 'badge bg-secondary';
   }
 
-  getStatusLabel(status: string): string {
-    return status === 'active' ? 'Activo' : 'Inactivo';
+  getStatusLabel(status: boolean | string): string {
+    const isActive = typeof status === 'boolean' ? status : status === 'active';
+    return isActive ? 'Activo' : 'Inactivo';
+  }
+
+  getClientName(client: Client): string {
+    if (client.first_name || client.last_name) {
+      return `${client.first_name || ''} ${client.last_name || ''}`.trim();
+    }
+    return client.username;
+  }
+
+  openEditClientModal(client: Client): void {
+    this.editingClient = client;
+    this.editClient = {
+      name: `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.username,
+      email: client.email,
+      phone: client.phone || '',
+      company: client.company || ''
+    };
+    this.showEditClientModal = true;
+    this.updateError = null;
+  }
+
+  closeEditClientModal(): void {
+    this.showEditClientModal = false;
+    this.editingClient = null;
+    this.editClient = { name: '', email: '', phone: '', company: '' };
+    this.updateError = null;
+  }
+
+  updateClient(): void {
+    if (!this.editingClient || !this.editClient.name || !this.editClient.email) {
+      this.updateError = 'Por favor completa todos los campos requeridos';
+      return;
+    }
+
+    this.isUpdating = true;
+    this.updateError = null;
+
+    const nameParts = this.editClient.name.split(' ');
+    const updateData = {
+      first_name: nameParts[0] || '',
+      last_name: nameParts.slice(1).join(' ') || '',
+      phone: this.editClient.phone || undefined,
+      company: this.editClient.company || undefined
+    };
+
+    this.usersService.updateUser(this.editingClient.id, updateData).subscribe({
+      next: (updatedUser) => {
+        const index = this.clients.findIndex(c => c.id === this.editingClient!.id);
+        if (index !== -1) {
+          this.clients[index] = { ...this.clients[index], ...updatedUser };
+          this.applyFilters();
+        }
+        this.isUpdating = false;
+        this.closeEditClientModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar cliente:', error);
+        this.updateError = error.error?.message || 'Error al actualizar el cliente. Intenta nuevamente.';
+        this.isUpdating = false;
+      }
+    });
   }
 }
 
