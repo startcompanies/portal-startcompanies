@@ -22,7 +22,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   sanitizedHtml: SafeHtml = '';
   isBrowser = false;
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
-  private calendlyLoaded = false;
+  private calendlyInitialized = new Set<string>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -37,8 +37,8 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   ngOnChanges() {
     if (this.isBrowser) {
       this.sanitizeHtml();
-      // Resetear el flag cuando cambia el contenido
-      this.calendlyLoaded = false;
+      // Resetear los IDs inicializados cuando cambia el contenido
+      this.calendlyInitialized.clear();
       // Esperar a que el contenido se renderice después del cambio
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
@@ -427,10 +427,10 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   }
 
   /**
-   * Detecta si hay un div con id "my-cal-inline" y carga el Calendly inline
+   * Detecta si hay divs con id "my-cal-inline" y carga todos los Calendly inline
    */
   private loadCalendlyIfNeeded(): void {
-    if (!this.isBrowser || this.calendlyLoaded) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -438,19 +438,53 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return;
     }
 
-    // Buscar el div con id "my-cal-inline" en el contenido renderizado
-    const calendlyDiv = this.contentContainer.nativeElement.querySelector('#my-cal-inline');
+    // Buscar TODOS los divs con id "my-cal-inline" en el contenido renderizado
+    // Nota: querySelectorAll puede no encontrar todos los divs si tienen IDs duplicados,
+    // así que buscamos manualmente todos los divs y verificamos su id
+    const container = this.contentContainer.nativeElement;
     
-    if (calendlyDiv && !this.calendlyLoaded) {
-      this.calendlyLoaded = true;
-      this.initializeCalendly();
+    // Buscar todos los divs en el contenedor y filtrar los que tienen id relacionado con "my-cal-inline"
+    const allDivs = Array.from(container.querySelectorAll('div')) as HTMLElement[];
+    let calendlyDivs = allDivs.filter(div => {
+      const id = div.getAttribute('id') || '';
+      return id.includes('my-cal-inline');
+    });
+    
+    // Si no encontramos ninguno, buscar por id exacto (puede haber solo uno)
+    if (calendlyDivs.length === 0) {
+      const singleDiv = container.querySelector('#my-cal-inline') as HTMLElement;
+      if (singleDiv) {
+        calendlyDivs = [singleDiv];
+      }
     }
+    
+    // Si hay múltiples divs con el mismo ID, necesitamos generar IDs únicos
+    calendlyDivs.forEach((div, index) => {
+      let currentId = div.getAttribute('id') || '';
+      let uniqueId = currentId;
+      
+      // Si el ID es "my-cal-inline" y hay más de uno, generar un ID único
+      if (currentId === 'my-cal-inline' && calendlyDivs.length > 1) {
+        uniqueId = `my-cal-inline-${index}`;
+        div.setAttribute('id', uniqueId);
+      } else if (!currentId || currentId === '') {
+        // Si no tiene ID, asignarle uno
+        uniqueId = `my-cal-inline-${index}`;
+        div.setAttribute('id', uniqueId);
+      }
+      
+      // Inicializar cada Calendly si no ha sido inicializado
+      if (!this.calendlyInitialized.has(uniqueId)) {
+        this.calendlyInitialized.add(uniqueId);
+        this.initializeCalendly(uniqueId, index);
+      }
+    });
   }
 
   /**
-   * Inicializa el widget de Calendly inline
+   * Inicializa el widget de Calendly inline para un elemento específico
    */
-  private async initializeCalendly(): Promise<void> {
+  private async initializeCalendly(elementId: string, index: number): Promise<void> {
     if (typeof window === 'undefined') {
       return;
     }
@@ -512,20 +546,25 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         };
     })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
+    // Crear un namespace único para cada instancia de Calendly
+    const namespace = `30min-${index}`;
+
     // Esperar a que Cal esté disponible y luego inicializar
     const initCalendly = () => {
       if (window.Cal) {
         window.Cal.config = window.Cal.config || {};
         window.Cal.config.forwardQueryParams = true;
 
-        window.Cal('init', '30min', { origin: 'https://cal.com' });
+        // Inicializar el namespace único para este Calendly
+        window.Cal('init', namespace, { origin: 'https://cal.com' });
 
-        window.Cal.ns['30min']('inline', {
-          elementOrSelector: '#my-cal-inline',
+        // Inicializar el widget inline en el elemento específico
+        window.Cal.ns[namespace]('inline', {
+          elementOrSelector: `#${elementId}`,
           calLink: calLink,
         });
 
-        window.Cal.ns['30min']('ui', {
+        window.Cal.ns[namespace]('ui', {
           cssVarsPerTheme: {
             light: { 'cal-brand': '#006AFE' },
             dark: { 'cal-brand': '#fafafa' },

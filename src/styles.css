@@ -4,6 +4,13 @@
 @import url("./app/shared/styles/responsive-images.css");
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
+/* Prevenir overflow horizontal global */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
+}
+
 :root {
   --color-fondo-claro: #FDFFFE;
   --color-secundario-tecnico: #01C9E2;

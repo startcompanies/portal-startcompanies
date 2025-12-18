@@ -52,7 +52,7 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
         (posts) => {
           // Manejar los posts filtrados por slug aquí
           this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
-          this.mainArticles = posts.slice(2, 6); // Tomar los siguientes 4 artículos (después de los top 2)
+          this.mainArticles = posts.slice(2, 4); // Tomar los siguientes 2 artículos (después de los top 2)
           
           // Configurar SEO para la categoría
           if (posts.length > 0 && posts[0].categories && posts[0].categories.length > 0) {
@@ -70,7 +70,7 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
         .then((posts) => {
           // Manejar todos los posts aquí
           this.topArticles = posts.slice(0, 2); // Ejemplo: tomar los primeros 2 artículos
-          this.mainArticles = posts.slice(2, 6); // Tomar los siguientes 4 artículos
+          this.mainArticles = posts.slice(2, 4); // Tomar los siguientes 2 artículos
         })
         .catch((error) => {
           console.error('Error fetching all posts:', error);

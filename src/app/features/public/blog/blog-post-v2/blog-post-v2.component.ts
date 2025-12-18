@@ -272,6 +272,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // Remover el div completo que contiene "Sobre los autores" (data-id="65935626")
     firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="65935626"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
 
+    // Remover el div completo que genera espacio innecesario en móviles (data-id="741d5f43")
+    // Usar DOM parsing para manejar correctamente divs anidados
+    firstSectionHtml = this.removeDivByDataId(firstSectionHtml, '741d5f43');
+
     // Aplicar estilos y añadir icono al enlace "Abrir tu LLC" con href="#contact"
     // Buscar enlaces que tengan href="#contact" o cualquier variación
     firstSectionHtml = firstSectionHtml.replace(
@@ -381,6 +385,32 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       content.substring(0, firstSectionStart) + 
       content.substring(sectionEnd)
     ).trim();
+  }
+
+  /**
+   * Elimina un div completo por su data-id, manejando correctamente divs anidados
+   */
+  private removeDivByDataId(html: string, dataId: string): string {
+    if (!html || !this.isBrowser) return html;
+    
+    try {
+      // Crear un contenedor temporal para parsear el HTML parcial
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      
+      const divToRemove = tempDiv.querySelector(`div[data-id="${dataId}"]`);
+      
+      if (divToRemove) {
+        divToRemove.remove();
+        return tempDiv.innerHTML.trim();
+      }
+    } catch (error) {
+      console.warn('Error al eliminar div por data-id:', error);
+      // Fallback a regex si falla el parsing DOM
+      return html.replace(new RegExp(`<div[^>]*data-id="${dataId}"[^>]*>[\\s\\S]*?</div>`, 'gi'), '').trim();
+    }
+    
+    return html;
   }
 
   private sanitizeHtmlString(html: string): string {
