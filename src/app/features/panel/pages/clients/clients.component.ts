@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { UsersService, User, CreateUserDto } from '../../services/users.service';
+import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
 
-interface Client extends User {
+interface Client extends PartnerClient {
   totalRequests?: number;
   activeRequests?: number;
   completedRequests?: number;
   lastActivity?: string;
-  partnerId?: number;
   partnerName?: string;
 }
 
@@ -28,7 +27,6 @@ export class ClientsComponent implements OnInit {
   // Filtros
   searchTerm: string = '';
   selectedStatus: string = 'all';
-  selectedPartner: string = 'all';
   
   // Modal de nuevo cliente
   showNewClientModal = false;
@@ -57,40 +55,53 @@ export class ClientsComponent implements OnInit {
     { value: 'inactive', label: 'Inactivos' }
   ];
 
-  partners: User[] = [];
-
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private partnerClientsService: PartnerClientsService
+  ) {}
 
   ngOnInit(): void {
-    this.loadPartners();
+    // Admin solo ve sus propios clientes, no necesita cargar partners
     this.loadClients();
-  }
-
-  loadPartners(): void {
-    this.usersService.getPartners().subscribe({
-      next: (partners) => {
-        this.partners = partners;
-      },
-      error: (error) => {
-        console.error('Error al cargar partners:', error);
-      }
-    });
   }
 
   loadClients(): void {
     this.isLoading = true;
-    this.usersService.getClients().subscribe({
-      next: (users) => {
-        this.clients = users.map(user => ({
-          ...user,
-          totalRequests: 0, // TODO: Calcular desde requests
-          activeRequests: 0, // TODO: Calcular desde requests
-          completedRequests: 0, // TODO: Calcular desde requests
-          createdAt: user.createdAt || new Date().toISOString(),
-          lastActivity: user.updatedAt || undefined
-        } as Client));
-        this.applyFilters();
-        this.isLoading = false;
+    // Admin solo ve sus propios clientes (sin partner)
+    this.partnerClientsService.getAdminClients().subscribe({
+      next: (clients) => {
+        // Cargar estadísticas para cada cliente
+        const clientsWithStats = clients.map(client => ({
+          ...client,
+          totalRequests: 0,
+          activeRequests: 0,
+          completedRequests: 0,
+          createdAt: client.createdAt || new Date().toISOString(),
+          lastActivity: client.updatedAt || undefined
+        }));
+
+        // Cargar estadísticas en paralelo
+        const statsPromises = clientsWithStats.map(client => 
+          this.partnerClientsService.getClientStats(client.id).toPromise()
+        );
+
+        Promise.all(statsPromises).then(statsArray => {
+          statsArray.forEach((stats, index) => {
+            if (stats) {
+              clientsWithStats[index].totalRequests = stats.totalRequests;
+              clientsWithStats[index].activeRequests = stats.activeRequests;
+              clientsWithStats[index].completedRequests = stats.completedRequests;
+            }
+          });
+
+          this.clients = clientsWithStats;
+          this.applyFilters();
+          this.isLoading = false;
+        }).catch(() => {
+          // Si falla cargar stats, usar datos sin stats
+          this.clients = clientsWithStats;
+          this.applyFilters();
+          this.isLoading = false;
+        });
       },
       error: (error) => {
         console.error('Error al cargar clientes:', error);
@@ -100,22 +111,19 @@ export class ClientsComponent implements OnInit {
     });
   }
 
+
   applyFilters(): void {
     this.filteredClients = this.clients.filter(client => {
-      const fullName = `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.username;
       const matchesSearch = !this.searchTerm || 
-        fullName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        client.full_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         (client.company && client.company.toLowerCase().includes(this.searchTerm.toLowerCase()));
       
       const clientStatus = client.status ? 'active' : 'inactive';
       const matchesStatus = this.selectedStatus === 'all' || clientStatus === this.selectedStatus;
       
-      const matchesPartner = this.selectedPartner === 'all' || 
-        (this.selectedPartner === 'none' && !client.partnerId) ||
-        client.partnerId?.toString() === this.selectedPartner;
-      
-      return matchesSearch && matchesStatus && matchesPartner;
+      // Admin solo ve clientes sin partner, no necesita filtro de partner
+      return matchesSearch && matchesStatus;
     });
   }
 
@@ -127,9 +135,6 @@ export class ClientsComponent implements OnInit {
     this.applyFilters();
   }
 
-  onPartnerChange(): void {
-    this.applyFilters();
-  }
 
   openNewClientModal(): void {
     this.showNewClientModal = true;
@@ -152,27 +157,23 @@ export class ClientsComponent implements OnInit {
     this.isCreating = true;
     this.createError = null;
 
-    const nameParts = this.newClient.name.split(' ');
-    // No enviar password - se generará automáticamente y se enviará por email
-    const createUserDto: CreateUserDto = {
-      username: this.newClient.email.split('@')[0],
+    const createClientDto: CreatePartnerClientDto = {
+      full_name: this.newClient.name,
       email: this.newClient.email,
-      password: '', // Se generará automáticamente en el backend
-      first_name: nameParts[0] || '',
-      last_name: nameParts.slice(1).join(' ') || '',
-      type: 'client',
       phone: this.newClient.phone || undefined,
-      company: this.newClient.company || undefined
+      company: this.newClient.company || undefined,
+      // Admin crea clientes sin partner asignado
+      partnerId: undefined
     };
 
-    this.usersService.createUser(createUserDto).subscribe({
-      next: (user) => {
+    this.partnerClientsService.createClient(createClientDto).subscribe({
+      next: (client) => {
         const newClient: Client = {
-          ...user,
+          ...client,
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
-          createdAt: user.createdAt || new Date().toISOString()
+          createdAt: client.createdAt || new Date().toISOString()
         };
         this.clients.push(newClient);
         this.applyFilters();
@@ -188,11 +189,11 @@ export class ClientsComponent implements OnInit {
   }
 
   toggleClientStatus(client: Client): void {
-    this.usersService.toggleUserStatus(client.id).subscribe({
-      next: (updatedUser) => {
+    this.partnerClientsService.toggleClientStatus(client.id).subscribe({
+      next: (updatedClient) => {
         const index = this.clients.findIndex(c => c.id === client.id);
         if (index !== -1) {
-          this.clients[index] = { ...this.clients[index], status: updatedUser.status };
+          this.clients[index] = { ...this.clients[index], status: updatedClient.status };
           this.applyFilters();
         }
       },
@@ -213,17 +214,10 @@ export class ClientsComponent implements OnInit {
     return isActive ? 'Activo' : 'Inactivo';
   }
 
-  getClientName(client: Client): string {
-    if (client.first_name || client.last_name) {
-      return `${client.first_name || ''} ${client.last_name || ''}`.trim();
-    }
-    return client.username;
-  }
-
   openEditClientModal(client: Client): void {
     this.editingClient = client;
     this.editClient = {
-      name: `${client.first_name || ''} ${client.last_name || ''}`.trim() || client.username,
+      name: client.full_name,
       email: client.email,
       phone: client.phone || '',
       company: client.company || ''
@@ -248,19 +242,17 @@ export class ClientsComponent implements OnInit {
     this.isUpdating = true;
     this.updateError = null;
 
-    const nameParts = this.editClient.name.split(' ');
     const updateData = {
-      first_name: nameParts[0] || '',
-      last_name: nameParts.slice(1).join(' ') || '',
+      full_name: this.editClient.name,
       phone: this.editClient.phone || undefined,
       company: this.editClient.company || undefined
     };
 
-    this.usersService.updateUser(this.editingClient.id, updateData).subscribe({
-      next: (updatedUser) => {
+    this.partnerClientsService.updateClient(this.editingClient.id, updateData).subscribe({
+      next: (updatedClient) => {
         const index = this.clients.findIndex(c => c.id === this.editingClient!.id);
         if (index !== -1) {
-          this.clients[index] = { ...this.clients[index], ...updatedUser };
+          this.clients[index] = { ...this.clients[index], ...updatedClient };
           this.applyFilters();
         }
         this.isUpdating = false;

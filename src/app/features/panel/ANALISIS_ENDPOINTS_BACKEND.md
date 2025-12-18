@@ -2982,3 +2982,4 @@ Esta sección proporciona una referencia completa de todos los campos de cada ti
 
 5. **Porcentajes**: La suma de `percentageOfParticipation` de todos los miembros debe ser exactamente 100%.
 
+

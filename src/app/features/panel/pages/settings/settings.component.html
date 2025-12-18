@@ -17,7 +17,7 @@
         Perfil
       </button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li *ngIf="showPreferences" class="nav-item" role="presentation">
       <button 
         class="nav-link" 
         [class.active]="activeTab === 'preferences'"
@@ -73,28 +73,17 @@
 
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
         <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">Nombre <span class="text-danger">*</span></label>
+          <div class="col-md-12">
+            <label class="form-label">Nombre Completo <span class="text-danger">*</span></label>
             <input 
               type="text" 
               class="form-control"
-              [class.is-invalid]="profileForm.get('first_name')?.invalid && profileForm.get('first_name')?.touched"
-              formControlName="first_name"
+              [class.is-invalid]="profileForm.get('full_name')?.invalid && profileForm.get('full_name')?.touched"
+              formControlName="full_name"
+              placeholder="Nombre y apellidos"
             >
             <div class="invalid-feedback">
-              {{ getFieldError(profileForm, 'first_name') }}
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Apellido <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
-              class="form-control"
-              [class.is-invalid]="profileForm.get('last_name')?.invalid && profileForm.get('last_name')?.touched"
-              formControlName="last_name"
-            >
-            <div class="invalid-feedback">
-              {{ getFieldError(profileForm, 'last_name') }}
+              {{ getFieldError(profileForm, 'full_name') }}
             </div>
           </div>
           <div class="col-md-6">
@@ -102,12 +91,10 @@
             <input 
               type="email" 
               class="form-control"
-              [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
               formControlName="email"
+              [disabled]="true"
             >
-            <div class="invalid-feedback">
-              {{ getFieldError(profileForm, 'email') }}
-            </div>
+            <small class="form-text text-muted">El email no se puede modificar</small>
           </div>
           <div class="col-md-6">
             <label class="form-label">Teléfono</label>
@@ -322,4 +309,5 @@
     </div>
   </div>
 </div>
+
 

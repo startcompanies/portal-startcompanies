@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService, User } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service';
+import { UsersService, User } from '../../services/users.service';
 
 interface UserPreferences {
   language: 'es' | 'en';
@@ -26,6 +27,7 @@ export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
   activeTab: 'profile' | 'preferences' | 'security' | 'processes' = 'profile';
+  showPreferences = false; // Ocultar preferencias por el momento
   
   // Formularios
   profileForm: FormGroup;
@@ -47,11 +49,11 @@ export class SettingsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private usersService: UsersService,
     private fb: FormBuilder
   ) {
     this.profileForm = this.fb.group({
-      first_name: ['', Validators.required],
-      last_name: ['', Validators.required],
+      full_name: ['', Validators.required], // Nombre completo en un solo campo
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
       company: ['']
@@ -94,15 +96,48 @@ export class SettingsComponent implements OnInit {
   }
 
   loadUserData(): void {
-    if (this.currentUser) {
-      this.profileForm.patchValue({
-        first_name: this.currentUser.first_name || '',
-        last_name: this.currentUser.last_name || '',
-        email: this.currentUser.email || '',
-        phone: '',
-        company: ''
-      });
-    }
+    // Cargar datos actualizados desde el backend
+    this.usersService.getCurrentUser().subscribe({
+      next: (user) => {
+        // Convertir User de UsersService a formato compatible
+        this.currentUser = {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          status: user.status,
+          type: user.type as 'client' | 'partner' | 'admin',
+          first_name: user.first_name,
+          last_name: user.last_name,
+          phone: user.phone,
+          company: user.company
+        };
+        
+        // Combinar first_name y last_name en un solo campo
+        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        
+        this.profileForm.patchValue({
+          full_name: fullName || '',
+          email: user.email || '',
+          phone: user.phone || '',
+          company: user.company || ''
+        });
+      },
+      error: (error) => {
+        console.error('Error al cargar datos del usuario:', error);
+        // Fallback a datos del token si falla la petición
+        const authUser = this.authService.getCurrentUser();
+        if (authUser) {
+          this.currentUser = authUser;
+          const fullName = `${authUser.first_name || ''} ${authUser.last_name || ''}`.trim();
+          this.profileForm.patchValue({
+            full_name: fullName || '',
+            email: authUser.email || '',
+            phone: authUser.phone || '',
+            company: authUser.company || ''
+          });
+        }
+      }
+    });
   }
 
   loadPreferences(): void {
@@ -146,13 +181,44 @@ export class SettingsComponent implements OnInit {
     this.isLoading = true;
     this.saveError = null;
 
-    // TODO: Guardar perfil en el backend
-    setTimeout(() => {
-      console.log('Guardar perfil:', this.profileForm.value);
-      this.isLoading = false;
-      this.saveSuccess = true;
-      setTimeout(() => this.saveSuccess = false, 3000);
-    }, 1000);
+    // Separar nombre completo en first_name y last_name
+    const fullName = this.profileForm.value.full_name.trim();
+    const nameParts = fullName.split(' ');
+    const first_name = nameParts[0] || '';
+    const last_name = nameParts.slice(1).join(' ') || '';
+
+    const updateData = {
+      first_name,
+      last_name,
+      phone: this.profileForm.value.phone || undefined,
+      company: this.profileForm.value.company || undefined
+    };
+
+    // Llamar al backend para actualizar el perfil
+    this.usersService.updateCurrentUser(updateData).subscribe({
+      next: (updatedUser) => {
+        // Actualizar el usuario en el servicio de auth
+        this.currentUser = {
+          id: updatedUser.id,
+          username: updatedUser.username,
+          email: updatedUser.email,
+          status: updatedUser.status,
+          type: updatedUser.type as 'client' | 'partner' | 'admin',
+          first_name: updatedUser.first_name,
+          last_name: updatedUser.last_name,
+          phone: updatedUser.phone,
+          company: updatedUser.company
+        };
+        this.isLoading = false;
+        this.saveSuccess = true;
+        setTimeout(() => this.saveSuccess = false, 3000);
+      },
+      error: (error) => {
+        console.error('Error al actualizar perfil:', error);
+        this.saveError = error.error?.message || 'Error al guardar los cambios. Intenta nuevamente.';
+        this.isLoading = false;
+      }
+    });
   }
 
   savePreferences(): void {
@@ -261,4 +327,5 @@ export class SettingsComponent implements OnInit {
     return '';
   }
 }
+
 

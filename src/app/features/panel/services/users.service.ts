@@ -95,4 +95,23 @@ export class UsersService {
   toggleUserStatus(id: number): Observable<User> {
     return this.http.patch<User>(`${this.apiUrl}/${id}/status`, {});
   }
+
+  /**
+   * Obtener el usuario actual autenticado
+   */
+  getCurrentUser(): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/me`);
+  }
+
+  /**
+   * Actualizar el perfil del usuario actual
+   */
+  updateCurrentUser(userData: UpdateUserDto): Observable<User> {
+    return this.http.patch<User>(`${this.apiUrl}/me`, userData);
+  }
+
+  getPartnerStats(partnerId: number): Observable<{ totalClients: number; totalRequests: number }> {
+    return this.http.get<{ totalClients: number; totalRequests: number }>(`${this.apiUrl}/partners/${partnerId}/stats`);
+  }
 }
+

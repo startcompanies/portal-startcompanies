@@ -165,3 +165,4 @@ Todas usan `AuthLayoutComponent` que muestra el componente correcto según la ru
 3. **UX**: Spinners de carga durante las peticiones
 4. **Seguridad**: Las contraseñas no se muestran en los logs (sanitizadas)
 5. **Tokens**: El reset password usa tokens JWT que se envían por email (pendiente implementar envío real)
+

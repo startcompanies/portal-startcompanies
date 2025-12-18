@@ -62,15 +62,37 @@ export class PartnersComponent implements OnInit {
     this.isLoading = true;
     this.usersService.getPartners().subscribe({
       next: (users) => {
-        this.partners = users.map(user => ({
+        // Inicializar partners con valores por defecto
+        const partnersWithStats = users.map(user => ({
           ...user,
-          totalClients: 0, // TODO: Calcular desde requests
-          totalRequests: 0, // TODO: Calcular desde requests
+          totalClients: 0,
+          totalRequests: 0,
           createdAt: user.createdAt || new Date().toISOString(),
           lastActivity: user.updatedAt || undefined
         } as Partner));
-        this.applyFilters();
-        this.isLoading = false;
+
+        // Cargar estadísticas para cada partner en paralelo
+        const statsPromises = partnersWithStats.map(partner => 
+          this.usersService.getPartnerStats(partner.id).toPromise()
+        );
+
+        Promise.all(statsPromises).then(statsArray => {
+          statsArray.forEach((stats, index) => {
+            if (stats) {
+              partnersWithStats[index].totalClients = stats.totalClients;
+              partnersWithStats[index].totalRequests = stats.totalRequests;
+            }
+          });
+
+          this.partners = partnersWithStats;
+          this.applyFilters();
+          this.isLoading = false;
+        }).catch(() => {
+          // Si falla cargar stats, usar datos sin stats
+          this.partners = partnersWithStats;
+          this.applyFilters();
+          this.isLoading = false;
+        });
       },
       error: (error) => {
         console.error('Error al cargar partners:', error);

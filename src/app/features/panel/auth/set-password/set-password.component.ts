@@ -94,3 +94,4 @@ export class SetPasswordComponent implements OnInit {
            this.confirmPassword?.touched;
   }
 }
+

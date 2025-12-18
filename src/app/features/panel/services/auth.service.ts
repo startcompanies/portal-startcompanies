@@ -12,6 +12,9 @@ export interface User {
   type: 'client' | 'partner' | 'admin';
   first_name?: string;
   last_name?: string;
+  phone?: string;
+  company?: string;
+  bio?: string;
 }
 
 export interface AuthResponse {
@@ -142,4 +145,5 @@ export class AuthService {
     return this.hasRole('client');
   }
 }
+
 
