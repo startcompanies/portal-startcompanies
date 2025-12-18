@@ -5,21 +5,18 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-reset-password',
+  selector: 'app-set-password',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
-  templateUrl: './reset-password.component.html',
-  styleUrl: './reset-password.component.css'
+  templateUrl: './set-password.component.html',
+  styleUrl: './set-password.component.css'
 })
-export class ResetPasswordComponent implements OnInit {
-  resetForm: FormGroup;
-  resetPasswordForm: FormGroup;
+export class SetPasswordComponent implements OnInit {
+  setPasswordForm: FormGroup;
   isLoading = false;
-  emailSent = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
   resetToken: string | null = null;
-  isResetMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,13 +24,7 @@ export class ResetPasswordComponent implements OnInit {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {
-    // Formulario para solicitar reset (forgot-password)
-    this.resetForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-
-    // Formulario para resetear contraseña con token
-    this.resetPasswordForm = this.fb.group({
+    this.setPasswordForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required]]
     }, {
@@ -42,11 +33,12 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Verificar si hay un token en la URL (modo reset)
+    // Verificar si hay un token en la URL
     this.route.queryParams.subscribe(params => {
       if (params['token']) {
         this.resetToken = params['token'];
-        this.isResetMode = true;
+      } else {
+        this.errorMessage = 'Token de invitación no válido o faltante.';
       }
     });
   }
@@ -62,69 +54,44 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.resetForm.valid) {
-      this.isLoading = true;
-      this.errorMessage = null;
-      this.emailSent = false;
-
-      this.authService.forgotPassword(this.resetForm.value.email).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.emailSent = true;
-        },
-        error: (error) => {
-          this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al enviar el correo. Verifica tu email e intenta nuevamente.';
-          console.error('Forgot password error:', error);
-        }
-      });
-    } else {
-      this.resetForm.markAllAsTouched();
-    }
-  }
-
-  onResetPassword() {
-    if (this.resetPasswordForm.valid && this.resetToken) {
+    if (this.setPasswordForm.valid && this.resetToken) {
       this.isLoading = true;
       this.errorMessage = null;
       this.successMessage = null;
 
       this.authService.resetPassword(
         this.resetToken,
-        this.resetPasswordForm.value.password
+        this.setPasswordForm.value.password
       ).subscribe({
         next: () => {
           this.isLoading = false;
-          this.successMessage = 'Contraseña restablecida exitosamente. Redirigiendo al login...';
+          this.successMessage = 'Contraseña establecida exitosamente. Redirigiendo al login...';
           setTimeout(() => {
             this.router.navigate(['/panel/login']);
           }, 2000);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al restablecer la contraseña. El token puede haber expirado.';
-          console.error('Reset password error:', error);
+          this.errorMessage = error.error?.message || 'Error al establecer la contraseña. El token puede haber expirado.';
+          console.error('Set password error:', error);
         }
       });
     } else {
-      this.resetPasswordForm.markAllAsTouched();
+      this.setPasswordForm.markAllAsTouched();
     }
   }
 
-  get email() {
-    return this.resetForm.get('email');
-  }
-
   get password() {
-    return this.resetPasswordForm.get('password');
+    return this.setPasswordForm.get('password');
   }
 
   get confirmPassword() {
-    return this.resetPasswordForm.get('confirmPassword');
+    return this.setPasswordForm.get('confirmPassword');
   }
 
   get passwordMismatch() {
-    return this.resetPasswordForm.errors?.['passwordMismatch'] && 
+    return this.setPasswordForm.errors?.['passwordMismatch'] && 
            this.confirmPassword?.touched;
   }
 }
+

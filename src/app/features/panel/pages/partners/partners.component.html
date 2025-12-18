@@ -63,7 +63,7 @@
         <div class="partner-card" *ngFor="let partner of filteredPartners">
           <div class="partner-header">
             <div class="partner-info">
-              <h4>{{ partner.name }}</h4>
+              <h4>{{ getPartnerName(partner) }}</h4>
               <p class="partner-email">{{ partner.email }}</p>
               <p *ngIf="partner.company" class="partner-company">{{ partner.company }}</p>
             </div>
@@ -101,18 +101,21 @@
           </div>
 
           <div class="partner-actions">
-            <a [routerLink]="['/panel/partners', partner.id]" class="btn btn-sm btn-outline-primary">
-              <i class="bi bi-eye me-1"></i>
-              Ver Detalles
-            </a>
+            <button 
+              class="btn btn-sm btn-outline-primary"
+              (click)="openEditPartnerModal(partner)"
+            >
+              <i class="bi bi-pencil me-1"></i>
+              Editar
+            </button>
             <button 
               class="btn btn-sm"
-              [class.btn-success]="partner.status === 'inactive'"
-              [class.btn-secondary]="partner.status === 'active'"
+              [class.btn-success]="!partner.status"
+              [class.btn-secondary]="partner.status"
               (click)="togglePartnerStatus(partner)"
             >
-              <i [class]="partner.status === 'active' ? 'bi-pause' : 'bi-play'"></i>
-              {{ partner.status === 'active' ? 'Desactivar' : 'Activar' }}
+              <i [class]="partner.status ? 'bi-pause' : 'bi-play'"></i>
+              {{ partner.status ? 'Desactivar' : 'Activar' }}
             </button>
           </div>
         </div>
@@ -167,17 +170,9 @@
           />
         </div>
 
-        <div class="mb-3">
-          <label for="partnerPassword" class="form-label">Contraseña Temporal <span class="text-danger">*</span></label>
-          <input
-            type="password"
-            id="partnerPassword"
-            class="form-control"
-            [(ngModel)]="newPartner.password"
-            placeholder="El partner deberá cambiar esta contraseña"
-            required
-          />
-          <small class="text-muted">El partner recibirá un email con instrucciones para cambiar su contraseña</small>
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Nota:</strong> Se generará automáticamente una contraseña temporal y se enviará un email de invitación al partner con un link para establecer su contraseña.
         </div>
       </div>
       <div class="modal-footer">
@@ -188,7 +183,7 @@
           type="button" 
           class="btn btn-primary" 
           (click)="createPartner()"
-          [disabled]="isCreating || !newPartner.name || !newPartner.email || !newPartner.password"
+          [disabled]="isCreating || !newPartner.name || !newPartner.email"
         >
           <span *ngIf="!isCreating">
             <i class="bi bi-check-circle me-2"></i>
@@ -202,5 +197,89 @@
       </div>
     </div>
   </div>
+
+  <!-- Modal de Editar Partner -->
+  <div *ngIf="showEditPartnerModal" class="modal-overlay" (click)="closeEditPartnerModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>Editar Partner</h4>
+        <button type="button" class="btn-close" (click)="closeEditPartnerModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="updateError" class="alert alert-danger">
+          {{ updateError }}
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerName" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="editPartnerName"
+            class="form-control"
+            [(ngModel)]="editPartner.name"
+            placeholder="Juan Pérez"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerEmail" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+          <input
+            type="email"
+            id="editPartnerEmail"
+            class="form-control"
+            [(ngModel)]="editPartner.email"
+            placeholder="partner@example.com"
+            required
+            disabled
+          />
+          <small class="text-muted">El email no se puede modificar</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerCompany" class="form-label">Empresa (opcional)</label>
+          <input
+            type="text"
+            id="editPartnerCompany"
+            class="form-control"
+            [(ngModel)]="editPartner.company"
+            placeholder="Nombre de la empresa"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerPhone" class="form-label">Teléfono (opcional)</label>
+          <input
+            type="tel"
+            id="editPartnerPhone"
+            class="form-control"
+            [(ngModel)]="editPartner.phone"
+            placeholder="+1 555-0100"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEditPartnerModal()" [disabled]="isUpdating">
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="updatePartner()"
+          [disabled]="isUpdating || !editPartner.name || !editPartner.email"
+        >
+          <span *ngIf="!isUpdating">
+            <i class="bi bi-check-circle me-2"></i>
+            Guardar Cambios
+          </span>
+          <span *ngIf="isUpdating">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Guardando...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+
 

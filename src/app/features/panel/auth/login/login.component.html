@@ -16,14 +16,13 @@
         id="email"
         class="form-control"
         formControlName="email"
+        [class.is-invalid]="email?.invalid && email?.touched"
         placeholder="tu@email.com"
       />
-      <!-- [class.is-invalid]="email?.invalid && email?.touched" -->
-      <!-- Validaciones comentadas temporalmente para maquetación -->
-      <!-- <div class="invalid-feedback" *ngIf="email?.invalid && email?.touched">
+      <div class="invalid-feedback" *ngIf="email?.invalid && email?.touched">
         <span *ngIf="email?.errors?.['required']">El correo es requerido</span>
         <span *ngIf="email?.errors?.['email']">Ingresa un correo válido</span>
-      </div> -->
+      </div>
     </div>
 
     <div class="mb-3">
@@ -33,14 +32,13 @@
         id="password"
         class="form-control"
         formControlName="password"
+        [class.is-invalid]="password?.invalid && password?.touched"
         placeholder="••••••••"
       />
-      <!-- [class.is-invalid]="password?.invalid && password?.touched" -->
-      <!-- Validaciones comentadas temporalmente para maquetación -->
-      <!-- <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
+      <div class="invalid-feedback" *ngIf="password?.invalid && password?.touched">
         <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
         <span *ngIf="password?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres</span>
-      </div> -->
+      </div>
     </div>
 
     <div class="mb-3 d-flex justify-content-between align-items-center">
@@ -56,9 +54,8 @@
     <button
       type="submit"
       class="btn btn-primary w-100"
-      [disabled]="isLoading"
+      [disabled]="isLoading || loginForm.invalid"
     >
-      <!-- [disabled]="isLoading || loginForm.invalid" -->
       <span *ngIf="!isLoading">Iniciar Sesión</span>
       <span *ngIf="isLoading">
         <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>

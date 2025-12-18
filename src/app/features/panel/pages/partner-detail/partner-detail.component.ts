@@ -152,3 +152,4 @@ export class PartnerDetailComponent implements OnInit {
   }
 }
 
+
