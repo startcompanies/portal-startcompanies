@@ -276,19 +276,23 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // Usar DOM parsing para manejar correctamente divs anidados
     firstSectionHtml = this.removeDivByDataId(firstSectionHtml, '741d5f43');
 
-    // Aplicar estilos y añadir icono al enlace "Abrir tu LLC" con href="#contact"
-    // Buscar enlaces que tengan href="#contact" o cualquier variación
+    // Aplicar estilos y añadir icono al enlace "Abrir tu LLC" o "Abre tu corporation" con href="#contact" o "../#contact"
+    // Buscar enlaces que tengan href="#contact" o cualquier variación (incluyendo "../#contact")
     firstSectionHtml = firstSectionHtml.replace(
-      /<a([^>]*?)href\s*=\s*["']#contact["']([^>]*?)>([\s\S]*?)<\/a>/gi,
-      (match, beforeHref, afterHref, linkContent) => {
-        // Verificar si el contenido del enlace contiene "Abrir tu LLC" (case insensitive)
+      /<a([^>]*?)href\s*=\s*["']([^"']*#contact[^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi,
+      (match, beforeHref, href, afterHref, linkContent) => {
+        // Verificar si el contenido del enlace contiene "Abrir tu LLC", "Abre tu LLC" o "Abre tu corporation" (case insensitive)
         const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
-        if (/abrir\s+tu\s+llc/i.test(cleanContent)) {
+        const hasAbrirLLCText = /abrir\s+tu\s+llc/i.test(cleanContent);
+        const hasAbreLLCText = /abre\s+tu\s+llc/i.test(cleanContent);
+        const hasAbreCorpText = /abre\s+tu\s+corporation|abre\s+tu\s+corp/i.test(cleanContent);
+        
+        if (hasAbrirLLCText || hasAbreLLCText || hasAbreCorpText) {
           // Verificar si ya tiene el icono
           const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
           
-          // Construir los estilos forzados con !important para asegurar que se apliquen
-          const forcedStyles = 'background-color: #01C9E2 !important; color: #FDFFFE !important; border: none !important; border-radius: 2.5rem !important; padding: 0.75rem 1.5rem !important; font-weight: 600 !important; font-size: 1rem !important; display: inline-flex !important; align-items: center !important; transition: background-color 0.3s ease !important;';
+          // Construir los estilos según las especificaciones del usuario
+          const forcedStyles = 'background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;';
           
           // Obtener los atributos existentes
           const allAttrs = beforeHref + afterHref;
@@ -343,10 +347,20 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
           let finalContent = linkContent.trim();
           if (!hasIcon) {
             // Limpiar espacios y agregar el icono después del texto
-            // Reemplazar "Abrir tu LLC" con "Abrir tu LLC [icono]"
-            finalContent = finalContent.replace(/(Abrir\s+tu\s+LLC)/gi, (match: string) => {
-              return match + ' <i class="bi bi-arrow-right ms-2"></i>';
-            });
+            // Reemplazar "Abrir tu LLC", "Abre tu LLC" o "Abre tu corporation" con el texto + icono
+            if (hasAbrirLLCText) {
+              finalContent = finalContent.replace(/(Abrir\s+tu\s+LLC)/gi, (match: string) => {
+                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+              });
+            } else if (hasAbreLLCText) {
+              finalContent = finalContent.replace(/(Abre\s+tu\s+LLC)/gi, (match: string) => {
+                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+              });
+            } else if (hasAbreCorpText) {
+              finalContent = finalContent.replace(/(Abre\s+tu\s+corporation|Abre\s+tu\s+corp)/gi, (match: string) => {
+                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+              });
+            }
             // Si no se encontró el texto exacto, agregar al final
             if (finalContent === linkContent.trim()) {
               finalContent = linkContent.trim() + ' <i class="bi bi-arrow-right ms-2"></i>';
@@ -371,7 +385,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
             finalAfterHref = ' ' + finalAfterHref;
           }
           
-          return `<a${finalBeforeHref}href="#contact"${finalAfterHref}>${finalContent}</a>`;
+          // Mantener el href original (puede ser "#contact" o "../#contact")
+          return `<a${finalBeforeHref}href="${href}"${finalAfterHref}>${finalContent}</a>`;
         }
         return match;
       }
