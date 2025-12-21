@@ -276,6 +276,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // Usar DOM parsing para manejar correctamente divs anidados
     firstSectionHtml = this.removeDivByDataId(firstSectionHtml, '741d5f43');
 
+    // Eliminar videos del contenido (iframe, video tags, etc.) ya que afectan las dimensiones de la card
+    firstSectionHtml = this.removeVideos(firstSectionHtml);
+
+    // Procesar columnas Bootstrap dentro de mission-description:
+    // 1. Eliminar columnas vacías
+    // 2. Convertir col-12 col-lg-6 a col-lg-12 para que el contenido ocupe todo el ancho
+    firstSectionHtml = this.processBootstrapColumns(firstSectionHtml);
+
     // Aplicar estilos y añadir icono al enlace "Abrir tu LLC" o "Abre tu corporation" con href="#contact" o "../#contact"
     // Buscar enlaces que tengan href="#contact" o cualquier variación (incluyendo "../#contact")
     firstSectionHtml = firstSectionHtml.replace(
@@ -400,6 +408,150 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       content.substring(0, firstSectionStart) + 
       content.substring(sectionEnd)
     ).trim();
+  }
+
+  /**
+   * Procesa las columnas Bootstrap dentro de mission-description:
+   * 1. Elimina columnas vacías (que solo contienen &nbsp; o están vacías)
+   * 2. Convierte cualquier col-* dentro de un row a col-lg-12 para que ocupe todo el ancho
+   */
+  private processBootstrapColumns(html: string): string {
+    if (!html || !this.isBrowser) return html;
+
+    try {
+      // Usar DOM parsing para encontrar y procesar rows con columnas
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Buscar todos los divs con clase "row"
+      const rows = tempDiv.querySelectorAll('div.row');
+      
+      rows.forEach((row) => {
+        const columns = row.querySelectorAll('div[class*="col-"]');
+        
+        // Verificar si hay columnas vacías o que necesitan ser convertidas
+        columns.forEach((col: Element) => {
+          const colElement = col as HTMLElement;
+          const classList = colElement.className;
+          const content = colElement.textContent?.trim() || '';
+          const innerHTML = colElement.innerHTML.trim();
+          
+          // Eliminar columnas vacías (solo &nbsp; o vacías, especialmente las d-none d-lg-block)
+          if ((content === '' || content === '&nbsp;' || content === '\u00A0' || innerHTML === '&nbsp;' || innerHTML === '') && 
+              (classList.includes('d-none') || classList.includes('col-lg-2'))) {
+            colElement.remove();
+          } else {
+            // Si la columna tiene contenido, convertirla a col-lg-12
+            // Eliminar todas las clases col-* y agregar solo col-lg-12
+            let newClasses = classList
+              .split(/\s+/)
+              .filter(cls => !cls.startsWith('col-'))
+              .join(' ')
+              .trim();
+            
+            // Agregar col-lg-12 si no está vacía
+            if (newClasses) {
+              newClasses = `col-lg-12 ${newClasses}`;
+            } else {
+              newClasses = 'col-lg-12';
+            }
+            
+            colElement.className = newClasses;
+          }
+        });
+      });
+
+      return tempDiv.innerHTML;
+    } catch (error) {
+      console.warn('Error procesando columnas Bootstrap:', error);
+      // Fallback: eliminar div específico conocido
+      html = this.removeDivByDataId(html, 'c76af68');
+      return html;
+    }
+  }
+
+
+  /**
+   * Elimina videos (iframe, video tags, etc.) y las columnas que los contienen
+   */
+  private removeVideos(html: string): string {
+    if (!html || !this.isBrowser) return html;
+
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Buscar todos los divs y verificar si contienen videos
+      const allDivs = Array.from(tempDiv.querySelectorAll('div'));
+      
+      // Procesar de atrás hacia adelante para evitar problemas al eliminar
+      for (let i = allDivs.length - 1; i >= 0; i--) {
+        const divElement = allDivs[i] as HTMLElement;
+        
+        // Verificar si el div contiene video, iframe, o elementos relacionados
+        const hasVideo = divElement.querySelector('video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"]');
+        const hasRatio = divElement.classList.contains('ratio') || divElement.classList.contains('ratio-16x9') || 
+                         divElement.classList.contains('ratio-21x9') || divElement.classList.contains('ratio-4x3') ||
+                         divElement.querySelector('[class*="ratio-"]');
+        
+        if (hasVideo || hasRatio) {
+          // Obtener el contenido sin el video para verificar si hay algo más
+          const clone = divElement.cloneNode(true) as HTMLElement;
+          clone.querySelectorAll('video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"], [class*="ratio"]').forEach(el => el.remove());
+          
+          const textContent = clone.textContent?.trim() || '';
+          const innerHTML = clone.innerHTML.trim();
+          
+          // Si el div solo contiene el video/ratio (sin contenido relevante), eliminar el div completo
+          // También eliminar si es una col que contiene solo video/ratio
+          if (textContent.length < 20 && (innerHTML.length < 100 || innerHTML.replace(/<[^>]+>/g, '').trim().length < 10)) {
+            divElement.remove();
+          }
+        }
+      }
+
+      // Eliminar elementos video, iframe y ratio que puedan quedar sueltos
+      tempDiv.querySelectorAll('video, iframe, [class*="ratio-16x9"], [class*="ratio-21x9"], [class*="ratio-4x3"], .ratio').forEach(el => {
+        const element = el as HTMLElement;
+        // Si está dentro de un div que solo contiene este elemento, eliminar el div padre
+        const parent = element.parentElement;
+        if (parent && parent.tagName === 'DIV') {
+          const parentText = parent.textContent?.trim() || '';
+          const parentClone = parent.cloneNode(true) as HTMLElement;
+          parentClone.querySelectorAll('video, iframe, [class*="ratio"]').forEach(v => v.remove());
+          const parentContent = parentClone.innerHTML.trim().replace(/<[^>]+>/g, '').trim();
+          
+          if (parentText.length < 20 && parentContent.length < 10) {
+            parent.remove();
+          } else {
+            element.remove();
+          }
+        } else {
+          element.remove();
+        }
+      });
+
+      html = tempDiv.innerHTML;
+      
+      // Limpiar con regex también (fallback para casos edge)
+      // Eliminar divs que contengan solo ratio/video
+      html = html.replace(/<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(/<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+      html = html.replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '');
+      html = html.replace(/<source[^>]*>/gi, '');
+
+      return html.trim();
+    } catch (error) {
+      console.warn('Error eliminando videos:', error);
+      // Fallback: usar solo regex
+      html = html.replace(/<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(/<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
+      html = html.replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '');
+      html = html.replace(/<source[^>]*>/gi, '');
+      return html.trim();
+    }
   }
 
   /**
