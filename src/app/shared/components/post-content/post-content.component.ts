@@ -334,6 +334,62 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
+    // Añadir enlace de WhatsApp después del contenido de cada item de FAQ
+    if (this.isBrowser) {
+      try {
+        const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+        const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
+        
+        // Usar DOM parsing para encontrar correctamente los divs custom-accordion-content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        
+        const accordionContents = tempDiv.querySelectorAll('.custom-accordion-content');
+        accordionContents.forEach((accordionContent: Element) => {
+          const accordionElement = accordionContent as HTMLElement;
+          const innerHTML = accordionElement.innerHTML;
+          
+          // Verificar si ya tiene el enlace de WhatsApp
+          if (innerHTML.includes('Contáctanos por WhatsApp') || innerHTML.includes('Contactar por WhatsApp') || innerHTML.includes(whatsappUrl)) {
+            return;
+          }
+          
+          // Añadir el enlace al final del contenido
+          accordionElement.innerHTML = innerHTML + whatsappLinkHtml;
+        });
+        
+        content = tempDiv.innerHTML;
+      } catch (error) {
+        console.warn('Error añadiendo enlaces de WhatsApp a FAQs:', error);
+        // Fallback con regex si falla el DOM parsing
+        const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+        const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
+        
+        // Buscar divs con clase custom-accordion-content usando regex más preciso
+        // Buscar el patrón completo: div con la clase, contenido, y cierre del div
+        content = content.replace(/(<div\s+[^>]*?class\s*=\s*["'][^"']*\bcustom-accordion-content\b[^"']*["'][^>]*>)([\s\S]*?)(<\/div>\s*(?=<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-button|<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-item|$))/gi, (match, divStart, divContent, divEnd) => {
+          // Verificar si ya tiene el enlace de WhatsApp
+          if (divContent.includes('Contáctanos por WhatsApp') || divContent.includes('Contactar por WhatsApp') || divContent.includes(whatsappUrl)) {
+            return match;
+          }
+          
+          // Añadir el enlace antes del cierre del div
+          return `${divStart}${divContent}${whatsappLinkHtml}${divEnd}`;
+        });
+      }
+    } else {
+      // Fallback con regex si no estamos en el navegador
+      const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+      const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
+      
+      content = content.replace(/(<div\s+[^>]*?class\s*=\s*["'][^"']*\bcustom-accordion-content\b[^"']*["'][^>]*>)([\s\S]*?)(<\/div>\s*(?=<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-button|<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-item|$))/gi, (match, divStart, divContent, divEnd) => {
+        if (divContent.includes('Contáctanos por WhatsApp') || divContent.includes('Contactar por WhatsApp') || divContent.includes(whatsappUrl)) {
+          return match;
+        }
+        return `${divStart}${divContent}${whatsappLinkHtml}${divEnd}`;
+      });
+    }
+    
     // Reemplazar el contenido del botón de acordeón con solo el icono
     // Extraer el texto del span dentro del botón y mantenerlo, pero reemplazar el SVG con el icono
     content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {
