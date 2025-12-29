@@ -29,15 +29,35 @@
     </mat-step>
 
     <!-- Paso de Información (varía según el flujo) -->
+    <mat-step [label]="stepTitles[withPayment ? 2 : 1] || ('WIZARD.steps.client' | transloco)">
+      <app-client-form-cuenta [stepNumber]="withPayment ? 2 : 1"></app-client-form-cuenta>
+    </mat-step>
+
     <mat-step [label]="stepTitles[withPayment ? 3 : 2] || ('WIZARD.steps.client' | transloco)">
-      <app-client-form-cuenta [stepNumber]="withPayment ? 3 : 2"></app-client-form-cuenta>
+      <app-aplicant-info-step [stepNumber]="withPayment ? 3 :2"></app-aplicant-info-step>
+    </mat-step>
+
+    <mat-step [label]="stepTitles[withPayment ? 4 : 3] || ('WIZARD.steps.client' | transloco)">
+      <app-company-address-step [stepNumber]="withPayment ? 4 : 3"></app-company-address-step>
+    </mat-step>
+
+    <mat-step [label]="stepTitles[withPayment ? 5 : 4] || ('WIZARD.steps.company-address' | transloco)">
+      <app-bank-account-info-step [stepNumber]="withPayment ? 5 : 4"></app-bank-account-info-step>
+    </mat-step>
+
+    <mat-step [label]="stepTitles[withPayment ? 6 : 5] || ('WIZARD.steps.llc-type' | transloco)">
+      <app-llc-type-step [stepNumber]="withPayment ? 6 : 5"></app-llc-type-step>
+    </mat-step>
+
+    <mat-step [label]="stepTitles[withPayment ? 7 : 6] || ('WIZARD.steps.owmers-identification' | transloco)">
+      <app-owners-identification-step [stepNumber]="withPayment ? 7 : 6"></app-owners-identification-step>
     </mat-step>
 
     <!-- Paso de Revisión -->
-    <mat-step [label]="stepTitles[withPayment ? 4 : 3] || ('WIZARD.steps.review' | transloco)">
+    <mat-step [label]="stepTitles[withPayment ? 8 : 7] || ('WIZARD.steps.review' | transloco)">
       <app-wizard-final-review-step 
-        [stepNumber]="withPayment ? 4 : 3" 
-        [previousSteps]="withPayment ? [1, 2, 3] : [1, 2]"
+        [stepNumber]="withPayment ? 8 : 7" 
+        [previousSteps]="withPayment ? [1, 2, 3] : [1, 2, 3, 4]"
       ></app-wizard-final-review-step>
     </mat-step>
   </mat-stepper>

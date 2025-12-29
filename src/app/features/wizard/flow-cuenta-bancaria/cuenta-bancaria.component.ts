@@ -16,6 +16,11 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 
 // Formulario específico de cuenta bancaria
 import { ClientFormCuentaComponent } from './steps/client-form-cuenta.component';
+import { AplicantInfoStepComponent } from './steps/aplicant-info-step/aplicant-info-step.component';
+import { CompanyAddressStepComponent } from './steps/company-address-step/company-address-step.component';
+import { BankAccountInfoStepComponent } from "./steps/bank-account-info-step/bank-account-info-step.component";
+import { LlcTypeStepComponent } from "./steps/llc-type-step/llc-type-step.component";
+import { OwnersIdentificationStepComponent } from "./steps/owners-identification-step/owners-identification-step.component";
 
 /**
  * Componente principal para el flujo de cuenta bancaria
@@ -32,8 +37,13 @@ import { ClientFormCuentaComponent } from './steps/client-form-cuenta.component'
     WizardBasicRegisterStepComponent,
     WizardPaymentStepComponent,
     ClientFormCuentaComponent,
+    AplicantInfoStepComponent,
+    CompanyAddressStepComponent,
     WizardFinalReviewStepComponent,
-  ],
+    BankAccountInfoStepComponent,
+    LlcTypeStepComponent,    
+    OwnersIdentificationStepComponent
+],
   templateUrl: './cuenta-bancaria.component.html',
   styleUrls: ['./cuenta-bancaria.component.css']
 })
@@ -67,6 +77,7 @@ export class CuentaBancariaComponent implements OnInit {
         : WizardFlowType.CUENTA_BANCARIA_SIN_PAGO;
       
       this.flowConfig = this.wizardConfigService.getFlowConfig(flowType);
+      console.log('Total steps', this.flowConfig.totalSteps);
       this.initializeStepIcons();
       this.initializeStepTitles();
     });

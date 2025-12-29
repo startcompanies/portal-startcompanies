@@ -547,7 +547,8 @@
     }
   },
   "COMMON": {
-    "note": "Note:"
+    "note": "Note:",
+    "select_option": "Select Option"
   },
   "LANDINGS": {
     "schedule_consultation": "Schedule a FREE consultation",
@@ -963,6 +964,22 @@
     "zoho_step": {
       "title": "Send to Zoho CRM",
       "subtitle": "We'll review the data before sending it to the CRM."
+    },
+    "applicant": {
+      "title": "Applicant Information",
+      "email": "Email",
+      "first_name": "First Name",
+      "paternal_last_name": "Paternal Last Name",
+      "maternal_last_name": "Maternal Last Name",
+      "phone": "Phone",
+      "account_type": "Account Type",
+      "legal_identifier": "Legal Identifier",
+      "industry": "Industry",
+      "economic_activity": "Economic Activity",
+      "certificate": "Certificate of Incorporation or Articles of Organization",
+      "ein": "Tax Identification Number (EIN)",
+      "operating_agreement": "Operating Agreement",
+      "business_type": "Business Type"
     }
   }
 }

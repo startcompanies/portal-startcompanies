@@ -543,7 +543,8 @@
     }
   },
   "COMMON": {
-    "note": "Nota:"
+    "note": "Nota:",
+    "select_option": "Seleccionar Opción"
   },
   "LANDINGS": {
     "schedule_consultation": "Agenda una asesoría GRATIS",
@@ -980,6 +981,22 @@
     "contact": {
       "title": "10. Contacto",
       "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
+    },
+    "applicant": {
+      "title": "Información del Solicitante",
+      "email":"Correo electrónico",
+      "first_name": "Primer Nombre",
+      "paternal_last_name": "Apellido Paterno",
+      "maternal_last_name": "Apellido Materno",
+      "phone": "Teléfono",
+      "account_type": "Tipo de cuenta",
+      "legal_identifier": "Identificación legal",
+      "industry": "Industria",
+      "economic_activity": "Actividad Economica",
+      "certificate": "Certificado de Constitución o Artículos de Organización",
+      "ein": "Número de identificación fiscal (EIN)",
+      "operating_agreement": "Acuerdo operativo",
+      "business_type": "Tipo de negocio"
     }
   }
 }
