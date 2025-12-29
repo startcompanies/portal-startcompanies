@@ -1,6 +1,6 @@
 <div class="client-form-cuenta">
     <h4 class="mb-3">
-        {{ 'WIZARD.owners.title' | transloco }}
+        {{ 'WIZARD.bank_account.owners.title' | transloco }}
     </h4>
 
     <form [formGroup]="form">
@@ -10,31 +10,31 @@
             <div class="owner-card" *ngFor="let owner of owners.controls; let i = index" [formGroupName]="i">
 
                 <h5 class="mb-3">
-                    {{ 'WIZARD.owners.owner' | transloco }} {{ i + 1 }}
+                    {{ 'WIZARD.bank_account.owners.owner' | transloco }} {{ i + 1 }}
                 </h5>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.first_name' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.first_name' | transloco }}</label>
                     <input class="form-control" formControlName="firstName" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.paternal_last_name' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.paternal_last_name' | transloco }}</label>
                     <input class="form-control" formControlName="paternalLastName" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.maternal_last_name' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.maternal_last_name' | transloco }}</label>
                     <input class="form-control" formControlName="maternalLastName" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.birth_date' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.birth_date' | transloco }}</label>
                     <input type="date" class="form-control" formControlName="dateOfBirth" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.nationality' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.nationality' | transloco }}</label>
                     <select class="form-control" formControlName="nationality">
                         <option value="">{{ 'COMMON.select_option' | transloco }}</option>
                         <option value="mx">México</option>
@@ -44,18 +44,18 @@
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.document_number' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.document_number' | transloco }}</label>
                     <input class="form-control" formControlName="passportOrNationalId" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.identity_document' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.identity_document' | transloco }}</label>
                     <input type="file" class="form-control" multiple accept="application/pdf,image/jpeg,image/png"
                         (change)="onIdentityFilesChange($event, i)" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label>{{ 'WIZARD.owners.facial_photo' | transloco }}</label>
+                    <label>{{ 'WIZARD.bank_account.owners.facial_photo' | transloco }}</label>
                     <input type="file" class="form-control" accept="image/jpeg,image/png"
                         (change)="onFacialPhotoChange($event, i)" />
                 </div>
@@ -70,7 +70,7 @@
         </div>
 
         <button type="button" class="btn btn-outline-primary mt-3" (click)="addOwner()">
-            {{ 'WIZARD.owners.add_owner' | transloco }}
+            {{ 'WIZARD.bank_account.owners.add_owner' | transloco }}
         </button>
 
     </form>

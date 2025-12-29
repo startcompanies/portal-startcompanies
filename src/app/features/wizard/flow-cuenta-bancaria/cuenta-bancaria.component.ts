@@ -21,6 +21,8 @@ import { CompanyAddressStepComponent } from './steps/company-address-step/compan
 import { BankAccountInfoStepComponent } from "./steps/bank-account-info-step/bank-account-info-step.component";
 import { LlcTypeStepComponent } from "./steps/llc-type-step/llc-type-step.component";
 import { OwnersIdentificationStepComponent } from "./steps/owners-identification-step/owners-identification-step.component";
+import { ConfirmationSignatureStepComponent } from "./steps/confirmation-signature-step/confirmation-signature-step.component";
+import { OwnerPersonalAddressStepComponent } from './steps/owner-personal-address-step/owner-personal-address-step.component';
 
 /**
  * Componente principal para el flujo de cuenta bancaria
@@ -41,8 +43,10 @@ import { OwnersIdentificationStepComponent } from "./steps/owners-identification
     CompanyAddressStepComponent,
     WizardFinalReviewStepComponent,
     BankAccountInfoStepComponent,
+    OwnerPersonalAddressStepComponent,
     LlcTypeStepComponent,    
-    OwnersIdentificationStepComponent
+    OwnersIdentificationStepComponent,
+    ConfirmationSignatureStepComponent
 ],
   templateUrl: './cuenta-bancaria.component.html',
   styleUrls: ['./cuenta-bancaria.component.css']

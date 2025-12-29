@@ -1,6 +1,6 @@
 <div class="client-form-cuenta">
     <h4 class="mb-3">
-        {{ 'WIZARD.companyAddress.title' | transloco }}
+        {{ 'WIZARD.bank_account.companyAddress.title' | transloco }}
     </h4>
 
     <form [formGroup]="form">
@@ -8,19 +8,19 @@
         <!-- Calle y número -->
         <div class="form-group mb-3">
             <label for="street">
-                {{ 'WIZARD.companyAddress.street' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.street' | transloco }}
             </label>
             <input id="street" class="form-control" formControlName="street" formGroupName="companyAddress" />
             <div *ngIf="form.get('companyAddress.street')?.touched && form.get('companyAddress.street')?.invalid"
                 class="text-danger mt-1">
-                {{ 'WIZARD.companyAddress.street_required' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.street_required' | transloco }}
             </div>
         </div>
 
         <!-- Unidad -->
         <div class="form-group mb-3">
             <label for="unit">
-                {{ 'WIZARD.companyAddress.unit' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.unit' | transloco }}
             </label>
             <input id="unit" class="form-control" formControlName="unit" formGroupName="companyAddress" />
         </div>
@@ -28,7 +28,7 @@
         <!-- Ciudad -->
         <div class="form-group mb-3">
             <label for="city">
-                {{ 'WIZARD.companyAddress.city' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.city' | transloco }}
             </label>
             <input id="city" class="form-control" formControlName="city" formGroupName="companyAddress" />
         </div>
@@ -36,7 +36,7 @@
         <!-- Estado -->
         <div class="form-group mb-3">
             <label for="state">
-                {{ 'WIZARD.companyAddress.state' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.state' | transloco }}
             </label>
             <select id="state" class="form-control" formControlName="state" formGroupName="companyAddress">
                 <option value="">{{ 'COMMON.select_option' | transloco }}</option>
@@ -50,7 +50,7 @@
         <!-- Código postal -->
         <div class="form-group mb-3">
             <label for="postalCode">
-                {{ 'WIZARD.companyAddress.postal_code' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.postal_code' | transloco }}
             </label>
             <input id="postalCode" class="form-control" formControlName="postalCode" formGroupName="companyAddress" />
         </div>
@@ -58,7 +58,7 @@
         <!-- País -->
         <div class="form-group mb-3">
             <label for="country">
-                {{ 'WIZARD.companyAddress.country' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.country' | transloco }}
             </label>
             <input id="country" class="form-control" formControlName="country" formGroupName="companyAddress"
                 [disabled]="true" />
@@ -67,7 +67,7 @@
         <!-- Registered Agent -->
         <div class="form-group mb-3">
             <label>
-                {{ 'WIZARD.companyAddress.is_registered_agent' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.is_registered_agent' | transloco }}
             </label>
             <select class="form-control" formControlName="isRegisteredAgentInUSA">
                 <option [ngValue]="true">
@@ -82,7 +82,7 @@
         <!-- Nombre Registered Agent -->
         <div class="form-group mb-3">
             <label for="registeredAgentName">
-                {{ 'WIZARD.companyAddress.agent_name' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.agent_name' | transloco }}
             </label>
             <input id="registeredAgentName" class="form-control" formControlName="registeredAgentName" />
         </div>
@@ -90,7 +90,7 @@
         <!-- Dirección Registered Agent -->
         <div class="form-group mb-3">
             <label for="registeredAgentAddress">
-                {{ 'WIZARD.companyAddress.agent_address' | transloco }}
+                {{ 'WIZARD.bank_account.companyAddress.agent_address' | transloco }}
             </label>
             <textarea id="registeredAgentAddress" class="form-control" rows="4"
                 formControlName="registeredAgentAddress"></textarea>

@@ -544,7 +544,10 @@
   },
   "COMMON": {
     "note": "Nota:",
-    "select_option": "Seleccionar Opción"
+    "select_option": "Seleccionar Opción",
+    "yes": "Sí",
+    "no": "No",
+    "remove": "Eliminar"
   },
   "LANDINGS": {
     "schedule_consultation": "Agenda una asesoría GRATIS",
@@ -982,36 +985,120 @@
       "title": "10. Contacto",
       "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
     },
-    "applicant": {
-      "title": "Información del Solicitante",
-      "email":"Correo electrónico",
-      "email_placeholder": "Ej. john.doe@example.com",
-      "email_invalid": "El correo electrónico es obligatorio.",
-      "first_name": "Primer Nombre",
-      "first_name_required": "El primer nombre es obligatorio.",
-      "paternal_last_name": "Apellido Paterno",
-      "maternal_last_name": "Apellido Materno",
-      "phone": "Teléfono",
-      "account_type": "Tipo de cuenta",
-      "account_type_required": "El tipo de cuenta es obligatorio.",
-      "legal_identifier": "Identificación legal",
-      "industry": "Industria",
-      "economic_activity": "Actividad Economica",
-      "certificate": "Certificado de Constitución o Artículos de Organización",
-      "ein": "Número de identificación fiscal (EIN)",
-      "ein_invalid": "El número de identificación fiscal es inválido.",
-      "operating_agreement": "Acuerdo operativo",
-      "business_type": "Tipo de negocio",
+    "bank_account": {
+      "applicant": {
+        "title": "Información del Solicitante",
+        "email": "Correo electrónico",
+        "email_placeholder": "Ej. john.doe@example.com",
+        "email_invalid": "El correo electrónico es obligatorio.",
+        "first_name": "Primer Nombre",
+        "first_name_required": "El primer nombre es obligatorio.",
+        "paternal_last_name": "Apellido Paterno",
+        "maternal_last_name": "Apellido Materno",
+        "phone": "Teléfono",
+        "account_type": "Tipo de cuenta",
+        "account_type_required": "El tipo de cuenta es obligatorio.",
+        "legal_identifier": "Identificación legal",
+        "industry": "Industria",
+        "economic_activity": "Actividad Economica",
+        "certificate": "Certificado de Constitución o Artículos de Organización",
+        "ein": "Número de identificación fiscal (EIN)",
+        "ein_invalid": "El número de identificación fiscal es inválido.",
+        "operating_agreement": "Acuerdo operativo",
+        "business_type": "Tipo de negocio"
+      },
+      "companyAddress": {
+        "title": "Dirección del registro",
+        "street": "Calle y número",
+        "street_required": "La calle y el número son obligatorios.",
+        "unit": "Unidad",
+        "city": "Ciudad",
+        "city_required": "La ciudad es obligatoria.",
+        "state": "Estado",
+        "state_required": "El estado es obligatorio.",
+        "postal_code": "Código postal",
+        "country": "País",
+        "country_required": "El país es obligatorio.",
+        "is_registered_agent": "¿Es el Registered Agent en USA?",
+        "agent_name": "Nombre del Registered Agent",
+        "agent_address": "Dirección del Registered Agent"
+      },
+      "bankAccount": {
+        "title": "Información de la cuenta bancaria",
+        "bank_name": "Nombre del banco",
+        "bank_name_required": "El nombre del banco es obligatorio.",
+        "swift": "SWIFT / BIC / ABA",
+        "swift_required": "El SWIFT / BIC / ABA es obligatorio.",
+        "account_number": "Número de cuenta",
+        "account_number_required": "El número de cuenta es obligatorio.",
+        "account_type": "Tipo de cuenta",
+        "first_registration_date": "Fecha de registro por primera vez",
+        "has_litigated": "¿Has litigado en el año fiscal actual?",
+        "litigation_details": "Detalles de litigio",
+        "litigation_details_required": "Los detalles de litigio son obligatorios."
+      },
+      "llcType": {
+        "title": "Tipo de LLC",
+        "label": "Tipo de LLC",
+        "single": "LLC de un solo miembro (Single Member LLC)",
+        "multi": "LLC de múltiples miembros (Multi-Member LLC)",
+        "required": "El tipo de LLC es obligatorio."
+      },
+      "ownerAddress": {
+        "title": "Dirección del propietario",
+        "same_as_business": "Es la misma dirección que el negocio",
+        "street": "Calle y número",
+        "unit": "Unidad",
+        "city": "Ciudad",
+        "state": "Estado",
+        "postal_code": "Código postal",
+        "country": "País",
+        "proof": "Comprobante de domicilio",
+        "proof_required": "El comprobante de domicilio es obligatorio."
+      },
+      "owners": {
+        "title": "Propietarios",
+        "owner": "Propietario",
+        "first_name": "Nombre",
+        "paternal_last_name": "Apellido Paterno",
+        "maternal_last_name": "Apellido Materno",
+        "birth_date": "Fecha de nacimiento",
+        "nationality": "Nacionalidad",
+        "document_number": "Número de documento",
+        "identity_document": "Documento de identidad",
+        "facial_photo": "Fotografía de rostro",
+        "add_owner": "Agregar propietario"
+      },
+      "confirmation": {
+        "title": "Confirmación",
+        "certification": "Certificación",
+        "accept_terms": "Acepto los términos y condiciones",
+        "accept_terms_required": "Los términos y condiciones son obligatorios.",
+        "validator": {
+          "title": "Validador",
+          "first_name": "Nombre",
+          "last_name": "Apellido",
+          "birth_date": "Fecha de nacimiento",
+          "nationalidad": "Nacionalidad",
+          "citizenship": "Ciudadanía",
+          "passport_number": "Número de pasaporte",
+          "passport_file": "Pasaporte",
+          "email": "Correo electrónico",
+          "use_email_login": "Usar correo electrónico para login",
+          "phone": "Teléfono",
+          "can_receive_sms": "Puede recibir SMS",
+          "us_resident": "Es residente en EE.UU."
+        }
+      },
       "steps": {
-        "step1": "Información del Solicitante",
-        "step2": "Dirección del registro",
-        "step3": "Información de la cuenta bancaria",
-        "step4": "Dirección personal del propietario",
-        "step5": "Tipo de LLC",
-        "step6": "Identificación de propietarios",
-        "step7": "Confirmación y Firma Electrónica"
+        "step1": "Solicitante",
+        "step2": "Registro",
+        "step3": "Cuenta",
+        "step4": "Propietario",
+        "step5": "Tipo",
+        "step6": "Propietarios",
+        "step7": "Firma"
       }
-
     }
   }
 }

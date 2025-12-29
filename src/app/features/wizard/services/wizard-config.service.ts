@@ -166,7 +166,7 @@ export class WizardConfigService {
   private getCuentaBancariaSinPagoConfig(): WizardFlowConfig {
     return {
       flowType: WizardFlowType.CUENTA_BANCARIA_SIN_PAGO,
-      totalSteps: 9,
+      totalSteps: 10,
       showStateSelection: false,
       showPayment: false,
       steps: [
@@ -188,49 +188,49 @@ export class WizardConfigService {
           stepNumber: 3,
           component: null as any,
           icon: 'bi-person-vcard',
-          translationKey: 'WIZARD.applicant.steps.step1',
+          translationKey: 'WIZARD.bank_account.steps.step1',
           required: true
         },
         {
           stepNumber: 4,
           component: null as any,
           icon: 'bi-geo-alt',
-          translationKey: 'WIZARD.applicant.steps.step2',
+          translationKey: 'WIZARD.bank_account.steps.step2',
           required: true
         },
         {
           stepNumber: 5,
           component: null as any,
           icon: 'bi-bank',
-          translationKey: 'WIZARD.applicant.steps.step3',
+          translationKey: 'WIZARD.bank_account.steps.step3',
           required: true
         },
         {
           stepNumber: 6,
           component: null as any,
           icon: 'bi-geo-alt',
-          translationKey: 'WIZARD.applicant.steps.step4',
+          translationKey: 'WIZARD.bank_account.steps.step4',
           required: true
         },
         {
           stepNumber: 7,
           component: null as any,
           icon: 'bi-building',
-          translationKey: 'WIZARD.applicant.steps.step5',
+          translationKey: 'WIZARD.bank_account.steps.step5',
           required: true,
         },
         {
           stepNumber: 8,
           component: null as any,
           icon: 'bi-people',
-          translationKey: 'WIZARD.applicant.steps.step6',
+          translationKey: 'WIZARD.bank_account.steps.step6',
           required: true
         },
         {
           stepNumber: 9,
           component: null as any,
           icon: 'bi-check-circle',
-          translationKey: 'WIZARD.applicant.steps.step7',
+          translationKey: 'WIZARD.bank_account.steps.step7',
           required: true
         },
         {

@@ -1,13 +1,13 @@
 <div class="client-form-cuenta">
     <h4 class="mb-3">
-        {{ 'WIZARD.llcType.title' | transloco }}
+        {{ 'WIZARD.bank_account.llcType.title' | transloco }}
     </h4>
 
     <form [formGroup]="form">
 
         <div class="form-group mb-3">
             <label>
-                {{ 'WIZARD.llcType.label' | transloco }}
+                {{ 'WIZARD.bank_account.llcType.label' | transloco }}
             </label>
 
             <select class="form-control" formControlName="llcType">
@@ -15,15 +15,15 @@
                     {{ 'COMMON.select_option' | transloco }}
                 </option>
                 <option value="single">
-                    {{ 'WIZARD.llcType.single' | transloco }}
+                    {{ 'WIZARD.bank_account.llcType.single' | transloco }}
                 </option>
                 <option value="multi">
-                    {{ 'WIZARD.llcType.multi' | transloco }}
+                    {{ 'WIZARD.bank_account.llcType.multi' | transloco }}
                 </option>
             </select>
 
             <div *ngIf="form.get('llcType')?.touched && form.get('llcType')?.invalid" class="text-danger mt-1">
-                {{ 'WIZARD.llcType.required' | transloco }}
+                {{ 'WIZARD.bank_account.llcType.required' | transloco }}
             </div>
         </div>
 
