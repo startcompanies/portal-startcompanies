@@ -985,18 +985,33 @@
     "applicant": {
       "title": "Información del Solicitante",
       "email":"Correo electrónico",
+      "email_placeholder": "Ej. john.doe@example.com",
+      "email_invalid": "El correo electrónico es obligatorio.",
       "first_name": "Primer Nombre",
+      "first_name_required": "El primer nombre es obligatorio.",
       "paternal_last_name": "Apellido Paterno",
       "maternal_last_name": "Apellido Materno",
       "phone": "Teléfono",
       "account_type": "Tipo de cuenta",
+      "account_type_required": "El tipo de cuenta es obligatorio.",
       "legal_identifier": "Identificación legal",
       "industry": "Industria",
       "economic_activity": "Actividad Economica",
       "certificate": "Certificado de Constitución o Artículos de Organización",
       "ein": "Número de identificación fiscal (EIN)",
+      "ein_invalid": "El número de identificación fiscal es inválido.",
       "operating_agreement": "Acuerdo operativo",
-      "business_type": "Tipo de negocio"
+      "business_type": "Tipo de negocio",
+      "steps": {
+        "step1": "Información del Solicitante",
+        "step2": "Dirección del registro",
+        "step3": "Información de la cuenta bancaria",
+        "step4": "Dirección personal del propietario",
+        "step5": "Tipo de LLC",
+        "step6": "Identificación de propietarios",
+        "step7": "Confirmación y Firma Electrónica"
+      }
+
     }
   }
 }

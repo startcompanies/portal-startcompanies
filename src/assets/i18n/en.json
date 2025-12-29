@@ -968,18 +968,32 @@
     "applicant": {
       "title": "Applicant Information",
       "email": "Email",
+      "email_placeholder": "E.g., john.doe@example.com",
+      "email_invalid": "Email is required.",
       "first_name": "First Name",
+      "first_name_required": "First name is required.",
       "paternal_last_name": "Paternal Last Name",
       "maternal_last_name": "Maternal Last Name",
       "phone": "Phone",
       "account_type": "Account Type",
+      "account_type_required": "Account type is required.",
       "legal_identifier": "Legal Identifier",
       "industry": "Industry",
       "economic_activity": "Economic Activity",
       "certificate": "Certificate of Incorporation or Articles of Organization",
       "ein": "Tax Identification Number (EIN)",
+      "ein_invalid": "Tax identification number is invalid.",
       "operating_agreement": "Operating Agreement",
-      "business_type": "Business Type"
+      "business_type": "Business Type",
+      "steps": {
+        "step1": "Applicant Information",
+        "step2": "Registration Address",
+        "step3": "Bank Account Information",
+        "step4": "Owner's Personal Address",
+        "step5": "LLC Type",
+        "step6": "Owners Identification",
+        "step7": "Document Certification"
+      }
     }
   }
 }

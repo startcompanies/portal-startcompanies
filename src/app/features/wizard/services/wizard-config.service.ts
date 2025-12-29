@@ -188,46 +188,53 @@ export class WizardConfigService {
           stepNumber: 3,
           component: null as any,
           icon: 'bi-person-vcard',
-          translationKey: 'WIZARD.steps.client',
+          translationKey: 'WIZARD.applicant.steps.step1',
           required: true
         },
         {
           stepNumber: 4,
           component: null as any,
           icon: 'bi-geo-alt',
-          translationKey: 'WIZARD.steps.company-address',
+          translationKey: 'WIZARD.applicant.steps.step2',
           required: true
         },
         {
           stepNumber: 5,
           component: null as any,
           icon: 'bi-bank',
-          translationKey: 'WIZARD.steps.bank-account',
+          translationKey: 'WIZARD.applicant.steps.step3',
           required: true
         },
         {
           stepNumber: 6,
           component: null as any,
-          icon: 'bi-house',
-          translationKey: 'WIZARD.steps.owner-address',
+          icon: 'bi-geo-alt',
+          translationKey: 'WIZARD.applicant.steps.step4',
           required: true
         },
         {
           stepNumber: 7,
           component: null as any,
-          icon: 'bi-diagram',
-          translationKey: 'WIZARD.steps.llc-type',
+          icon: 'bi-building',
+          translationKey: 'WIZARD.applicant.steps.step5',
           required: true,
         },
         {
           stepNumber: 8,
           component: null as any,
           icon: 'bi-people',
-          translationKey: 'WIZARD.steps.owners',
+          translationKey: 'WIZARD.applicant.steps.step6',
           required: true
         },
         {
           stepNumber: 9,
+          component: null as any,
+          icon: 'bi-check-circle',
+          translationKey: 'WIZARD.applicant.steps.step7',
+          required: true
+        },
+        {
+          stepNumber: 10,
           component: null as any,
           icon: 'bi-check-circle',
           translationKey: 'WIZARD.steps.review',
