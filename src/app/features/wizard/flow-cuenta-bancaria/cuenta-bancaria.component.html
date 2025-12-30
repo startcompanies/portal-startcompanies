@@ -60,6 +60,7 @@
       </div>
     </mat-step>
 
+    <!-- Dirección personal del propietario -->
     <mat-step [label]="stepTitles[withPayment ? 6 : 5] || ('WIZARD.steps.owner-personal-address' | transloco)">
       <div class="step-content-wrapper">
         <app-owner-personal-address-step [stepNumber]="withPayment ? 6 : 5"></app-owner-personal-address-step>

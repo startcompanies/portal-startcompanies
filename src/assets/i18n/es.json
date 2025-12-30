@@ -1010,15 +1010,30 @@
       "companyAddress": {
         "title": "Dirección del registro",
         "street": "Calle y número",
+        "street_placeholder": "Ej. 123 Main St",
         "street_required": "La calle y el número son obligatorios.",
         "unit": "Unidad",
+        "unit_placeholder": "Ej. Apt. 123",
         "city": "Ciudad",
-        "city_required": "La ciudad es obligatoria.",
+        "city_placeholder": "Ej. Miami",
         "state": "Estado",
+        "state_placeholder": "Selecciona un estado",
+        "state_options": {
+          "florida": "Florida",
+          "delaware": "Delaware",
+          "texas": "Texas",
+          "new_york": "Nueva York"
+        },
         "state_required": "El estado es obligatorio.",
         "postal_code": "Código postal",
+        "postal_code_placeholder": "Ej. 33130",
         "country": "País",
         "country_required": "El país es obligatorio.",
+        "country_options": {
+          "united_states": "Estados Unidos",
+          "spain": "España",
+          "argentina": "Argentina"
+        },
         "is_registered_agent": "¿Es el Registered Agent en USA?",
         "agent_name": "Nombre del Registered Agent",
         "agent_address": "Dirección del Registered Agent"

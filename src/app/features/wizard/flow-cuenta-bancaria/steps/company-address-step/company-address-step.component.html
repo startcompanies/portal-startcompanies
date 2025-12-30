@@ -4,97 +4,98 @@
     </h4>
 
     <form [formGroup]="form">
-
         <!-- Calle y número -->
         <div class="form-group mb-3">
-            <label for="street">
-                {{ 'WIZARD.bank_account.companyAddress.street' | transloco }}
-            </label>
-            <input id="street" class="form-control" formControlName="street" formGroupName="companyAddress" />
-            <div *ngIf="form.get('companyAddress.street')?.touched && form.get('companyAddress.street')?.invalid"
-                class="text-danger mt-1">
+            <label for="street">{{ 'WIZARD.bank_account.companyAddress.street' | transloco }}</label>
+            <input id="street" class="form-control" formControlName="street"
+                [placeholder]="'WIZARD.bank_account.companyAddress.street_placeholder' | transloco" />
+            <div *ngIf="form.get('street')?.touched && form.get('street')?.invalid" class="text-danger mt-1">
                 {{ 'WIZARD.bank_account.companyAddress.street_required' | transloco }}
             </div>
         </div>
 
         <!-- Unidad -->
         <div class="form-group mb-3">
-            <label for="unit">
-                {{ 'WIZARD.bank_account.companyAddress.unit' | transloco }}
-            </label>
-            <input id="unit" class="form-control" formControlName="unit" formGroupName="companyAddress" />
+            <label for="unit">{{ 'WIZARD.bank_account.companyAddress.unit' | transloco }}</label>
+            <input id="unit" class="form-control" formControlName="unit"
+                [placeholder]="'WIZARD.bank_account.companyAddress.unit_placeholder' | transloco" />
         </div>
 
         <!-- Ciudad -->
         <div class="form-group mb-3">
-            <label for="city">
-                {{ 'WIZARD.bank_account.companyAddress.city' | transloco }}
-            </label>
-            <input id="city" class="form-control" formControlName="city" formGroupName="companyAddress" />
+            <label for="city">{{ 'WIZARD.bank_account.companyAddress.city' | transloco }}</label>
+            <input id="city" class="form-control" formControlName="city"
+                [placeholder]="'WIZARD.bank_account.companyAddress.city_placeholder' | transloco" />
         </div>
 
         <!-- Estado -->
         <div class="form-group mb-3">
-            <label for="state">
-                {{ 'WIZARD.bank_account.companyAddress.state' | transloco }}
-            </label>
-            <select id="state" class="form-control" formControlName="state" formGroupName="companyAddress">
+            <label for="state">{{ 'WIZARD.bank_account.companyAddress.state' | transloco }}</label>
+            <select id="state" class="form-control" formControlName="state">
                 <option value="">{{ 'COMMON.select_option' | transloco }}</option>
-                <option value="CA">California</option>
-                <option value="TX">Texas</option>
-                <option value="FL">Florida</option>
-                <option value="NY">New York</option>
+                <option value="CA">{{ 'WIZARD.bank_account.companyAddress.state_options.florida' | transloco }}</option>
+                <option value="TX">{{ 'WIZARD.bank_account.companyAddress.state_options.delaware' | transloco }}
+                </option>
+                <option value="FL">{{ 'WIZARD.bank_account.companyAddress.state_options.texas' | transloco }}</option>
+                <option value="NY">{{ 'WIZARD.bank_account.companyAddress.state_options.new_york' | transloco }}
+                </option>
             </select>
         </div>
 
         <!-- Código postal -->
         <div class="form-group mb-3">
-            <label for="postalCode">
-                {{ 'WIZARD.bank_account.companyAddress.postal_code' | transloco }}
-            </label>
-            <input id="postalCode" class="form-control" formControlName="postalCode" formGroupName="companyAddress" />
+            <label for="postalCode">{{ 'WIZARD.bank_account.companyAddress.postal_code' | transloco }}</label>
+            <input id="postalCode" class="form-control" formControlName="postalCode"
+                [placeholder]="'WIZARD.bank_account.companyAddress.postal_code_placeholder' | transloco" />
         </div>
 
         <!-- País -->
         <div class="form-group mb-3">
-            <label for="country">
-                {{ 'WIZARD.bank_account.companyAddress.country' | transloco }}
-            </label>
-            <input id="country" class="form-control" formControlName="country" formGroupName="companyAddress"
-                [disabled]="true" />
-        </div>
-
-        <!-- Registered Agent -->
-        <div class="form-group mb-3">
-            <label>
-                {{ 'WIZARD.bank_account.companyAddress.is_registered_agent' | transloco }}
-            </label>
-            <select class="form-control" formControlName="isRegisteredAgentInUSA">
-                <option [ngValue]="true">
-                    {{ 'COMMON.yes' | transloco }}
+            <label for="country">{{ 'WIZARD.bank_account.companyAddress.country' | transloco }}</label>
+            <select name="country" id="country" class="form-control" formControlName="country">
+                <option value="">{{ 'COMMON.select_option' | transloco }}</option>
+                <option value="US">{{ 'WIZARD.bank_account.companyAddress.country_options.united_states' | transloco }}
                 </option>
-                <option [ngValue]="false">
-                    {{ 'COMMON.no' | transloco }}
+                <option value="ES">{{ 'WIZARD.bank_account.companyAddress.country_options.spain' | transloco }}</option>
+                <option value="AR">{{ 'WIZARD.bank_account.companyAddress.country_options.argentina' | transloco }}
                 </option>
             </select>
         </div>
 
-        <!-- Nombre Registered Agent -->
+        <!-- Is the Registered Agent in USA? -->
         <div class="form-group mb-3">
+            <label for="isRegisteredAgentInUSA">{{ 'WIZARD.bank_account.companyAddress.is_registered_agent' | transloco
+                }}</label>
+            <select name="isRegisteredAgentInUSA" id="isRegisteredAgentInUSA" class="form-control"
+                formControlName="isRegisteredAgentInUSA">
+                <option value="true">{{ 'COMMON.yes' | transloco }}</option>
+                <option value="false">{{ 'COMMON.no' | transloco }}</option>
+            </select>
+        </div>
+
+        <!-- Nombre Registered Agent -->
+        <div class="form-group mb-3" *ngIf="form.get('isRegisteredAgentInUSA')?.value === 'true' || form.get('isRegisteredAgentInUSA')?.value === true">
             <label for="registeredAgentName">
                 {{ 'WIZARD.bank_account.companyAddress.agent_name' | transloco }}
             </label>
             <input id="registeredAgentName" class="form-control" formControlName="registeredAgentName" />
+            <div *ngIf="form.get('registeredAgentName')?.touched && form.get('registeredAgentName')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.companyAddress.agent_name_required' | transloco }}
+            </div>
         </div>
 
         <!-- Dirección Registered Agent -->
-        <div class="form-group mb-3">
+        <div class="form-group mb-3" *ngIf="form.get('isRegisteredAgentInUSA')?.value === 'true' || form.get('isRegisteredAgentInUSA')?.value === true">
             <label for="registeredAgentAddress">
                 {{ 'WIZARD.bank_account.companyAddress.agent_address' | transloco }}
             </label>
             <textarea id="registeredAgentAddress" class="form-control" rows="4"
                 formControlName="registeredAgentAddress"></textarea>
+            <div *ngIf="form.get('registeredAgentAddress')?.touched && form.get('registeredAgentAddress')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.companyAddress.agent_address_required' | transloco }}
+            </div>
         </div>
-
     </form>
+
+
 </div>

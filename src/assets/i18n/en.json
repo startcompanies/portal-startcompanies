@@ -993,15 +993,30 @@
       "companyAddress": {
         "title": "Registration Address",
         "street": "Street and number",
+        "street_placeholder": "E.g., 123 Main St",
         "street_required": "The street and number are required.",
         "unit": "Unit",
+        "unit_placeholder": "E.g., Apt. 123",
         "city": "City",
-        "city_required": "The city is required.",
+        "city_placeholder": "E.g., Miami",
         "state": "State",
+        "state_placeholder": "Select a state",
+        "state_options": {
+          "florida": "Florida",
+          "delaware": "Delaware",
+          "texas": "Texas",
+          "new_york": "New York"
+        },
         "state_required": "The state is required.",
         "postal_code": "Postal Code",
+        "postal_code_placeholder": "E.g., 33130",
         "country": "Country",
         "country_required": "The country is required.",
+        "country_options": {
+          "united_states": "United States",
+          "spain": "Spain",
+          "argentina": "Argentina"
+        },
         "is_registered_agent": "Is the Registered Agent in USA?",
         "agent_name": "Registered Agent Name",
         "agent_address": "Registered Agent Address"
