@@ -15,17 +15,17 @@
 
                 <div class="form-group mb-3">
                     <label>{{ 'WIZARD.bank_account.owners.first_name' | transloco }}</label>
-                    <input class="form-control" formControlName="firstName" />
+                    <input class="form-control" formControlName="firstName" [placeholder]="'WIZARD.bank_account.owners.first_name_placeholder' | transloco" />
                 </div>
 
                 <div class="form-group mb-3">
                     <label>{{ 'WIZARD.bank_account.owners.paternal_last_name' | transloco }}</label>
-                    <input class="form-control" formControlName="paternalLastName" />
+                    <input class="form-control" formControlName="paternalLastName" [placeholder]="'WIZARD.bank_account.owners.paternal_last_name_placeholder' | transloco" />
                 </div>
 
                 <div class="form-group mb-3">
                     <label>{{ 'WIZARD.bank_account.owners.maternal_last_name' | transloco }}</label>
-                    <input class="form-control" formControlName="maternalLastName" />
+                    <input class="form-control" formControlName="maternalLastName" [placeholder]="'WIZARD.bank_account.owners.maternal_last_name_placeholder' | transloco" />
                 </div>
 
                 <div class="form-group mb-3">
@@ -45,7 +45,7 @@
 
                 <div class="form-group mb-3">
                     <label>{{ 'WIZARD.bank_account.owners.document_number' | transloco }}</label>
-                    <input class="form-control" formControlName="passportOrNationalId" />
+                    <input class="form-control" formControlName="passportOrNationalId" [placeholder]="'WIZARD.bank_account.owners.document_number_placeholder' | transloco" />
                 </div>
 
                 <div class="form-group mb-3">

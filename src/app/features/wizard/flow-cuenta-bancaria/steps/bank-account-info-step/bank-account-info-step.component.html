@@ -27,7 +27,7 @@
             <label for="swiftBicAba">
                 {{ 'WIZARD.bank_account.bankAccount.swift' | transloco }}
             </label>
-            <input id="swiftBicAba" class="form-control" formControlName="swiftBicAba" />
+            <input id="swiftBicAba" class="form-control" formControlName="swiftBicAba" [placeholder]="'WIZARD.bank_account.bankAccount.swift_placeholder' | transloco" />
         </div>
 
         <!-- Número de cuenta -->
@@ -35,7 +35,7 @@
             <label for="accountNumber">
                 {{ 'WIZARD.bank_account.bankAccount.account_number' | transloco }}
             </label>
-            <input id="accountNumber" class="form-control" formControlName="accountNumber" />
+            <input id="accountNumber" class="form-control" formControlName="accountNumber" [placeholder]="'WIZARD.bank_account.bankAccount.account_number_placeholder' | transloco" />
         </div>
 
         <!-- Tipo de cuenta -->
@@ -77,7 +77,7 @@
                 {{ 'WIZARD.bank_account.bankAccount.litigation_details' | transloco }}
             </label>
             <textarea id="litigationDetails" class="form-control" rows="4"
-                formControlName="litigationDetails"></textarea>
+                formControlName="litigationDetails" [placeholder]="'WIZARD.bank_account.bankAccount.litigation_details_placeholder' | transloco"></textarea>
 
             <div *ngIf="form.get('litigationDetails')?.touched && form.get('litigationDetails')?.invalid"
                 class="text-danger mt-1">

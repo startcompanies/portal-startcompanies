@@ -125,9 +125,9 @@ export class CuentaBancariaComponent implements OnInit {
   onFinish(): void {
     const allData = this.wizardStateService.getAllData();
     console.log('✅ Datos finales del wizard Cuenta Bancaria:', allData);
-    this.currentLang === 'es'
+    /*this.currentLang === 'es'
       ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
+      : this.router.navigate(['/en']);*/
   }
 
   onCancel(): void {

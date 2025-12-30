@@ -23,7 +23,7 @@
             <label for="applicantFirstName">
                 {{ 'WIZARD.bank_account.applicant.first_name' | transloco }}
             </label>
-            <input id="applicantFirstName" class="form-control" formControlName="applicantFirstName" />
+            <input id="applicantFirstName" class="form-control" formControlName="applicantFirstName" [placeholder]="'WIZARD.bank_account.applicant.first_name_placeholder' | transloco" />
             <div *ngIf="form.get('applicantFirstName')?.touched && form.get('applicantFirstName')?.invalid"
                 class="text-danger mt-1">
                 {{ 'WIZARD.bank_account.applicant.first_name_required' | transloco }}
@@ -35,7 +35,7 @@
             <label for="applicantPaternalLastName">
                 {{ 'WIZARD.bank_account.applicant.paternal_last_name' | transloco }}
             </label>
-            <input id="applicantPaternalLastName" class="form-control" formControlName="applicantPaternalLastName" />
+            <input id="applicantPaternalLastName" class="form-control" formControlName="applicantPaternalLastName" [placeholder]="'WIZARD.bank_account.applicant.paternal_last_name_placeholder' | transloco" />
         </div>
 
         <!-- Apellido Materno -->
@@ -43,7 +43,7 @@
             <label for="applicantMaternalLastName">
                 {{ 'WIZARD.bank_account.applicant.maternal_last_name' | transloco }}
             </label>
-            <input id="applicantMaternalLastName" class="form-control" formControlName="applicantMaternalLastName" />
+            <input id="applicantMaternalLastName" class="form-control" formControlName="applicantMaternalLastName" [placeholder]="'WIZARD.bank_account.applicant.maternal_last_name_placeholder' | transloco" />
         </div>
 
         <!-- Teléfono -->
@@ -51,7 +51,7 @@
             <label for="applicantPhone">
                 {{ 'WIZARD.bank_account.applicant.phone' | transloco }}
             </label>
-            <input id="applicantPhone" class="form-control" formControlName="applicantPhone" />
+            <input id="applicantPhone" class="form-control" formControlName="applicantPhone" [placeholder]="'WIZARD.bank_account.applicant.phone_placeholder' | transloco" />
         </div>
 
         <!-- Tipo de cuenta -->
@@ -87,7 +87,7 @@
             <label for="legalBusinessIdentifier">
                 {{ 'WIZARD.bank_account.applicant.legal_identifier' | transloco }}
             </label>
-            <input id="legalBusinessIdentifier" class="form-control" formControlName="legalBusinessIdentifier" />
+            <input id="legalBusinessIdentifier" class="form-control" formControlName="legalBusinessIdentifier" [placeholder]="'WIZARD.bank_account.applicant.legal_identifier_placeholder' | transloco" />
         </div>
 
         <!-- Industria -->
@@ -109,7 +109,7 @@
                 {{ 'WIZARD.bank_account.applicant.economic_activity' | transloco }}
             </label>
             <textarea id="economicActivity" class="form-control" rows="3" maxlength="200"
-                formControlName="economicActivity"></textarea>
+                formControlName="economicActivity" [placeholder]="'WIZARD.bank_account.applicant.economic_activity_placeholder' | transloco"></textarea>
         </div>
 
         <!-- EIN -->

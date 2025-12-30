@@ -10,7 +10,7 @@
             <label>
                 {{ 'WIZARD.bank_account.confirmation.certification' | transloco }}
             </label>
-            <textarea rows="5" class="form-control" formControlName="documentCertification"></textarea>
+            <textarea rows="5" class="form-control" formControlName="documentCertification" [placeholder]="'WIZARD.bank_account.confirmation.document_certification_placeholder' | transloco"></textarea>
         </div>
 
         <!-- Términos -->
@@ -36,12 +36,12 @@
 
             <div class="form-group mb-3">
                 <label>{{ 'WIZARD.bank_account.confirmation.validator.first_name' | transloco }}</label>
-                <input class="form-control" formControlName="firstName" />
+                <input class="form-control" formControlName="firstName" [placeholder]="'WIZARD.bank_account.confirmation.validator.first_name_placeholder' | transloco" />
             </div>
 
             <div class="form-group mb-3">
                 <label>{{ 'WIZARD.bank_account.confirmation.validator.last_name' | transloco }}</label>
-                <input class="form-control" formControlName="lastName" />
+                <input class="form-control" formControlName="lastName" [placeholder]="'WIZARD.bank_account.confirmation.validator.last_name_placeholder' | transloco" />
             </div>
 
             <div class="form-group mb-3">
@@ -71,7 +71,7 @@
 
             <div class="form-group mb-3">
                 <label>{{ 'WIZARD.bank_account.confirmation.validator.passport_number' | transloco }}</label>
-                <input class="form-control" formControlName="passportNumber" />
+                <input class="form-control" formControlName="passportNumber" [placeholder]="'WIZARD.bank_account.confirmation.validator.passport_number_placeholder' | transloco" />
             </div>
 
             <div class="form-group mb-3">
@@ -82,7 +82,7 @@
 
             <div class="form-group mb-3">
                 <label>{{ 'WIZARD.bank_account.confirmation.validator.email' | transloco }}</label>
-                <input type="email" class="form-control" formControlName="workEmail" />
+                <input type="email" class="form-control" formControlName="workEmail" [placeholder]="'WIZARD.bank_account.confirmation.validator.email_placeholder' | transloco" />
             </div>
 
             <div class="form-group mb-3">
@@ -94,7 +94,7 @@
 
             <div class="form-group mb-3">
                 <label>{{ 'WIZARD.bank_account.confirmation.validator.phone' | transloco }}</label>
-                <input class="form-control" formControlName="phone" />
+                <input class="form-control" formControlName="phone" [placeholder]="'WIZARD.bank_account.confirmation.validator.phone_placeholder' | transloco" />
             </div>
 
             <div class="form-group mb-3">
