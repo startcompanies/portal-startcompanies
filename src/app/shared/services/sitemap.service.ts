@@ -37,7 +37,7 @@ export class SitemapService {
    * Genera entrada de URL para un post
    */
   private generateUrlEntry(post: Post): string {
-    const url = `${this.baseUrl}/post/${post.slug}`;
+    const url = `${this.baseUrl}/blog/post/${post.slug}`;
     const lastmod = new Date(post.published_at).toISOString().split('T')[0];
     
     return `
@@ -120,7 +120,6 @@ Disallow: /api/
 
 # Allow blog
 Allow: /blog/
-Allow: /post/
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1`;

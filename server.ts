@@ -197,7 +197,7 @@ export function app(): express.Express {
       
       // Generar entradas de URL para cada post
       const postEntries = publishedPosts.map(post => {
-        const url = `${baseUrl}/post/${post.slug}`;
+        const url = `${baseUrl}/blog/post/${post.slug}`;
         const lastmod = post.published_at 
           ? new Date(post.published_at).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0];
@@ -430,42 +430,42 @@ export function app(): express.Express {
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>${baseUrl}/category/llc-formation</loc>
+    <loc>${baseUrl}/blog/category/llc-formation</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/en/category/llc-formation</loc>
+    <loc>${baseUrl}/en/blog/category/llc-formation</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/category/bank-accounts</loc>
+    <loc>${baseUrl}/blog/category/bank-accounts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/en/category/bank-accounts</loc>
+    <loc>${baseUrl}/en/blog/category/bank-accounts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/category/business-strategy</loc>
+    <loc>${baseUrl}/blog/category/business-strategy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/en/category/business-strategy</loc>
+    <loc>${baseUrl}/en/blog/category/business-strategy</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/category/tax-optimization</loc>
+    <loc>${baseUrl}/blog/category/tax-optimization</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>${baseUrl}/en/category/tax-optimization</loc>
+    <loc>${baseUrl}/en/blog/category/tax-optimization</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -499,11 +499,7 @@ Disallow: /api/
 
 # Allow blog and categories
 Allow: /blog/
-Allow: /category/
-Allow: /post/
 Allow: /en/blog/
-Allow: /en/category/
-Allow: /en/post/
 
 # Allow all landing pages and forms
 Allow: /abre-tu-llc

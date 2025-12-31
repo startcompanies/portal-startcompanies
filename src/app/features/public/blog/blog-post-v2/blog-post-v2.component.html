@@ -102,19 +102,19 @@
 <div [ngClass]="hasSections ? 'container-fluid my-5' : 'container my-5'" [class.landing-page-container]="hasSections">
   <div class="row">
     <main
-      [class]="hasSections ? 'col-12' : 'col-lg-8'"
+      [class]="hasSections ? 'col-12' : 'col-lg-9'"
       *ngIf="postArticle && postArticle.content; else noArticle"
     >
       <app-post-content [html]="hasSections ? remainingContent : postArticle.content" [isLandingPage]="hasSections"></app-post-content>
     </main>
 
     <ng-template #noArticle>
-      <main [class]="hasSections ? 'col-12' : 'col-lg-8'">
+      <main [class]="hasSections ? 'col-12' : 'col-lg-9'">
         <div class="alert alert-info">Artículo no disponible o cargando...</div>
       </main>
     </ng-template>
 
-    <aside class="col-lg-4 d-none d-lg-block" *ngIf="!hasSections">
+    <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections">
       <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
         <div class="card-header pt-4 sc-header">
           <p class="text-center">En este articulo</p>

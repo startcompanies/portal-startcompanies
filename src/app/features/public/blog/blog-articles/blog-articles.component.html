@@ -28,12 +28,12 @@
                   <div class="card-body">
                     <h3 class="card-title">{{ topArticle.title }}</h3>
                     <!--<a
-                      href="/post/{{ topArticle.slug }}"
+                      href="/blog/post/{{ topArticle.slug }}"
                       class="btn btn-light rounded-pill mt-3"
                       >{{ "CONTENT.blog.button" | transloco }}</a
                     >-->
                     <a
-                      [langRouterLink]="['/post', topArticle.slug]"
+                      [langRouterLink]="['/blog', 'post', topArticle.slug]"
                       class="btn btn-light rounded-pill mt-3"
                       >{{ "CONTENT.blog.button" | transloco }}</a
                     >
@@ -51,8 +51,8 @@
         <h4 class="category-title">{{ "BLOG.categories" | transloco }}</h4>
         <ul class="list-unstyled mb-0 category-list">
           <li *ngFor="let category of categories">
-            <!--<a href="/category/{{ category.slug }}">{{ category.name }}</a>-->
-            <a [langRouterLink]="['/category', category.slug]">{{
+            <!--<a href="/blog/category/{{ category.slug }}">{{ category.name }}</a>-->
+            <a [langRouterLink]="['/blog', 'category', category.slug]">{{
               category.name
             }}</a>
             <span class="badge text-secondary">({{ category.count }})</span>
@@ -80,12 +80,12 @@
               </p>
               <div class="container">
                 <!--<a
-                  href="/post/{{ mainArticle.slug }}"
+                  href="/blog/post/{{ mainArticle.slug }}"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
                   >{{ "CONTENT.blog.button" | transloco }}</a
                 >-->
                 <a
-                  [langRouterLink]="['/post', mainArticle.slug]"
+                  [langRouterLink]="['/blog', 'post', mainArticle.slug]"
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
                   >{{ "CONTENT.blog.button" | transloco }}</a
                 >

@@ -79,7 +79,7 @@ export class BlogSeoService {
    * Genera los datos SEO para un post específico
    */
   private generatePostSeoData(post: Post): SeoData {
-    const postUrl = `${this.baseUrl}/post/${post.slug}`;
+    const postUrl = `${this.baseUrl}/blog/post/${post.slug}`;
     const postImage = post.image_url || `${this.baseUrl}/assets/blog/default-post.webp`;
     
     // Generar keywords basadas en categorías y tags
@@ -216,11 +216,11 @@ export class BlogSeoService {
       "dateModified": post.published_at,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `${this.baseUrl}/post/${post.slug}`
+        "@id": `${this.baseUrl}/blog/post/${post.slug}`
       },
       "articleSection": post.categories.map(cat => cat.name).join(', '),
       "keywords": this.generateKeywords(post),
-      "url": `${this.baseUrl}/post/${post.slug}`
+      "url": `${this.baseUrl}/blog/post/${post.slug}`
     };
 
     this.addJsonLdScript(structuredData);
@@ -260,8 +260,14 @@ export class BlogSeoService {
 
   /**
    * Añade script JSON-LD al head del documento
+   * Solo se ejecuta en el navegador (no en SSR)
    */
   private addJsonLdScript(data: any): void {
+    // Verificar que estamos en el navegador antes de acceder a document
+    if (!isPlatformBrowser(this.platformId)) {
+      return; // No hacer nada en SSR
+    }
+
     // Remover script anterior si existe
     const existingScript = document.querySelector('script[type="application/ld+json"]');
     if (existingScript) {
@@ -279,7 +285,7 @@ export class BlogSeoService {
    * Genera URL canónica para un post
    */
   generateCanonicalUrl(slug: string): string {
-    return `${this.baseUrl}/post/${slug}`;
+    return `${this.baseUrl}/blog/post/${slug}`;
   }
 
   /**
