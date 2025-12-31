@@ -22,7 +22,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   sanitizedHtml: SafeHtml = '';
   isBrowser = false;
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
-  private calendlyLoaded = false;
+  private calendlyInitialized = new Set<string>();
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -37,8 +37,8 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   ngOnChanges() {
     if (this.isBrowser) {
       this.sanitizeHtml();
-      // Resetear el flag cuando cambia el contenido
-      this.calendlyLoaded = false;
+      // Resetear los IDs inicializados cuando cambia el contenido
+      this.calendlyInitialized.clear();
       // Esperar a que el contenido se renderice después del cambio
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
@@ -256,23 +256,32 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return match;
     });
     
-    // Agregar estilos e icono de flecha a enlaces que contengan "Abrir tu LLC"
+    // Agregar estilos e icono de flecha a enlaces que contengan "Abrir tu LLC" o "Abre tu corporation" o que estén dentro de mission-card o secciones con background-image
     content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
       // Limpiar el contenido del enlace para comparar (eliminar HTML interno y espacios)
       const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
-      // Verificar si el contenido del enlace contiene el texto "Abrir tu LLC" (case insensitive)
+      // Verificar si el contenido del enlace contiene el texto "Abrir tu LLC" o "Abre tu corporation" (case insensitive)
       const hasAbrirLLCText = /abrir\s+tu\s+llc/i.test(cleanContent);
+      const hasAbreLLCText = /abre\s+tu\s+llc/i.test(cleanContent);
+      const hasAbreCorpText = /abre\s+tu\s+corporation|abre\s+tu\s+corp/i.test(cleanContent);
       // Verificar si el enlace ya tiene los estilos aplicados
-      const hasStyles = match.includes('abrir-llc-btn');
+      const hasStyles = match.includes('abrir-llc-btn') || match.includes('background-color: var(--color-secundario-tecnico)');
       
-      if (hasAbrirLLCText && !hasStyles) {
+      // Verificar si el enlace está dentro de una mission-card o sección con background-image
+      // Buscar el contexto anterior (hasta 2000 caracteres antes) para ver si hay mission-card o section con background-image
+      const contextStart = Math.max(0, content.indexOf(match) - 2000);
+      const contextBefore = content.substring(contextStart, content.indexOf(match));
+      const isInMissionCard = /mission-card/i.test(contextBefore);
+      const isInBackgroundSection = /section[^>]*style\s*=\s*["'][^"']*background-image[^"']*["']/i.test(contextBefore);
+      
+      if ((hasAbrirLLCText || hasAbreLLCText || hasAbreCorpText || isInMissionCard || isInBackgroundSection) && !hasStyles) {
         // Obtener los atributos existentes de toda la etiqueta
         const allAttrs = beforeHref + afterHref;
         const classMatch = allAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
         const styleMatch = allAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
         
-        // Construir los nuevos estilos (reemplazando cualquier estilo existente)
-        const newStyles = 'background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: 0.75rem 1.5rem; font-weight: 600; font-size: 1rem; display: inline-flex; align-items: center; transition: background-color 0.3s ease;';
+        // Construir los nuevos estilos según las especificaciones del usuario
+        const newStyles = 'background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;';
         
         // Mantener las clases existentes y añadir abrir-llc-btn si no existe
         let newClass = 'abrir-llc-btn';
@@ -317,58 +326,215 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         
         // Verificar si el contenido ya tiene el icono
         const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
-        const iconHtml = hasIcon ? '' : '<i class="bi bi-arrow-right me-2"></i>';
+        const iconHtml = hasIcon ? '' : '<i class="bi bi-arrow-right ms-2"></i>';
         
-        // Construir el nuevo enlace con el icono antes del contenido
-        return `<a ${newBeforeHref}href="${href}"${newAfterHref}>${iconHtml}${linkContent}</a>`;
+        // Construir el nuevo enlace con el icono después del contenido (como en el ejemplo del usuario)
+        return `<a ${newBeforeHref}href="${href}"${newAfterHref}>${linkContent}${iconHtml}</a>`;
       }
       return match;
     });
     
-    // Agregar iconos de flecha hacia abajo a los botones de acordeón que no los tengan
-    // El icono debe estar al final del botón (no después del span) para que justify-content: space-between funcione
-    content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {
-      // Verificar si el botón ya tiene un icono accordion-icon
-      if (!match.includes('accordion-icon')) {
-        // Crear el SVG de flecha hacia abajo (igual al ejemplo)
-        const arrowIcon = `<svg class="accordion-icon" style="width: 16px; height: 16px; transition: transform 0.3s;" viewBox="0 0 192 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 384.662V127.338c0-17.818 21.543-26.741 34.142-14.142l128.662 128.662c7.81 7.81 7.81 20.474 0 28.284L34.142 398.804C21.543 411.404 0 402.48 0 384.662z"></path></svg>`;
-        // Asegurar que el botón tenga los estilos necesarios para el layout flex, pero SIN width: 100%
-        let styleAttr = afterClass.match(/style\s*=\s*["']([^"']*)["']/i);
-        let newAfterClass = afterClass;
+    // Añadir enlace de WhatsApp después del contenido de cada item de FAQ
+    if (this.isBrowser) {
+      try {
+        const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+        const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
         
-        if (styleAttr) {
-          const existingStyle = styleAttr[1];
-          // Eliminar width: 100% si existe
-          let newStyle = existingStyle.replace(/width\s*:\s*100%\s*;?/gi, '').trim();
-          // Limpiar dobles espacios y puntos y comas extra
-          newStyle = newStyle.replace(/\s*;\s*;/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '');
+        // Usar DOM parsing para encontrar correctamente los divs custom-accordion-content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        
+        const accordionContents = tempDiv.querySelectorAll('.custom-accordion-content');
+        accordionContents.forEach((accordionContent: Element) => {
+          const accordionElement = accordionContent as HTMLElement;
+          const innerHTML = accordionElement.innerHTML;
           
-          // Asegurar que tenga display: flex
-          if (!newStyle.includes('display:') && !newStyle.includes('display ')) {
-            newStyle = newStyle + (newStyle ? '; ' : '') + 'display: flex;';
+          // Verificar si ya tiene el enlace de WhatsApp
+          if (innerHTML.includes('Contáctanos por WhatsApp') || innerHTML.includes('Contactar por WhatsApp') || innerHTML.includes(whatsappUrl)) {
+            return;
           }
           
-          // Asegurar que tenga justify-content: space-between
-          if (!newStyle.includes('justify-content:')) {
-            newStyle = newStyle + (newStyle ? ' ' : '') + 'justify-content: space-between;';
+          // Añadir el enlace al final del contenido
+          accordionElement.innerHTML = innerHTML + whatsappLinkHtml;
+        });
+        
+        content = tempDiv.innerHTML;
+      } catch (error) {
+        console.warn('Error añadiendo enlaces de WhatsApp a FAQs:', error);
+        // Fallback con regex si falla el DOM parsing
+        const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+        const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
+        
+        // Buscar divs con clase custom-accordion-content usando regex más preciso
+        // Buscar el patrón completo: div con la clase, contenido, y cierre del div
+        content = content.replace(/(<div\s+[^>]*?class\s*=\s*["'][^"']*\bcustom-accordion-content\b[^"']*["'][^>]*>)([\s\S]*?)(<\/div>\s*(?=<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-button|<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-item|$))/gi, (match, divStart, divContent, divEnd) => {
+          // Verificar si ya tiene el enlace de WhatsApp
+          if (divContent.includes('Contáctanos por WhatsApp') || divContent.includes('Contactar por WhatsApp') || divContent.includes(whatsappUrl)) {
+            return match;
           }
           
-          // Asegurar que tenga align-items: center
-          if (!newStyle.includes('align-items:')) {
-            newStyle = newStyle + (newStyle ? ' ' : '') + 'align-items: center;';
-          }
-          
-          newAfterClass = afterClass.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyle}"`);
-        } else {
-          // Si no tiene style, añadirlo completo SIN width: 100%
-          newAfterClass = afterClass + ' style="text-align: left; background: none; border: none; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"';
+          // Añadir el enlace antes del cierre del div
+          return `${divStart}${divContent}${whatsappLinkHtml}${divEnd}`;
+        });
+      }
+    } else {
+      // Fallback con regex si no estamos en el navegador
+      const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
+      const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
+      
+      content = content.replace(/(<div\s+[^>]*?class\s*=\s*["'][^"']*\bcustom-accordion-content\b[^"']*["'][^>]*>)([\s\S]*?)(<\/div>\s*(?=<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-button|<div[^>]*class\s*=\s*["'][^"']*\bcustom-accordion-item|$))/gi, (match, divStart, divContent, divEnd) => {
+        if (divContent.includes('Contáctanos por WhatsApp') || divContent.includes('Contactar por WhatsApp') || divContent.includes(whatsappUrl)) {
+          return match;
+        }
+        return `${divStart}${divContent}${whatsappLinkHtml}${divEnd}`;
+      });
+    }
+    
+    // Reemplazar el contenido del botón de acordeón con solo el icono
+    // Extraer el texto del span dentro del botón y mantenerlo, pero reemplazar el SVG con el icono
+    content = content.replace(/<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi, (match, beforeClass, classAttr, afterClass, buttonContent) => {
+      // Extraer el texto del span dentro del botón
+      const spanMatch = buttonContent.match(/<span[^>]*>([\s\S]*?)<\/span>/i);
+      const questionText = spanMatch ? spanMatch[1] : buttonContent.replace(/<[^>]*>/g, '').trim();
+      
+      // Verificar si ya tiene el icono faq-arrow-icon
+      if (match.includes('faq-arrow-icon')) {
+        return match;
+      }
+      
+      // Crear el nuevo contenido del botón: h2 con el texto + icono
+      const faqArrowIcon = '<i class="bi bi-chevron-down faq-arrow-icon" style="margin: 0 0.5rem;"></i>';
+      const newButtonContent = `<h2 style="font-size: 1.1rem; margin: 0;">${questionText}</h2>${faqArrowIcon}`;
+      
+      // Asegurar que el botón tenga los estilos necesarios para el layout flex
+      let styleAttr = afterClass.match(/style\s*=\s*["']([^"']*)["']/i);
+      let newAfterClass = afterClass;
+      
+      if (styleAttr) {
+        const existingStyle = styleAttr[1];
+        // Eliminar width: 100% si existe
+        let newStyle = existingStyle.replace(/width\s*:\s*100%\s*;?/gi, '').trim();
+        // Limpiar dobles espacios y puntos y comas extra
+        newStyle = newStyle.replace(/\s*;\s*;/g, ';').replace(/^\s*;\s*/, '').replace(/\s*;\s*$/, '');
+        
+        // Asegurar que tenga display: flex
+        if (!newStyle.includes('display:') && !newStyle.includes('display ')) {
+          newStyle = newStyle + (newStyle ? '; ' : '') + 'display: flex;';
         }
         
-        // Añadir el icono al final del contenido del botón
-        return `<button ${beforeClass}class="${classAttr}"${newAfterClass}>${buttonContent}${arrowIcon}</button>`;
+        // Asegurar que tenga justify-content: space-between
+        if (!newStyle.includes('justify-content:')) {
+          newStyle = newStyle + (newStyle ? ' ' : '') + 'justify-content: space-between;';
+        }
+        
+        // Asegurar que tenga align-items: center
+        if (!newStyle.includes('align-items:')) {
+          newStyle = newStyle + (newStyle ? ' ' : '') + 'align-items: center;';
+        }
+        
+        newAfterClass = afterClass.replace(/style\s*=\s*["'][^"']*["']/i, `style="${newStyle}"`);
+      } else {
+        // Si no tiene style, añadirlo completo
+        newAfterClass = afterClass + ' style="text-align: left; background: none; border: none; padding: 1rem 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;"';
       }
-      return match;
+      
+      // Reemplazar el contenido del botón con h2 + icono
+      return `<button ${beforeClass}class="${classAttr}"${newAfterClass}>${newButtonContent}</button>`;
     });
+    
+    // Aplicar estilo mission-card a estructuras similares (row con col-lg-6 que contengan imagen y contenido)
+    // Solo para landing pages
+    if (this.isLandingPage) {
+      // Buscar divs con clase "row" que contengan col-lg-6 y que tengan imagen y contenido
+      content = content.replace(/(<div\s+[^>]*class\s*=\s*["'][^"']*row[^"']*["'][^>]*>)([\s\S]*?)(<\/div>)/gi, (match: string, rowStart: string, rowContent: string, rowEnd: string) => {
+        // Verificar si ya tiene la clase mission-card
+        if (rowStart.includes('mission-card')) {
+          return match;
+        }
+        
+        // Verificar si tiene col-lg-6 y contiene imagen y contenido
+        const hasColLg6 = /col-lg-6/i.test(rowContent);
+        const hasImage = /<img[^>]*>/i.test(rowContent) || /mission-image/i.test(rowContent);
+        const hasContent = /mission-content|col-lg-6[\s\S]{50,}/i.test(rowContent); // Al menos 50 caracteres de contenido
+        
+        if (hasColLg6 && hasImage && hasContent) {
+          // Agregar la clase mission-card y los estilos necesarios
+          let newRowStart = rowStart;
+          
+          // Agregar mission-card a las clases
+          const classMatch = rowStart.match(/class\s*=\s*["']([^"']*)["']/i);
+          if (classMatch) {
+            const existingClasses = classMatch[1];
+            if (!existingClasses.includes('mission-card')) {
+              const newClasses = `${existingClasses} mission-card align-items-center my-5 g-5 py-5`;
+              newRowStart = rowStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClasses}"`);
+            }
+          } else {
+            // Si no tiene class, agregarlo
+            newRowStart = rowStart.replace(/>/, ' class="mission-card row align-items-center my-5 g-5 py-5">');
+          }
+          
+          // Asegurar que las columnas tengan mt-0
+          let processedContent = rowContent.replace(/(<div\s+[^>]*class\s*=\s*["']([^"']*col-lg-6[^"']*)["'][^>]*>)/gi, (colMatch: string, colStart: string, colClasses: string) => {
+            if (!colStart.includes('mt-0')) {
+              const newColClasses = colClasses.includes('mt-0') ? colClasses : `${colClasses} mt-0`;
+              return colStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newColClasses}"`);
+            }
+            return colMatch;
+          });
+          
+          // Asegurar que las imágenes tengan mission-image-container y mission-image
+          processedContent = processedContent.replace(/(<div\s+[^>]*>)\s*(<img\s+[^>]*>)/gi, (imgMatch: string, divStart: string, imgTag: string) => {
+            // Verificar si ya está dentro de mission-image-container
+            if (imgMatch.includes('mission-image-container')) {
+              return imgMatch;
+            }
+            // Verificar si el div padre tiene mission-image-container
+            const parentDiv = imgMatch.match(/<div\s+[^>]*>/);
+            if (parentDiv && parentDiv[0].includes('mission-image-container')) {
+              return imgMatch;
+            }
+            // Envolver la imagen con mission-image-container si no está envuelta
+            return `<div class="mission-image-container">${imgTag}</div>`;
+          });
+          
+          // Asegurar que las imágenes tengan la clase mission-image
+          processedContent = processedContent.replace(/(<img\s+[^>]*class\s*=\s*["']([^"']*)["'][^>]*>)/gi, (imgMatch: string, imgStart: string, imgClasses: string) => {
+            if (!imgClasses.includes('mission-image')) {
+              const newImgClasses = `${imgClasses} mission-image img-fluid`;
+              return imgStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newImgClasses}"`);
+            }
+            return imgMatch;
+          });
+          
+          // Asegurar que el contenido tenga mission-content
+          processedContent = processedContent.replace(/(<div\s+[^>]*class\s*=\s*["']([^"']*col-lg-6[^"']*)["'][^>]*>)\s*(<div\s+[^>]*>)/gi, (contentMatch: string, colStart: string, colClasses: string, contentDivStart: string) => {
+            // Verificar si el contenido div tiene mission-content
+            if (!contentDivStart.includes('mission-content')) {
+              // Verificar si el contenido div no tiene clase
+              if (!contentDivStart.match(/class\s*=/i)) {
+                return `${colStart}<div class="mission-content">`;
+              } else {
+                // Agregar mission-content a las clases existentes
+                const contentClassMatch = contentDivStart.match(/class\s*=\s*["']([^"']*)["']/i);
+                if (contentClassMatch) {
+                  const existingContentClasses = contentClassMatch[1];
+                  if (!existingContentClasses.includes('mission-content')) {
+                    const newContentClasses = `${existingContentClasses} mission-content`;
+                    return `${colStart}${contentDivStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newContentClasses}"`)}`;
+                  }
+                }
+              }
+            }
+            return contentMatch;
+          });
+          
+          return `${newRowStart}${processedContent}${rowEnd}`;
+        }
+        
+        return match;
+      });
+    }
     
     // Agregar iconos de estrellas después del span con clase veredicto-rating-number
     // Buscar todos los spans completos con veredicto-rating-number y añadir iconos después si no existen
@@ -427,10 +593,10 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   }
 
   /**
-   * Detecta si hay un div con id "my-cal-inline" y carga el Calendly inline
+   * Detecta si hay divs con id "my-cal-inline" y carga todos los Calendly inline
    */
   private loadCalendlyIfNeeded(): void {
-    if (!this.isBrowser || this.calendlyLoaded) {
+    if (!this.isBrowser) {
       return;
     }
 
@@ -438,19 +604,53 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       return;
     }
 
-    // Buscar el div con id "my-cal-inline" en el contenido renderizado
-    const calendlyDiv = this.contentContainer.nativeElement.querySelector('#my-cal-inline');
+    // Buscar TODOS los divs con id "my-cal-inline" en el contenido renderizado
+    // Nota: querySelectorAll puede no encontrar todos los divs si tienen IDs duplicados,
+    // así que buscamos manualmente todos los divs y verificamos su id
+    const container = this.contentContainer.nativeElement;
     
-    if (calendlyDiv && !this.calendlyLoaded) {
-      this.calendlyLoaded = true;
-      this.initializeCalendly();
+    // Buscar todos los divs en el contenedor y filtrar los que tienen id relacionado con "my-cal-inline"
+    const allDivs = Array.from(container.querySelectorAll('div')) as HTMLElement[];
+    let calendlyDivs = allDivs.filter(div => {
+      const id = div.getAttribute('id') || '';
+      return id.includes('my-cal-inline');
+    });
+    
+    // Si no encontramos ninguno, buscar por id exacto (puede haber solo uno)
+    if (calendlyDivs.length === 0) {
+      const singleDiv = container.querySelector('#my-cal-inline') as HTMLElement;
+      if (singleDiv) {
+        calendlyDivs = [singleDiv];
+      }
     }
+    
+    // Si hay múltiples divs con el mismo ID, necesitamos generar IDs únicos
+    calendlyDivs.forEach((div, index) => {
+      let currentId = div.getAttribute('id') || '';
+      let uniqueId = currentId;
+      
+      // Si el ID es "my-cal-inline" y hay más de uno, generar un ID único
+      if (currentId === 'my-cal-inline' && calendlyDivs.length > 1) {
+        uniqueId = `my-cal-inline-${index}`;
+        div.setAttribute('id', uniqueId);
+      } else if (!currentId || currentId === '') {
+        // Si no tiene ID, asignarle uno
+        uniqueId = `my-cal-inline-${index}`;
+        div.setAttribute('id', uniqueId);
+      }
+      
+      // Inicializar cada Calendly si no ha sido inicializado
+      if (!this.calendlyInitialized.has(uniqueId)) {
+        this.calendlyInitialized.add(uniqueId);
+        this.initializeCalendly(uniqueId, index);
+      }
+    });
   }
 
   /**
-   * Inicializa el widget de Calendly inline
+   * Inicializa el widget de Calendly inline para un elemento específico
    */
-  private async initializeCalendly(): Promise<void> {
+  private async initializeCalendly(elementId: string, index: number): Promise<void> {
     if (typeof window === 'undefined') {
       return;
     }
@@ -512,20 +712,25 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         };
     })(window, 'https://app.cal.com/embed/embed.js', 'init');
 
+    // Crear un namespace único para cada instancia de Calendly
+    const namespace = `30min-${index}`;
+
     // Esperar a que Cal esté disponible y luego inicializar
     const initCalendly = () => {
       if (window.Cal) {
         window.Cal.config = window.Cal.config || {};
         window.Cal.config.forwardQueryParams = true;
 
-        window.Cal('init', '30min', { origin: 'https://cal.com' });
+        // Inicializar el namespace único para este Calendly
+        window.Cal('init', namespace, { origin: 'https://cal.com' });
 
-        window.Cal.ns['30min']('inline', {
-          elementOrSelector: '#my-cal-inline',
+        // Inicializar el widget inline en el elemento específico
+        window.Cal.ns[namespace]('inline', {
+          elementOrSelector: `#${elementId}`,
           calLink: calLink,
         });
 
-        window.Cal.ns['30min']('ui', {
+        window.Cal.ns[namespace]('ui', {
           cssVarsPerTheme: {
             light: { 'cal-brand': '#006AFE' },
             dark: { 'cal-brand': '#fafafa' },

@@ -40,7 +40,7 @@
 
   <div class="container position-relative">
     <div class="mission-card row align-items-center my-5 g-5 py-5">
-      <div class="col-lg-6">
+      <div class="col-lg-6 mt-0">
         <div class="mission-image-container">
           <img
             [src]="firstSectionImage || postArticle.image_url"
@@ -49,7 +49,7 @@
           />
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-6 mt-0">
         <div class="mission-content">
           <h2 class="mission-title">{{ postArticle.title }}</h2>
           <div class="mission-description" [innerHTML]="getSanitizedFirstSection()"></div>
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons">
+    <div class="social-share-buttons d-none d-lg-block">
       <button
         type="button"
         class="social-share-btn whatsapp-btn"

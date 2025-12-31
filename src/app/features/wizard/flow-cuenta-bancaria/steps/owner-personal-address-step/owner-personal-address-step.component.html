@@ -1,0 +1,83 @@
+<div class="client-form-cuenta">
+    <h4 class="mb-3">
+      {{ 'WIZARD.bank_account.ownerAddress.title' | transloco }}
+    </h4>
+  
+    <form [formGroup]="form">
+  
+      <!-- ¿Misma dirección? -->
+      <div class="form-group mb-3">
+        <label>
+          {{ 'WIZARD.bank_account.ownerAddress.same_as_business' | transloco }}
+        </label>
+        <select
+          class="form-control"
+          formControlName="isSameAddressAsBusiness"
+        >
+          <option [ngValue]="true">{{ 'COMMON.yes' | transloco }}</option>
+          <option [ngValue]="false">{{ 'COMMON.no' | transloco }}</option>
+        </select>
+      </div>
+  
+      <!-- Dirección personal -->
+      <div
+        formGroupName="ownerPersonalAddress"
+        *ngIf="form.get('isSameAddressAsBusiness')?.value === false"
+      >
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.street' | transloco }}</label>
+          <input class="form-control" formControlName="street" />
+        </div>
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.unit' | transloco }}</label>
+          <input class="form-control" formControlName="unit" />
+        </div>
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.city' | transloco }}</label>
+          <input class="form-control" formControlName="city" />
+        </div>
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.state' | transloco }}</label>
+          <input class="form-control" formControlName="state" />
+        </div>
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.postal_code' | transloco }}</label>
+          <input class="form-control" formControlName="postalCode" />
+        </div>
+  
+        <div class="form-group mb-3">
+          <label>{{ 'WIZARD.bank_account.ownerAddress.country' | transloco }}</label>
+          <input class="form-control" formControlName="country" />
+        </div>
+  
+      </div>
+  
+      <!-- Comprobante de domicilio -->
+      <div class="form-group mb-3">
+        <label>
+          {{ 'WIZARD.bank_account.ownerAddress.proof' | transloco }}
+        </label>
+        <input
+          type="file"
+          class="form-control"
+          multiple
+          accept="application/pdf,image/jpeg,image/png"
+          (change)="onFileChange($event)"
+        />
+  
+        <div
+          *ngIf="form.get('proofOfAddress')?.touched && form.get('proofOfAddress')?.invalid"
+          class="text-danger mt-1"
+        >
+          {{ 'WIZARD.bank_account.ownerAddress.proof_required' | transloco }}
+        </div>
+      </div>
+  
+    </form>
+  </div>
+  

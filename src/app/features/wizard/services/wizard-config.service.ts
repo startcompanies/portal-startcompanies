@@ -166,7 +166,7 @@ export class WizardConfigService {
   private getCuentaBancariaSinPagoConfig(): WizardFlowConfig {
     return {
       flowType: WizardFlowType.CUENTA_BANCARIA_SIN_PAGO,
-      totalSteps: 3,
+      totalSteps: 10,
       showStateSelection: false,
       showPayment: false,
       steps: [
@@ -186,6 +186,55 @@ export class WizardConfigService {
         },
         {
           stepNumber: 3,
+          component: null as any,
+          icon: 'bi-person-vcard',
+          translationKey: 'WIZARD.bank_account.steps.step1',
+          required: true
+        },
+        {
+          stepNumber: 4,
+          component: null as any,
+          icon: 'bi-geo-alt',
+          translationKey: 'WIZARD.bank_account.steps.step2',
+          required: true
+        },
+        {
+          stepNumber: 5,
+          component: null as any,
+          icon: 'bi-bank',
+          translationKey: 'WIZARD.bank_account.steps.step3',
+          required: true
+        },
+        {
+          stepNumber: 6,
+          component: null as any,
+          icon: 'bi-geo-alt',
+          translationKey: 'WIZARD.bank_account.steps.step4',
+          required: true
+        },
+        {
+          stepNumber: 7,
+          component: null as any,
+          icon: 'bi-building',
+          translationKey: 'WIZARD.bank_account.steps.step5',
+          required: true,
+        },
+        {
+          stepNumber: 8,
+          component: null as any,
+          icon: 'bi-people',
+          translationKey: 'WIZARD.bank_account.steps.step6',
+          required: true
+        },
+        {
+          stepNumber: 9,
+          component: null as any,
+          icon: 'bi-check-circle',
+          translationKey: 'WIZARD.bank_account.steps.step7',
+          required: true
+        },
+        {
+          stepNumber: 10,
           component: null as any,
           icon: 'bi-check-circle',
           translationKey: 'WIZARD.steps.review',

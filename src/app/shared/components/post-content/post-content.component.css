@@ -18,6 +18,15 @@
   }
 }
 
+/* Estilos para enlaces dentro de secciones con background image */
+.app-post-content section[style*="background-image"] a,
+section[style*="background-image"] a {
+  font-size: 16px !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  background-color: #f1e2d9 !important;
+}
+
 /* Estilos para abre-corp-card */
 .app-post-content .abre-corp-card,
 .abre-corp-card {

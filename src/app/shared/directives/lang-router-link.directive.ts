@@ -47,10 +47,24 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
 
   private normalizeCommands(cmds: any[] | string): any[] {
     const arr = Array.isArray(cmds) ? cmds.slice() : [cmds];
-    if (arr.length > 0 && typeof arr[0] === 'string') {
-      arr[0] = (arr[0] as string).replace(/^\/+/, ''); // quitar slashes iniciales
+    
+    // Dividir comandos que contienen diagonales en segmentos separados
+    const result: any[] = [];
+    for (const cmd of arr) {
+      if (typeof cmd === 'string') {
+        const cleaned = cmd.replace(/^\/+/, ''); // quitar slashes iniciales
+        if (cleaned.includes('/')) {
+          // Dividir por diagonales y filtrar segmentos vacíos
+          const segments = cleaned.split('/').filter(s => s.length > 0);
+          result.push(...segments);
+        } else {
+          result.push(cleaned);
+        }
+      } else {
+        result.push(cmd);
+      }
     }
-    return arr;
+    return result;
   }
 
   private updateHref() {
@@ -111,7 +125,8 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'abotax': 'abotax',
             'category': 'category',
             'post': 'post',
-            'registro-cliente': 'client-register'
+            'registro-cliente': 'client-register',
+            'cuenta-bancaria': 'bank-account',
           };
           return routeMapping[cmd] || cmd;
         }
@@ -138,7 +153,8 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'fixcal': 'fixcal',
             'abotax': 'abotax',
             'category': 'category',
-            'post': 'post'
+            'post': 'post',
+            'bank-account': 'cuenta-bancaria',
           };
           return routeMapping[cmd] || cmd;
         }

@@ -3,17 +3,17 @@ import { ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
-import { ScHeaderComponent } from '../../sc-header/sc-header.component';
+import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
-import { SeoBaseComponent } from '../../shared/components/seo-base/seo-base.component';
-import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
-import { BlogComponent } from '../../sections/blog/blog.component';
+import { SeoBaseComponent } from '../../../../shared/components/seo-base/seo-base.component';
+import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
+import { BlogComponent } from '../../home/sections/blog/blog.component';
 import { SharedModule } from '../../../../shared/shared/shared.module';
-import { PostContentComponent } from '../../shared/components/post-content/post-content.component';
+import { PostContentComponent } from '../../../../shared/components/post-content/post-content.component';
 
-import { BlogService } from '../../services/blog.service';
-import { BlogSeoService } from '../../services/blog-seo.service';
-import { Post } from '../../shared/models/post.model';
+import { BlogService } from '../../../../shared/services/blog.service';
+import { BlogSeoService } from '../../../../shared/services/blog-seo.service';
+import { Post } from '../../../../shared/models/post.model';
 
 @Component({
   selector: 'app-blog-post',
