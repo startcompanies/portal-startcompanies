@@ -50,6 +50,17 @@
         Procesos
       </button>
     </li>
+    <li *ngIf="isAdmin" class="nav-item" role="presentation">
+      <button 
+        class="nav-link" 
+        [class.active]="activeTab === 'zoho'"
+        (click)="setActiveTab('zoho')"
+        type="button"
+      >
+        <i class="bi bi-cloud me-2"></i>
+        Zoho CRM
+      </button>
+    </li>
   </ul>
 
   <!-- Messages -->
@@ -308,6 +319,217 @@
       </form>
     </div>
   </div>
+
+  <!-- Tab Content: Zoho Config (Admin Only) -->
+  <div *ngIf="activeTab === 'zoho' && isAdmin" class="tab-content">
+    <div class="settings-card">
+      <h4>Configuración de Zoho CRM</h4>
+      <p class="text-muted">Gestiona la autenticación OAuth con Zoho CRM para sincronización de datos</p>
+
+      <!-- Lista de Configuraciones Existentes -->
+      <div *ngIf="zohoConfigs.length > 0" class="mb-4">
+        <h5>Configuraciones Existentes</h5>
+        <div class="list-group">
+          <div 
+            *ngFor="let config of zohoConfigs" 
+            class="list-group-item d-flex justify-content-between align-items-center"
+            [class.active]="selectedConfig?.id === config.id"
+            (click)="selectConfig(config)"
+            style="cursor: pointer;"
+          >
+            <div>
+              <strong>{{ config.org }}</strong> - {{ config.service }} ({{ config.region }})
+              <br>
+              <small class="text-muted">
+                <span *ngIf="config.refresh_token" class="text-success">
+                  <i class="bi bi-check-circle"></i> Token configurado
+                </span>
+                <span *ngIf="!config.refresh_token" class="text-warning">
+                  <i class="bi bi-exclamation-triangle"></i> Sin token
+                </span>
+                | Creado: {{ config.createdAt | date:'short' }}
+              </small>
+            </div>
+            <button 
+              class="btn btn-sm btn-danger"
+              (click)="deleteZohoConfig(config); $event.stopPropagation()"
+              [disabled]="isLoading"
+            >
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de Configuración -->
+      <form [formGroup]="zohoConfigForm" (ngSubmit)="saveZohoConfig()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Organización <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control"
+              [class.is-invalid]="zohoConfigForm.get('org')?.invalid && zohoConfigForm.get('org')?.touched"
+              formControlName="org"
+              placeholder="startcompanies"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'org') }}
+            </div>
+            <small class="form-text text-muted">Nombre de la organización en Zoho</small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Servicio <span class="text-danger">*</span></label>
+            <select 
+              class="form-select"
+              [class.is-invalid]="zohoConfigForm.get('service')?.invalid && zohoConfigForm.get('service')?.touched"
+              formControlName="service"
+            >
+              <option value="crm">CRM</option>
+              <option value="recruit">Recruit</option>
+              <option value="books">Books</option>
+            </select>
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'service') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Región <span class="text-danger">*</span></label>
+            <select 
+              class="form-select"
+              [class.is-invalid]="zohoConfigForm.get('region')?.invalid && zohoConfigForm.get('region')?.touched"
+              formControlName="region"
+            >
+              <option value="com">com (Estados Unidos)</option>
+              <option value="eu">eu (Europa)</option>
+              <option value="in">in (India)</option>
+              <option value="au">au (Australia)</option>
+              <option value="com.cn">com.cn (China)</option>
+            </select>
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'region') }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Scopes <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control"
+              [class.is-invalid]="zohoConfigForm.get('scopes')?.invalid && zohoConfigForm.get('scopes')?.touched"
+              formControlName="scopes"
+              placeholder="ZohoCRM.modules.ALL,ZohoCRM.settings.ALL"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'scopes') }}
+            </div>
+            <small class="form-text text-muted">
+              Permisos solicitados. Requerido: <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code><br>
+              <span class="text-warning">⚠️ Si ya tienes una configuración, necesitas re-autorizar con los nuevos scopes.</span>
+            </small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Client ID <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              class="form-control"
+              [class.is-invalid]="zohoConfigForm.get('client_id')?.invalid && zohoConfigForm.get('client_id')?.touched"
+              formControlName="client_id"
+              placeholder="1000.XXXXXXXXXXXX"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'client_id') }}
+            </div>
+            <small class="form-text text-muted">Client ID de tu aplicación Zoho</small>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Client Secret <span class="text-danger">*</span></label>
+            <input 
+              type="password" 
+              class="form-control"
+              [class.is-invalid]="zohoConfigForm.get('client_secret')?.invalid && zohoConfigForm.get('client_secret')?.touched"
+              formControlName="client_secret"
+              placeholder="Tu client secret"
+            >
+            <div class="invalid-feedback">
+              {{ getFieldError(zohoConfigForm, 'client_secret') }}
+            </div>
+            <small class="form-text text-muted">Client Secret de tu aplicación Zoho</small>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
+            {{ selectedConfig ? 'Actualizar' : 'Guardar' }} Configuración
+          </button>
+          
+          <button 
+            type="button" 
+            class="btn btn-success" 
+            (click)="authorizeZoho()" 
+            [disabled]="isLoading || isOAuthInProgress || zohoConfigForm.invalid"
+          >
+            <span *ngIf="isOAuthInProgress" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isOAuthInProgress" class="bi bi-key me-2"></i>
+            {{ (selectedConfig && selectedConfig.refresh_token) ? 'Re-autorizar' : 'Autorizar con Zoho' }}
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-secondary" 
+            (click)="createNewConfig()"
+            [disabled]="isLoading"
+          >
+            <i class="bi bi-plus-circle me-2"></i>
+            Nueva Configuración
+          </button>
+        </div>
+
+        <div *ngIf="selectedConfig?.refresh_token" class="mt-3 alert alert-success">
+          <i class="bi bi-check-circle me-2"></i>
+          <strong>Token configurado:</strong> Esta configuración tiene un refresh token válido. 
+          Puedes re-autorizar si necesitas actualizar los permisos.
+        </div>
+
+        <div *ngIf="selectedConfig?.refresh_token && selectedConfig?.scopes && !selectedConfig?.scopes?.includes('ZohoCRM.settings.ALL')" class="mt-3 alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Scopes insuficientes:</strong> Esta configuración no incluye <code>ZohoCRM.settings.ALL</code>, 
+          que es necesario para sincronizar datos. Por favor, actualiza los scopes y re-autoriza.
+        </div>
+
+        <div *ngIf="selectedConfig && !selectedConfig.refresh_token" class="mt-3 alert alert-warning">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <strong>Sin token:</strong> Esta configuración no tiene un refresh token. 
+          Haz clic en "Autorizar con Zoho" para completar la configuración OAuth.
+        </div>
+      </form>
+
+      <!-- Información adicional -->
+      <div class="mt-4">
+        <div class="card bg-light">
+          <div class="card-body">
+            <h6 class="card-title">
+              <i class="bi bi-info-circle me-2"></i>
+              Información sobre OAuth
+            </h6>
+            <ul class="mb-0 small">
+              <li>Guarda primero la configuración antes de autorizar</li>
+              <li>Al hacer clic en "Autorizar con Zoho" se abrirá una ventana para que autorices la aplicación</li>
+              <li>El refresh token se guardará automáticamente después de la autorización</li>
+              <li>Asegúrate de que la URL de redirección en Zoho sea: <code>{{ environment.apiUrl || 'http://localhost:3000' }}/orgTk/callback</code> (sin /api)</li>
+              <li><strong>Scopes requeridos:</strong> <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code> (para sincronización completa)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
+
+
 
 

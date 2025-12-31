@@ -5,7 +5,13 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading && request">
+  <div *ngIf="loadError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ loadError }}
+    <button type="button" class="btn-close" (click)="loadError = null" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="!isLoading && !loadError && request">
     <!-- Header -->
     <div class="request-header">
       <div class="d-flex justify-content-between align-items-start mb-3">
@@ -13,7 +19,15 @@
           <h2>{{ getRequestTypeLabel(request.type) }}</h2>
           <p class="text-muted mb-0">Solicitud #{{ request.id }}</p>
         </div>
-        <div class="text-end">
+        <div class="text-end d-flex gap-2 align-items-center">
+          <button 
+            class="btn btn-outline-secondary btn-sm" 
+            (click)="openAllDataModal()"
+            title="Ver todos los datos de la solicitud"
+          >
+            <i class="bi bi-code-square me-1"></i>
+            Ver Datos Completos
+          </button>
           <span [class]="getStatusClass(request.status)">
             {{ getStatusLabel(request.status) }}
           </span>
@@ -266,6 +280,685 @@
       Volver a Mis Solicitudes
     </a>
   </div>
+
+  <!-- Modal: Ver Todos los Datos -->
+  <div *ngIf="showAllDataModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" (click)="closeAllDataModal()">
+    <div class="modal-dialog modal-dialog-centered modal-xl" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Datos Completos de la Solicitud #{{ request?.id }}
+          </h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeAllDataModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="fullRequestData" class="data-viewer">
+            <!-- Información General -->
+            <div class="card mb-4 shadow-sm">
+              <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Información General
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo:</label>
+                      <span class="detail-value badge bg-primary">{{ getRequestTypeLabel(fullRequestData.type) }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Estado:</label>
+                      <span [class]="getStatusClass(fullRequestData.status) + ' badge'">
+                        {{ getStatusLabel(fullRequestData.status) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId">
+                    <div class="detail-item">
+                      <label class="detail-label">Ver Registro en Zoho:</label>
+                      <a 
+                        [href]="'https://crm.zoho.com/crm/org881745849/tab/Accounts/' + fullRequestData.zohoAccountId" 
+                        target="_blank" 
+                        class="detail-value text-primary text-decoration-underline d-inline-flex align-items-center"
+                        title="Ver registro en Zoho CRM"
+                      >
+                        <i class="bi bi-box-arrow-up-right me-2"></i>
+                        Abrir en Zoho CRM ({{ fullRequestData.zohoAccountId }})
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Fecha Creación:</label>
+                      <span class="detail-value">{{ fullRequestData.createdAt | date:'medium' }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Fecha Actualización:</label>
+                      <span class="detail-value">{{ fullRequestData.updatedAt | date:'medium' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Información del Cliente -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.client">
+              <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-person me-2"></i>
+                  Información del Cliente
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Email:</label>
+                      <span class="detail-value">{{ fullRequestData.client.email }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.client.first_name || fullRequestData.client.last_name">
+                    <div class="detail-item">
+                      <label class="detail-label">Nombre Completo:</label>
+                      <span class="detail-value">
+                        {{ getFullName(fullRequestData.client.first_name, fullRequestData.client.last_name) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.client.username">
+                    <div class="detail-item">
+                      <label class="detail-label">Username:</label>
+                      <span class="detail-value">{{ fullRequestData.client.username }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Información del Partner -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.partner">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-handshake me-2"></i>
+                  Información del Partner
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Email:</label>
+                      <span class="detail-value">{{ fullRequestData.partner.email }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.partner.first_name || fullRequestData.partner.last_name">
+                    <div class="detail-item">
+                      <label class="detail-label">Nombre Completo:</label>
+                      <span class="detail-value">
+                        {{ getFullName(fullRequestData.partner.first_name, fullRequestData.partner.last_name) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Datos de la Solicitud Apertura LLC (desde BD local) -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'apertura-llc' && fullRequestData.aperturaLlcRequest">
+              <div class="card-header bg-primary text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-building me-2"></i>
+                  Datos de Apertura LLC
+                </h6>
+              </div>
+              <div class="card-body">
+                <!-- Información General de la LLC -->
+                <div class="mb-4">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Información General
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcName">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre de la LLC:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.llcName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcNameOption2">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre Opción 2:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.llcNameOption2 }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcNameOption3">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre Opción 3:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.llcNameOption3 }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcType">
+                      <div class="detail-item">
+                        <label class="detail-label">Tipo de LLC:</label>
+                        <span class="detail-value badge bg-secondary">
+                          {{ fullRequestData.aperturaLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.accountType">
+                      <div class="detail-item">
+                        <label class="detail-label">Tipo de Account:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.accountType }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.businessDescription">
+                      <div class="detail-item">
+                        <label class="detail-label">Actividad Principal:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.businessDescription }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.actividadFinancieraEsperada">
+                      <div class="detail-item">
+                        <label class="detail-label">Actividad Financiera Esperada:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.actividadFinancieraEsperada }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.incorporationState">
+                      <div class="detail-item">
+                        <label class="detail-label">Estado de Registro:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.incorporationState }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.estadoConstitucion">
+                      <div class="detail-item">
+                        <label class="detail-label">Estado de Constitución:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.estadoConstitucion }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.website">
+                      <div class="detail-item">
+                        <label class="detail-label">Website:</label>
+                        <a 
+                          [href]="fullRequestData.aperturaLlcRequest.website" 
+                          target="_blank" 
+                          class="detail-value text-primary text-decoration-underline"
+                          *ngIf="fullRequestData.aperturaLlcRequest.website && fullRequestData.aperturaLlcRequest.website.startsWith('http')"
+                        >
+                          {{ fullRequestData.aperturaLlcRequest.website }}
+                          <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                        </a>
+                        <span *ngIf="!fullRequestData.aperturaLlcRequest.website || !fullRequestData.aperturaLlcRequest.website.startsWith('http')" class="detail-value">
+                          {{ fullRequestData.aperturaLlcRequest.website }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.linkedin">
+                      <div class="detail-item">
+                        <label class="detail-label">LinkedIn:</label>
+                        <a 
+                          [href]="fullRequestData.aperturaLlcRequest.linkedin" 
+                          target="_blank" 
+                          class="detail-value text-primary text-decoration-underline"
+                          *ngIf="fullRequestData.aperturaLlcRequest.linkedin && fullRequestData.aperturaLlcRequest.linkedin.startsWith('http')"
+                        >
+                          {{ fullRequestData.aperturaLlcRequest.linkedin }}
+                          <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                        </a>
+                        <span *ngIf="!fullRequestData.aperturaLlcRequest.linkedin || !fullRequestData.aperturaLlcRequest.linkedin.startsWith('http')" class="detail-value">
+                          {{ fullRequestData.aperturaLlcRequest.linkedin }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.einNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de EIN:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.einNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.annualRevenue">
+                      <div class="detail-item">
+                        <label class="detail-label">Annual Revenue:</label>
+                        <span class="detail-value">${{ fullRequestData.aperturaLlcRequest.annualRevenue | number:'1.2-2' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Información Adicional (Campos Booleanos) -->
+                <div class="mb-4" *ngIf="hasAdditionalBooleanFields(fullRequestData.aperturaLlcRequest)">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-check2-square me-2"></i>
+                    Información Adicional
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.almacenaProductosDepositoUSA !== null && fullRequestData.aperturaLlcRequest.almacenaProductosDepositoUSA !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Almacena productos en depósito USA?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.almacenaProductosDepositoUSA ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.almacenaProductosDepositoUSA ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.declaroImpuestosAntes !== null && fullRequestData.aperturaLlcRequest.declaroImpuestosAntes !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Declaró impuestos antes?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.declaroImpuestosAntes ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.declaroImpuestosAntes ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcConStartCompanies !== null && fullRequestData.aperturaLlcRequest.llcConStartCompanies !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿LLC con Start Companies?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.llcConStartCompanies ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.llcConStartCompanies ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.ingresosMayor250k !== null && fullRequestData.aperturaLlcRequest.ingresosMayor250k !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Ingresos > $250k?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.ingresosMayor250k ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.ingresosMayor250k ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.activosEnUSA !== null && fullRequestData.aperturaLlcRequest.activosEnUSA !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Activos en USA?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.activosEnUSA ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.activosEnUSA ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.ingresosPeriodicos10k !== null && fullRequestData.aperturaLlcRequest.ingresosPeriodicos10k !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Ingresos periódicos > $10k?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.ingresosPeriodicos10k ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.ingresosPeriodicos10k ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.contrataServiciosUSA !== null && fullRequestData.aperturaLlcRequest.contrataServiciosUSA !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Contrata servicios en USA?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.contrataServiciosUSA ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.contrataServiciosUSA ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.propiedadEnUSA !== null && fullRequestData.aperturaLlcRequest.propiedadEnUSA !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Propiedad en USA?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.propiedadEnUSA ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.propiedadEnUSA ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.tieneCuentasBancarias !== null && fullRequestData.aperturaLlcRequest.tieneCuentasBancarias !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tiene cuentas bancarias?:</label>
+                        <span [class]="'badge ' + (fullRequestData.aperturaLlcRequest.tieneCuentasBancarias ? 'bg-success' : 'bg-danger')">
+                          {{ fullRequestData.aperturaLlcRequest.tieneCuentasBancarias ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Contacto Principal LLC (Primer Member) -->
+            <div class="card mb-4 shadow-sm" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && fullRequestData.members && fullRequestData.members.length > 0">
+              <div class="card-header bg-info text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-person-fill me-2"></i>
+                  Contacto Principal LLC
+                </h6>
+              </div>
+              <div class="card-body">
+                <div *ngFor="let member of fullRequestData.members.slice(0, 1); let i = index">
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="member.firstName">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombres:</label>
+                        <span class="detail-value">{{ member.firstName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.lastName">
+                      <div class="detail-item">
+                        <label class="detail-label">Apellidos:</label>
+                        <span class="detail-value">{{ member.lastName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.email">
+                      <div class="detail-item">
+                        <label class="detail-label">Correo Electrónico:</label>
+                        <span class="detail-value">{{ member.email }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.phoneNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Teléfono:</label>
+                        <span class="detail-value">{{ member.phoneNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.nationality">
+                      <div class="detail-item">
+                        <label class="detail-label">Nacionalidad:</label>
+                        <span class="detail-value">{{ member.nationality }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.dateOfBirth">
+                      <div class="detail-item">
+                        <label class="detail-label">Fecha de Nacimiento:</label>
+                        <span class="detail-value">{{ member.dateOfBirth | date:'short' }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.passportNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de Pasaporte:</label>
+                        <span class="detail-value">{{ member.passportNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">Porcentaje de Participación:</label>
+                        <span class="detail-value badge bg-primary">{{ member.percentageOfParticipation }}%</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="member.memberAddress">
+                      <div class="detail-item">
+                        <label class="detail-label">Dirección:</label>
+                        <div class="detail-value ms-3 mt-1">
+                          {{ member.memberAddress.street }}
+                          <span *ngIf="member.memberAddress.unit">, {{ member.memberAddress.unit }}</span><br>
+                          {{ member.memberAddress.city }}, {{ member.memberAddress.stateRegion }}<br>
+                          {{ member.memberAddress.postalCode }}, {{ member.memberAddress.country }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Socios LLC (Members adicionales) -->
+            <div class="card mb-4 shadow-sm" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && fullRequestData.members && fullRequestData.members.length > 1">
+              <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                  <i class="bi bi-people-fill me-2"></i>
+                  Socios LLC
+                </h6>
+              </div>
+              <div class="card-body">
+                <div *ngFor="let member of fullRequestData.members.slice(1); let i = index" class="border rounded p-3 mb-3 bg-light">
+                  <h6 class="mb-3 text-secondary">
+                    <i class="bi bi-person-badge me-2"></i>
+                    Socio {{ i + 1 }}
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="member.firstName">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombres:</label>
+                        <span class="detail-value">{{ member.firstName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.lastName">
+                      <div class="detail-item">
+                        <label class="detail-label">Apellidos:</label>
+                        <span class="detail-value">{{ member.lastName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.email">
+                      <div class="detail-item">
+                        <label class="detail-label">Correo Electrónico:</label>
+                        <span class="detail-value">{{ member.email }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.phoneNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Teléfono:</label>
+                        <span class="detail-value">{{ member.phoneNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.nationality">
+                      <div class="detail-item">
+                        <label class="detail-label">Nacionalidad:</label>
+                        <span class="detail-value">{{ member.nationality }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.dateOfBirth">
+                      <div class="detail-item">
+                        <label class="detail-label">Fecha de Nacimiento:</label>
+                        <span class="detail-value">{{ member.dateOfBirth | date:'short' }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
+                      <div class="detail-item">
+                        <label class="detail-label">Porcentaje de Participación:</label>
+                        <span class="detail-value badge bg-primary">{{ member.percentageOfParticipation }}%</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="member.memberAddress">
+                      <div class="detail-item">
+                        <label class="detail-label">Dirección:</label>
+                        <div class="detail-value ms-3 mt-1">
+                          {{ member.memberAddress.street }}
+                          <span *ngIf="member.memberAddress.unit">, {{ member.memberAddress.unit }}</span><br>
+                          {{ member.memberAddress.city }}, {{ member.memberAddress.stateRegion }}<br>
+                          {{ member.memberAddress.postalCode }}, {{ member.memberAddress.country }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Mensaje si no hay miembros -->
+            <div class="alert alert-info mb-4" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && (!fullRequestData.members || fullRequestData.members.length === 0)">
+              <i class="bi bi-info-circle me-2"></i>
+              No se encontraron miembros asociados a esta solicitud.
+            </div>
+            
+            <!-- Datos de Renovación LLC -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'renovacion-llc' && fullRequestData.renovacionLlcRequest">
+              <div class="card-header bg-warning text-dark">
+                <h6 class="mb-0">
+                  <i class="bi bi-arrow-repeat me-2"></i>
+                  Datos de Renovación LLC
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcName">
+                    <div class="detail-item">
+                      <label class="detail-label">Nombre de la LLC:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcName }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcType">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo de LLC:</label>
+                      <span class="detail-value badge bg-secondary">
+                        {{ fullRequestData.renovacionLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.state">
+                    <div class="detail-item">
+                      <label class="detail-label">Estado de Registro:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.state }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.einNumber">
+                    <div class="detail-item">
+                      <label class="detail-label">Número de EIN:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.einNumber }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.mainActivityDescription">
+                    <div class="detail-item">
+                      <label class="detail-label">Actividad Principal:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.mainActivityDescription }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactEmail">
+                    <div class="detail-item">
+                      <label class="detail-label">Correo Electrónico:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactEmail }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactPhone">
+                    <div class="detail-item">
+                      <label class="detail-label">Teléfono:</label>
+                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactPhone }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Datos de Cuenta Bancaria -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'cuenta-bancaria' && fullRequestData.cuentaBancariaRequest">
+              <div class="card-header bg-success text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-bank me-2"></i>
+                  Datos de Cuenta Bancaria
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier">
+                    <div class="detail-item">
+                      <label class="detail-label">Identificador Legal del Negocio:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.accountType">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo de Cuenta:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.accountType }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.businessType">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo de Negocio:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.businessType }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.industry">
+                    <div class="detail-item">
+                      <label class="detail-label">Industria:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.industry }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.economicActivity">
+                    <div class="detail-item">
+                      <label class="detail-label">Actividad Económica:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.economicActivity }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ein">
+                    <div class="detail-item">
+                      <label class="detail-label">EIN:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ein }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.llcType">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo de LLC:</label>
+                      <span class="detail-value badge bg-secondary">
+                        {{ fullRequestData.cuentaBancariaRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantEmail">
+                    <div class="detail-item">
+                      <label class="detail-label">Correo del Solicitante:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.applicantEmail }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantPhone">
+                    <div class="detail-item">
+                      <label class="detail-label">Teléfono del Solicitante:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.applicantPhone }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantFirstName || fullRequestData.cuentaBancariaRequest.applicantPaternalLastName">
+                    <div class="detail-item">
+                      <label class="detail-label">Nombre del Solicitante:</label>
+                      <span class="detail-value">
+                        {{ getFullName(fullRequestData.cuentaBancariaRequest.applicantFirstName, fullRequestData.cuentaBancariaRequest.applicantPaternalLastName, fullRequestData.cuentaBancariaRequest.applicantMaternalLastName) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.bankName">
+                    <div class="detail-item">
+                      <label class="detail-label">Nombre del Banco:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.bankName }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.bankAccountType">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo de Cuenta Bancaria:</label>
+                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.bankAccountType }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.companyAddress">
+                    <div class="detail-item">
+                      <label class="detail-label">Dirección de la Empresa:</label>
+                      <div class="detail-value ms-3 mt-1">
+                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.street }}
+                        <span *ngIf="fullRequestData.cuentaBancariaRequest.companyAddress.unit">, {{ fullRequestData.cuentaBancariaRequest.companyAddress.unit }}</span><br>
+                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.city }}, {{ fullRequestData.cuentaBancariaRequest.companyAddress.state }}<br>
+                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.postalCode }}, {{ fullRequestData.cuentaBancariaRequest.companyAddress.country }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.notes">
+              <div class="card-header bg-secondary text-white">
+                <h6 class="mb-0">
+                  <i class="bi bi-sticky me-2"></i>
+                  Notas
+                </h6>
+              </div>
+              <div class="card-body">
+                <p class="mb-0">{{ fullRequestData.notes }}</p>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!fullRequestData" class="text-center py-4">
+            <p class="text-muted">No hay datos disponibles</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeAllDataModal()">
+            <i class="bi bi-x-circle me-2"></i>
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
+
+
 
 

@@ -209,7 +209,7 @@ export class MultilingualSeoService {
           keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
           ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
           ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
-          canonical: `${this.baseUrl}/inicio`
+          canonical: `${this.baseUrl}/`
         },
         'en': {
           title: 'Start Companies LLC - US Bank Account Opening Services',
@@ -227,7 +227,7 @@ export class MultilingualSeoService {
           keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
           ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
           ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
-          canonical: `${this.baseUrl}/inicio`
+          canonical: `${this.baseUrl}/`
         },
         'en': {
           title: 'Start Companies LLC - US Bank Account Opening Services',

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
@@ -23,8 +23,6 @@ export class HeaderManejoComponent {
   isOpen: boolean = false;
   currentRoute: string = '';
 
-  currentLang = 'es';
-
   // Configuración de imágenes del logo para NgOptimizedImage
   logoImages = {
     mobile: '/assets/logo-dark-mobile.png',
@@ -39,13 +37,11 @@ export class HeaderManejoComponent {
     private router: Router,
     private scrollService: ScrollService,
     public translocoService: TranslocoService,
-    private languageService: LanguageService,
-    private cdr: ChangeDetectorRef
+    private languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
     this.getCurrentRoute();
-    this.currentLang = this.translocoService.getActiveLang();
   }
 
   /**
@@ -87,15 +83,6 @@ export class HeaderManejoComponent {
       setTimeout(() => {
         this.scrollService.scrollTo('pricingSection');
       }, 50);
-    });
-  }
-
-  changeLanguage(lang: string) {
-    // usa setLanguage que además reemplaza la URL
-    this.languageService.setLanguage(lang, true).then(() => {
-      this.currentLang = lang;
-      // markForCheck si estás en OnPush o para seguridad visual
-      this.cdr.markForCheck();
     });
   }
 }

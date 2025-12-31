@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
+import { firstValueFrom } from 'rxjs';
 
 interface Client extends PartnerClient {
   totalRequests?: number;
@@ -23,6 +24,7 @@ export class ClientsComponent implements OnInit {
   isLoading = true;
   clients: Client[] = [];
   filteredClients: Client[] = [];
+  loadError: string | null = null;
   
   // Filtros
   searchTerm: string = '';
@@ -64,51 +66,66 @@ export class ClientsComponent implements OnInit {
     this.loadClients();
   }
 
-  loadClients(): void {
+  async loadClients(): Promise<void> {
     this.isLoading = true;
-    // Admin solo ve sus propios clientes (sin partner)
-    this.partnerClientsService.getAdminClients().subscribe({
-      next: (clients) => {
-        // Cargar estadísticas para cada cliente
-        const clientsWithStats = clients.map(client => ({
-          ...client,
-          totalRequests: 0,
-          activeRequests: 0,
-          completedRequests: 0,
-          createdAt: client.createdAt || new Date().toISOString(),
-          lastActivity: client.updatedAt || undefined
-        }));
+    this.loadError = null;
+    
+    try {
+      // Admin solo ve sus propios clientes (sin partner)
+      const clients = await firstValueFrom(this.partnerClientsService.getAdminClients());
+      
+      console.log('Clientes recibidos del backend:', clients);
+      
+      if (!clients || clients.length === 0) {
+        console.log('No se encontraron clientes');
+        this.clients = [];
+        this.filteredClients = [];
+        this.isLoading = false;
+        return;
+      }
 
-        // Cargar estadísticas en paralelo
+      // Cargar estadísticas para cada cliente
+      const clientsWithStats = clients.map(client => ({
+        ...client,
+        totalRequests: 0,
+        activeRequests: 0,
+        completedRequests: 0,
+        createdAt: client.createdAt || new Date().toISOString(),
+        lastActivity: client.updatedAt || undefined
+      }));
+
+      // Cargar estadísticas en paralelo
+      try {
         const statsPromises = clientsWithStats.map(client => 
-          this.partnerClientsService.getClientStats(client.id).toPromise()
+          firstValueFrom(this.partnerClientsService.getClientStats(client.id)).catch(() => null)
         );
 
-        Promise.all(statsPromises).then(statsArray => {
-          statsArray.forEach((stats, index) => {
-            if (stats) {
-              clientsWithStats[index].totalRequests = stats.totalRequests;
-              clientsWithStats[index].activeRequests = stats.activeRequests;
-              clientsWithStats[index].completedRequests = stats.completedRequests;
-            }
-          });
-
-          this.clients = clientsWithStats;
-          this.applyFilters();
-          this.isLoading = false;
-        }).catch(() => {
-          // Si falla cargar stats, usar datos sin stats
-          this.clients = clientsWithStats;
-          this.applyFilters();
-          this.isLoading = false;
+        const statsArray = await Promise.all(statsPromises);
+        
+        statsArray.forEach((stats, index) => {
+          if (stats) {
+            clientsWithStats[index].totalRequests = stats.totalRequests;
+            clientsWithStats[index].activeRequests = stats.activeRequests;
+            clientsWithStats[index].completedRequests = stats.completedRequests;
+          }
         });
-      },
-      error: (error) => {
-        console.error('Error al cargar clientes:', error);
-        this.createError = 'Error al cargar los clientes. Intenta nuevamente.';
-        this.isLoading = false;
+      } catch (statsError) {
+        console.warn('Error al cargar estadísticas, continuando sin stats:', statsError);
+        // Continuar sin estadísticas si falla
       }
-    });
+
+      this.clients = clientsWithStats;
+      this.applyFilters();
+      console.log('Clientes procesados:', this.clients);
+      console.log('Clientes filtrados:', this.filteredClients);
+    } catch (error: any) {
+      console.error('Error al cargar clientes:', error);
+      this.loadError = error?.error?.message || 'Error al cargar los clientes. Intenta nuevamente.';
+      this.clients = [];
+      this.filteredClients = [];
+    } finally {
+      this.isLoading = false;
+    }
   }
 
 

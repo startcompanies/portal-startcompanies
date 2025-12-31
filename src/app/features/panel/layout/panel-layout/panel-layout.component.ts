@@ -44,6 +44,7 @@ export class PanelLayoutComponent implements OnInit {
     if (user?.type === 'admin') {
       this.menuItems = [
         { label: 'Dashboard', route: '/panel/dashboard', icon: 'bi-speedometer2', roles: ['admin'] },
+        { label: 'Sincronización Zoho', route: '/panel/zoho-sync', icon: 'bi-arrow-repeat', roles: ['admin'] },
         { label: 'Solicitudes', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['admin'] },
         { label: 'Clientes', route: '/panel/clients', icon: 'bi-people', roles: ['admin'] },
         { label: 'Partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['admin'] },

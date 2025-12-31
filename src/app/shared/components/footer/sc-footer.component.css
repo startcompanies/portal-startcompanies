@@ -183,6 +183,57 @@
     /* Centra el texto en móvil */
 }
 
+/* Estilos para el selector de idioma en el footer */
+.footer-language-selector {
+    margin-top: 0;
+}
+
+.footer-btn-language {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.footer-btn-language:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+}
+
+.footer-btn-language:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.footer-language-selector .dropdown-menu {
+    background-color: #293b49;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    min-width: 80px;
+}
+
+.footer-language-selector .dropdown-item {
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.footer-language-selector .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #02cae3;
+}
+
+.footer-language-selector .dropdown-item:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #02cae3;
+}
+
 /* Alinea el texto del footer-bottom a la izquierda en desktop */
 @media (min-width: 768px) {
     .footer-bottom {

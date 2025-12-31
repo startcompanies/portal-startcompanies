@@ -10,7 +10,13 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading">
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage">
     <!-- Filtros -->
     <div class="filters-section">
       <div class="row g-3">
@@ -118,5 +124,10 @@
     </div>
   </div>
 </div>
+
+
+
+
+
 
 

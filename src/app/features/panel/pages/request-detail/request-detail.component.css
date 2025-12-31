@@ -315,6 +315,26 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Modal de datos completos - más ancho y centrado */
+.modal-dialog-centered {
+  display: flex;
+  align-items: center;
+  min-height: calc(100% - 1rem);
+}
+
+/* Asegurar que el modal sea más ancho */
+.modal-xl {
+  max-width: 90% !important;
+  width: 90% !important;
+}
+
+/* Mejorar el scroll del modal */
+.modal-body {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 1.5rem;
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -371,6 +391,81 @@
   background: var(--color-degradado);
 }
 
+/* Estilos para detalles estructurados */
+.detail-item {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.detail-label {
+  display: block;
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  display: block;
+  color: #212529;
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.detail-value a {
+  color: #0d6efd;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.detail-value a:hover {
+  color: #0a58ca;
+  text-decoration: underline;
+}
+
+/* Mejoras para cards en el modal */
+.modal-body .card {
+  border: none;
+  border-radius: 8px;
+}
+
+.modal-body .card-header {
+  border-radius: 8px 8px 0 0;
+  font-weight: 600;
+}
+
+.modal-body .card-body {
+  padding: 1.5rem;
+}
+
+/* Scrollbar personalizado para el modal */
+.modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.modal-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 @media (max-width: 768px) {
   .request-meta {
     flex-direction: column;
@@ -401,6 +496,24 @@
   .modal-content {
     max-width: 100%;
   }
+
+  .detail-item {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .detail-label {
+    font-size: 0.8rem;
+  }
+
+  .detail-value {
+    font-size: 0.9rem;
+  }
 }
+
+
+
+
+
 
 

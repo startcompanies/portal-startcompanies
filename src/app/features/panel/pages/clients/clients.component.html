@@ -11,6 +11,13 @@
     </button>
   </div>
 
+  <!-- Error Message -->
+  <div *ngIf="loadError" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ loadError }}
+    <button type="button" class="btn-close" (click)="loadError = null" aria-label="Close"></button>
+  </div>
+
   <!-- Filtros -->
   <div class="filters-section">
     <div class="row g-3">
@@ -43,7 +50,7 @@
 
   <!-- Lista de Clientes -->
   <div class="clients-section">
-    <div *ngIf="filteredClients.length === 0 && !isLoading" class="empty-state">
+    <div *ngIf="filteredClients.length === 0 && !isLoading && !loadError" class="empty-state">
       <i class="bi bi-people" style="font-size: 4rem; color: #ccc;"></i>
       <h3>No hay clientes</h3>
       <p class="text-muted">No se encontraron clientes con los filtros aplicados</p>
@@ -218,5 +225,10 @@
     </div>
   </div>
 </div>
+
+
+
+
+
 
 

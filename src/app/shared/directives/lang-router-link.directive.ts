@@ -92,7 +92,8 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
           const routeMapping: { [key: string]: string } = {
-            'inicio': 'home',
+            '': 'home', // Raíz en español mapea a 'home' en inglés
+            'inicio': 'home', // Mantener compatibilidad
             'nosotros': 'about-us',
             'contacto': 'contact',
             'planes': 'plans',
@@ -120,7 +121,7 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
           const routeMapping: { [key: string]: string } = {
-            'home': 'inicio',
+            'home': '', // 'home' en inglés mapea a raíz '' en español
             'about-us': 'nosotros',
             'contact': 'contacto',
             'plans': 'planes',

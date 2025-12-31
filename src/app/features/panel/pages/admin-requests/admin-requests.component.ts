@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { RequestsService, Request } from '../../services/requests.service';
 
-interface Request {
+interface RequestDisplay {
   id: number;
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   status: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
@@ -24,8 +25,9 @@ interface Request {
 })
 export class AdminRequestsComponent implements OnInit {
   isLoading = true;
-  requests: Request[] = [];
-  filteredRequests: Request[] = [];
+  requests: RequestDisplay[] = [];
+  filteredRequests: RequestDisplay[] = [];
+  errorMessage: string | null = null;
   
   // Filtros
   selectedStatus: string = 'all';
@@ -47,50 +49,78 @@ export class AdminRequestsComponent implements OnInit {
     { value: 'cuenta-bancaria', label: 'Cuenta Bancaria' }
   ];
 
+  constructor(private requestsService: RequestsService) {}
+
   ngOnInit(): void {
     this.loadRequests();
   }
 
-  loadRequests(): void {
+  async loadRequests(): Promise<void> {
     this.isLoading = true;
-    // TODO: Cargar solicitudes desde el backend
-    setTimeout(() => {
-      this.requests = [
-        {
-          id: 1,
-          type: 'apertura-llc',
-          status: 'en-proceso',
-          clientName: 'Juan Pérez',
-          clientEmail: 'juan@example.com',
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-20'),
-          currentStep: 'Procesamiento'
-        },
-        {
-          id: 2,
-          type: 'renovacion-llc',
-          status: 'pendiente',
-          clientName: 'María García',
-          clientEmail: 'maria@example.com',
-          partnerName: 'Partner ABC',
-          createdAt: new Date('2024-01-18'),
-          updatedAt: new Date('2024-01-18'),
-          currentStep: 'Revisión de Documentos'
-        },
-        {
-          id: 3,
-          type: 'cuenta-bancaria',
-          status: 'completada',
-          clientName: 'Carlos López',
-          clientEmail: 'carlos@example.com',
-          createdAt: new Date('2024-01-10'),
-          updatedAt: new Date('2024-01-25'),
-          currentStep: 'Completado'
-        }
-      ];
+    this.errorMessage = null;
+    
+    try {
+      // Preparar filtros para la API
+      const filters: any = {};
+      if (this.selectedStatus !== 'all') {
+        filters.status = this.selectedStatus;
+      }
+      if (this.selectedType !== 'all') {
+        filters.type = this.selectedType;
+      }
+
+      // Obtener requests desde la API
+      const apiRequests = await this.requestsService.getAllRequests(filters);
+      
+      // Transformar los datos de la API al formato de display
+      this.requests = apiRequests.map(request => this.mapRequestToDisplay(request));
+      
       this.applyFilters();
+    } catch (error: any) {
+      console.error('Error al cargar solicitudes:', error);
+      this.errorMessage = error?.error?.message || 'Error al cargar las solicitudes. Por favor, intenta nuevamente.';
+      this.requests = [];
+      this.filteredRequests = [];
+    } finally {
       this.isLoading = false;
-    }, 1000);
+    }
+  }
+
+  /**
+   * Mapea un Request de la API a RequestDisplay para el template
+   */
+  private mapRequestToDisplay(request: Request): RequestDisplay {
+    const clientName = request.client 
+      ? `${request.client.first_name || ''} ${request.client.last_name || ''}`.trim() || request.client.username || request.client.email
+      : 'N/A';
+    
+    const clientEmail = request.client?.email || 'N/A';
+    
+    const partnerName = request.partner
+      ? `${request.partner.first_name || ''} ${request.partner.last_name || ''}`.trim() || request.partner.username || request.partner.email
+      : undefined;
+
+    // Determinar el paso actual basado en el tipo de request
+    let currentStep = 'Inicial';
+    if (request.aperturaLlcRequest) {
+      currentStep = `Paso ${request.aperturaLlcRequest.currentStepNumber || 1}`;
+    } else if (request.renovacionLlcRequest) {
+      currentStep = `Paso ${request.renovacionLlcRequest.currentStepNumber || 1}`;
+    } else if (request.cuentaBancariaRequest) {
+      currentStep = `Paso ${request.cuentaBancariaRequest.currentStepNumber || 1}`;
+    }
+
+    return {
+      id: request.id,
+      type: request.type,
+      status: request.status,
+      clientName,
+      clientEmail,
+      partnerName,
+      createdAt: new Date(request.createdAt),
+      updatedAt: new Date(request.updatedAt),
+      currentStep
+    };
   }
 
   applyFilters(): void {
@@ -107,11 +137,11 @@ export class AdminRequestsComponent implements OnInit {
   }
 
   onStatusChange(): void {
-    this.applyFilters();
+    this.loadRequests(); // Recargar desde la API con el nuevo filtro
   }
 
   onTypeChange(): void {
-    this.applyFilters();
+    this.loadRequests(); // Recargar desde la API con el nuevo filtro
   }
 
   onSearchChange(): void {
@@ -147,5 +177,10 @@ export class AdminRequestsComponent implements OnInit {
     return classes[status] || 'badge bg-secondary';
   }
 }
+
+
+
+
+
 
 

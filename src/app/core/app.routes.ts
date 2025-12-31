@@ -25,10 +25,6 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/inicio'
-      },
-      {
-        path: 'inicio',
         loadComponent: () =>
           import('../features/public/home/home.component').then(
             (m) => m.HomeComponent
@@ -42,9 +38,14 @@ export const routes: Routes = [
             ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/inicio'),
+            canonical: getCanonicalUrl('/'),
           },
         },
+      },
+      {
+        path: 'inicio',
+        redirectTo: '',
+        pathMatch: 'full'
       },
       {
         path: 'nosotros',
@@ -157,7 +158,7 @@ export const routes: Routes = [
             ogDescription: 'Lee nuestros artículos sobre LLC y servicios financieros en Estados Unidos.',
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/post/:slug'),
+            // canonical se establece dinámicamente en el componente blog-post-v2
           },
         },
       },
@@ -543,6 +544,24 @@ export const routes: Routes = [
             description: 'Gestiona tu perfil, preferencias y configuraciones'
           }
         }
+      },
+      {
+        path: 'zoho-sync',
+        canActivate: [authGuard, roleGuard],
+        data: { 
+          roles: ['admin'],
+          seo: {
+            title: 'Sincronización Zoho - Panel Start Companies',
+            description: 'Gestiona la sincronización de datos entre el panel y Zoho CRM'
+          }
+        },
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/zoho-sync/zoho-sync.component').then(m => m.ZohoSyncComponent)
+          }
+        ]
       }
     ]
   },

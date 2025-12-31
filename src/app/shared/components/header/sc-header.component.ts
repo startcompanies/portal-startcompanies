@@ -30,7 +30,6 @@ export class ScHeaderComponent implements OnInit {
 
   isOpen = false;
   isNavbarShrunk = false;
-  currentLang = 'es';
   currentRoute = '';
 
   private logoImagesSubject = new BehaviorSubject({
@@ -80,11 +79,6 @@ export class ScHeaderComponent implements OnInit {
       this.navbarScroll();
     }
     this.getCurrentRoute();
-    this.currentLang = this.languageService.currentLang;
-    this.translocoService.langChanges$.subscribe((l) => {
-      this.currentLang = l;
-      this.cdr.markForCheck();
-    });
   }
 
   private getCurrentRoute(): void {
@@ -142,18 +136,6 @@ export class ScHeaderComponent implements OnInit {
       setTimeout(() => {
         this.scrollService.scrollTo('pricingSection');
       }, 50);
-    });
-  }
-
-  changeLanguage(lang: string) {
-    /*this.translocoService.setActiveLang(lang);
-    this.translocoService.setDefaultLang(lang);
-    this.currentLang = lang;*/
-    // usa setLanguage que además reemplaza la URL
-    this.languageService.setLanguage(lang, true).then(() => {
-      this.currentLang = lang;
-      // markForCheck si estás en OnPush o para seguridad visual
-      this.cdr.markForCheck();
     });
   }
 }

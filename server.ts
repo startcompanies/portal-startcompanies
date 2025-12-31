@@ -41,13 +41,56 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
 
-  // Endpoint para sitemap dinámico
+  // Endpoint para sitemap.xml - Redirige al sitemap-index
   server.get('/sitemap.xml', async (req, res) => {
+    // Redirigir al sitemap-index para mejor organización
+    res.redirect(301, '/sitemap-index.xml');
+  });
+
+  // Endpoint para sitemap-index.xml dinámico
+  server.get('/sitemap-index.xml', async (req, res) => {
     try {
-      // Generar sitemap básico sin dependencias de Angular
+      const baseUrl = getBaseUrl(req);
+      const lastmod = new Date().toISOString().split('T')[0];
+      
+      const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ===== SITEMAP DE PÁGINAS ESTÁTICAS ===== -->
+  <sitemap>
+    <loc>${baseUrl}/pages.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
+  <!-- ===== SITEMAP DE POSTS DEL BLOG ===== -->
+  <sitemap>
+    <loc>${baseUrl}/posts.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
+  <!-- ===== SITEMAP DE IMÁGENES ===== -->
+  <sitemap>
+    <loc>${baseUrl}/sitemap-images.xml</loc>
+    <lastmod>${lastmod}</lastmod>
+  </sitemap>
+
+</sitemapindex>`;
+      
+      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache por 1 hora
+      res.send(sitemapIndex);
+    } catch (error) {
+      console.error('Error generating sitemap-index:', error);
+      res.status(500).send('Error generating sitemap-index');
+    }
+  });
+
+  // Endpoint para pages.xml - Páginas estáticas
+  server.get('/pages.xml', async (req, res) => {
+    try {
       const baseUrl = getBaseUrl(req);
       const staticUrls = [
-        // Página principal (redirección)
+        // Página principal
         { url: '/', priority: '1.0', changefreq: 'weekly' },
         
         // Rutas principales en español (ahora en raíz)
@@ -120,58 +163,65 @@ export function app(): express.Express {
       res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache por 1 hora
       res.send(sitemap);
     } catch (error) {
-      console.error('Error generating sitemap:', error);
-      res.status(500).send('Error generating sitemap');
+      console.error('Error generating pages sitemap:', error);
+      res.status(500).send('Error generating pages sitemap');
     }
   });
 
-  // Endpoint para sitemap-index.xml dinámico
-  server.get('/sitemap-index.xml', async (req, res) => {
+  // Endpoint para posts.xml - Posts del blog
+  server.get('/posts.xml', async (req, res) => {
     try {
       const baseUrl = getBaseUrl(req);
-      const lastmod = new Date().toISOString().split('T')[0];
+      // Obtener URL de API desde variables de entorno o usar valor por defecto
+      const apiUrl = process.env['API_URL'] || process.env['NX_API_URL'] || 'https://api-web.startcompanies.us';
+      const apiEndpoint = apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
       
-      const sitemapIndex = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <!-- ===== SITEMAP PRINCIPAL ===== -->
-  <sitemap>
-    <loc>${baseUrl}/sitemap.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-
-  <!-- ===== SITEMAP DE IMÁGENES ===== -->
-  <sitemap>
-    <loc>${baseUrl}/sitemap-images.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-
-  <!-- ===== SITEMAPS FUTUROS ===== -->
-  <!-- 
-  <sitemap>
-    <loc>${baseUrl}/sitemap-blog.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-  
-  <sitemap>
-    <loc>${baseUrl}/sitemap-services.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-  
-  <sitemap>
-    <loc>${baseUrl}/sitemap-pages.xml</loc>
-    <lastmod>${lastmod}</lastmod>
-  </sitemap>
-  -->
-
-</sitemapindex>`;
+      // Obtener posts desde la API
+      let posts: any[] = [];
+      try {
+        const response = await fetch(`${apiEndpoint}/posts/get-from-portal`);
+        if (response.ok) {
+          posts = await response.json();
+        } else {
+          console.warn('API no disponible, generando sitemap vacío de posts');
+        }
+      } catch (fetchError) {
+        console.warn('Error fetching posts from API:', fetchError);
+        // Continuar con array vacío si falla la API
+      }
       
-      res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+      // Filtrar solo posts publicados
+      const publishedPosts = Array.isArray(posts) 
+        ? posts.filter(post => post && post.is_published) 
+        : [];
+      
+      // Generar entradas de URL para cada post
+      const postEntries = publishedPosts.map(post => {
+        const url = `${baseUrl}/post/${post.slug}`;
+        const lastmod = post.published_at 
+          ? new Date(post.published_at).toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
+        
+        return `
+    <url>
+      <loc>${url}</loc>
+      <lastmod>${lastmod}</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+    </url>`;
+      }).join('');
+
+      const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  ${postEntries}
+</urlset>`;
+      
+      res.setHeader('Content-Type', 'application/xml');
       res.setHeader('Cache-Control', 'public, max-age=3600'); // Cache por 1 hora
-      res.send(sitemapIndex);
+      res.send(sitemap);
     } catch (error) {
-      console.error('Error generating sitemap-index:', error);
-      res.status(500).send('Error generating sitemap-index');
+      console.error('Error generating posts sitemap:', error);
+      res.status(500).send('Error generating posts sitemap');
     }
   });
 
@@ -438,8 +488,10 @@ export function app(): express.Express {
 Allow: /
 
 # Sitemaps
-Sitemap: ${baseUrl}/sitemap.xml
-Sitemap: ${baseUrl}/sitemap-blog.xml
+Sitemap: ${baseUrl}/sitemap-index.xml
+Sitemap: ${baseUrl}/pages.xml
+Sitemap: ${baseUrl}/posts.xml
+Sitemap: ${baseUrl}/sitemap-images.xml
 
 # Disallow admin areas
 Disallow: /admin/

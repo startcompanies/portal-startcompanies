@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
@@ -144,6 +144,75 @@ export class AuthService {
   isClient(): boolean {
     return this.hasRole('client');
   }
+
+  /**
+   * SSO Authentication - Autenticación mediante parámetros de URL para embedding
+   */
+  public ssoAuth(
+    email: string,
+    token: string,
+    customerId?: string,
+    phone?: string
+  ): Observable<any> {
+    let url = `${this.apiUrl}/sso?email=${encodeURIComponent(
+      email
+    )}&token=${encodeURIComponent(token)}`;
+
+    if (customerId) {
+      url += `&customerId=${encodeURIComponent(customerId)}`;
+    }
+
+    if (phone) {
+      url += `&phone=${encodeURIComponent(phone)}`;
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
+
+    return this.http.get<any>(url, { headers, withCredentials: true }).pipe(
+      tap((response) => {
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+          this.loadUserFromToken(response.accessToken);
+          
+          // Guardar refreshToken en localStorage como fallback para iframes
+          if (response.refreshToken) {
+            localStorage.setItem('refreshToken', response.refreshToken);
+          }
+          
+          // Marcar que el login fue vía SSO
+          localStorage.setItem('isSsoLogin', 'true');
+        }
+      })
+    );
+  }
+
+  /**
+   * Refresh token para SSO (usa refreshToken del localStorage)
+   */
+  public refreshSso(refreshToken: string): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/refresh-sso`,
+      { refreshToken },
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      }
+    ).pipe(
+      tap((response) => {
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+          this.loadUserFromToken(response.accessToken);
+        }
+      })
+    );
+  }
 }
+
+
+
+
+
 
 

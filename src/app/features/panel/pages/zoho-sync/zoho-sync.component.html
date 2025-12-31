@@ -1,0 +1,267 @@
+<div class="zoho-sync-container" *ngIf="isAdmin">
+  <div class="header">
+    <h1>Sincronización con Zoho CRM</h1>
+    <p class="subtitle">Gestiona la sincronización de datos entre el panel y Zoho CRM</p>
+  </div>
+
+  <!-- Mensajes -->
+  <div class="messages" *ngIf="error || successMessage">
+    <div class="alert alert-error" *ngIf="error">
+      <span class="icon">⚠️</span>
+      <span>{{ error }}</span>
+      <button class="close-btn" (click)="clearMessages()">×</button>
+    </div>
+    <div class="alert alert-success" *ngIf="successMessage">
+      <span class="icon">✅</span>
+      <span>{{ successMessage }}</span>
+      <button class="close-btn" (click)="clearMessages()">×</button>
+    </div>
+  </div>
+
+  <!-- Configuración General -->
+  <div class="config-section">
+    <h2>Configuración</h2>
+    <div class="form-group">
+      <label for="org">Organización/Cliente:</label>
+      <input 
+        type="text" 
+        id="org" 
+        [(ngModel)]="org" 
+        placeholder="startcompanies"
+        class="form-control"
+      />
+    </div>
+  </div>
+
+  <!-- Importar desde Zoho -->
+  <div class="section">
+    <h2>Importar desde Zoho CRM</h2>
+    
+    <!-- Importar Accounts -->
+    <div class="card">
+      <h3>Importar Accounts</h3>
+      <p class="description">
+        Importa Accounts desde Zoho CRM y crea/actualiza Requests en el panel.<br>
+        <strong>Nota:</strong> Al importar Accounts, se procesan automáticamente los contactos (subforms) y deals relacionados.
+      </p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="accountsLimit">Límite:</label>
+          <input 
+            type="number" 
+            id="accountsLimit" 
+            [(ngModel)]="accountsLimit" 
+            min="1" 
+            max="200"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label for="accountsOffset">Offset:</label>
+          <input 
+            type="number" 
+            id="accountsOffset" 
+            [(ngModel)]="accountsOffset" 
+            min="0"
+            class="form-control"
+          />
+        </div>
+      </div>
+      
+      <button 
+        class="btn btn-primary" 
+        (click)="importAccounts()" 
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">Importar Accounts</span>
+        <span *ngIf="isLoading">Importando...</span>
+      </button>
+
+      <!-- Resultados de Accounts -->
+      <div class="results" *ngIf="accountsResult">
+        <h4>Resultados:</h4>
+        <div class="stats">
+          <div class="stat">
+            <span class="label">Total procesados:</span>
+            <span class="value">{{ accountsResult.total }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">Nuevos:</span>
+            <span class="value success">{{ accountsResult.imported }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">Actualizados:</span>
+            <span class="value warning">{{ accountsResult.updated }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">Errores:</span>
+            <span class="value error">{{ accountsResult.errors.length }}</span>
+          </div>
+        </div>
+
+        <!-- Errores -->
+        <div class="errors-list" *ngIf="accountsResult.errors.length > 0">
+          <h5>Errores:</h5>
+          <ul>
+            <li *ngFor="let err of accountsResult.errors">
+              <strong>{{ err.accountName }}</strong> ({{ err.accountId }}): {{ err.error }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Importar Account específico -->
+    <div class="card">
+      <h3>Importar Account Específico</h3>
+      <p class="description">Importa un Account específico por su ID de Zoho</p>
+      
+      <div class="form-group">
+        <label for="accountId">Account ID de Zoho:</label>
+        <input 
+          type="text" 
+          id="accountId" 
+          [(ngModel)]="accountId" 
+          placeholder="6698625000000549831"
+          class="form-control"
+        />
+      </div>
+      
+      <button 
+        class="btn btn-primary" 
+        (click)="importAccountById()" 
+        [disabled]="isLoading || !accountId"
+      >
+        <span *ngIf="!isLoading">Importar Account</span>
+        <span *ngIf="isLoading">Importando...</span>
+      </button>
+    </div>
+
+    <!-- Nota: Los Deals se procesan automáticamente al importar Accounts -->
+
+    <!-- Sincronización Completa -->
+    <div class="card card-highlight">
+      <h3>🔄 Sincronización Completa</h3>
+      <p class="description">
+        <strong>Importa TODOS los Accounts desde Zoho CRM sin límite.</strong><br>
+        Al importar cada Account, se procesan automáticamente:<br>
+        • Contactos desde subforms (Contacto_Principal_LLC, Socios_LLC)<br>
+        • Deals relacionados para actualizar el status del Request
+      </p>
+      
+      <div class="alert alert-info">
+        <strong>⚠️ Nota:</strong> Esta operación puede tardar varios minutos dependiendo de la cantidad de Accounts en Zoho CRM.
+      </div>
+      
+      <button 
+        class="btn btn-primary btn-large" 
+        (click)="fullSync()" 
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">🔄 Ejecutar Sincronización Completa</span>
+        <span *ngIf="isLoading">Sincronizando...</span>
+      </button>
+
+      <!-- Resultados de Sincronización Completa -->
+      <div class="results" *ngIf="fullSyncResult">
+        <h4>Resultados de Sincronización Completa:</h4>
+        
+        <div class="info-message" *ngIf="fullSyncResult.message">
+          <p><strong>ℹ️</strong> {{ fullSyncResult.message }}</p>
+        </div>
+        
+        <div class="sub-results">
+          <h5>Accounts procesados:</h5>
+          <div class="stats">
+            <div class="stat">
+              <span class="label">Total:</span>
+              <span class="value">{{ fullSyncResult.accounts.total }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Nuevos:</span>
+              <span class="value success">{{ fullSyncResult.accounts.imported }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Actualizados:</span>
+              <span class="value warning">{{ fullSyncResult.accounts.updated }}</span>
+            </div>
+            <div class="stat">
+              <span class="label">Errores:</span>
+              <span class="value error">{{ fullSyncResult.accounts.errors.length }}</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="note">
+          <strong>Nota:</strong> Los contactos (subforms) y deals relacionados se procesaron automáticamente con cada Account.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sincronizar hacia Zoho -->
+  <div class="section">
+    <h2>Sincronizar hacia Zoho CRM</h2>
+    
+    <div class="card">
+      <h3>Sincronizar Solicitud</h3>
+      <p class="description">Sincroniza una solicitud del panel hacia Zoho CRM (crea/actualiza Account, Contacts y Deal)</p>
+      
+      <div class="form-group">
+        <label for="requestId">ID de Solicitud:</label>
+        <input 
+          type="number" 
+          id="requestId" 
+          [(ngModel)]="requestId" 
+          placeholder="123"
+          class="form-control"
+        />
+      </div>
+      
+      <button 
+        class="btn btn-secondary" 
+        (click)="syncRequest()" 
+        [disabled]="isLoading || !requestId"
+      >
+        <span *ngIf="!isLoading">Sincronizar Solicitud</span>
+        <span *ngIf="isLoading">Sincronizando...</span>
+      </button>
+
+      <!-- Resultados de Sincronización -->
+      <div class="results" *ngIf="syncRequestResult">
+        <h4>Resultados:</h4>
+        <div class="info-list">
+          <div class="info-item">
+            <span class="label">Account ID:</span>
+            <span class="value">{{ syncRequestResult.accountId }}</span>
+          </div>
+          <div class="info-item" *ngIf="syncRequestResult.dealId">
+            <span class="label">Deal ID:</span>
+            <span class="value">{{ syncRequestResult.dealId }}</span>
+          </div>
+          <div class="info-item" *ngIf="syncRequestResult.primaryContactId">
+            <span class="label">Contacto Principal ID:</span>
+            <span class="value">{{ syncRequestResult.primaryContactId }}</span>
+          </div>
+          <div class="info-item" *ngIf="syncRequestResult.contactIds.length > 0">
+            <span class="label">Contactos creados:</span>
+            <span class="value">{{ syncRequestResult.contactIds.length }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="no-access" *ngIf="!isAdmin">
+  <div class="message">
+    <h2>Acceso Restringido</h2>
+    <p>No tienes permisos para acceder a esta sección. Solo los administradores pueden gestionar la sincronización con Zoho CRM.</p>
+  </div>
+</div>
+
+
+
+
+
