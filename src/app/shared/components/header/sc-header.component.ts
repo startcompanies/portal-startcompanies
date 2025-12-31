@@ -53,13 +53,13 @@ export class ScHeaderComponent implements OnInit {
     this.logoImagesSubject.next({
       ...this.logoImages,
       mobile: isDarkMode
-        ? '/assets/logo-dark-mobile.webp'
+        ? '/assets/logo-grey-mobile.webp'
         : '/assets/logo-mobile.webp',
       tablet: isDarkMode
-        ? '/assets/logo-dark-tablet.webp'
+        ? '/assets/logo-grey-tablet.webp'
         : '/assets/logo-tablet.webp',
-      desktop: isDarkMode ? '/assets/logo-dark.webp' : '/assets/logo.webp',
-      fallback: isDarkMode ? '/assets/logo-dark.webp' : '/assets/logo.webp',
+      desktop: isDarkMode ? '/assets/logo-grey-desktop.webp' : '/assets/logo.webp',
+      fallback: isDarkMode ? '/assets/logo-grey.png' : '/assets/logo.webp',
     });
 
     this.cdr.markForCheck();
