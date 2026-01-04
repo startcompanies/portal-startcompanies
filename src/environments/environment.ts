@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  //apiUrl: 'http://localhost:3000',
-  apiUrl: 'https://api-web.startcompanies.io',
+  apiUrl: 'http://localhost:3000',
+  //apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/posts/get-sandbox-posts',
   categoriesEndpoint: '/categories/whith-sandbox-posts-count',
   facebookPixel: {

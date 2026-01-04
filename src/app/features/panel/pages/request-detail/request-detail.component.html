@@ -63,36 +63,26 @@
           <div class="timeline-content">
             <div class="step-header">
               <h4 class="step-title">{{ step.name }}</h4>
-              <div *ngIf="isAdmin" class="step-admin-actions">
-                <div class="btn-group btn-group-sm" role="group">
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-success"
-                    (click)="updateStepStatus(step, 'completed')"
-                    [disabled]="step.status === 'completed'"
-                    title="Marcar como completado"
-                  >
-                    <i class="bi bi-check"></i>
-                  </button>
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-primary"
-                    (click)="updateStepStatus(step, 'current')"
-                    [disabled]="step.status === 'current'"
-                    title="Marcar como actual"
-                  >
-                    <i class="bi bi-clock"></i>
-                  </button>
-                  <button 
-                    type="button" 
-                    class="btn btn-outline-secondary"
-                    (click)="updateStepStatus(step, 'pending')"
-                    [disabled]="step.status === 'pending'"
-                    title="Marcar como pendiente"
-                  >
-                    <i class="bi bi-x"></i>
-                  </button>
-                </div>
+              <!-- Botones de acción solo para "Solicitud Recibida" cuando está en estado "solicitud-recibida" -->
+              <div *ngIf="isAdmin && step.name === 'Solicitud Recibida' && isSolicitudRecibida()" class="step-admin-actions">
+                <button 
+                  type="button" 
+                  class="btn btn-success btn-sm me-2"
+                  (click)="approveRequest()"
+                  title="Aprobar solicitud"
+                >
+                  <i class="bi bi-check-circle me-1"></i>
+                  Aprobar
+                </button>
+                <button 
+                  type="button" 
+                  class="btn btn-danger btn-sm"
+                  (click)="rejectRequest()"
+                  title="Rechazar solicitud"
+                >
+                  <i class="bi bi-x-circle me-1"></i>
+                  Rechazar
+                </button>
               </div>
             </div>
             <p class="step-description">{{ step.description }}</p>
@@ -106,7 +96,8 @@
                 </span>
               </small>
             </div>
-            <div *ngIf="isAdmin && step.status !== 'pending'" class="step-assign">
+            <!-- Ocultar asignación para etapas del blueprint (solo mostrar para etapas genéricas) -->
+            <div *ngIf="isAdmin && step.status !== 'pending' && step.name !== 'Solicitud Recibida' && !isBlueprintStage(step.name)" class="step-assign">
               <label class="form-label-sm">Asignar a:</label>
               <select 
                 class="form-select form-select-sm" 
@@ -128,59 +119,47 @@
     <div class="documents-section">
       <div class="section-header">
         <h3 class="section-title">Documentos Entregados</h3>
-        <button 
-          *ngIf="isAdmin" 
-          class="btn btn-sm btn-primary"
-          (click)="openUploadModal()"
-        >
-          <i class="bi bi-upload me-2"></i>
-          Subir Documento
-        </button>
       </div>
       
-      <div *ngIf="request.documents.length === 0" class="alert alert-info">
-        <i class="bi bi-info-circle me-2"></i>
-        Los documentos estarán disponibles cuando el proceso esté completado.
+      <!-- Mostrar iframe con WorkDrive embed si está disponible -->
+      <div *ngIf="request.workDriveUrlExternal && getSafeWorkDriveUrl()" class="workdrive-container">
+        <div class="workdrive-iframe-wrapper">
+          <iframe 
+            [src]="getSafeWorkDriveUrl()" 
+            class="workdrive-iframe"
+            frameborder="0"
+            allowfullscreen
+            allow="autoplay; encrypted-media; fullscreen"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
+            title="Documentos de Zoho WorkDrive"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+      
+      <!-- Fallback: enlace si no se puede generar la URL de embed -->
+      <div *ngIf="request.workDriveUrlExternal && !getSafeWorkDriveUrl()" class="workdrive-container">
+        <div class="workdrive-link-container">
+          <div class="workdrive-info">
+            <i class="bi bi-folder-fill me-2"></i>
+            <span>Los documentos están disponibles en Zoho WorkDrive</span>
+          </div>
+          <a 
+            [href]="request.workDriveUrlExternal" 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-lg"
+          >
+            <i class="bi bi-box-arrow-up-right me-2"></i>
+            Abrir Documentos en Zoho WorkDrive
+          </a>
+        </div>
       </div>
 
-      <div *ngIf="request.documents.length > 0" class="documents-list">
-        <div class="document-card" *ngFor="let doc of request.documents">
-          <div class="document-icon">
-            <i [class]="getDocumentTypeIcon(doc.type)"></i>
-          </div>
-          <div class="document-info">
-            <h4 class="document-name">{{ doc.name }}</h4>
-            <div class="document-meta">
-              <span class="document-type-badge">{{ getDocumentTypeLabel(doc.type) }}</span>
-              <span class="document-size" *ngIf="doc.size">
-                <i class="bi bi-file-earmark me-1"></i>
-                {{ formatFileSize(doc.size) }}
-              </span>
-              <span class="document-date">
-                <i class="bi bi-calendar3 me-1"></i>
-                {{ doc.uploadedAt | date:'short' }}
-              </span>
-            </div>
-            <p *ngIf="doc.description" class="document-description">{{ doc.description }}</p>
-          </div>
-          <div class="document-actions">
-            <button 
-              class="btn btn-sm btn-primary" 
-              (click)="downloadDocument(doc)"
-              [disabled]="doc.url === '#'"
-            >
-              <i class="bi bi-download me-2"></i>
-              Descargar
-            </button>
-            <button 
-              *ngIf="isAdmin" 
-              class="btn btn-sm btn-outline-danger ms-2" 
-              (click)="deleteDocument(doc)"
-            >
-              <i class="bi bi-trash"></i>
-            </button>
-          </div>
-        </div>
+      <!-- Mensaje cuando no hay WorkDrive URL -->
+      <div *ngIf="!request.workDriveUrlExternal" class="alert alert-info">
+        <i class="bi bi-info-circle me-2"></i>
+        Los documentos estarán disponibles cuando el proceso esté completado.
       </div>
     </div>
 
@@ -282,109 +261,22 @@
   </div>
 
   <!-- Modal: Ver Todos los Datos -->
-  <div *ngIf="showAllDataModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);" (click)="closeAllDataModal()">
-    <div class="modal-dialog modal-dialog-centered modal-xl" (click)="$event.stopPropagation()">
+  <div *ngIf="showAllDataModal" class="modal fade show d-block modal-full-width" tabindex="-1" (click)="closeAllDataModal()">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-full-width-dialog" (click)="$event.stopPropagation()">
       <div class="modal-content">
-        <div class="modal-header bg-primary text-white">
+        <div class="modal-header modal-header-custom">
           <h5 class="modal-title">
             <i class="bi bi-file-earmark-text me-2"></i>
             Datos Completos de la Solicitud #{{ request?.id }}
           </h5>
-          <button type="button" class="btn-close btn-close-white" (click)="closeAllDataModal()" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" (click)="closeAllDataModal()" aria-label="Close" style="filter: brightness(0) invert(1);"></button>
         </div>
         <div class="modal-body">
           <div *ngIf="fullRequestData" class="data-viewer">
-            <!-- Información General -->
-            <div class="card mb-4 shadow-sm">
-              <div class="card-header bg-primary text-white">
-                <h6 class="mb-0">
-                  <i class="bi bi-info-circle me-2"></i>
-                  Información General
-                </h6>
-              </div>
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo:</label>
-                      <span class="detail-value badge bg-primary">{{ getRequestTypeLabel(fullRequestData.type) }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="detail-item">
-                      <label class="detail-label">Estado:</label>
-                      <span [class]="getStatusClass(fullRequestData.status) + ' badge'">
-                        {{ getStatusLabel(fullRequestData.status) }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId">
-                    <div class="detail-item">
-                      <label class="detail-label">Ver Registro en Zoho:</label>
-                      <a 
-                        [href]="'https://crm.zoho.com/crm/org881745849/tab/Accounts/' + fullRequestData.zohoAccountId" 
-                        target="_blank" 
-                        class="detail-value text-primary text-decoration-underline d-inline-flex align-items-center"
-                        title="Ver registro en Zoho CRM"
-                      >
-                        <i class="bi bi-box-arrow-up-right me-2"></i>
-                        Abrir en Zoho CRM ({{ fullRequestData.zohoAccountId }})
-                      </a>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="detail-item">
-                      <label class="detail-label">Fecha Creación:</label>
-                      <span class="detail-value">{{ fullRequestData.createdAt | date:'medium' }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="detail-item">
-                      <label class="detail-label">Fecha Actualización:</label>
-                      <span class="detail-value">{{ fullRequestData.updatedAt | date:'medium' }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Información del Cliente -->
-            <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.client">
-              <div class="card-header bg-info text-white">
-                <h6 class="mb-0">
-                  <i class="bi bi-person me-2"></i>
-                  Información del Cliente
-                </h6>
-              </div>
-              <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <div class="detail-item">
-                      <label class="detail-label">Email:</label>
-                      <span class="detail-value">{{ fullRequestData.client.email }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.client.first_name || fullRequestData.client.last_name">
-                    <div class="detail-item">
-                      <label class="detail-label">Nombre Completo:</label>
-                      <span class="detail-value">
-                        {{ getFullName(fullRequestData.client.first_name, fullRequestData.client.last_name) }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.client.username">
-                    <div class="detail-item">
-                      <label class="detail-label">Username:</label>
-                      <span class="detail-value">{{ fullRequestData.client.username }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <!-- Información del Partner -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.partner">
-              <div class="card-header bg-success text-white">
+              <div class="card-header card-header-soft-success">
                 <h6 class="mb-0">
                   <i class="bi bi-handshake me-2"></i>
                   Información del Partner
@@ -412,7 +304,7 @@
 
             <!-- Datos de la Solicitud Apertura LLC (desde BD local) -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'apertura-llc' && fullRequestData.aperturaLlcRequest">
-              <div class="card-header bg-primary text-white">
+              <div class="card-header card-header-soft">
                 <h6 class="mb-0">
                   <i class="bi bi-building me-2"></i>
                   Datos de Apertura LLC
@@ -447,7 +339,7 @@
                     <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.llcType">
                       <div class="detail-item">
                         <label class="detail-label">Tipo de LLC:</label>
-                        <span class="detail-value badge bg-secondary">
+                        <span class="detail-value badge badge-llc-type">
                           {{ fullRequestData.aperturaLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
                         </span>
                       </div>
@@ -617,7 +509,7 @@
 
             <!-- Contacto Principal LLC (Primer Member) -->
             <div class="card mb-4 shadow-sm" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && fullRequestData.members && fullRequestData.members.length > 0">
-              <div class="card-header bg-info text-white">
+              <div class="card-header card-header-soft-info">
                 <h6 class="mb-0">
                   <i class="bi bi-person-fill me-2"></i>
                   Contacto Principal LLC
@@ -671,7 +563,7 @@
                     <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
                       <div class="detail-item">
                         <label class="detail-label">Porcentaje de Participación:</label>
-                        <span class="detail-value badge bg-primary">{{ member.percentageOfParticipation }}%</span>
+                        <span class="detail-value badge badge-soft-primary">{{ member.percentageOfParticipation }}%</span>
                       </div>
                     </div>
                     <div class="col-md-12" *ngIf="member.memberAddress">
@@ -692,7 +584,7 @@
 
             <!-- Socios LLC (Members adicionales) -->
             <div class="card mb-4 shadow-sm" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && fullRequestData.members && fullRequestData.members.length > 1">
-              <div class="card-header bg-warning text-dark">
+              <div class="card-header card-header-soft-warning">
                 <h6 class="mb-0">
                   <i class="bi bi-people-fill me-2"></i>
                   Socios LLC
@@ -744,7 +636,7 @@
                     <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
                       <div class="detail-item">
                         <label class="detail-label">Porcentaje de Participación:</label>
-                        <span class="detail-value badge bg-primary">{{ member.percentageOfParticipation }}%</span>
+                        <span class="detail-value badge badge-soft-primary">{{ member.percentageOfParticipation }}%</span>
                       </div>
                     </div>
                     <div class="col-md-12" *ngIf="member.memberAddress">
@@ -771,7 +663,7 @@
             
             <!-- Datos de Renovación LLC -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'renovacion-llc' && fullRequestData.renovacionLlcRequest">
-              <div class="card-header bg-warning text-dark">
+              <div class="card-header card-header-soft-warning">
                 <h6 class="mb-0">
                   <i class="bi bi-arrow-repeat me-2"></i>
                   Datos de Renovación LLC
@@ -788,7 +680,7 @@
                   <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcType">
                     <div class="detail-item">
                       <label class="detail-label">Tipo de LLC:</label>
-                      <span class="detail-value badge bg-secondary">
+                      <span class="detail-value badge badge-llc-type">
                         {{ fullRequestData.renovacionLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
                       </span>
                     </div>
@@ -829,7 +721,7 @@
             
             <!-- Datos de Cuenta Bancaria -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'cuenta-bancaria' && fullRequestData.cuentaBancariaRequest">
-              <div class="card-header bg-success text-white">
+              <div class="card-header card-header-soft-success">
                 <h6 class="mb-0">
                   <i class="bi bi-bank me-2"></i>
                   Datos de Cuenta Bancaria
@@ -876,7 +768,7 @@
                   <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.llcType">
                     <div class="detail-item">
                       <label class="detail-label">Tipo de LLC:</label>
-                      <span class="detail-value badge bg-secondary">
+                      <span class="detail-value badge badge-llc-type">
                         {{ fullRequestData.cuentaBancariaRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
                       </span>
                     </div>
@@ -940,6 +832,60 @@
                 <p class="mb-0">{{ fullRequestData.notes }}</p>
               </div>
             </div>
+
+            <!-- Información General -->
+            <div class="card mb-4 shadow-sm">
+              <div class="card-header card-header-soft">
+                <h6 class="mb-0">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Información General
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Tipo:</label>
+                      <span class="detail-value badge badge-soft-primary">{{ getRequestTypeLabel(fullRequestData.type) }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Estado:</label>
+                      <span [class]="getStatusClass(fullRequestData.status) + ' badge'">
+                        {{ getStatusLabel(fullRequestData.status) }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId">
+                    <div class="detail-item">
+                      <label class="detail-label">Ver Registro en Zoho:</label>
+                      <a 
+                        [href]="'https://crm.zoho.com/crm/org881745849/tab/Accounts/' + fullRequestData.zohoAccountId" 
+                        target="_blank" 
+                        class="detail-value text-primary text-decoration-underline d-inline-flex align-items-center"
+                        title="Ver registro en Zoho CRM"
+                      >
+                        <i class="bi bi-box-arrow-up-right me-2"></i>
+                        Abrir en Zoho CRM ({{ fullRequestData.zohoAccountId }})
+                      </a>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Fecha Creación:</label>
+                      <span class="detail-value">{{ fullRequestData.createdAt | date:'medium' }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">Fecha Actualización:</label>
+                      <span class="detail-value">{{ fullRequestData.updatedAt | date:'medium' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div *ngIf="!fullRequestData" class="text-center py-4">
             <p class="text-muted">No hay datos disponibles</p>
@@ -955,6 +901,7 @@
     </div>
   </div>
 </div>
+
 
 
 

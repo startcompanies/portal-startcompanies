@@ -7,7 +7,9 @@ import { firstValueFrom } from 'rxjs';
 export interface Request {
   id: number;
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
-  status: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  status: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  stage?: string; // Etapa actual del blueprint
+  workDriveUrlExternal?: string; // URL externa de Zoho WorkDrive
   client?: {
     id: number;
     email: string;
@@ -71,10 +73,21 @@ export interface Request {
 }
 
 export interface RequestFilters {
-  status?: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  status?: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
   type?: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   clientId?: number;
   partnerId?: number;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 @Injectable({
@@ -86,9 +99,9 @@ export class RequestsService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtener todas las solicitudes con filtros opcionales (solo admin)
+   * Obtener todas las solicitudes con filtros opcionales y paginación (solo admin)
    */
-  getAllRequests(filters?: RequestFilters): Promise<Request[]> {
+  getAllRequests(filters?: RequestFilters): Promise<PaginatedResponse<Request>> {
     let params = new HttpParams();
     
     if (filters) {
@@ -104,10 +117,19 @@ export class RequestsService {
       if (filters.partnerId) {
         params = params.set('partnerId', filters.partnerId.toString());
       }
+      if (filters.search && filters.search.trim().length > 0) {
+        params = params.set('search', filters.search.trim());
+      }
+      if (filters.page) {
+        params = params.set('page', filters.page.toString());
+      }
+      if (filters.limit) {
+        params = params.set('limit', filters.limit.toString());
+      }
     }
 
     return firstValueFrom(
-      this.http.get<Request[]>(this.apiUrl, { params })
+      this.http.get<PaginatedResponse<Request>>(this.apiUrl, { params })
     );
   }
 
@@ -162,6 +184,29 @@ export class RequestsService {
   }
 
   /**
+   * Aprobar una solicitud (solo admin)
+   */
+  approveRequest(id: number, initialStage?: string, notes?: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post<any>(`${this.apiUrl}/${id}/approve`, {
+        initialStage,
+        notes,
+      })
+    );
+  }
+
+  /**
+   * Rechazar una solicitud (solo admin)
+   */
+  rejectRequest(id: number, notes?: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post<any>(`${this.apiUrl}/${id}/reject`, {
+        notes,
+      })
+    );
+  }
+
+  /**
    * Obtener documentos requeridos por tipo de solicitud
    */
   getRequiredDocuments(
@@ -178,6 +223,7 @@ export class RequestsService {
     );
   }
 }
+
 
 
 
