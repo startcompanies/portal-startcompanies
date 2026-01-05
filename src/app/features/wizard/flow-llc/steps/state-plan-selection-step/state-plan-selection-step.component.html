@@ -1,0 +1,50 @@
+<div class="state-plan-selection-step">
+    <h4>{{ 'WIZARD.steps.state_plan' | transloco }}</h4>
+    <form [formGroup]="form">
+        <div class="form-group">
+            <label for="state">{{ 'WIZARD.state_plan_step.plan' | transloco }} <span
+                    class="text-danger">*</span></label>
+            <select id="state" class="form-control" formControlName="plan" (change)="changePlan()">
+                <option value="">
+                    {{ 'WIZARD.state_plan_step.plan_label' | transloco }}
+                </option>
+                <option *ngFor="let plan of planes" [value]="plan">
+                    {{ 'WIZARD.state_plan_step.planes_options.' +
+                    plan.toLowerCase().replace(' ',
+                    '_') | transloco }}
+                </option>
+            </select>
+
+            <div *ngIf="form.get('plan')?.touched && form.get('plan')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.state_plan_step.plan_required' | transloco }}
+            </div>
+        </div>
+        <label for="state">{{ 'WIZARD.state_plan_step.state' | transloco }} <span class="text-danger">*</span></label>
+        <div class="row mb-2">
+            <div class="col">
+                <button class="state-btn" [ngClass]="{ active: selectedState === 'new_mexico' }" (click)="selectState('new_mexico')">{{
+                    'WIZARD.state_plan_step.state_new_mexico' | transloco }}</button>
+            </div>
+            <div class="col">
+                <button class="state-btn" [ngClass]="{ active: selectedState === 'texas' }" (click)="selectState('texas')">{{
+                    'WIZARD.state_plan_step.state_texas' | transloco }}</button>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="state">{{ 'WIZARD.state_plan_step.other_option' | transloco }}</label>
+
+            <select id="state" class="form-control" formControlName="state" (change)="changeState()">
+                <option value="">
+                    {{ 'WIZARD.state_plan_step.state_label' | transloco }}
+                </option>
+                <option *ngFor="let state of states" [value]="state">
+                    {{ state }}
+                </option>
+            </select>
+
+            <div *ngIf="form.get('state')?.touched && form.get('state')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.state_plan_step.state_required' | transloco }}
+            </div>
+        </div>
+    </form>
+</div>

@@ -42,16 +42,33 @@
   justify-content: center;
   border-left: 4px solid rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   border-radius: 1rem 0rem 0rem 1rem;
 }
 
 /* Contenido del wizard */
 .wizard-inner {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 86%;
+  margin: 1% 7% 1% 7%;
+  padding: 2rem 1rem;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wizard-step-content {
+  flex: 1;
+  overflow-y: auto;
+
+  /* scroll suave */
+  scrollbar-gutter: stable;
+}
+
+.wizard-progress-indicator,
+.wizard-custom-navigation {
+  flex-shrink: 0;
 }
 
 /* Estilos personalizados para Angular Material Stepper - Diseño moderno */
@@ -81,8 +98,8 @@
 
 /* Indicador de progreso personalizado - Estilo moderno */
 .wizard-progress-indicator {
-  margin-bottom: 3rem;
-  padding-bottom: 2rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -90,7 +107,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.8rem;
 }
 
 .wizard-progress-text {
@@ -189,8 +206,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 3rem;
-  padding-top: 2rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
   border-top: 1px solid #f3f4f6;
   gap: 1rem;
 }
@@ -254,6 +271,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -283,12 +301,12 @@
   }
 
   .wizard-progress-indicator {
-    margin-bottom: 2rem;
-    padding-bottom: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
   }
 
   .wizard-progress-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
   }
 
   .wizard-progress-text {

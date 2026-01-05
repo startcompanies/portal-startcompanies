@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 })
 export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 1;
-  
+
   form!: FormGroup;
   private formSubscription?: Subscription;
 
@@ -27,14 +27,17 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
-    
+
     this.form = new FormGroup({
+      fullName: new FormControl(savedData.fullName || '', [Validators.required]),
+      phone: new FormControl(savedData.phone || '', [Validators.required]),
       email: new FormControl(savedData.email || '', [Validators.required, Validators.email]),
       password: new FormControl(savedData.password || '', Validators.required),
     });
   }
 
   ngOnInit(): void {
+    this.wizardStateService.registerForm(this.stepNumber, this.form);
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
@@ -48,6 +51,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.wizardStateService.unregisterForm(this.stepNumber);
     this.formSubscription?.unsubscribe();
     this.saveStepData();
   }

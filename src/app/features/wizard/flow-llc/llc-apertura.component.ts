@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatStepperModule } from '@angular/material/stepper';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -18,6 +18,10 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 // Formulario específico de LLC
 import { ClientFormLLCComponent } from './steps/client-form-llc.component';
 
+import { WizardLlcInformationStepComponent } from './steps/llc-information-step/llc-information-step.component';
+import { WizardStatePlanSelectionStepComponent } from './steps/state-plan-selection-step/state-plan-selection-step.component';
+import { StripeService } from '../services/stripe.service';
+
 /**
  * Componente principal para el flujo de apertura de LLC
  * Flujo: datos básicos → selección estado/precio → pago → información → revisión → envío
@@ -35,21 +39,29 @@ import { ClientFormLLCComponent } from './steps/client-form-llc.component';
     WizardPaymentStepComponent,
     ClientFormLLCComponent,
     WizardFinalReviewStepComponent,
+    WizardLlcInformationStepComponent,
+    WizardStatePlanSelectionStepComponent,
   ],
+  providers: [StripeService, TranslocoService],
   templateUrl: './llc-apertura.component.html',
   styleUrls: ['./llc-apertura.component.css']
 })
 export class LLCAperturaComponent implements OnInit {
+
   flowConfig!: any;
   currentStepIndex = 0;
   stepTitles: { [key: number]: string } = {};
   currentLang = 'es';
-  
+
+  packId: string = '';
+  priceId: string = '';
+  state: string = '';
+
   stepIcons: { [key: number]: string } = {
     1: 'bi-person-plus',
     2: 'bi-geo-alt',
     3: 'bi-credit-card',
-    4: 'bi-person-vcard',
+    4: 'bi-briefcase',
     5: 'bi-check-circle',
   };
 
@@ -59,8 +71,9 @@ export class LLCAperturaComponent implements OnInit {
     private transloco: TranslocoService,
     private languageService: LanguageService,
     public translocoService: TranslocoService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private stripeService: StripeService
+  ) { }
 
   ngOnInit(): void {
     this.flowConfig = this.wizardConfigService.getFlowConfig(WizardFlowType.LLC_APERTURA);
@@ -75,16 +88,16 @@ export class LLCAperturaComponent implements OnInit {
   private initializeStepTitles(): void {
     combineLatest([
       this.transloco.selectTranslate('WIZARD.steps.register'),
-      this.transloco.selectTranslate('WIZARD.steps.state'),
+      this.transloco.selectTranslate('WIZARD.steps.state_plan'),
       this.transloco.selectTranslate('WIZARD.steps.payment'),
-      this.transloco.selectTranslate('WIZARD.steps.client'),
+      this.transloco.selectTranslate('WIZARD.steps.llc_info'),
       this.transloco.selectTranslate('WIZARD.steps.review'),
-    ]).subscribe(([register, state, payment, client, review]) => {
+    ]).subscribe(([register, statePlan, payment, llcInfo, review]) => {
       this.stepTitles = {
         1: register,
-        2: state,
+        2: statePlan,
         3: payment,
-        4: client,
+        4: llcInfo,
         5: review,
       };
     });
@@ -97,6 +110,12 @@ export class LLCAperturaComponent implements OnInit {
       setTimeout(() => {
         this.onFinish();
       }, 100);
+    }
+
+    if (index === 2) {
+      this.packId = this.stripeService.getPackId();
+      this.priceId = this.stripeService.getPriceId();
+      this.state = this.stripeService.getState();
     }
   }
 
