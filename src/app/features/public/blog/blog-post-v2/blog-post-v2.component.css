@@ -383,6 +383,7 @@
 .mission-content {
   padding: 1rem 0;
   color: #ffffff;
+  text-align: left;
 }
 
 .mission-title {
@@ -391,6 +392,7 @@
   color: #ffffff;
   margin-bottom: 1rem;
   line-height: 1.2;
+  text-align: left;
 }
 
 .mission-description {
@@ -400,11 +402,13 @@
   color: #ffffff;
   margin-bottom: 0;
   opacity: 0.95;
+  text-align: left;
 }
 
 .mission-description :deep(p) {
   margin-bottom: 1rem;
   color: #ffffff;
+  text-align: left;
 }
 
 .mission-description :deep(ul),
@@ -412,11 +416,26 @@
   margin-bottom: 1rem;
   padding-left: 1.5rem;
   color: #ffffff;
+  text-align: left;
 }
 
 .mission-description :deep(li) {
   margin-bottom: 0.5rem;
   color: #ffffff;
+  text-align: left;
+}
+
+.mission-description :deep(div) {
+  text-align: left;
+}
+
+.mission-description :deep(h1),
+.mission-description :deep(h2),
+.mission-description :deep(h3),
+.mission-description :deep(h4),
+.mission-description :deep(h5),
+.mission-description :deep(h6) {
+  text-align: left;
 }
 
 /* Botones de compartir sociales */
@@ -502,12 +521,12 @@
 
   .mission-title {
     font-size: 2.5rem;
-    text-align: center;
+    text-align: left;
   }
 
   .mission-description {
     font-size: 1.1rem;
-    text-align: center;
+    text-align: left;
   }
 
   .mission-content {
@@ -540,7 +559,7 @@
 
 @media (max-width: 575.98px) {
   .mission-title {
-    font-size: 1.8rem;
+    font-size: 1.1rem;
   }
 
   .mission-description {

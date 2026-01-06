@@ -37,7 +37,7 @@ export class SitemapService {
    * Genera entrada de URL para un post
    */
   private generateUrlEntry(post: Post): string {
-    const url = `${this.baseUrl}/blog/${post.slug}`;
+    const url = `${this.baseUrl}/blog/post/${post.slug}`;
     const lastmod = new Date(post.published_at).toISOString().split('T')[0];
     
     return `
@@ -109,8 +109,10 @@ export class SitemapService {
 Allow: /
 
 # Sitemaps
-Sitemap: ${this.baseUrl}/sitemap.xml
-Sitemap: ${this.baseUrl}/sitemap-blog.xml
+Sitemap: ${this.baseUrl}/sitemap-index.xml
+Sitemap: ${this.baseUrl}/pages.xml
+Sitemap: ${this.baseUrl}/posts.xml
+Sitemap: ${this.baseUrl}/sitemap-images.xml
 
 # Disallow admin areas
 Disallow: /admin/

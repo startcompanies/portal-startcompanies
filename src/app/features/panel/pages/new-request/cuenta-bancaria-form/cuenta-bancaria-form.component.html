@@ -1,0 +1,537 @@
+<div [formGroup]="serviceDataForm">
+  <!-- SECCIÓN: INFORMACIÓN DE LA LLC -->
+  <div *ngIf="currentSection === 1" class="form-section">
+    <h4 class="section-title">SECCIÓN: INFORMACIÓN DE LA LLC</h4>
+    <div class="row g-3">
+      <!-- Tipo de negocio -->
+      <div class="col-md-6">
+        <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
+        <select id="businessType" class="form-select" formControlName="businessType">
+          <option value="">Select</option>
+          <option value="llc">LLC</option>
+          <option value="corporation">Corporation</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Nombre legal del negocio -->
+      <div class="col-md-6">
+        <label for="legalBusinessName" class="form-label">Nombre legal del negocio <span class="text-danger">*</span></label>
+        <input type="text" id="legalBusinessName" class="form-control" formControlName="legalBusinessName" placeholder="123">
+        <small class="form-text text-muted">Debe coincidir exactamente como aparece en el Articles of Organization. No permitido es incluir 'LLC'.</small>
+      </div>
+
+      <!-- Industria / Rubro -->
+      <div class="col-md-6">
+        <label for="industry" class="form-label">Industria / Rubro</label>
+        <input type="text" id="industry" class="form-control" formControlName="industry" placeholder="Ej: Tecnología, Retail, Servicios">
+      </div>
+
+      <!-- Cantidad de empleados -->
+      <div class="col-md-6">
+        <label for="numberOfEmployees" class="form-label">Cantidad de empleados <span class="text-danger">*</span></label>
+        <input type="text" id="numberOfEmployees" class="form-control" formControlName="numberOfEmployees" placeholder="123">
+      </div>
+
+      <!-- Descripción breve -->
+      <div class="col-md-12">
+        <label for="briefDescription" class="form-label">Descripción breve <span class="text-danger">*</span></label>
+        <textarea id="briefDescription" class="form-control" formControlName="briefDescription" rows="4"></textarea>
+        <small class="form-text text-muted">La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.</small>
+      </div>
+
+      <!-- Sitio web o red social -->
+      <div class="col-md-6">
+        <label for="websiteOrSocialMedia" class="form-label">Sitio web o red social</label>
+        <input type="text" id="websiteOrSocialMedia" class="form-control" formControlName="websiteOrSocialMedia" placeholder="123">
+      </div>
+
+      <!-- Adjuntar EIN Letter -->
+      <div class="col-md-6">
+        <label for="einLetterFile" class="form-label">Adjuntar EIN Letter <span class="text-danger">*</span></label>
+        <input type="file" id="einLetterFile" class="form-control" (change)="onFileSelected($event, 'einLetterUrl', 'einLetter')" accept=".pdf,.jpg,.jpeg,.png,.docx" [disabled]="getFileUploadState('einLetter').uploading" />
+        <small class="form-text text-muted">El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)</small>
+        <div *ngIf="getFileUploadState('einLetter').file && !getFileUploadState('einLetter').uploading" class="selected-file-info mt-2">
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('einLetter').file?.name }} ({{ ((getFileUploadState('einLetter').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('einLetter', 'einLetterUrl', 'einLetterFile')"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div *ngIf="getFileUploadState('einLetter').uploading" class="upload-progress mt-2">
+          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('einLetter').progress" [attr.aria-valuenow]="getFileUploadState('einLetter').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('einLetter').progress }}%</div></div>
+          <small class="text-muted">Subiendo archivo...</small>
+        </div>
+        <div *ngIf="serviceDataForm.get('einLetterUrl')?.value && !getFileUploadState('einLetter').file && !getFileUploadState('einLetter').uploading" class="uploaded-file-info mt-2">
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+            <a [href]="serviceDataForm.get('einLetterUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('einLetter', 'einLetterUrl', 'einLetterFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+          </div>
+        </div>
+        <input type="hidden" formControlName="einLetterUrl">
+      </div>
+
+      <!-- Numero de EIN -->
+      <div class="col-md-6">
+        <label for="einNumber" class="form-label">Numero de EIN <span class="text-danger">*</span></label>
+        <input type="text" id="einNumber" class="form-control" formControlName="einNumber" placeholder="XX-XXXXXXX" pattern="[0-9]{2}-[0-9]{7}">
+        <small class="form-text text-muted">Formato: XX-XXXXXXX (ej. 12-3456789)</small>
+      </div>
+
+      <!-- Adjuntar Articles de Organización o Certificate of Formation -->
+      <div class="col-md-12">
+        <label for="articlesOrCertificateFile" class="form-label">Adjuntar Articles de Organización o Certificate of Formation <span class="text-danger">*</span></label>
+        <input type="file" id="articlesOrCertificateFile" class="form-control" (change)="onFileSelected($event, 'articlesOrCertificateUrl', 'articlesOrCertificate')" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" [disabled]="getFileUploadState('articlesOrCertificate').uploading" />
+        <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+        <div *ngIf="getFileUploadState('articlesOrCertificate').file && !getFileUploadState('articlesOrCertificate').uploading" class="selected-file-info mt-2">
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('articlesOrCertificate').file?.name }} ({{ ((getFileUploadState('articlesOrCertificate').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('articlesOrCertificate', 'articlesOrCertificateUrl', 'articlesOrCertificateFile')"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div *ngIf="getFileUploadState('articlesOrCertificate').uploading" class="upload-progress mt-2">
+          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('articlesOrCertificate').progress" [attr.aria-valuenow]="getFileUploadState('articlesOrCertificate').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('articlesOrCertificate').progress }}%</div></div>
+          <small class="text-muted">Subiendo archivo...</small>
+        </div>
+        <div *ngIf="serviceDataForm.get('articlesOrCertificateUrl')?.value && !getFileUploadState('articlesOrCertificate').file && !getFileUploadState('articlesOrCertificate').uploading" class="uploaded-file-info mt-2">
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+            <a [href]="serviceDataForm.get('articlesOrCertificateUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('articlesOrCertificate', 'articlesOrCertificateUrl', 'articlesOrCertificateFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+          </div>
+        </div>
+        <input type="hidden" formControlName="articlesOrCertificateUrl">
+      </div>
+    </div>
+  </div>
+
+  <!-- Dirección del Registered Agent -->
+  <div *ngIf="currentSection === 2" class="form-section">
+    <h4 class="section-title">Dirección del Registered Agent</h4>
+    <div class="row g-3">
+      <!-- Subtítulo: Dirección de tu empresa en USA -->
+      <div class="col-md-12">
+        <h5 class="section-subtitle">Dirección de tu empresa en USA <span class="text-danger">*</span></h5>
+      </div>
+
+      <!-- Calle y número -->
+      <div class="col-md-12">
+        <label for="registeredAgentStreet" class="form-label">Calle y número</label>
+        <input type="text" id="registeredAgentStreet" class="form-control" formControlName="registeredAgentStreet">
+      </div>
+
+      <!-- Apto / Suite / PO Box -->
+      <div class="col-md-12">
+        <label for="registeredAgentUnit" class="form-label">Apto / Suite / PO Box</label>
+        <input type="text" id="registeredAgentUnit" class="form-control" formControlName="registeredAgentUnit">
+      </div>
+
+      <!-- Ciudad y Estado -->
+      <div class="col-md-6">
+        <label for="registeredAgentCity" class="form-label">Ciudad</label>
+        <input type="text" id="registeredAgentCity" class="form-control" formControlName="registeredAgentCity">
+      </div>
+
+      <div class="col-md-6">
+        <label for="registeredAgentState" class="form-label">Estado</label>
+        <select id="registeredAgentState" class="form-select" formControlName="registeredAgentState">
+          <option value="">-Select-</option>
+          <option *ngFor="let state of usStates" [value]="state.value">{{ state.label }} ({{ state.abbreviation }})</option>
+        </select>
+      </div>
+
+      <!-- Postal / Zip Code y Country -->
+      <div class="col-md-6">
+        <label for="registeredAgentZipCode" class="form-label">Postal / Zip Code</label>
+        <input type="text" id="registeredAgentZipCode" class="form-control" formControlName="registeredAgentZipCode">
+      </div>
+
+      <div class="col-md-6">
+        <label for="registeredAgentCountry" class="form-label">Country</label>
+        <select id="registeredAgentCountry" class="form-select" formControlName="registeredAgentCountry">
+          <option value="">-Select-</option>
+          <option value="United States" selected>United States</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+
+      <!-- Instrucción -->
+      <div class="col-md-12">
+        <small class="form-text text-muted">Ingresa la dirección del Registered Agent tal como aparece en el Articles of Organization.</small>
+      </div>
+
+      <!-- Estado de constitución -->
+      <div class="col-md-6">
+        <label for="incorporationState" class="form-label">Estado de constitución</label>
+        <select id="incorporationState" class="form-select" formControlName="incorporationState">
+          <option value="">-Select-</option>
+          <option *ngFor="let state of usStates" [value]="state.value">{{ state.label }} ({{ state.abbreviation }})</option>
+        </select>
+      </div>
+
+      <!-- Mes y Año de Incorporación -->
+      <div class="col-md-6">
+        <label for="incorporationMonthYear" class="form-label">Mes y Año de Incorporación</label>
+        <input type="text" id="incorporationMonthYear" class="form-control" formControlName="incorporationMonthYear" placeholder="MMM-yyyy">
+        <small class="form-text text-muted">Formato: MMM-yyyy (ej. Jan-2024)</small>
+      </div>
+
+      <!-- Países donde haces negocios con tu LLC -->
+      <div class="col-md-12">
+        <label for="countriesWhereBusiness" class="form-label">Países donde haces negocios con tu LLC</label>
+        <select id="countriesWhereBusiness" class="form-select" formControlName="countriesWhereBusiness" multiple size="5">
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+        <small class="form-text text-muted">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples países.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información de la persona que verificará la cuenta bancaria -->
+  <div *ngIf="currentSection === 3" class="form-section">
+    <h4 class="section-title">Información de la persona que verificará la cuenta bancaria</h4>
+    <div class="row g-3">
+      <!-- Nombre(s) -->
+      <div class="col-md-6">
+        <label for="validatorFirstName" class="form-label">Nombre(s) <span class="text-danger">*</span></label>
+        <input type="text" id="validatorFirstName" class="form-control" formControlName="validatorFirstName">
+      </div>
+
+      <!-- Apellidos -->
+      <div class="col-md-6">
+        <label for="validatorLastName" class="form-label">Apellidos <span class="text-danger">*</span></label>
+        <input type="text" id="validatorLastName" class="form-control" formControlName="validatorLastName">
+      </div>
+
+      <!-- Fecha de Nacimiento -->
+      <div class="col-md-6">
+        <label for="validatorDateOfBirth" class="form-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
+        <input type="text" id="validatorDateOfBirth" class="form-control" formControlName="validatorDateOfBirth" placeholder="dd-MMM-yyyy">
+      </div>
+
+      <!-- Nacionalidad -->
+      <div class="col-md-6">
+        <label for="validatorNationality" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+        <select id="validatorNationality" class="form-select" formControlName="validatorNationality">
+          <option value="">-Select-</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+
+      <!-- Ciudadanía -->
+      <div class="col-md-6">
+        <label for="validatorCitizenship" class="form-label">Ciudadanía <span class="text-danger">*</span></label>
+        <select id="validatorCitizenship" class="form-select" formControlName="validatorCitizenship">
+          <option value="">-Select-</option>
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+      </div>
+
+      <!-- Número de pasaporte -->
+      <div class="col-md-6">
+        <label for="validatorPassportNumber" class="form-label">Número de pasaporte <span class="text-danger">*</span></label>
+        <input type="text" id="validatorPassportNumber" class="form-control" formControlName="validatorPassportNumber" placeholder="Como figura en el pasaporte, incluye letras y números">
+      </div>
+
+      <!-- Adjuntar pasaporte -->
+      <div class="col-md-12">
+        <label for="validatorPassportFile" class="form-label">Adjunta una copia escaneada o foto legible del pasaporte, asegurándote de que esté vigente. <span class="text-danger">*</span></label>
+        <input type="file" id="validatorPassportFile" class="form-control" (change)="onFileSelected($event, 'validatorPassportUrl', 'validatorPassport')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('validatorPassport').uploading" />
+        <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+        <div *ngIf="getFileUploadState('validatorPassport').file && !getFileUploadState('validatorPassport').uploading" class="selected-file-info mt-2">
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('validatorPassport').file?.name }} ({{ ((getFileUploadState('validatorPassport').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('validatorPassport', 'validatorPassportUrl', 'validatorPassportFile')"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div *ngIf="getFileUploadState('validatorPassport').uploading" class="upload-progress mt-2">
+          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('validatorPassport').progress" [attr.aria-valuenow]="getFileUploadState('validatorPassport').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('validatorPassport').progress }}%</div></div>
+          <small class="text-muted">Subiendo archivo...</small>
+        </div>
+        <div *ngIf="serviceDataForm.get('validatorPassportUrl')?.value && !getFileUploadState('validatorPassport').file && !getFileUploadState('validatorPassport').uploading" class="uploaded-file-info mt-2">
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+            <a [href]="serviceDataForm.get('validatorPassportUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('validatorPassport', 'validatorPassportUrl', 'validatorPassportFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+          </div>
+        </div>
+        <input type="hidden" formControlName="validatorPassportUrl">
+      </div>
+
+      <!-- Email laboral -->
+      <div class="col-md-6">
+        <label for="validatorWorkEmail" class="form-label">Email laboral</label>
+        <input type="email" id="validatorWorkEmail" class="form-control" formControlName="validatorWorkEmail" placeholder="Este correo se usará para ingresar a Relay">
+        <small class="form-text text-muted">Este correo se usará para ingresar a Relay</small>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="col-md-6">
+        <label for="validatorPhone" class="form-label">Teléfono</label>
+        <div class="input-group">
+          <input type="tel" id="validatorPhone" class="form-control" formControlName="validatorPhone">
+        </div>
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="checkbox" id="canReceiveSMS" formControlName="canReceiveSMS">
+          <label class="form-check-label" for="canReceiveSMS">Debe tener capacidad para recibir SMS</label>
+        </div>
+      </div>
+
+      <!-- ¿Es residente en EE.UU.? -->
+      <div class="col-md-12">
+        <label class="form-label">¿Es residente en EE.UU.?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="isUSResidentYes" formControlName="isUSResident" value="yes">
+          <label class="form-check-label" for="isUSResidentYes">Si</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="isUSResidentNo" formControlName="isUSResident" value="no">
+          <label class="form-check-label" for="isUSResidentNo">No</label>
+        </div>
+      </div>
+
+      <!-- Cargo / Título / Ocupación -->
+      <div class="col-md-6">
+        <label for="validatorTitle" class="form-label">Cargo / Título / Ocupación</label>
+        <select id="validatorTitle" class="form-select" formControlName="validatorTitle">
+          <option value="">-Select-</option>
+          <option value="ceo">CEO</option>
+          <option value="president">President</option>
+          <option value="director">Director</option>
+          <option value="manager">Manager</option>
+          <option value="owner">Owner</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- Fuente de ingreso personal -->
+      <div class="col-md-6">
+        <label for="validatorIncomeSource" class="form-label">Fuente de ingreso personal</label>
+        <select id="validatorIncomeSource" class="form-select" formControlName="validatorIncomeSource">
+          <option value="">-Select-</option>
+          <option value="salary">Salary</option>
+          <option value="business">Business</option>
+          <option value="investments">Investments</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <!-- ¿Cuánto ganas en el año? -->
+      <div class="col-md-6">
+        <label for="validatorAnnualIncome" class="form-label">¿Cuánto ganas en el año?</label>
+        <div class="input-group">
+          <input type="number" id="validatorAnnualIncome" class="form-control" formControlName="validatorAnnualIncome" placeholder=".00" step="0.01" min="0">
+          <span class="input-group-text">$</span>
+        </div>
+        <small class="form-text text-muted">El monto será expresado en USD</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dirección personal del propietario -->
+  <div *ngIf="currentSection === 4" class="form-section">
+    <h4 class="section-title">Dirección personal del propietario</h4>
+    <div class="row g-3">
+      <div class="col-md-12">
+        <small class="form-text text-muted">Ingresa la dirección personal del propietario para validar los domicilios.</small>
+      </div>
+
+      <!-- Calle y número -->
+      <div class="col-md-8">
+        <label for="ownerPersonalStreet" class="form-label">Calle y número <span class="text-danger">*</span></label>
+        <input type="text" id="ownerPersonalStreet" class="form-control" formControlName="ownerPersonalStreet">
+      </div>
+
+      <!-- Calle y número interior -->
+      <div class="col-md-4">
+        <label for="ownerPersonalUnit" class="form-label">Calle y número interior</label>
+        <input type="text" id="ownerPersonalUnit" class="form-control" formControlName="ownerPersonalUnit">
+      </div>
+
+      <!-- Ciudad -->
+      <div class="col-md-6">
+        <label for="ownerPersonalCity" class="form-label">Ciudad</label>
+        <input type="text" id="ownerPersonalCity" class="form-control" formControlName="ownerPersonalCity">
+      </div>
+
+      <!-- Estados / Provincias -->
+      <div class="col-md-6">
+        <label for="ownerPersonalState" class="form-label">Estados / Provincias</label>
+        <select id="ownerPersonalState" class="form-select" formControlName="ownerPersonalState">
+          <option value="">Select</option>
+          <option *ngFor="let state of usStates" [value]="state.value">{{ state.label }} ({{ state.abbreviation }})</option>
+        </select>
+      </div>
+
+      <!-- País y/o Estado -->
+      <div class="col-md-6">
+        <label for="ownerPersonalCountry" class="form-label">País y/o Estado</label>
+        <input type="text" id="ownerPersonalCountry" class="form-control" formControlName="ownerPersonalCountry">
+      </div>
+
+      <!-- Código Postal -->
+      <div class="col-md-6">
+        <label for="ownerPersonalPostalCode" class="form-label">Código Postal</label>
+        <input type="text" id="ownerPersonalPostalCode" class="form-control" formControlName="ownerPersonalPostalCode" placeholder="123">
+      </div>
+
+      <!-- Adjuntar factura de servicio -->
+      <div class="col-md-12">
+        <label for="serviceBillFile" class="form-label">Adjuntar factura de servicio <span class="text-danger">*</span></label>
+        <input type="file" id="serviceBillFile" class="form-control" (change)="onFileSelected($event, 'serviceBillUrl', 'serviceBill')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('serviceBill').uploading" />
+        <small class="form-text text-muted">No debe tener más de 3 meses – debe coincidir con esta dirección – nombre y dirección deben ser los mismos. Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+        <div *ngIf="getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="selected-file-info mt-2">
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('serviceBill').file?.name }} ({{ ((getFileUploadState('serviceBill').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div *ngIf="getFileUploadState('serviceBill').uploading" class="upload-progress mt-2">
+          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('serviceBill').progress" [attr.aria-valuenow]="getFileUploadState('serviceBill').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('serviceBill').progress }}%</div></div>
+          <small class="text-muted">Subiendo archivo...</small>
+        </div>
+        <div *ngIf="serviceDataForm.get('serviceBillUrl')?.value && !getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="uploaded-file-info mt-2">
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+            <a [href]="serviceDataForm.get('serviceBillUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+          </div>
+        </div>
+        <input type="hidden" formControlName="serviceBillUrl">
+      </div>
+    </div>
+  </div>
+
+  <!-- Tipo de LLC -->
+  <div *ngIf="currentSection === 5" class="form-section">
+    <h4 class="section-title">Tipo de LLC</h4>
+    <div class="row g-3">
+      <!-- ¿Tu LLC es Multi-Member? -->
+      <div class="col-md-12">
+        <label class="form-label">¿Tu LLC es Multi-Member? <span class="text-danger">*</span></label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="isMultiMemberYes" formControlName="isMultiMember" value="yes">
+          <label class="form-check-label" for="isMultiMemberYes">Sí</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" id="isMultiMemberNo" formControlName="isMultiMember" value="no">
+          <label class="form-check-label" for="isMultiMemberNo">No</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información de los propietarios (solo si es Multi-Member) -->
+  <div *ngIf="currentSection === 6 && isMultiMember" class="form-section">
+    <h4 class="section-title">Información de los propietarios</h4>
+    <div class="row g-3">
+      <div class="col-md-12">
+        <small class="form-text text-muted">Proporciona la información de todos los propietarios o socios.</small>
+      </div>
+
+      <!-- FormArray de propietarios -->
+      <div class="col-md-12" formArrayName="owners">
+        <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index" [formGroupName]="i" class="card mb-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Propietario {{ i + 1 }}</h5>
+            <button *ngIf="ownersFormArray && ownersFormArray.length > 1" type="button" class="btn btn-sm btn-outline-danger" (click)="removeOwner(i)">
+              <i class="bi bi-trash"></i> Eliminar
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <!-- Nombre -->
+              <div class="col-md-6">
+                <label [for]="'ownerFirstName' + i" class="form-label">Nombre</label>
+                <input type="text" [id]="'ownerFirstName' + i" class="form-control" formControlName="firstName">
+              </div>
+
+              <!-- Apellido -->
+              <div class="col-md-6">
+                <label [for]="'ownerLastName' + i" class="form-label">Apellido</label>
+                <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName">
+              </div>
+
+              <!-- Fecha de nacimiento -->
+              <div class="col-md-6">
+                <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
+                <input type="text" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth" placeholder="dd-MMM-yyyy">
+              </div>
+
+              <!-- Nacionalidad -->
+              <div class="col-md-6">
+                <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad</label>
+                <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
+                  <option value="">-Select-</option>
+                  <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                </select>
+              </div>
+
+              <!-- Número de pasaporte -->
+              <div class="col-md-6">
+                <label [for]="'ownerPassportNumber' + i" class="form-label">Número de pasaporte</label>
+                <input type="text" [id]="'ownerPassportNumber' + i" class="form-control" formControlName="passportNumber">
+              </div>
+
+              <!-- SSN / ITIN -->
+              <div class="col-md-6">
+                <label [for]="'ownerSSNITIN' + i" class="form-label">SSN / ITIN</label>
+                <input type="text" [id]="'ownerSSNITIN' + i" class="form-control" formControlName="ssnItin">
+              </div>
+
+              <!-- CUIT -->
+              <div class="col-md-6">
+                <label [for]="'ownerCUIT' + i" class="form-label">CUIT</label>
+                <input type="text" [id]="'ownerCUIT' + i" class="form-control" formControlName="cuit">
+              </div>
+
+              <!-- Porcentaje de participación -->
+              <div class="col-md-6">
+                <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación</label>
+                <div class="input-group">
+                  <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100">
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
+
+              <!-- Adjuntar pasaporte vigente -->
+              <div class="col-md-12">
+                <label [for]="'ownerPassportFile' + i" class="form-label">Adjuntar pasaporte vigente <span class="text-danger">*</span></label>
+                <input type="file" [id]="'ownerPassportFile' + i" class="form-control" (change)="onFileSelected($event, 'owners.' + i + '.passportFileUrl', 'ownerPassport' + i)" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('ownerPassport' + i).uploading" />
+                <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+                <div *ngIf="getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="selected-file-info mt-2">
+                  <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('ownerPassport' + i).file?.name }} ({{ ((getFileUploadState('ownerPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle"></i></button>
+                  </div>
+                </div>
+                <div *ngIf="getFileUploadState('ownerPassport' + i).uploading" class="upload-progress mt-2">
+                  <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('ownerPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('ownerPassport' + i).progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('ownerPassport' + i).progress }}%</div></div>
+                  <small class="text-muted">Subiendo archivo...</small>
+                </div>
+                <div *ngIf="owner.get('passportFileUrl')?.value && !getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="uploaded-file-info mt-2">
+                  <div class="alert alert-success">
+                    <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+                    <a [href]="owner.get('passportFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                  </div>
+                </div>
+                <input type="hidden" formControlName="passportFileUrl">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mensaje cuando no hay propietarios -->
+        <div *ngIf="!ownersFormArray || ownersFormArray.length === 0" class="alert alert-info">
+          <p class="mb-0">No hay propietarios agregados. Haz clic en "Agregar propietario" para comenzar.</p>
+        </div>
+
+        <!-- Botón para agregar propietario -->
+        <button type="button" class="btn btn-primary mt-3" (click)="addOwner()">
+          <i class="bi bi-plus-circle me-2"></i>Agregar propietario
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

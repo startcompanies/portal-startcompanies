@@ -101,6 +101,9 @@
   margin-bottom: 0.5rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #f3f4f6;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
 }
 
 .wizard-progress-header {
@@ -116,20 +119,83 @@
   color: #1f2937;
 }
 
+.wizard-progress-steps-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.wizard-steps-nav-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+}
+
+.wizard-steps-nav-button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: var(--color-primario, #0068BD);
+  color: var(--color-primario, #0068BD);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.wizard-steps-nav-button:disabled {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wizard-steps-nav-button mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
 .wizard-progress-steps {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+  padding: 0.5rem 0;
+  /* Mostrar siempre 4 pasos visibles */
+  width: 100%;
+  /* Ocultar scrollbar pero mantener funcionalidad */
+}
+
+.wizard-progress-steps::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .wizard-progress-step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
-  min-width: 80px;
+  flex: 0 0 auto;
+  /* Ancho fijo para cada paso: 25% del contenedor (4 pasos visibles) */
+  width: calc(25% - 0.75rem);
+  min-width: calc(25% - 0.75rem);
   position: relative;
+  transition: transform 0.2s ease;
 }
 
 .wizard-progress-step-icon {
@@ -301,8 +367,9 @@
   }
 
   .wizard-progress-indicator {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    min-height: 120px;
   }
 
   .wizard-progress-header {
@@ -313,16 +380,31 @@
     font-size: 14px;
   }
 
+  .wizard-progress-steps-container {
+    gap: 0.25rem;
+  }
+
+  .wizard-steps-nav-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wizard-steps-nav-button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
   .wizard-progress-steps {
     gap: 0.5rem;
-    overflow-x: auto;
     padding-bottom: 0.5rem;
     -webkit-overflow-scrolling: touch;
   }
 
   .wizard-progress-step {
-    min-width: 60px;
-    flex: 0 0 auto;
+    flex: 0 0 calc(50% - 0.25rem); /* 2 pasos visibles en móvil */
+    min-width: calc(50% - 0.25rem);
+    max-width: calc(50% - 0.25rem);
   }
 
   .wizard-progress-step-icon {

@@ -106,7 +106,25 @@
 
       <!-- Texto legal inferior -->
       <div class="footer-bottom pt-4 text-center text-md-start">
-        {{ "FOOTER.description" | transloco }}
+        <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-between align-items-center gap-3">
+          <div>{{ "FOOTER.description" | transloco }}</div>
+          <div class="footer-language-selector">
+            <div class="dropdown">
+              <button class="btn footer-btn-language dropdown-toggle" type="button" id="footerLanguageDropdown"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                {{ currentLang === "es" ? "ES" : "EN" }}
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="footerLanguageDropdown">
+                <li>
+                  <a class="dropdown-item" (click)="changeLanguage('en')">EN</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" (click)="changeLanguage('es')">ES</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

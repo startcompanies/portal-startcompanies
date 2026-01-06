@@ -5,7 +5,11 @@
       <h2>Mis Clientes</h2>
       <p class="text-muted">Gestiona los clientes asociados a tu cuenta</p>
     </div>
-    <button class="btn btn-primary" (click)="openNewClientModal()">
+    <button 
+      *ngIf="clients.length > 0"
+      class="btn btn-primary" 
+      (click)="openNewClientModal()"
+    >
       <i class="bi bi-plus-circle me-2"></i>
       Nuevo Cliente
     </button>
@@ -96,7 +100,7 @@
             <i class="bi bi-person-circle"></i>
           </div>
           <div class="client-info">
-            <h4>{{ client.name }}</h4>
+            <h4>{{ client.full_name }}</h4>
             <p class="text-muted mb-0">{{ client.email }}</p>
             <span [class]="getStatusClass(client.status)">
               {{ getStatusLabel(client.status) }}
@@ -116,7 +120,7 @@
             </div>
             <div *ngIf="client.lastRequestDate" class="detail-item">
               <i class="bi bi-clock-history me-2"></i>
-              <span>Última solicitud: {{ client.lastRequestDate | date:'short' }}</span>
+              <span *ngIf="client.lastRequestDate">Última solicitud: {{ client.lastRequestDate | date:'short' }}</span>
             </div>
           </div>
 
@@ -143,7 +147,7 @@
             <div class="client-actions">
               <a 
                 [routerLink]="['/panel/new-request']"
-                [queryParams]="{ clientId: client.id }"
+                [queryParams]="{ client: client.uuid }"
                 class="btn btn-sm btn-primary"
                 title="Nueva Solicitud"
               >
@@ -153,9 +157,9 @@
               <button 
                 class="btn btn-sm btn-outline-secondary"
                 (click)="toggleClientStatus(client)"
-                [title]="client.status === 'active' ? 'Desactivar' : 'Activar'"
+                [title]="client.status ? 'Desactivar' : 'Activar'"
               >
-                <i [class]="client.status === 'active' ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
+                <i [class]="client.status ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
               </button>
             </div>
           </div>
@@ -213,4 +217,12 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
+
+
 

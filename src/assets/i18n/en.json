@@ -548,7 +548,11 @@
     }
   },
   "COMMON": {
-    "note": "Note:"
+    "note": "Note:",
+    "select_option": "Select Option",
+    "yes": "Yes",
+    "no": "No",
+    "remove": "Remove"
   },
   "LANDINGS": {
     "schedule_consultation": "Schedule a FREE consultation",
@@ -722,182 +726,177 @@
     "common": {
       "last_update": "Last update"
     },
-    "LEGAL": {
-      "common": {
-        "last_update": "Last update"
-      },
-      "PRIVACY": {
-        "title": "Privacy Policy",
-        "intro": "At <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\", \"we\"), we respect your privacy and are committed to protecting the personal data you provide to us. This Privacy Policy explains what data we collect, for what purpose, for how long we keep it, with whom we share it and what your rights are. It applies to the entire website <strong>startcompanies.us</strong>, our landing pages and the forms associated with our services for <strong>LLC</strong> formation and <strong>bank account opening</strong> in the United States.",
-        "sections": {
-          "controller": {
-            "title": "1. Data controller",
-            "body": "Ebizboost LLC (legal name), commercially operating as Start Companies. Website: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. If you have privacy questions, please use the contact channels published on the site."
-          },
-          "data": {
-            "title": "2. Data we collect",
-            "items": {
-              "1": "Identification and contact: name, email, phone, country/city.",
-              "2": "Basic business information related to LLC formation and management.",
-              "3": "Language and content preferences.",
-              "4": "Technical and usage data: IP, device/browser type, pages viewed, referrals.",
-              "5": "Form data (e.g., LLC opening, renewal, Relay, Fixcal, Abotax)."
-            }
-          },
-          "sources": {
-            "title": "3. How we obtain the data",
-            "items": {
-              "1": "Directly from you when you complete forms or schedule a call.",
-              "2": "Automatically through cookies and similar analytics and performance technologies.",
-              "3": "Through third-party integrations necessary to provide our services (e.g., scheduling or communication tools)."
-            }
-          },
-          "purposes": {
-            "title": "4. Purposes and legal basis",
-            "items": {
-              "1": "Respond to inquiries and provide initial advice (legitimate interest and/or pre-contractual performance).",
-              "2": "Provide the requested services (contract performance).",
-              "3": "Improve the site, the experience and our processes (legitimate interest).",
-              "4": "Operational and/or informative communications related to the services (legitimate interest/contract).",
-              "5": "Comply with applicable legal obligations."
-            }
-          },
-          "cookies": {
-            "title": "5. Cookies and analytics",
-            "body": "We use cookies necessary for the operation of the site and, where appropriate, performance/analytics cookies to understand usage and optimize content. You can control the use of cookies from your browser settings. By continuing to browse, you agree to their use as described in this Policy."
-          },
-          "sharing": {
-            "title": "6. With whom we share data",
-            "items": {
-              "1": "Technology providers that help us operate the site and forms.",
-              "2": "Scheduling/communication tools necessary to coordinate meetings and provide support.",
-              "3": "When required by law, competent authorities."
-            },
-            "note": "We do not sell your personal data. We only share what is necessary to provide and improve services, or due to legal requirements."
-          },
-          "transfers": {
-            "title": "7. International transfers",
-            "body": "Since we provide services in the United States, your data may be hosted or processed in infrastructures located outside your country. We take reasonable measures to protect them in accordance with appropriate security and privacy standards."
-          },
-          "retention": {
-            "title": "8. Retention periods",
-            "body": "We retain data as long as necessary for the stated purposes, the provision of the service, legal compliance or until you request its deletion where appropriate."
-          },
-          "rights": {
-            "title": "9. Your rights",
-            "body": "Depending on your jurisdiction, you may exercise rights such as access, rectification, update, objection, portability or deletion. To exercise them, contact us through the means published on the site, indicating your request and proving your identity."
-          },
-          "security": {
-            "title": "10. Security",
-            "body": "We implement reasonable technical and organizational measures to protect your data against unauthorized access, loss or alteration. However, no system is 100% secure."
-          },
-          "minors": {
-            "title": "11. Minors",
-            "body": "Our services are aimed at adults. We do not knowingly collect data from minors without verifiable consent from their legal representatives."
-          },
-          "updates": {
-            "title": "12. Updates to this Policy",
-            "body": "We may update this Policy to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
-          },
-          "contact": {
-            "title": "13. Contact",
-            "body": "If you have questions about privacy or the processing of your data, contact us through the official channels published on the site."
-          },
-          "user_data_deletion": {
-            "title": "14. User data deletion",
-            "body": "In compliance with Meta Platform Terms and privacy best practices, we handle data deletion requests originating from any of our channels and services (website, forms, CRM, email, messaging/Meta and operational records). Deletion applies to contact data, form-submitted content, interaction histories and preferences, unless there is a legal obligation to retain data (e.g., tax, accounting or fraud prevention). Below we outline general guidelines and Meta-bot specifics:",
-            "meta_compliance": {
-              "title": "14.1 Compliance with Meta Platform Terms",
-              "content": "Our WhatsApp/Meta bot strictly complies with Meta Platform Terms, including: (a) We do not process Platform Data without valid user consent to build profiles; (b) We do not attempt to decode, circumvent, re-identify, de-anonymize, unscramble, unencrypt, or reverse hash Platform Data; (c) We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access; (d) We maintain a clear and accessible privacy policy that explains how we collect, use and share data."
-            },
-            "bot_interaction": {
-              "title": "14.2 Bot interaction data",
-              "content": "Data collected through interactions with our WhatsApp/Meta bot includes: sent messages, information provided during conversations, user preferences, and contact data. This data is processed solely to provide the requested service and improve user experience, always with explicit user consent."
-            },
-            "deletion_process": {
-              "title": "14.3 Deletion process",
-              "content": "Users can request deletion of their data through the following methods:",
-              "methods": {
-                "1": "Contacting our support team directly",
-                "2": "Sending a request by email to administracion@starcompanies.us"
-              },
-              "verification": "All deletion requests require identity verification to protect user privacy."
-            },
-            "retention_period": {
-              "title": "14.4 Retention period",
-              "content": "Bot interaction data is retained for a maximum period of 12 months from the last interaction, after which it is automatically deleted from our systems, unless legal obligations require longer retention. This period complies with Meta Platform Terms standards."
-            },
-            "automatic_deletion": {
-              "title": "14.5 Automatic deletion",
-              "content": "We implement automated processes that delete user data after the established retention period. Deleted data includes: conversation history, shared personal information, user preferences, and any identifiable data associated with the user's Meta account. Data is deleted securely and irreversibly."
-            },
-            "security_measures": {
-              "title": "14.6 Security measures",
-              "content": "We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access, including: data encryption in transit and at rest, role-based access controls, regular security audits, and compliance with Meta security standards."
-            },
-            "verification": {
-              "title": "14.7 Deletion verification",
-              "content": "Once the deletion request is processed, we will confirm to the user that their data has been deleted from our systems. This confirmation will be sent through the same channel used for the request (bot, email, or direct support). We maintain deletion records for audit and compliance purposes."
-            }
-          },
-          "intermediary": {
-            "title": "Scope of service and disclaimer",
-            "body": "<strong>Ebizboost LLC</strong> acts as an intermediary in the facilitation of legal and banking procedures in the U.S. It is not part of government entities and has no alliances with banks. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the essential information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
+    "PRIVACY": {
+      "title": "Privacy Policy",
+      "intro": "At <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\", \"we\"), we respect your privacy and are committed to protecting the personal data you provide to us. This Privacy Policy explains what data we collect, for what purpose, for how long we keep it, with whom we share it and what your rights are. It applies to the entire website <strong>startcompanies.us</strong>, our landing pages and the forms associated with our services for <strong>LLC</strong> formation and <strong>bank account opening</strong> in the United States.",
+      "sections": {
+        "controller": {
+          "title": "1. Data controller",
+          "body": "Ebizboost LLC (legal name), commercially operating as Start Companies. Website: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. If you have privacy questions, please use the contact channels published on the site."
+        },
+        "data": {
+          "title": "2. Data we collect",
+          "items": {
+            "1": "Identification and contact: name, email, phone, country/city.",
+            "2": "Basic business information related to LLC formation and management.",
+            "3": "Language and content preferences.",
+            "4": "Technical and usage data: IP, device/browser type, pages viewed, referrals.",
+            "5": "Form data (e.g., LLC opening, renewal, Relay, Fixcal, Abotax)."
           }
+        },
+        "sources": {
+          "title": "3. How we obtain the data",
+          "items": {
+            "1": "Directly from you when you complete forms or schedule a call.",
+            "2": "Automatically through cookies and similar analytics and performance technologies.",
+            "3": "Through third-party integrations necessary to provide our services (e.g., scheduling or communication tools)."
+          }
+        },
+        "purposes": {
+          "title": "4. Purposes and legal basis",
+          "items": {
+            "1": "Respond to inquiries and provide initial advice (legitimate interest and/or pre-contractual performance).",
+            "2": "Provide the requested services (contract performance).",
+            "3": "Improve the site, the experience and our processes (legitimate interest).",
+            "4": "Operational and/or informative communications related to the services (legitimate interest/contract).",
+            "5": "Comply with applicable legal obligations."
+          }
+        },
+        "cookies": {
+          "title": "5. Cookies and analytics",
+          "body": "We use cookies necessary for the operation of the site and, where appropriate, performance/analytics cookies to understand usage and optimize content. You can control the use of cookies from your browser settings. By continuing to browse, you agree to their use as described in this Policy."
+        },
+        "sharing": {
+          "title": "6. With whom we share data",
+          "items": {
+            "1": "Technology providers that help us operate the site and forms.",
+            "2": "Scheduling/communication tools necessary to coordinate meetings and provide support.",
+            "3": "When required by law, competent authorities."
+          },
+          "note": "We do not sell your personal data. We only share what is necessary to provide and improve services, or due to legal requirements."
+        },
+        "transfers": {
+          "title": "7. International transfers",
+          "body": "Since we provide services in the United States, your data may be hosted or processed in infrastructures located outside your country. We take reasonable measures to protect them in accordance with appropriate security and privacy standards."
+        },
+        "retention": {
+          "title": "8. Retention periods",
+          "body": "We retain data as long as necessary for the stated purposes, the provision of the service, legal compliance or until you request its deletion where appropriate."
+        },
+        "rights": {
+          "title": "9. Your rights",
+          "body": "Depending on your jurisdiction, you may exercise rights such as access, rectification, update, objection, portability or deletion. To exercise them, contact us through the means published on the site, indicating your request and proving your identity."
+        },
+        "security": {
+          "title": "10. Security",
+          "body": "We implement reasonable technical and organizational measures to protect your data against unauthorized access, loss or alteration. However, no system is 100% secure."
+        },
+        "minors": {
+          "title": "11. Minors",
+          "body": "Our services are aimed at adults. We do not knowingly collect data from minors without verifiable consent from their legal representatives."
+        },
+        "updates": {
+          "title": "12. Updates to this Policy",
+          "body": "We may update this Policy to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+        },
+        "contact": {
+          "title": "13. Contact",
+          "body": "If you have questions about privacy or the processing of your data, contact us through the official channels published on the site."
+        },
+        "user_data_deletion": {
+          "title": "14. User data deletion",
+          "body": "In compliance with Meta Platform Terms and privacy best practices, we handle data deletion requests originating from any of our channels and services (website, forms, CRM, email, messaging/Meta and operational records). Deletion applies to contact data, form-submitted content, interaction histories and preferences, unless there is a legal obligation to retain data (e.g., tax, accounting or fraud prevention). Below we outline general guidelines and Meta-bot specifics:",
+          "meta_compliance": {
+            "title": "14.1 Compliance with Meta Platform Terms",
+            "content": "Our WhatsApp/Meta bot strictly complies with Meta Platform Terms, including: (a) We do not process Platform Data without valid user consent to build profiles; (b) We do not attempt to decode, circumvent, re-identify, de-anonymize, unscramble, unencrypt, or reverse hash Platform Data; (c) We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access; (d) We maintain a clear and accessible privacy policy that explains how we collect, use and share data."
+          },
+          "bot_interaction": {
+            "title": "14.2 Bot interaction data",
+            "content": "Data collected through interactions with our WhatsApp/Meta bot includes: sent messages, information provided during conversations, user preferences, and contact data. This data is processed solely to provide the requested service and improve user experience, always with explicit user consent."
+          },
+          "deletion_process": {
+            "title": "14.3 Deletion process",
+            "content": "Users can request deletion of their data through the following methods:",
+            "methods": {
+              "1": "Contacting our support team directly",
+              "2": "Sending a request by email to administracion@starcompanies.us"
+            },
+            "verification": "All deletion requests require identity verification to protect user privacy."
+          },
+          "retention_period": {
+            "title": "14.4 Retention period",
+            "content": "Bot interaction data is retained for a maximum period of 12 months from the last interaction, after which it is automatically deleted from our systems, unless legal obligations require longer retention. This period complies with Meta Platform Terms standards."
+          },
+          "automatic_deletion": {
+            "title": "14.5 Automatic deletion",
+            "content": "We implement automated processes that delete user data after the established retention period. Deleted data includes: conversation history, shared personal information, user preferences, and any identifiable data associated with the user's Meta account. Data is deleted securely and irreversibly."
+          },
+          "security_measures": {
+            "title": "14.6 Security measures",
+            "content": "We implement appropriate technical and organizational security measures to protect Platform Data against unauthorized access, including: data encryption in transit and at rest, role-based access controls, regular security audits, and compliance with Meta security standards."
+          },
+          "verification": {
+            "title": "14.7 Deletion verification",
+            "content": "Once the deletion request is processed, we will confirm to the user that their data has been deleted from our systems. This confirmation will be sent through the same channel used for the request (bot, email, or direct support). We maintain deletion records for audit and compliance purposes."
+          }
+        },
+        "intermediary": {
+          "title": "Scope of service and disclaimer",
+          "body": "<strong>Ebizboost LLC</strong> acts as an intermediary in the facilitation of legal and banking procedures in the U.S. It is not part of government entities and has no alliances with banks. It is not responsible for the misuse of accounts or incorrect information. By scheduling a call and accepting the requirements sent, the user accepts the no-refund clause. Additionally, Ebizboost LLC will share only the essential information related to the requirements explained and sent after the conversation. The user implicitly accepts, either verbally or through any official contact channel, that the information provided is correct and complete."
         }
-      },
-      "TERMS": {
-        "title": "Terms and Conditions",
-        "intro": "These Terms and Conditions (\"Terms\") govern access to and use of the <strong>startcompanies.us</strong> website and the services offered by <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\"). By using the site or contracting our services, you accept these Terms.",
-        "sections": {
-          "services": {
-            "title": "1. Services",
-            "body": "We provide services related to the <strong>formation</strong> and <strong>management</strong> of LLCs in the United States, as well as advice and support for <strong>bank account opening</strong> (e.g., Relay) and related procedures. The information published is for informational purposes and does not constitute legal or tax advice."
-          },
-          "site_use": {
-            "title": "2. Use of the site",
-            "items": {
-              "1": "You must provide truthful and updated information in forms and communications.",
-              "2": "Use of the site for unlawful purposes or to harm third parties is prohibited.",
-              "3": "We may modify, suspend or limit access to the site for maintenance or operational reasons."
-            }
-          },
-          "contracting": {
-            "title": "3. Contracting and payments",
-            "body": "Before contracting, we will inform you of the scope of the service, estimated times and applicable costs. Payments will be made through the enabled means and may be subject to refund policies detailed in the specific proposal or contract."
-          },
-          "liability": {
-            "title": "4. Responsibilities",
-            "items": {
-              "1": "Your responsibility: provide correct data and the required documentation in a timely manner.",
-              "2": "Our responsibility: perform the contracted services with diligence and good faith.",
-              "3": "Limitation: we do not guarantee results beyond our control (e.g., banking or state decisions)."
-            }
-          },
-          "ip": {
-            "title": "5. Intellectual property",
-            "body": "The content of the site (texts, trademarks, graphics, images and code) is owned by Start Companies or its authors and is protected by applicable laws. Unauthorized reproduction is prohibited."
-          },
-          "privacy": {
-            "title": "6. Personal data and privacy",
-            "body": "The processing of personal data is governed by our <a href=\"/en/privacy-policy\">Privacy Policy</a>. By using the site or our services, you confirm that you have read it and accept its content."
-          },
-          "third_party": {
-            "title": "7. Third-party links and tools",
-            "body": "The site may include links or third-party integrations (e.g., scheduling, messaging and analytics). We do not control their content or policies; we recommend reviewing their terms and privacy notices."
-          },
-          "modifications": {
-            "title": "8. Modifications",
-            "body": "We may update these Terms to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
-          },
-          "law": {
-            "title": "9. Governing law",
-            "body": "These Terms will be interpreted in accordance with the applicable laws in the jurisdiction where we operate. In case of dispute, we will seek to resolve it in good faith; if not possible, it will be submitted to the competent courts."
-          },
-          "contact": {
-            "title": "10. Contact",
-            "body": "For inquiries related to these Terms, use the contact methods published on the site."
+      }
+    },
+    "TERMS": {
+      "title": "Terms and Conditions",
+      "intro": "These Terms and Conditions (\"Terms\") govern access to and use of the <strong>startcompanies.us</strong> website and the services offered by <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\"). By using the site or contracting our services, you accept these Terms.",
+      "sections": {
+        "services": {
+          "title": "1. Services",
+          "body": "We provide services related to the <strong>formation</strong> and <strong>management</strong> of LLCs in the United States, as well as advice and support for <strong>bank account opening</strong> (e.g., Relay) and related procedures. The information published is for informational purposes and does not constitute legal or tax advice."
+        },
+        "site_use": {
+          "title": "2. Use of the site",
+          "items": {
+            "1": "You must provide truthful and updated information in forms and communications.",
+            "2": "Use of the site for unlawful purposes or to harm third parties is prohibited.",
+            "3": "We may modify, suspend or limit access to the site for maintenance or operational reasons."
           }
+        },
+        "contracting": {
+          "title": "3. Contracting and payments",
+          "body": "Before contracting, we will inform you of the scope of the service, estimated times and applicable costs. Payments will be made through the enabled means and may be subject to refund policies detailed in the specific proposal or contract."
+        },
+        "liability": {
+          "title": "4. Responsibilities",
+          "items": {
+            "1": "Your responsibility: provide correct data and the required documentation in a timely manner.",
+            "2": "Our responsibility: perform the contracted services with diligence and good faith.",
+            "3": "Limitation: we do not guarantee results beyond our control (e.g., banking or state decisions)."
+          }
+        },
+        "ip": {
+          "title": "5. Intellectual property",
+          "body": "The content of the site (texts, trademarks, graphics, images and code) is owned by Start Companies or its authors and is protected by applicable laws. Unauthorized reproduction is prohibited."
+        },
+        "privacy": {
+          "title": "6. Personal data and privacy",
+          "body": "The processing of personal data is governed by our <a href=\"/en/privacy-policy\">Privacy Policy</a>. By using the site or our services, you confirm that you have read it and accept its content."
+        },
+        "third_party": {
+          "title": "7. Third-party links and tools",
+          "body": "The site may include links or third-party integrations (e.g., scheduling, messaging and analytics). We do not control their content or policies; we recommend reviewing their terms and privacy notices."
+        },
+        "modifications": {
+          "title": "8. Modifications",
+          "body": "We may update these Terms to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+        },
+        "law": {
+          "title": "9. Governing law",
+          "body": "These Terms will be interpreted in accordance with the applicable laws in the jurisdiction where we operate. In case of dispute, we will seek to resolve it in good faith; if not possible, it will be submitted to the competent courts."
+        },
+        "contact": {
+          "title": "10. Contact",
+          "body": "For inquiries related to these Terms, use the contact methods published on the site."
         }
       }
     }
@@ -913,22 +912,11 @@
       "payment": "Payment",
       "client": "Client Data",
       "review": "Final Review",
-      "zoho": "Send to Zoho CRM",
-      "llc_info": "LLC Information",
-      "state_plan": "Plan and contracting state"
+      "zoho": "Send to Zoho CRM"
     },
+    "password": "Password",
     "state": "State",
     "select_state": "Select contracting state",
-    "basic_register": {
-      "full_name": "Full Name",
-      "full_name_required": "Full name is required.",
-      "password": "Password",
-      "password_required": "Password is required.",
-      "email": "Email",
-      "email_required": "Email is required.",
-      "phone": "Phone",
-      "phone_required": "Phone is required."
-    },
     "checkout": {
       "title": "Checkout / Payment",
       "summary": "summary of the selected service:",
@@ -940,8 +928,7 @@
       "select_method": "Select method",
       "card": "Credit card / debit",
       "paypal": "PayPal",
-      "required_method": "Select payment method.",
-      "pay_button": "Pay ${{amount}}"
+      "required_method": "Select payment method."
     },
     "client": {
       "title": "Additional Client Information",
@@ -967,53 +954,9 @@
       "placeholder": "Select a state",
       "required": "State is required",
       "options": {
-        "alabama": "Alabama",
-        "alaska": "Alaska",
-        "arizona": "Arizona",
-        "arkansas": "Arkansas",
-        "california": "California",
-        "colorado": "Colorado",
-        "connecticut": "Connecticut",
-        "delaware": "Delaware",
         "florida": "Florida",
-        "georgia": "Georgia",
-        "hawaii": "Hawaii",
-        "idaho": "Idaho",
-        "illinois": "Illinois",
-        "indiana": "Indiana",
-        "iowa": "Iowa",
-        "kansas": "Kansas",
-        "kentucky": "Kentucky",
-        "louisiana": "Louisiana",
-        "maine": "Maine",
-        "maryland": "Maryland",
-        "massachusetts": "Massachusetts",
-        "michigan": "Michigan",
-        "minnesota": "Minnesota",
-        "mississippi": "Mississippi",
-        "missouri": "Missouri",
-        "montana": "Montana",
-        "nebraska": "Nebraska",
-        "nevada": "Nevada",
-        "new_hampshire": "New Hampshire",
-        "new_jersey": "New Jersey",
-        "new_york": "New York",
-        "north_carolina": "North Carolina",
-        "north_dakota": "North Dakota",
-        "ohio": "Ohio",
-        "oklahoma": "Oklahoma",
-        "oregon": "Oregon",
-        "pennsylvania": "Pennsylvania",
-        "rhode_island": "Rhode Island",
-        "south_carolina": "South Carolina",
-        "south_dakota": "South Dakota",
-        "tennessee": "Tennessee",
-        "utah": "Utah",
-        "vermont": "Vermont",
-        "virginia": "Virginia",
-        "washington": "Washington",
-        "west_virginia": "West Virginia",
-        "wisconsin": "Wisconsin",
+        "delaware": "Delaware",
+        "texas": "Texas",
         "wyoming": "Wyoming"
       }
     },
@@ -1021,49 +964,153 @@
       "title": "Send to Zoho CRM",
       "subtitle": "We'll review the data before sending it to the CRM."
     },
-    "llc_info_step": {
-      "llc_name_one": "LLC Name Option 1",
-      "llc_name_one_required": "LLC Name Option 1 is required.",
-      "llc_name_two": "LLC Name Option 2",
-      "llc_name_two_required": "LLC Name Option 2 is required.",
-      "llc_name_three": "LLC Name Option 3",
-      "llc_name_three_required": "LLC Name Option 3 is required.",
-      "llc_sufix": "Remember that 'LLC' must be at the end of the name.",
-      "llc_main_activity": "Main Activity of the LLC",
-      "llc_main_activity_required": "Main Activity of the LLC is required.",
-      "llc_corporate_structure": "Corporate Structure",
-      "llc_corporate_structure_placeholder": "Select an option",
-      "llc_corporate_structure_required": "Corporate Structure is required.",
-      "options_corporate_structure": {
-        "single_member": "Single Member",
-        "multi_member": "Multi Member"
+    "bank_account": {
+      "applicant": {
+        "title": "Applicant Information",
+        "email": "Email",
+        "email_placeholder": "E.g., john.doe@example.com",
+        "email_invalid": "Email is required.",
+        "first_name": "First Name",
+        "first_name_placeholder": "E.g., John",
+        "first_name_required": "First name is required.",
+        "paternal_last_name": "Paternal Last Name",
+        "paternal_last_name_placeholder": "E.g., Perez",
+        "maternal_last_name": "Maternal Last Name",
+        "maternal_last_name_placeholder": "E.g., Doe",
+        "phone": "Phone",
+        "phone_placeholder": "E.g., +1 (305) 123-4567",
+        "account_type": "Account Type",
+        "account_type_required": "Account type is required.",
+        "legal_identifier": "Legal Identifier",
+        "legal_identifier_placeholder": "E.g., 1234567890",
+        "industry": "Industry",
+        "economic_activity": "Economic Activity",
+        "economic_activity_placeholder": "E.g., Technology, Commerce, Services",
+        "certificate": "Certificate of Incorporation or Articles of Organization",
+        "ein": "Tax Identification Number (EIN)",
+        "ein_invalid": "Tax identification number is invalid.",
+        "operating_agreement": "Operating Agreement",
+        "business_type": "Business Type"
       },
-      "llc_linkedin": "LinkedIn Profile (optional)",
-      "add_propietaries": "Add Proprietaries",
-      "add_owners": "Add Owner",
-      "return_to_info": "Return to LLC Information"
-    },
-    "state_plan_step": {
-      "plan": "Plan",
-      "plan_label": "Select a plan",
-      "plan_required": "Plan is required.",
-      "planes_options": {
-        "entrepreneur": "Entrepreneur (From $499)",
-        "elite": "Elite (From $599)",
-        "premium": "Premium (From $699)"
+      "companyAddress": {
+        "title": "Registration Address",
+        "street": "Street and number",
+        "street_placeholder": "E.g., 123 Main St",
+        "street_required": "The street and number are required.",
+        "unit": "Unit",
+        "unit_placeholder": "E.g., Apt. 123",
+        "city": "City",
+        "city_placeholder": "E.g., Miami",
+        "state": "State",
+        "state_placeholder": "Select a state",
+        "state_options": {
+          "florida": "Florida",
+          "delaware": "Delaware",
+          "texas": "Texas",
+          "new_york": "New York"
+        },
+        "state_required": "The state is required.",
+        "postal_code": "Postal Code",
+        "postal_code_placeholder": "E.g., 33130",
+        "country": "Country",
+        "country_required": "The country is required.",
+        "country_options": {
+          "united_states": "United States",
+          "spain": "Spain",
+          "argentina": "Argentina"
+        },
+        "is_registered_agent": "Is the Registered Agent in USA?",
+        "agent_name": "Registered Agent Name",
+        "agent_address": "Registered Agent Address"
       },
-      "state": "State",
-      "state_label": "Select a state",
-      "state_required": "State is required.",
-      "state_texas": "Texas (+$100)",
-      "state_new_mexico": "New Mexico (No additional cost)",
-      "other_option": "Other Options",
-      "options": {
-        "florida": "Florida",
-        "delaware": "Delaware",
-        "texas": "Texas",
-        "wyoming": "Wyoming",
-        "new_mexico": "New Mexico"
+      "bankAccount": {
+        "title": "Bank Account Information",
+        "bank_name": "Bank Name",
+        "bank_name_required": "The bank name is required.",
+        "swift": "SWIFT / BIC / ABA",
+        "swift_required": "The SWIFT / BIC / ABA is required.",
+        "swift_placeholder": "E.g., 01234567890",
+        "account_number": "Account Number",
+        "account_number_required": "The account number is required.",
+        "account_number_placeholder": "E.g., 1234567890",
+        "account_type": "Account Type",
+        "first_registration_date": "First Registration Date",
+        "has_litigated": "Have you litigated in the current fiscal year?",
+        "litigation_details": "Litigation Details",
+        "litigation_details_required": "The litigation details are required.",
+        "litigation_details_placeholder": "E.g., I have litigated in the current fiscal year."
+      },
+      "llcType": {
+        "title": "LLC Type",
+        "label": "LLC Type",
+        "single": "Single Member LLC",
+        "multi": "Multi-Member LLC",
+        "required": "The LLC type is required."
+      },
+      "ownerAddress": {
+        "title": "Owner Address",
+        "same_as_business": "Same as business",
+        "street": "Street",
+        "unit": "Unit",
+        "city": "City",
+        "state": "State",
+        "postal_code": "Postal Code",
+        "country": "Country",
+        "proof": "Proof of Address",
+        "proof_required": "The proof of address is required."
+      },
+      "owners": {
+        "title": "Owners",
+        "owner": "Owner",
+        "first_name": "First Name",
+        "first_name_placeholder": "E.g., John",
+        "paternal_last_name": "Paternal Last Name",
+        "paternal_last_name_placeholder": "E.g., Perez",
+        "maternal_last_name": "Maternal Last Name",
+        "maternal_last_name_placeholder": "E.g., Doe",
+        "birth_date": "Birth Date",
+        "nationality": "Nationality",
+        "document_number": "Document Number",
+        "document_number_placeholder": "E.g., 1234567890",
+        "identity_document": "Identity Document",
+        "facial_photo": "Facial Photo",
+        "add_owner": "Add Owner"
+      },
+      "confirmation": {
+        "title": "Confirmation",
+        "certification": "Certification",
+        "document_certification_placeholder": "E.g., I certify that the information provided is correct and complete.",
+        "accept_terms": "I accept the terms and conditions",
+        "accept_terms_required": "The terms and conditions are required.",
+        "validator": {
+          "title": "Validator",
+          "first_name": "First Name",
+          "first_name_placeholder": "E.g., John",
+          "last_name": "Last Name",
+          "last_name_placeholder": "E.g., Perez",
+          "birth_date": "Birth Date",
+          "nationality": "Nationality",
+          "citizenship": "Citizenship",
+          "passport_number_placeholder": "E.g., 1234567890",
+          "passport_number": "Passport Number",
+          "passport_file": "Passport File",
+          "email_placeholder": "E.g., john.doe@example.com",
+          "email": "Email",
+          "use_email_login": "Use email for login",
+          "phone": "Phone",
+          "phone_placeholder": "E.g., +1 (305) 123-4567",
+          "can_receive_sms": "Can receive SMS",
+          "us_resident": "US Resident"
+        }
+      },
+      "steps": {
+        "step1": "Applicant",
+        "step2": "Registration",
+        "step3": "Account",
+        "step4": "Owner",
+        "step5": "Type",
+        "step6": "Owners",
+        "step7": "Certification"
       }
     }
   }

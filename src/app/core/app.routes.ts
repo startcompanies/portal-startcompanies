@@ -25,10 +25,6 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/inicio'
-      },
-      {
-        path: 'inicio',
         loadComponent: () =>
           import('../features/public/home/home.component').then(
             (m) => m.HomeComponent
@@ -42,9 +38,14 @@ export const routes: Routes = [
             ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/inicio'),
+            canonical: getCanonicalUrl('/'),
           },
         },
+      },
+      {
+        path: 'inicio',
+        redirectTo: '',
+        pathMatch: 'full'
       },
       {
         path: 'nosotros',
@@ -105,61 +106,74 @@ export const routes: Routes = [
       },
       {
         path: 'blog',
-        loadComponent: () =>
-          import('../features/public/blog/blog-home/blog-home.component').then(
-            (m) => m.BlogHomeComponent
-          ),
-        data: {
-          seo: {
-            title: 'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
-            description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
-            keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
-            ogTitle: 'Blog - Start Companies LLC',
-            ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            ogImage: getImageUrl('/assets/logo.png'),
-            twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/blog'),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('../features/public/blog/blog-home/blog-home.component').then(
+                (m) => m.BlogHomeComponent
+              ),
+            data: {
+              seo: {
+                title: 'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
+                description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
+                keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
+                ogTitle: 'Blog - Start Companies LLC',
+                ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                canonical: getCanonicalUrl('/blog'),
+              },
+            },
           },
-        },
+          {
+            path: 'category/:slug',
+            loadComponent: () =>
+              import('../features/public/blog/blog-home/blog-home.component').then(
+                (m) => m.BlogHomeComponent
+              ),
+            data: {
+              seo: {
+                title: 'Categoría de Blog - Start Companies LLC',
+                description: 'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+                keywords: 'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+                ogTitle: 'Categoría de Blog - Start Companies LLC',
+                ogDescription: 'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                canonical: getCanonicalUrl('/blog/category/:slug'),
+              },
+            },
+          },
+          {
+            path: 'post/:slug',
+            loadComponent: () => import('../features/public/blog/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
+            data: {
+              seo: {
+                title: 'Artículo de Blog - Start Companies LLC',
+                description: 'Lee nuestros artículos sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+                keywords: 'artículo blog LLC, blog Start Companies, noticias financieras, consejos LLC',
+                ogTitle: 'Artículo de Blog - Start Companies LLC',
+                ogDescription: 'Lee nuestros artículos sobre LLC y servicios financieros en Estados Unidos.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                // canonical se establece dinámicamente en el componente blog-post-v2
+              },
+            },
+          },
+        ]
       },
+      // Redirects para mantener compatibilidad con rutas antiguas
       {
         path: 'category/:slug',
-        loadComponent: () =>
-          import('../features/public/blog/blog-home/blog-home.component').then(
-            (m) => m.BlogHomeComponent
-          ),
-        data: {
-          seo: {
-            title: 'Categoría de Blog - Start Companies LLC',
-            description: 'Explora nuestras categorías de blog sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            keywords: 'categoría blog LLC, blog Start Companies, noticias financieras, consejos LLC',
-            ogTitle: 'Categoría de Blog - Start Companies LLC',
-            ogDescription: 'Explora nuestras categorías de blog sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: getImageUrl('/assets/logo.png'),
-            twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/category/:slug'),
-          },
-        },
+        redirectTo: '/blog/category/:slug',
+        pathMatch: 'full'
       },
       {
         path: 'post/:slug',
-        /*loadComponent: () =>
-          import('../features/public/blog/blog-post/blog-post.component').then(
-            (m) => m.BlogPostComponent
-          ),*/
-        loadComponent: () => import('../features/public/blog/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
-        data: {
-          seo: {
-            title: 'Artículo de Blog - Start Companies LLC',
-            description: 'Lee nuestros artículos sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-            keywords: 'artículo blog LLC, blog Start Companies, noticias financieras, consejos LLC',
-            ogTitle: 'Artículo de Blog - Start Companies LLC',
-            ogDescription: 'Lee nuestros artículos sobre LLC y servicios financieros en Estados Unidos.',
-            ogImage: getImageUrl('/assets/logo.png'),
-            twitterSite: '@startcompaniess',
-            canonical: getCanonicalUrl('/post/:slug'),
-          },
-        },
+        redirectTo: '/blog/post/:slug',
+        pathMatch: 'full'
       },
       {
         path: 'aviso-de-privacidad',
@@ -334,6 +348,16 @@ export const routes: Routes = [
           }
         }
       },
+      {
+        path: 'set-password',
+        loadComponent: () => import('../features/panel/layout/auth-layout/auth-layout.component').then(m => m.AuthLayoutComponent),
+        data: {
+          seo: {
+            title: 'Establecer Contraseña - Panel Start Companies',
+            description: 'Establece tu contraseña para acceder al panel de Start Companies'
+          }
+        }
+      },
       // Rutas del panel con layout principal (requieren autenticación)
       {
         path: 'dashboard',
@@ -457,6 +481,10 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+          },
+          {
+            path: ':uuid',
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
           }
         ],
         data: {
@@ -533,6 +561,24 @@ export const routes: Routes = [
             description: 'Gestiona tu perfil, preferencias y configuraciones'
           }
         }
+      },
+      {
+        path: 'zoho-sync',
+        canActivate: [authGuard, roleGuard],
+        data: { 
+          roles: ['admin'],
+          seo: {
+            title: 'Sincronización Zoho - Panel Start Companies',
+            description: 'Gestiona la sincronización de datos entre el panel y Zoho CRM'
+          }
+        },
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () => import('../features/panel/pages/zoho-sync/zoho-sync.component').then(m => m.ZohoSyncComponent)
+          }
+        ]
       }
     ]
   },
@@ -635,17 +681,73 @@ export const routes: Routes = [
       },
       {
         path: 'blog',
-        redirectTo: '/blog',
-        pathMatch: 'full'
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('../features/public/blog/blog-home/blog-home.component').then(
+                (m) => m.BlogHomeComponent
+              ),
+            data: {
+              seo: {
+                title: 'Blog - Start Companies LLC | News and Tips for LLCs in the U.S.',
+                description: 'Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.',
+                keywords: 'blog LLC United States, bank account tips, financial news, Start Companies blog',
+                ogTitle: 'Blog - Start Companies LLC',
+                ogDescription: 'Stay informed about LLCs, bank accounts and financial services in the United States.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                canonical: getCanonicalUrl('/en/blog'),
+              },
+            },
+          },
+          {
+            path: 'category/:slug',
+            loadComponent: () =>
+              import('../features/public/blog/blog-home/blog-home.component').then(
+                (m) => m.BlogHomeComponent
+              ),
+            data: {
+              seo: {
+                title: 'Blog Category - Start Companies LLC',
+                description: 'Explore our blog categories about LLCs, bank accounts and financial services in the United States.',
+                keywords: 'blog category LLC, Start Companies blog, financial news, LLC tips',
+                ogTitle: 'Blog Category - Start Companies LLC',
+                ogDescription: 'Explore our blog categories about LLCs and financial services in the United States.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                canonical: getCanonicalUrl('/en/blog/category/:slug'),
+              },
+            },
+          },
+          {
+            path: 'post/:slug',
+            loadComponent: () => import('../features/public/blog/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
+            data: {
+              seo: {
+                title: 'Blog Article - Start Companies LLC',
+                description: 'Read our articles about LLCs, bank accounts and financial services in the United States.',
+                keywords: 'blog article LLC, Start Companies blog, financial news, LLC tips',
+                ogTitle: 'Blog Article - Start Companies LLC',
+                ogDescription: 'Read our articles about LLCs and financial services in the United States.',
+                ogImage: getImageUrl('/assets/logo.png'),
+                twitterSite: '@startcompaniess',
+                // canonical se establece dinámicamente en el componente blog-post-v2
+              },
+            },
+          },
+        ]
       },
+      // Redirects para mantener compatibilidad con rutas antiguas (inglés)
       {
         path: 'category/:slug',
-        redirectTo: '/category/:slug',
+        redirectTo: '/en/blog/category/:slug',
         pathMatch: 'full'
       },
       {
         path: 'post/:slug',
-        redirectTo: '/post/:slug',
+        redirectTo: '/en/blog/post/:slug',
         pathMatch: 'full'
       },
       // Wizard routes - English

@@ -2,20 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
+import { firstValueFrom } from 'rxjs';
 
-interface Client {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  company?: string;
-  status: 'active' | 'inactive';
-  totalRequests: number;
-  activeRequests: number;
-  completedRequests: number;
-  createdAt: Date;
-  lastActivity?: Date;
-  partnerId?: number;
+interface Client extends PartnerClient {
+  totalRequests?: number;
+  activeRequests?: number;
+  completedRequests?: number;
+  lastActivity?: string;
   partnerName?: string;
 }
 
@@ -30,22 +24,32 @@ export class ClientsComponent implements OnInit {
   isLoading = true;
   clients: Client[] = [];
   filteredClients: Client[] = [];
+  loadError: string | null = null;
   
   // Filtros
   searchTerm: string = '';
   selectedStatus: string = 'all';
-  selectedPartner: string = 'all';
   
   // Modal de nuevo cliente
   showNewClientModal = false;
+  showEditClientModal = false;
+  editingClient: Client | null = null;
   newClient = {
     name: '',
     email: '',
     phone: '',
     company: ''
   };
+  editClient = {
+    name: '',
+    email: '',
+    phone: '',
+    company: ''
+  };
   isCreating = false;
+  isUpdating = false;
   createError: string | null = null;
+  updateError: string | null = null;
 
   statusOptions = [
     { value: 'all', label: 'Todos' },
@@ -53,95 +57,90 @@ export class ClientsComponent implements OnInit {
     { value: 'inactive', label: 'Inactivos' }
   ];
 
-  partners = [
-    { id: 1, name: 'Partner ABC' },
-    { id: 2, name: 'Partner XYZ' },
-    { id: 3, name: 'Partner DEF' }
-  ];
+  constructor(
+    private partnerClientsService: PartnerClientsService
+  ) {}
 
   ngOnInit(): void {
+    // Admin solo ve sus propios clientes, no necesita cargar partners
     this.loadClients();
   }
 
-  loadClients(): void {
+  async loadClients(): Promise<void> {
     this.isLoading = true;
-    // TODO: Cargar clientes desde el backend
-    setTimeout(() => {
-      this.clients = [
-        {
-          id: 1,
-          name: 'Juan Pérez',
-          email: 'juan@example.com',
-          phone: '+1 555-0101',
-          status: 'active',
-          totalRequests: 3,
-          activeRequests: 1,
-          completedRequests: 2,
-          createdAt: new Date('2024-01-05'),
-          lastActivity: new Date('2024-01-18'),
-          partnerId: 1,
-          partnerName: 'Partner ABC'
-        },
-        {
-          id: 2,
-          name: 'María García',
-          email: 'maria@example.com',
-          phone: '+1 555-0102',
-          company: 'García Corp',
-          status: 'active',
-          totalRequests: 5,
-          activeRequests: 2,
-          completedRequests: 3,
-          createdAt: new Date('2024-01-10'),
-          lastActivity: new Date('2024-01-19'),
-          partnerId: 1,
-          partnerName: 'Partner ABC'
-        },
-        {
-          id: 3,
-          name: 'Carlos Rodríguez',
-          email: 'carlos@example.com',
-          status: 'active',
-          totalRequests: 2,
-          activeRequests: 0,
-          completedRequests: 2,
-          createdAt: new Date('2023-12-15'),
-          lastActivity: new Date('2024-01-10')
-        },
-        {
-          id: 4,
-          name: 'Ana Martínez',
-          email: 'ana@example.com',
-          phone: '+1 555-0104',
-          status: 'inactive',
-          totalRequests: 1,
-          activeRequests: 0,
-          completedRequests: 1,
-          createdAt: new Date('2023-11-20'),
-          lastActivity: new Date('2023-12-05'),
-          partnerId: 2,
-          partnerName: 'Partner XYZ'
-        }
-      ];
+    this.loadError = null;
+    
+    try {
+      // Admin solo ve sus propios clientes (sin partner)
+      const clients = await firstValueFrom(this.partnerClientsService.getAdminClients());
+      
+      console.log('Clientes recibidos del backend:', clients);
+      
+      if (!clients || clients.length === 0) {
+        console.log('No se encontraron clientes');
+        this.clients = [];
+        this.filteredClients = [];
+        this.isLoading = false;
+        return;
+      }
+
+      // Cargar estadísticas para cada cliente
+      const clientsWithStats = clients.map(client => ({
+        ...client,
+        totalRequests: 0,
+        activeRequests: 0,
+        completedRequests: 0,
+        createdAt: client.createdAt || new Date().toISOString(),
+        lastActivity: client.updatedAt || undefined
+      }));
+
+      // Cargar estadísticas en paralelo
+      try {
+        const statsPromises = clientsWithStats.map(client => 
+          firstValueFrom(this.partnerClientsService.getClientStats(client.id)).catch(() => null)
+        );
+
+        const statsArray = await Promise.all(statsPromises);
+        
+        statsArray.forEach((stats, index) => {
+          if (stats) {
+            clientsWithStats[index].totalRequests = stats.totalRequests;
+            clientsWithStats[index].activeRequests = stats.activeRequests;
+            clientsWithStats[index].completedRequests = stats.completedRequests;
+          }
+        });
+      } catch (statsError) {
+        console.warn('Error al cargar estadísticas, continuando sin stats:', statsError);
+        // Continuar sin estadísticas si falla
+      }
+
+      this.clients = clientsWithStats;
       this.applyFilters();
+      console.log('Clientes procesados:', this.clients);
+      console.log('Clientes filtrados:', this.filteredClients);
+    } catch (error: any) {
+      console.error('Error al cargar clientes:', error);
+      this.loadError = error?.error?.message || 'Error al cargar los clientes. Intenta nuevamente.';
+      this.clients = [];
+      this.filteredClients = [];
+    } finally {
       this.isLoading = false;
-    }, 1000);
+    }
   }
+
 
   applyFilters(): void {
     this.filteredClients = this.clients.filter(client => {
       const matchesSearch = !this.searchTerm || 
-        client.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        client.full_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         (client.company && client.company.toLowerCase().includes(this.searchTerm.toLowerCase()));
       
-      const matchesStatus = this.selectedStatus === 'all' || client.status === this.selectedStatus;
+      const clientStatus = client.status ? 'active' : 'inactive';
+      const matchesStatus = this.selectedStatus === 'all' || clientStatus === this.selectedStatus;
       
-      const matchesPartner = this.selectedPartner === 'all' || 
-        (this.selectedPartner === 'none' && !client.partnerId) ||
-        client.partnerId?.toString() === this.selectedPartner;
-      
-      return matchesSearch && matchesStatus && matchesPartner;
+      // Admin solo ve clientes sin partner, no necesita filtro de partner
+      return matchesSearch && matchesStatus;
     });
   }
 
@@ -153,9 +152,6 @@ export class ClientsComponent implements OnInit {
     this.applyFilters();
   }
 
-  onPartnerChange(): void {
-    this.applyFilters();
-  }
 
   openNewClientModal(): void {
     this.showNewClientModal = true;
@@ -178,40 +174,113 @@ export class ClientsComponent implements OnInit {
     this.isCreating = true;
     this.createError = null;
 
-    // TODO: Llamar al backend para crear el cliente
-    setTimeout(() => {
-      const newClient: Client = {
-        id: this.clients.length + 1,
-        name: this.newClient.name,
-        email: this.newClient.email,
-        phone: this.newClient.phone || undefined,
-        company: this.newClient.company || undefined,
-        status: 'active',
-        totalRequests: 0,
-        activeRequests: 0,
-        completedRequests: 0,
-        createdAt: new Date()
-      };
+    const createClientDto: CreatePartnerClientDto = {
+      full_name: this.newClient.name,
+      email: this.newClient.email,
+      phone: this.newClient.phone || undefined,
+      company: this.newClient.company || undefined,
+      // Admin crea clientes sin partner asignado
+      partnerId: undefined
+    };
 
-      this.clients.push(newClient);
-      this.applyFilters();
-      this.isCreating = false;
-      this.closeNewClientModal();
-    }, 1000);
+    this.partnerClientsService.createClient(createClientDto).subscribe({
+      next: (client) => {
+        const newClient: Client = {
+          ...client,
+          totalRequests: 0,
+          activeRequests: 0,
+          completedRequests: 0,
+          createdAt: client.createdAt || new Date().toISOString()
+        };
+        this.clients.push(newClient);
+        this.applyFilters();
+        this.isCreating = false;
+        this.closeNewClientModal();
+      },
+      error: (error) => {
+        console.error('Error al crear cliente:', error);
+        this.createError = error.error?.message || 'Error al crear el cliente. Intenta nuevamente.';
+        this.isCreating = false;
+      }
+    });
   }
 
   toggleClientStatus(client: Client): void {
-    // TODO: Implementar cambio de estado en el backend
-    client.status = client.status === 'active' ? 'inactive' : 'active';
-    this.applyFilters();
+    this.partnerClientsService.toggleClientStatus(client.id).subscribe({
+      next: (updatedClient) => {
+        const index = this.clients.findIndex(c => c.id === client.id);
+        if (index !== -1) {
+          this.clients[index] = { ...this.clients[index], status: updatedClient.status };
+          this.applyFilters();
+        }
+      },
+      error: (error) => {
+        console.error('Error al cambiar estado del cliente:', error);
+        this.createError = error.error?.message || 'Error al cambiar el estado. Intenta nuevamente.';
+      }
+    });
   }
 
-  getStatusClass(status: string): string {
-    return status === 'active' ? 'badge bg-success' : 'badge bg-secondary';
+  getStatusClass(status: boolean | string): string {
+    const isActive = typeof status === 'boolean' ? status : status === 'active';
+    return isActive ? 'badge bg-success' : 'badge bg-secondary';
   }
 
-  getStatusLabel(status: string): string {
-    return status === 'active' ? 'Activo' : 'Inactivo';
+  getStatusLabel(status: boolean | string): string {
+    const isActive = typeof status === 'boolean' ? status : status === 'active';
+    return isActive ? 'Activo' : 'Inactivo';
+  }
+
+  openEditClientModal(client: Client): void {
+    this.editingClient = client;
+    this.editClient = {
+      name: client.full_name,
+      email: client.email,
+      phone: client.phone || '',
+      company: client.company || ''
+    };
+    this.showEditClientModal = true;
+    this.updateError = null;
+  }
+
+  closeEditClientModal(): void {
+    this.showEditClientModal = false;
+    this.editingClient = null;
+    this.editClient = { name: '', email: '', phone: '', company: '' };
+    this.updateError = null;
+  }
+
+  updateClient(): void {
+    if (!this.editingClient || !this.editClient.name || !this.editClient.email) {
+      this.updateError = 'Por favor completa todos los campos requeridos';
+      return;
+    }
+
+    this.isUpdating = true;
+    this.updateError = null;
+
+    const updateData = {
+      full_name: this.editClient.name,
+      phone: this.editClient.phone || undefined,
+      company: this.editClient.company || undefined
+    };
+
+    this.partnerClientsService.updateClient(this.editingClient.id, updateData).subscribe({
+      next: (updatedClient) => {
+        const index = this.clients.findIndex(c => c.id === this.editingClient!.id);
+        if (index !== -1) {
+          this.clients[index] = { ...this.clients[index], ...updatedClient };
+          this.applyFilters();
+        }
+        this.isUpdating = false;
+        this.closeEditClientModal();
+      },
+      error: (error) => {
+        console.error('Error al actualizar cliente:', error);
+        this.updateError = error.error?.message || 'Error al actualizar el cliente. Intenta nuevamente.';
+        this.isUpdating = false;
+      }
+    });
   }
 }
 

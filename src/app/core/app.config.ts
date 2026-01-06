@@ -33,7 +33,8 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([authInterceptor])
     ),
-    provideAnimations(),
+    // provideAnimations() y provideServiceWorker() se agregan solo en main.ts (browser)
+    // para evitar problemas con SSR donde document/window no existen
     provideTransloco({
       config: {
         availableLangs: ['en', 'es'],
@@ -53,9 +54,7 @@ export const appConfig: ApplicationConfig = {
       deps: [LanguageService],
       multi: true,
     },
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      registrationStrategy: 'registerWhenStable:30000',
-    }),
+    // NOTA: provideAnimations() y provideServiceWorker() se mueven a main.ts (browser)
+    // para evitar problemas con SSR
   ],
 };

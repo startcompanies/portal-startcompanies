@@ -22,17 +22,14 @@ export class LoginComponent {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {
-    // Validaciones comentadas temporalmente para maquetación
-    // Contraseña precargada para usuarios mockup
     this.loginForm = this.fb.group({
-      email: ['admin@test.com'],
-      password: ['test123']
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onSubmit() {
-    // Validaciones comentadas temporalmente para maquetación
-    // if (this.loginForm.valid) {
+    if (this.loginForm.valid) {
       this.isLoading = true;
       this.errorMessage = null;
 
@@ -55,19 +52,21 @@ export class LoginComponent {
           const user = this.authService.getCurrentUser();
           if (user?.type === 'admin') {
             this.router.navigate(['/panel/dashboard']);
+          } else if (user?.type === 'partner') {
+            this.router.navigate(['/panel/client-dashboard']);
           } else {
             this.router.navigate(['/panel/client-dashboard']);
           }
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+          this.errorMessage = error.error?.message || error.message || 'Error al iniciar sesión. Verifica tus credenciales.';
           console.error('Login error:', error);
         }
       });
-    // } else {
-    //   this.loginForm.markAllAsTouched();
-    // }
+    } else {
+      this.loginForm.markAllAsTouched();
+    }
   }
 
   get email() {

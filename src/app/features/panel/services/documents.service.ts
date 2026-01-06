@@ -12,7 +12,7 @@ export interface UploadResponse {
   providedIn: 'root'
 })
 export class DocumentsService {
-  private apiUrl = `${environment.apiUrl || 'http://localhost:3000'}/upload-file`;
+  private apiUrl = `${environment.apiUrl || 'http://localhost:3000'}/panel/documents`;
 
   constructor(private http: HttpClient) {}
 
@@ -38,13 +38,19 @@ export class DocumentsService {
   }
 
   getDocumentsByRequest(requestId: number): Observable<any> {
-    // TODO: Implementar endpoint para obtener documentos de una solicitud
     return this.http.get(`${this.apiUrl}/request/${requestId}`);
   }
 
   deleteDocument(documentId: number): Observable<any> {
-    // TODO: Implementar endpoint para eliminar documentos
     return this.http.delete(`${this.apiUrl}/${documentId}`);
   }
 }
+
+
+
+
+
+
+
+
 

@@ -43,13 +43,27 @@
   align-items: center;
 }
 
-/* Bootstrap Carousel Fix - Ocultar slides inactivos */
-.sc-hero .carousel-item:not(.active) {
-  display: none !important;
+/* Bootstrap Carousel Fix - Para efecto fade */
+.sc-hero .carousel-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  display: flex;
+  align-items: center;
 }
 
 .sc-hero .carousel-item.active {
-  display: flex !important;
+  position: relative;
+  opacity: 1;
+  z-index: 1;
+}
+
+.sc-hero .carousel-item:not(.active) {
+  z-index: 0;
 }
 
 /* Asegurar que el carrusel funcione correctamente */
@@ -57,15 +71,7 @@
   position: relative;
   width: 100%;
   height: 100%;
-}
-
-.sc-hero .carousel-item {
-  position: relative;
-  float: left;
-  width: 100%;
-  height: 100%;
-  margin-right: -100%;
-  backface-visibility: hidden;
+  overflow: hidden;
 }
 
 .sc-hero .carousel-item .container {
@@ -371,7 +377,8 @@
   }
   .hero-btn-primary,
   .hero-btn-secondary {
-    font-size: 0.7rem;
+    /*font-size: 0.7rem;*/
+    font-size: 1rem;
     padding: 0.3rem 1.5rem;
   }
 }

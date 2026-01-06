@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap, of } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 
@@ -12,6 +12,9 @@ export interface User {
   type: 'client' | 'partner' | 'admin';
   first_name?: string;
   last_name?: string;
+  phone?: string;
+  company?: string;
+  bio?: string;
 }
 
 export interface AuthResponse {
@@ -48,51 +51,6 @@ export class AuthService {
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
-    // En modo desarrollo, simular login con usuarios mockup
-    if (!environment.production) {
-      const mockUsers: Array<{ email: string; password: string; user: User }> = [
-        { 
-          email: 'admin@test.com', 
-          password: 'test123', 
-          user: { id: 1, username: 'admin_test', email: 'admin@test.com', status: true, type: 'admin' as const, first_name: 'Admin', last_name: 'Test' } 
-        },
-        { 
-          email: 'partner@test.com', 
-          password: 'test123', 
-          user: { id: 2, username: 'partner_test', email: 'partner@test.com', status: true, type: 'partner' as const, first_name: 'Partner', last_name: 'Test' } 
-        },
-        { 
-          email: 'client@test.com', 
-          password: 'test123', 
-          user: { id: 3, username: 'client_test', email: 'client@test.com', status: true, type: 'client' as const, first_name: 'Client', last_name: 'Test' } 
-        }
-      ];
-
-      const mockUser = mockUsers.find(u => u.email === credentials.email && u.password === credentials.password);
-      
-      if (mockUser) {
-        // Simular token JWT (solo para desarrollo)
-        const mockToken = this.generateMockToken(mockUser.user);
-        const response: AuthResponse = { token: mockToken };
-        
-        // Guardar también el usuario en localStorage para recuperarlo si el token falla
-        localStorage.setItem('mock_user', JSON.stringify(mockUser.user));
-        this.setToken(mockToken);
-        this.currentUserSubject.next(mockUser.user);
-        
-        return of(response);
-      } else {
-        // Simular error de autenticación
-        return new Observable(observer => {
-          observer.error({ 
-            status: 401, 
-            error: { message: 'Credenciales inválidas' } 
-          });
-        });
-      }
-    }
-
-    // En producción, usar el backend real
     return this.http.post<AuthResponse>(`${this.apiUrl}/signin`, credentials).pipe(
       tap(response => {
         this.setToken(response.token);
@@ -101,29 +59,23 @@ export class AuthService {
     );
   }
 
-  private generateMockToken(user: User): string {
-    // Generar un token JWT mockup simple (solo para desarrollo)
-    // En producción siempre se usa el token real del backend
-    const header = btoa(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-    const payload = btoa(JSON.stringify({
-      id: user.id,
-      userName: user.username,
-      email: user.email,
-      status: user.status,
-      type: user.type,
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 horas
-    }));
-    return `${header}.${payload}.mock_signature`;
-  }
-
   register(data: RegisterData): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/signup`, data);
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, {
+      token,
+      newPassword
+    });
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
-    localStorage.removeItem('mock_user');
     this.currentUserSubject.next(null);
     this.router.navigate(['/panel/login']);
   }
@@ -172,18 +124,6 @@ export class AuthService {
       this.currentUserSubject.next(user);
     } catch (error) {
       console.error('Error al decodificar token:', error);
-      // En desarrollo, si es un token mockup, intentar cargar desde localStorage
-      if (!environment.production) {
-        const storedUser = localStorage.getItem('mock_user');
-        if (storedUser) {
-          try {
-            this.currentUserSubject.next(JSON.parse(storedUser));
-            return;
-          } catch (e) {
-            // Si falla, continuar con logout
-          }
-        }
-      }
       this.logout();
     }
   }
@@ -204,5 +144,77 @@ export class AuthService {
   isClient(): boolean {
     return this.hasRole('client');
   }
+
+  /**
+   * SSO Authentication - Autenticación mediante parámetros de URL para embedding
+   */
+  public ssoAuth(
+    email: string,
+    token: string,
+    customerId?: string,
+    phone?: string
+  ): Observable<any> {
+    let url = `${this.apiUrl}/sso?email=${encodeURIComponent(
+      email
+    )}&token=${encodeURIComponent(token)}`;
+
+    if (customerId) {
+      url += `&customerId=${encodeURIComponent(customerId)}`;
+    }
+
+    if (phone) {
+      url += `&phone=${encodeURIComponent(phone)}`;
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    });
+
+    return this.http.get<any>(url, { headers, withCredentials: true }).pipe(
+      tap((response) => {
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+          this.loadUserFromToken(response.accessToken);
+          
+          // Guardar refreshToken en localStorage como fallback para iframes
+          if (response.refreshToken) {
+            localStorage.setItem('refreshToken', response.refreshToken);
+          }
+          
+          // Marcar que el login fue vía SSO
+          localStorage.setItem('isSsoLogin', 'true');
+        }
+      })
+    );
+  }
+
+  /**
+   * Refresh token para SSO (usa refreshToken del localStorage)
+   */
+  public refreshSso(refreshToken: string): Observable<any> {
+    return this.http.post<any>(
+      `${this.apiUrl}/refresh-sso`,
+      { refreshToken },
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      }
+    ).pipe(
+      tap((response) => {
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+          this.loadUserFromToken(response.accessToken);
+        }
+      })
+    );
+  }
 }
+
+
+
+
+
+
+
+
 

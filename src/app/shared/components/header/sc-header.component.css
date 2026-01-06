@@ -46,6 +46,17 @@
   margin-top: 0px;
   margin-bottom: 0.5rem;
 }
+
+.sc-menu-container .navbar-collapse {
+  display: flex !important;
+  flex-basis: auto;
+}
+
+.sc-menu-container .navbar-nav {
+  flex-wrap: nowrap;
+  width: 100%;
+  justify-content: center;
+}
 /* Estilos específicos para Safari */
 @supports (-webkit-appearance: none) {
   .sc-navbar-logo app-responsive-image img {
@@ -73,12 +84,26 @@
 }
 
 /* Estilo de los elementos de navegación (links) */
+.sc-navbar .navbar-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sc-navbar .navbar-nav .nav-item {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .sc-navbar .navbar-nav .nav-link {
   color: var(--color-fondo-claro);
   font-weight: 500;
   transition: color 0.2s ease;
   position: relative;
   cursor: pointer;
+  white-space: nowrap;
+  padding: 0.5rem 0.75rem;
 }
 
 .nav-link {
@@ -86,7 +111,7 @@
 }
 
 .nav-link-dark {
-  color: var(--color-primario) !important;
+  color: #293B49 !important;
 }
 
 .sc-navbar .navbar-nav .nav-link:hover,
@@ -108,7 +133,13 @@
 
 /* Estilo para el underline de elementos activos cuando el navbar es claro */
 .sc-navbar.sc-navbar-light .navbar-nav .nav-item.active .nav-link::after {
-  background-color: var(--color-primario);
+  background-color: #293B49;
+}
+
+/* Estilos para hover cuando el navbar está en modo claro (después de scroll) */
+.sc-navbar.sc-navbar-light .navbar-nav .nav-link:hover,
+.sc-navbar.sc-navbar-light .navbar-nav .nav-link.active {
+  color: #293B49 !important;
 }
 
 /* Contenedor de botones */
@@ -149,12 +180,12 @@
 
 /* Estilo del botón "Iniciar sesión" cuando el navbar está en modo claro */
 .sc-navbar-light .sc-btn-login {
-  color: var(--color-primario);
-  border-color: var(--color-primario);
+  color: #293B49;
+  border-color: #293B49;
 }
 
 .sc-navbar-light .sc-btn-login:hover {
-  background-color: var(--color-primario);
+  background-color: #293B49;
   color: var(--color-fondo-claro);
 }
 

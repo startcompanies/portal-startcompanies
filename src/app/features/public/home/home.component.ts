@@ -91,7 +91,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     const carouselElement = document.getElementById('carouselExampleIndicators');
     if (carouselElement && typeof bootstrap !== 'undefined') {
       this.carousel = new bootstrap.Carousel(carouselElement, {
-        interval: 5000, // Cambiar cada 5 segundos
+        interval: 12000, // Cambiar cada 10 segundos
         wrap: true, // Loop infinito
         keyboard: true, // Navegación con teclado
         pause: 'hover' // Pausar al hacer hover

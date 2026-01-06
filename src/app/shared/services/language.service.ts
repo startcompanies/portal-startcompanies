@@ -133,7 +133,7 @@ export class LanguageService {
 
     if (segs.length === 0) {
       // Si no hay segmentos, redirigir a la página principal del idioma
-      const targetUrl = lang === 'es' ? ['/', 'inicio'] : ['/', lang, 'home'];
+      const targetUrl = lang === 'es' ? ['/'] : ['/', lang, 'home'];
       console.log('[LanguageService] No segments, navigating to:', targetUrl);
       return this.router.navigate(targetUrl);
     }
@@ -142,7 +142,7 @@ export class LanguageService {
     if (this.availableLangs.includes(segs[0])) {
       // Si solo queda el idioma (sin página específica), agregar página principal
       if (segs.length === 1) {
-        const targetUrl = lang === 'es' ? ['/', 'inicio'] : ['/', lang, 'home'];
+        const targetUrl = lang === 'es' ? ['/'] : ['/', lang, 'home'];
         console.log('[LanguageService] Only language segment, navigating to:', targetUrl);
         return this.router.navigate(targetUrl);
       } else {
@@ -152,7 +152,8 @@ export class LanguageService {
         
         if (lang === 'es') {
           // Para español, usar raíz sin prefijo
-          const targetUrl = ['/', mappedRoute];
+          // Si mappedRoute es vacío, solo usar ['/']
+          const targetUrl = mappedRoute === '' ? ['/'] : ['/', mappedRoute];
           console.log('[LanguageService] Spanish route, navigating to:', targetUrl);
           return this.router.navigate(targetUrl, {
             queryParams: tree.queryParams,
@@ -200,7 +201,7 @@ export class LanguageService {
     if (targetLang === 'es') {
       // Mapear de inglés a español
       const englishToSpanish: { [key: string]: string } = {
-        'home': 'inicio',
+        'home': '', // Raíz en español
         'about-us': 'nosotros',
         'contact': 'contacto',
         'plans': 'planes',
@@ -223,7 +224,8 @@ export class LanguageService {
     } else {
       // Mapear de español a inglés
       const spanishToEnglish: { [key: string]: string } = {
-        'inicio': 'home',
+        '': 'home', // Raíz en español mapea a 'home' en inglés
+        'inicio': 'home', // Mantener compatibilidad con rutas antiguas
         'nosotros': 'about-us',
         'contacto': 'contact',
         'planes': 'plans',

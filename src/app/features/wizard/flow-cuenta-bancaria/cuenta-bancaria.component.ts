@@ -16,6 +16,13 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 
 // Formulario específico de cuenta bancaria
 import { ClientFormCuentaComponent } from './steps/client-form-cuenta.component';
+import { AplicantInfoStepComponent } from './steps/aplicant-info-step/aplicant-info-step.component';
+import { CompanyAddressStepComponent } from './steps/company-address-step/company-address-step.component';
+import { BankAccountInfoStepComponent } from "./steps/bank-account-info-step/bank-account-info-step.component";
+import { LlcTypeStepComponent } from "./steps/llc-type-step/llc-type-step.component";
+import { OwnersIdentificationStepComponent } from "./steps/owners-identification-step/owners-identification-step.component";
+import { ConfirmationSignatureStepComponent } from "./steps/confirmation-signature-step/confirmation-signature-step.component";
+import { OwnerPersonalAddressStepComponent } from './steps/owner-personal-address-step/owner-personal-address-step.component';
 
 /**
  * Componente principal para el flujo de cuenta bancaria
@@ -32,8 +39,15 @@ import { ClientFormCuentaComponent } from './steps/client-form-cuenta.component'
     WizardBasicRegisterStepComponent,
     WizardPaymentStepComponent,
     ClientFormCuentaComponent,
+    AplicantInfoStepComponent,
+    CompanyAddressStepComponent,
     WizardFinalReviewStepComponent,
-  ],
+    BankAccountInfoStepComponent,
+    OwnerPersonalAddressStepComponent,
+    LlcTypeStepComponent,    
+    OwnersIdentificationStepComponent,
+    ConfirmationSignatureStepComponent
+],
   templateUrl: './cuenta-bancaria.component.html',
   styleUrls: ['./cuenta-bancaria.component.css']
 })
@@ -67,6 +81,7 @@ export class CuentaBancariaComponent implements OnInit {
         : WizardFlowType.CUENTA_BANCARIA_SIN_PAGO;
       
       this.flowConfig = this.wizardConfigService.getFlowConfig(flowType);
+      console.log('Total steps', this.flowConfig.totalSteps);
       this.initializeStepIcons();
       this.initializeStepTitles();
     });
@@ -110,9 +125,9 @@ export class CuentaBancariaComponent implements OnInit {
   onFinish(): void {
     const allData = this.wizardStateService.getAllData();
     console.log('✅ Datos finales del wizard Cuenta Bancaria:', allData);
-    this.currentLang === 'es'
+    /*this.currentLang === 'es'
       ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
+      : this.router.navigate(['/en']);*/
   }
 
   onCancel(): void {

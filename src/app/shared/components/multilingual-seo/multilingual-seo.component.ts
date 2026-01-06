@@ -90,6 +90,7 @@ export class MultilingualSeoComponent implements OnInit, OnDestroy {
 
     // Mapear rutas a routeKeys
     const routeMapping: { [key: string]: string } = {
+      '': 'inicio', // Raíz mapea a 'inicio' como routeKey
       'inicio': 'inicio',
       'home': 'home',
       'nosotros': 'nosotros',
