@@ -481,6 +481,10 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+          },
+          {
+            path: ':uuid',
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
           }
         ],
         data: {

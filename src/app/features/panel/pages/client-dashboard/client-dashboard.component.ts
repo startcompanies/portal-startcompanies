@@ -39,24 +39,13 @@ export class ClientDashboardComponent implements OnInit {
   loadDashboardData(): void {
     this.isLoading = true;
     // TODO: Cargar datos desde el backend
-    setTimeout(() => {
-      this.processSummary = [
-        { type: 'apertura-llc', total: 1, inProgress: 1, completed: 0, pending: 0 },
-        { type: 'renovacion-llc', total: 0, inProgress: 0, completed: 0, pending: 0 },
-        { type: 'cuenta-bancaria', total: 0, inProgress: 0, completed: 0, pending: 0 }
-      ];
-      this.recentRequests = [
-        {
-          id: 1,
-          type: 'apertura-llc',
-          status: 'en-proceso',
-          currentStep: 'Procesamiento en Estado',
-          createdAt: new Date('2024-01-15'),
-          clientName: this.isPartner ? 'Juan Pérez' : undefined
-        }
-      ];
-      this.isLoading = false;
-    }, 1000);
+    this.processSummary = [
+      { type: 'apertura-llc', total: 0, inProgress: 0, completed: 0, pending: 0 },
+      { type: 'renovacion-llc', total: 0, inProgress: 0, completed: 0, pending: 0 },
+      { type: 'cuenta-bancaria', total: 0, inProgress: 0, completed: 0, pending: 0 }
+    ];
+    this.recentRequests = [];
+    this.isLoading = false;
   }
 
   getProcessTypeLabel(type: string): string {
@@ -97,6 +86,7 @@ export class ClientDashboardComponent implements OnInit {
     return classes[status] || 'badge bg-secondary';
   }
 }
+
 
 
 

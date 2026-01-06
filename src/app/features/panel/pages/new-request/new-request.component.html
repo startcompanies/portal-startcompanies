@@ -2,6 +2,10 @@
   <div class="request-header">
     <h2>Nueva Solicitud</h2>
     <p class="text-muted">Crea una nueva solicitud para un cliente</p>
+    <div *ngIf="selectedClient" class="alert alert-info mt-3">
+      <i class="bi bi-person-circle me-2"></i>
+      <strong>Cliente seleccionado:</strong> {{ selectedClient.full_name }} ({{ selectedClient.email }})
+    </div>
   </div>
 
   <!-- Progress Steps -->
@@ -10,13 +14,17 @@
       <div class="step-number">1</div>
       <div class="step-label">Tipo de Servicio</div>
     </div>
-    <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+    <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2" *ngIf="!selectedClientId">
       <div class="step-number">2</div>
       <div class="step-label">Información del Cliente</div>
     </div>
-    <div class="step-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
-      <div class="step-number">3</div>
-      <div class="step-label">Detalles</div>
+    <div class="step-item" [class.active]="currentStep >= (selectedClientId ? 2 : 3)" [class.completed]="currentStep > (selectedClientId ? 2 : 3)">
+      <div class="step-number">{{ selectedClientId ? 2 : 3 }}</div>
+      <div class="step-label">Datos del Servicio</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= (selectedClientId ? 3 : 4)" [class.completed]="currentStep > (selectedClientId ? 3 : 4)">
+      <div class="step-number">{{ selectedClientId ? 3 : 4 }}</div>
+      <div class="step-label">Pago</div>
     </div>
   </div>
 
@@ -52,8 +60,8 @@
       </div>
     </div>
 
-    <!-- Paso 2: Información del Cliente -->
-    <div *ngIf="currentStep === 2" class="form-step">
+    <!-- Paso 2: Información del Cliente (solo si no hay cliente seleccionado) -->
+    <div *ngIf="currentStep === 2 && !selectedClientId" class="form-step">
       <h3>Información del Cliente</h3>
       <div class="row g-3">
         <div class="col-md-6">
@@ -110,6 +118,42 @@
           />
         </div>
       </div>
+
+      <!-- Selección de Apertura Existente (solo para Renovación) -->
+      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && clientEmail?.value" class="form-section mt-4">
+        <h4 class="section-title">Seleccionar Apertura Existente (Opcional)</h4>
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          Si este cliente tiene una apertura LLC completada, puedes seleccionarla para precargar algunos datos. 
+          Si prefieres iniciar desde cero, selecciona "Crear nueva renovación sin apertura previa".
+        </div>
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label for="selectAperturaStep2" class="form-label">Apertura LLC</label>
+            <select 
+              id="selectAperturaStep2" 
+              class="form-select" 
+              [value]="selectedAperturaId || ''"
+              (change)="onAperturaSelected($any($event.target).value ? parseIntHelper($any($event.target).value) : null)"
+              [disabled]="isLoadingAperturas"
+            >
+              <option value="">Crear nueva renovación sin apertura previa</option>
+              <option *ngFor="let apertura of clientAperturas" [value]="apertura.id">
+                {{ getAperturaDisplayName(apertura) }} - {{ getAperturaState(apertura) }} 
+                ({{ getAperturaType(apertura) }})
+                - {{ apertura.createdAt | date:'short' }}
+              </option>
+            </select>
+            <small class="form-text text-muted" *ngIf="isLoadingAperturas">
+              <i class="bi bi-hourglass-split me-1"></i>Cargando aperturas...
+            </small>
+            <small class="form-text text-muted" *ngIf="!isLoadingAperturas && clientAperturas.length === 0 && clientEmail?.value">
+              <i class="bi bi-info-circle me-1"></i>No se encontraron aperturas completadas para este cliente.
+            </small>
+          </div>
+        </div>
+      </div>
+
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">Anterior</button>
         <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!validateStep2()">
@@ -118,63 +162,321 @@
       </div>
     </div>
 
-    <!-- Paso 3: Detalles Específicos -->
-    <div *ngIf="currentStep === 3" class="form-step">
-      <h3>Detalles del Servicio</h3>
+    <!-- Paso 2 o 3: Datos Específicos del Servicio (Paso 2 si hay cliente, Paso 3 si no hay) -->
+    <div *ngIf="(currentStep === 2 && selectedClientId) || (currentStep === 3 && !selectedClientId)" class="form-step" [formGroup]="serviceDataForm">
+      <h3>Datos del Servicio: {{ getServiceTypeLabel(getSelectedServiceType()) }}</h3>
       
-      <!-- Detalles para Apertura LLC -->
-      <div *ngIf="getSelectedServiceType() === 'apertura-llc'">
-        <div class="mb-3">
-          <label for="llcType" class="form-label">Tipo de LLC <span class="text-danger">*</span></label>
-          <select id="llcType" class="form-select" formControlName="llcType" required>
-            <option value="">Selecciona...</option>
-            <option *ngFor="let type of llcTypes" [value]="type.value">
-              {{ type.label }} - {{ type.description }}
-            </option>
-          </select>
+      <!-- Selección de Apertura Existente para Renovación (cuando hay cliente seleccionado) -->
+      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && selectedClientId" class="form-section mb-4">
+        <div class="card border-primary">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+              <i class="bi bi-building me-2"></i>
+              Seleccionar Apertura LLC Existente (Opcional)
+            </h5>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              Si este cliente tiene una apertura LLC completada, puedes seleccionarla para precargar algunos datos. 
+              Si prefieres iniciar desde cero, selecciona "Crear nueva renovación sin apertura previa".
+            </div>
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label for="selectAperturaWithClient" class="form-label">Apertura LLC</label>
+                <select 
+                  id="selectAperturaWithClient" 
+                  class="form-select" 
+                  [value]="selectedAperturaId || ''"
+                  (change)="onAperturaSelected($any($event.target).value ? parseIntHelper($any($event.target).value) : null)"
+                  [disabled]="isLoadingAperturas"
+                >
+                  <option value="">Crear nueva renovación sin apertura previa</option>
+                  <option *ngFor="let apertura of clientAperturas" [value]="apertura.id">
+                    {{ getAperturaDisplayName(apertura) }} - 
+                    {{ getAperturaState(apertura) }} 
+                    ({{ getAperturaType(apertura) }})
+                    - {{ apertura.createdAt | date:'short' }}
+                  </option>
+                </select>
+                <small class="form-text text-muted" *ngIf="isLoadingAperturas">
+                  <i class="bi bi-hourglass-split me-1"></i>Cargando aperturas...
+                </small>
+                <small class="form-text text-muted" *ngIf="!isLoadingAperturas && clientAperturas.length === 0">
+                  <i class="bi bi-info-circle me-1"></i>No se encontraron aperturas completadas para este cliente.
+                </small>
+                <small class="form-text text-success" *ngIf="!isLoadingAperturas && clientAperturas.length > 0">
+                  <i class="bi bi-check-circle me-1"></i>Se encontraron {{ clientAperturas.length }} apertura(s) para este cliente.
+                </small>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="llcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
-          <input
-            type="text"
-            id="llcName"
-            class="form-control"
-            formControlName="llcName"
-            placeholder="Mi Empresa LLC"
-            required
-          />
+      </div>
+      
+      <!-- Apertura LLC -->
+      <app-apertura-llc-form
+        *ngIf="getSelectedServiceType() === 'apertura-llc'"
+        [serviceDataForm]="serviceDataForm"
+        [usStates]="usStates"
+        [fileUploadStates]="fileUploadStates"
+        [currentSection]="serviceSection"
+        (fileSelected)="onFileSelected($event.event, $event.formControlPath, $event.fileKey)"
+        (memberFileSelected)="onMemberFileSelected($event.event, $event.memberIndex, $event.formControlPath, $event.fileKey)"
+        (fileCleared)="clearFile($event.fileKey, $event.formControlPath, $event.inputId)"
+        (memberFileCleared)="clearMemberFile($event.memberIndex, $event.formControlPath, $event.fileKey, $event.inputId)"
+        (llcTypeChanged)="handleLlcTypeChange($event)"
+        (addMemberRequested)="addMember()"
+        (removeMemberRequested)="removeMember($event)"
+      ></app-apertura-llc-form>
+      
+      <!-- Renovación LLC -->
+      <app-renovacion-llc-form
+        *ngIf="getSelectedServiceType() === 'renovacion-llc'"
+        [serviceDataForm]="serviceDataForm"
+        [usStates]="usStates"
+        [llcTypes]="llcTypes"
+        [fileUploadStates]="fileUploadStates"
+        [currentSection]="serviceSection"
+        (fileSelected)="onFileSelected($event.event, $event.formControlPath, $event.fileKey)"
+        (fileCleared)="clearFile($event.fileKey, $event.formControlPath, $event.inputId)"
+        (addMemberRequested)="addMember()"
+        (removeMemberRequested)="removeMember($event)"
+        (addOwnerRequested)="addOwner()"
+        (removeOwnerRequested)="removeOwner($event)"
+      ></app-renovacion-llc-form>
+
+      <!-- Cuenta Bancaria -->
+      <app-cuenta-bancaria-form
+        *ngIf="getSelectedServiceType() === 'cuenta-bancaria'"
+        [serviceDataForm]="serviceDataForm"
+        [usStates]="usStates"
+        [llcTypes]="llcTypes"
+        [currentSection]="serviceSection"
+        [fileUploadStates]="fileUploadStates"
+        (fileSelected)="onFileSelected($event.event, $event.formControlPath, $event.fileKey)"
+        (fileCleared)="clearFile($event.fileKey, $event.formControlPath, $event.inputId)"
+        (addOwnerRequested)="addOwner()"
+        (removeOwnerRequested)="removeOwner($event)"
+      ></app-cuenta-bancaria-form>
+
+      <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+        {{ errorMessage }}
+      </div>
+
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="isLoading">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="isLoading || !validateCurrentServiceSection()">
+          {{ isLastServiceSection() ? 'Siguiente' : 'Continuar' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 3 o 4: Pago (Paso 3 si hay cliente, Paso 4 si no hay) -->
+    <div *ngIf="(currentStep === 3 && selectedClientId) || (currentStep === 4 && !selectedClientId)" class="form-step">
+      <h3>Información de Pago</h3>
+      
+      <div class="row g-3">
+        <div class="col-md-12">
+          <label for="paymentMethod" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+          <div class="payment-methods">
+            <div 
+              *ngFor="let method of paymentMethods" 
+              class="payment-method-card"
+              [class.selected]="requestForm.get('paymentMethod')?.value === method.value"
+              (click)="requestForm.get('paymentMethod')?.setValue(method.value)"
+            >
+              <input
+                type="radio"
+                [id]="'payment-' + method.value"
+                [value]="method.value"
+                formControlName="paymentMethod"
+                class="payment-radio"
+              />
+              <label [for]="'payment-' + method.value" class="payment-label">
+                <i [class]="'bi ' + method.icon + ' me-2'"></i>
+                {{ method.label }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <label for="paymentAmount" class="form-label">
+            Monto a Pagar (USD) 
+            <span class="text-danger" *ngIf="requestForm.get('paymentAmount')?.value > 0">*</span>
+          </label>
+          <div class="input-group">
+            <span class="input-group-text">$</span>
+            <input
+              type="number"
+              id="paymentAmount"
+              class="form-control"
+              formControlName="paymentAmount"
+              [class.is-invalid]="requestForm.get('paymentAmount')?.invalid && requestForm.get('paymentAmount')?.touched"
+              [readonly]="shouldCalculateAmount()"
+              [class.bg-light]="shouldCalculateAmount()"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+            />
+          </div>
+          <small class="form-text text-muted" *ngIf="shouldCalculateAmount()">
+            <i class="bi bi-info-circle me-1"></i>El monto se calcula automáticamente según el tipo de servicio y estado seleccionado.
+          </small>
+          <div class="alert alert-info mt-2" *ngIf="shouldCalculateAmount() && requestForm.get('paymentAmount')?.value === 0">
+            <i class="bi bi-info-circle me-2"></i>Cuenta bancaria gratuita seleccionada. No se requiere pago.
+          </div>
+          <div class="invalid-feedback" *ngIf="requestForm.get('paymentAmount')?.invalid && requestForm.get('paymentAmount')?.touched && !shouldCalculateAmount()">
+            El monto debe ser mayor a $0.00
+          </div>
+        </div>
+
+        <!-- Mensaje si el monto es 0 (cuenta bancaria gratuita) -->
+        <div *ngIf="requestForm.get('paymentAmount')?.value === 0 && getSelectedServiceType() === 'cuenta-bancaria'" class="col-md-12">
+          <div class="alert alert-success">
+            <h5><i class="bi bi-check-circle me-2"></i>Cuenta Bancaria Gratuita</h5>
+            <p class="mb-0">Has seleccionado la opción gratuita. No se requiere pago para esta solicitud.</p>
+          </div>
+        </div>
+
+        <!-- Transferencia Bancaria -->
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'transferencia' && requestForm.get('paymentAmount')?.value > 0" class="col-md-12">
+          <div class="alert alert-info">
+            <h5><i class="bi bi-info-circle me-2"></i>Instrucciones para Transferencia Bancaria</h5>
+            <p class="mb-3">Por favor, realiza la transferencia a la siguiente cuenta:</p>
+            
+            <div class="bank-transfer-details">
+              <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <div class="bank-detail-item">
+                    <strong><i class="bi bi-building me-2"></i>Beneficiario:</strong>
+                    <p class="mb-0">EbizBoost LLC</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="bank-detail-item">
+                    <strong><i class="bi bi-bank me-2"></i>Banco:</strong>
+                    <p class="mb-0">THREAD</p>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="bank-detail-item">
+                    <strong><i class="bi bi-geo-alt me-2"></i>Dirección:</strong>
+                    <p class="mb-0">420 Southwest 7th Street, Suite:1019<br>Miami, FL, 33130, US</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="bank-detail-item">
+                    <strong><i class="bi bi-credit-card me-2"></i>Número de Cuenta:</strong>
+                    <p class="mb-0"><code>200000776994</code></p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="bank-detail-item">
+                    <strong><i class="bi bi-hash me-2"></i>Routing Number:</strong>
+                    <p class="mb-0"><code>064209588</code></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="alert alert-warning mb-3">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Importante:</strong> Sube el comprobante de transferencia una vez realizada.
+            </div>
+            
+          </div>
+          
+          <label for="paymentProofFile" class="form-label">Comprobante de Transferencia</label>
+          <div class="file-upload-container">
+            <input
+              type="file"
+              id="paymentProofFile"
+              class="form-control"
+              (change)="onPaymentProofFileSelected($event)"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+              [disabled]="isUploadingPaymentProof"
+            />
+            <small class="form-text text-muted">
+              Formatos aceptados: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)
+            </small>
+            
+            <!-- Mostrar archivo seleccionado -->
+            <div *ngIf="selectedPaymentProofFile && !isUploadingPaymentProof" class="selected-file-info mt-2">
+              <div class="alert alert-info d-flex justify-content-between align-items-center">
+                <span>
+                  <i class="bi bi-file-earmark me-2"></i>
+                  {{ selectedPaymentProofFile.name }} ({{ (selectedPaymentProofFile.size / 1024 / 1024).toFixed(2) }} MB)
+                </span>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearPaymentProofFile()">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Mostrar progreso de carga -->
+            <div *ngIf="isUploadingPaymentProof" class="upload-progress mt-2">
+              <div class="progress">
+                <div 
+                  class="progress-bar progress-bar-striped progress-bar-animated" 
+                  role="progressbar" 
+                  [style.width.%]="paymentProofUploadProgress"
+                  [attr.aria-valuenow]="paymentProofUploadProgress"
+                  aria-valuemin="0" 
+                  aria-valuemax="100"
+                >
+                  {{ paymentProofUploadProgress }}%
+                </div>
+              </div>
+              <small class="text-muted">Subiendo archivo...</small>
+            </div>
+
+            <!-- Mostrar URL si ya está subido -->
+            <div *ngIf="requestForm.get('paymentProofUrl')?.value && !selectedPaymentProofFile && !isUploadingPaymentProof" class="uploaded-file-info mt-2">
+              <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>
+                <strong>Archivo subido exitosamente</strong>
+                <br>
+                <a [href]="requestForm.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
+                  <i class="bi bi-box-arrow-up-right me-1"></i>
+                  Ver comprobante
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearPaymentProofFile()">
+                  <i class="bi bi-x-circle me-1"></i>
+                  Cambiar archivo
+                </button>
+              </div>
+            </div>
+
+            <!-- Campo oculto para guardar la URL -->
+            <input type="hidden" formControlName="paymentProofUrl">
+          </div>
+        </div>
+
+        <!-- Stripe -->
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0" class="col-md-12">
+          <app-stripe-payment-form
+            [amount]="requestForm.get('paymentAmount')?.value"
+            [currency]="'usd'"
+            [showAmount]="false"
+            [disabled]="stripeProcessing || isLoading || stripePaymentProcessed"
+            (paymentReady)="onStripePaymentReady($event)"
+            (paymentError)="onStripePaymentError($event)"
+            (paymentSuccess)="onStripePaymentSuccess($event)"
+          ></app-stripe-payment-form>
+          
+          <!-- Mensaje cuando el pago ya fue procesado -->
+          <div *ngIf="stripePaymentProcessed" class="alert alert-success mt-3">
+            <i class="bi bi-check-circle me-2"></i>
+            <strong>Pago procesado exitosamente.</strong> Los datos de la tarjeta están bloqueados y no se pueden modificar.
+          </div>
         </div>
       </div>
 
-      <!-- Detalles para Renovación LLC -->
-      <div *ngIf="getSelectedServiceType() === 'renovacion-llc'">
-        <div class="mb-3">
-          <label for="existingLLCNumber" class="form-label">Número de LLC Existente <span class="text-danger">*</span></label>
-          <input
-            type="text"
-            id="existingLLCNumber"
-            class="form-control"
-            formControlName="existingLLCNumber"
-            placeholder="LLC-123456"
-            required
-          />
-        </div>
-      </div>
-
-      <!-- Detalles para Cuenta Bancaria -->
-      <div *ngIf="getSelectedServiceType() === 'cuenta-bancaria'">
-        <div class="mb-3">
-          <label for="bankAccountType" class="form-label">Tipo de Cuenta <span class="text-danger">*</span></label>
-          <select id="bankAccountType" class="form-select" formControlName="bankAccountType" required>
-            <option value="">Selecciona...</option>
-            <option value="relay">Relay</option>
-            <option value="mercury">Mercury</option>
-            <option value="other">Otra</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="mb-3">
+      <div class="mb-3 mt-3">
         <label for="notes" class="form-label">Notas Adicionales</label>
         <textarea
           id="notes"
@@ -189,11 +491,41 @@
         {{ errorMessage }}
       </div>
 
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+
       <div class="step-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="isLoading">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="isLoading || stripeProcessing">
           Anterior
         </button>
-        <button type="submit" class="btn btn-primary" [disabled]="isLoading || requestForm.invalid">
+        
+        <!-- Botón para procesar pago con Stripe (solo si es Stripe y aún no se ha procesado) -->
+        <button 
+          *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0 && !stripePaymentProcessed"
+          type="button" 
+          class="btn btn-primary me-2" 
+          (click)="processStripePayment()"
+          [disabled]="isLoading || stripeProcessing"
+        >
+          <span *ngIf="!stripeProcessing">
+            <i class="bi bi-credit-card me-2"></i>
+            Procesar Pago
+          </span>
+          <span *ngIf="stripeProcessing">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Procesando pago...
+          </span>
+        </button>
+        
+        <!-- Botón para crear solicitud (siempre visible, termina el flujo) -->
+        <button 
+          type="button" 
+          class="btn btn-success" 
+          [disabled]="isLoading || stripeProcessing || !validateStep4()"
+          (click)="onCreateRequestClick($event)"
+          [title]="(isLoading || stripeProcessing || !validateStep4()) ? 'Completa todos los campos requeridos' : 'Crear solicitud'"
+        >
           <span *ngIf="!isLoading">
             <i class="bi bi-check-circle me-2"></i>
             Crear Solicitud
@@ -203,10 +535,25 @@
             Creando...
           </span>
         </button>
+        
+        <!-- Mensaje de ayuda si el botón está deshabilitado -->
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0 && !stripePaymentProcessed" class="mt-2">
+          <small class="text-muted">
+            <i class="bi bi-info-circle me-1"></i>
+            Primero debes procesar el pago antes de crear la solicitud.
+          </small>
+        </div>
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0 && stripePaymentProcessed && !validateStep4()" class="mt-2">
+          <small class="text-warning">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            El pago fue procesado, pero hay un problema con la validación. Revisa los campos.
+          </small>
+        </div>
       </div>
     </div>
   </form>
 </div>
+
 
 
 

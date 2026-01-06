@@ -10,5 +10,9 @@ export const environment = {
     debug: false // Modo debug desactivado en producción
   },
   baseUrl: 'https://startcompanies.us',
-  domain: 'startcompanies.us'
+  domain: 'startcompanies.us',
+  stripe: {
+    // TODO: Reemplazar con tu clave pública de Stripe para producción
+    publishableKey: 'pk_live_51...' // Clave de producción
+  }
 };

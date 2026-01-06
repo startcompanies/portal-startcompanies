@@ -20,6 +20,27 @@
           <p class="text-muted mb-0">Solicitud #{{ request.id }}</p>
         </div>
         <div class="text-end d-flex gap-2 align-items-center">
+          <!-- Botones de aprobar/rechazar solo para admin cuando está en solicitud-recibida -->
+          <div *ngIf="isAdmin && isSolicitudRecibida()" class="d-flex gap-2 me-2">
+            <button 
+              type="button" 
+              class="btn btn-success btn-sm"
+              (click)="approveRequest()"
+              title="Aprobar solicitud"
+            >
+              <i class="bi bi-check-circle me-1"></i>
+              Aprobar
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-danger btn-sm"
+              (click)="rejectRequest()"
+              title="Rechazar solicitud"
+            >
+              <i class="bi bi-x-circle me-1"></i>
+              Rechazar
+            </button>
+          </div>
           <button 
             class="btn btn-outline-secondary btn-sm" 
             (click)="openAllDataModal()"
@@ -504,6 +525,73 @@
                     </div>
                   </div>
                 </div>
+
+                <!-- SECCIÓN: INFORMACIÓN PARA APERTURA BANCARIA -->
+                <div class="mb-4">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-bank me-2"></i>
+                    SECCIÓN: INFORMACIÓN PARA APERTURA BANCARIA
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.serviceBillUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Factura de Servicio (Prueba de Dirección):</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.aperturaLlcRequest.serviceBillUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.bankStatementUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Resumen Bancario:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.aperturaLlcRequest.bankStatementUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.periodicIncome10k">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tendrá ingresos periódicos que suman USD 10,000 o más en los próximos tres meses?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.aperturaLlcRequest.periodicIncome10k === 'si'" [class.bg-danger]="fullRequestData.aperturaLlcRequest.periodicIncome10k === 'no'">
+                          {{ fullRequestData.aperturaLlcRequest.periodicIncome10k === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.bankAccountLinkedEmail">
+                      <div class="detail-item">
+                        <label class="detail-label">Correo Electrónico Vinculado a la Cuenta Bancaria:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.bankAccountLinkedEmail }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.bankAccountLinkedPhone">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de Teléfono Vinculado a la Cuenta Bancaria:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.bankAccountLinkedPhone }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.actividadFinancieraEsperada">
+                      <div class="detail-item">
+                        <label class="detail-label">Actividad financiera esperada:</label>
+                        <span class="detail-value">{{ fullRequestData.aperturaLlcRequest.actividadFinancieraEsperada }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.aperturaLlcRequest.projectOrCompanyUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">URL del Proyecto o Empresa:</label>
+                        <a [href]="fullRequestData.aperturaLlcRequest.projectOrCompanyUrl" target="_blank" class="detail-value text-primary text-decoration-underline">
+                          {{ fullRequestData.aperturaLlcRequest.projectOrCompanyUrl }}
+                          <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -556,8 +644,31 @@
                     </div>
                     <div class="col-md-6" *ngIf="member.passportNumber">
                       <div class="detail-item">
-                        <label class="detail-label">Número de Pasaporte:</label>
+                        <label class="detail-label">Número Pasaporte Completo:</label>
                         <span class="detail-value">{{ member.passportNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.scannedPassportUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Pasaporte escaneado:</label>
+                        <div class="detail-value">
+                          <a [href]="member.scannedPassportUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.ssnItin">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de SSN/ITIN:</label>
+                        <span class="detail-value">{{ member.ssnItin }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.cuit">
+                      <div class="detail-item">
+                        <label class="detail-label">ID Fiscal Nacional (CUIT):</label>
+                        <span class="detail-value">{{ member.cuit }}</span>
                       </div>
                     </div>
                     <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
@@ -568,7 +679,7 @@
                     </div>
                     <div class="col-md-12" *ngIf="member.memberAddress">
                       <div class="detail-item">
-                        <label class="detail-label">Dirección:</label>
+                        <label class="detail-label">Dirección Completa:</label>
                         <div class="detail-value ms-3 mt-1">
                           {{ member.memberAddress.street }}
                           <span *ngIf="member.memberAddress.unit">, {{ member.memberAddress.unit }}</span><br>
@@ -633,6 +744,35 @@
                         <span class="detail-value">{{ member.dateOfBirth | date:'short' }}</span>
                       </div>
                     </div>
+                    <div class="col-md-6" *ngIf="member.passportNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Número Pasaporte Completo:</label>
+                        <span class="detail-value">{{ member.passportNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.scannedPassportUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Pasaporte escaneado:</label>
+                        <div class="detail-value">
+                          <a [href]="member.scannedPassportUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.ssnItin">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de SSN/ITIN:</label>
+                        <span class="detail-value">{{ member.ssnItin }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="member.cuit">
+                      <div class="detail-item">
+                        <label class="detail-label">ID Fiscal Nacional (CUIT):</label>
+                        <span class="detail-value">{{ member.cuit }}</span>
+                      </div>
+                    </div>
                     <div class="col-md-6" *ngIf="member.percentageOfParticipation !== null && member.percentageOfParticipation !== undefined">
                       <div class="detail-item">
                         <label class="detail-label">Porcentaje de Participación:</label>
@@ -641,7 +781,7 @@
                     </div>
                     <div class="col-md-12" *ngIf="member.memberAddress">
                       <div class="detail-item">
-                        <label class="detail-label">Dirección:</label>
+                        <label class="detail-label">Dirección Completa:</label>
                         <div class="detail-value ms-3 mt-1">
                           {{ member.memberAddress.street }}
                           <span *ngIf="member.memberAddress.unit">, {{ member.memberAddress.unit }}</span><br>
@@ -670,49 +810,424 @@
                 </h6>
               </div>
               <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcName">
-                    <div class="detail-item">
-                      <label class="detail-label">Nombre de la LLC:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcName }}</span>
+                <!-- SECCIÓN: INFORMACIÓN DE LA LLC -->
+                <div class="mb-4">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-info-circle me-2"></i>
+                    SECCIÓN: INFORMACIÓN DE LA LLC
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcName">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre de la LLC:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.state">
+                      <div class="detail-item">
+                        <label class="detail-label">Estado de Registro de la LLC:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.state }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcType">
+                      <div class="detail-item">
+                        <label class="detail-label">Estructura Societaria:</label>
+                        <span class="detail-value badge badge-llc-type">
+                          {{ fullRequestData.renovacionLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.mainActivity || fullRequestData.renovacionLlcRequest.mainActivityDescription">
+                      <div class="detail-item">
+                        <label class="detail-label">Actividad Principal de la LLC:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.mainActivity || fullRequestData.renovacionLlcRequest.mainActivityDescription }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.hasPropertyInUSA">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.hasPropertyInUSA === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.hasPropertyInUSA === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.hasPropertyInUSA === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.almacenaProductosDepositoUSA">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.almacenaProductosDepositoUSA === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.almacenaProductosDepositoUSA === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.almacenaProductosDepositoUSA === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contrataServiciosUSA">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.contrataServiciosUSA === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.contrataServiciosUSA === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.contrataServiciosUSA === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.tieneCuentasBancarias">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tu LLC tiene cuentas bancarias a su nombre?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.tieneCuentasBancarias === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.tieneCuentasBancarias === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.tieneCuentasBancarias === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.einNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de EIN:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.einNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcCreationDate">
+                      <div class="detail-item">
+                        <label class="detail-label">Fecha de creación de la LLC:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcCreationDate | date:'dd-MMM-yyyy' }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.countriesWhereLLCDoesBusiness && fullRequestData.renovacionLlcRequest.countriesWhereLLCDoesBusiness.length > 0">
+                      <div class="detail-item">
+                        <label class="detail-label">Países donde la LLC realiza negocios:</label>
+                        <div class="detail-value">
+                          <span *ngFor="let country of fullRequestData.renovacionLlcRequest.countriesWhereLLCDoesBusiness; let last = last" class="badge bg-secondary me-1">
+                            {{ country }}<span *ngIf="!last">,</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.declaracionInicial || fullRequestData.renovacionLlcRequest.declaracionAnoCorriente || fullRequestData.renovacionLlcRequest.cambioDireccionRA || fullRequestData.renovacionLlcRequest.cambioNombre || fullRequestData.renovacionLlcRequest.declaracionAnosAnteriores || fullRequestData.renovacionLlcRequest.agregarCambiarSocio || fullRequestData.renovacionLlcRequest.declaracionCierre">
+                      <div class="detail-item">
+                        <label class="detail-label">Tipo de declaración:</label>
+                        <div class="detail-value">
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.declaracionInicial" class="badge bg-info me-1">Declaración Inicial</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.declaracionAnoCorriente" class="badge bg-info me-1">Declaración del año corriente (2025)</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.cambioDireccionRA" class="badge bg-info me-1">Cambio de dirección y de Registered Agent (RA)</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.cambioNombre" class="badge bg-info me-1">Cambio de nombre</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.declaracionAnosAnteriores" class="badge bg-info me-1">Declaración de años anteriores</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.agregarCambiarSocio" class="badge bg-info me-1">Agregar o cambiar socio</span>
+                          <span *ngIf="fullRequestData.renovacionLlcRequest.declaracionCierre" class="badge bg-info me-1">Declaracion de Cierre de tu LLC</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactEmail">
+                      <div class="detail-item">
+                        <label class="detail-label">Correo de Contacto:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactEmail }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactPhone">
+                      <div class="detail-item">
+                        <label class="detail-label">Teléfono de Contacto:</label>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactPhone }}</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcType">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo de LLC:</label>
-                      <span class="detail-value badge badge-llc-type">
-                        {{ fullRequestData.renovacionLlcRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
-                      </span>
+                </div>
+
+                <!-- SECCIÓN: INFORMACIÓN CONTABLE DE LA LLC -->
+                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.llcOpeningCost || fullRequestData.renovacionLlcRequest.paidToFamilyMembers || fullRequestData.renovacionLlcRequest.paidToLocalCompanies || fullRequestData.renovacionLlcRequest.paidForLLCFormation || fullRequestData.renovacionLlcRequest.paidForLLCDissolution || fullRequestData.renovacionLlcRequest.bankAccountBalanceEndOfYear">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-calculator me-2"></i>
+                    SECCIÓN: INFORMACIÓN CONTABLE DE LA LLC
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcOpeningCost">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto costó abrir la LLC en Estados Unidos?:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.llcOpeningCost | number:'1.2-2' }} USD</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.paidToFamilyMembers">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.paidToFamilyMembers | number:'1.2-2' }} USD</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.paidToLocalCompanies">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto pagó la LLC a empresas locales del dueño por bienes o servicios?:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.paidToLocalCompanies | number:'1.2-2' }} USD</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.paidForLLCFormation">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto se pagó por la formación de la LLC?:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.paidForLLCFormation | number:'1.2-2' }} USD</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.paidForLLCDissolution">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto se pagó por la disolución de la LLC (si aplica)?:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.paidForLLCDissolution | number:'1.2-2' }} USD</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.bankAccountBalanceEndOfYear">
+                      <div class="detail-item">
+                        <label class="detail-label">Saldo Al fin de año de las cuentas bancarias de la LLC:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.bankAccountBalanceEndOfYear | number:'1.2-2' }} USD</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.state">
-                    <div class="detail-item">
-                      <label class="detail-label">Estado de Registro:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.state }}</span>
+                </div>
+
+                <!-- SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025 -->
+                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.totalRevenue2025">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-graph-up me-2"></i>
+                    SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <div class="detail-item">
+                        <label class="detail-label">Facturación total de la LLC en 2025:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.totalRevenue2025 | number:'1.2-2' }} USD</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.einNumber">
-                    <div class="detail-item">
-                      <label class="detail-label">Número de EIN:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.einNumber }}</span>
+                </div>
+
+                <!-- SECCIÓN: INFORMACIÓN ADICIONAL DE LA LLC -->
+                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.hasFinancialInvestmentsInUSA !== null || fullRequestData.renovacionLlcRequest.hasFiledTaxesBefore !== null || fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies !== null">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-file-earmark-text me-2"></i>
+                    SECCIÓN: INFORMACIÓN ADICIONAL DE LA LLC
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.hasFinancialInvestmentsInUSA">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.hasFinancialInvestmentsInUSA === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.hasFinancialInvestmentsInUSA === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.hasFinancialInvestmentsInUSA === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.hasFiledTaxesBefore">
+                      <div class="detail-item">
+                        <label class="detail-label">¿La LLC declaró impuestos anteriormente?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.hasFiledTaxesBefore === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.hasFiledTaxesBefore === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.hasFiledTaxesBefore === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies">
+                      <div class="detail-item">
+                        <label class="detail-label">¿La LLC se constituyó con Start Companies?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies === 'si'" [class.bg-danger]="fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies === 'no'">
+                          {{ fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies === 'si' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <!-- Documentos adicionales si no se constituyó con Start Companies -->
+                    <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.wasConstitutedWithStartCompanies === 'no'">
+                      <div class="alert alert-warning">
+                        <small>Documentos adicionales requeridos:</small>
+                        <ul class="mb-0 mt-2">
+                          <li *ngIf="fullRequestData.renovacionLlcRequest.partnersPassportsFileUrl">
+                            <a [href]="fullRequestData.renovacionLlcRequest.partnersPassportsFileUrl" target="_blank" class="text-decoration-none">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Pasaportes de los socios
+                            </a>
+                          </li>
+                          <li *ngIf="fullRequestData.renovacionLlcRequest.operatingAgreementAdditionalFileUrl">
+                            <a [href]="fullRequestData.renovacionLlcRequest.operatingAgreementAdditionalFileUrl" target="_blank" class="text-decoration-none">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Operating Agreement
+                            </a>
+                          </li>
+                          <li *ngIf="fullRequestData.renovacionLlcRequest.form147Or575FileUrl">
+                            <a [href]="fullRequestData.renovacionLlcRequest.form147Or575FileUrl" target="_blank" class="text-decoration-none">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Formulario 147 o 575
+                            </a>
+                          </li>
+                          <li *ngIf="fullRequestData.renovacionLlcRequest.articlesOfOrganizationAdditionalFileUrl">
+                            <a [href]="fullRequestData.renovacionLlcRequest.articlesOfOrganizationAdditionalFileUrl" target="_blank" class="text-decoration-none">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Artículos de Organización
+                            </a>
+                          </li>
+                          <li *ngIf="fullRequestData.renovacionLlcRequest.boiReportFileUrl">
+                            <a [href]="fullRequestData.renovacionLlcRequest.boiReportFileUrl" target="_blank" class="text-decoration-none">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Reporte BOI
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.bankStatementsFileUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Información bancaria:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.renovacionLlcRequest.bankStatementsFileUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Estados de cuenta de diciembre de 2025
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.mainActivityDescription">
-                    <div class="detail-item">
-                      <label class="detail-label">Actividad Principal:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.mainActivityDescription }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactEmail">
-                    <div class="detail-item">
-                      <label class="detail-label">Correo Electrónico:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactEmail }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.contactPhone">
-                    <div class="detail-item">
-                      <label class="detail-label">Teléfono:</label>
-                      <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.contactPhone }}</span>
+                </div>
+
+                <!-- SECCIÓN: INFORMACIÓN DEL PROPIETARIO (para renovación-llc) -->
+                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.owners && fullRequestData.renovacionLlcRequest.owners.length > 0">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-person-fill me-2"></i>
+                    SECCIÓN: INFORMACIÓN DEL PROPIETARIO
+                  </h6>
+                  <div *ngFor="let owner of fullRequestData.renovacionLlcRequest.owners; let i = index" class="border rounded p-3 mb-3 bg-light">
+                    <h6 class="mb-3 text-secondary">
+                      <i class="bi bi-person-badge me-2"></i>
+                      Propietario {{ i + 1 }}
+                    </h6>
+                    <div class="row g-3">
+                      <div class="col-md-6" *ngIf="owner.name">
+                        <div class="detail-item">
+                          <label class="detail-label">Nombre:</label>
+                          <span class="detail-value">{{ owner.name }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.lastName">
+                        <div class="detail-item">
+                          <label class="detail-label">Apellido:</label>
+                          <span class="detail-value">{{ owner.lastName }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.dateOfBirth">
+                        <div class="detail-item">
+                          <label class="detail-label">Fecha de nacimiento:</label>
+                          <span class="detail-value">{{ owner.dateOfBirth | date:'dd-MMM-yyyy' }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.email">
+                        <div class="detail-item">
+                          <label class="detail-label">Correo electrónico:</label>
+                          <span class="detail-value">{{ owner.email }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.phone">
+                        <div class="detail-item">
+                          <label class="detail-label">Teléfono de contacto:</label>
+                          <span class="detail-value">{{ owner.phone }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-12" *ngIf="owner.fullAddress">
+                        <div class="detail-item">
+                          <label class="detail-label">Dirección Completa:</label>
+                          <span class="detail-value">{{ owner.fullAddress }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-12" *ngIf="owner.unit">
+                        <div class="detail-item">
+                          <label class="detail-label">Número interior/departamento:</label>
+                          <span class="detail-value">{{ owner.unit }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="owner.city">
+                        <div class="detail-item">
+                          <label class="detail-label">Ciudad:</label>
+                          <span class="detail-value">{{ owner.city }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="owner.stateRegion">
+                        <div class="detail-item">
+                          <label class="detail-label">Estado/Región/Provincia:</label>
+                          <span class="detail-value">{{ owner.stateRegion }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4" *ngIf="owner.postalCode">
+                        <div class="detail-item">
+                          <label class="detail-label">Código postal:</label>
+                          <span class="detail-value">{{ owner.postalCode }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.country">
+                        <div class="detail-item">
+                          <label class="detail-label">País de Residencia:</label>
+                          <span class="detail-value">{{ owner.country }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.nationality">
+                        <div class="detail-item">
+                          <label class="detail-label">Nacionalidad:</label>
+                          <span class="detail-value">{{ owner.nationality }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.passportNumber">
+                        <div class="detail-item">
+                          <label class="detail-label">Número Pasaporte Completo:</label>
+                          <span class="detail-value">{{ owner.passportNumber }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.ssnItin">
+                        <div class="detail-item">
+                          <label class="detail-label">Número de SSN/ITIN:</label>
+                          <span class="detail-value">{{ owner.ssnItin }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.cuit">
+                        <div class="detail-item">
+                          <label class="detail-label">ID Fiscal Nacional (CUIT):</label>
+                          <span class="detail-value">{{ owner.cuit }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.capitalContributions2025">
+                        <div class="detail-item">
+                          <label class="detail-label">Aportes de Capital a la LLC 2025 (USD):</label>
+                          <span class="detail-value">${{ owner.capitalContributions2025 | number:'1.2-2' }} USD</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.loansToLLC2025">
+                        <div class="detail-item">
+                          <label class="detail-label">Préstamos a la LLC 2025 (USD):</label>
+                          <span class="detail-value">${{ owner.loansToLLC2025 | number:'1.2-2' }} USD</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.loansRepaid2025">
+                        <div class="detail-item">
+                          <label class="detail-label">Préstamos Reembolsados 2025 (USD):</label>
+                          <span class="detail-value">${{ owner.loansRepaid2025 | number:'1.2-2' }} USD</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.capitalWithdrawals2025">
+                        <div class="detail-item">
+                          <label class="detail-label">Retiros de Capital 2025 (USD):</label>
+                          <span class="detail-value">${{ owner.capitalWithdrawals2025 | number:'1.2-2' }} USD</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.hasInvestmentsInUSA">
+                        <div class="detail-item">
+                          <label class="detail-label">¿Posee inversiones o activos en EE.UU.?:</label>
+                          <span class="detail-value badge" [class.bg-success]="owner.hasInvestmentsInUSA === 'si'" [class.bg-danger]="owner.hasInvestmentsInUSA === 'no'">
+                            {{ owner.hasInvestmentsInUSA === 'si' ? 'Sí' : 'No' }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.isUSCitizen">
+                        <div class="detail-item">
+                          <label class="detail-label">El propietario es ciudadano de EE.UU.?:</label>
+                          <span class="detail-value badge" [class.bg-success]="owner.isUSCitizen === 'si'" [class.bg-danger]="owner.isUSCitizen === 'no'">
+                            {{ owner.isUSCitizen === 'si' ? 'Sí' : 'No' }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.taxCountry">
+                        <div class="detail-item">
+                          <label class="detail-label">País bajo cuyas leyes el propietario presenta impuestos:</label>
+                          <span class="detail-value">{{ owner.taxCountry }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.wasInUSA31Days2025">
+                        <div class="detail-item">
+                          <label class="detail-label">¿El propietario estuvo en EE.UU. más de 31 días en 2025?:</label>
+                          <span class="detail-value badge" [class.bg-success]="owner.wasInUSA31Days2025 === 'si'" [class.bg-danger]="owner.wasInUSA31Days2025 === 'no'">
+                            {{ owner.wasInUSA31Days2025 === 'si' ? 'Sí' : 'No' }}
+                          </span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.participationPercentage">
+                        <div class="detail-item">
+                          <label class="detail-label">Porcentaje de participación:</label>
+                          <span class="detail-value badge badge-soft-primary">{{ owner.participationPercentage }}%</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -728,91 +1243,402 @@
                 </h6>
               </div>
               <div class="card-body">
-                <div class="row g-3">
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier">
-                    <div class="detail-item">
-                      <label class="detail-label">Identificador Legal del Negocio:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier }}</span>
+                <!-- SECCIÓN: INFORMACIÓN DE LA LLC -->
+                <div class="mb-4">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-info-circle me-2"></i>
+                    SECCIÓN: INFORMACIÓN DE LA LLC
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.businessType">
+                      <div class="detail-item">
+                        <label class="detail-label">Tipo de negocio:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.businessType }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.legalBusinessName || fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre legal del negocio:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.legalBusinessName || fullRequestData.cuentaBancariaRequest.legalBusinessIdentifier }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.industry">
+                      <div class="detail-item">
+                        <label class="detail-label">Industria / Rubro:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.industry }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.numberOfEmployees">
+                      <div class="detail-item">
+                        <label class="detail-label">Cantidad de empleados:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.numberOfEmployees }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.briefDescription">
+                      <div class="detail-item">
+                        <label class="detail-label">Descripción breve:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.briefDescription }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia">
+                      <div class="detail-item">
+                        <label class="detail-label">Sitio web o red social:</label>
+                        <a [href]="fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia" target="_blank" class="detail-value text-primary text-decoration-underline" *ngIf="fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia && fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia.startsWith('http')">
+                          {{ fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia }}
+                          <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                        </a>
+                        <span *ngIf="!fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia || !fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia.startsWith('http')" class="detail-value">
+                          {{ fullRequestData.cuentaBancariaRequest.websiteOrSocialMedia }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.einLetterUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Adjuntar EIN Letter:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.cuentaBancariaRequest.einLetterUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.einNumber || fullRequestData.cuentaBancariaRequest.ein">
+                      <div class="detail-item">
+                        <label class="detail-label">Numero de EIN:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.einNumber || fullRequestData.cuentaBancariaRequest.ein }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.articlesOrCertificateUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Adjuntar Articles de Organización o Certificate of Formation:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.cuentaBancariaRequest.articlesOrCertificateUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.accountType">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo de Cuenta:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.accountType }}</span>
+                </div>
+
+                <!-- Dirección del Registered Agent -->
+                <div class="mb-4" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentStreet || fullRequestData.cuentaBancariaRequest.registeredAgentCity || fullRequestData.cuentaBancariaRequest.incorporationState">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-geo-alt me-2"></i>
+                    Dirección del Registered Agent
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentStreet">
+                      <div class="detail-item">
+                        <label class="detail-label">Calle y número:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentStreet }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentUnit">
+                      <div class="detail-item">
+                        <label class="detail-label">Apto / Suite / PO Box:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentUnit }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentCity">
+                      <div class="detail-item">
+                        <label class="detail-label">Ciudad:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentCity }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentState">
+                      <div class="detail-item">
+                        <label class="detail-label">Estado:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentState }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentZipCode">
+                      <div class="detail-item">
+                        <label class="detail-label">Postal / Zip Code:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentZipCode }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.registeredAgentCountry">
+                      <div class="detail-item">
+                        <label class="detail-label">Country:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.registeredAgentCountry }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.incorporationState">
+                      <div class="detail-item">
+                        <label class="detail-label">Estado de constitución:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.incorporationState }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.incorporationMonthYear">
+                      <div class="detail-item">
+                        <label class="detail-label">Mes y Año de Incorporación:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.incorporationMonthYear }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.countriesWhereBusiness && fullRequestData.cuentaBancariaRequest.countriesWhereBusiness.length > 0">
+                      <div class="detail-item">
+                        <label class="detail-label">Países donde haces negocios con tu LLC:</label>
+                        <div class="detail-value">
+                          <span *ngFor="let country of fullRequestData.cuentaBancariaRequest.countriesWhereBusiness; let last = last" class="badge bg-secondary me-1">
+                            {{ country }}<span *ngIf="!last">,</span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.businessType">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo de Negocio:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.businessType }}</span>
+                </div>
+
+                <!-- Información de la persona que verificará la cuenta bancaria -->
+                <div class="mb-4" *ngIf="fullRequestData.cuentaBancariaRequest.validatorFirstName || fullRequestData.cuentaBancariaRequest.validatorLastName || fullRequestData.cuentaBancariaRequest.validatorPassportNumber">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-person-check me-2"></i>
+                    Información de la persona que verificará la cuenta bancaria
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorFirstName">
+                      <div class="detail-item">
+                        <label class="detail-label">Nombre(s):</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorFirstName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorLastName">
+                      <div class="detail-item">
+                        <label class="detail-label">Apellidos:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorLastName }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorDateOfBirth">
+                      <div class="detail-item">
+                        <label class="detail-label">Fecha de Nacimiento:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorDateOfBirth }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorNationality">
+                      <div class="detail-item">
+                        <label class="detail-label">Nacionalidad:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorNationality }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorCitizenship">
+                      <div class="detail-item">
+                        <label class="detail-label">Ciudadanía:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorCitizenship }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorPassportNumber">
+                      <div class="detail-item">
+                        <label class="detail-label">Número de pasaporte:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorPassportNumber }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.validatorPassportUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Pasaporte escaneado:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.cuentaBancariaRequest.validatorPassportUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorWorkEmail">
+                      <div class="detail-item">
+                        <label class="detail-label">Email laboral:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorWorkEmail }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorPhone">
+                      <div class="detail-item">
+                        <label class="detail-label">Teléfono:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorPhone }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.canReceiveSMS !== null">
+                      <div class="detail-item">
+                        <label class="detail-label">Debe tener capacidad para recibir SMS:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.cuentaBancariaRequest.canReceiveSMS" [class.bg-danger]="!fullRequestData.cuentaBancariaRequest.canReceiveSMS">
+                          {{ fullRequestData.cuentaBancariaRequest.canReceiveSMS ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.isUSResident">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Es residente en EE.UU.?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.cuentaBancariaRequest.isUSResident === 'yes'" [class.bg-danger]="fullRequestData.cuentaBancariaRequest.isUSResident === 'no'">
+                          {{ fullRequestData.cuentaBancariaRequest.isUSResident === 'yes' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorTitle">
+                      <div class="detail-item">
+                        <label class="detail-label">Cargo / Título / Ocupación:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorTitle }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorIncomeSource">
+                      <div class="detail-item">
+                        <label class="detail-label">Fuente de ingreso personal:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.validatorIncomeSource }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.validatorAnnualIncome">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Cuánto ganas en el año?:</label>
+                        <span class="detail-value">${{ fullRequestData.cuentaBancariaRequest.validatorAnnualIncome | number:'1.2-2' }} USD</span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.industry">
-                    <div class="detail-item">
-                      <label class="detail-label">Industria:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.industry }}</span>
+                </div>
+
+                <!-- Dirección personal del propietario -->
+                <div class="mb-4" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalStreet || fullRequestData.cuentaBancariaRequest.ownerPersonalCity">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-house me-2"></i>
+                    Dirección personal del propietario
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-8" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalStreet">
+                      <div class="detail-item">
+                        <label class="detail-label">Calle y número:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalStreet }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-4" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalUnit">
+                      <div class="detail-item">
+                        <label class="detail-label">Calle y número interior:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalUnit }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalCity">
+                      <div class="detail-item">
+                        <label class="detail-label">Ciudad:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalCity }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalState">
+                      <div class="detail-item">
+                        <label class="detail-label">Estados / Provincias:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalState }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalCountry">
+                      <div class="detail-item">
+                        <label class="detail-label">País y/o Estado:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalCountry }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ownerPersonalPostalCode">
+                      <div class="detail-item">
+                        <label class="detail-label">Código Postal:</label>
+                        <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ownerPersonalPostalCode }}</span>
+                      </div>
+                    </div>
+                    <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.serviceBillUrl">
+                      <div class="detail-item">
+                        <label class="detail-label">Adjuntar factura de servicio:</label>
+                        <div class="detail-value">
+                          <a [href]="fullRequestData.cuentaBancariaRequest.serviceBillUrl" target="_blank" class="text-primary text-decoration-underline">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                            <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.economicActivity">
-                    <div class="detail-item">
-                      <label class="detail-label">Actividad Económica:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.economicActivity }}</span>
+                </div>
+
+                <!-- Tipo de LLC -->
+                <div class="mb-4" *ngIf="fullRequestData.cuentaBancariaRequest.isMultiMember">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-diagram-3 me-2"></i>
+                    Tipo de LLC
+                  </h6>
+                  <div class="row g-3">
+                    <div class="col-md-12">
+                      <div class="detail-item">
+                        <label class="detail-label">¿Tu LLC es Multi-Member?:</label>
+                        <span class="detail-value badge" [class.bg-success]="fullRequestData.cuentaBancariaRequest.isMultiMember === 'yes'" [class.bg-danger]="fullRequestData.cuentaBancariaRequest.isMultiMember === 'no'">
+                          {{ fullRequestData.cuentaBancariaRequest.isMultiMember === 'yes' ? 'Sí' : 'No' }}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.ein">
-                    <div class="detail-item">
-                      <label class="detail-label">EIN:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.ein }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.llcType">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo de LLC:</label>
-                      <span class="detail-value badge badge-llc-type">
-                        {{ fullRequestData.cuentaBancariaRequest.llcType === 'single' ? 'Single Member' : 'Multi Member' }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantEmail">
-                    <div class="detail-item">
-                      <label class="detail-label">Correo del Solicitante:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.applicantEmail }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantPhone">
-                    <div class="detail-item">
-                      <label class="detail-label">Teléfono del Solicitante:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.applicantPhone }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.applicantFirstName || fullRequestData.cuentaBancariaRequest.applicantPaternalLastName">
-                    <div class="detail-item">
-                      <label class="detail-label">Nombre del Solicitante:</label>
-                      <span class="detail-value">
-                        {{ getFullName(fullRequestData.cuentaBancariaRequest.applicantFirstName, fullRequestData.cuentaBancariaRequest.applicantPaternalLastName, fullRequestData.cuentaBancariaRequest.applicantMaternalLastName) }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.bankName">
-                    <div class="detail-item">
-                      <label class="detail-label">Nombre del Banco:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.bankName }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-6" *ngIf="fullRequestData.cuentaBancariaRequest.bankAccountType">
-                    <div class="detail-item">
-                      <label class="detail-label">Tipo de Cuenta Bancaria:</label>
-                      <span class="detail-value">{{ fullRequestData.cuentaBancariaRequest.bankAccountType }}</span>
-                    </div>
-                  </div>
-                  <div class="col-md-12" *ngIf="fullRequestData.cuentaBancariaRequest.companyAddress">
-                    <div class="detail-item">
-                      <label class="detail-label">Dirección de la Empresa:</label>
-                      <div class="detail-value ms-3 mt-1">
-                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.street }}
-                        <span *ngIf="fullRequestData.cuentaBancariaRequest.companyAddress.unit">, {{ fullRequestData.cuentaBancariaRequest.companyAddress.unit }}</span><br>
-                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.city }}, {{ fullRequestData.cuentaBancariaRequest.companyAddress.state }}<br>
-                        {{ fullRequestData.cuentaBancariaRequest.companyAddress.postalCode }}, {{ fullRequestData.cuentaBancariaRequest.companyAddress.country }}
+                </div>
+
+                <!-- Información de los propietarios (solo si es Multi-Member) -->
+                <div class="mb-4" *ngIf="fullRequestData.cuentaBancariaRequest.isMultiMember === 'yes' && fullRequestData.cuentaBancariaRequest.owners && fullRequestData.cuentaBancariaRequest.owners.length > 0">
+                  <h6 class="text-secondary mb-3 border-bottom pb-2">
+                    <i class="bi bi-people-fill me-2"></i>
+                    Información de los propietarios
+                  </h6>
+                  <div *ngFor="let owner of fullRequestData.cuentaBancariaRequest.owners; let i = index" class="border rounded p-3 mb-3 bg-light">
+                    <h6 class="mb-3 text-secondary">
+                      <i class="bi bi-person-badge me-2"></i>
+                      Propietario {{ i + 1 }}
+                    </h6>
+                    <div class="row g-3">
+                      <div class="col-md-6" *ngIf="owner.firstName">
+                        <div class="detail-item">
+                          <label class="detail-label">Nombre:</label>
+                          <span class="detail-value">{{ owner.firstName }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.lastName">
+                        <div class="detail-item">
+                          <label class="detail-label">Apellido:</label>
+                          <span class="detail-value">{{ owner.lastName }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.dateOfBirth">
+                        <div class="detail-item">
+                          <label class="detail-label">Fecha de nacimiento:</label>
+                          <span class="detail-value">{{ owner.dateOfBirth }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.nationality">
+                        <div class="detail-item">
+                          <label class="detail-label">Nacionalidad:</label>
+                          <span class="detail-value">{{ owner.nationality }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.passportNumber">
+                        <div class="detail-item">
+                          <label class="detail-label">Número de pasaporte:</label>
+                          <span class="detail-value">{{ owner.passportNumber }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.ssnItin">
+                        <div class="detail-item">
+                          <label class="detail-label">SSN / ITIN:</label>
+                          <span class="detail-value">{{ owner.ssnItin }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.cuit">
+                        <div class="detail-item">
+                          <label class="detail-label">CUIT:</label>
+                          <span class="detail-value">{{ owner.cuit }}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-6" *ngIf="owner.participationPercentage">
+                        <div class="detail-item">
+                          <label class="detail-label">Porcentaje de participación:</label>
+                          <span class="detail-value badge badge-soft-primary">{{ owner.participationPercentage }}%</span>
+                        </div>
+                      </div>
+                      <div class="col-md-12" *ngIf="owner.passportFileUrl">
+                        <div class="detail-item">
+                          <label class="detail-label">Adjuntar pasaporte vigente:</label>
+                          <div class="detail-value">
+                            <a [href]="owner.passportFileUrl" target="_blank" class="text-primary text-decoration-underline">
+                              <i class="bi bi-file-earmark-pdf me-1"></i>Ver documento
+                              <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -901,6 +1727,7 @@
     </div>
   </div>
 </div>
+
 
 
 

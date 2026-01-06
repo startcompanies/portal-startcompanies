@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment';
 
 export interface PartnerClient {
   id: number;
+  uuid: string;
   partnerId?: number;
   userId?: number;
   full_name: string;
@@ -94,6 +95,13 @@ export class PartnerClientsService {
   }
 
   /**
+   * Obtener un cliente por UUID (envía el UUID en el body para mayor seguridad)
+   */
+  getClientByUuid(uuid: string): Observable<PartnerClient> {
+    return this.http.post<PartnerClient>(`${this.apiUrl}/by-uuid`, { uuid });
+  }
+
+  /**
    * Obtener estadísticas de un cliente
    */
   getClientStats(id: number): Observable<ClientStats> {
@@ -128,6 +136,7 @@ export class PartnerClientsService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }
+
 
 
 

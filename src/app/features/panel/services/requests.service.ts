@@ -6,8 +6,10 @@ import { firstValueFrom } from 'rxjs';
 
 export interface Request {
   id: number;
+  uuid?: string;
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   status: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  currentStep?: number; // Paso principal del wizard (1, 2, 3, 4)
   stage?: string; // Etapa actual del blueprint
   workDriveUrlExternal?: string; // URL externa de Zoho WorkDrive
   client?: {
@@ -69,7 +71,16 @@ export interface Request {
     };
     percentageOfParticipation: number;
     validatesBankAccount: boolean;
+    scannedPassportUrl?: string;
+    ssnItin?: string;
+    cuit?: string;
   }>;
+  // Propiedades de pago
+  paymentMethod?: 'stripe' | 'transferencia' | 'free' | string;
+  paymentAmount?: number;
+  paymentStatus?: 'pending' | 'succeeded' | 'failed' | string;
+  stripeChargeId?: string; // ID del cargo de Stripe
+  paymentProofUrl?: string; // URL del comprobante de pago (para transferencias)
 }
 
 export interface RequestFilters {
@@ -148,6 +159,15 @@ export class RequestsService {
   }
 
   /**
+   * Obtener una solicitud por UUID
+   */
+  getRequestByUuid(uuid: string): Promise<Request> {
+    return firstValueFrom(
+      this.http.get<Request>(`${this.apiUrl}/uuid/${uuid}`)
+    );
+  }
+
+  /**
    * Obtener una solicitud por ID
    */
   getRequestById(id: number): Promise<Request> {
@@ -169,6 +189,15 @@ export class RequestsService {
    * Actualizar una solicitud
    */
   updateRequest(id: number, data: any): Promise<Request> {
+    console.log(`[RequestsService] updateRequest llamado con ID: ${id}`);
+    console.log(`[RequestsService] URL: PATCH ${this.apiUrl}/${id}`);
+    console.log(`[RequestsService] Datos a enviar:`, {
+      paymentMethod: data.paymentMethod,
+      paymentAmount: data.paymentAmount,
+      stripeToken: data.stripeToken ? 'presente' : 'ausente',
+      paymentProofUrl: data.paymentProofUrl,
+      status: data.status,
+    });
     return firstValueFrom(
       this.http.patch<Request>(`${this.apiUrl}/${id}`, data)
     );
@@ -222,7 +251,25 @@ export class RequestsService {
       this.http.get<any>(`${this.apiUrl}/required-documents`, { params })
     );
   }
+
+  /**
+   * Obtiene las aperturas LLC de un cliente para renovación
+   */
+  getClientAperturas(clientId?: number, clientEmail?: string): Promise<any[]> {
+    if (clientId) {
+      return firstValueFrom(
+        this.http.get<any[]>(`${this.apiUrl}/client/${clientId}/aperturas`)
+      );
+    } else if (clientEmail) {
+      return firstValueFrom(
+        this.http.get<any[]>(`${this.apiUrl}/client/email/${encodeURIComponent(clientEmail)}/aperturas`)
+      );
+    } else {
+      return Promise.resolve([]);
+    }
+  }
 }
+
 
 
 

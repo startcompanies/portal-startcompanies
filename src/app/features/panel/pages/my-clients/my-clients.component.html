@@ -147,7 +147,7 @@
             <div class="client-actions">
               <a 
                 [routerLink]="['/panel/new-request']"
-                [queryParams]="{ clientId: client.id }"
+                [queryParams]="{ client: client.uuid }"
                 class="btn btn-sm btn-primary"
                 title="Nueva Solicitud"
               >
@@ -217,6 +217,7 @@
     </div>
   </div>
 </div>
+
 
 
 

@@ -178,6 +178,191 @@
   border-top: 1px solid #e9ecef;
 }
 
+/* Form Sections */
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-secundario-tecnico);
+}
+
+/* Member Cards */
+.member-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.member-card h5 {
+  color: var(--color-texto-oscuro);
+  font-size: 1.1rem;
+}
+
+/* Payment Methods */
+.payment-methods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-method-card {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.payment-method-card:hover {
+  border-color: var(--color-secundario-tecnico);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.payment-method-card.selected {
+  border-color: var(--color-secundario-tecnico);
+  background: rgba(1, 201, 226, 0.05);
+}
+
+.payment-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.payment-label {
+  cursor: pointer;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+.payment-label i {
+  font-size: 1.5rem;
+  color: var(--color-secundario-tecnico);
+}
+
+/* Stripe Payment Container */
+.stripe-payment-container {
+  margin-top: 1rem;
+}
+
+.stripe-card-element {
+  padding: 12px;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  background: white;
+  min-height: 50px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.stripe-card-element:focus-within {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 0.2rem rgba(1, 201, 226, 0.25);
+  outline: 0;
+}
+
+.stripe-card-errors {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  min-height: 20px;
+}
+
+.stripe-card-errors:empty {
+  display: none;
+}
+
+/* Bank Transfer Details */
+.bank-transfer-details {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+}
+
+.bank-detail-item {
+  margin-bottom: 1rem;
+}
+
+.bank-detail-item strong {
+  color: var(--color-texto-oscuro);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.bank-detail-item p {
+  color: #495057;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.bank-detail-item code {
+  background: #e9ecef;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  color: #212529;
+}
+
+/* File Upload */
+.file-upload-container {
+  margin-top: 0.5rem;
+}
+
+.selected-file-info .alert {
+  margin-bottom: 0;
+  padding: 0.75rem 1rem;
+}
+
+.upload-progress {
+  margin-top: 0.5rem;
+}
+
+.upload-progress .progress {
+  height: 25px;
+  margin-bottom: 0.5rem;
+}
+
+.uploaded-file-info .alert {
+  margin-bottom: 0;
+  padding: 0.75rem 1rem;
+}
+
+.uploaded-file-info a {
+  color: #0d6efd;
+}
+
+.uploaded-file-info a:hover {
+  text-decoration: underline !important;
+}
+
+/* Input Group */
+.input-group-text {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .steps-indicator {
     flex-direction: column;
@@ -202,6 +387,10 @@
     grid-template-columns: 1fr;
   }
 
+  .payment-methods {
+    grid-template-columns: 1fr;
+  }
+
   .step-actions {
     flex-direction: column-reverse;
     gap: 0.5rem;
@@ -211,7 +400,16 @@
   .step-actions a {
     width: 100%;
   }
+
+  .form-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .member-card {
+    padding: 1rem;
+  }
 }
+
 
 
 

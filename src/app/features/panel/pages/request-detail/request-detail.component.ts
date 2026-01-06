@@ -49,7 +49,8 @@ interface RequestDisplay {
   styleUrl: './request-detail.component.css'
 })
 export class RequestDetailComponent implements OnInit {
-  requestId: string | null = null;
+  requestId: string | null = null; // UUID o ID numérico (string)
+  requestNumericId: number | null = null; // ID numérico para operaciones del backend
   request: RequestDisplay | null = null;
   fullRequestData: ApiRequest | null = null; // Datos completos de la API
   isLoading = true;
@@ -98,12 +99,21 @@ export class RequestDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.requestId = this.route.snapshot.paramMap.get('id');
+    // Intentar obtener UUID primero, luego ID (para compatibilidad)
+    this.requestId = this.route.snapshot.paramMap.get('uuid') || this.route.snapshot.paramMap.get('id');
     if (this.requestId) {
       this.loadRequest();
     } else {
       this.router.navigate(['/panel/my-requests']);
     }
+  }
+
+  /**
+   * Verifica si un string es un UUID
+   */
+  private isUUID(str: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(str);
   }
 
   async loadRequest(): Promise<void> {
@@ -116,10 +126,25 @@ export class RequestDetailComponent implements OnInit {
     }
 
     try {
-      const requestId = parseInt(this.requestId);
-      const apiRequest = await this.requestsService.getRequestById(requestId);
+      let apiRequest: ApiRequest;
+      
+      // Detectar si es UUID o ID numérico
+      if (this.isUUID(this.requestId)) {
+        // Es un UUID, usar getRequestByUuid
+        apiRequest = await this.requestsService.getRequestByUuid(this.requestId);
+      } else {
+        // Es un ID numérico, usar getRequestById (compatibilidad)
+        const requestId = parseInt(this.requestId);
+        if (isNaN(requestId)) {
+          throw new Error('ID de solicitud inválido');
+        }
+        apiRequest = await this.requestsService.getRequestById(requestId);
+      }
       
       this.fullRequestData = apiRequest;
+      
+      // Guardar el ID numérico para operaciones que lo requieren
+      this.requestNumericId = apiRequest.id;
       
       // Debug: Ver qué datos están llegando
       console.log('Datos completos de la solicitud:', apiRequest);
@@ -145,6 +170,53 @@ export class RequestDetailComponent implements OnInit {
           date: new Date(apiRequest.createdAt),
           completedBy: undefined
         });
+        
+        // Agregar todos los pasos siguientes del flujo como 'pending'
+        // Para apertura-llc, usar las etapas del blueprint
+        if (apiRequest.type === 'apertura-llc') {
+          const blueprintStages = this.getBlueprintStages();
+          blueprintStages.forEach((stageName: string, index: number) => {
+            steps.push({
+              id: index + 2, // +2 porque la primera es "Solicitud Recibida"
+              name: stageName,
+              description: `Etapa del proceso: ${stageName}`,
+              status: 'pending',
+              date: undefined,
+              completedBy: undefined
+            });
+          });
+        } else if (apiRequest.type === 'cuenta-bancaria') {
+          // Para cuenta-bancaria, usar las etapas del blueprint
+          const blueprintStages = this.getCuentaBancariaBlueprintStages();
+          blueprintStages.forEach((stageName: string, index: number) => {
+            steps.push({
+              id: index + 2,
+              name: stageName,
+              description: `Etapa del proceso: ${stageName}`,
+              status: 'pending',
+              date: undefined,
+              completedBy: undefined
+            });
+          });
+        } else {
+          // Para otros tipos (renovacion-llc), usar las definiciones genéricas
+          const stepDefinitions = this.getStepDefinitions(apiRequest.type);
+          stepDefinitions.forEach((stepDef: { name: string; description: string }, index: number) => {
+            // Saltar "Solicitud Recibida" si está en las definiciones (ya está agregada)
+            if (stepDef.name === 'Solicitud Recibida') {
+              return;
+            }
+            
+            steps.push({
+              id: steps.length + 1,
+              name: stepDef.name,
+              description: stepDef.description,
+              status: 'pending',
+              date: undefined,
+              completedBy: undefined
+            });
+          });
+        }
       } else {
         // Si ya pasó de "solicitud-recibida", esta etapa está completada
         steps.push({
@@ -833,11 +905,15 @@ export class RequestDetailComponent implements OnInit {
     this.uploadError = null;
     this.uploadProgress = 0;
 
-    const requestIdNum = parseInt(this.requestId);
+    if (!this.requestNumericId) {
+      this.uploadError = 'No se pudo obtener el ID de la solicitud';
+      this.isUploading = false;
+      return;
+    }
 
     this.documentsService.uploadDocument(
       this.selectedFile,
-      requestIdNum,
+      this.requestNumericId,
       this.uploadDocumentType,
       this.uploadDescription
     ).subscribe({
@@ -968,7 +1044,10 @@ export class RequestDetailComponent implements OnInit {
         initialStage = 'Renovación Confirmada';
       }
       
-      await this.requestsService.approveRequest(parseInt(this.requestId), initialStage);
+      if (!this.requestNumericId) {
+        throw new Error('No se pudo obtener el ID de la solicitud');
+      }
+      await this.requestsService.approveRequest(this.requestNumericId, initialStage);
       
       // Recargar la solicitud
       await this.loadRequest();
@@ -991,7 +1070,10 @@ export class RequestDetailComponent implements OnInit {
     if (reason === null) return; // Usuario canceló
 
     try {
-      await this.requestsService.rejectRequest(parseInt(this.requestId), reason || undefined);
+      if (!this.requestNumericId) {
+        throw new Error('No se pudo obtener el ID de la solicitud');
+      }
+      await this.requestsService.rejectRequest(this.requestNumericId, reason || undefined);
       
       // Recargar la solicitud
       await this.loadRequest();
@@ -1077,6 +1159,7 @@ export class RequestDetailComponent implements OnInit {
   // Helper para usar Math en el template
   Math = Math;
 }
+
 
 
 

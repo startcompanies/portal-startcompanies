@@ -60,13 +60,13 @@ export class MyClientsComponent implements OnInit {
     this.partnerClientsService.getMyClients().subscribe({
       next: (clients) => {
         // Cargar estadísticas para cada cliente
-        const clientsWithStats = clients.map(client => ({
+        const clientsWithStats: Client[] = clients.map(client => ({
           ...client,
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
           createdAt: client.createdAt || new Date().toISOString(),
-          lastActivity: client.updatedAt || undefined
+          lastActivity: client.updatedAt || undefined,
         }));
 
         // Cargar estadísticas en paralelo
@@ -74,7 +74,7 @@ export class MyClientsComponent implements OnInit {
           this.partnerClientsService.getClientStats(client.id).toPromise()
         );
 
-        Promise.all(statsPromises).then(statsArray => {
+        Promise.all(statsPromises).then((statsArray) => {
           statsArray.forEach((stats, index) => {
             if (stats) {
               clientsWithStats[index].totalRequests = stats.totalRequests;
@@ -87,7 +87,7 @@ export class MyClientsComponent implements OnInit {
           this.applyFilters();
           this.isLoading = false;
         }).catch(() => {
-          // Si falla cargar stats, usar datos sin stats
+          // Si falla cargar stats, usar datos sin ellos
           this.clients = clientsWithStats;
           this.applyFilters();
           this.isLoading = false;
@@ -215,6 +215,7 @@ export class MyClientsComponent implements OnInit {
     return this.filteredClients.reduce((sum, c) => sum + (c.totalRequests || 0), 0);
   }
 }
+
 
 
 
