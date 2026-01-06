@@ -307,6 +307,7 @@
     "description": "We solve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.",
     "name": "Name",
     "email": "Email",
+    "email_required": "Email is required",
     "message": "Message",
     "send": "Send",
     "advice": {

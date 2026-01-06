@@ -1,0 +1,56 @@
+.state-plan-selection-step {
+    padding: 1rem 0;
+}
+
+.state-plan-selection-step h4 {
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.state-plan-selection-step .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.state-plan-selection-step .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.state-plan-selection-step .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.state-plan-selection-step .form-control:focus {
+    outline: none;
+    border-color: var(--color-primario, #0068BD);
+    box-shadow: 0 0 0 3px rgba(0, 104, 189, 0.1);
+}
+
+.state-plan-selection-step .text-danger {
+    font-size: 0.875rem;
+    color: #dc2626;
+}
+
+.state-btn {
+    border: 1px solid #ced4da;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.state-btn.active {
+    border: 1px solid #003f9e;
+    /* azul bootstrap */
+    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}

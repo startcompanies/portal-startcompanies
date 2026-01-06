@@ -306,6 +306,7 @@
     "description": "Resolvemos todas tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo está listo para acompañarte en cada paso del proceso.",
     "name": "Nombre",
     "email": "Correo electrónico",
+    "email_required": "El correo electrónico es obligatorio",
     "message": "Mensaje",
     "send": "Enviar",
     "advice": {

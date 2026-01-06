@@ -5,39 +5,39 @@
   <ul class="list-group mb-4">
     <li class="list-group-item">
       <strong>{{ 'WIZARD.checkout.service_label' | transloco }}:</strong>
-      {{ previousStepData.service || ('WIZARD.checkout.not_specified' | transloco) }}
+      {{ packId || ('WIZARD.checkout.not_specified' | transloco) }}
     </li>
     <li class="list-group-item">
       <strong>{{ 'WIZARD.checkout.state_label' | transloco }}:</strong>
-      {{ previousStepData.state || ('WIZARD.checkout.not_selected' | transloco) }}
+      {{ state || ('WIZARD.checkout.not_selected' | transloco) }}
     </li>
   </ul>
 
   <form [formGroup]="form">
-    <div class="form-group">
-      <label for="paymentMethod">{{ 'WIZARD.checkout.payment_method' | transloco }}</label>
-      <select
-        id="paymentMethod"
-        class="form-control"
-        formControlName="paymentMethod"
-      >
-        <option value="">
-          {{ 'WIZARD.checkout.select_method' | transloco }}
-        </option>
-        <option value="card">
-          {{ 'WIZARD.checkout.card' | transloco }}
-        </option>
-        <option value="paypal">
-          {{ 'WIZARD.checkout.paypal' | transloco }}
-        </option>
-      </select>
 
-      <div
-        *ngIf="form.get('paymentMethod')?.touched && form.get('paymentMethod')?.invalid"
-        class="text-danger mt-1"
-      >
-        {{ 'WIZARD.checkout.required_method' | transloco }}
+
+    <div class="row mb-3">
+      <div class="col">
+        <div class="stripe-field" id="card-number"></div>
       </div>
+    </div>
+
+    <!-- Renglón 2 -->
+    <div class="row mb-1">
+      <div class="col">
+        <div class="stripe-field" id="card-expiry"></div>
+      </div>
+      <div class="col">
+        <div class="stripe-field" id="card-cvc"></div>
+      </div>
+    </div>
+    <div class="row mb-2 d-flex justify-content-end">
+      <img src="assets/logo-stripe.png" alt="Stripe" class="stripe-logo" />
+    </div>
+    <div class="row ps-2 pe-2">
+      <button class="pay-button d-flex justify-content-center align-items-center" (click)="pay()">
+        <span>{{ ('WIZARD.checkout.pay_button' | transloco:{ amount: totalAmount }) }}</span>
+      </button>
     </div>
   </form>
 </div>

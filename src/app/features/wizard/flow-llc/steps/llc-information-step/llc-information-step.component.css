@@ -1,0 +1,135 @@
+.llc-information-step {
+    padding: 1rem 0;
+    overflow: hidden;
+}
+
+.llc-information-step h4 {
+    margin-bottom: 1.5rem;
+    color: #1f2937;
+    font-weight: 600;
+}
+
+.llc-information-step .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.llc-information-step .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.llc-information-step .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.llc-information-step .form-control:focus {
+    outline: none;
+    border-color: var(--color-primario, #0068BD);
+    box-shadow: 0 0 0 3px rgba(0, 104, 189, 0.1);
+}
+
+.llc-information-step .text-danger {
+    font-size: 0.875rem;
+    color: #dc2626;
+}
+
+.wizard-custom-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.wizard-nav-button {
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: none;
+    letter-spacing: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.wizard-nav-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.wizard-nav-button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.wizard-nav-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.wizard-nav-button-previous {
+    background: #f9fafb;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.wizard-nav-button-previous:hover:not(:disabled) {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+}
+
+.wizard-nav-button-next {
+    background: var(--color-degradado, linear-gradient(135deg, #01C9E2 0%, #0068BD 100%));
+    color: #ffffff;
+    margin-left: auto;
+}
+
+.wizard-nav-button-next:hover:not(:disabled) {
+    background: linear-gradient(135deg, #01B8D4 0%, #005A9E 100%);
+    box-shadow: 0 4px 16px rgba(0, 104, 189, 0.4);
+}
+
+.button-add-owner {
+    background-color: #E0F2FE;
+    color: #0068BD;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s;
+    height: 15vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 40vh;
+    height: 40vh;
+    overflow-y: auto;
+}
+
+.container-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 45vh;
+    height: 45vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}

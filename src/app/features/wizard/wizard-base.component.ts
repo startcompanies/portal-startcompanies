@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../shared/services/language.service';
-import { WizardStateService } from '../../shared/services/wizard-state.service';
+import { WizardStateService } from '../wizard/services/wizard-state.service';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -35,7 +35,8 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   @Input() stepTitles: { [key: number]: string } = {};
   @Input() stepIcons: { [key: number]: string } = {};
   @Input() steps: any[] = [];
-  
+  @Input() flowType: string = 'llc';
+
   @Output() stepChanged = new EventEmitter<number>();
   @Output() previousStep = new EventEmitter<void>();
   @Output() nextStep = new EventEmitter<void>();
@@ -62,11 +63,15 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   private destroy$ = new Subject<void>();
   private readonly VISIBLE_STEPS = 4;
 
+  showNextButton = true;
+  private sub!: Subscription;
+
   constructor(
     private languageService: LanguageService,
     public translocoService: TranslocoService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private wizardStateService: WizardStateService
+  ) { }
 
   ngOnInit(): void {
     this.currentLang = this.languageService.currentLang;
@@ -74,6 +79,13 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
     this.translocoService.langChanges$.subscribe((l) => {
       this.currentLang = l;
     });
+
+    if (this.flowType === 'llc' && this.internalStepIndex == 3) {
+      this.sub = this.wizardStateService.showNextButton$
+        .subscribe(value => this.showNextButton = value);
+    } else {
+      this.showNextButton = true;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -115,6 +127,13 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
         this.checkScrollButtons();
       }, 100);
     }
+
+    if (this.flowType === 'llc' && this.internalStepIndex == 3) {
+      this.sub = this.wizardStateService.showNextButton$
+        .subscribe(value => this.showNextButton = value);
+    } else {
+      this.showNextButton = true;
+    }
   }
 
   onStepChanged(index: number): void {
@@ -150,6 +169,14 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   }
 
   goToNextStep(): void {
+    const stepNumber = this.internalStepIndex + 1;
+    const form = this.wizardStateService.getForm(stepNumber);
+
+    if (form && form.invalid) {
+      form.markAllAsTouched();
+      return; // ⛔ no avanza
+    }
+
     if (this.internalStepIndex < this.totalSteps - 1 && this.stepper) {
       this.stepper.next();
       this.nextStep.emit();

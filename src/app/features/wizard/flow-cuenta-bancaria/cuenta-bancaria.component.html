@@ -1,20 +1,7 @@
-<app-wizard-base
-  *ngIf="flowConfig"
-  [totalSteps]="flowConfig.totalSteps"
-  [currentStepIndex]="currentStepIndex"
-  [stepTitles]="stepTitles"
-  [stepIcons]="stepIcons"
-  [steps]="flowConfig.steps"
-  (stepChanged)="onStepChanged($event)"
-  (finish)="onFinish()"
-  (cancel)="onCancel()"
->
-  <mat-stepper 
-    #stepper
-    [linear]="false"
-    (selectionChange)="onStepChanged($event.selectedIndex)"
-    class="custom-stepper"
-  >
+<app-wizard-base *ngIf="flowConfig" [totalSteps]="flowConfig.totalSteps" [currentStepIndex]="currentStepIndex"
+  [stepTitles]="stepTitles" [stepIcons]="stepIcons" [steps]="flowConfig.steps" (stepChanged)="onStepChanged($event)"
+  (finish)="onFinish()" (cancel)="onCancel()" [flowType]="'cuenta-bancaria'">
+  <mat-stepper #stepper [linear]="false" (selectionChange)="onStepChanged($event.selectedIndex)" class="custom-stepper">
     <!-- Paso 1: Registro Básico (siempre presente) -->
     <mat-step [label]="stepTitles[1] || ('WIZARD.steps.register' | transloco)">
       <div class="step-content-wrapper">
