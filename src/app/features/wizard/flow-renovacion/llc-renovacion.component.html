@@ -1,30 +1,125 @@
-<app-wizard-base *ngIf="flowConfig" [totalSteps]="flowConfig.totalSteps" [currentStepIndex]="currentStepIndex"
-  [stepTitles]="stepTitles" [stepIcons]="stepIcons" [steps]="flowConfig.steps" (stepChanged)="onStepChanged($event)"
-  (finish)="onFinish()" (cancel)="onCancel()" [flowType]="'renovacion'">
-  <mat-stepper #stepper [linear]="false" (selectionChange)="onStepChanged($event.selectedIndex)" class="custom-stepper">
+<div class="wizard-wrapper">
+  <!-- Fondo moderno con elementos de marca -->
+  <div class="wizard-background">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+  </div>
+
+  <!-- Contenido del wizard -->
+  <div class="llc-apertura-container">
+    <div class="request-header">
+      <h2>Renovación de LLC</h2>
+      <p class="text-muted">Completa el proceso para renovar tu LLC en Estados Unidos</p>
+    </div>
+
+    <!-- Progress Steps Indicator -->
+    <div class="steps-indicator">
+      <div class="step-item" [class.active]="currentStepIndex >= 0" [class.completed]="currentStepIndex > 0">
+        <div class="step-number">1</div>
+        <div class="step-label">{{ stepTitles[1] || 'Registro Básico' }}</div>
+      </div>
+      <div class="step-item" [class.active]="currentStepIndex >= 1" [class.completed]="currentStepIndex > 1">
+        <div class="step-number">2</div>
+        <div class="step-label">{{ stepTitles[2] || 'Estado' }}</div>
+      </div>
+      <div class="step-item" [class.active]="currentStepIndex >= 2" [class.completed]="currentStepIndex > 2">
+        <div class="step-number">3</div>
+        <div class="step-label">{{ stepTitles[3] || 'Pago' }}</div>
+      </div>
+      <div class="step-item" [class.active]="currentStepIndex >= 3" [class.completed]="currentStepIndex > 3">
+        <div class="step-number">4</div>
+        <div class="step-label">{{ stepTitles[4] || 'Información de la LLC' }}</div>
+      </div>
+      <div class="step-item" [class.active]="currentStepIndex >= 4" [class.completed]="currentStepIndex > 4">
+        <div class="step-number">5</div>
+        <div class="step-label">{{ stepTitles[5] || 'Revisión Final' }}</div>
+      </div>
+    </div>
+
     <!-- Paso 1: Registro Básico -->
-    <mat-step [label]="stepTitles[1] || ('WIZARD.steps.register' | transloco)">
+    <div *ngIf="currentStepIndex === 0" class="form-step">
+      <h3>{{ stepTitles[1] || 'Registro Básico' }}</h3>
       <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
-    </mat-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(1)">
+          Siguiente
+        </button>
+      </div>
+    </div>
 
     <!-- Paso 2: Selección de Estado -->
-    <mat-step [label]="stepTitles[2] || ('WIZARD.steps.state' | transloco)">
+    <div *ngIf="currentStepIndex === 1" class="form-step">
+      <h3>{{ stepTitles[2] || 'Estado' }}</h3>
       <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
-    </mat-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(0)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(2)">
+          Siguiente
+        </button>
+      </div>
+    </div>
 
     <!-- Paso 3: Pago -->
-    <mat-step [label]="stepTitles[3] || ('WIZARD.steps.payment' | transloco)">
+    <div *ngIf="currentStepIndex === 2" class="form-step">
+      <h3>{{ stepTitles[3] || 'Pago' }}</h3>
       <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2"></app-wizard-payment-step>
-    </mat-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(1)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(3)">
+          Siguiente
+        </button>
+      </div>
+    </div>
 
-    <!-- Paso 4: Formulario de Cliente (Específico de Renovación) -->
-    <mat-step [label]="stepTitles[4] || ('WIZARD.steps.client' | transloco)">
-      <app-client-form-renovacion [stepNumber]="4"></app-client-form-renovacion>
-    </mat-step>
+    <!-- Paso 4: Información de la LLC -->
+    <div *ngIf="currentStepIndex === 3" class="form-step">
+      <h3>{{ stepTitles[4] || 'Información de la LLC' }}</h3>
+      <app-wizard-renovacion-llc-information-step
+        [stepNumber]="4"
+        [previousStepNumber]="3"
+        (sectionChanged)="renovacionInfoCurrentSection = $event"
+      ></app-wizard-renovacion-llc-information-step>
+      
+      <!-- Solo mostrar botones del wizard cuando estamos en la última sección (5) -->
+      <div class="step-actions" *ngIf="renovacionInfoCurrentSection === 5">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(2)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(4)">
+          Siguiente
+        </button>
+      </div>
+    </div>
 
     <!-- Paso 5: Revisión Final -->
-    <mat-step [label]="stepTitles[5] || ('WIZARD.steps.review' | transloco)">
+    <div *ngIf="currentStepIndex === 4" class="form-step">
+      <h3>{{ stepTitles[5] || 'Revisión Final' }}</h3>
       <app-wizard-final-review-step [stepNumber]="5" [previousSteps]="[1, 2, 3, 4]"></app-wizard-final-review-step>
-    </mat-step>
-  </mat-stepper>
-</app-wizard-base>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(3)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-success" (click)="onFinish()">
+          <i class="bi bi-check-circle me-2"></i>
+          Enviar Solicitud
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

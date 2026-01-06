@@ -34,13 +34,25 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         // Cargar datos guardados si existen
         const savedData = this.wizardStateService.getStepData(this.stepNumber);
 
+        /**
+         * CAMPOS OPCIONALES - Se puede navegar sin completar todos los campos
+         * - nameOne: Primera opción de nombre de LLC (opcional)
+         * - nameTwo: Segunda opción de nombre de LLC (opcional)
+         * - nameThree: Tercera opción de nombre de LLC (opcional)
+         * - state: Estado corporativo (opcional) - Valores: 'Florida', 'Delaware', 'Texas', 'Wyoming'
+         * - mainActivity: Actividad principal de la LLC (opcional)
+         * - structureType: Tipo de estructura (opcional) - Valores: 'Single Member', 'Multi Member'
+         * - linkedinProfile: Perfil de LinkedIn (opcional)
+         * 
+         * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
+         */
         this.form = new FormGroup({
-            nameOne: new FormControl(savedData.nameOne || '', [Validators.required]),
-            nameTwo: new FormControl(savedData.nameTwo || '', [Validators.required]),
-            nameThree: new FormControl(savedData.nameThree || '', [Validators.required]),
-            state: new FormControl(savedData.state || '', [Validators.required]),
-            mainActivity: new FormControl(savedData.mainActivity || '', [Validators.required]),
-            structureType: new FormControl(savedData.structureType || '', [Validators.required]),
+            nameOne: new FormControl(savedData.nameOne || ''),
+            nameTwo: new FormControl(savedData.nameTwo || ''),
+            nameThree: new FormControl(savedData.nameThree || ''),
+            state: new FormControl(savedData.state || ''),
+            mainActivity: new FormControl(savedData.mainActivity || ''),
+            structureType: new FormControl(savedData.structureType || ''),
             linkedinProfile: new FormControl(savedData.linkedinProfile || ''),
         });
     }

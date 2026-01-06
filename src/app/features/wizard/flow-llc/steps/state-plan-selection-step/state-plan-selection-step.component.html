@@ -1,52 +1,91 @@
 <div class="state-plan-selection-step">
-    <h4>{{ 'WIZARD.steps.state_plan' | transloco }}</h4>
-    <form [formGroup]="form">
-        <div class="form-group">
-            <label for="state">{{ 'WIZARD.state_plan_step.plan' | transloco }} <span
-                    class="text-danger">*</span></label>
-            <select id="state" class="form-control" formControlName="plan" (change)="changePlan()">
-                <option value="">
-                    {{ 'WIZARD.state_plan_step.plan_label' | transloco }}
-                </option>
-                <option *ngFor="let plan of planes" [value]="plan">
-                    {{ 'WIZARD.state_plan_step.planes_options.' +
-                    plan.toLowerCase().replace(' ',
-                    '_') | transloco }}
-                </option>
-            </select>
-
-            <div *ngIf="form.get('plan')?.touched && form.get('plan')?.invalid" class="text-danger mt-1">
-                {{ 'WIZARD.state_plan_step.plan_required' | transloco }}
+  <form [formGroup]="form">
+    <!-- Selección de Plan -->
+    <div class="form-group mb-4">
+      <label for="plan">Plan <span class="text-danger">*</span></label>
+      <div class="row g-3">
+        <div class="col-md-4" *ngFor="let plan of planes">
+          <div class="plan-card" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
+            <div class="plan-header">
+              <span class="recommended-badge" *ngIf="plan.recommended">Recomendado</span>
+              <h5 class="plan-name">{{ plan.label }}</h5>
+              <div class="plan-price">${{ plan.price }}</div>
             </div>
+            <p class="plan-description small">{{ plan.description }}</p>
+            <p class="plan-subtitle small text-muted">{{ plan.subtitle }}</p>
+          </div>
         </div>
-        <label for="state">{{ 'WIZARD.state_plan_step.state' | transloco }} <span class="text-danger">*</span></label>
-        <div class="row mb-2">
-            <div class="col">
-                <button class="state-btn" [ngClass]="{ active: selectedState === 'new_mexico' }"
-                    (click)="selectState('new_mexico')">{{
-                    'WIZARD.state_plan_step.state_new_mexico' | transloco }}</button>
-            </div>
-            <div class="col">
-                <button class="state-btn" [ngClass]="{ active: selectedState === 'texas' }"
-                    (click)="selectState('texas')">{{
-                    'WIZARD.state_plan_step.state_texas' | transloco }}</button>
-            </div>
+      </div>
+    </div>
+    
+    <!-- Selección de Estado -->
+    <div class="form-group mb-3">
+      <label for="state">Estado <span class="text-danger">*</span></label>
+      
+      <!-- Mostrar estado pre-seleccionado si el plan solo tiene un estado -->
+      <div *ngIf="selectedPlan && getSelectedPlanStates().length === 1" class="mb-3">
+        <div class="form-control bg-light" style="padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; cursor: default;">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+            <strong>{{ getSelectedPlanStates()[0] }}</strong>
+          </div>
         </div>
-        <div class="form-group">
-            <label for="state">{{ 'WIZARD.state_plan_step.other_option' | transloco }}</label>
-
-            <select id="state" class="form-control" formControlName="state" (change)="changeState()">
-                <option value="">
-                    {{ 'WIZARD.state_plan_step.state_label' | transloco }}
-                </option>
-                <option *ngFor="let state of states" [value]="getStateLabel(state)">
-                    {{ getStateLabel(state) }}
-                </option>
-            </select>
-
-            <div *ngIf="form.get('state')?.touched && form.get('state')?.invalid" class="text-danger mt-1">
-                {{ 'WIZARD.state_plan_step.state_required' | transloco }}
-            </div>
+      </div>
+      
+      <!-- Botones rápidos para estados comunes (solo si hay múltiples estados disponibles) -->
+      <div class="row mb-2" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('New Mexico')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'New Mexico'"
+            (click)="selectState('New Mexico')"
+          >
+            Nuevo México
+          </button>
         </div>
-    </form>
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('Texas')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'Texas'"
+            (click)="selectState('Texas')"
+          >
+            Texas
+          </button>
+        </div>
+      </div>
+      
+      <!-- Selector de otros estados (filtrado según plan seleccionado) -->
+      <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+        Otros estados
+      </label>
+      <select 
+        id="state-select" 
+        class="form-control" 
+        formControlName="state" 
+        (change)="changeState()"
+        *ngIf="selectedPlan && getSelectedPlanStates().length !== 1"
+      >
+        <option value="">Selecciona un estado...</option>
+        <option *ngFor="let state of getAvailableStates()" [value]="state.value">
+          {{ state.label }} ({{ state.abbreviation }})
+        </option>
+      </select>
+      
+      <small class="text-muted d-block mt-2" *ngIf="!selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Primero selecciona un plan para ver los estados disponibles
+      </small>
+      <small class="text-muted d-block mt-2" *ngIf="selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Estados disponibles según el plan seleccionado
+      </small>
+    </div>
+    
+    <!-- Mostrar monto calculado -->
+    <div *ngIf="calculatedAmount > 0" class="alert alert-info">
+      <strong>Monto estimado:</strong> ${{ calculatedAmount }} USD
+    </div>
+  </form>
 </div>

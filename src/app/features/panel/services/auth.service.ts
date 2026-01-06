@@ -74,6 +74,28 @@ export class AuthService {
     });
   }
 
+  /**
+   * Envía email de verificación al usuario recién registrado
+   */
+  sendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/send-verification-email`, { email });
+  }
+
+  /**
+   * Verifica el email del usuario usando el token recibido por correo
+   */
+  verifyEmail(token: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/verify-email`, { token }).pipe(
+      tap(response => {
+        // Si la verificación incluye un token, hacer login automático
+        if (response.token) {
+          this.setToken(response.token);
+          this.loadUserFromToken(response.token);
+        }
+      })
+    );
+  }
+
   logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.currentUserSubject.next(null);

@@ -1,61 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { LanguageService } from '../../../shared/services/language.service';
-import { WizardStateService } from '../services/wizard-state.service';
-import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
-import { combineLatest } from 'rxjs';
-
-// Componentes reutilizables
-import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
-import { WizardStateSelectionStepComponent } from '../components/state-selection-step/state-selection-step.component';
-import { WizardPaymentStepComponent } from '../components/payment-step/payment-step.component';
-import { WizardFinalReviewStepComponent } from '../components/final-review-step/final-review-step.component';
-
-// Componente wrapper para información de renovación LLC
-import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-renovacion-llc-information-step/wizard-renovacion-llc-information-step.component';
+import { WizardStateService } from '../../../services/wizard-state.service';
+import { WizardRenovacionLlcFormComponent } from '../wizard-renovacion-llc-form/wizard-renovacion-llc-form.component';
+import { Subscription } from 'rxjs';
 
 /**
- * Componente principal para el flujo de renovación de LLC
+ * Componente wrapper para usar wizard-renovacion-llc-form en el wizard
+ * Este componente inicializa el formulario y maneja la integración con el wizard
  */
 @Component({
-  selector: 'app-llc-renovacion',
+  selector: 'app-wizard-renovacion-llc-information-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslocoPipe,
-    WizardBasicRegisterStepComponent,
-    WizardStateSelectionStepComponent,
-    WizardPaymentStepComponent,
-    WizardRenovacionLlcInformationStepComponent,
-    WizardFinalReviewStepComponent,
-  ],
-  templateUrl: './llc-renovacion.component.html',
-  styleUrls: ['./llc-renovacion.component.css']
+  imports: [CommonModule, ReactiveFormsModule, WizardRenovacionLlcFormComponent],
+  templateUrl: './wizard-renovacion-llc-information-step.component.html',
+  styleUrls: ['./wizard-renovacion-llc-information-step.component.css']
 })
-export class LLCRenovacionComponent implements OnInit {
-  flowConfig!: any;
-  currentStepIndex = 0;
-  stepTitles: { [key: number]: string } = {};
-  currentLang = 'es';
-  
-  stepIcons: { [key: number]: string } = {
-    1: 'bi-person-plus',
-    2: 'bi-geo-alt',
-    3: 'bi-credit-card',
-    4: 'bi-person-vcard',
-    5: 'bi-check-circle',
-  };
+export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDestroy {
+  @Input() stepNumber: number = 4;
+  @Input() previousStepNumber: number = 3;
+  @Output() sectionChanged = new EventEmitter<number>();
 
-  // Para controlar la visibilidad de botones en el paso 4 (Información LLC)
-  renovacionInfoCurrentSection = 1;
-
-  // Formulario de datos del servicio
   serviceDataForm!: FormGroup;
+  currentSection = 1;
+  fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
   
-  // Estados de USA
+  // Lista de estados de USA
   usStates = [
     { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
     { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
@@ -115,98 +85,76 @@ export class LLCRenovacionComponent implements OnInit {
     { value: 'multi', label: 'Multi Member LLC', description: 'LLC con múltiples miembros' }
   ];
 
-  // Estado de carga de archivos
-  fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+  totalSections = 5; // Total de secciones para Renovación LLC
+
+  private formSubscription?: Subscription;
 
   constructor(
-    private wizardConfigService: WizardConfigService,
     private wizardStateService: WizardStateService,
-    private transloco: TranslocoService,
-    private languageService: LanguageService,
-    public translocoService: TranslocoService,
-    private router: Router,
     private fb: FormBuilder
   ) {
-    // Inicializar el formulario de datos del servicio
+    // Inicializar formulario con estructura de renovacion-llc-form
     this.serviceDataForm = this.fb.group({});
     this.initializeRenovacionLlcForm(this.serviceDataForm);
   }
 
   ngOnInit(): void {
-    this.flowConfig = this.wizardConfigService.getFlowConfig(WizardFlowType.LLC_RENOVACION);
-    this.initializeStepTitles();
-    this.currentLang = this.languageService.currentLang;
-    this.translocoService.langChanges$.subscribe((l) => {
-      this.currentLang = l;
-      this.initializeStepTitles();
-    });
-  }
-
-  private initializeStepTitles(): void {
-    combineLatest([
-      this.transloco.selectTranslate('WIZARD.steps.register'),
-      this.transloco.selectTranslate('WIZARD.steps.state'),
-      this.transloco.selectTranslate('WIZARD.steps.payment'),
-      this.transloco.selectTranslate('WIZARD.steps.client'),
-      this.transloco.selectTranslate('WIZARD.steps.review'),
-    ]).subscribe(([register, state, payment, client, review]) => {
-      this.stepTitles = {
-        1: register,
-        2: state,
-        3: payment,
-        4: client,
-        5: review,
-      };
-    });
-  }
-
-  onStepChanged(index: number): void {
-    this.currentStepIndex = index;
-    // Si llegamos al último paso (revisión), ejecutar onFinish
-    if (index === this.flowConfig.totalSteps - 1) {
-      setTimeout(() => {
-        this.onFinish();
-      }, 100);
+    this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
+    
+    // Cargar datos guardados
+    const savedData = this.wizardStateService.getStepData(this.stepNumber);
+    if (savedData && Object.keys(savedData).length > 0) {
+      this.serviceDataForm.patchValue(savedData);
     }
+
+    // Obtener el estado seleccionado del paso anterior (estado y plan)
+    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
+    if (statePlanData && statePlanData.state) {
+      const stateValue = statePlanData.state;
+      this.serviceDataForm.get('state')?.setValue(stateValue);
+    }
+    
+    if (savedData && savedData.state) {
+      this.serviceDataForm.get('state')?.setValue(savedData.state);
+    }
+
+    // Guardar datos cuando el formulario cambia
+    this.formSubscription = this.serviceDataForm.valueChanges.subscribe(() => {
+      this.saveStepData();
+    });
+
+    // Emitir la sección inicial
+    this.sectionChanged.emit(this.currentSection);
   }
 
-  onFinish(): void {
-    const allData = this.wizardStateService.getAllData();
-    console.log('✅ Datos finales del wizard LLC Renovación:', allData);
-    this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
+  ngOnDestroy(): void {
+    this.wizardStateService.unregisterForm(this.stepNumber);
+    this.formSubscription?.unsubscribe();
+    this.saveStepData();
   }
 
-  onCancel(): void {
-    this.wizardStateService.clear();
-    this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
+  /**
+   * Guarda los datos del paso
+   */
+  private saveStepData(): void {
+    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
   }
 
   /**
    * Inicializa el formulario de renovación LLC
    */
   private initializeRenovacionLlcForm(group: FormGroup): void {
-    // Información básica de la LLC
     group.addControl('llcName', this.fb.control(''));
     group.addControl('state', this.fb.control(''));
     group.addControl('llcType', this.fb.control(''));
     group.addControl('mainActivity', this.fb.control(''));
-    
-    // Preguntas sobre la empresa
     group.addControl('hasPropertyInUSA', this.fb.control(''));
     group.addControl('almacenaProductosDepositoUSA', this.fb.control(''));
     group.addControl('contrataServiciosUSA', this.fb.control(''));
     group.addControl('tieneCuentasBancarias', this.fb.control(''));
-    
-    // EIN y otros datos
     group.addControl('einNumber', this.fb.control(''));
     group.addControl('countriesWhereLLCDoesBusiness', this.fb.control([]));
     group.addControl('llcCreationDate', this.fb.control(''));
-    
-    // Tipo de declaración (checkboxes)
     group.addControl('declaracionInicial', this.fb.control(false));
     group.addControl('declaracionAnoCorriente', this.fb.control(false));
     group.addControl('cambioDireccionRA', this.fb.control(false));
@@ -214,28 +162,17 @@ export class LLCRenovacionComponent implements OnInit {
     group.addControl('declaracionAnosAnteriores', this.fb.control(false));
     group.addControl('agregarCambiarSocio', this.fb.control(false));
     group.addControl('declaracionCierre', this.fb.control(false));
-    
-    // Paso 2: Información de Propietarios (single o multimember)
-    const ownersArray = this.fb.array([]);
-    group.addControl('owners', ownersArray);
-    
-    // Paso 3: Información Contable de la LLC
+    group.addControl('owners', this.fb.array([]));
     group.addControl('llcOpeningCost', this.fb.control(''));
     group.addControl('paidToFamilyMembers', this.fb.control(''));
     group.addControl('paidToLocalCompanies', this.fb.control(''));
     group.addControl('paidForLLCFormation', this.fb.control(''));
     group.addControl('paidForLLCDissolution', this.fb.control(''));
     group.addControl('bankAccountBalanceEndOfYear', this.fb.control(''));
-    
-    // Paso 4: Movimientos Financieros de la LLC en 2025
     group.addControl('totalRevenue2025', this.fb.control(''));
-    
-    // Paso 5: Información Adicional de la LLC
     group.addControl('hasFinancialInvestmentsInUSA', this.fb.control(''));
     group.addControl('hasFiledTaxesBefore', this.fb.control(''));
     group.addControl('wasConstitutedWithStartCompanies', this.fb.control(''));
-    
-    // Documentos adicionales
     group.addControl('partnersPassportsFileUrl', this.fb.control(''));
     group.addControl('operatingAgreementAdditionalFileUrl', this.fb.control(''));
     group.addControl('form147Or575FileUrl', this.fb.control(''));
@@ -248,18 +185,35 @@ export class LLCRenovacionComponent implements OnInit {
    * Maneja la selección de archivos
    */
   onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): void {
-    console.log('File selected:', event);
+    const input = event.event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    this.fileUploadStates[event.fileKey] = {
+      file: file,
+      uploading: false,
+      progress: 0
+    };
+
+    const control = this.serviceDataForm.get(event.formControlPath);
+    if (control) {
+      control.setValue(file.name);
+    }
   }
 
   /**
-   * Maneja la limpieza de archivos
+   * Limpia un archivo
    */
   onFileCleared(event: { fileKey: string; formControlPath: string; inputId: string }): void {
-    console.log('File cleared:', event);
+    delete this.fileUploadStates[event.fileKey];
+    const control = this.serviceDataForm.get(event.formControlPath);
+    if (control) {
+      control.setValue('');
+    }
   }
 
   /**
-   * Maneja la adición de propietarios
+   * Agrega un propietario
    */
   onAddOwnerRequested(): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
@@ -298,12 +252,32 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   /**
-   * Maneja la eliminación de propietarios
+   * Elimina un propietario
    */
   onRemoveOwnerRequested(index: number): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
     if (ownersArray && ownersArray.length > index) {
       ownersArray.removeAt(index);
+    }
+  }
+
+  /**
+   * Navega a la sección anterior
+   */
+  goToPreviousSection(): void {
+    if (this.currentSection > 1) {
+      this.currentSection--;
+      this.sectionChanged.emit(this.currentSection);
+    }
+  }
+
+  /**
+   * Navega a la siguiente sección
+   */
+  goToNextSection(): void {
+    if (this.currentSection < this.totalSections) {
+      this.currentSection++;
+      this.sectionChanged.emit(this.currentSection);
     }
   }
 }

@@ -909,7 +909,19 @@
       "payment": "Pago",
       "client": "Datos del cliente",
       "review": "Revisión final",
-      "zoho": "Envío a Zoho CRM"
+      "zoho": "Envío a Zoho CRM",
+      "state_plan": "Estado y Plan",
+      "llc_info": "Información de la LLC"
+    },
+    "basic_register": {
+      "full_name": "Nombre completo",
+      "full_name_required": "El nombre completo es obligatorio.",
+      "phone": "Teléfono",
+      "phone_required": "El teléfono es obligatorio.",
+      "email": "Correo electrónico",
+      "email_required": "El correo electrónico es obligatorio.",
+      "password": "Contraseña",
+      "password_required": "La contraseña es obligatoria."
     },
     "password": "Contraseña",
     "state": "Estado",
@@ -1129,6 +1141,49 @@
         "step6": "Propietarios",
         "step7": "Firma"
       }
+    },
+    "llc_info_step": {
+      "llc_name_one": "Nombre de la LLC - Opción 1",
+      "llc_name_one_required": "El nombre de la LLC (opción 1) es obligatorio.",
+      "llc_name_two": "Nombre de la LLC - Opción 2",
+      "llc_name_two_required": "El nombre de la LLC (opción 2) es obligatorio.",
+      "llc_name_three": "Nombre de la LLC - Opción 3",
+      "llc_name_three_required": "El nombre de la LLC (opción 3) es obligatorio.",
+      "llc_sufix": "Recuerde que 'LLC' debe ir al final del nombre.",
+      "llc_main_activity": "Actividad Principal de la LLC",
+      "llc_main_activity_required": "La actividad principal es obligatoria.",
+      "llc_corporate_structure": "Estructura Societaria",
+      "llc_corporate_structure_placeholder": "Selecciona...",
+      "options_corporate_structure": {
+        "single_member": "LLC de un solo miembro (Single Member LLC)",
+        "multi_member": "LLC con múltiples miembros (Multi Member LLC)"
+      },
+      "add_propietaries": "Agregar Propietarios",
+      "add_owner": "Agregar propietario",
+      "return_to_info": "Volver a información"
+    },
+    "state_plan_step": {
+      "plan": "Plan",
+      "plan_label": "Selecciona un plan",
+      "plan_required": "El plan es obligatorio.",
+      "state": "Estado",
+      "state_label": "Selecciona un estado",
+      "state_required": "El estado es obligatorio.",
+      "state_new_mexico": "Nuevo México",
+      "state_texas": "Texas",
+      "other_option": "Otra opción",
+      "planes_options": {
+        "entrepreneur": "Pack Emprendedor",
+        "elite": "Pack Elite",
+        "premium": "Pack Premium"
+      },
+      "options": {
+        "new_mexico": "Nuevo México",
+        "texas": "Texas"
+      }
+    },
+    "checkout": {
+      "pay_button": "Pagar ${{amount}}"
     }
   }
 }

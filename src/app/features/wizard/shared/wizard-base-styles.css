@@ -1,5 +1,4 @@
-/* Importar estilos base compartidos */
-@import '../shared/wizard-base-styles.css';
+/* Estilos base compartidos para todos los wizards */
 
 /* Wrapper principal con fondo moderno */
 .wizard-wrapper {
@@ -125,7 +124,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* Steps Indicator (igual que new-request) */
+/* Steps Indicator */
 .steps-indicator {
   display: flex;
   justify-content: space-between;

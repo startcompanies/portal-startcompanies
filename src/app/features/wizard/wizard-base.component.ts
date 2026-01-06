@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { LanguageService } from '../../shared/services/language.service';
 import { WizardStateService } from '../wizard/services/wizard-state.service';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Subject, Subscription } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 /**
@@ -110,6 +110,9 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   }
 
   ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -168,14 +171,27 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
     }
   }
 
+  /**
+   * Navega al siguiente paso del wizard
+   * 
+   * NOTA: La validación de formularios ha sido deshabilitada.
+   * Los usuarios pueden navegar libremente entre pasos sin completar los campos.
+   * 
+   * IMPORTANTE:
+   * - Esta función ya no valida si el formulario es válido
+   * - Los usuarios pueden avanzar incluso con formularios incompletos
+   * - Si el usuario hace clic directamente en un paso del indicador (mat-stepper),
+   *   puede navegar libremente porque [linear]="false"
+   */
   goToNextStep(): void {
     const stepNumber = this.internalStepIndex + 1;
     const form = this.wizardStateService.getForm(stepNumber);
 
-    if (form && form.invalid) {
-      form.markAllAsTouched();
-      return; // ⛔ no avanza
-    }
+    // Validación deshabilitada - se puede navegar sin completar campos
+    // if (form && form.invalid) {
+    //   form.markAllAsTouched();
+    //   return; // ⛔ no avanza - formulario inválido
+    // }
 
     if (this.internalStepIndex < this.totalSteps - 1 && this.stepper) {
       this.stepper.next();

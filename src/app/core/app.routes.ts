@@ -752,6 +752,10 @@ export const routes: Routes = [
       },
       // Wizard routes - English
       {
+        path: 'wizard/verify-email',
+        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.EmailVerificationComponent),
+      },
+      {
         path: 'wizard/llc-opening',
         loadComponent: () => import('../features/wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),
       },

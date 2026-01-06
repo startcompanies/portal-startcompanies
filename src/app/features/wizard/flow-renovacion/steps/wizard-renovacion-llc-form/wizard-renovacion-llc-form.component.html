@@ -1,0 +1,585 @@
+<div [formGroup]="serviceDataForm">
+  <!-- Sección 1: Información General de la LLC -->
+  <div *ngIf="currentSection === 1" class="form-section">
+    <h4 class="section-title"><strong>INFORMACIÓN DE LA LLC</strong></h4>
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label for="renovacionLlcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
+        <input type="text" id="renovacionLlcName" class="form-control" formControlName="llcName" placeholder="Debe coincidir exactamente como aparece en el Articles of Organization">
+        <small class="form-text text-muted">Debe coincidir exactamente como aparece en el Articles of Organization.</small>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="renovacionState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
+        <select id="renovacionState" class="form-select" formControlName="state">
+          <option value="">Selecciona un estado...</option>
+          <option *ngFor="let state of usStates" [value]="state.value">
+            {{ state.label }} ({{ state.abbreviation }})
+          </option>
+        </select>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="llcTypeRenovacion" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
+        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType">
+          <option value="">Selecciona...</option>
+          <option *ngFor="let type of llcTypes" [value]="type.value">{{ type.label }}</option>
+        </select>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="mainActivity" class="form-label">Actividad Principal de la LLC</label>
+        <textarea id="mainActivity" class="form-control" formControlName="mainActivity" rows="3" placeholder="Actividad principal que realizará su empresa."></textarea>
+        <small class="form-text text-muted">Actividad principal que realizará su empresa.</small>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasPropertyInUSA" id="hasPropertyInUSAYes" [value]="'si'" formControlName="hasPropertyInUSA">
+          <label class="form-check-label" for="hasPropertyInUSAYes">Si</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasPropertyInUSA" id="hasPropertyInUSANo" [value]="'no'" formControlName="hasPropertyInUSA">
+          <label class="form-check-label" for="hasPropertyInUSANo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="almacenaProductosDepositoUSA" id="almacenaProductosDepositoUSAYes" [value]="'si'" formControlName="almacenaProductosDepositoUSA">
+          <label class="form-check-label" for="almacenaProductosDepositoUSAYes">Si</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="almacenaProductosDepositoUSA" id="almacenaProductosDepositoUSANo" [value]="'no'" formControlName="almacenaProductosDepositoUSA">
+          <label class="form-check-label" for="almacenaProductosDepositoUSANo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente (excluyendo freelancers)?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="contrataServiciosUSA" id="contrataServiciosUSAYes" [value]="'si'" formControlName="contrataServiciosUSA">
+          <label class="form-check-label" for="contrataServiciosUSAYes">Si</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="contrataServiciosUSA" id="contrataServiciosUSANo" [value]="'no'" formControlName="contrataServiciosUSA">
+          <label class="form-check-label" for="contrataServiciosUSANo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿Tu LLC tiene cuentas bancarias a su nombre?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="tieneCuentasBancarias" id="tieneCuentasBancariasYes" [value]="'si'" formControlName="tieneCuentasBancarias">
+          <label class="form-check-label" for="tieneCuentasBancariasYes">Si</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="tieneCuentasBancarias" id="tieneCuentasBancariasNo" [value]="'no'" formControlName="tieneCuentasBancarias">
+          <label class="form-check-label" for="tieneCuentasBancariasNo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="einNumberRenovacion" class="form-label">Número de EIN</label>
+        <input type="text" id="einNumberRenovacion" class="form-control" formControlName="einNumber" placeholder="XX-XXXXXXX (ej. 12-3456789)" pattern="[0-9]{2}-[0-9]{7}">
+        <small class="form-text text-muted">El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Ingresa tu EIN en el formato XX-XXXXXXX (ej. 12-3456789).</small>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="llcCreationDate" class="form-label">Fecha de creación de la LLC</label>
+        <input type="date" id="llcCreationDate" class="form-control" formControlName="llcCreationDate">
+        <small class="form-text text-muted">Extraer la fecha desde la carta del EIN (CP 575 o Letter 147C) para asegurarse de que coincide con el registro oficial.</small>
+      </div>
+      
+      <div class="col-md-6">
+        <label for="countriesWhereLLCDoesBusiness" class="form-label">Países donde la LLC realiza negocios</label>
+        <select id="countriesWhereLLCDoesBusiness" class="form-select" formControlName="countriesWhereLLCDoesBusiness" multiple size="5">
+          <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+        </select>
+        <small class="form-text text-muted">Selecciona uno o más países donde tu LLC realiza negocios. Mantén presionada la tecla Ctrl (Cmd en Mac) para seleccionar múltiples opciones.</small>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">Selecciona el tipo de declaración (puedes elegir varias opciones)</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="declaracionInicial" formControlName="declaracionInicial">
+          <label class="form-check-label" for="declaracionInicial">Declaración Inicial</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="declaracionAnoCorriente" formControlName="declaracionAnoCorriente">
+          <label class="form-check-label" for="declaracionAnoCorriente">Declaración del año corriente (2025)</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="cambioDireccionRA" formControlName="cambioDireccionRA">
+          <label class="form-check-label" for="cambioDireccionRA">Cambio de dirección y de Registered Agent (RA)</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="cambioNombre" formControlName="cambioNombre">
+          <label class="form-check-label" for="cambioNombre">Cambio de nombre</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="declaracionAnosAnteriores" formControlName="declaracionAnosAnteriores">
+          <label class="form-check-label" for="declaracionAnosAnteriores">Declaración de años anteriores</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="agregarCambiarSocio" formControlName="agregarCambiarSocio">
+          <label class="form-check-label" for="agregarCambiarSocio">Agregar o cambiar socio</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="declaracionCierre" formControlName="declaracionCierre">
+          <label class="form-check-label" for="declaracionCierre">Declaracion de Cierre de tu LLC</label>
+        </div>
+        <small class="form-text text-muted">Selecciona una o más opciones según el tipo de declaración que estás presentando. Si no estás seguro, consulta con nuestro equipo.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 2: Información de Propietarios (single o multimember) -->
+  <div *ngIf="currentSection === 2" class="form-section">
+    <h4 class="section-title"><strong>INFORMACIÓN DEL PROPIETARIO</strong></h4>
+    
+    <div formArrayName="owners">
+      <div *ngIf="ownersFormArray && ownersFormArray.length === 0" class="alert alert-info">
+        <p class="mb-0">No hay propietarios agregados. Por favor, agregue al menos un propietario.</p>
+        <button type="button" class="btn btn-primary mt-2" (click)="addOwner()">
+          <i class="bi bi-plus-circle me-2"></i>Agregar Propietario
+        </button>
+      </div>
+      <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index" [formGroupName]="i" class="owner-card mb-4 p-3 border rounded">
+        <div class="d-flex justify-content-between align-items-center mb-3" *ngIf="serviceDataForm.get('llcType')?.value === 'multi'">
+          <h5 class="mb-0">Propietario {{ i + 1 }}</h5>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeOwner(i)" *ngIf="ownersFormArray && ownersFormArray.length > 1">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+        
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label [for]="'ownerName' + i" class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerName' + i" class="form-control" formControlName="name" placeholder="Enter a value for this field.">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerLastName' + i" class="form-label">Apellido <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName" placeholder="Enter a value for this field.">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
+            <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerEmail' + i" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+            <input type="email" [id]="'ownerEmail' + i" class="form-control" formControlName="email" placeholder="Enter a value for this field.">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerPhone' + i" class="form-label">Teléfono de contacto <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">+52</span>
+              <input type="tel" [id]="'ownerPhone' + i" class="form-control" formControlName="phone" placeholder="Enter a value for this field.">
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label [for]="'ownerFullAddress' + i" class="form-label">Dirección Completa <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerFullAddress' + i" class="form-control mb-2" formControlName="fullAddress" placeholder="Ejemplo: Av. Libertador 1234">
+            <small class="form-text text-muted">Calle y número exterior/altura</small>
+          </div>
+          <div class="col-md-12">
+            <label [for]="'ownerUnit' + i" class="form-label">Número interior/departamento <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerUnit' + i" class="form-control" formControlName="unit" placeholder="Ejemplo: Piso 2, Oficina 105">
+          </div>
+          <div class="col-md-4">
+            <label [for]="'ownerCity' + i" class="form-label">Ciudad <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerCity' + i" class="form-control" formControlName="city" placeholder="Ejemplo: Madrid">
+          </div>
+          <div class="col-md-4">
+            <label [for]="'ownerStateRegion' + i" class="form-label">Estado/Región/Provincia <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerStateRegion' + i" class="form-control" formControlName="stateRegion" placeholder="Ejemplo: Florida, CDMX, Buenos Aires">
+          </div>
+          <div class="col-md-4">
+            <label [for]="'ownerPostalCode' + i" class="form-label">Código postal <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerPostalCode' + i" class="form-control" formControlName="postalCode" placeholder="Ejemplo: 10001">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerCountry' + i" class="form-label">País de Residencia</label>
+            <select [id]="'ownerCountry' + i" class="form-select" formControlName="country">
+              <option value="">Selecciona un país...</option>
+              <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+            <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
+              <option value="">Selecciona...</option>
+              <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerPassport' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país).">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerSSN' + i" class="form-label">Número de SSN/ITIN (si tiene, de lo contrario, dejar en blanco)</label>
+            <input type="text" [id]="'ownerSSN' + i" class="form-control" formControlName="ssnItin">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerCUIT' + i" class="form-label">ID Fiscal Nacional (CUIT)</label>
+            <input type="text" [id]="'ownerCUIT' + i" class="form-control" formControlName="cuit">
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerCapitalContributions' + i" class="form-label">Aportes de Capital a la LLC 2025 (USD) <small class="text-muted">– Fondos personales transferidos como contribución de capital. No incluye préstamos.</small></label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerCapitalContributions' + i" class="form-control" formControlName="capitalContributions2025" step="0.01" min="0">
+              <span class="input-group-text">USD</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerLoansToLLC' + i" class="form-label">Préstamos a la LLC 2025 (USD) <small class="text-muted">– Monto prestado desde cuentas personales u otras entidades. No incluye aportes de capital.</small></label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerLoansToLLC' + i" class="form-control" formControlName="loansToLLC2025" step="0.01" min="0">
+              <span class="input-group-text">USD</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerLoansRepaid' + i" class="form-label">Préstamos Reembolsados 2025 (USD) <small class="text-muted">– Préstamos otorgados por el propietario y devueltos por la LLC. No incluye retiros de capital.</small></label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerLoansRepaid' + i" class="form-control" formControlName="loansRepaid2025" step="0.01" min="0">
+              <span class="input-group-text">USD</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerCapitalWithdrawals' + i" class="form-label">Retiros de Capital 2025 (USD) <small class="text-muted">– Transferencias del propietario desde cuentas de la LLC a su cuenta personal.</small></label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerCapitalWithdrawals' + i" class="form-control" formControlName="capitalWithdrawals2025" step="0.01" min="0">
+              <span class="input-group-text">USD</span>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">¿Posee inversiones o activos en EE.UU.? <small class="text-muted">– Incluye cualquier inversión o activo financiero relacionado con la LLC o el propietario.</small></label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSAYes' + i" [value]="'si'" formControlName="hasInvestmentsInUSA">
+              <label class="form-check-label" [for]="'hasInvestmentsUSAYes' + i">Sí</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSANo' + i" [value]="'no'" formControlName="hasInvestmentsInUSA">
+              <label class="form-check-label" [for]="'hasInvestmentsUSANo' + i">No</label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">El propietario es ciudadano de EE.UU.? <small class="text-muted">– Esto impacta el tratamiento fiscal de la LLC.</small></label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenYes' + i" [value]="'si'" formControlName="isUSCitizen">
+              <label class="form-check-label" [for]="'isUSCitizenYes' + i">Sí</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenNo' + i" [value]="'no'" formControlName="isUSCitizen">
+              <label class="form-check-label" [for]="'isUSCitizenNo' + i">No</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerTaxCountry' + i" class="form-label">País bajo cuyas leyes el propietario presenta impuestos</label>
+            <select [id]="'ownerTaxCountry' + i" class="form-select" formControlName="taxCountry">
+              <option value="">Selecciona un país...</option>
+              <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </select>
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">¿El propietario estuvo en EE.UU. más de 31 días en 2025? <small class="text-muted">– Esto afecta sus obligaciones fiscales.</small></label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysYes' + i" [value]="'si'" formControlName="wasInUSA31Days2025">
+              <label class="form-check-label" [for]="'wasInUSA31DaysYes' + i">Sí</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysNo' + i" [value]="'no'" formControlName="wasInUSA31Days2025">
+              <label class="form-check-label" [for]="'wasInUSA31DaysNo' + i">No</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación <span class="text-danger">*</span> %</label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100" step="0.01">
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button type="button" class="btn btn-outline-primary" (click)="addOwner()" *ngIf="serviceDataForm.get('llcType')?.value === 'multi' && ownersFormArray && ownersFormArray.length > 0">
+        <i class="bi bi-plus-circle me-2"></i>Agregar Propietario
+      </button>
+    </div>
+  </div>
+
+  <!-- Sección 3: Información Contable de la LLC -->
+  <div *ngIf="currentSection === 3" class="form-section">
+    <h4 class="section-title"><strong>INFORMACIÓN CONTABLE DE LA LLC</strong></h4>
+    
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label for="llcOpeningCost" class="form-label">¿Cuánto costó abrir la LLC en Estados Unidos?</label>
+        <div class="input-group">
+          <input type="number" id="llcOpeningCost" class="form-control" formControlName="llcOpeningCost" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="paidToFamilyMembers" class="form-label">¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?</label>
+        <div class="input-group">
+          <input type="number" id="paidToFamilyMembers" class="form-control" formControlName="paidToFamilyMembers" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="paidToLocalCompanies" class="form-label">¿Cuánto pagó la LLC a empresas locales (En otro Pais) del dueño por bienes o servicios?</label>
+        <div class="input-group">
+          <input type="number" id="paidToLocalCompanies" class="form-control" formControlName="paidToLocalCompanies" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="paidForLLCFormation" class="form-label">¿Cuánto se pagó por la formación de la LLC (Incorporation/State fees)?</label>
+        <div class="input-group">
+          <input type="number" id="paidForLLCFormation" class="form-control" formControlName="paidForLLCFormation" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="paidForLLCDissolution" class="form-label">¿Cuánto se pagó por la disolución de la LLC (si aplica)?</label>
+        <div class="input-group">
+          <input type="number" id="paidForLLCDissolution" class="form-control" formControlName="paidForLLCDissolution" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label for="bankAccountBalanceEndOfYear" class="form-label">Saldo Al fin de año de las cuentas bancarias de la LLC</label>
+        <div class="input-group">
+          <input type="number" id="bankAccountBalanceEndOfYear" class="form-control" formControlName="bankAccountBalanceEndOfYear" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 4: Movimientos Financieros de la LLC en 2025 -->
+  <div *ngIf="currentSection === 4" class="form-section">
+    <h4 class="section-title"><strong>MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025</strong></h4>
+    
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en 2025</label>
+        <div class="input-group">
+          <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0">
+          <span class="input-group-text">USD</span>
+        </div>
+        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de 2025, considerando todas las cuentas bancarias asociadas.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección 5: Información Adicional de la LLC -->
+  <div *ngIf="currentSection === 5" class="form-section">
+    <h4 class="section-title"><strong>INFORMACIÓN ADICIONAL DE LA LLC</strong></h4>
+    
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label class="form-label">¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasFinancialInvestmentsInUSA" id="hasFinancialInvestmentsInUSAYes" [value]="'si'" formControlName="hasFinancialInvestmentsInUSA">
+          <label class="form-check-label" for="hasFinancialInvestmentsInUSAYes">Sí</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasFinancialInvestmentsInUSA" id="hasFinancialInvestmentsInUSANo" [value]="'no'" formControlName="hasFinancialInvestmentsInUSA">
+          <label class="form-check-label" for="hasFinancialInvestmentsInUSANo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿La LLC declaró impuestos anteriormente?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasFiledTaxesBefore" id="hasFiledTaxesBeforeYes" [value]="'si'" formControlName="hasFiledTaxesBefore">
+          <label class="form-check-label" for="hasFiledTaxesBeforeYes">Sí</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="hasFiledTaxesBefore" id="hasFiledTaxesBeforeNo" [value]="'no'" formControlName="hasFiledTaxesBefore">
+          <label class="form-check-label" for="hasFiledTaxesBeforeNo">No</label>
+        </div>
+      </div>
+      
+      <div class="col-md-12">
+        <label class="form-label">¿La LLC se constituyó con Start Companies?</label>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="wasConstitutedWithStartCompanies" id="wasConstitutedWithStartCompaniesYes" [value]="'si'" formControlName="wasConstitutedWithStartCompanies">
+          <label class="form-check-label" for="wasConstitutedWithStartCompaniesYes">Sí</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="wasConstitutedWithStartCompanies" id="wasConstitutedWithStartCompaniesNo" [value]="'no'" formControlName="wasConstitutedWithStartCompanies">
+          <label class="form-check-label" for="wasConstitutedWithStartCompaniesNo">No</label>
+        </div>
+        <div *ngIf="serviceDataForm.get('wasConstitutedWithStartCompanies')?.value === 'no'" class="alert alert-warning mt-2">
+          <small>Si respondió 'No', por favor suba los siguientes documentos: Pasaportes de los socios, Operating Agreement, Formulario 147 donde figura el EIN Letter, Artículos de Organización, y el Reporte BOI.</small>
+        </div>
+      </div>
+      
+      <!-- Documentos adicionales (solo si se responde "No" a Start Companies) -->
+      <div *ngIf="serviceDataForm.get('wasConstitutedWithStartCompanies')?.value === 'no'" class="col-md-12 mt-4">
+        <h5 class="mb-3">Documentos Adicionales</h5>
+        
+        <!-- Pasaportes de los socios -->
+        <div class="mb-3">
+          <label for="partnersPassportsFile" class="form-label"><strong>Pasaportes de los socios</strong></label>
+          <input type="file" id="partnersPassportsFile" class="form-control" (change)="onFileSelected($event, 'partnersPassportsFileUrl', 'partnersPassports')" accept=".pdf" [disabled]="getFileUploadState('partnersPassports').uploading" />
+          <small class="form-text text-muted">Por favor, cargue un archivo PDF con los pasaportes de los socios.</small>
+          <div *ngIf="getFileUploadState('partnersPassports').file && !getFileUploadState('partnersPassports').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('partnersPassports').file?.name }} ({{ ((getFileUploadState('partnersPassports').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('partnersPassports', 'partnersPassportsFileUrl', 'partnersPassportsFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('partnersPassports').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('partnersPassports').progress" [attr.aria-valuenow]="getFileUploadState('partnersPassports').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('partnersPassports').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+          <div *ngIf="serviceDataForm.get('partnersPassportsFileUrl')?.value && !getFileUploadState('partnersPassports').file && !getFileUploadState('partnersPassports').uploading" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+              <a [href]="serviceDataForm.get('partnersPassportsFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('partnersPassports', 'partnersPassportsFileUrl', 'partnersPassportsFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+            </div>
+          </div>
+          <input type="hidden" formControlName="partnersPassportsFileUrl">
+        </div>
+        
+        <!-- Operating Agreement -->
+        <div class="mb-3">
+          <label for="operatingAgreementAdditionalFile" class="form-label"><strong>Operating Agreement</strong></label>
+          <input type="file" id="operatingAgreementAdditionalFile" class="form-control" (change)="onFileSelected($event, 'operatingAgreementAdditionalFileUrl', 'operatingAgreementAdditional')" accept=".pdf" [disabled]="getFileUploadState('operatingAgreementAdditional').uploading" />
+          <small class="form-text text-muted">Por favor, cargue un archivo PDF con el Operating Agreement.</small>
+          <div *ngIf="getFileUploadState('operatingAgreementAdditional').file && !getFileUploadState('operatingAgreementAdditional').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('operatingAgreementAdditional').file?.name }} ({{ ((getFileUploadState('operatingAgreementAdditional').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('operatingAgreementAdditional', 'operatingAgreementAdditionalFileUrl', 'operatingAgreementAdditionalFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('operatingAgreementAdditional').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('operatingAgreementAdditional').progress" [attr.aria-valuenow]="getFileUploadState('operatingAgreementAdditional').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('operatingAgreementAdditional').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+          <div *ngIf="serviceDataForm.get('operatingAgreementAdditionalFileUrl')?.value && !getFileUploadState('operatingAgreementAdditional').file && !getFileUploadState('operatingAgreementAdditional').uploading" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+              <a [href]="serviceDataForm.get('operatingAgreementAdditionalFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('operatingAgreementAdditional', 'operatingAgreementAdditionalFileUrl', 'operatingAgreementAdditionalFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+            </div>
+          </div>
+          <input type="hidden" formControlName="operatingAgreementAdditionalFileUrl">
+        </div>
+        
+        <!-- Formulario 147 o 575 (requerido) -->
+        <div class="mb-3">
+          <label for="form147Or575File" class="form-label"><strong>Formulario 147 o 575 <span class="text-danger">*</span></strong></label>
+          <input type="file" id="form147Or575File" class="form-control" (change)="onFileSelected($event, 'form147Or575FileUrl', 'form147Or575')" accept=".pdf" [disabled]="getFileUploadState('form147Or575').uploading" />
+          <small class="form-text text-muted">Por favor, cargue un archivo PDF con el Formulario 147 donde figura el EIN Letter.</small>
+          <div *ngIf="getFileUploadState('form147Or575').file && !getFileUploadState('form147Or575').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('form147Or575').file?.name }} ({{ ((getFileUploadState('form147Or575').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('form147Or575', 'form147Or575FileUrl', 'form147Or575File')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('form147Or575').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('form147Or575').progress" [attr.aria-valuenow]="getFileUploadState('form147Or575').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('form147Or575').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+          <div *ngIf="serviceDataForm.get('form147Or575FileUrl')?.value && !getFileUploadState('form147Or575').file && !getFileUploadState('form147Or575').uploading" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+              <a [href]="serviceDataForm.get('form147Or575FileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('form147Or575', 'form147Or575FileUrl', 'form147Or575File')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+            </div>
+          </div>
+          <input type="hidden" formControlName="form147Or575FileUrl">
+        </div>
+        
+        <!-- Artículos de Organización / Certificados de Organización (requerido) -->
+        <div class="mb-3">
+          <label for="articlesOfOrganizationAdditionalFile" class="form-label"><strong>Artículos de Organización / Certificados de Organización <span class="text-danger">*</span></strong></label>
+          <input type="file" id="articlesOfOrganizationAdditionalFile" class="form-control" (change)="onFileSelected($event, 'articlesOfOrganizationAdditionalFileUrl', 'articlesOfOrganizationAdditional')" accept=".pdf" [disabled]="getFileUploadState('articlesOfOrganizationAdditional').uploading" />
+          <small class="form-text text-muted">Por favor, cargue un archivo PDF con los Artículos de Organización.</small>
+          <div *ngIf="getFileUploadState('articlesOfOrganizationAdditional').file && !getFileUploadState('articlesOfOrganizationAdditional').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('articlesOfOrganizationAdditional').file?.name }} ({{ ((getFileUploadState('articlesOfOrganizationAdditional').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('articlesOfOrganizationAdditional', 'articlesOfOrganizationAdditionalFileUrl', 'articlesOfOrganizationAdditionalFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('articlesOfOrganizationAdditional').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('articlesOfOrganizationAdditional').progress" [attr.aria-valuenow]="getFileUploadState('articlesOfOrganizationAdditional').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('articlesOfOrganizationAdditional').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+          <div *ngIf="serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.value && !getFileUploadState('articlesOfOrganizationAdditional').file && !getFileUploadState('articlesOfOrganizationAdditional').uploading" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+              <a [href]="serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('articlesOfOrganizationAdditional', 'articlesOfOrganizationAdditionalFileUrl', 'articlesOfOrganizationAdditionalFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+            </div>
+          </div>
+          <input type="hidden" formControlName="articlesOfOrganizationAdditionalFileUrl">
+        </div>
+        
+        <!-- Reporte BOI -->
+        <div class="mb-3">
+          <label for="boiReportFile" class="form-label"><strong>Reporte BOI</strong></label>
+          <input type="file" id="boiReportFile" class="form-control" (change)="onFileSelected($event, 'boiReportFileUrl', 'boiReport')" accept=".pdf" [disabled]="getFileUploadState('boiReport').uploading" />
+          <small class="form-text text-muted">Por favor, cargue un archivo PDF con el Reporte BOI.</small>
+          <div *ngIf="getFileUploadState('boiReport').file && !getFileUploadState('boiReport').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('boiReport').file?.name }} ({{ ((getFileUploadState('boiReport').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('boiReport', 'boiReportFileUrl', 'boiReportFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('boiReport').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('boiReport').progress" [attr.aria-valuenow]="getFileUploadState('boiReport').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('boiReport').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+          <div *ngIf="serviceDataForm.get('boiReportFileUrl')?.value && !getFileUploadState('boiReport').file && !getFileUploadState('boiReport').uploading" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+              <a [href]="serviceDataForm.get('boiReportFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('boiReport', 'boiReportFileUrl', 'boiReportFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+            </div>
+          </div>
+          <input type="hidden" formControlName="boiReportFileUrl">
+        </div>
+      </div>
+      
+      <!-- Información bancaria (siempre visible) -->
+      <div class="col-md-12">
+        <label for="bankStatementsFile" class="form-label"><strong>Información bancaria</strong></label>
+        <input type="file" id="bankStatementsFile" class="form-control" (change)="onFileSelected($event, 'bankStatementsFileUrl', 'bankStatements')" accept=".pdf" [disabled]="getFileUploadState('bankStatements').uploading" />
+        <small class="form-text text-muted">Por favor, cargue un archivo PDF con los estados de cuenta de diciembre de 2025 para todos los bancos asociados con la LLC.</small>
+        <div *ngIf="getFileUploadState('bankStatements').file && !getFileUploadState('bankStatements').uploading" class="selected-file-info mt-2">
+          <div class="alert alert-info d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('bankStatements').file?.name }} ({{ ((getFileUploadState('bankStatements').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('bankStatements', 'bankStatementsFileUrl', 'bankStatementsFile')"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+        <div *ngIf="getFileUploadState('bankStatements').uploading" class="upload-progress mt-2">
+          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('bankStatements').progress" [attr.aria-valuenow]="getFileUploadState('bankStatements').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('bankStatements').progress }}%</div></div>
+          <small class="text-muted">Subiendo archivo...</small>
+        </div>
+        <div *ngIf="serviceDataForm.get('bankStatementsFileUrl')?.value && !getFileUploadState('bankStatements').file && !getFileUploadState('bankStatements').uploading" class="uploaded-file-info mt-2">
+          <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+            <a [href]="serviceDataForm.get('bankStatementsFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('bankStatements', 'bankStatementsFileUrl', 'bankStatementsFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+          </div>
+        </div>
+        <input type="hidden" formControlName="bankStatementsFileUrl">
+      </div>
+    </div>
+  </div>
+
+</div>

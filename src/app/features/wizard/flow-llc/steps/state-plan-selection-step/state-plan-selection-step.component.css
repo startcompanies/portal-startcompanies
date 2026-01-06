@@ -1,56 +1,133 @@
 .state-plan-selection-step {
-    padding: 1rem 0;
+  padding: 1rem 0;
 }
 
-.state-plan-selection-step h4 {
-    margin-bottom: 1.5rem;
-    color: #1f2937;
-    font-weight: 600;
+/* Plan Cards - Diseño simplificado */
+.plan-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-.state-plan-selection-step .form-group {
-    margin-bottom: 1.5rem;
+.plan-card:hover {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.state-plan-selection-step .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #374151;
+.plan-card.selected {
+  border-color: var(--color-secundario-tecnico);
+  background: rgba(1, 201, 226, 0.05);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
 }
 
-.state-plan-selection-step .form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+.plan-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
 }
 
-.state-plan-selection-step .form-control:focus {
-    outline: none;
-    border-color: var(--color-primario, #0068BD);
-    box-shadow: 0 0 0 3px rgba(0, 104, 189, 0.1);
+.recommended-badge {
+  background: #ffc107;
+  color: var(--color-texto-oscuro);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
 }
 
-.state-plan-selection-step .text-danger {
-    font-size: 0.875rem;
-    color: #dc2626;
+.plan-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin: 0;
 }
 
+.plan-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-secundario-tecnico);
+  margin-top: 0.5rem;
+}
+
+.plan-description {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.plan-subtitle {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Botones de estado */
 .state-btn {
-    border: 1px solid #ced4da;
-    background-color: #fff;
-    transition: all 0.2s ease;
-    width: 100%;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+.state-btn:hover {
+  border-color: var(--color-secundario-tecnico);
+  background-color: rgba(1, 201, 226, 0.05);
 }
 
 .state-btn.active {
-    border: 1px solid #003f9e;
-    /* azul bootstrap */
-    box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+  border-color: var(--color-secundario-tecnico);
+  background-color: rgba(1, 201, 226, 0.1);
+  color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
+}
+
+/* Form controls */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .plan-card {
+    margin-bottom: 2rem;
+  }
+  
+  .plan-price {
+    font-size: 2rem;
+  }
+  
+  .state-plan-selection-step h2 {
+    font-size: 1.5rem;
+  }
 }

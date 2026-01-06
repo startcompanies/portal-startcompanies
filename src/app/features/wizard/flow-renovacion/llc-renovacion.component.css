@@ -1,2 +1,2 @@
-/* Estilos específicos del flujo de renovación de LLC */
-/* La mayoría de estilos están en wizard-base.component.css */
+/* Importar estilos base compartidos */
+@import '../shared/wizard-base-styles.css';

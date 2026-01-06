@@ -1,87 +1,120 @@
-<app-wizard-base *ngIf="flowConfig" [totalSteps]="flowConfig.totalSteps" [currentStepIndex]="currentStepIndex"
-  [stepTitles]="stepTitles" [stepIcons]="stepIcons" [steps]="flowConfig.steps" (stepChanged)="onStepChanged($event)"
-  (finish)="onFinish()" (cancel)="onCancel()" [flowType]="'cuenta-bancaria'">
-  <mat-stepper #stepper [linear]="false" (selectionChange)="onStepChanged($event.selectedIndex)" class="custom-stepper">
-    <!-- Paso 1: Registro Básico (siempre presente) -->
-    <mat-step [label]="stepTitles[1] || ('WIZARD.steps.register' | transloco)">
-      <div class="step-content-wrapper">
-        <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
+<div class="wizard-wrapper">
+  <!-- Fondo moderno con elementos de marca -->
+  <div class="wizard-background">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+  </div>
+
+  <!-- Contenido del wizard -->
+  <div class="llc-apertura-container">
+    <div class="request-header">
+      <h2>Cuenta Bancaria</h2>
+      <p class="text-muted">Completa el proceso para abrir tu cuenta bancaria</p>
+    </div>
+
+    <!-- Progress Steps Indicator -->
+    <div class="steps-indicator">
+      <div class="step-item" [class.active]="currentStepIndex >= 0" [class.completed]="currentStepIndex > 0">
+        <div class="step-number">1</div>
+        <div class="step-label">Registro Básico</div>
       </div>
-    </mat-step>
+      <div class="step-item" *ngIf="withPayment" 
+           [class.active]="currentStepIndex >= 1" 
+           [class.completed]="currentStepIndex > 1">
+        <div class="step-number">2</div>
+        <div class="step-label">Pago</div>
+      </div>
+      <div class="step-item" 
+           [class.active]="currentStepIndex >= (withPayment ? 2 : 1)" 
+           [class.completed]="currentStepIndex > (withPayment ? 2 : 1)">
+        <div class="step-number">{{ withPayment ? 3 : 2 }}</div>
+        <div class="step-label">Datos de Cuenta Bancaria</div>
+      </div>
+      <div class="step-item" 
+           [class.active]="currentStepIndex >= (withPayment ? 3 : 2)" 
+           [class.completed]="currentStepIndex > (withPayment ? 3 : 2)">
+        <div class="step-number">{{ withPayment ? 4 : 3 }}</div>
+        <div class="step-label">Revisión Final</div>
+      </div>
+    </div>
+
+    <!-- Paso 1: Registro Básico -->
+    <div *ngIf="currentStepIndex === 0" class="form-step">
+      <h3>Registro Básico</h3>
+      <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(1)">
+          Siguiente
+        </button>
+      </div>
+    </div>
 
     <!-- Paso 2: Pago (solo si withPayment = true) -->
-    <mat-step 
-      *ngIf="withPayment"
-      [label]="stepTitles[2] || ('WIZARD.steps.payment' | transloco)"
-    >
-      <div class="step-content-wrapper">
-        <app-wizard-payment-step [stepNumber]="2" [previousStepNumber]="1"></app-wizard-payment-step>
+    <div *ngIf="withPayment && currentStepIndex === 1" class="form-step">
+      <h3>Pago</h3>
+      <app-wizard-payment-step 
+        [stepNumber]="2" 
+        [previousStepNumber]="1"
+        [fixedAmount]="99"
+        [currency]="'USD'"
+      ></app-wizard-payment-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(0)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(2)">
+          Siguiente
+        </button>
       </div>
-    </mat-step>
+    </div>
 
-    <!-- Paso de Información (varía según el flujo) -->
-    <mat-step [label]="stepTitles[withPayment ? 2 : 1] || ('WIZARD.steps.client' | transloco)">
-      <div class="step-content-wrapper">
-        <app-client-form-cuenta [stepNumber]="withPayment ? 2 : 1"></app-client-form-cuenta>
+    <!-- Paso: Datos de Cuenta Bancaria -->
+    <div *ngIf="currentStepIndex === (withPayment ? 2 : 1)" class="form-step">
+      <h3>Datos de Cuenta Bancaria</h3>
+      <app-wizard-cuenta-bancaria-information-step
+        [stepNumber]="withPayment ? 3 : 2"
+        [previousStepNumber]="withPayment ? 2 : 1"
+        (sectionChanged)="cuentaBancariaInfoCurrentSection = $event"
+      ></app-wizard-cuenta-bancaria-information-step>
+      
+      <!-- Solo mostrar botones del wizard cuando estamos en la última sección (6) -->
+      <div class="step-actions" *ngIf="cuentaBancariaInfoCurrentSection === 6">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 1 : 0)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-primary" (click)="onStepChanged(withPayment ? 3 : 2)">
+          Siguiente
+        </button>
       </div>
-    </mat-step>
+    </div>
 
-    <!-- Información del solicitante -->
-    <mat-step [label]="stepTitles[withPayment ? 3 : 2] || ('WIZARD.steps.client' | transloco)">
-      <div class="step-content-wrapper">
-        <app-aplicant-info-step [stepNumber]="withPayment ? 3 :2"></app-aplicant-info-step>
+    <!-- Paso: Revisión Final -->
+    <div *ngIf="currentStepIndex === (withPayment ? 3 : 2)" class="form-step">
+      <h3>Revisión Final</h3>
+      <app-wizard-final-review-step 
+        [stepNumber]="withPayment ? 4 : 3" 
+        [previousSteps]="withPayment ? [1, 2, 3] : [1, 2]"
+      ></app-wizard-final-review-step>
+      
+      <div class="step-actions">
+        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 2 : 1)">
+          Anterior
+        </button>
+        <button type="button" class="btn btn-success" (click)="onFinish()">
+          <i class="bi bi-check-circle me-2"></i>
+          Enviar Solicitud
+        </button>
       </div>
-    </mat-step>
-
-    <!-- Dirección del registro -->
-    <mat-step [label]="stepTitles[withPayment ? 4 : 3] || ('WIZARD.steps.client' | transloco)">
-      <div class="step-content-wrapper">
-        <app-company-address-step [stepNumber]="withPayment ? 4 : 3"></app-company-address-step>
-      </div>
-    </mat-step>
-
-    <!-- Cuenta bancaria -->
-    <mat-step [label]="stepTitles[withPayment ? 5 : 4] || ('WIZARD.steps.company-address' | transloco)">
-      <div class="step-content-wrapper">
-        <app-bank-account-info-step [stepNumber]="withPayment ? 5 : 4"></app-bank-account-info-step>
-      </div>
-    </mat-step>
-
-    <!-- Dirección personal del propietario -->
-    <mat-step [label]="stepTitles[withPayment ? 6 : 5] || ('WIZARD.steps.owner-personal-address' | transloco)">
-      <div class="step-content-wrapper">
-        <app-owner-personal-address-step [stepNumber]="withPayment ? 6 : 5"></app-owner-personal-address-step>
-      </div>
-    </mat-step>
-
-    <!-- Tipo de LLC -->
-    <mat-step [label]="stepTitles[withPayment ? 7 : 6] || ('WIZARD.steps.llc-type' | transloco)">
-      <div class="step-content-wrapper">
-        <app-llc-type-step [stepNumber]="withPayment ? 7 : 6"></app-llc-type-step>
-      </div>
-    </mat-step>
-
-    <!-- Paso de Información (varía según el flujo) -->
-    <mat-step [label]="stepTitles[withPayment ? 8 : 7] || ('WIZARD.steps.owmers-identification' | transloco)">
-      <div class="step-content-wrapper">
-        <app-owners-identification-step [stepNumber]="withPayment ? 8 : 7"></app-owners-identification-step>
-      </div>
-    </mat-step>
-
-    <mat-step [label]="stepTitles[withPayment ? 9 : 8] || ('WIZARD.steps.sign-agreement' | transloco)">
-      <div class="step-content-wrapper">
-        <app-confirmation-signature-step [stepNumber]="withPayment ? 9 : 8"></app-confirmation-signature-step>
-      </div>
-    </mat-step>
-
-    <!-- Paso de Revisión -->
-    <mat-step [label]="stepTitles[withPayment ? 10 : 9] || ('WIZARD.steps.review' | transloco)">
-      <div class="step-content-wrapper">
-        <app-wizard-final-review-step 
-          [stepNumber]="withPayment ? 10 : 9" 
-          [previousSteps]="withPayment ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] : [1, 2, 3, 4, 5, 6, 7, 8, 9]"
-        ></app-wizard-final-review-step>
-      </div>
-    </mat-step>
-  </mat-stepper>
-</app-wizard-base>
+    </div>
+  </div>
+</div>

@@ -1,55 +1,31 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { LanguageService } from '../../../shared/services/language.service';
-import { WizardStateService } from '../services/wizard-state.service';
-import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
-import { combineLatest } from 'rxjs';
-
-// Componentes reutilizables
-import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
-import { WizardPaymentStepComponent } from '../components/payment-step/payment-step.component';
-import { WizardFinalReviewStepComponent } from '../components/final-review-step/final-review-step.component';
-
-// Componente wrapper para información de cuenta bancaria
-import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cuenta-bancaria-information-step/wizard-cuenta-bancaria-information-step.component';
+import { WizardStateService } from '../../../services/wizard-state.service';
+import { WizardCuentaBancariaFormComponent } from '../wizard-cuenta-bancaria-form/wizard-cuenta-bancaria-form.component';
+import { Subscription } from 'rxjs';
 
 /**
- * Componente principal para el flujo de cuenta bancaria
- * Soporta dos variantes: con pago y sin pago
+ * Componente wrapper para usar wizard-cuenta-bancaria-form en el wizard
+ * Este componente inicializa el formulario y maneja la integración con el wizard
  */
 @Component({
-  selector: 'app-cuenta-bancaria',
+  selector: 'app-wizard-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [
-    CommonModule,
-    TranslocoPipe,
-    WizardBasicRegisterStepComponent,
-    WizardPaymentStepComponent,
-    WizardFinalReviewStepComponent,
-    WizardCuentaBancariaInformationStepComponent
-  ],
-  templateUrl: './cuenta-bancaria.component.html',
-  styleUrls: ['./cuenta-bancaria.component.css']
+  imports: [CommonModule, ReactiveFormsModule, WizardCuentaBancariaFormComponent],
+  templateUrl: './wizard-cuenta-bancaria-information-step.component.html',
+  styleUrls: ['./wizard-cuenta-bancaria-information-step.component.css']
 })
-export class CuentaBancariaComponent implements OnInit {
-  withPayment: boolean = false;
+export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnDestroy {
+  @Input() stepNumber: number = 2;
+  @Input() previousStepNumber: number = 1;
+  @Output() sectionChanged = new EventEmitter<number>();
 
-  flowConfig!: any;
-  currentStepIndex = 0;
-  stepTitles: { [key: number]: string } = {};
-  stepIcons: { [key: number]: string } = {};
-  currentLang = 'es';
-
-  // Para controlar la visibilidad de botones en el paso de información de cuenta bancaria
-  cuentaBancariaInfoCurrentSection = 1;
-
-  // Formulario de datos del servicio
   serviceDataForm!: FormGroup;
+  currentSection = 1;
+  fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
   
-  // Estados de USA
+  // Lista de estados de USA
   usStates = [
     { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
     { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
@@ -103,84 +79,48 @@ export class CuentaBancariaComponent implements OnInit {
     { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' }
   ];
 
-  // Estado de carga de archivos
-  fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+  totalSections = 6; // Total de secciones para Cuenta Bancaria
+
+  private formSubscription?: Subscription;
 
   constructor(
-    private wizardConfigService: WizardConfigService,
     private wizardStateService: WizardStateService,
-    private transloco: TranslocoService,
-    private languageService: LanguageService,
-    public translocoService: TranslocoService,
-    private router: Router,
-    private route: ActivatedRoute,
     private fb: FormBuilder
   ) {
-    // Inicializar el formulario de datos del servicio
+    // Inicializar formulario con estructura de cuenta-bancaria-form
     this.serviceDataForm = this.fb.group({});
     this.initializeCuentaBancariaForm(this.serviceDataForm);
   }
 
   ngOnInit(): void {
-    // Determinar el tipo de flujo basado en la ruta o parámetro
-    this.route.data.subscribe(data => {
-      this.withPayment = data['withPayment'] || false;
-      
-      // Determinar el tipo de flujo basado en el parámetro withPayment
-      const flowType = this.withPayment 
-        ? WizardFlowType.CUENTA_BANCARIA_CON_PAGO 
-        : WizardFlowType.CUENTA_BANCARIA_SIN_PAGO;
-      
-      this.flowConfig = this.wizardConfigService.getFlowConfig(flowType);
-      console.log('Total steps', this.flowConfig.totalSteps);
-      this.initializeStepIcons();
-      this.initializeStepTitles();
-    });
+    this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
-    this.currentLang = this.languageService.currentLang;
-    this.translocoService.langChanges$.subscribe((l) => {
-      this.currentLang = l;
-      this.initializeStepTitles();
+    // Cargar datos guardados
+    const savedData = this.wizardStateService.getStepData(this.stepNumber);
+    if (savedData && Object.keys(savedData).length > 0) {
+      this.serviceDataForm.patchValue(savedData);
+    }
+
+    // Guardar datos cuando el formulario cambia
+    this.formSubscription = this.serviceDataForm.valueChanges.subscribe(() => {
+      this.saveStepData();
     });
+
+    // Emitir la sección inicial
+    this.sectionChanged.emit(this.currentSection);
   }
 
-  private initializeStepIcons(): void {
-    this.stepIcons = {};
-    this.flowConfig.steps.forEach((step: any) => {
-      this.stepIcons[step.stepNumber] = step.icon;
-    });
+  ngOnDestroy(): void {
+    this.wizardStateService.unregisterForm(this.stepNumber);
+    this.formSubscription?.unsubscribe();
+    this.saveStepData();
   }
 
-  private initializeStepTitles(): void {
-    const translationKeys = this.flowConfig.steps.map((step: any) => 
-      this.transloco.selectTranslate(step.translationKey)
-    );
-
-    combineLatest(translationKeys).subscribe((translations: any) => {
-      this.flowConfig.steps.forEach((step: any, index: number) => {
-        this.stepTitles[step.stepNumber] = translations[index];
-      });
-    });
-  }
-
-  onStepChanged(index: number): void {
-    this.currentStepIndex = index;
-    // No ejecutar onFinish automáticamente, el usuario debe hacer clic en el botón
-  }
-
-  onFinish(): void {
-    const allData = this.wizardStateService.getAllData();
-    console.log('✅ Datos finales del wizard Cuenta Bancaria:', allData);
-    /*this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);*/
-  }
-
-  onCancel(): void {
-    this.wizardStateService.clear();
-    this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);
+  /**
+   * Guarda los datos del paso
+   */
+  private saveStepData(): void {
+    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
   }
 
   /**
@@ -247,20 +187,35 @@ export class CuentaBancariaComponent implements OnInit {
    * Maneja la selección de archivos
    */
   onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): void {
-    // Implementar lógica de carga de archivos si es necesario
-    console.log('File selected:', event);
+    const input = event.event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    this.fileUploadStates[event.fileKey] = {
+      file: file,
+      uploading: false,
+      progress: 0
+    };
+
+    const control = this.serviceDataForm.get(event.formControlPath);
+    if (control) {
+      control.setValue(file.name);
+    }
   }
 
   /**
-   * Maneja la limpieza de archivos
+   * Limpia un archivo
    */
   onFileCleared(event: { fileKey: string; formControlPath: string; inputId: string }): void {
-    // Implementar lógica de limpieza de archivos si es necesario
-    console.log('File cleared:', event);
+    delete this.fileUploadStates[event.fileKey];
+    const control = this.serviceDataForm.get(event.formControlPath);
+    if (control) {
+      control.setValue('');
+    }
   }
 
   /**
-   * Maneja la adición de propietarios
+   * Agrega un propietario
    */
   onAddOwnerRequested(): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
@@ -284,12 +239,32 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   /**
-   * Maneja la eliminación de propietarios
+   * Elimina un propietario
    */
   onRemoveOwnerRequested(index: number): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
     if (ownersArray && ownersArray.length > index) {
       ownersArray.removeAt(index);
+    }
+  }
+
+  /**
+   * Navega a la sección anterior
+   */
+  goToPreviousSection(): void {
+    if (this.currentSection > 1) {
+      this.currentSection--;
+      this.sectionChanged.emit(this.currentSection);
+    }
+  }
+
+  /**
+   * Navega a la siguiente sección
+   */
+  goToNextSection(): void {
+    if (this.currentSection < this.totalSections) {
+      this.currentSection++;
+      this.sectionChanged.emit(this.currentSection);
     }
   }
 }
