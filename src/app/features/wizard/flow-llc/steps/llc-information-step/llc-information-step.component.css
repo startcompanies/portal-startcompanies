@@ -20,20 +20,7 @@
     color: #374151;
 }
 
-.llc-information-step .form-control {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
-}
-
-.llc-information-step .form-control:focus {
-    outline: none;
-    border-color: var(--color-primario, #0068BD);
-    box-shadow: 0 0 0 3px rgba(0, 104, 189, 0.1);
-}
+/* Los estilos de form-control se heredan de wizard-base-styles.css */
 
 .llc-information-step .text-danger {
     font-size: 0.875rem;

@@ -102,20 +102,7 @@
   color: var(--color-texto-oscuro);
 }
 
-.form-control {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: var(--color-secundario-tecnico);
-  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
-}
+/* Los estilos de form-control se heredan de wizard-base-styles.css */
 
 /* Responsive */
 @media (max-width: 768px) {
