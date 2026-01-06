@@ -82,7 +82,7 @@
   border-radius: 6px;
   border: none;
 
-  background-color: #b1c9fd;
+  background-color: #2563eb;
   color: white;
   font-size: 16px;
   font-weight: 500;
@@ -90,10 +90,11 @@
 }
 
 .pay-button:hover {
-  background-color: #6881c4;
+  background-color: #1d4ed8;
 }
 
 .stripe-logo {
-  height: 16px;
+  width: 15%;
+  height: 30px;
   opacity: 0.9;
 }

@@ -21,7 +21,56 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     @Input() stepNumber: number = 2;
     @Input() previousStepNumber: number = 1; // Paso anterior para mostrar resumen
 
-    states = ['Florida', 'Delaware', 'Texas', 'Wyoming'];
+    states = [
+        'alabama',
+        'alaska',
+        'arizona',
+        'arkansas',
+        'california',
+        'colorado',
+        'connecticut',
+        'delaware',
+        'florida',
+        'georgia',
+        'hawaii',
+        'idaho',
+        'illinois',
+        'indiana',
+        'iowa',
+        'kansas',
+        'kentucky',
+        'louisiana',
+        'maine',
+        'maryland',
+        'massachusetts',
+        'michigan',
+        'minnesota',
+        'mississippi',
+        'missouri',
+        'montana',
+        'nebraska',
+        'nevada',
+        'new_hampshire',
+        'new_jersey',
+        'new_york',
+        'north_carolina',
+        'north_dakota',
+        'ohio',
+        'oklahoma',
+        'oregon',
+        'pennsylvania',
+        'rhode_island',
+        'south_carolina',
+        'south_dakota',
+        'tennessee',
+        'utah',
+        'vermont',
+        'virginia',
+        'washington',
+        'west_virginia',
+        'wisconsin',
+        'wyoming'
+    ];
     planes = ['Entrepreneur', 'Elite', 'Premium'];
     selectedState: string | null = null;
 
@@ -39,7 +88,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
 
         this.form = new FormGroup({
             plan: new FormControl(savedData.plan || '', [Validators.required]),
-            state: new FormControl(savedData.state || '', [])
+            state: new FormControl(savedData.state || '', [Validators.required]),
         });
     }
 
@@ -82,6 +131,10 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     }
 
     selectState(state: string) {
+        //Quitar el requerido del campo state al seleccionar un estado predefinido
+        this.form.get('state')?.clearValidators();
+        this.form.get('state')?.updateValueAndValidity();
+
         this.selectedState = state;
         this.form.get('state')?.setValue(null);
 
@@ -99,5 +152,11 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
 
     changePlan() {
         this.stripeService.setPackId(this.form.get('plan')?.value);
+    }
+
+    getStateLabel(state: string): string {
+        return this.transloco.translate(
+            'WIZARD.state_step.options.' + state
+        );
     }
 }

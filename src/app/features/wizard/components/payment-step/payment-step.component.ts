@@ -26,6 +26,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   @Input() packId: string = '';
   @Input() priceId: string = '';
   @Input() state: string = '';
+  totalAmount: number = 10;
 
   form!: FormGroup;
   previousStepData: any = {};

@@ -23,7 +23,7 @@
     </div>
 
     <!-- Renglón 2 -->
-    <div class="row mb-3">
+    <div class="row mb-1">
       <div class="col">
         <div class="stripe-field" id="card-expiry"></div>
       </div>
@@ -31,14 +31,13 @@
         <div class="stripe-field" id="card-cvc"></div>
       </div>
     </div>
-
-    <div class="row">
+    <div class="row mb-2 d-flex justify-content-end">
+      <img src="assets/logo-stripe.png" alt="Stripe" class="stripe-logo" />
+    </div>
+    <div class="row ps-2 pe-2">
       <button class="pay-button d-flex justify-content-center align-items-center" (click)="pay()">
-        <span>Pagar</span>
-        <img src="assets/logo_stripe.svg.png" alt="Stripe" class="stripe-logo" />
+        <span>{{ ('WIZARD.checkout.pay_button' | transloco:{ amount: totalAmount }) }}</span>
       </button>
     </div>
-
-
   </form>
 </div>

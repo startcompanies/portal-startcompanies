@@ -123,10 +123,10 @@ export class WizardBaseComponent implements OnInit, OnChanges {
     const stepNumber = this.internalStepIndex + 1;
     const form = this.wizardStateService.getForm(stepNumber);
 
-    /*if (form && form.invalid) {
+    if (form && form.invalid) {
       form.markAllAsTouched();
       return; // ⛔ no avanza
-    }*/
+    }
 
     if (this.internalStepIndex < this.totalSteps - 1 && this.stepper) {
       this.stepper.next();

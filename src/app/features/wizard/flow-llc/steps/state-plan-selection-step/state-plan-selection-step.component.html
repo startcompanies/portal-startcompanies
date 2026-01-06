@@ -22,11 +22,13 @@
         <label for="state">{{ 'WIZARD.state_plan_step.state' | transloco }} <span class="text-danger">*</span></label>
         <div class="row mb-2">
             <div class="col">
-                <button class="state-btn" [ngClass]="{ active: selectedState === 'new_mexico' }" (click)="selectState('new_mexico')">{{
+                <button class="state-btn" [ngClass]="{ active: selectedState === 'new_mexico' }"
+                    (click)="selectState('new_mexico')">{{
                     'WIZARD.state_plan_step.state_new_mexico' | transloco }}</button>
             </div>
             <div class="col">
-                <button class="state-btn" [ngClass]="{ active: selectedState === 'texas' }" (click)="selectState('texas')">{{
+                <button class="state-btn" [ngClass]="{ active: selectedState === 'texas' }"
+                    (click)="selectState('texas')">{{
                     'WIZARD.state_plan_step.state_texas' | transloco }}</button>
             </div>
         </div>
@@ -37,8 +39,8 @@
                 <option value="">
                     {{ 'WIZARD.state_plan_step.state_label' | transloco }}
                 </option>
-                <option *ngFor="let state of states" [value]="state">
-                    {{ state }}
+                <option *ngFor="let state of states" [value]="getStateLabel(state)">
+                    {{ getStateLabel(state) }}
                 </option>
             </select>
 
