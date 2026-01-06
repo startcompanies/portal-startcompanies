@@ -174,10 +174,11 @@
           </div>
           <div class="col-md-6">
             <label [for]="'ownerPhone' + i" class="form-label">Teléfono de contacto <span class="text-danger">*</span></label>
-            <div class="input-group">
-              <span class="input-group-text">+52</span>
-              <input type="tel" [id]="'ownerPhone' + i" class="form-control" formControlName="phone" placeholder="Enter a value for this field.">
-            </div>
+            <app-intl-tel-input
+              [id]="'ownerPhone' + i"
+              formControlName="phone"
+              placeholder="Teléfono de contacto"
+            ></app-intl-tel-input>
           </div>
           <div class="col-md-12">
             <label [for]="'ownerFullAddress' + i" class="form-label">Dirección Completa <span class="text-danger">*</span></label>

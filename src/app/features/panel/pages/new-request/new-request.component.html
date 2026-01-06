@@ -109,13 +109,12 @@
         </div>
         <div class="col-md-6">
           <label for="clientPhone" class="form-label">Teléfono</label>
-          <input
-            type="tel"
+          <app-intl-tel-input
             id="clientPhone"
-            class="form-control"
             formControlName="clientPhone"
-            placeholder="+1 (555) 123-4567"
-          />
+            placeholder="Teléfono"
+            [initialCountry]="detectedCountryCode"
+          ></app-intl-tel-input>
         </div>
       </div>
 
@@ -553,6 +552,7 @@
     </div>
   </form>
 </div>
+
 
 
 

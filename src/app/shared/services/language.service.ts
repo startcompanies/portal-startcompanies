@@ -218,7 +218,10 @@ export class LanguageService {
         'fixcal': 'fixcal',
         'abotax': 'abotax',
         'category': 'category',
-        'post': 'post'
+        'post': 'post',
+        'wizard/llc-opening': 'wizard/llc-apertura',
+        'wizard/llc-renewal': 'wizard/llc-renovacion',
+        'wizard/bank-account': 'wizard/cuenta-bancaria'
       };
       return englishToSpanish[route] || route;
     } else {
@@ -242,7 +245,10 @@ export class LanguageService {
         'fixcal': 'fixcal',
         'abotax': 'abotax',
         'category': 'category',
-        'post': 'post'
+        'post': 'post',
+        'wizard/llc-apertura': 'wizard/llc-opening',
+        'wizard/llc-renovacion': 'wizard/llc-renewal',
+        'wizard/cuenta-bancaria': 'wizard/bank-account'
       };
       return spanishToEnglish[route] || route;
     }

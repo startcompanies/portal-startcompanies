@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
 
 @Component({
   selector: 'app-wizard-apertura-llc-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './wizard-apertura-llc-form.component.html',
   styleUrl: './wizard-apertura-llc-form.component.css'
 })
@@ -143,3 +144,4 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
   }
 
 }
+

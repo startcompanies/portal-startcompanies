@@ -142,3 +142,4 @@ export class EmailVerificationComponent implements OnInit {
     this.router.navigate([wizardPath]);
   }
 }
+

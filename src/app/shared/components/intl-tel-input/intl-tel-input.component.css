@@ -1,0 +1,12 @@
+/* Estilos para el input de teléfono internacional */
+/* Los estilos principales están en wizard-base-styles.css para tener la especificidad correcta */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Contenedor principal de intl-tel-input */
+:host .iti {
+  width: 100%;
+}
+

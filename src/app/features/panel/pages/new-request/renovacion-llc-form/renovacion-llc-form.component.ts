@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
 
 @Component({
   selector: 'app-renovacion-llc-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './renovacion-llc-form.component.html',
   styleUrl: './renovacion-llc-form.component.css'
 })
@@ -206,4 +207,5 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
     this.removeOwnerRequested.emit(index);
   }
 }
+
 

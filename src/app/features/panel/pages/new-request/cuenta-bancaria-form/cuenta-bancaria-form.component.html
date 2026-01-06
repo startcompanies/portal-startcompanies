@@ -268,9 +268,11 @@
       <!-- Teléfono -->
       <div class="col-md-6">
         <label for="validatorPhone" class="form-label">Teléfono</label>
-        <div class="input-group">
-          <input type="tel" id="validatorPhone" class="form-control" formControlName="validatorPhone">
-        </div>
+        <app-intl-tel-input
+          id="validatorPhone"
+          formControlName="validatorPhone"
+          placeholder="Teléfono"
+        ></app-intl-tel-input>
         <div class="form-check mt-2">
           <input class="form-check-input" type="checkbox" id="canReceiveSMS" formControlName="canReceiveSMS">
           <label class="form-check-label" for="canReceiveSMS">Debe tener capacidad para recibir SMS</label>

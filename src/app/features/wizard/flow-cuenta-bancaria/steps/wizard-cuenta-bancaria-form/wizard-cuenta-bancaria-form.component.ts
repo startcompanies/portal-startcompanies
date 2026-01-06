@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
 
 @Component({
   selector: 'app-wizard-cuenta-bancaria-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './wizard-cuenta-bancaria-form.component.html',
   styleUrl: './wizard-cuenta-bancaria-form.component.css'
 })
@@ -133,3 +134,4 @@ export class WizardCuentaBancariaFormComponent implements OnInit, OnChanges {
     this.removeOwnerRequested.emit(index);
   }
 }
+

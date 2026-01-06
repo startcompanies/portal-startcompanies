@@ -130,7 +130,11 @@
                 </div>
                 <div class="col-md-6">
                   <label [for]="'memberPhone' + i" class="form-label">Teléfono <span class="text-danger">*</span></label>
-                  <input type="tel" [id]="'memberPhone' + i" class="form-control" formControlName="phoneNumber">
+                  <app-intl-tel-input
+                    [id]="'memberPhone' + i"
+                    formControlName="phoneNumber"
+                    placeholder="Teléfono"
+                  ></app-intl-tel-input>
                 </div>
                 <div class="col-md-6">
                   <label [for]="'memberPercentage' + i" class="form-label">% de Participación <span class="text-danger">*</span></label>
@@ -265,7 +269,11 @@
             
             <div class="col-md-12">
               <label for="bankAccountLinkedPhone" class="form-label">Número de Teléfono Vinculado a la Cuenta Bancaria <span class="text-danger">*</span></label>
-              <input type="tel" id="bankAccountLinkedPhone" class="form-control" formControlName="bankAccountLinkedPhone" placeholder="Este número debe ser apto para recibir SMS. Indique el número con la característica del país.">
+              <app-intl-tel-input
+                id="bankAccountLinkedPhone"
+                formControlName="bankAccountLinkedPhone"
+                placeholder="Este número debe ser apto para recibir SMS. Indique el número con la característica del país."
+              ></app-intl-tel-input>
             </div>
             
             <div class="col-md-12">

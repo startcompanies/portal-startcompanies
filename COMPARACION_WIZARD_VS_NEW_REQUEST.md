@@ -74,3 +74,4 @@ Adaptar el wizard de apertura LLC para usar la estructura simple de `new-request
 - Implementar indicador de progreso similar a `new-request`
 - Mover botones dentro de cada paso
 - Mantener los componentes de paso pero simplificarlos
+

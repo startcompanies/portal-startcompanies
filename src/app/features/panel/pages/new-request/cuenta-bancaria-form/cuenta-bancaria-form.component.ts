@@ -1,11 +1,12 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
 
 @Component({
   selector: 'app-cuenta-bancaria-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './cuenta-bancaria-form.component.html',
   styleUrl: './cuenta-bancaria-form.component.css'
 })
@@ -133,4 +134,5 @@ export class CuentaBancariaFormComponent implements OnInit, OnChanges {
     this.removeOwnerRequested.emit(index);
   }
 }
+
 

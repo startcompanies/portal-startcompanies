@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
 
 @Component({
   selector: 'app-wizard-renovacion-llc-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './wizard-renovacion-llc-form.component.html',
   styleUrl: './wizard-renovacion-llc-form.component.css'
 })
@@ -206,3 +207,4 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
     this.removeOwnerRequested.emit(index);
   }
 }
+

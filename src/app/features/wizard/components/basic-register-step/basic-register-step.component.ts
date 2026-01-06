@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -7,6 +7,8 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../../panel/services/auth.service';
 import { PartnerClientsService } from '../../../panel/services/partner-clients.service';
 import { firstValueFrom } from 'rxjs';
+import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
+import { GeolocationService } from '../../../../shared/services/geolocation.service';
 
 /**
  * Componente reutilizable para el paso de registro básico
@@ -15,13 +17,14 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-wizard-basic-register-step',
   standalone: true,
-  imports: [SharedModule, TranslocoPipe, ReactiveFormsModule],
+  imports: [SharedModule, TranslocoPipe, ReactiveFormsModule, IntlTelInputComponent],
   templateUrl: './basic-register-step.component.html',
   styleUrls: ['./basic-register-step.component.css']
 })
 export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 1;
   @Output() userCreated = new EventEmitter<{ userId: number; clientId: number }>();
+  @ViewChild(IntlTelInputComponent) phoneInput?: IntlTelInputComponent;
   
   form!: FormGroup;
   private formSubscription?: Subscription;
@@ -31,11 +34,13 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   createdClientId: number | null = null;
   waitingEmailVerification = false;
   successMessage: string | null = null;
+  detectedCountryCode: string = 'us';
 
   constructor(
     private wizardStateService: WizardStateService,
     private authService: AuthService,
-    private partnerClientsService: PartnerClientsService
+    private partnerClientsService: PartnerClientsService,
+    private geolocationService: GeolocationService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -69,6 +74,17 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         this.createdClientId = savedData.clientId;
       }
     }
+
+    // Obtener país por IP y establecerlo en el input de teléfono
+    this.geolocationService.getCountryCodeByIP().subscribe(countryCode => {
+      this.detectedCountryCode = countryCode;
+      // Actualizar el país en el input después de que se inicialice
+      setTimeout(() => {
+        if (this.phoneInput) {
+          this.phoneInput.setCountry(countryCode);
+        }
+      }, 500);
+    });
 
     // Guardar datos cuando el formulario cambia
     this.formSubscription = this.form.valueChanges.subscribe(() => {

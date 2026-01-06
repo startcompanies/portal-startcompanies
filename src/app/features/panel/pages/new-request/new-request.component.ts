@@ -13,11 +13,13 @@ import { AperturaLlcFormComponent } from './apertura-llc-form/apertura-llc-form.
 import { RenovacionLlcFormComponent } from './renovacion-llc-form/renovacion-llc-form.component';
 import { CuentaBancariaFormComponent } from './cuenta-bancaria-form/cuenta-bancaria-form.component';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../components/stripe-payment-form/stripe-payment-form.component';
+import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
+import { GeolocationService } from '../../../../shared/services/geolocation.service';
 
 @Component({
   selector: 'app-new-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, AperturaLlcFormComponent, RenovacionLlcFormComponent, CuentaBancariaFormComponent, StripePaymentFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, AperturaLlcFormComponent, RenovacionLlcFormComponent, CuentaBancariaFormComponent, StripePaymentFormComponent, IntlTelInputComponent],
   templateUrl: './new-request.component.html',
   styleUrl: './new-request.component.css'
 })
@@ -54,6 +56,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Para request en borrador
   draftRequestId: number | null = null;
+
+  // País detectado por IP
+  detectedCountryCode: string = 'us';
 
   // Sub-pasos para apertura LLC (movidos al componente hijo)
   // aperturaLlcSubStep y aperturaLlcTotalSubSteps ahora están en AperturaLlcFormComponent
@@ -144,7 +149,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     private requestsService: RequestsService,
     private stripeService: StripeService,
     private http: HttpClient,
-    private partnerClientsService: PartnerClientsService
+    private partnerClientsService: PartnerClientsService,
+    private geolocationService: GeolocationService
   ) {
     this.requestForm = this.fb.group({
       // Paso 1: Tipo de servicio
@@ -400,6 +406,11 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       this.router.navigate(['/panel/my-requests']);
       return;
     }
+
+    // Obtener país por IP y establecerlo como predeterminado
+    this.geolocationService.getCountryCodeByIP().subscribe(countryCode => {
+      this.detectedCountryCode = countryCode;
+    });
 
     // Verificar si hay un UUID de request en la ruta (para continuar borrador)
     this.route.params.subscribe(async params => {

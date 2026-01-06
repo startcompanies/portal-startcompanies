@@ -17,7 +17,14 @@
       <div class="col">
         <div class="form-group">
           <label>{{ 'WIZARD.basic_register.phone' | transloco }} <span class="text-danger">*</span></label>
-          <input class="form-control" formControlName="phone" maxlength="15" />
+          <app-intl-tel-input
+            #phoneInput
+            id="phone"
+            formControlName="phone"
+            [placeholder]="'WIZARD.basic_register.phone' | transloco"
+            [required]="false"
+            [initialCountry]="detectedCountryCode"
+          ></app-intl-tel-input>
           <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="text-danger mt-1">
             {{ 'WIZARD.basic_register.phone_required' | transloco }}
           </div>
