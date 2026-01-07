@@ -10,6 +10,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const token = authService.getToken();
   
+  // Log para debugging (solo en desarrollo)
+  if (req.url.includes('/panel/requests')) {
+    console.log('[AuthInterceptor] Request URL:', req.url);
+    console.log('[AuthInterceptor] Token presente:', !!token);
+    console.log('[AuthInterceptor] Method:', req.method);
+  }
+  
   // Agregar token a las peticiones si existe
   if (token) {
     req = req.clone({
@@ -17,6 +24,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         Authorization: `Bearer ${token}`
       }
     });
+  } else if (req.url.includes('/panel/requests')) {
+    console.warn('[AuthInterceptor] ⚠️ No hay token disponible para la petición a /panel/requests');
   }
 
   return next(req).pipe(
@@ -65,6 +74,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
+
 
 
 

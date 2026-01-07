@@ -4,6 +4,9 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
+// Log para debugging
+console.log('[RequestsService] Environment API URL:', environment.apiUrl);
+
 export interface Request {
   id: number;
   uuid?: string;
@@ -107,7 +110,11 @@ export interface PaginatedResponse<T> {
 export class RequestsService {
   private apiUrl = `${environment.apiUrl || 'http://localhost:3000'}/panel/requests`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Log para debugging
+    console.log('[RequestsService] Constructor - API URL configurada:', this.apiUrl);
+    console.log('[RequestsService] Constructor - Environment API URL:', environment.apiUrl);
+  }
 
   /**
    * Obtener todas las solicitudes con filtros opcionales y paginación (solo admin)
@@ -180,6 +187,9 @@ export class RequestsService {
    * Crear una nueva solicitud
    */
   createRequest(data: any): Promise<Request> {
+    console.log(`[RequestsService] createRequest - URL: ${this.apiUrl}`);
+    console.log(`[RequestsService] createRequest - Environment API URL: ${environment.apiUrl}`);
+    console.log(`[RequestsService] createRequest - Data keys:`, Object.keys(data));
     return firstValueFrom(
       this.http.post<Request>(this.apiUrl, data)
     );
@@ -269,6 +279,7 @@ export class RequestsService {
     }
   }
 }
+
 
 
 

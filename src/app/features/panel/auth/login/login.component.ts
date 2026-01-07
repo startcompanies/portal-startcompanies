@@ -44,7 +44,9 @@ export class LoginComponent {
           const returnUrl = this.route.snapshot.queryParams['returnUrl'];
           
           if (returnUrl) {
-            this.router.navigate([returnUrl]);
+            // Usar navigateByUrl para manejar correctamente URLs con query params
+            // navigateByUrl puede parsear correctamente URLs como /panel/new-request?client=uuid
+            this.router.navigateByUrl(returnUrl);
             return;
           }
           

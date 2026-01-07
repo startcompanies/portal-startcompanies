@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
@@ -48,7 +48,8 @@ export class MyClientsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private partnerClientsService: PartnerClientsService
+    private partnerClientsService: PartnerClientsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -214,7 +215,17 @@ export class MyClientsComponent implements OnInit {
   get totalRequests(): number {
     return this.filteredClients.reduce((sum, c) => sum + (c.totalRequests || 0), 0);
   }
+
+  /**
+   * Navega a la página de nueva solicitud con el UUID del cliente
+   */
+  navigateToNewRequest(clientUuid: string): void {
+    this.router.navigate(['/panel/new-request'], {
+      queryParams: { client: clientUuid }
+    });
+  }
 }
+
 
 
 

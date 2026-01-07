@@ -722,6 +722,7 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   async saveDraftRequest(): Promise<void> {
     // Solo guardar si hay cliente seleccionado o creado
     if (!this.selectedClientId) {
+      console.log('[saveDraftRequest] No hay cliente seleccionado, omitiendo guardado');
       return;
     }
 
@@ -730,8 +731,23 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     const serviceData = formValue.serviceData;
 
     if (!serviceType) {
+      console.log('[saveDraftRequest] No hay servicio seleccionado, omitiendo guardado');
       return; // No hay servicio seleccionado aún
     }
+
+    // Verificar autenticación antes de intentar guardar
+    if (!this.authService.isAuthenticated()) {
+      console.warn('[saveDraftRequest] ⚠️ Usuario no autenticado, no se puede guardar el borrador');
+      return;
+    }
+
+    console.log('[saveDraftRequest] Iniciando guardado de borrador...', {
+      selectedClientId: this.selectedClientId,
+      serviceType,
+      draftRequestId: this.draftRequestId,
+      currentStep: this.currentStep,
+      serviceSection: this.serviceSection
+    });
 
     try {
       // Preparar datos para el backend (sin pago)
