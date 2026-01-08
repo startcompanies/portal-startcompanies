@@ -72,11 +72,26 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
   private destroy$ = new Subject<void>();
   private llcTypeSubscriptionSet = false;
 
+  // Año relevante para el formulario de renovación (año fiscal que se está renovando)
+  // Para renovación, típicamente es el año anterior al actual
+  get currentYear(): number {
+    const now = new Date();
+    // Para renovación, el año fiscal relevante es el año anterior
+    // Si estamos en enero-marzo, podría ser el año anterior; si estamos después, el año actual
+    // Por ahora, usamos el año anterior al actual como año fiscal de renovación
+    return now.getFullYear() - 1;
+  }
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     // Inicializar un propietario si el array está vacío y estamos en el paso 2
     this.ensureOwnerExists();
+    
+    // Actualizar selects múltiples después de que el componente se inicialice
+    setTimeout(() => {
+      this.updateTaxCountrySelects();
+    }, 500);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -89,6 +104,8 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
         if (newValue === 2) {
           setTimeout(() => {
             this.ensureOwnerExists();
+            // Forzar actualización de select múltiple taxCountry
+            this.updateTaxCountrySelects();
           }, 100);
         }
       }
@@ -106,6 +123,60 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
           });
       }
     }
+    
+    // Si cambia serviceDataForm, actualizar selects múltiples después de un delay
+    if (changes['serviceDataForm'] && this.serviceDataForm) {
+      setTimeout(() => {
+        this.updateTaxCountrySelects();
+      }, 500);
+    }
+  }
+  
+  /**
+   * Fuerza la actualización de los select múltiples taxCountry
+   * Esto asegura que los valores seleccionados se muestren correctamente
+   */
+  private updateTaxCountrySelects(): void {
+    const ownersArray = this.ownersFormArray;
+    if (!ownersArray) return;
+    
+    ownersArray.controls.forEach((control, index) => {
+      const taxCountryControl = control.get('taxCountry');
+      if (taxCountryControl) {
+        let currentValue = taxCountryControl.value;
+        
+        // Si el valor es un string, convertirlo a array
+        if (currentValue && typeof currentValue === 'string') {
+          if (currentValue.includes(',')) {
+            currentValue = currentValue.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0);
+          } else if (currentValue.length > 0) {
+            currentValue = [currentValue];
+          } else {
+            currentValue = [];
+          }
+        }
+        
+        // Si el valor es un array y tiene elementos, forzar actualización
+        if (Array.isArray(currentValue) && currentValue.length > 0) {
+          // Usar setTimeout para asegurar que el DOM esté renderizado
+          setTimeout(() => {
+            // Crear una nueva referencia del array para forzar la detección de cambios
+            const newValue = [...currentValue];
+            // Primero limpiar el valor
+            taxCountryControl.setValue([], { emitEvent: false });
+            // Luego establecer el nuevo valor después de un pequeño delay
+            setTimeout(() => {
+              taxCountryControl.setValue(newValue, { emitEvent: false });
+            }, 50);
+          }, 200);
+        } else if (!currentValue || (Array.isArray(currentValue) && currentValue.length === 0)) {
+          // Asegurar que el valor sea un array vacío si no hay valor
+          setTimeout(() => {
+            taxCountryControl.setValue([], { emitEvent: false });
+          }, 200);
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {

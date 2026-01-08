@@ -608,15 +608,88 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
         
         if (serviceDataForm) {
-          // Cargar todos los datos disponibles
+          // Cargar todos los datos disponibles (excepto owners que se maneja por separado)
           Object.keys(renovacionData).forEach(key => {
-            if (key !== 'currentStepNumber' && key !== 'requestId' && serviceDataForm.get(key)) {
+            if (key !== 'currentStepNumber' && key !== 'requestId' && key !== 'owners' && serviceDataForm.get(key)) {
               const value = (renovacionData as any)[key];
               if (value !== null && value !== undefined && value !== '') {
                 serviceDataForm.patchValue({ [key]: value });
               }
             }
           });
+          
+          // Cargar owners si existen
+          if (renovacionData.owners && Array.isArray(renovacionData.owners) && renovacionData.owners.length > 0) {
+            const ownersArray = this.ownersFormArray;
+            // Limpiar owners existentes
+            while (ownersArray.length > 0) {
+              ownersArray.removeAt(0);
+            }
+            // Agregar cada owner del borrador
+            renovacionData.owners.forEach((ownerData: any) => {
+              // Asegurar que phone se carga correctamente, incluso si es string vacío
+              const phoneValue = ownerData.phone !== null && ownerData.phone !== undefined ? ownerData.phone : '';
+              
+              const ownerGroup = this.fb.group({
+                name: [ownerData.name || ''],
+                lastName: [ownerData.lastName || ''],
+                dateOfBirth: [ownerData.dateOfBirth || ''],
+                email: [ownerData.email || '', Validators.email],
+                phone: [phoneValue], // Asegurar que phone se carga correctamente
+                fullAddress: [ownerData.fullAddress || ''],
+                unit: [ownerData.unit || ''],
+                city: [ownerData.city || ''],
+                stateRegion: [ownerData.stateRegion || ''],
+                postalCode: [ownerData.postalCode || ''],
+                country: [ownerData.country || ''],
+                nationality: [ownerData.nationality || ''],
+                passportNumber: [ownerData.passportNumber || ''],
+                ssnItin: [ownerData.ssnItin || ''],
+                cuit: [ownerData.cuit || ''],
+                capitalContributions: [ownerData.capitalContributions || 0],
+                loansToLLC: [ownerData.loansToLLC || 0],
+                loansRepaid: [ownerData.loansRepaid || 0],
+                capitalWithdrawals: [ownerData.capitalWithdrawals || 0],
+                hasInvestmentsInUSA: [ownerData.hasInvestmentsInUSA || ''],
+                isUSCitizen: [ownerData.isUSCitizen || ''],
+                taxCountry: [Array.isArray(ownerData.taxCountry) ? ownerData.taxCountry : (ownerData.taxCountry ? [ownerData.taxCountry] : [])],
+                wasInUSA31Days: [ownerData.wasInUSA31Days || ''],
+                participationPercentage: [ownerData.participationPercentage || 0, [Validators.min(0), Validators.max(100)]]
+              });
+              ownersArray.push(ownerGroup);
+            });
+            console.log('[loadDraftRequest] Owners cargados:', ownersArray.length, 'owners con phone:', renovacionData.owners.map((o: any) => ({ phone: o.phone, tipo: typeof o.phone })));
+            
+            // Forzar actualización del componente intl-tel-input después de un breve delay
+            // para asegurar que el componente se inicialice con el valor correcto
+            setTimeout(() => {
+              ownersArray.controls.forEach((control, index) => {
+                const phoneControl = control.get('phone');
+                if (phoneControl && renovacionData.owners[index]?.phone) {
+                  // Forzar actualización del valor para que intl-tel-input lo detecte
+                  phoneControl.setValue(renovacionData.owners[index].phone, { emitEvent: true });
+                }
+                
+                // Forzar actualización del select múltiple taxCountry
+                const taxCountryControl = control.get('taxCountry');
+                if (taxCountryControl) {
+                  const taxCountryValue = renovacionData.owners[index]?.taxCountry;
+                  if (taxCountryValue) {
+                    // Asegurar que sea un array
+                    const taxCountryArray = Array.isArray(taxCountryValue) 
+                      ? taxCountryValue 
+                      : (typeof taxCountryValue === 'string' && taxCountryValue.includes(',')
+                          ? taxCountryValue.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0)
+                          : [taxCountryValue]);
+                    // Establecer el valor después de un pequeño delay adicional para asegurar que el DOM esté listo
+                    setTimeout(() => {
+                      taxCountryControl.setValue(taxCountryArray, { emitEvent: false });
+                    }, 50);
+                  }
+                }
+              });
+            }, 300);
+          }
         }
       } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest) {
         const cuentaData = request.cuentaBancariaRequest;
@@ -767,9 +840,29 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           members: this.membersFormArray?.value || []
         };
       } else if (serviceType === 'renovacion-llc') {
+        // Log para debuggear el problema del phone
+        const ownersValue = this.ownersFormArray.value || [];
+        const ownersControls = this.ownersFormArray.controls || [];
+        
+        // Verificar valores directamente de los FormControls
+        ownersControls.forEach((control: any, index: number) => {
+          const phoneControl = control.get('phone');
+          const phoneValueFromControl = phoneControl?.value;
+          const phoneValueFromArray = ownersValue[index]?.phone;
+          console.log(`[saveDraftRequest] Owner ${index + 1}:`, {
+            phoneFromControl: phoneValueFromControl,
+            phoneFromArray: phoneValueFromArray,
+            controlValid: phoneControl?.valid,
+            controlDirty: phoneControl?.dirty,
+            controlTouched: phoneControl?.touched
+          });
+        });
+        
+        console.log('[saveDraftRequest] Owners completos antes de enviar:', JSON.stringify(ownersValue, null, 2));
+        
         requestData.renovacionLlcData = {
           ...serviceData,
-          members: this.membersFormArray?.value || []
+          owners: ownersValue
         };
       } else if (serviceType === 'cuenta-bancaria') {
         requestData.cuentaBancariaData = {
@@ -832,8 +925,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         this.selectedClient = newClient;
         this.selectedClientId = newClient.id;
         
-        // Precargar los datos en el formulario (por si acaso)
-        this.precargarDatosCliente(newClient);
+        // NO llamar a precargarDatosCliente porque cambia el paso automáticamente
+        // Solo actualizar los campos del formulario sin cambiar el paso
+        // Los datos ya están en el formulario, solo necesitamos el ID
         
         console.log('Cliente creado exitosamente:', newClient);
       }
@@ -1240,8 +1334,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     group.addControl('paidForLLCDissolution', this.fb.control('')); // ¿Cuánto se pagó por la disolución de la LLC (si aplica)?
     group.addControl('bankAccountBalanceEndOfYear', this.fb.control('')); // Saldo al fin de año de las cuentas bancarias de la LLC
     
-    // Paso 4: Movimientos Financieros de la LLC en 2025
-    group.addControl('totalRevenue2025', this.fb.control('')); // Facturación total de la LLC en 2025
+    // Paso 4: Movimientos Financieros de la LLC
+    group.addControl('totalRevenue', this.fb.control('')); // Facturación total de la LLC
     
     // Paso 5: Información Adicional de la LLC
     group.addControl('hasFinancialInvestmentsInUSA', this.fb.control('')); // ¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?
@@ -1489,14 +1583,14 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         passportNumber: [''], // Validators.required - COMENTADO PARA TESTING
         ssnItin: [''],
         cuit: [''],
-        capitalContributions2025: [0],
-        loansToLLC2025: [0],
-        loansRepaid2025: [0],
-        capitalWithdrawals2025: [0],
+        capitalContributions: [0],
+        loansToLLC: [0],
+        loansRepaid: [0],
+        capitalWithdrawals: [0],
         hasInvestmentsInUSA: [''],
         isUSCitizen: [''],
-        taxCountry: [''],
-        wasInUSA31Days2025: [''],
+        taxCountry: [[]],
+        wasInUSA31Days: [''],
         participationPercentage: [0, [Validators.min(0), Validators.max(100)]] // Validators.required - COMENTADO PARA TESTING
       });
     }
@@ -1645,21 +1739,34 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.currentStep === 1 && this.serviceType?.valid) {
         this.currentStep = 2;
       } else if (this.currentStep === 2 && this.validateStep2()) {
-        try {
-          // Crear el cliente cuando se completa el paso 2
-          await this.createClientFromForm();
-          
-          // Si la creación fue exitosa, continuar con el siguiente paso
-          // Si es renovación, cargar aperturas del cliente antes de avanzar
+        // Si no hay cliente seleccionado, crear el cliente
+        if (!this.selectedClientId) {
+          try {
+            // Crear el cliente cuando se completa el paso 2
+            await this.createClientFromForm();
+            
+            // Después de crear el cliente, cargar aperturas si es renovación
+            if (this.getSelectedServiceType() === 'renovacion-llc') {
+              await this.loadClientAperturas();
+            }
+            // NO avanzar automáticamente - el usuario debe hacer clic en "Siguiente" nuevamente
+            // para ver la sección de "Seleccionar Apertura Existente" si es renovación
+            return; // Salir aquí para que el usuario pueda ver el paso 2 con el cliente creado
+          } catch (error) {
+            // Si hay error al crear el cliente, no avanzar al siguiente paso
+            console.error('No se pudo crear el cliente, no se avanza al siguiente paso');
+            return;
+          }
+        }
+        
+        // Si ya hay cliente seleccionado (fue creado en el clic anterior), avanzar al paso 3
+        if (this.selectedClientId) {
+          // Si es renovación, cargar aperturas del cliente antes de avanzar (por si no se cargaron antes)
           if (this.getSelectedServiceType() === 'renovacion-llc') {
             await this.loadClientAperturas();
           }
           this.currentStep = 3;
           this.serviceSection = 1; // Iniciar en la primera sección
-        } catch (error) {
-          // Si hay error al crear el cliente, no avanzar al siguiente paso
-          // El error ya se muestra en errorMessage
-          console.error('No se pudo crear el cliente, no se avanza al siguiente paso');
         }
       }
     }
@@ -1826,10 +1933,10 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   validateStep4(): boolean {
-    // Validaciones comentadas para testing rápido
     // Para cuenta bancaria gratuita, el monto puede ser 0
     const paymentMethod = this.requestForm.get('paymentMethod')?.value;
     const paymentAmount = this.requestForm.get('paymentAmount')?.value;
+    const paymentProofUrl = this.requestForm.get('paymentProofUrl')?.value;
     const serviceType = this.getSelectedServiceType();
     
     console.log('[validateStep4] Validando paso 4:', {
@@ -1838,12 +1945,25 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       serviceType,
       stripePaymentProcessed: this.stripePaymentProcessed,
       stripePaymentToken: this.stripePaymentToken ? 'presente' : 'ausente',
+      paymentProofUrl: paymentProofUrl ? 'presente' : 'ausente',
     });
     
+    // Si es cuenta bancaria gratuita (monto 0), no requiere método de pago
     if (serviceType === 'cuenta-bancaria' && paymentAmount === 0) {
-      // Si es cuenta bancaria gratuita, no requiere método de pago
       console.log('[validateStep4] Cuenta bancaria gratuita, retornando true');
       return true;
+    }
+    
+    // Si no hay monto o el monto es 0, no requiere pago
+    if (!paymentAmount || paymentAmount === 0) {
+      console.log('[validateStep4] Sin monto a pagar, retornando true');
+      return true;
+    }
+    
+    // Si hay monto a pagar, debe haber método de pago
+    if (!paymentMethod) {
+      console.log('[validateStep4] Hay monto pero no hay método de pago, retornando false');
+      return false;
     }
     
     // Si el método de pago es Stripe y hay un monto, verificar que el pago haya sido procesado
@@ -1853,9 +1973,15 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       return isValid;
     }
     
-    console.log('[validateStep4] Retornando true por defecto');
-    return true; // !!(this.requestForm.get('paymentMethod')?.valid && 
-           // this.requestForm.get('paymentAmount')?.valid);
+    // Si el método de pago es transferencia y hay un monto, verificar que haya comprobante
+    if (paymentMethod === 'transferencia' && paymentAmount > 0) {
+      const isValid = !!paymentProofUrl && paymentProofUrl.trim().length > 0;
+      console.log('[validateStep4] Transferencia con monto > 0, validación:', isValid);
+      return isValid;
+    }
+    
+    console.log('[validateStep4] Retornando false por defecto (caso no cubierto)');
+    return false;
   }
 
   /**
@@ -2461,13 +2587,19 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
             ssnItin: [member.ssnItin || ''],
             cuit: [member.cuit || ''],
             participationPercentage: [member.percentageOfParticipation || 0],
-            capitalContributions2025: [0],
-            loansToLLC2025: [0],
-            loansRepaid2025: [0],
-            capitalWithdrawals2025: [0],
+            capitalContributions: [0],
+            loansToLLC: [0],
+            loansRepaid: [0],
+            capitalWithdrawals: [0],
             hasInvestmentsInUSA: [''],
             isUSCitizen: [''],
-            taxCountry: [''],
+            taxCountry: [Array.isArray(member.taxFilingCountry) 
+              ? member.taxFilingCountry 
+              : (member.taxFilingCountry 
+                  ? (typeof member.taxFilingCountry === 'string' && member.taxFilingCountry.includes(',')
+                      ? member.taxFilingCountry.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0)
+                      : [member.taxFilingCountry])
+                  : [])],
             wasInUSA31Days2025: ['']
           });
           ownersArray.push(ownerGroup);

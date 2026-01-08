@@ -228,70 +228,70 @@
             <input type="text" [id]="'ownerCUIT' + i" class="form-control" formControlName="cuit">
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerCapitalContributions' + i" class="form-label">Aportes de Capital a la LLC 2025 (USD) <small class="text-muted">– Fondos personales transferidos como contribución de capital. No incluye préstamos.</small></label>
+            <label [for]="'ownerCapitalContributions' + i" class="form-label">Aportes de Capital a la LLC en {{ currentYear }} (USD) <small class="text-muted">– Fondos personales transferidos como contribución de capital. No incluye préstamos.</small></label>
             <div class="input-group">
-              <input type="number" [id]="'ownerCapitalContributions' + i" class="form-control" formControlName="capitalContributions2025" step="0.01" min="0">
+              <input type="number" [id]="'ownerCapitalContributions' + i" class="form-control" formControlName="capitalContributions" step="0.01" min="0">
               <span class="input-group-text">USD</span>
             </div>
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerLoansToLLC' + i" class="form-label">Préstamos a la LLC 2025 (USD) <small class="text-muted">– Monto prestado desde cuentas personales u otras entidades. No incluye aportes de capital.</small></label>
+            <label [for]="'ownerLoansToLLC' + i" class="form-label">Préstamos a la LLC en {{ currentYear }} (USD) <small class="text-muted">– Monto prestado desde cuentas personales u otras entidades. No incluye aportes de capital.</small></label>
             <div class="input-group">
-              <input type="number" [id]="'ownerLoansToLLC' + i" class="form-control" formControlName="loansToLLC2025" step="0.01" min="0">
+              <input type="number" [id]="'ownerLoansToLLC' + i" class="form-control" formControlName="loansToLLC" step="0.01" min="0">
               <span class="input-group-text">USD</span>
             </div>
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerLoansRepaid' + i" class="form-label">Préstamos Reembolsados 2025 (USD) <small class="text-muted">– Préstamos otorgados por el propietario y devueltos por la LLC. No incluye retiros de capital.</small></label>
+            <label [for]="'ownerLoansRepaid' + i" class="form-label">Préstamos Reembolsados en {{ currentYear }} (USD) <small class="text-muted">– Préstamos otorgados por el propietario y devueltos por la LLC. No incluye retiros de capital.</small></label>
             <div class="input-group">
-              <input type="number" [id]="'ownerLoansRepaid' + i" class="form-control" formControlName="loansRepaid2025" step="0.01" min="0">
+              <input type="number" [id]="'ownerLoansRepaid' + i" class="form-control" formControlName="loansRepaid" step="0.01" min="0">
               <span class="input-group-text">USD</span>
             </div>
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerCapitalWithdrawals' + i" class="form-label">Retiros de Capital 2025 (USD) <small class="text-muted">– Transferencias del propietario desde cuentas de la LLC a su cuenta personal.</small></label>
+            <label [for]="'ownerCapitalWithdrawals' + i" class="form-label">Retiros de Capital en {{ currentYear }} (USD) <small class="text-muted">– Transferencias del propietario desde cuentas de la LLC a su cuenta personal.</small></label>
             <div class="input-group">
-              <input type="number" [id]="'ownerCapitalWithdrawals' + i" class="form-control" formControlName="capitalWithdrawals2025" step="0.01" min="0">
+              <input type="number" [id]="'ownerCapitalWithdrawals' + i" class="form-control" formControlName="capitalWithdrawals" step="0.01" min="0">
               <span class="input-group-text">USD</span>
             </div>
           </div>
           <div class="col-md-12">
             <label class="form-label">¿Posee inversiones o activos en EE.UU.? <small class="text-muted">– Incluye cualquier inversión o activo financiero relacionado con la LLC o el propietario.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSAYes' + i" [value]="'si'" formControlName="hasInvestmentsInUSA">
+              <input class="form-check-input" type="radio" name="hasInvestmentsInUSA" [id]="'hasInvestmentsUSAYes' + i" [value]="'si'" formControlName="hasInvestmentsInUSA">
               <label class="form-check-label" [for]="'hasInvestmentsUSAYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSANo' + i" [value]="'no'" formControlName="hasInvestmentsInUSA">
+              <input class="form-check-input" type="radio" name="hasInvestmentsInUSA" [id]="'hasInvestmentsUSANo' + i" [value]="'no'" formControlName="hasInvestmentsInUSA">
               <label class="form-check-label" [for]="'hasInvestmentsUSANo' + i">No</label>
             </div>
           </div>
           <div class="col-md-12">
             <label class="form-label">El propietario es ciudadano de EE.UU.? <small class="text-muted">– Esto impacta el tratamiento fiscal de la LLC.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenYes' + i" [value]="'si'" formControlName="isUSCitizen">
+              <input class="form-check-input" type="radio" name="isUSCitizen" [id]="'isUSCitizenYes' + i" [value]="'si'" formControlName="isUSCitizen">
               <label class="form-check-label" [for]="'isUSCitizenYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenNo' + i" [value]="'no'" formControlName="isUSCitizen">
+              <input class="form-check-input" type="radio" name="isUSCitizen" [id]="'isUSCitizenNo' + i" [value]="'no'" formControlName="isUSCitizen">
               <label class="form-check-label" [for]="'isUSCitizenNo' + i">No</label>
             </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerTaxCountry' + i" class="form-label">País bajo cuyas leyes el propietario presenta impuestos</label>
-            <select [id]="'ownerTaxCountry' + i" class="form-select" formControlName="taxCountry">
-              <option value="">Selecciona un país...</option>
+            <select [id]="'ownerTaxCountry' + i" class="form-select" formControlName="taxCountry" multiple size="4">
               <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
             </select>
+            <small class="form-text text-muted">Mantén presionada la tecla Ctrl (o Cmd en Mac) para seleccionar múltiples países.</small>
           </div>
           <div class="col-md-12">
-            <label class="form-label">¿El propietario estuvo en EE.UU. más de 31 días en 2025? <small class="text-muted">– Esto afecta sus obligaciones fiscales.</small></label>
+            <label class="form-label">¿El propietario estuvo en EE.UU. más de 31 días en {{ currentYear }}? <small class="text-muted">– Esto afecta sus obligaciones fiscales.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysYes' + i" [value]="'si'" formControlName="wasInUSA31Days2025">
+              <input class="form-check-input" type="radio" name="wasInUSA31Days" [id]="'wasInUSA31DaysYes' + i" [value]="'si'" formControlName="wasInUSA31Days">
               <label class="form-check-label" [for]="'wasInUSA31DaysYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysNo' + i" [value]="'no'" formControlName="wasInUSA31Days2025">
+              <input class="form-check-input" type="radio" name="wasInUSA31Days" [id]="'wasInUSA31DaysNo' + i" [value]="'no'" formControlName="wasInUSA31Days">
               <label class="form-check-label" [for]="'wasInUSA31DaysNo' + i">No</label>
             </div>
           </div>
@@ -366,18 +366,18 @@
     </div>
   </div>
 
-  <!-- Sección 4: Movimientos Financieros de la LLC en 2025 -->
+  <!-- Sección 4: Movimientos Financieros de la LLC -->
   <div *ngIf="currentSection === 4" class="form-section">
-    <h4 class="section-title"><strong>SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN {{ currentYear }}</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
-        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en 2025</label>
+        <label for="totalRevenue" class="form-label">Facturación total de la LLC en {{ currentYear }}</label>
         <div class="input-group">
-          <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0">
+          <input type="number" id="totalRevenue" class="form-control" formControlName="totalRevenue" step="0.01" min="0">
           <span class="input-group-text">USD</span>
         </div>
-        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de 2025, considerando todas las cuentas bancarias asociadas.</small>
+        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de {{ currentYear }}, considerando todas las cuentas bancarias asociadas.</small>
       </div>
     </div>
   </div>
@@ -560,7 +560,7 @@
       <div class="col-md-12">
         <label for="bankStatementsFile" class="form-label"><strong>Información bancaria</strong></label>
         <input type="file" id="bankStatementsFile" class="form-control" (change)="onFileSelected($event, 'bankStatementsFileUrl', 'bankStatements')" accept=".pdf" [disabled]="getFileUploadState('bankStatements').uploading" />
-        <small class="form-text text-muted">Por favor, cargue un archivo PDF con los estados de cuenta de diciembre de 2025 para todos los bancos asociados con la LLC.</small>
+        <small class="form-text text-muted">Por favor, cargue un archivo PDF con los estados de cuenta de diciembre de {{ currentYear }} para todos los bancos asociados con la LLC.</small>
         <div *ngIf="getFileUploadState('bankStatements').file && !getFileUploadState('bankStatements').uploading" class="selected-file-info mt-2">
           <div class="alert alert-info d-flex justify-content-between align-items-center">
             <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('bankStatements').file?.name }} ({{ ((getFileUploadState('bankStatements').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
