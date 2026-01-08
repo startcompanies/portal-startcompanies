@@ -118,8 +118,8 @@
         </div>
       </div>
 
-      <!-- Selección de Apertura Existente (solo para Renovación) -->
-      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && clientEmail?.value" class="form-section mt-4">
+      <!-- Selección de Apertura Existente (solo para Renovación y cuando el cliente ya existe y tiene aperturas) -->
+      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && selectedClientId && clientAperturas.length > 0" class="form-section mt-4">
         <h4 class="section-title">Seleccionar Apertura Existente (Opcional)</h4>
         <div class="alert alert-info">
           <i class="bi bi-info-circle me-2"></i>
@@ -146,7 +146,7 @@
             <small class="form-text text-muted" *ngIf="isLoadingAperturas">
               <i class="bi bi-hourglass-split me-1"></i>Cargando aperturas...
             </small>
-            <small class="form-text text-muted" *ngIf="!isLoadingAperturas && clientAperturas.length === 0 && clientEmail?.value">
+            <small class="form-text text-muted" *ngIf="!isLoadingAperturas && clientAperturas.length === 0">
               <i class="bi bi-info-circle me-1"></i>No se encontraron aperturas completadas para este cliente.
             </small>
           </div>
@@ -165,8 +165,8 @@
     <div *ngIf="(currentStep === 2 && selectedClientId) || (currentStep === 3 && !selectedClientId)" class="form-step" [formGroup]="serviceDataForm">
       <h3>Datos del Servicio: {{ getServiceTypeLabel(getSelectedServiceType()) }}</h3>
       
-      <!-- Selección de Apertura Existente para Renovación (cuando hay cliente seleccionado) -->
-      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && selectedClientId" class="form-section mb-4">
+      <!-- Selección de Apertura Existente para Renovación (cuando hay cliente seleccionado y tiene aperturas) -->
+      <div *ngIf="getSelectedServiceType() === 'renovacion-llc' && selectedClientId && clientAperturas.length > 0" class="form-section mb-4">
         <div class="card border-primary">
           <div class="card-header bg-primary text-white">
             <h5 class="mb-0">

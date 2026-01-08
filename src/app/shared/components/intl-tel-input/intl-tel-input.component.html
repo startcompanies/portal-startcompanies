@@ -1,10 +1,17 @@
-<input
-  #telInput
-  type="tel"
-  [id]="id"
-  [placeholder]="placeholder"
-  [required]="required"
-  [disabled]="disabled"
-  class="form-control"
-/>
+<div class="intl-tel-input-wrapper">
+  <input
+    #telInput
+    type="tel"
+    [id]="id"
+    [placeholder]="placeholder"
+    [required]="required"
+    [disabled]="disabled"
+    [class.is-invalid]="showError && !isValid"
+    [class.is-valid]="showError && isValid && value"
+    class="form-control"
+  />
+  <div *ngIf="showError && !isValid && errorMessage" class="invalid-feedback d-block">
+    {{ errorMessage }}
+  </div>
+</div>
 

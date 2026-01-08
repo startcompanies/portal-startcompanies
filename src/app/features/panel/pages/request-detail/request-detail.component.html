@@ -972,17 +972,17 @@
                   </div>
                 </div>
 
-                <!-- SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025 -->
-                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.totalRevenue2025">
+                <!-- SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC -->
+                <div class="mb-4" *ngIf="fullRequestData.renovacionLlcRequest.totalRevenue">
                   <h6 class="text-secondary mb-3 border-bottom pb-2">
                     <i class="bi bi-graph-up me-2"></i>
-                    SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025
+                    SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN {{ currentYear }}
                   </h6>
                   <div class="row g-3">
                     <div class="col-md-12">
                       <div class="detail-item">
-                        <label class="detail-label">Facturación total de la LLC en 2025:</label>
-                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.totalRevenue2025 | number:'1.2-2' }} USD</span>
+                        <label class="detail-label">Facturación total de la LLC en {{ currentYear }}:</label>
+                        <span class="detail-value">${{ fullRequestData.renovacionLlcRequest.totalRevenue | number:'1.2-2' }} USD</span>
                       </div>
                     </div>
                   </div>
@@ -1057,7 +1057,7 @@
                         <label class="detail-label">Información bancaria:</label>
                         <div class="detail-value">
                           <a [href]="fullRequestData.renovacionLlcRequest.bankStatementsFileUrl" target="_blank" class="text-primary text-decoration-underline">
-                            <i class="bi bi-file-earmark-pdf me-1"></i>Estados de cuenta de diciembre de 2025
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Estados de cuenta de diciembre de {{ currentYear }}
                             <i class="bi bi-box-arrow-up-right ms-1" style="font-size: 0.75rem;"></i>
                           </a>
                         </div>
@@ -1168,28 +1168,28 @@
                           <span class="detail-value">{{ owner.cuit }}</span>
                         </div>
                       </div>
-                      <div class="col-md-6" *ngIf="owner.capitalContributions2025">
+                      <div class="col-md-6" *ngIf="owner.capitalContributions">
                         <div class="detail-item">
-                          <label class="detail-label">Aportes de Capital a la LLC 2025 (USD):</label>
-                          <span class="detail-value">${{ owner.capitalContributions2025 | number:'1.2-2' }} USD</span>
+                          <label class="detail-label">Aportes de Capital a la LLC en {{ currentYear }} (USD):</label>
+                          <span class="detail-value">${{ owner.capitalContributions | number:'1.2-2' }} USD</span>
                         </div>
                       </div>
-                      <div class="col-md-6" *ngIf="owner.loansToLLC2025">
+                      <div class="col-md-6" *ngIf="owner.loansToLLC">
                         <div class="detail-item">
-                          <label class="detail-label">Préstamos a la LLC 2025 (USD):</label>
-                          <span class="detail-value">${{ owner.loansToLLC2025 | number:'1.2-2' }} USD</span>
+                          <label class="detail-label">Préstamos a la LLC en {{ currentYear }} (USD):</label>
+                          <span class="detail-value">${{ owner.loansToLLC | number:'1.2-2' }} USD</span>
                         </div>
                       </div>
-                      <div class="col-md-6" *ngIf="owner.loansRepaid2025">
+                      <div class="col-md-6" *ngIf="owner.loansRepaid">
                         <div class="detail-item">
-                          <label class="detail-label">Préstamos Reembolsados 2025 (USD):</label>
-                          <span class="detail-value">${{ owner.loansRepaid2025 | number:'1.2-2' }} USD</span>
+                          <label class="detail-label">Préstamos Reembolsados en {{ currentYear }} (USD):</label>
+                          <span class="detail-value">${{ owner.loansRepaid | number:'1.2-2' }} USD</span>
                         </div>
                       </div>
-                      <div class="col-md-6" *ngIf="owner.capitalWithdrawals2025">
+                      <div class="col-md-6" *ngIf="owner.capitalWithdrawals">
                         <div class="detail-item">
-                          <label class="detail-label">Retiros de Capital 2025 (USD):</label>
-                          <span class="detail-value">${{ owner.capitalWithdrawals2025 | number:'1.2-2' }} USD</span>
+                          <label class="detail-label">Retiros de Capital en {{ currentYear }} (USD):</label>
+                          <span class="detail-value">${{ owner.capitalWithdrawals | number:'1.2-2' }} USD</span>
                         </div>
                       </div>
                       <div class="col-md-6" *ngIf="owner.hasInvestmentsInUSA">
@@ -1214,11 +1214,11 @@
                           <span class="detail-value">{{ owner.taxCountry }}</span>
                         </div>
                       </div>
-                      <div class="col-md-6" *ngIf="owner.wasInUSA31Days2025">
+                      <div class="col-md-6" *ngIf="owner.wasInUSA31Days">
                         <div class="detail-item">
-                          <label class="detail-label">¿El propietario estuvo en EE.UU. más de 31 días en 2025?:</label>
-                          <span class="detail-value badge" [class.bg-success]="owner.wasInUSA31Days2025 === 'si'" [class.bg-danger]="owner.wasInUSA31Days2025 === 'no'">
-                            {{ owner.wasInUSA31Days2025 === 'si' ? 'Sí' : 'No' }}
+                          <label class="detail-label">¿El propietario estuvo en EE.UU. más de 31 días en {{ currentYear }}?:</label>
+                          <span class="detail-value badge" [class.bg-success]="owner.wasInUSA31Days === 'si'" [class.bg-danger]="owner.wasInUSA31Days === 'no'">
+                            {{ owner.wasInUSA31Days === 'si' ? 'Sí' : 'No' }}
                           </span>
                         </div>
                       </div>

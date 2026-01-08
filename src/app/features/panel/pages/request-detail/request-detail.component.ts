@@ -98,6 +98,16 @@ export class RequestDetailComponent implements OnInit {
     this.isAdmin = this.authService.isAdmin();
   }
 
+  // Año relevante para el formulario de renovación (año fiscal que se está renovando)
+  // Para renovación, típicamente es el año anterior al actual
+  get currentYear(): number {
+    const now = new Date();
+    // Para renovación, el año fiscal relevante es el año anterior
+    // Si estamos en enero-marzo, podría ser el año anterior; si estamos después, el año actual
+    // Por ahora, usamos el año anterior al actual como año fiscal de renovación
+    return now.getFullYear() - 1;
+  }
+
   ngOnInit(): void {
     // Intentar obtener UUID primero, luego ID (para compatibilidad)
     this.requestId = this.route.snapshot.paramMap.get('uuid') || this.route.snapshot.paramMap.get('id');
