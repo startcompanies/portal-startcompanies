@@ -11,5 +11,6 @@ export const environment = {
     debug: true // Modo debug activado en staging
   },
   baseUrl: 'https://staging.startcompanies.io',
+  //baseUrl: 'http://localhost:4000',
   domain: 'staging.startcompanies.io'
 };

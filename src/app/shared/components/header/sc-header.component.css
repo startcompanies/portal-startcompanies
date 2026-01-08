@@ -47,9 +47,23 @@
   margin-bottom: 0.5rem;
 }
 
-.sc-menu-container .navbar-collapse {
-  display: flex !important;
-  flex-basis: auto;
+/* Solo mostrar el menú en desktop (pantallas grandes) */
+@media (min-width: 992px) {
+  .sc-menu-container .navbar-collapse {
+    display: flex !important;
+    flex-basis: auto;
+  }
+}
+
+/* En móviles, el menú debe estar oculto por defecto */
+@media (max-width: 991.98px) {
+  .sc-menu-container .navbar-collapse {
+    display: none !important;
+  }
+  
+  .sc-menu-container .navbar-collapse.show {
+    display: block !important;
+  }
 }
 
 .sc-menu-container .navbar-nav {

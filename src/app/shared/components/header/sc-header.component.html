@@ -8,37 +8,42 @@
         </app-responsive-image>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleMenu()">
+      <button class="navbar-toggler" type="button"
+        [attr.aria-controls]="'navbarNav'"
+        [attr.aria-expanded]="isOpen"
+        aria-label="Toggle navigation" 
+        (click)="toggleMenu()">
         <span class="navbar-toggler-icon"></span>
       </button>
     </div>
 
     <div class="container sc-menu-container">
-      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+      <div class="collapse navbar-collapse justify-content-center" 
+           [class.show]="isOpen"
+           id="navbarNav">
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item" [ngClass]="{ active: isRouteActive('/nosotros') }">
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link" aria-current="page"
-              [langRouterLink]="'nosotros'">{{ "NAVBAR.us" | transloco }}</a>
+              [langRouterLink]="'nosotros'" (click)="closeMenu()">{{ "NAVBAR.us" | transloco }}</a>
           </li>
           <li class="nav-item" [ngClass]="{
               active: isRouteActive('/planes') || isRouteActive('/pricing')
             }">
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link" href="javascript:void(0)"
-              (click)="navigateToPlansSection()">{{ "NAVBAR.plans" | transloco }}</a>
+              (click)="navigateToPlansSection(); closeMenu()">{{ "NAVBAR.plans" | transloco }}</a>
           </li>
           <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" aria-current="page" class="nav-link"
-              [langRouterLink]="'blog'">{{ "NAVBAR.blog" | transloco }}</a>
+              [langRouterLink]="'blog'" (click)="closeMenu()">{{ "NAVBAR.blog" | transloco }}</a>
           </li>
           <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
-              [langRouterLink]="'contacto'">{{ "NAVBAR.contact" | transloco }}</a>
+              [langRouterLink]="'contacto'" (click)="closeMenu()">{{ "NAVBAR.contact" | transloco }}</a>
           </li>
           <!-- Botón de iniciar sesión en móvil -->
           <li class="nav-item d-lg-none">
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
-              routerLink="/panel/login">{{ "NAVBAR.login" | transloco }}</a>
+              routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
           </li>
         </ul>
       </div>

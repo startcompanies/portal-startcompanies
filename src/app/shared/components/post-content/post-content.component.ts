@@ -1,6 +1,8 @@
 import { Component, Input, Inject, PLATFORM_ID, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 declare global {
   interface Window {
@@ -24,9 +26,12 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
   private calendlyInitialized = new Set<string>();
 
+  baseUrl = environment.baseUrl;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
@@ -43,6 +48,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
+        this.processInternalLinks();
       }, 200);
     }
   }
@@ -58,6 +64,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
+        this.processInternalLinks();
       }, 200);
     }
   }
@@ -206,10 +213,42 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     content = content.replace(/\\n/g, ''); // eliminar escapes de newline
     content = content.replace(/<p>\s*<\/p>/g, ''); // eliminar párrafos vacíos
     
-    // Procesar enlaces externos preservando TODOS los atributos existentes (style, class, etc.)
-    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>/gi, (match, beforeHref, href, afterHref) => {
-      // Si es un enlace externo, agregar target y rel sin romper atributos existentes
-      if (href && !href.startsWith('/') && !href.startsWith('#') && !href.startsWith('mailto:')) {
+    // Procesar enlaces a businessenusa.com y convertirlos a enlaces internos de Angular
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Verificar si el enlace apunta a businessenusa.com
+      if (href && href.includes('businessenusa.com')) {
+        try {
+          const url = new URL(href);
+          // Extraer la ruta (por ejemplo, 'que-es-llc' de 'https://businessenusa.com/que-es-llc')
+          const path = url.pathname.replace(/^\//, ''); // Remover el slash inicial
+          
+          if (path) {
+            // Marcar el enlace con un atributo data para procesarlo después
+            // Preservar todos los atributos existentes
+            const allAttrs = beforeHref + afterHref;
+            const hasTarget = /target\s*=/i.test(allAttrs);
+            const hasDataLink = /data-internal-link\s*=/i.test(allAttrs);
+            
+            let newAttrs = '';
+            if (!hasDataLink) {
+              newAttrs += ` data-internal-link="${path}"`;
+            }
+            // Mantener target="_blank" si ya existe, o agregarlo si no existe
+            if (!hasTarget) {
+              newAttrs += ' target="_blank"';
+            }
+            
+            // Preservar todos los atributos originales y agregar el marcador
+            return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>${linkContent}</a>`;
+          }
+        } catch (e) {
+          // Si hay error al parsear la URL, continuar con el procesamiento normal
+          console.warn('Error parsing URL:', href, e);
+        }
+      }
+      
+      // Para otros enlaces externos, agregar target y rel sin romper atributos existentes
+      if (href && !href.startsWith('/') && !href.startsWith('#') && !href.startsWith('mailto:') && !href.includes('businessenusa.com')) {
         // Verificar si ya tiene target o rel
         const hasTarget = /target\s*=/i.test(beforeHref + afterHref);
         const hasRel = /rel\s*=/i.test(beforeHref + afterHref);
@@ -223,7 +262,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         }
         
         // Preservar todos los atributos originales (style, class, etc.)
-        return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>`;
+        return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>${linkContent}</a>`;
       }
       return match;
     });
@@ -590,6 +629,69 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
+  }
+
+  /**
+   * Procesa los enlaces internos marcados con data-internal-link y los convierte a enlaces de Angular
+   */
+  private processInternalLinks(): void {
+    if (!this.isBrowser || !this.contentContainer?.nativeElement) {
+      return;
+    }
+
+    const container = this.contentContainer.nativeElement;
+    const internalLinks = container.querySelectorAll('a[data-internal-link]') as NodeListOf<HTMLAnchorElement>;
+
+    internalLinks.forEach((link) => {
+      const route = link.getAttribute('data-internal-link');
+      if (!route) return;
+
+      // Verificar si ya se procesó este enlace
+      if (link.hasAttribute('data-processed-internal-link')) {
+        return;
+      }
+
+      // Marcar como procesado
+      link.setAttribute('data-processed-internal-link', 'true');
+
+      // Remover el atributo data-internal-link para limpiar
+      link.removeAttribute('data-internal-link');
+
+      // Agregar event listener para navegación con Angular Router
+      link.addEventListener('click', (event: MouseEvent) => {
+        // Permitir middle/ctrl/meta/shift/alt clicks y enlaces con target distinto
+        if (
+          event.button !== 0 ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return; // dejar comportamiento por defecto
+        }
+
+        const target = link.getAttribute('target');
+        if (target && target !== '_self') {
+          return; // permitir abrir en nueva pestaña si piden
+        }
+
+        // Prevenir el comportamiento por defecto y navegar con Angular Router
+        event.preventDefault();
+        
+        // Navegar usando el Router de Angular
+        // La ruta puede ser un string simple o un array
+        // Agregar 'blog' antes de la ruta
+        const routeArray = route.split('/').filter(segment => segment.length > 0);
+        this.router.navigate(['blog', ...routeArray]).catch((error) => {
+          console.warn('Error navegando a ruta:', route, error);
+        });
+      });
+
+      // Actualizar el href para que funcione con "abrir en nueva pestaña" y sea SEO-friendly
+      // Construir la URL completa usando baseUrl con 'blog' en medio
+      const fullUrl = `${this.baseUrl}/blog/${route}`;
+      link.setAttribute('href', fullUrl);
+    });
   }
 
   /**

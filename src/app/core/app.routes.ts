@@ -147,7 +147,7 @@ export const routes: Routes = [
             },
           },
           {
-            path: 'post/:slug',
+            path: ':slug',
             loadComponent: () => import('../features/public/blog/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
             data: {
               seo: {
@@ -172,7 +172,7 @@ export const routes: Routes = [
       },
       {
         path: 'post/:slug',
-        redirectTo: '/blog/post/:slug',
+        redirectTo: '/blog/:slug',
         pathMatch: 'full'
       },
       {
@@ -718,7 +718,7 @@ export const routes: Routes = [
             },
           },
           {
-            path: 'post/:slug',
+            path: ':slug',
             loadComponent: () => import('../features/public/blog/blog-post-v2/blog-post-v2.component').then(m => m.BlogPostV2Component),
             data: {
               seo: {
@@ -743,7 +743,7 @@ export const routes: Routes = [
       },
       {
         path: 'post/:slug',
-        redirectTo: '/en/blog/post/:slug',
+        redirectTo: '/en/blog/:slug',
         pathMatch: 'full'
       },
       // Wizard routes - English

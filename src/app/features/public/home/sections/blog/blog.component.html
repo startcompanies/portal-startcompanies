@@ -48,7 +48,7 @@
                           {{ stripHtmlTags(post.excerpt) }}
                         </p>
                         <a
-                          [langRouterLink]="['/blog', 'post', post.slug]"
+                          [langRouterLink]="['/blog', post.slug]"
                           class="blog-read-more mt-auto"
                           >Leer más</a
                         >
@@ -133,7 +133,7 @@
                           {{ stripHtmlTags(postSlide[0].excerpt) }}
                         </p>
                         <a
-                          [langRouterLink]="['/blog', 'post', postSlide[0].slug]"
+                          [langRouterLink]="['/blog', postSlide[0].slug]"
                           class="blog-read-more mt-auto"
                           >Leer más</a
                         >

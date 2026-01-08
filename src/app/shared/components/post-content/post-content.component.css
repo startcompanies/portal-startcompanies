@@ -24,7 +24,8 @@ section[style*="background-image"] a {
   font-size: 16px !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  background-color: #f1e2d9 !important;
+  /*background-color: #f1e2d9 !important;*/
+  color: #FFFFFF !important;
 }
 
 /* Estilos para abre-corp-card */
@@ -33,15 +34,16 @@ section[style*="background-image"] a {
   background-color: #2d3748 !important;
   font-family: Arial, sans-serif !important;
   max-width: 100% !important;
+  min-height: 450px !important;
   padding: 1.5rem 2rem !important;
-  border-radius: 0.5rem !important;
+  border-radius: 2rem !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
 .app-post-content .abre-corp-title,
 .abre-corp-title {
   color: #ffffff !important;
-  font-size: 1rem;
+  font-size: 1.7rem;
   font-weight: 800 !important;
   line-height: 1.3 !important;
   margin-bottom: 1rem !important;
@@ -75,7 +77,7 @@ section[style*="background-image"] a {
   background-color: #00bcd4 !important;
   color: #ffffff !important;
   border: none !important;
-  font-size: 0.7rem !important;
+  font-size: 1rem !important;
   white-space: nowrap !important;
   padding: 0.75rem 0 !important;
   border-radius: 50px !important;
@@ -93,7 +95,7 @@ section[style*="background-image"] a {
 .app-post-content .abre-corp-calendar-container,
 .abre-corp-calendar-container {
   background-color: #ffffff !important;
-  max-height: 600px !important;
+  max-height: 400px !important;
   width: 100% !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
@@ -450,7 +452,6 @@ section[style*="background-image"] a {
 
 .app-post-content .preguntas-frecuentes-title,
 .preguntas-frecuentes-title {
-  color: #ffffff;
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 800;
   line-height: 1.3;
@@ -635,3 +636,197 @@ section[style*="background-image"] a {
   font-size: clamp(0.95rem, 2vw, 1rem);
 }
 
+/* Estilos para landing-index-card (card de índice para posts tipo landing) */
+.app-post-content .landing-index-card,
+.landing-index-card {
+  background: #02CAE3;
+  color: #FFFFFF;
+  border-radius: 1rem;
+  border: none;
+}
+.app-post-content .landing-index-card a, .landing-index-card a {
+  color: #FFFFFF !important;
+}
+
+/* Estilos para imágenes en posts tipo landing */
+.landing-page-row .app-post-content img {
+  border-radius: 4rem !important;
+}
+
+/* Estilos para tablas dentro del contenido del post */
+.app-post-content .table-custom-container,
+.app-post-content .table-responsive.table-custom-container {
+  border-radius: 15px 15px 0 0;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  margin-bottom: 2rem;
+}
+
+.app-post-content .table-custom-container .table-custom,
+.app-post-content .table-responsive.table-custom-container .table-custom {
+  margin-bottom: 0;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Estilo del encabezado oscuro */
+.app-post-content .table-custom-container .table-custom thead tr,
+.app-post-content .table-responsive.table-custom-container .table-custom thead tr {
+  background-color: #293B49 !important;
+  color: #FFFFFF !important;
+}
+
+.app-post-content .table-custom-container .table-custom thead th,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th {
+  padding: 1.5rem 1rem !important;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #dee2e6 !important;
+  border-top: none !important;
+  vertical-align: middle;
+  font-size: 1rem;
+  background-color: #293B49 !important;
+  color: #FFFFFF !important;
+}
+
+.app-post-content .table-custom-container .table-custom thead th:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:first-child {
+  border-left: none !important;
+  text-align: left;
+  padding-left: 1.5rem;
+  background-color: #293B49 !important;
+}
+
+.app-post-content .table-custom-container .table-custom thead th:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:last-child {
+  border-right: none !important;
+}
+
+/* Estilo de las celdas del cuerpo */
+.app-post-content .table-custom-container .table-custom tbody td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td {
+  padding: 1.2rem 1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #333333;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:first-child {
+  border-left: none !important;
+  text-align: left;
+  font-weight: 500;
+  padding-left: 1.5rem;
+  background-color: #ffffff;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:last-child {
+  border-right: none !important;
+}
+
+.app-post-content .table-custom-container .table-custom tbody tr:last-child td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Bordes internos sutiles */
+.app-post-content .table-custom-container .table-bordered,
+.app-post-content .table-responsive.table-custom-container .table-bordered {
+  border: none;
+}
+
+/* Estilos para el título de preguntas frecuentes */
+.app-post-content .preguntas-frecuentes-title,
+.preguntas-frecuentes-title {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+}
+
+.app-post-content .preguntas-frecuentes-title span,
+.preguntas-frecuentes-title span {
+  color: #02CAE3 !important;
+}
+
+/* Estilos para el botón de descarga de template */
+.app-post-content .btn-descarga-template,
+.btn-descarga-template {
+  background: #02CAE3 !important;
+  border: none !important;
+  border-radius: 1rem !important;
+  font-size: 1rem !important;
+  padding: 7px !important;
+}
+
+/* Estilos para la card de autor */
+.app-post-content .card-autor,
+.card-autor {
+  background-color: #02cae3 !important;
+  border-radius: 2.5rem !important; /* Más redondeado según captura */
+  padding: 2.5rem !important;      /* Más espacio interno */
+  border: none !important;
+}
+
+/* Estilos para la imagen del autor */
+.app-post-content .card-autor img.rounded-circle,
+.card-autor img.rounded-circle {
+  width: 200px !important;  /* Aumentado para igualar la captura */
+  height: 200px !important;
+  object-fit: cover !important;
+  border: 3px solid rgba(255,255,255,0.2) !important; /* Toque de calidad */
+}
+
+/* Estilos para el label "Autor" */
+.app-post-content .card-autor .autor-label,
+.card-autor .autor-label {
+  font-size: 0.9rem !important;
+  color: #1a1a1a !important; /* Negro suave de la captura */
+  margin-bottom: 0.2rem !important;
+  font-weight: 700 !important;
+}
+
+/* Estilos para el nombre del autor */
+.app-post-content .card-autor .autor-nombre,
+.card-autor .autor-nombre {
+  font-size: 1.8rem !important; /* Más grande y pesado */
+  color: #ffffff !important;
+  margin-bottom: 0.8rem !important;
+  font-weight: 800 !important; /* Extra bold como en la imagen */
+}
+
+/* Estilos para la descripción del autor */
+.app-post-content .card-autor .autor-descripcion,
+.card-autor .autor-descripcion {
+  color: #1a1a1a !important; /* Mejor contraste sobre el cian */
+  font-size: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  line-height: 1.5 !important;
+}
+
+.app-post-content .card-autor .autor-descripcion p,
+.card-autor .autor-descripcion p {
+  margin: 0 !important;
+}
+
+/* Estilos para el botón de LinkedIn del autor */
+.app-post-content .card-autor .btn-linkedin-autor,
+.card-autor .btn-linkedin-autor {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  background-color: #2d2d2d !important; /* Fondo gris oscuro de la captura */
+  border: none !important;
+  padding: 0.7rem 1.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.app-post-content .card-autor .btn-linkedin-autor:hover,
+.card-autor .btn-linkedin-autor:hover {
+  background-color: #000000 !important;
+  transform: translateY(-2px);
+}

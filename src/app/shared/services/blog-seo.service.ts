@@ -79,7 +79,7 @@ export class BlogSeoService {
    * Genera los datos SEO para un post específico
    */
   private generatePostSeoData(post: Post): SeoData {
-    const postUrl = `${this.baseUrl}/blog/post/${post.slug}`;
+    const postUrl = `${this.baseUrl}/blog/${post.slug}`;
     const postImage = post.image_url || `${this.baseUrl}/assets/blog/default-post.webp`;
     
     // Generar keywords basadas en categorías y tags
@@ -216,11 +216,11 @@ export class BlogSeoService {
       "dateModified": post.published_at,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `${this.baseUrl}/blog/post/${post.slug}`
+        "@id": `${this.baseUrl}/blog/${post.slug}`
       },
       "articleSection": post.categories.map(cat => cat.name).join(', '),
       "keywords": this.generateKeywords(post),
-      "url": `${this.baseUrl}/blog/post/${post.slug}`
+      "url": `${this.baseUrl}/blog/${post.slug}`
     };
 
     this.addJsonLdScript(structuredData);
@@ -285,7 +285,7 @@ export class BlogSeoService {
    * Genera URL canónica para un post
    */
   generateCanonicalUrl(slug: string): string {
-    return `${this.baseUrl}/blog/post/${slug}`;
+    return `${this.baseUrl}/blog/${slug}`;
   }
 
   /**

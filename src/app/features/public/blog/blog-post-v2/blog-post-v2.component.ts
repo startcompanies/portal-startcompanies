@@ -11,6 +11,8 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 import { PostContentComponent } from '../../../../shared/components/post-content/post-content.component';
 import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -22,20 +24,23 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
     ResponsiveImageComponent,
     PostContentComponent,
     ScHeaderComponent,
+    LangRouterLinkDirective,
   ],
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
 })
 export class BlogPostV2Component implements OnInit, AfterViewInit {
   private blogService = inject(BlogService);
+  baseUrl = environment.baseUrl;
 
-  postArticle!: Post;
+  postArticle?: Post;
   isBrowser = false;
   contentBlocks: any[] = [];
   hasSections = false;
   firstSectionContent = '';
   firstSectionImage = '';
   remainingContent = '';
+  heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
 
   heroImages = {
@@ -54,7 +59,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       return this.heroImages;
     }
     // Si no es landing, usar la imagen del post
-    if (this.postArticle?.image_url) {
+    if (this.postArticle && this.postArticle.image_url) {
       return {
         mobile: this.postArticle.image_url,
         tablet: this.postArticle.image_url,
@@ -97,6 +102,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Resetear hasSections antes de cargar el nuevo post
       this.hasSections = false;
+      this.heroCardContent = '';
+      this.firstSectionContent = '';
+      this.firstSectionImage = '';
       this.postArticle = post;
       if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -112,6 +120,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         // Si tiene secciones, extraer la primera sección
         if (this.hasSections) {
           this.extractFirstSection(post.content);
+        } else {
+          // Para posts no-landing, extraer contenido inicial para la card hero
+          this.extractHeroCardContent(post.content);
         }
       }
       
@@ -260,7 +271,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       firstSectionHtml = firstSectionHtml.replace(imgRegex, '').trim();
     } else {
       // Si no hay imagen en la sección, usar la imagen del post
-      this.firstSectionImage = this.postArticle.image_url || '';
+      this.firstSectionImage = this.postArticle?.image_url || '';
     }
 
     // Remover títulos (h1, h2, h3) del contenido para evitar duplicación con el título del post
@@ -590,6 +601,79 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   getSanitizedFirstSection(): SafeHtml {
     // Usar bypassSecurityTrustHtml para preservar los estilos inline aplicados
     return this.sanitizer.bypassSecurityTrustHtml(this.firstSectionContent);
+  }
+
+  getSanitizedHeroCardContent(): SafeHtml {
+    // Usar bypassSecurityTrustHtml para preservar los estilos inline aplicados
+    return this.sanitizer.bypassSecurityTrustHtml(this.heroCardContent);
+  }
+
+  /**
+   * Extrae el primer párrafo del post para mostrar en la card hero (posts no-landing)
+   */
+  private extractHeroCardContent(content: string): void {
+    if (!this.isBrowser || !content) return;
+
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = content;
+
+      // Extraer solo el primer párrafo <p></p>
+      const firstParagraph = tempDiv.querySelector('p');
+      let extractedContent = '';
+
+      if (firstParagraph) {
+        extractedContent = firstParagraph.outerHTML;
+      }
+
+      // Limpiar el contenido extraído
+      extractedContent = this.cleanHeroCardContent(extractedContent);
+
+      this.heroCardContent = this.sanitizeHtmlString(extractedContent);
+      this.firstSectionImage = this.postArticle?.image_url || '';
+    } catch (error) {
+      console.warn('Error extrayendo contenido para card hero:', error);
+      this.heroCardContent = '';
+      this.firstSectionImage = this.postArticle?.image_url || '';
+    }
+  }
+
+  /**
+   * Limpia el contenido extraído para la card hero
+   */
+  private cleanHeroCardContent(html: string): string {
+    if (!html || !this.isBrowser) return html;
+
+    try {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Remover videos
+      tempDiv.querySelectorAll('video, iframe, [class*="video"], [class*="embed"]').forEach(el => el.remove());
+
+      // Remover imágenes grandes o que puedan afectar el diseño
+      tempDiv.querySelectorAll('img').forEach(img => {
+        const imgElement = img as HTMLImageElement;
+        // Mantener solo imágenes pequeñas o con clases específicas
+        if (imgElement.width && imgElement.width > 300) {
+          imgElement.remove();
+        }
+      });
+
+      // Remover enlaces que puedan causar problemas
+      tempDiv.querySelectorAll('a[href^="#"]').forEach(link => {
+        // Mantener los enlaces pero simplificarlos si es necesario
+        const linkElement = link as HTMLAnchorElement;
+        if (linkElement.href.includes('#contact')) {
+          // Mantener estos enlaces
+        }
+      });
+
+      return tempDiv.innerHTML.trim();
+    } catch (error) {
+      console.warn('Error limpiando contenido de card hero:', error);
+      return html;
+    }
   }
 
   getCurrentUrl(): string {
