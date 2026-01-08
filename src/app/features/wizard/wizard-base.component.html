@@ -20,27 +20,13 @@
             </div>
           </div>
           <div class="wizard-progress-steps-container">
-            <button 
-              class="wizard-steps-nav-button wizard-steps-nav-prev"
-              (click)="scrollSteps('prev')"
-              [disabled]="!canScrollPrev"
-              type="button"
-              aria-label="Pasos anteriores"
-              *ngIf="steps.length > 4"
-            >
+            <button class="wizard-steps-nav-button wizard-steps-nav-prev" (click)="scrollSteps('prev')"
+              [disabled]="!canScrollPrev" type="button" aria-label="Pasos anteriores" *ngIf="steps.length > 4">
               <mat-icon>chevron_left</mat-icon>
             </button>
-            <div 
-              class="wizard-progress-steps"
-              #stepsContainer
-              (scroll)="onStepsScroll()"
-            >
-              <div 
-                *ngFor="let step of steps; let i = index" 
-                class="wizard-progress-step"
-                [ngClass]="getStepClass(i)"
-                [attr.data-step-index]="i"
-              >
+            <div class="wizard-progress-steps" #stepsContainer (scroll)="onStepsScroll()">
+              <div *ngFor="let step of steps; let i = index" class="wizard-progress-step" [ngClass]="getStepClass(i)"
+                [attr.data-step-index]="i">
                 <div class="wizard-progress-step-icon">
                   <i [class]="'bi ' + stepIcons[step.stepNumber || (i + 1)]"></i>
                 </div>
@@ -49,14 +35,8 @@
                 </div>
               </div>
             </div>
-            <button 
-              class="wizard-steps-nav-button wizard-steps-nav-next"
-              (click)="scrollSteps('next')"
-              [disabled]="!canScrollNext"
-              type="button"
-              aria-label="Siguientes pasos"
-              *ngIf="steps.length > 4"
-            >
+            <button class="wizard-steps-nav-button wizard-steps-nav-next" (click)="scrollSteps('next')"
+              [disabled]="!canScrollNext" type="button" aria-label="Siguientes pasos" *ngIf="steps.length > 4">
               <mat-icon>chevron_right</mat-icon>
             </button>
           </div>

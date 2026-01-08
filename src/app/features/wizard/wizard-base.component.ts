@@ -57,7 +57,7 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   currentLang = 'es';
   internalStepIndex: number = 0;
   @ContentChild(MatStepper) stepper!: MatStepper;
-  
+
   canScrollPrev: boolean = false;
   canScrollNext: boolean = false;
   private destroy$ = new Subject<void>();
@@ -79,8 +79,12 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
     this.translocoService.langChanges$.subscribe((l) => {
       this.currentLang = l;
     });
-
-    if (this.flowType === 'llc' && this.internalStepIndex == 3) {
+    console.log('Flow type:', this.flowType);
+    console.log('Initial step index:', this.internalStepIndex);
+    if (this.internalStepIndex == 0) {
+      this.showNextButton = false;
+    }
+    else if (this.flowType === 'llc' && this.internalStepIndex == 3) {
       this.sub = this.wizardStateService.showNextButton$
         .subscribe(value => this.showNextButton = value);
     } else {
@@ -142,12 +146,12 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
   onStepChanged(index: number): void {
     this.internalStepIndex = index;
     this.stepChanged.emit(index);
-    
+
     setTimeout(() => {
       this.scrollToActiveStep();
       this.checkScrollButtons();
     }, 100);
-    
+
     if (index === this.totalSteps - 1) {
       setTimeout(() => {
         this.onFinish();
@@ -233,7 +237,7 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
 
     const container = this.stepsContainer.nativeElement;
     const activeStepElement = container.querySelector(`[data-step-index="${this.internalStepIndex}"]`) as HTMLElement;
-    
+
     if (activeStepElement) {
       const containerRect = container.getBoundingClientRect();
       const stepRect = activeStepElement.getBoundingClientRect();
@@ -246,7 +250,7 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
 
       // Calcular posición para mostrar 4 pasos centrando el activo cuando sea posible
       let targetScroll: number;
-      
+
       if (stepIndex < this.VISIBLE_STEPS / 2) {
         // Si está en los primeros pasos, mostrar desde el inicio
         targetScroll = 0;

@@ -41,7 +41,7 @@ export class LLCAperturaComponent implements OnInit {
   currentStep = 1;
   totalSteps = 5;
   currentLang = 'es';
-  
+
   createdUserId: number | null = null;
   createdClientId: number | null = null;
   isLoading = false;
@@ -49,9 +49,11 @@ export class LLCAperturaComponent implements OnInit {
   successMessage: string | null = null;
 
   stepTitles: { [key: number]: string } = {};
-  
+
   // Para controlar la visibilidad de botones en el paso 4 (Información LLC)
   llcInfoCurrentSection = 1;
+
+  showNextButton = false;
 
   constructor(
     private wizardStateService: WizardStateService,
@@ -60,7 +62,7 @@ export class LLCAperturaComponent implements OnInit {
     private router: Router,
     private requestsService: RequestsService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeStepTitles();
@@ -97,11 +99,11 @@ export class LLCAperturaComponent implements OnInit {
    */
   private checkPendingVerification(): void {
     const savedState = localStorage.getItem('wizard_state_pending_verification');
-    
+
     if (savedState && this.authService.isAuthenticated()) {
       try {
         const state = JSON.parse(savedState);
-        
+
         if (state.wizardData) {
           Object.keys(state.wizardData).forEach(stepNumber => {
             this.wizardStateService.setStepData(parseInt(stepNumber), state.wizardData[stepNumber]);
@@ -114,7 +116,6 @@ export class LLCAperturaComponent implements OnInit {
         }
 
         localStorage.removeItem('wizard_state_pending_verification');
-        console.log('[LLCAperturaComponent] Estado del wizard restaurado después de verificación');
       } catch (error) {
         console.error('Error al restaurar estado del wizard:', error);
       }
@@ -146,6 +147,10 @@ export class LLCAperturaComponent implements OnInit {
     this.createdUserId = event.userId;
     this.createdClientId = event.clientId;
     console.log('[LLCAperturaComponent] Usuario y cliente creados:', event);
+  }
+
+  onShowNextButton(show: boolean): void {
+    this.showNextButton = show;
   }
 
   /**
@@ -198,7 +203,7 @@ export class LLCAperturaComponent implements OnInit {
       const createdRequest = await this.requestsService.createRequest(requestData);
 
       console.log('[LLCAperturaComponent] Solicitud creada exitosamente:', createdRequest);
-      
+
       this.successMessage = 'Solicitud creada exitosamente';
       this.isLoading = false;
 

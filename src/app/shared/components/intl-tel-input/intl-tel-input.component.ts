@@ -28,8 +28,8 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   @Input() separateDialCode: boolean = false;
 
   private iti: any = null;
-  private onChange = (value: string) => {};
-  private onTouched = () => {};
+  private onChange = (value: string) => { };
+  private onTouched = () => { };
 
   value: string = '';
 
@@ -46,11 +46,11 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
         separateDialCode: this.separateDialCode,
         utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/js/utils.js'
       };
-      
+
       if (this.initialCountry) {
         options.initialCountry = this.initialCountry;
       }
-      
+
       this.iti = intlTelInput(this.telInput.nativeElement, options);
 
       // Listen for changes
@@ -129,6 +129,7 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
 
   // Public method to get the full number with country code
   getFullNumber(): string {
+    console.log('[IntlTelInputComponent] getFullNumber called', this.iti);
     if (this.iti) {
       return this.iti.getNumber() || '';
     }

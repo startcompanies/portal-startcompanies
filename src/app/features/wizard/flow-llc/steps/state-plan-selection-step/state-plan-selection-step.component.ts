@@ -75,13 +75,13 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' },
         { value: 'District of Columbia', label: 'District of Columbia', abbreviation: 'DC' },
     ];
-    
+
     // Planes disponibles según reglas de precios
     planes = [
-        { 
-            value: 'Entrepreneur', 
-            label: 'Pack Emprendedor', 
-            price: 499, 
+        {
+            value: 'Entrepreneur',
+            label: 'Pack Emprendedor',
+            price: 499,
             states: ['New Mexico'],
             recommended: true,
             description: 'Ideal para freelancers, agencias y startups en etapa temprana que no tienen presencia física en EE.UU.',
@@ -97,10 +97,10 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
                 'E-book con información sobre LLCs.'
             ]
         },
-        { 
-            value: 'Elite', 
-            label: 'Pack Elite', 
-            price: 599, 
+        {
+            value: 'Elite',
+            label: 'Pack Elite',
+            price: 599,
             states: ['all'],
             recommended: false,
             description: 'Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos',
@@ -116,10 +116,10 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
                 'E-book con información sobre LLCs.'
             ]
         },
-        { 
-            value: 'Premium', 
-            label: 'Pack Premium', 
-            price: 699, 
+        {
+            value: 'Premium',
+            label: 'Pack Premium',
+            price: 699,
             states: ['all'],
             recommended: false,
             description: 'Ideal para emprendedores. Solución integral con soporte fiscal y renovación automática.',
@@ -141,8 +141,8 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             ]
         }
     ];
-    
-    
+
+
     selectedState: string | null = null;
     selectedPlan: string | null = null;
     calculatedAmount: number = 0;
@@ -191,7 +191,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             this.saveStepData();
             this.calculateAmount();
         });
-        
+
         // Calcular monto inicial
         this.calculateAmount();
     }
@@ -247,7 +247,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         }
 
         this.calculatedAmount = baseAmount;
-        
+
         // Guardar monto en el estado del wizard
         this.wizardStateService.setStepData(this.stepNumber, {
             ...this.form.value,
@@ -260,7 +260,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         this.form.get('plan')?.setValue(planValue);
         this.selectedPlan = planValue;
         this.stripeService.setPackId(planValue);
-        
+
         const selectedPlanObj = this.planes.find(p => p.value === planValue);
         if (selectedPlanObj) {
             // Si el plan solo tiene un estado disponible, seleccionarlo automáticamente
@@ -283,7 +283,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
                 }
             }
         }
-        
+
         this.calculateAmount();
     }
 
@@ -328,7 +328,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
                     }
                 }
             }
-            
+
             this.selectedState = stateValue;
             this.stripeService.setState(stateValue);
             this.calculateAmount();
@@ -419,7 +419,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         }
 
         // Si el plan tiene estados específicos, filtrar
-        return this.usStates.filter(state => 
+        return this.usStates.filter(state =>
             selectedPlanObj.states.includes(state.value)
         );
     }

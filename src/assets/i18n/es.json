@@ -914,14 +914,25 @@
       "llc_info": "Información de la LLC"
     },
     "basic_register": {
-      "full_name": "Nombre completo",
-      "full_name_required": "El nombre completo es obligatorio.",
+      "name": "Nombre",
+      "name_required": "El nombre es obligatorio.",
+      "lastName": "Apellido",
+      "lastName_required": "El apellido es obligatorio.",
       "phone": "Teléfono",
       "phone_required": "El teléfono es obligatorio.",
       "email": "Correo electrónico",
       "email_required": "El correo electrónico es obligatorio.",
       "password": "Contraseña",
-      "password_required": "La contraseña es obligatoria."
+      "password_required": "La contraseña es obligatoria.",
+      "register_button": "Registrarse para continuar",
+      "validate_email": "Validación de correo electrónico",
+      "validate_email_description": "Hemos enviado un código de verificación a tu correo electrónico. Por favor, ingrésalo a continuación para continuar.",
+      "email_code": "Código de verificación",
+      "email_code_required": "El código de verificación es obligatorio.",
+      "verify_button": "Verificar correo electrónico",
+      "complete_data": "Por favor completa todos los campos requeridos",
+      "email_exists": "El correo electrónico ya está registrado. Por favor, inicia sesión.",
+      "email_exists_validate": "El correo electrónico ya está registrado. Por favor, ingresa el código de verificación."
     },
     "password": "Contraseña",
     "state": "Estado",
@@ -937,7 +948,8 @@
       "select_method": "Seleccione método",
       "card": "Tarjeta de crédito / débito",
       "paypal": "PayPal",
-      "required_method": "Seleccione un método de pago."
+      "required_method": "Seleccione un método de pago.",
+      "pay_button": "Pagar ${{amount}}"
     },
     "client": {
       "title": "Datos adicionales del cliente",
@@ -1181,9 +1193,6 @@
         "new_mexico": "Nuevo México",
         "texas": "Texas"
       }
-    },
-    "checkout": {
-      "pay_button": "Pagar ${{amount}}"
     }
   }
 }

@@ -74,7 +74,7 @@
     <!-- Paso 3: Pago -->
     <div *ngIf="currentStepIndex === 2" class="form-step">
       <h3>{{ stepTitles[3] || 'Pago' }}</h3>
-      <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2"></app-wizard-payment-step>
+      <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2" [type]="'renovacion-llc'"></app-wizard-payment-step>
       
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(1)">

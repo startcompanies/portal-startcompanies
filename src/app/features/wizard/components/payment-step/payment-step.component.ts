@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 import { StripeService } from '../../services/stripe.service';
 import { HttpClient } from '@angular/common/http';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
-
+import { RequestService } from '../../services/request.service';
 /**
  * Componente reutilizable para el paso de pago
  * Usado en flujos que requieren pago
@@ -29,9 +29,10 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   @Input() state: string = '';
   @Input() fixedAmount: number | null = null; // Monto fijo para flujos como cuenta bancaria (99 USD)
   @Input() currency: string = 'USD';
-  
+  @Input() type: string = '';
+
   @ViewChild(StripePaymentFormComponent, { static: false }) stripePaymentForm!: StripePaymentFormComponent;
-  
+
   totalAmount: number = 0;
   stripeProcessing = false;
   stripePaymentProcessed = false;
@@ -44,7 +45,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private stripeService: StripeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private requestService: RequestService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -68,12 +70,12 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     } else {
       // Cargar datos del paso anterior para mostrar resumen
       this.previousStepData = this.wizardStateService.getStepData(this.previousStepNumber);
-      
+
       // Obtener plan y estado del paso anterior
       if (this.previousStepData) {
         this.packId = this.previousStepData.plan || this.packId;
         this.state = this.previousStepData.state || this.state;
-        
+
         // Obtener monto del paso anterior
         if (this.previousStepData.amount) {
           this.totalAmount = this.previousStepData.amount;
@@ -143,15 +145,18 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
 
       // Guardar el token del pago
       this.stripePaymentToken = paymentResult.token;
-      
+
       // 2. Guardar estado del pago en el wizard
       this.stripePaymentProcessed = true;
       this.saveStepData();
-      
+
       // 3. Bloquear los campos de la tarjeta
       this.stripePaymentForm.disableCardElement();
-      
+
       this.stripeProcessing = false;
+
+      this.submitRequest();
+
       return true;
 
     } catch (error: any) {
@@ -194,5 +199,48 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       state: this.state
     };
     this.wizardStateService.setStepData(this.stepNumber, dataToSave);
+  }
+
+  submitRequest(): Promise<Request | null> {
+    return new Promise<Request | null>(async (resolve) => {
+      // Procesar el pago si no se ha hecho aún
+      if (!this.stripePaymentProcessed) {
+        const paymentSuccess = await this.processStripePayment();
+        if (!paymentSuccess) {
+          resolve(null);
+          return;
+        }
+      }
+
+      // Construir datos para la solicitud
+      const allData = this.wizardStateService.getAllData();
+
+      localStorage.setItem('wizard_request_in_process', JSON.stringify({
+        wizardData: allData,
+        timestamp: Date.now()
+      }));
+
+      const requestData = {
+        type: this.type,
+        currentStepNumber: this.stepNumber,
+        status: 'pendiente',
+        stripeToken: this.stripePaymentToken,
+        paymentAmount: this.totalAmount,
+        paymentMethod: 'stripe',
+        clientData: allData.step1,
+      };
+
+      console.log('[WizardPaymentStep] Enviando solicitud con datos:', requestData);
+
+      try {
+        // Enviar la solicitud al backend
+        const newRequest = await this.requestService.createRequest(requestData);
+        console.log('[WizardPaymentStep] Solicitud creada:', newRequest);
+        resolve(newRequest);
+      } catch (error) {
+        console.error('Error al enviar solicitud:', error);
+        resolve(null);
+      }
+    });
   }
 }

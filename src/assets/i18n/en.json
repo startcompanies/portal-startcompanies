@@ -917,14 +917,25 @@
       "llc_info": "LLC Information"
     },
     "basic_register": {
-      "full_name": "Full Name",
-      "full_name_required": "Full name is required.",
+      "name": "Name",
+      "name_required": "Name is required.",
+      "lastName": "Last Name",
+      "lastName_required": "Last name is required.",
       "phone": "Phone",
       "phone_required": "Phone is required.",
       "email": "Email",
       "email_required": "Email is required.",
       "password": "Password",
-      "password_required": "Password is required."
+      "password_required": "Password is required.",
+      "register_button": "Register to continue",
+      "validate_email": "Email validation",
+      "validate_email_description": "We have sent a verification code to your email. Please enter it below to continue.",
+      "email_code": "Verification code",
+      "email_code_required": "Verification code is required.",
+      "verify_button": "Verify email",
+      "complete_data": "Please complete all required fields",
+      "email_exists": "An account with this email already exists. Please log in.",
+      "email_exists_validate": "An account with this email already exists but is not verified. Please verify your email."
     },
     "password": "Password",
     "state": "State",
@@ -940,7 +951,8 @@
       "select_method": "Select method",
       "card": "Credit card / debit",
       "paypal": "PayPal",
-      "required_method": "Select payment method."
+      "required_method": "Select payment method.",
+      "pay_button": "Pay ${{amount}}"
     },
     "client": {
       "title": "Additional Client Information",
@@ -1164,9 +1176,6 @@
         "new_mexico": "New Mexico",
         "texas": "Texas"
       }
-    },
-    "checkout": {
-      "pay_button": "Pay ${{amount}}"
     }
   }
 }

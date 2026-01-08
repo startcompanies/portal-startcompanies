@@ -23,21 +23,18 @@
         <div class="step-number">1</div>
         <div class="step-label">Registro Básico</div>
       </div>
-      <div class="step-item" *ngIf="withPayment" 
-           [class.active]="currentStepIndex >= 1" 
-           [class.completed]="currentStepIndex > 1">
+      <div class="step-item" *ngIf="withPayment" [class.active]="currentStepIndex >= 1"
+        [class.completed]="currentStepIndex > 1">
         <div class="step-number">2</div>
         <div class="step-label">Pago</div>
       </div>
-      <div class="step-item" 
-           [class.active]="currentStepIndex >= (withPayment ? 2 : 1)" 
-           [class.completed]="currentStepIndex > (withPayment ? 2 : 1)">
+      <div class="step-item" [class.active]="currentStepIndex >= (withPayment ? 2 : 1)"
+        [class.completed]="currentStepIndex > (withPayment ? 2 : 1)">
         <div class="step-number">{{ withPayment ? 3 : 2 }}</div>
         <div class="step-label">Datos de Cuenta Bancaria</div>
       </div>
-      <div class="step-item" 
-           [class.active]="currentStepIndex >= (withPayment ? 3 : 2)" 
-           [class.completed]="currentStepIndex > (withPayment ? 3 : 2)">
+      <div class="step-item" [class.active]="currentStepIndex >= (withPayment ? 3 : 2)"
+        [class.completed]="currentStepIndex > (withPayment ? 3 : 2)">
         <div class="step-number">{{ withPayment ? 4 : 3 }}</div>
         <div class="step-label">Revisión Final</div>
       </div>
@@ -47,7 +44,7 @@
     <div *ngIf="currentStepIndex === 0" class="form-step">
       <h3>Registro Básico</h3>
       <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
-      
+
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
           Cancelar
@@ -61,13 +58,9 @@
     <!-- Paso 2: Pago (solo si withPayment = true) -->
     <div *ngIf="withPayment && currentStepIndex === 1" class="form-step">
       <h3>Pago</h3>
-      <app-wizard-payment-step 
-        [stepNumber]="2" 
-        [previousStepNumber]="1"
-        [fixedAmount]="99"
-        [currency]="'USD'"
-      ></app-wizard-payment-step>
-      
+      <app-wizard-payment-step [stepNumber]="2" [previousStepNumber]="1" [fixedAmount]="99" [currency]="'USD'"
+        [type]="'cuenta-bancaria'"></app-wizard-payment-step>
+
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(0)">
           Anterior
@@ -81,12 +74,10 @@
     <!-- Paso: Datos de Cuenta Bancaria -->
     <div *ngIf="currentStepIndex === (withPayment ? 2 : 1)" class="form-step">
       <h3>Datos de Cuenta Bancaria</h3>
-      <app-wizard-cuenta-bancaria-information-step
-        [stepNumber]="withPayment ? 3 : 2"
+      <app-wizard-cuenta-bancaria-information-step [stepNumber]="withPayment ? 3 : 2"
         [previousStepNumber]="withPayment ? 2 : 1"
-        (sectionChanged)="cuentaBancariaInfoCurrentSection = $event"
-      ></app-wizard-cuenta-bancaria-information-step>
-      
+        (sectionChanged)="cuentaBancariaInfoCurrentSection = $event"></app-wizard-cuenta-bancaria-information-step>
+
       <!-- Solo mostrar botones del wizard cuando estamos en la última sección (6) -->
       <div class="step-actions" *ngIf="cuentaBancariaInfoCurrentSection === 6">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 1 : 0)">
@@ -101,11 +92,9 @@
     <!-- Paso: Revisión Final -->
     <div *ngIf="currentStepIndex === (withPayment ? 3 : 2)" class="form-step">
       <h3>Revisión Final</h3>
-      <app-wizard-final-review-step 
-        [stepNumber]="withPayment ? 4 : 3" 
-        [previousSteps]="withPayment ? [1, 2, 3] : [1, 2]"
-      ></app-wizard-final-review-step>
-      
+      <app-wizard-final-review-step [stepNumber]="withPayment ? 4 : 3"
+        [previousSteps]="withPayment ? [1, 2, 3] : [1, 2]"></app-wizard-final-review-step>
+
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 2 : 1)">
           Anterior

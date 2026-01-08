@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
-import { Subscription } from 'rxjs';
+import { last, Subscription } from 'rxjs';
 import { AuthService } from '../../../panel/services/auth.service';
 import { PartnerClientsService } from '../../../panel/services/partner-clients.service';
 import { firstValueFrom } from 'rxjs';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
-
+import { RegisterService } from '../../services/register.service';
+import { RegisterData } from '../../services/register.service';
+import e from 'express';
 /**
  * Componente reutilizable para el paso de registro básico
  * Usado en todos los flujos
@@ -25,8 +27,10 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 1;
   @Output() userCreated = new EventEmitter<{ userId: number; clientId: number }>();
   @ViewChild(IntlTelInputComponent) phoneInput?: IntlTelInputComponent;
-  
+  @Output() showNextButton = new EventEmitter<boolean>();
+
   form!: FormGroup;
+  formValidation!: FormGroup;
   private formSubscription?: Subscription;
   isLoading = false;
   errorMessage: string | null = null;
@@ -35,12 +39,17 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   waitingEmailVerification = false;
   successMessage: string | null = null;
   detectedCountryCode: string = 'us';
+  emailVerificationCode: string = '';
+  emailCodeError: string | null = null;
+  emailVerified: boolean = false;
 
   constructor(
     private wizardStateService: WizardStateService,
     private authService: AuthService,
     private partnerClientsService: PartnerClientsService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private registerService: RegisterService,
+    private transloco: TranslocoService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -55,16 +64,34 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
      * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
      */
     this.form = new FormGroup({
-      fullName: new FormControl(savedData.fullName || ''),
+      firstName: new FormControl(savedData.firstName || '', [Validators.required]),
+      lastName: new FormControl(savedData.lastName || '', [Validators.required]),
       phone: new FormControl(savedData.phone || ''),
       email: new FormControl(savedData.email || '', [Validators.email]), // Solo valida formato si se completa
-      password: new FormControl(savedData.password || ''),
+      password: new FormControl(savedData.password || '', [Validators.required]),
+    });
+
+    this.formValidation = new FormGroup({
+      emailCode: new FormControl('', [Validators.required])
     });
   }
 
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.form);
     // Cargar datos guardados
+
+    if (this.authService.isAuthenticated()) {
+      this.emailVerified = true;
+      const data = this.authService.getCurrentUser();
+      this.form.patchValue({
+        firstName: data?.first_name || '',
+        lastName: data?.last_name || '',
+        email: data?.email || '',
+        phone: data?.phone || ''
+      });
+      this.showNextButton.emit(true);
+    }
+
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
       this.form.patchValue(savedData);
@@ -89,7 +116,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     // Guardar datos cuando el formulario cambia
     this.formSubscription = this.form.valueChanges.subscribe(() => {
       this.saveStepData();
-      
+
       // NO crear automáticamente - el usuario debe hacer clic explícitamente o avanzar al siguiente paso
       // La creación se hará cuando se intente avanzar al siguiente paso
     });
@@ -106,6 +133,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
    */
   private saveStepData(): void {
     if (this.form.valid) {
+      console.log('[WizardBasicRegisterStep] Formulario válido, guardando datos en el estado del wizard');
       this.wizardStateService.setStepData(this.stepNumber, this.form.value);
     }
   }
@@ -116,10 +144,10 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
    */
   async createUserAndClient(): Promise<boolean> {
     const formValue = this.form.value;
-    const { fullName, email, password, phone } = formValue;
+    const { firstName, lastName, email, password, phone } = formValue;
 
-    if (!fullName || !email || !password) {
-      this.errorMessage = 'Por favor completa todos los campos requeridos (nombre, email, contraseña)';
+    if (!firstName || !lastName || !email || !password) {
+      this.errorMessage = this.transloco.translate('WIZARD.basic_register.fill_all_required');
       return false;
     }
 
@@ -127,59 +155,19 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
 
     try {
-      // 1. Crear usuario (registro)
-      const nameParts = fullName.trim().split(' ');
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      const registerData = {
-        username: email, // Usar email como username
+      const registerData: RegisterData = {
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password,
-        first_name: firstName,
-        last_name: lastName
+        phone: phone
       };
 
       console.log('[WizardBasicRegisterStep] Creando usuario:', registerData);
-      const newUser = await firstValueFrom(this.authService.register(registerData));
-      this.createdUserId = newUser.id;
+      const newUser = await firstValueFrom(this.registerService.register(registerData));
       console.log('[WizardBasicRegisterStep] Usuario creado:', newUser);
 
-      // 2. Enviar email de verificación (NO hacer login automático)
-      try {
-        await firstValueFrom(this.authService.sendVerificationEmail(email));
-        console.log('[WizardBasicRegisterStep] Email de verificación enviado');
-      } catch (error: any) {
-        console.warn('[WizardBasicRegisterStep] Error al enviar email de verificación:', error);
-        // Continuar aunque falle el envío del email (puede que el backend lo envíe automáticamente)
-      }
-
-      // 3. Crear cliente asociado al usuario
-      // Para usuarios tipo 'client', el backend puede crear automáticamente el cliente
-      // Si no, crear el cliente usando el servicio
-      const clientData = {
-        full_name: fullName,
-        email: email,
-        phone: phone || undefined,
-        userId: newUser.id
-      };
-
-      let newClient: any = null;
-      try {
-        // Crear cliente usando el servicio
-        newClient = await firstValueFrom(
-          this.partnerClientsService.createClient(clientData)
-        );
-        this.createdClientId = newClient.id;
-        console.log('[WizardBasicRegisterStep] Cliente creado:', newClient);
-      } catch (error: any) {
-        // Si falla porque el cliente ya existe o por otra razón, usar el userId
-        console.warn('[WizardBasicRegisterStep] Error al crear cliente:', error);
-        // El backend puede haber creado el cliente automáticamente o puede que necesitemos buscarlo
-        // Por ahora, usar el userId como referencia
-        this.createdClientId = newUser.id;
-        newClient = { id: newUser.id }; // Crear objeto temporal para evitar errores
-      }
+      this.userCreated.emit({ userId: newUser.id, clientId: this.createdClientId! });
 
       // Guardar IDs en el estado del wizard
       this.wizardStateService.setStepData(this.stepNumber, {
@@ -199,21 +187,27 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         password: password,
         userId: newUser.id,
         clientId: this.createdClientId,
+        phone: phone,
         timestamp: Date.now()
       }));
 
       // Marcar que está esperando verificación
       this.waitingEmailVerification = true;
       this.isLoading = false;
-      
+
       // Retornar false para indicar que necesita verificación
       return false;
 
     } catch (error: any) {
-      console.error('[WizardBasicRegisterStep] Error al crear usuario/cliente:', error);
       this.errorMessage = error?.error?.message || 'Error al crear la cuenta. Por favor, intenta nuevamente.';
-      if (error.status === 400 && error.error?.message?.includes('email')) {
-        this.errorMessage = 'Ya existe un usuario con este email. Por favor, usa otro email o inicia sesión.';
+
+      if (error.error.statusCode == 400 && this.errorMessage?.includes('inicia sesión')) {
+        this.errorMessage = this.transloco.translate('WIZARD.basic_register.email_exists');
+      } else if (error.error.statusCode == 400 && this.errorMessage?.includes('confirmar')) {
+        this.errorMessage = this.transloco.translate('WIZARD.basic_register.email_exists_validate');
+        this.waitingEmailVerification = true;
+        this.isLoading = false;
+
       }
       this.isLoading = false;
       return false;
@@ -243,6 +237,40 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       this.errorMessage = error?.error?.message || 'Error al reenviar el email. Por favor, intenta nuevamente.';
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  async verifyEmailCode(): Promise<boolean> {
+    const email = this.form.get('email')?.value;
+    const code = this.formValidation.get('emailCode')?.value;
+    if (!email) {
+      this.errorMessage = 'No se encontró el email. Por favor, completa el formulario.';
+      return false;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    try {
+      const response = await firstValueFrom(this.registerService.verifyEmail({ email, confirmationToken: code }));
+
+      if (!response.accessToken) {
+        this.errorMessage = 'Código de verificación inválido. Por favor, intenta nuevamente.';
+        this.isLoading = false;
+        return false;
+      }
+
+      this.waitingEmailVerification = false;
+      this.showNextButton.emit(true);
+      this.emailVerified = true;
+      this.isLoading = false;
+      return true;
+
+    } catch (error: any) {
+      console.error('[WizardBasicRegisterStep] Error al verificar email:', error);
+      this.errorMessage = error?.error?.message || 'Error al verificar el email. Por favor, intenta nuevamente.';
+      this.isLoading = false;
+      return false;
     }
   }
 }

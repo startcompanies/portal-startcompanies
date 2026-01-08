@@ -132,16 +132,17 @@ export class AuthService {
       if (parts.length < 2) {
         throw new Error('Token inválido');
       }
-      
+
       const payload = JSON.parse(atob(parts[1]));
+      console.log('Payload decodificado del token:', payload);
       const user: User = {
         id: payload.id,
         username: payload.userName || payload.username,
         email: payload.email,
         status: payload.status,
         type: payload.type || 'client',
-        first_name: payload.first_name,
-        last_name: payload.last_name
+        first_name: payload.firstName,
+        last_name: payload.lastName
       };
       this.currentUserSubject.next(user);
     } catch (error) {
@@ -198,12 +199,12 @@ export class AuthService {
         if (response.accessToken) {
           this.setToken(response.accessToken);
           this.loadUserFromToken(response.accessToken);
-          
+
           // Guardar refreshToken en localStorage como fallback para iframes
           if (response.refreshToken) {
             localStorage.setItem('refreshToken', response.refreshToken);
           }
-          
+
           // Marcar que el login fue vía SSO
           localStorage.setItem('isSsoLogin', 'true');
         }
