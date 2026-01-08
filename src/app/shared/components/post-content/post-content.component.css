@@ -18,14 +18,118 @@
   }
 }
 
+/* Estilos para secciones con background image */
+.app-post-content section[style*="background-image"],
+section[style*="background-image"] {
+  width: 100%;
+  padding: 3rem 0;
+}
+
+/* Estilos para contenedores dentro de secciones con background image */
+.app-post-content section[style*="background-image"] .container,
+section[style*="background-image"] .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.app-post-content section[style*="background-image"] .row,
+section[style*="background-image"] .row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+/* Columnas dentro de secciones con background image - estilo cuadrado tipo Word */
+.app-post-content section[style*="background-image"] [class*="col-"],
+section[style*="background-image"] [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+/* Columnas con imágenes - alineación superior cuadrada */
+.app-post-content section[style*="background-image"] [class*="col-"]:has(img),
+section[style*="background-image"] [class*="col-"]:has(img) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem 1.5rem;
+}
+
+/* Alternativa para navegadores que no soportan :has() - imágenes dentro de columnas */
+.app-post-content section[style*="background-image"] [class*="col-"] img,
+section[style*="background-image"] [class*="col-"] img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  min-height: 300px;
+}
+
+/* Alinear texto en secciones con background image - alineación izquierda tipo Word */
+.app-post-content section[style*="background-image"] p,
+section[style*="background-image"] p {
+  text-align: left !important;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.app-post-content section[style*="background-image"] h1,
+.app-post-content section[style*="background-image"] h2,
+.app-post-content section[style*="background-image"] h3,
+.app-post-content section[style*="background-image"] h4,
+.app-post-content section[style*="background-image"] h5,
+.app-post-content section[style*="background-image"] h6,
+section[style*="background-image"] h1,
+section[style*="background-image"] h2,
+section[style*="background-image"] h3,
+section[style*="background-image"] h4,
+section[style*="background-image"] h5,
+section[style*="background-image"] h6 {
+  text-align: left !important;
+  max-width: 100%;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Alinear imágenes en secciones con background image - estilo cuadrado tipo Word */
+.app-post-content section[style*="background-image"] img,
+section[style*="background-image"] img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  min-height: 350px !important;
+  margin: 0 !important;
+  object-fit: cover !important;
+  border-radius: 0.5rem !important;
+  aspect-ratio: 4 / 3;
+}
+
 /* Estilos para enlaces dentro de secciones con background image */
 .app-post-content section[style*="background-image"] a,
 section[style*="background-image"] a {
   font-size: 16px !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  /*background-color: #f1e2d9 !important;*/
   color: #FFFFFF !important;
+  text-align: left !important;
+  display: inline-block !important;
+  margin-top: 0.5rem;
 }
 
 /* Estilos para abre-corp-card */
@@ -488,6 +592,44 @@ section[style*="background-image"] a {
   margin-left: 1rem;
 }
 
+/* Estilos para el header del acordeón de preguntas frecuentes */
+.app-post-content .custom-accordion-header,
+.custom-accordion-header {
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos para el botón del acordeón de preguntas frecuentes */
+.app-post-content .custom-accordion-button,
+.custom-accordion-button {
+  text-align: left !important;
+  background: none !important;
+  border: none !important;
+  padding: 1rem 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  cursor: pointer !important;
+  /*width: 100% !important;*/
+}
+
+/* Estilos para el h2 dentro del botón del acordeón */
+.app-post-content .custom-accordion-button h2,
+.custom-accordion-button h2 {
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+  font-weight: inherit;
+}
+
+/* Estilos para el icono del acordeón de preguntas frecuentes */
+.app-post-content .faq-arrow-icon,
+.faq-arrow-icon {
+  margin: 0 0.5rem !important;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  font-size: 1rem !important;
+}
+
 /* Estilos para renovar-llc-card */
 .app-post-content .renovar-llc-card,
 .renovar-llc-card {
@@ -765,7 +907,7 @@ section[style*="background-image"] a {
 /* Estilos para la card de autor */
 .app-post-content .card-autor,
 .card-autor {
-  background-color: #02cae3 !important;
+  background-color: #283A48 !important;
   border-radius: 2.5rem !important; /* Más redondeado según captura */
   padding: 2.5rem !important;      /* Más espacio interno */
   border: none !important;
@@ -784,7 +926,7 @@ section[style*="background-image"] a {
 .app-post-content .card-autor .autor-label,
 .card-autor .autor-label {
   font-size: 0.9rem !important;
-  color: #1a1a1a !important; /* Negro suave de la captura */
+  color: #ffffff !important; /* Negro suave de la captura */
   margin-bottom: 0.2rem !important;
   font-weight: 700 !important;
 }
@@ -801,7 +943,7 @@ section[style*="background-image"] a {
 /* Estilos para la descripción del autor */
 .app-post-content .card-autor .autor-descripcion,
 .card-autor .autor-descripcion {
-  color: #1a1a1a !important; /* Mejor contraste sobre el cian */
+  color: #ffffff !important; /* Mejor contraste sobre el cian */
   font-size: 1rem !important;
   margin-bottom: 1.5rem !important;
   line-height: 1.5 !important;

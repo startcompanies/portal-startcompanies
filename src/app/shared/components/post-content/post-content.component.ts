@@ -181,20 +181,39 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       // Solo actualizar si no es el botón del acordeón actual
       if (buttonElement !== button) {
         buttonElement.setAttribute('aria-expanded', 'false');
+        // Cambiar el icono de preguntas frecuentes a chevron-down cuando se cierra
+        const otherFaqArrowIcon = buttonElement.querySelector('.faq-arrow-icon') as HTMLElement;
+        if (otherFaqArrowIcon) {
+          otherFaqArrowIcon.classList.remove('bi-chevron-up');
+          otherFaqArrowIcon.classList.add('bi-chevron-down');
+        }
       }
     });
 
+    // Buscar el icono de preguntas frecuentes (faq-arrow-icon) dentro del botón
+    const faqArrowIcon = button.querySelector('.faq-arrow-icon') as HTMLElement;
+    
     // Toggle del acordeón actual
     if (content.style.display === 'none' || content.style.display === '') {
       content.style.display = 'block';
       if (icon) {
         icon.style.transform = 'rotate(90deg)';
       }
+      // Cambiar el icono de chevron-down a chevron-up cuando está abierto
+      if (faqArrowIcon) {
+        faqArrowIcon.classList.remove('bi-chevron-down');
+        faqArrowIcon.classList.add('bi-chevron-up');
+      }
       button.setAttribute('aria-expanded', 'true');
     } else {
       content.style.display = 'none';
       if (icon) {
         icon.style.transform = 'rotate(0deg)';
+      }
+      // Cambiar el icono de chevron-up a chevron-down cuando está cerrado
+      if (faqArrowIcon) {
+        faqArrowIcon.classList.remove('bi-chevron-up');
+        faqArrowIcon.classList.add('bi-chevron-down');
       }
       button.setAttribute('aria-expanded', 'false');
     }
