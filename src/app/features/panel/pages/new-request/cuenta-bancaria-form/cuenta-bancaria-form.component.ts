@@ -106,6 +106,26 @@ export class CuentaBancariaFormComponent implements OnInit, OnChanges {
     return this.fileUploadStates[key] || { file: null, uploading: false, progress: 0 };
   }
 
+  /**
+   * Genera el fileKey para archivos de owners (para cuenta-bancaria, el fileKey se usa directamente)
+   * Este método existe para mantener consistencia y asegurar que el fileKey se genere correctamente
+   */
+  getOwnerFileKey(fileKeyPrefix: string, ownerIndex: number): string {
+    // Para cuenta-bancaria, el fileKey se usa directamente sin modificación
+    // ya que onFileSelected en new-request.component.ts no genera un uniqueKey para owners
+    // Pero necesitamos incluir el índice para que sea único para cada owner
+    return `${fileKeyPrefix}${ownerIndex}`;
+  }
+
+  /**
+   * Obtiene el valor de un campo del owner de forma segura
+   */
+  getOwnerFieldValue(owner: any, fieldName: string): string | null {
+    const control = owner.get ? owner.get(fieldName) : null;
+    const value = control?.value;
+    return value && value !== '' ? value : null;
+  }
+
   getCompanyAddressForm(): FormGroup | null {
     return this.serviceDataForm?.get('companyAddress') as FormGroup | null;
   }
@@ -132,6 +152,31 @@ export class CuentaBancariaFormComponent implements OnInit, OnChanges {
 
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
+  }
+
+  /**
+   * Verifica si hay suficientes propietarios para multimember (mínimo 2)
+   */
+  hasEnoughOwnersForMultiMember(): boolean {
+    if (!this.isMultiMember) {
+      return true; // Si no es multimember, no requiere validación
+    }
+    const ownersCount = this.ownersFormArray?.length || 0;
+    return ownersCount >= 2;
+  }
+
+  /**
+   * Obtiene el mensaje de validación para mostrar al lado del botón
+   */
+  getOwnersValidationMessage(): string {
+    if (!this.isMultiMember) {
+      return '';
+    }
+    const ownersCount = this.ownersFormArray?.length || 0;
+    if (ownersCount < 2) {
+      return `Se requieren al menos 2 propietarios para LLC Multi-Member. Actualmente tienes ${ownersCount}.`;
+    }
+    return '';
   }
 }
 

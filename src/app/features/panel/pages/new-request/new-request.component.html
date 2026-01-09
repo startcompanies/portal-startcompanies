@@ -267,9 +267,23 @@
         <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="isLoading">
           Anterior
         </button>
-        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="isLoading || !validateCurrentServiceSection()">
-          {{ isLastServiceSection() ? 'Siguiente' : 'Continuar' }}
-        </button>
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="isLoading || !validateCurrentServiceSection()">
+            {{ isLastServiceSection() ? 'Siguiente' : 'Continuar' }}
+          </button>
+          <small *ngIf="getAperturaLlcMembersValidationMessage()" class="text-warning">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ getAperturaLlcMembersValidationMessage() }}
+          </small>
+          <small *ngIf="getRenovacionLlcOwnersValidationMessage()" class="text-warning">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ getRenovacionLlcOwnersValidationMessage() }}
+          </small>
+          <small *ngIf="getCuentaBancariaOwnersValidationMessage()" class="text-warning">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ getCuentaBancariaOwnersValidationMessage() }}
+          </small>
+        </div>
       </div>
     </div>
 

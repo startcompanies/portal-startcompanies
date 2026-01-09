@@ -111,8 +111,40 @@ export class AperturaLlcFormComponent implements OnInit, OnChanges {
     return this.serviceDataForm?.get('llcType')?.value === 'multi';
   }
 
+  /**
+   * Verifica si hay suficientes miembros para multimember (mínimo 2)
+   */
+  hasEnoughMembersForMultiMember(): boolean {
+    if (!this.isMultiMember()) {
+      return true; // Si no es multimember, no requiere validación
+    }
+    const membersCount = this.membersFormArray?.length || 0;
+    return membersCount >= 2;
+  }
+
+  /**
+   * Obtiene el mensaje de validación para mostrar al lado del botón
+   */
+  getMembersValidationMessage(): string {
+    if (!this.isMultiMember()) {
+      return '';
+    }
+    const membersCount = this.membersFormArray?.length || 0;
+    if (membersCount < 2) {
+      return `Se requieren al menos 2 miembros para LLC Multi-Member. Actualmente tienes ${membersCount}.`;
+    }
+    return '';
+  }
+
   getFileUploadState(key: string): { file: File | null; uploading: boolean; progress: number } {
     return this.fileUploadStates[key] || { file: null, uploading: false, progress: 0 };
+  }
+
+  /**
+   * Genera el uniqueKey para archivos de miembros (debe coincidir con el formato usado en new-request.component.ts)
+   */
+  getMemberFileKey(fileKey: string, memberIndex: number): string {
+    return `${fileKey}_member_${memberIndex}`;
   }
 
   getMemberAddressForm(member: any): FormGroup | null {

@@ -277,6 +277,39 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
   }
+
+  isSingleMember(): boolean {
+    return this.serviceDataForm?.get('llcType')?.value === 'single';
+  }
+
+  isMultiMember(): boolean {
+    return this.serviceDataForm?.get('llcType')?.value === 'multi';
+  }
+
+  /**
+   * Verifica si hay suficientes propietarios para multimember (mínimo 2)
+   */
+  hasEnoughOwnersForMultiMember(): boolean {
+    if (!this.isMultiMember()) {
+      return true; // Si no es multimember, no requiere validación
+    }
+    const ownersCount = this.ownersFormArray?.length || 0;
+    return ownersCount >= 2;
+  }
+
+  /**
+   * Obtiene el mensaje de validación para mostrar al lado del botón
+   */
+  getOwnersValidationMessage(): string {
+    if (!this.isMultiMember()) {
+      return '';
+    }
+    const ownersCount = this.ownersFormArray?.length || 0;
+    if (ownersCount < 2) {
+      return `Se requieren al menos 2 propietarios para LLC Multi-Member. Actualmente tienes ${ownersCount}.`;
+    }
+    return '';
+  }
 }
 
 

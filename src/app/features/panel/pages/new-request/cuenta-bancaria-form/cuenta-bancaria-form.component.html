@@ -441,119 +441,112 @@
 
   <!-- Información de los propietarios (solo si es Multi-Member) -->
   <div *ngIf="currentSection === 6 && isMultiMember" class="form-section">
-    <h4 class="section-title">Información de los propietarios</h4>
-    <div class="row g-3">
-      <div class="col-md-12">
-        <small class="form-text text-muted">Proporciona la información de todos los propietarios o socios.</small>
-      </div>
-
-      <!-- FormArray de propietarios -->
-      <div class="col-md-12" formArrayName="owners">
-        <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index" [formGroupName]="i" class="card mb-3">
-          <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Propietario {{ i + 1 }}</h5>
-            <button *ngIf="ownersFormArray && ownersFormArray.length > 1" type="button" class="btn btn-sm btn-outline-danger" (click)="removeOwner(i)">
-              <i class="bi bi-trash"></i> Eliminar
-            </button>
-          </div>
-          <div class="card-body">
-            <div class="row g-3">
-              <!-- Nombre -->
-              <div class="col-md-6">
-                <label [for]="'ownerFirstName' + i" class="form-label">Nombre</label>
-                <input type="text" [id]="'ownerFirstName' + i" class="form-control" formControlName="firstName">
-              </div>
-
-              <!-- Apellido -->
-              <div class="col-md-6">
-                <label [for]="'ownerLastName' + i" class="form-label">Apellido</label>
-                <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName">
-              </div>
-
-              <!-- Fecha de nacimiento -->
-              <div class="col-md-6">
-                <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
-                <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
-              </div>
-
-              <!-- Nacionalidad -->
-              <div class="col-md-6">
-                <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad</label>
-                <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
-                  <option value="">-Select-</option>
-                  <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
-                </select>
-              </div>
-
-              <!-- Número de pasaporte -->
-              <div class="col-md-6">
-                <label [for]="'ownerPassportNumber' + i" class="form-label">Número de pasaporte</label>
-                <input type="text" [id]="'ownerPassportNumber' + i" class="form-control" formControlName="passportNumber">
-              </div>
-
-              <!-- SSN / ITIN -->
-              <div class="col-md-6">
-                <label [for]="'ownerSSNITIN' + i" class="form-label">SSN / ITIN</label>
-                <input type="text" [id]="'ownerSSNITIN' + i" class="form-control" formControlName="ssnItin">
-              </div>
-
-              <!-- CUIT -->
-              <div class="col-md-6">
-                <label [for]="'ownerCUIT' + i" class="form-label">CUIT</label>
-                <input type="text" [id]="'ownerCUIT' + i" class="form-control" formControlName="cuit">
-              </div>
-
-              <!-- Porcentaje de participación -->
-              <div class="col-md-6">
-                <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación</label>
-                <div class="input-group">
-                  <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100">
-                  <span class="input-group-text">%</span>
-                </div>
-              </div>
-
-              <!-- Adjuntar pasaporte vigente -->
-              <div class="col-md-12">
-                <label [for]="'ownerPassportFile' + i" class="form-label">Adjuntar pasaporte vigente <span class="text-danger">*</span></label>
-                <!-- Solo mostrar input de file si NO hay URL guardada -->
-                <div *ngIf="!owner.get('passportFileUrl')?.value">
-                  <input type="file" [id]="'ownerPassportFile' + i" class="form-control" (change)="onFileSelected($event, 'owners.' + i + '.passportFileUrl', 'ownerPassport' + i)" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('ownerPassport' + i).uploading" />
-                  <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
-                  <div *ngIf="getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="selected-file-info mt-2">
-                    <div class="alert alert-info d-flex justify-content-between align-items-center">
-                      <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('ownerPassport' + i).file?.name }} ({{ ((getFileUploadState('ownerPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle"></i></button>
-                    </div>
-                  </div>
-                  <div *ngIf="getFileUploadState('ownerPassport' + i).uploading" class="upload-progress mt-2">
-                    <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('ownerPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('ownerPassport' + i).progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('ownerPassport' + i).progress }}%</div></div>
-                    <small class="text-muted">Subiendo archivo...</small>
-                  </div>
-                </div>
-                <!-- Mostrar archivo existente si hay URL guardada -->
-                <div *ngIf="owner.get('passportFileUrl')?.value && !getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="uploaded-file-info mt-2">
-                  <div class="alert alert-success">
-                    <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
-                    <a [href]="owner.get('passportFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
-                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
-                  </div>
-                </div>
-                <input type="hidden" formControlName="passportFileUrl">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Mensaje cuando no hay propietarios -->
-        <div *ngIf="!ownersFormArray || ownersFormArray.length === 0" class="alert alert-info">
-          <p class="mb-0">No hay propietarios agregados. Haz clic en "Agregar propietario" para comenzar.</p>
-        </div>
-
-        <!-- Botón para agregar propietario -->
-        <button type="button" class="btn btn-primary mt-3" (click)="addOwner()">
-          <i class="bi bi-plus-circle me-2"></i>Agregar propietario
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LOS PROPIETARIOS</strong></h4>
+    
+    <div formArrayName="owners">
+      <div *ngIf="ownersFormArray && ownersFormArray.length === 0" class="alert alert-info">
+        <p class="mb-0">No hay propietarios agregados. Por favor, agregue al menos un propietario.</p>
+        <button type="button" class="btn btn-primary mt-2" (click)="addOwner()">
+          <i class="bi bi-plus-circle me-2"></i>Agregar Propietario
         </button>
       </div>
+      <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index" [formGroupName]="i" class="owner-card mb-4 p-3 border rounded">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Propietario {{ i + 1 }}</h5>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeOwner(i)" *ngIf="ownersFormArray && ownersFormArray.length > 1">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+        
+        <div class="row g-3">
+          <!-- Nombre -->
+          <div class="col-md-6">
+            <label [for]="'ownerFirstName' + i" class="form-label">Nombre <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerFirstName' + i" class="form-control" formControlName="firstName" placeholder="Enter a value for this field.">
+          </div>
+
+          <!-- Apellido -->
+          <div class="col-md-6">
+            <label [for]="'ownerLastName' + i" class="form-label">Apellido <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName" placeholder="Enter a value for this field.">
+          </div>
+
+          <!-- Fecha de nacimiento -->
+          <div class="col-md-6">
+            <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
+            <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
+          </div>
+
+          <!-- Nacionalidad -->
+          <div class="col-md-6">
+            <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+            <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
+              <option value="">Selecciona...</option>
+              <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+            </select>
+          </div>
+
+          <!-- Número de pasaporte -->
+          <div class="col-md-6">
+            <label [for]="'ownerPassportNumber' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
+            <input type="text" [id]="'ownerPassportNumber' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país).">
+          </div>
+
+          <!-- SSN / ITIN -->
+          <div class="col-md-6">
+            <label [for]="'ownerSSNITIN' + i" class="form-label">Número de SSN/ITIN (si tiene, de lo contrario, dejar en blanco)</label>
+            <input type="text" [id]="'ownerSSNITIN' + i" class="form-control" formControlName="ssnItin">
+          </div>
+
+          <!-- CUIT -->
+          <div class="col-md-6">
+            <label [for]="'ownerCUIT' + i" class="form-label">ID Fiscal Nacional (CUIT)</label>
+            <input type="text" [id]="'ownerCUIT' + i" class="form-control" formControlName="cuit">
+          </div>
+
+          <!-- Porcentaje de participación -->
+          <div class="col-md-6">
+            <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación <span class="text-danger">*</span> %</label>
+            <div class="input-group">
+              <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100" step="0.01">
+              <span class="input-group-text">%</span>
+            </div>
+          </div>
+
+          <!-- Adjuntar pasaporte vigente -->
+          <div class="col-md-12">
+            <label [for]="'ownerPassportFile' + i" class="form-label">Pasaporte escaneado <span class="text-danger">*</span></label>
+            <!-- Solo mostrar input de file si NO hay URL guardada -->
+            <div *ngIf="!owner.get('passportFileUrl')?.value">
+              <input type="file" [id]="'ownerPassportFile' + i" class="form-control" (change)="onFileSelected($event, 'owners.' + i + '.passportFileUrl', getOwnerFileKey('ownerPassport', i))" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" [disabled]="getFileUploadState(getOwnerFileKey('ownerPassport', i)).uploading" />
+              <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+              <div *ngIf="getFileUploadState(getOwnerFileKey('ownerPassport', i)).file && !getFileUploadState(getOwnerFileKey('ownerPassport', i)).uploading" class="selected-file-info mt-2">
+                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                  <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState(getOwnerFileKey('ownerPassport', i)).file?.name }} ({{ ((getFileUploadState(getOwnerFileKey('ownerPassport', i)).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+                  <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile(getOwnerFileKey('ownerPassport', i), 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle"></i></button>
+                </div>
+              </div>
+              <div *ngIf="getFileUploadState(getOwnerFileKey('ownerPassport', i)).uploading" class="upload-progress mt-2">
+                <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState(getOwnerFileKey('ownerPassport', i)).progress" [attr.aria-valuenow]="getFileUploadState(getOwnerFileKey('ownerPassport', i)).progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState(getOwnerFileKey('ownerPassport', i)).progress }}%</div></div>
+                <small class="text-muted">Subiendo archivo...</small>
+              </div>
+            </div>
+            <!-- Mostrar archivo existente si hay URL guardada -->
+            <div *ngIf="owner.get('passportFileUrl')?.value && !getFileUploadState(getOwnerFileKey('ownerPassport', i)).file && !getFileUploadState(getOwnerFileKey('ownerPassport', i)).uploading" class="uploaded-file-info mt-2">
+              <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+                <a [href]="owner.get('passportFileUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+                <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile(getOwnerFileKey('ownerPassport', i), 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+              </div>
+            </div>
+            <input type="hidden" formControlName="passportFileUrl">
+          </div>
+        </div>
+      </div>
+      
+      <button type="button" class="btn btn-outline-primary" (click)="addOwner()" *ngIf="ownersFormArray && ownersFormArray.length > 0">
+        <i class="bi bi-plus-circle me-2"></i>Agregar Propietario
+      </button>
     </div>
   </div>
 </div>

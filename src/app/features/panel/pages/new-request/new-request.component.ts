@@ -25,6 +25,9 @@ import { GeolocationService } from '../../../../shared/services/geolocation.serv
 })
 export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(StripePaymentFormComponent, { static: false }) stripePaymentForm!: StripePaymentFormComponent;
+  @ViewChild(AperturaLlcFormComponent, { static: false }) aperturaLlcFormComponent!: AperturaLlcFormComponent;
+  @ViewChild(RenovacionLlcFormComponent, { static: false }) renovacionLlcFormComponent!: RenovacionLlcFormComponent;
+  @ViewChild(CuentaBancariaFormComponent, { static: false }) cuentaBancariaFormComponent!: CuentaBancariaFormComponent;
   
   requestForm: FormGroup;
   isLoading = false;
@@ -800,6 +803,24 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
               canReceiveSMS: (requestWithOwners.cuentaBancariaRequest as any)?.validatorCanReceiveSMS || false,
               isUSResident: (requestWithOwners.cuentaBancariaRequest as any)?.validatorIsUSResident || false,
             };
+            
+            // IMPORTANTE: Cargar también directamente en los controles del formulario principal
+            // porque cuenta-bancaria-form lee directamente de serviceDataForm.get('validatorPassportUrl') y serviceDataForm.get('isUSResident')
+            serviceDataForm.get('validatorPassportUrl')?.setValue(validator.scannedPassportUrl || '');
+            serviceDataForm.get('isUSResident')?.setValue(validator.isUSResident ? 'yes' : 'no');
+            serviceDataForm.get('validatorFirstName')?.setValue(validator.firstName || '');
+            serviceDataForm.get('validatorLastName')?.setValue(validator.lastName || '');
+            serviceDataForm.get('validatorDateOfBirth')?.setValue(validator.dateOfBirth ? new Date(validator.dateOfBirth).toISOString().split('T')[0] : '');
+            serviceDataForm.get('validatorNationality')?.setValue(validator.nationality || '');
+            serviceDataForm.get('validatorCitizenship')?.setValue(validator.citizenship || '');
+            serviceDataForm.get('validatorPassportNumber')?.setValue(validator.passportNumber || '');
+            serviceDataForm.get('validatorWorkEmail')?.setValue(validator.workEmail || '');
+            serviceDataForm.get('validatorPhone')?.setValue(validator.phone || '');
+            serviceDataForm.get('canReceiveSMS')?.setValue(validator.canReceiveSMS || false);
+            serviceDataForm.get('validatorTitle')?.setValue((requestWithOwners.cuentaBancariaRequest as any)?.validatorTitle || '');
+            serviceDataForm.get('validatorIncomeSource')?.setValue((requestWithOwners.cuentaBancariaRequest as any)?.validatorIncomeSource || '');
+            serviceDataForm.get('validatorAnnualIncome')?.setValue((requestWithOwners.cuentaBancariaRequest as any)?.validatorAnnualIncome || '');
+            
             const validatorsArray = serviceDataForm.get('validators') as FormArray;
             if (validatorsArray) {
               while (validatorsArray.length > 0) {
@@ -1779,17 +1800,18 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           // Si es "No" (no es Multi-Member), saltar el paso 6 y pasar al siguiente paso del wizard
           if (isMultiMember === 'no') {
             if (this.validateStep3()) {
-              // Avanzar al paso de pago (actualizar currentStep antes de guardar)
+              // IMPORTANTE: Guardar ANTES de resetear serviceSection para que los datos
+              // se guarden con el currentStepNumber correcto (5 en este caso)
+              await this.saveDraftRequest();
+              
+              // Avanzar al paso de pago (actualizar currentStep)
               if (this.selectedClientId) {
                 this.currentStep = 3;
               } else {
                 this.currentStep = 4;
               }
-              // Resetear la sección
+              // Resetear la sección DESPUÉS de guardar
               this.serviceSection = 1;
-              
-              // Guardar request en borrador con el nuevo currentStep actualizado
-              await this.saveDraftRequest();
               
               // Calcular el monto antes de mostrar el paso de pago
               this.calculatePaymentAmount();
@@ -1798,15 +1820,18 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         }
         
-        // Guardar request en borrador antes de avanzar
+        // Limpiar estado temporal de archivos al cambiar de sección
+        this.clearFileUploadStates();
+        
+        // Avanzar a la siguiente sección
+        this.serviceSection++;
+        
+        // Guardar request en borrador DESPUÉS de actualizar serviceSection
+        // Esto asegura que currentStepNumber refleje la sección actual
         // Si es la primera sección que se completa (pasando de 1 a 2), crear la request
         // Si es cualquier otra sección, actualizar la request existente
         await this.saveDraftRequest();
         
-        // Limpiar estado temporal de archivos al cambiar de sección
-        this.clearFileUploadStates();
-        
-        this.serviceSection++;
         // Si avanzamos al paso 2 de renovación y no hay propietarios, inicializar uno
         if (this.getSelectedServiceType() === 'renovacion-llc' && this.serviceSection === 2) {
           setTimeout(() => {
@@ -1828,20 +1853,24 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Si es la última sección, validar todo el paso y avanzar al siguiente paso del wizard
       if (this.validateStep3()) {
+        // IMPORTANTE: Guardar ANTES de resetear serviceSection para que los owners/members
+        // se guarden con el currentStepNumber correcto (6 para cuenta-bancaria, etc.)
+        // Guardar con el currentStepNumber actual (la última sección completada)
+        await this.saveDraftRequest();
+        
         // Limpiar estado temporal de archivos al cambiar de paso
         this.clearFileUploadStates();
+        // Limpiar mensajes de éxito al cambiar de paso principal
+        this.successMessage = null;
         
-        // Avanzar al paso de pago (actualizar currentStep antes de guardar)
+        // Avanzar al paso de pago (actualizar currentStep)
         if (this.selectedClientId) {
           this.currentStep = 3;
         } else {
           this.currentStep = 4;
         }
-        // Resetear la sección
+        // Resetear la sección DESPUÉS de guardar
         this.serviceSection = 1;
-        
-        // Guardar request en borrador con el nuevo currentStep actualizado
-        await this.saveDraftRequest();
         
         // Calcular el monto antes de mostrar el paso de pago
         this.calculatePaymentAmount();
@@ -1920,9 +1949,19 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           //        this.serviceDataForm?.get('llcType')?.valid || false;
           return true; // Por ahora siempre válido
         case 2: // Propietario/Socios
-          // Validación comentada temporalmente - COMENTADO PARA TESTING
-          // return this.membersFormArray?.length > 0 || false;
-          return true; // Por ahora siempre válido
+          // Validar que si es multimember, haya al menos 2 miembros
+          const llcType = this.serviceDataForm?.get('llcType')?.value;
+          if (llcType === 'multi') {
+            const membersCount = this.membersFormArray?.length || 0;
+            return membersCount >= 2;
+          }
+          // Para single member, debe haber al menos 1 miembro
+          if (llcType === 'single') {
+            const membersCount = this.membersFormArray?.length || 0;
+            return membersCount >= 1;
+          }
+          // Si no hay llcType seleccionado, permitir avanzar (se validará en otra sección)
+          return true;
         case 3: // Apertura Bancaria
           return true; // Por ahora siempre válido
         default:
@@ -1942,6 +1981,34 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         case 4: // Domicilio Registrado
           return true;
         case 5: // Socios/Miembros y Confirmación
+          return true;
+        default:
+          return false;
+      }
+    }
+    
+    if (serviceType === 'cuenta-bancaria') {
+      switch (this.serviceSection) {
+        case 1: // Información de la LLC
+          return true; // Por ahora siempre válido
+        case 2: // Dirección del Registered Agent
+          return true; // Por ahora siempre válido
+        case 3: // Información de la persona que verificará la cuenta bancaria
+          return true; // Por ahora siempre válido
+        case 4: // Dirección personal del propietario
+          return true; // Por ahora siempre válido
+        case 5: // Tipo de LLC
+          // Validar que isMultiMember esté seleccionado
+          const isMultiMember = this.serviceDataForm?.get('isMultiMember')?.value;
+          return isMultiMember === 'yes' || isMultiMember === 'no';
+        case 6: // Información de los propietarios (solo si es Multi-Member)
+          // Validar que si es multimember, haya al menos 2 propietarios
+          const llcType = this.serviceDataForm?.get('isMultiMember')?.value;
+          if (llcType === 'yes') {
+            const ownersCount = this.ownersFormArray?.length || 0;
+            return ownersCount >= 2;
+          }
+          // Si no es multimember, no debería estar en esta sección, pero permitir avanzar
           return true;
         default:
           return false;
@@ -1993,12 +2060,13 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.serviceSection === this.getTotalServiceSections();
   }
 
-  previousStep(): void {
+  async previousStep(): Promise<void> {
     // Si estamos en el paso "Datos del Servicio" y no es la primera sección, retroceder a la sección anterior
     if (this.isServiceDataStep() && this.serviceSection > 1) {
       // Limpiar estado temporal de archivos al cambiar de sección
       this.clearFileUploadStates();
       
+      // Retroceder a la sección anterior
       this.serviceSection--;
       
       // Para cuenta bancaria, si retrocedemos y no es Multi-Member, asegurar que no estemos en el paso 6
@@ -2009,11 +2077,18 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           this.serviceSection = 5;
         }
       }
+      
+      // Guardar request en borrador DESPUÉS de actualizar serviceSection
+      // Esto asegura que currentStepNumber refleje la sección actual
+      await this.saveDraftRequest();
+      
       return;
     }
 
     // Si estamos en el paso "Datos del Servicio" y es la primera sección, retroceder al paso anterior
     if (this.isServiceDataStep() && this.serviceSection === 1) {
+      // Limpiar mensajes de éxito al cambiar de paso principal
+      this.successMessage = null;
       this.currentStep--;
       // Resetear la sección cuando salimos del paso de datos del servicio
       this.serviceSection = 1;
@@ -2022,6 +2097,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Retroceder al paso anterior del wizard principal
     if (this.currentStep > 1) {
+      // Limpiar mensajes de éxito al cambiar de paso principal
+      this.successMessage = null;
       this.currentStep--;
       // Si entramos al paso "Datos del Servicio", resetear a la primera sección
       if (this.isServiceDataStep()) {
@@ -2539,8 +2616,23 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   findFormControl(path: string): FormControl | null {
     // Si el path contiene puntos, intentar acceder directamente
     if (path.includes('.')) {
+      // Si el path es para owners (ej: 'owners.0.passportFileUrl'), buscar en serviceData
+      if (path.startsWith('owners.')) {
+        const fullPath = `serviceData.${path}`;
+        const control = this.requestForm.get(fullPath) as FormControl;
+        return control || null;
+      }
+      
+      // Para otros paths con puntos, intentar primero directamente
       const control = this.requestForm.get(path) as FormControl;
-      return control || null;
+      if (control) {
+        return control;
+      }
+      
+      // Si no se encuentra, intentar buscar en serviceData
+      const serviceDataPath = `serviceData.${path}`;
+      const serviceDataControl = this.requestForm.get(serviceDataPath) as FormControl;
+      return serviceDataControl || null;
     }
     
     // Intentar buscar en el root del formulario
@@ -2595,6 +2687,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         this.fileUploadStates[key].progress = 0;
       }
     });
+    // Limpiar mensajes de éxito al cambiar de sección/paso
+    this.successMessage = null;
   }
 
   /**
@@ -2835,6 +2929,45 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
                     apertura.aperturaLlcRequest?.llcType || 
                     apertura.aperturaData?.llcType;
     return llcType === 'single' ? 'Single Member' : 'Multi Member';
+  }
+
+  /**
+   * Obtiene el mensaje de validación de miembros para apertura-llc
+   */
+  getAperturaLlcMembersValidationMessage(): string {
+    if (this.getSelectedServiceType() !== 'apertura-llc' || this.serviceSection !== 2) {
+      return '';
+    }
+    if (this.aperturaLlcFormComponent) {
+      return this.aperturaLlcFormComponent.getMembersValidationMessage();
+    }
+    return '';
+  }
+
+  /**
+   * Obtiene el mensaje de validación de propietarios para renovacion-llc
+   */
+  getRenovacionLlcOwnersValidationMessage(): string {
+    if (this.getSelectedServiceType() !== 'renovacion-llc' || this.serviceSection !== 5) {
+      return '';
+    }
+    if (this.renovacionLlcFormComponent) {
+      return this.renovacionLlcFormComponent.getOwnersValidationMessage();
+    }
+    return '';
+  }
+
+  /**
+   * Obtiene el mensaje de validación de propietarios para cuenta-bancaria
+   */
+  getCuentaBancariaOwnersValidationMessage(): string {
+    if (this.getSelectedServiceType() !== 'cuenta-bancaria' || this.serviceSection !== 6) {
+      return '';
+    }
+    if (this.cuentaBancariaFormComponent) {
+      return this.cuentaBancariaFormComponent.getOwnersValidationMessage();
+    }
+    return '';
   }
 }
 
