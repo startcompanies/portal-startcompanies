@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 /**
  * Servicio para manejar el estado del wizard
@@ -10,6 +11,17 @@ import { FormGroup } from '@angular/forms';
 })
 export class WizardStateService {
   private stepData: Map<number, any> = new Map();
+  private stepForms = new Map<number, FormGroup>();
+  private showNextButtonSubject = new BehaviorSubject<boolean>(true);
+  showNextButton$ = this.showNextButtonSubject.asObservable();
+
+  registerForm(stepNumber: number, form: FormGroup): void {
+    this.stepForms.set(stepNumber, form);
+  }
+
+  unregisterForm(stepNumber: number): void {
+    this.stepForms.delete(stepNumber);
+  }
 
   /**
    * Guarda los datos de un paso
@@ -63,5 +75,20 @@ export class WizardStateService {
   getFormData(form: FormGroup): any {
     if (!form) return {};
     return form.value;
+  }
+
+  /**
+   * Obtiene el formulario registrado de un paso
+   */
+  getForm(stepNumber: number): FormGroup | undefined {
+    return this.stepForms.get(stepNumber);
+  }
+
+  hideNextButton() {
+    this.showNextButtonSubject.next(false);
+  }
+
+  showNextButton() {
+    this.showNextButtonSubject.next(true);
   }
 }

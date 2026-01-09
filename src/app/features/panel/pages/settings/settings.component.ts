@@ -103,6 +103,19 @@ export class SettingsComponent implements OnInit {
       client_id: ['', Validators.required],
       client_secret: ['', Validators.required]
     });
+    
+    // Actualizar scopes cuando cambie el servicio
+    this.zohoConfigForm.get('service')?.valueChanges.subscribe(service => {
+      if (service === 'workdrive') {
+        this.zohoConfigForm.patchValue({
+          scopes: 'WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL'
+        });
+      } else if (service === 'crm') {
+        this.zohoConfigForm.patchValue({
+          scopes: 'ZohoCRM.modules.ALL,ZohoCRM.settings.ALL'
+        });
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -360,7 +373,10 @@ export class SettingsComponent implements OnInit {
         this.zohoConfigs = configs;
         // Si hay configs, cargar la primera o buscar por org/service
         if (configs.length > 0) {
-          const defaultConfig = configs.find(c => c.org === 'startcompanies' && c.service === 'crm') || configs[0];
+          // Priorizar CRM, luego WorkDrive, luego cualquier otra
+          const defaultConfig = configs.find(c => c.org === 'startcompanies' && c.service === 'crm') ||
+                                configs.find(c => c.org === 'startcompanies' && c.service === 'workdrive') ||
+                                configs[0];
           this.selectConfig(defaultConfig);
         }
       },
@@ -569,6 +585,9 @@ export class SettingsComponent implements OnInit {
     });
   }
 }
+
+
+
 
 
 

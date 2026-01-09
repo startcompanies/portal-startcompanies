@@ -1,0 +1,91 @@
+<div class="state-plan-selection-step">
+  <form [formGroup]="form">
+    <!-- Selección de Plan -->
+    <div class="form-group mb-4">
+      <label for="plan">Plan <span class="text-danger">*</span></label>
+      <div class="row g-3">
+        <div class="col-md-4" *ngFor="let plan of planes">
+          <div class="plan-card" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
+            <div class="plan-header">
+              <span class="recommended-badge" *ngIf="plan.recommended">Recomendado</span>
+              <h5 class="plan-name">{{ plan.label }}</h5>
+              <div class="plan-price">${{ plan.price }}</div>
+            </div>
+            <p class="plan-description small">{{ plan.description }}</p>
+            <p class="plan-subtitle small text-muted">{{ plan.subtitle }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Selección de Estado -->
+    <div class="form-group mb-3">
+      <label for="state">Estado <span class="text-danger">*</span></label>
+      
+      <!-- Mostrar estado pre-seleccionado si el plan solo tiene un estado -->
+      <div *ngIf="selectedPlan && getSelectedPlanStates().length === 1" class="mb-3">
+        <div class="form-control bg-light" style="padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; cursor: default;">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+            <strong>{{ getSelectedPlanStates()[0] }}</strong>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Botones rápidos para estados comunes (solo si hay múltiples estados disponibles) -->
+      <div class="row mb-2" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('New Mexico')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'New Mexico'"
+            (click)="selectState('New Mexico')"
+          >
+            Nuevo México
+          </button>
+        </div>
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('Texas')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'Texas'"
+            (click)="selectState('Texas')"
+          >
+            Texas
+          </button>
+        </div>
+      </div>
+      
+      <!-- Selector de otros estados (filtrado según plan seleccionado) -->
+      <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+        Otros estados
+      </label>
+      <select 
+        id="state-select" 
+        class="form-control" 
+        formControlName="state" 
+        (change)="changeState()"
+        *ngIf="selectedPlan && getSelectedPlanStates().length !== 1"
+      >
+        <option value="">Selecciona un estado...</option>
+        <option *ngFor="let state of getAvailableStates()" [value]="state.value">
+          {{ state.label }} ({{ state.abbreviation }})
+        </option>
+      </select>
+      
+      <small class="text-muted d-block mt-2" *ngIf="!selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Primero selecciona un plan para ver los estados disponibles
+      </small>
+      <small class="text-muted d-block mt-2" *ngIf="selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Estados disponibles según el plan seleccionado
+      </small>
+    </div>
+    
+    <!-- Mostrar monto calculado -->
+    <div *ngIf="calculatedAmount > 0" class="alert alert-info">
+      <strong>Monto estimado:</strong> ${{ calculatedAmount }} USD
+    </div>
+  </form>
+</div>

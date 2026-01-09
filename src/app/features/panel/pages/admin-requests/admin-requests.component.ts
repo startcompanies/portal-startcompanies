@@ -7,7 +7,7 @@ import { RequestsService, Request } from '../../services/requests.service';
 interface RequestDisplay {
   id: number;
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
-  status: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  status: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
   clientName: string;
   clientEmail: string;
   partnerName?: string;
@@ -33,9 +33,16 @@ export class AdminRequestsComponent implements OnInit {
   selectedStatus: string = 'all';
   selectedType: string = 'all';
   searchTerm: string = '';
+  
+  // Paginación
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
+  totalPages: number = 0;
 
   statusOptions = [
     { value: 'all', label: 'Todos los Estados' },
+    { value: 'solicitud-recibida', label: 'Solicitud Recibida' },
     { value: 'pendiente', label: 'Pendiente' },
     { value: 'en-proceso', label: 'En Proceso' },
     { value: 'completada', label: 'Completada' },
@@ -61,26 +68,40 @@ export class AdminRequestsComponent implements OnInit {
     
     try {
       // Preparar filtros para la API
-      const filters: any = {};
+      const filters: any = {
+        page: this.currentPage,
+        limit: this.itemsPerPage,
+      };
       if (this.selectedStatus !== 'all') {
         filters.status = this.selectedStatus;
       }
       if (this.selectedType !== 'all') {
         filters.type = this.selectedType;
       }
+      if (this.searchTerm && this.searchTerm.trim().length > 0) {
+        filters.search = this.searchTerm.trim();
+      }
 
-      // Obtener requests desde la API
-      const apiRequests = await this.requestsService.getAllRequests(filters);
+      // Obtener requests desde la API con paginación y filtros
+      const response = await this.requestsService.getAllRequests(filters);
+      
+      // Actualizar información de paginación
+      this.totalItems = response.total;
+      this.totalPages = response.totalPages;
+      this.currentPage = response.page;
       
       // Transformar los datos de la API al formato de display
-      this.requests = apiRequests.map(request => this.mapRequestToDisplay(request));
+      this.requests = response.data.map(request => this.mapRequestToDisplay(request));
       
-      this.applyFilters();
+      // Los datos ya vienen filtrados del backend, así que filteredRequests = requests
+      this.filteredRequests = this.requests;
     } catch (error: any) {
       console.error('Error al cargar solicitudes:', error);
       this.errorMessage = error?.error?.message || 'Error al cargar las solicitudes. Por favor, intenta nuevamente.';
       this.requests = [];
       this.filteredRequests = [];
+      this.totalItems = 0;
+      this.totalPages = 0;
     } finally {
       this.isLoading = false;
     }
@@ -100,14 +121,21 @@ export class AdminRequestsComponent implements OnInit {
       ? `${request.partner.first_name || ''} ${request.partner.last_name || ''}`.trim() || request.partner.username || request.partner.email
       : undefined;
 
-    // Determinar el paso actual basado en el tipo de request
+    // Determinar la etapa actual: usar request.stage si está disponible, sino usar currentStepNumber como fallback
     let currentStep = 'Inicial';
-    if (request.aperturaLlcRequest) {
-      currentStep = `Paso ${request.aperturaLlcRequest.currentStepNumber || 1}`;
-    } else if (request.renovacionLlcRequest) {
-      currentStep = `Paso ${request.renovacionLlcRequest.currentStepNumber || 1}`;
-    } else if (request.cuentaBancariaRequest) {
-      currentStep = `Paso ${request.cuentaBancariaRequest.currentStepNumber || 1}`;
+    
+    // Prioridad 1: Usar request.stage si está disponible
+    if (request.stage && request.stage.trim()) {
+      currentStep = request.stage;
+    } else {
+      // Prioridad 2: Usar currentStepNumber de los sub-requests como fallback
+      if (request.aperturaLlcRequest) {
+        currentStep = `Paso ${request.aperturaLlcRequest.currentStepNumber || 1}`;
+      } else if (request.renovacionLlcRequest) {
+        currentStep = `Paso ${request.renovacionLlcRequest.currentStepNumber || 1}`;
+      } else if (request.cuentaBancariaRequest) {
+        currentStep = `Paso ${request.cuentaBancariaRequest.currentStepNumber || 1}`;
+      }
     }
 
     return {
@@ -124,28 +152,50 @@ export class AdminRequestsComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filteredRequests = this.requests.filter(request => {
-      const matchesStatus = this.selectedStatus === 'all' || request.status === this.selectedStatus;
-      const matchesType = this.selectedType === 'all' || request.type === this.selectedType;
-      const matchesSearch = !this.searchTerm || 
-        request.clientName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        request.clientEmail.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        (request.partnerName && request.partnerName.toLowerCase().includes(this.searchTerm.toLowerCase()));
-      
-      return matchesStatus && matchesType && matchesSearch;
-    });
+    // Los filtros ahora se aplican en el backend, pero mantenemos este método
+    // por si necesitamos filtrado local adicional en el futuro
+    this.filteredRequests = this.requests;
   }
 
   onStatusChange(): void {
+    this.currentPage = 1; // Resetear a la primera página
     this.loadRequests(); // Recargar desde la API con el nuevo filtro
   }
 
   onTypeChange(): void {
+    this.currentPage = 1; // Resetear a la primera página
     this.loadRequests(); // Recargar desde la API con el nuevo filtro
   }
 
   onSearchChange(): void {
-    this.applyFilters();
+    // Resetear a la primera página cuando se cambia la búsqueda
+    this.currentPage = 1;
+    // Usar debounce para evitar demasiadas llamadas mientras el usuario escribe
+    this.loadRequests();
+  }
+
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadRequests();
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+    
+    if (endPage - startPage < maxPagesToShow - 1) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    
+    return pages;
   }
 
   getRequestTypeLabel(type: string): string {
@@ -159,6 +209,7 @@ export class AdminRequestsComponent implements OnInit {
 
   getStatusLabel(status: string): string {
     const statuses: { [key: string]: string } = {
+      'solicitud-recibida': 'Solicitud Recibida',
       'pendiente': 'Pendiente',
       'en-proceso': 'En Proceso',
       'completada': 'Completada',
@@ -169,6 +220,7 @@ export class AdminRequestsComponent implements OnInit {
 
   getStatusClass(status: string): string {
     const classes: { [key: string]: string } = {
+      'solicitud-recibida': 'badge bg-warning',
       'pendiente': 'badge bg-warning',
       'en-proceso': 'badge bg-info',
       'completada': 'badge bg-success',
@@ -176,7 +228,22 @@ export class AdminRequestsComponent implements OnInit {
     };
     return classes[status] || 'badge bg-secondary';
   }
+
+  getRequestTypeClass(type: string): string {
+    const classes: { [key: string]: string } = {
+      'apertura-llc': 'request-type-apertura',
+      'renovacion-llc': 'request-type-renovacion',
+      'cuenta-bancaria': 'request-type-cuenta'
+    };
+    return classes[type] || 'request-type-default';
+  }
+
+  // Helper para usar Math en el template
+  Math = Math;
 }
+
+
+
 
 
 

@@ -4,10 +4,17 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
 
+// Log para debugging
+console.log('[RequestsService] Environment API URL:', environment.apiUrl);
+
 export interface Request {
   id: number;
+  uuid?: string;
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
-  status: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  status: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  currentStep?: number; // Paso principal del wizard (1, 2, 3, 4)
+  stage?: string; // Etapa actual del blueprint
+  workDriveUrlExternal?: string; // URL externa de Zoho WorkDrive
   client?: {
     id: number;
     email: string;
@@ -67,14 +74,34 @@ export interface Request {
     };
     percentageOfParticipation: number;
     validatesBankAccount: boolean;
+    scannedPassportUrl?: string;
+    ssnItin?: string;
+    cuit?: string;
   }>;
+  // Propiedades de pago
+  paymentMethod?: 'stripe' | 'transferencia' | 'free' | string;
+  paymentAmount?: number;
+  paymentStatus?: 'pending' | 'succeeded' | 'failed' | string;
+  stripeChargeId?: string; // ID del cargo de Stripe
+  paymentProofUrl?: string; // URL del comprobante de pago (para transferencias)
 }
 
 export interface RequestFilters {
-  status?: 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
+  status?: 'solicitud-recibida' | 'pendiente' | 'en-proceso' | 'completada' | 'rechazada';
   type?: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   clientId?: number;
   partnerId?: number;
+  search?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 @Injectable({
@@ -83,12 +110,16 @@ export interface RequestFilters {
 export class RequestsService {
   private apiUrl = `${environment.apiUrl || 'http://localhost:3000'}/panel/requests`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    // Log para debugging
+    console.log('[RequestsService] Constructor - API URL configurada:', this.apiUrl);
+    console.log('[RequestsService] Constructor - Environment API URL:', environment.apiUrl);
+  }
 
   /**
-   * Obtener todas las solicitudes con filtros opcionales (solo admin)
+   * Obtener todas las solicitudes con filtros opcionales y paginación (solo admin)
    */
-  getAllRequests(filters?: RequestFilters): Promise<Request[]> {
+  getAllRequests(filters?: RequestFilters): Promise<PaginatedResponse<Request>> {
     let params = new HttpParams();
     
     if (filters) {
@@ -104,10 +135,19 @@ export class RequestsService {
       if (filters.partnerId) {
         params = params.set('partnerId', filters.partnerId.toString());
       }
+      if (filters.search && filters.search.trim().length > 0) {
+        params = params.set('search', filters.search.trim());
+      }
+      if (filters.page) {
+        params = params.set('page', filters.page.toString());
+      }
+      if (filters.limit) {
+        params = params.set('limit', filters.limit.toString());
+      }
     }
 
     return firstValueFrom(
-      this.http.get<Request[]>(this.apiUrl, { params })
+      this.http.get<PaginatedResponse<Request>>(this.apiUrl, { params })
     );
   }
 
@@ -126,6 +166,15 @@ export class RequestsService {
   }
 
   /**
+   * Obtener una solicitud por UUID
+   */
+  getRequestByUuid(uuid: string): Promise<Request> {
+    return firstValueFrom(
+      this.http.get<Request>(`${this.apiUrl}/uuid/${uuid}`)
+    );
+  }
+
+  /**
    * Obtener una solicitud por ID
    */
   getRequestById(id: number): Promise<Request> {
@@ -138,6 +187,9 @@ export class RequestsService {
    * Crear una nueva solicitud
    */
   createRequest(data: any): Promise<Request> {
+    console.log(`[RequestsService] createRequest - URL: ${this.apiUrl}`);
+    console.log(`[RequestsService] createRequest - Environment API URL: ${environment.apiUrl}`);
+    console.log(`[RequestsService] createRequest - Data keys:`, Object.keys(data));
     return firstValueFrom(
       this.http.post<Request>(this.apiUrl, data)
     );
@@ -147,6 +199,15 @@ export class RequestsService {
    * Actualizar una solicitud
    */
   updateRequest(id: number, data: any): Promise<Request> {
+    console.log(`[RequestsService] updateRequest llamado con ID: ${id}`);
+    console.log(`[RequestsService] URL: PATCH ${this.apiUrl}/${id}`);
+    console.log(`[RequestsService] Datos a enviar:`, {
+      paymentMethod: data.paymentMethod,
+      paymentAmount: data.paymentAmount,
+      stripeToken: data.stripeToken ? 'presente' : 'ausente',
+      paymentProofUrl: data.paymentProofUrl,
+      status: data.status,
+    });
     return firstValueFrom(
       this.http.patch<Request>(`${this.apiUrl}/${id}`, data)
     );
@@ -158,6 +219,29 @@ export class RequestsService {
   deleteRequest(id: number): Promise<void> {
     return firstValueFrom(
       this.http.delete<void>(`${this.apiUrl}/${id}`)
+    );
+  }
+
+  /**
+   * Aprobar una solicitud (solo admin)
+   */
+  approveRequest(id: number, initialStage?: string, notes?: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post<any>(`${this.apiUrl}/${id}/approve`, {
+        initialStage,
+        notes,
+      })
+    );
+  }
+
+  /**
+   * Rechazar una solicitud (solo admin)
+   */
+  rejectRequest(id: number, notes?: string): Promise<any> {
+    return firstValueFrom(
+      this.http.post<any>(`${this.apiUrl}/${id}/reject`, {
+        notes,
+      })
     );
   }
 
@@ -177,7 +261,28 @@ export class RequestsService {
       this.http.get<any>(`${this.apiUrl}/required-documents`, { params })
     );
   }
+
+  /**
+   * Obtiene las aperturas LLC de un cliente para renovación
+   */
+  getClientAperturas(clientId?: number, clientEmail?: string): Promise<any[]> {
+    if (clientId) {
+      return firstValueFrom(
+        this.http.get<any[]>(`${this.apiUrl}/client/${clientId}/aperturas`)
+      );
+    } else if (clientEmail) {
+      return firstValueFrom(
+        this.http.get<any[]>(`${this.apiUrl}/client/email/${encodeURIComponent(clientEmail)}/aperturas`)
+      );
+    } else {
+      return Promise.resolve([]);
+    }
+  }
 }
+
+
+
+
 
 
 

@@ -24,11 +24,12 @@ export class HeaderManejoComponent {
   currentRoute: string = '';
 
   // Configuración de imágenes del logo para NgOptimizedImage
+  // Usar logo gris como en el header principal cuando está en modo scroll
   logoImages = {
-    mobile: '/assets/logo-dark-mobile.png',
-    tablet: '/assets/logo-dark-tablet.png',
-    desktop: '/assets/logo-dark.png',
-    fallback: '/assets/logo-dark.png',
+    mobile: '/assets/logo-grey-mobile.webp',
+    tablet: '/assets/logo-grey-tablet.webp',
+    desktop: '/assets/logo-grey-desktop.webp',
+    fallback: '/assets/logo-grey.png',
     alt: 'Start Companies Logo',
     priority: true,
   };

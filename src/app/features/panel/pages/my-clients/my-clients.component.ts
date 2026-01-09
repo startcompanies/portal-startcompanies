@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
@@ -48,7 +48,8 @@ export class MyClientsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private partnerClientsService: PartnerClientsService
+    private partnerClientsService: PartnerClientsService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -60,13 +61,13 @@ export class MyClientsComponent implements OnInit {
     this.partnerClientsService.getMyClients().subscribe({
       next: (clients) => {
         // Cargar estadísticas para cada cliente
-        const clientsWithStats = clients.map(client => ({
+        const clientsWithStats: Client[] = clients.map(client => ({
           ...client,
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
           createdAt: client.createdAt || new Date().toISOString(),
-          lastActivity: client.updatedAt || undefined
+          lastActivity: client.updatedAt || undefined,
         }));
 
         // Cargar estadísticas en paralelo
@@ -74,7 +75,7 @@ export class MyClientsComponent implements OnInit {
           this.partnerClientsService.getClientStats(client.id).toPromise()
         );
 
-        Promise.all(statsPromises).then(statsArray => {
+        Promise.all(statsPromises).then((statsArray) => {
           statsArray.forEach((stats, index) => {
             if (stats) {
               clientsWithStats[index].totalRequests = stats.totalRequests;
@@ -87,7 +88,7 @@ export class MyClientsComponent implements OnInit {
           this.applyFilters();
           this.isLoading = false;
         }).catch(() => {
-          // Si falla cargar stats, usar datos sin stats
+          // Si falla cargar stats, usar datos sin ellos
           this.clients = clientsWithStats;
           this.applyFilters();
           this.isLoading = false;
@@ -214,7 +215,20 @@ export class MyClientsComponent implements OnInit {
   get totalRequests(): number {
     return this.filteredClients.reduce((sum, c) => sum + (c.totalRequests || 0), 0);
   }
+
+  /**
+   * Navega a la página de nueva solicitud con el UUID del cliente
+   */
+  navigateToNewRequest(clientUuid: string): void {
+    this.router.navigate(['/panel/new-request'], {
+      queryParams: { client: clientUuid }
+    });
+  }
 }
+
+
+
+
 
 
 

@@ -28,7 +28,8 @@
             class="form-control"
             placeholder="Nombre, email o partner..."
             [(ngModel)]="searchTerm"
-            (input)="onSearchChange()"
+            (keyup.enter)="onSearchChange()"
+            (blur)="onSearchChange()"
           />
         </div>
         <div class="col-md-4">
@@ -63,7 +64,13 @@
     <!-- Lista de Solicitudes -->
     <div class="requests-section">
       <div class="section-header">
-        <h3>Solicitudes ({{ filteredRequests.length }})</h3>
+        <h3>Solicitudes ({{ totalItems }})</h3>
+        <div class="pagination-info">
+          <span class="text-muted">
+            Mostrando {{ (currentPage - 1) * itemsPerPage + 1 }} - 
+            {{ Math.min(currentPage * itemsPerPage, totalItems) }} de {{ totalItems }}
+          </span>
+        </div>
       </div>
 
       <div *ngIf="filteredRequests.length === 0" class="empty-state">
@@ -77,8 +84,7 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Tipo</th>
+                <th style="min-width: 120px;">Tipo</th>
                 <th>Cliente</th>
                 <th>Partner</th>
                 <th>Estado</th>
@@ -89,9 +95,10 @@
             </thead>
             <tbody>
               <tr *ngFor="let request of filteredRequests">
-                <td>#{{ request.id }}</td>
-                <td>
-                  <span class="request-type-badge">{{ getRequestTypeLabel(request.type) }}</span>
+                <td style="min-width: 120px;">
+                  <span class="request-type-badge" [ngClass]="getRequestTypeClass(request.type)">
+                    {{ getRequestTypeLabel(request.type) }}
+                  </span>
                 </td>
                 <td>
                   <div class="client-info">
@@ -121,9 +128,58 @@
           </table>
         </div>
       </div>
+
+      <!-- Controles de Paginación -->
+      <div *ngIf="totalPages > 1" class="pagination-container">
+        <nav aria-label="Paginación de solicitudes">
+          <ul class="pagination justify-content-center">
+            <!-- Botón Anterior -->
+            <li class="page-item" [class.disabled]="currentPage === 1">
+              <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(currentPage - 1)" [attr.aria-disabled]="currentPage === 1">
+                <i class="bi bi-chevron-left"></i> Anterior
+              </a>
+            </li>
+
+            <!-- Primera página -->
+            <li *ngIf="getPageNumbers()[0] > 1" class="page-item">
+              <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(1)">1</a>
+            </li>
+            <li *ngIf="getPageNumbers()[0] > 2" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+
+            <!-- Números de página -->
+            <li *ngFor="let page of getPageNumbers()" class="page-item" [class.active]="page === currentPage">
+              <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(page)">
+                {{ page }}
+              </a>
+            </li>
+
+            <!-- Última página -->
+            <li *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1" class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+            <li *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages" class="page-item">
+              <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(totalPages)">
+                {{ totalPages }}
+              </a>
+            </li>
+
+            <!-- Botón Siguiente -->
+            <li class="page-item" [class.disabled]="currentPage === totalPages">
+              <a class="page-link" href="#" (click)="$event.preventDefault(); onPageChange(currentPage + 1)" [attr.aria-disabled]="currentPage === totalPages">
+                Siguiente <i class="bi bi-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 </div>
+
+
+
 
 
 

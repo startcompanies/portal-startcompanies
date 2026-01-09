@@ -189,6 +189,91 @@
   margin-bottom: 1.5rem;
 }
 
+/* WorkDrive Container */
+.workdrive-container {
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--color-fondo-claro);
+  margin-top: 1rem;
+}
+
+.workdrive-iframe-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 600px;
+  overflow: hidden;
+  background: #f8f9fa;
+}
+
+.workdrive-iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  display: block;
+}
+
+/* Fallback: enlace cuando no se puede usar iframe */
+.workdrive-link-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.workdrive-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-oscuro);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.workdrive-info i {
+  font-size: 1.5rem;
+  color: var(--color-secundario-tecnico);
+}
+
+/* Responsive para WorkDrive */
+@media (max-width: 768px) {
+  .workdrive-container {
+    border-radius: 8px;
+  }
+  
+  .workdrive-iframe-wrapper {
+    min-height: 400px;
+  }
+  
+  .workdrive-iframe {
+    height: 400px;
+  }
+  
+  .workdrive-link-container {
+    padding: 2rem 1.5rem;
+  }
+  
+  .workdrive-link-container .btn {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .workdrive-iframe-wrapper {
+    min-height: 550px;
+  }
+  
+  .workdrive-iframe {
+    height: 550px;
+  }
+}
+
 .documents-list {
   display: flex;
   flex-direction: column;
@@ -315,17 +400,59 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Modal de datos completos - más ancho y centrado */
-.modal-dialog-centered {
+/* Modal de datos completos - más ancho y centrado usando clases específicas */
+.modal-full-width {
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1050;
+}
+
+/* Forzar ancho del modal-dialog con clase específica */
+.modal-full-width .modal-dialog.modal-full-width-dialog {
+  max-width: 99%;
+  width: 99%;
+  margin: 0 auto;
+  flex: 0 0 99%;
+}
+
+.modal-full-width .modal-dialog-centered {
   display: flex;
   align-items: center;
   min-height: calc(100% - 1rem);
+  margin: 0 auto;
+  position: relative;
 }
 
-/* Asegurar que el modal sea más ancho */
-.modal-xl {
-  max-width: 90% !important;
-  width: 90% !important;
+/* Asegurar que el modal-xl dentro del modal-full-width sea ancho */
+.modal-full-width .modal-dialog.modal-xl.modal-full-width-dialog {
+  max-width: 99%;
+  width: 99%;
+  margin: 0 auto;
+  position: relative;
+  flex: 0 0 99%;
+}
+
+/* Asegurar que el modal-content ocupe todo el espacio disponible */
+.modal-xl .modal-content {
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+/* Asegurar que el modal-body tenga scroll si es necesario */
+.modal-xl .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(90vh - 120px); /* Restar header y footer */
 }
 
 /* Mejorar el scroll del modal */
@@ -466,6 +593,71 @@
   background: #555;
 }
 
+/* Colores suaves para el modal - tonos menos saturados */
+.modal-header-custom {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%) !important;
+  color: white;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.card-header-soft {
+  background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+  color: #495057;
+  border-bottom: 1px solid #ced4da;
+}
+
+.card-header-soft-info {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%) !important;
+  color: #0c5460;
+  border-bottom: 1px solid #abdde5;
+}
+
+.card-header-soft-success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+  color: #155724;
+  border-bottom: 1px solid #b1dfbb;
+}
+
+.card-header-soft-warning {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%) !important;
+  color: #856404;
+  border-bottom: 1px solid #ffe69c;
+}
+
+.badge-soft-primary {
+  background-color: #6c757d !important;
+  color: white;
+}
+
+.badge-soft-info {
+  background-color: #17a2b8 !important;
+  color: white;
+}
+
+/* Badges de estado más suaves */
+.badge.bg-success {
+  background-color: #28a745 !important;
+  opacity: 0.9;
+}
+
+.badge.bg-danger {
+  background-color: #dc3545 !important;
+  opacity: 0.9;
+}
+
+.badge.bg-info {
+  background-color: #17a2b8 !important;
+  opacity: 0.9;
+}
+
+/* Badge para Tipo de LLC con mejor contraste */
+.badge-llc-type {
+  background-color: #495057 !important;
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 0.35rem 0.75rem;
+}
+
 @media (max-width: 768px) {
   .request-meta {
     flex-direction: column;
@@ -497,6 +689,13 @@
     max-width: 100%;
   }
 
+  /* En móviles, el modal puede ser un poco más pequeño */
+  .modal-full-width .modal-dialog.modal-full-width-dialog {
+    max-width: 95%;
+    width: 95%;
+    flex: 0 0 95%;
+  }
+
   .detail-item {
     margin-bottom: 0.75rem;
     padding-bottom: 0.5rem;
@@ -510,6 +709,9 @@
     font-size: 0.9rem;
   }
 }
+
+
+
 
 
 

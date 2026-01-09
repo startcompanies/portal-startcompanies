@@ -1,11 +1,7 @@
 <div class="wizard-section">
   <!-- Fondo hero -->
-  <app-responsive-image
-    [images]="heroImages"
-    context="hero"
-    loading="eager"
-    cssClass="sc-hero-bg"
-  ></app-responsive-image>
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager"
+    cssClass="sc-hero-bg"></app-responsive-image>
 
   <!-- Contenedor principal -->
   <div class="wizard-layout">
@@ -19,7 +15,8 @@
         <div class="wizard-progress-indicator">
           <div class="wizard-progress-header">
             <div class="wizard-progress-text">
-              Paso {{ internalStepIndex + 1 }}/{{ totalSteps }} - {{ stepTitles[internalStepIndex + 1] || ('WIZARD.steps.step' + (internalStepIndex + 1) | transloco) }}
+              Paso {{ internalStepIndex + 1 }}/{{ totalSteps }} - {{ stepTitles[internalStepIndex + 1] ||
+              ('WIZARD.steps.step' + (internalStepIndex + 1) | transloco) }}
             </div>
           </div>
           <div class="wizard-progress-steps-container">
@@ -64,30 +61,23 @@
             </button>
           </div>
         </div>
-        
-        <ng-content></ng-content>
-        
+
+        <div class="wizard-step-content">
+          <ng-content></ng-content>
+        </div>
+
         <!-- Botones de navegación personalizados -->
         <div class="wizard-custom-navigation">
-          <button 
-            mat-stroked-button
-            type="button"
-            class="wizard-nav-button wizard-nav-button-previous"
-            [disabled]="internalStepIndex === 0"
-            (click)="goToPreviousStep()"
-          >
-            <mat-icon>arrow_back</mat-icon>
+          <button mat-stroked-button type="button" class="wizard-nav-button wizard-nav-button-previous"
+            [disabled]="internalStepIndex === 0" (click)="goToPreviousStep()">
+            <i [class]="'bi bi-arrow-left'"></i>
             {{ 'WIZARD.previous' | transloco }}
           </button>
-          <button 
-            mat-raised-button
-            type="button"
-            class="wizard-nav-button wizard-nav-button-next"
-            [disabled]="internalStepIndex === totalSteps - 1"
-            (click)="goToNextStep()"
-          >
+          <button *ngIf="showNextButton" mat-raised-button id="nextButton" type="button"
+            class="wizard-nav-button wizard-nav-button-next" [disabled]="internalStepIndex === totalSteps - 1"
+            (click)="goToNextStep()">
             {{ 'WIZARD.next' | transloco }}
-            <mat-icon>arrow_forward</mat-icon>
+            <i [class]="'bi bi-arrow-right'"></i>
           </button>
         </div>
       </div>
