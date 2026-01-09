@@ -49,18 +49,22 @@
       <!-- Adjuntar EIN Letter -->
       <div class="col-md-6">
         <label for="einLetterFile" class="form-label">Adjuntar EIN Letter <span class="text-danger">*</span></label>
-        <input type="file" id="einLetterFile" class="form-control" (change)="onFileSelected($event, 'einLetterUrl', 'einLetter')" accept=".pdf,.jpg,.jpeg,.png,.docx" [disabled]="getFileUploadState('einLetter').uploading" />
-        <small class="form-text text-muted">El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)</small>
-        <div *ngIf="getFileUploadState('einLetter').file && !getFileUploadState('einLetter').uploading" class="selected-file-info mt-2">
-          <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('einLetter').file?.name }} ({{ ((getFileUploadState('einLetter').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('einLetter', 'einLetterUrl', 'einLetterFile')"><i class="bi bi-x-circle"></i></button>
+        <!-- Solo mostrar input de file si NO hay URL guardada -->
+        <div *ngIf="!serviceDataForm.get('einLetterUrl')?.value">
+          <input type="file" id="einLetterFile" class="form-control" (change)="onFileSelected($event, 'einLetterUrl', 'einLetter')" accept=".pdf,.jpg,.jpeg,.png,.docx" [disabled]="getFileUploadState('einLetter').uploading" />
+          <small class="form-text text-muted">El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)</small>
+          <div *ngIf="getFileUploadState('einLetter').file && !getFileUploadState('einLetter').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('einLetter').file?.name }} ({{ ((getFileUploadState('einLetter').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('einLetter', 'einLetterUrl', 'einLetterFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('einLetter').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('einLetter').progress" [attr.aria-valuenow]="getFileUploadState('einLetter').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('einLetter').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
           </div>
         </div>
-        <div *ngIf="getFileUploadState('einLetter').uploading" class="upload-progress mt-2">
-          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('einLetter').progress" [attr.aria-valuenow]="getFileUploadState('einLetter').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('einLetter').progress }}%</div></div>
-          <small class="text-muted">Subiendo archivo...</small>
-        </div>
+        <!-- Mostrar archivo existente si hay URL guardada -->
         <div *ngIf="serviceDataForm.get('einLetterUrl')?.value && !getFileUploadState('einLetter').file && !getFileUploadState('einLetter').uploading" class="uploaded-file-info mt-2">
           <div class="alert alert-success">
             <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
@@ -81,18 +85,22 @@
       <!-- Adjuntar Articles de Organización o Certificate of Formation -->
       <div class="col-md-12">
         <label for="articlesOrCertificateFile" class="form-label">Adjuntar Articles de Organización o Certificate of Formation <span class="text-danger">*</span></label>
-        <input type="file" id="articlesOrCertificateFile" class="form-control" (change)="onFileSelected($event, 'articlesOrCertificateUrl', 'articlesOrCertificate')" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" [disabled]="getFileUploadState('articlesOrCertificate').uploading" />
-        <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
-        <div *ngIf="getFileUploadState('articlesOrCertificate').file && !getFileUploadState('articlesOrCertificate').uploading" class="selected-file-info mt-2">
-          <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('articlesOrCertificate').file?.name }} ({{ ((getFileUploadState('articlesOrCertificate').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('articlesOrCertificate', 'articlesOrCertificateUrl', 'articlesOrCertificateFile')"><i class="bi bi-x-circle"></i></button>
+        <!-- Solo mostrar input de file si NO hay URL guardada -->
+        <div *ngIf="!serviceDataForm.get('articlesOrCertificateUrl')?.value">
+          <input type="file" id="articlesOrCertificateFile" class="form-control" (change)="onFileSelected($event, 'articlesOrCertificateUrl', 'articlesOrCertificate')" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" [disabled]="getFileUploadState('articlesOrCertificate').uploading" />
+          <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+          <div *ngIf="getFileUploadState('articlesOrCertificate').file && !getFileUploadState('articlesOrCertificate').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('articlesOrCertificate').file?.name }} ({{ ((getFileUploadState('articlesOrCertificate').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('articlesOrCertificate', 'articlesOrCertificateUrl', 'articlesOrCertificateFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('articlesOrCertificate').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('articlesOrCertificate').progress" [attr.aria-valuenow]="getFileUploadState('articlesOrCertificate').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('articlesOrCertificate').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
           </div>
         </div>
-        <div *ngIf="getFileUploadState('articlesOrCertificate').uploading" class="upload-progress mt-2">
-          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('articlesOrCertificate').progress" [attr.aria-valuenow]="getFileUploadState('articlesOrCertificate').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('articlesOrCertificate').progress }}%</div></div>
-          <small class="text-muted">Subiendo archivo...</small>
-        </div>
+        <!-- Mostrar archivo existente si hay URL guardada -->
         <div *ngIf="serviceDataForm.get('articlesOrCertificateUrl')?.value && !getFileUploadState('articlesOrCertificate').file && !getFileUploadState('articlesOrCertificate').uploading" class="uploaded-file-info mt-2">
           <div class="alert alert-success">
             <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
@@ -206,7 +214,7 @@
       <!-- Fecha de Nacimiento -->
       <div class="col-md-6">
         <label for="validatorDateOfBirth" class="form-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
-        <input type="text" id="validatorDateOfBirth" class="form-control" formControlName="validatorDateOfBirth" placeholder="dd-MMM-yyyy">
+        <input type="date" id="validatorDateOfBirth" class="form-control" formControlName="validatorDateOfBirth">
       </div>
 
       <!-- Nacionalidad -->
@@ -236,18 +244,22 @@
       <!-- Adjuntar pasaporte -->
       <div class="col-md-12">
         <label for="validatorPassportFile" class="form-label">Adjunta una copia escaneada o foto legible del pasaporte, asegurándote de que esté vigente. <span class="text-danger">*</span></label>
-        <input type="file" id="validatorPassportFile" class="form-control" (change)="onFileSelected($event, 'validatorPassportUrl', 'validatorPassport')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('validatorPassport').uploading" />
-        <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
-        <div *ngIf="getFileUploadState('validatorPassport').file && !getFileUploadState('validatorPassport').uploading" class="selected-file-info mt-2">
-          <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('validatorPassport').file?.name }} ({{ ((getFileUploadState('validatorPassport').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('validatorPassport', 'validatorPassportUrl', 'validatorPassportFile')"><i class="bi bi-x-circle"></i></button>
+        <!-- Solo mostrar input de file si NO hay URL guardada -->
+        <div *ngIf="!serviceDataForm.get('validatorPassportUrl')?.value">
+          <input type="file" id="validatorPassportFile" class="form-control" (change)="onFileSelected($event, 'validatorPassportUrl', 'validatorPassport')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('validatorPassport').uploading" />
+          <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+          <div *ngIf="getFileUploadState('validatorPassport').file && !getFileUploadState('validatorPassport').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('validatorPassport').file?.name }} ({{ ((getFileUploadState('validatorPassport').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('validatorPassport', 'validatorPassportUrl', 'validatorPassportFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('validatorPassport').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('validatorPassport').progress" [attr.aria-valuenow]="getFileUploadState('validatorPassport').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('validatorPassport').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
           </div>
         </div>
-        <div *ngIf="getFileUploadState('validatorPassport').uploading" class="upload-progress mt-2">
-          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('validatorPassport').progress" [attr.aria-valuenow]="getFileUploadState('validatorPassport').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('validatorPassport').progress }}%</div></div>
-          <small class="text-muted">Subiendo archivo...</small>
-        </div>
+        <!-- Mostrar archivo existente si hay URL guardada -->
         <div *ngIf="serviceDataForm.get('validatorPassportUrl')?.value && !getFileUploadState('validatorPassport').file && !getFileUploadState('validatorPassport').uploading" class="uploaded-file-info mt-2">
           <div class="alert alert-success">
             <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
@@ -380,18 +392,22 @@
       <!-- Adjuntar factura de servicio -->
       <div class="col-md-12">
         <label for="serviceBillFile" class="form-label">Adjuntar factura de servicio <span class="text-danger">*</span></label>
-        <input type="file" id="serviceBillFile" class="form-control" (change)="onFileSelected($event, 'serviceBillUrl', 'serviceBill')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('serviceBill').uploading" />
-        <small class="form-text text-muted">No debe tener más de 3 meses – debe coincidir con esta dirección – nombre y dirección deben ser los mismos. Formatos: PDF, JPG, PNG (máx. 10MB)</small>
-        <div *ngIf="getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="selected-file-info mt-2">
-          <div class="alert alert-info d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('serviceBill').file?.name }} ({{ ((getFileUploadState('serviceBill').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-            <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle"></i></button>
+        <!-- Solo mostrar input de file si NO hay URL guardada -->
+        <div *ngIf="!serviceDataForm.get('serviceBillUrl')?.value">
+          <input type="file" id="serviceBillFile" class="form-control" (change)="onFileSelected($event, 'serviceBillUrl', 'serviceBill')" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('serviceBill').uploading" />
+          <small class="form-text text-muted">No debe tener más de 3 meses – debe coincidir con esta dirección – nombre y dirección deben ser los mismos. Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+          <div *ngIf="getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('serviceBill').file?.name }} ({{ ((getFileUploadState('serviceBill').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle"></i></button>
+            </div>
+          </div>
+          <div *ngIf="getFileUploadState('serviceBill').uploading" class="upload-progress mt-2">
+            <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('serviceBill').progress" [attr.aria-valuenow]="getFileUploadState('serviceBill').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('serviceBill').progress }}%</div></div>
+            <small class="text-muted">Subiendo archivo...</small>
           </div>
         </div>
-        <div *ngIf="getFileUploadState('serviceBill').uploading" class="upload-progress mt-2">
-          <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('serviceBill').progress" [attr.aria-valuenow]="getFileUploadState('serviceBill').progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('serviceBill').progress }}%</div></div>
-          <small class="text-muted">Subiendo archivo...</small>
-        </div>
+        <!-- Mostrar archivo existente si hay URL guardada -->
         <div *ngIf="serviceDataForm.get('serviceBillUrl')?.value && !getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="uploaded-file-info mt-2">
           <div class="alert alert-success">
             <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
@@ -457,7 +473,7 @@
               <!-- Fecha de nacimiento -->
               <div class="col-md-6">
                 <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
-                <input type="text" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth" placeholder="dd-MMM-yyyy">
+                <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
               </div>
 
               <!-- Nacionalidad -->
@@ -499,18 +515,22 @@
               <!-- Adjuntar pasaporte vigente -->
               <div class="col-md-12">
                 <label [for]="'ownerPassportFile' + i" class="form-label">Adjuntar pasaporte vigente <span class="text-danger">*</span></label>
-                <input type="file" [id]="'ownerPassportFile' + i" class="form-control" (change)="onFileSelected($event, 'owners.' + i + '.passportFileUrl', 'ownerPassport' + i)" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('ownerPassport' + i).uploading" />
-                <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
-                <div *ngIf="getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="selected-file-info mt-2">
-                  <div class="alert alert-info d-flex justify-content-between align-items-center">
-                    <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('ownerPassport' + i).file?.name }} ({{ ((getFileUploadState('ownerPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
-                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle"></i></button>
+                <!-- Solo mostrar input de file si NO hay URL guardada -->
+                <div *ngIf="!owner.get('passportFileUrl')?.value">
+                  <input type="file" [id]="'ownerPassportFile' + i" class="form-control" (change)="onFileSelected($event, 'owners.' + i + '.passportFileUrl', 'ownerPassport' + i)" accept=".pdf,.jpg,.jpeg,.png" [disabled]="getFileUploadState('ownerPassport' + i).uploading" />
+                  <small class="form-text text-muted">Formatos: PDF, JPG, PNG (máx. 10MB)</small>
+                  <div *ngIf="getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="selected-file-info mt-2">
+                    <div class="alert alert-info d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-file-earmark me-2"></i>{{ getFileUploadState('ownerPassport' + i).file?.name }} ({{ ((getFileUploadState('ownerPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)</span>
+                      <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('ownerPassport' + i, 'owners.' + i + '.passportFileUrl', 'ownerPassportFile' + i)"><i class="bi bi-x-circle"></i></button>
+                    </div>
+                  </div>
+                  <div *ngIf="getFileUploadState('ownerPassport' + i).uploading" class="upload-progress mt-2">
+                    <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('ownerPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('ownerPassport' + i).progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('ownerPassport' + i).progress }}%</div></div>
+                    <small class="text-muted">Subiendo archivo...</small>
                   </div>
                 </div>
-                <div *ngIf="getFileUploadState('ownerPassport' + i).uploading" class="upload-progress mt-2">
-                  <div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('ownerPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('ownerPassport' + i).progress" aria-valuemin="0" aria-valuemax="100">{{ getFileUploadState('ownerPassport' + i).progress }}%</div></div>
-                  <small class="text-muted">Subiendo archivo...</small>
-                </div>
+                <!-- Mostrar archivo existente si hay URL guardada -->
                 <div *ngIf="owner.get('passportFileUrl')?.value && !getFileUploadState('ownerPassport' + i).file && !getFileUploadState('ownerPassport' + i).uploading" class="uploaded-file-info mt-2">
                   <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>

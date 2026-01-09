@@ -56,6 +56,7 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   // Para request en borrador
   draftRequestId: number | null = null;
+  draftRequestUuid: string | null = null; // UUID de la request en borrador para estructura de carpetas
 
   // País detectado por IP
   detectedCountryCode: string = 'us';
@@ -327,9 +328,11 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
               members: this.membersFormArray?.value || []
             };
           } else if (serviceType === 'renovacion-llc') {
+            // Homologar: usar 'members' en lugar de 'owners' para ser consistente con apertura-llc
+            // El FormArray se llama 'owners' en el frontend pero se envía como 'members' al backend
             requestData.renovacionLlcData = {
               ...serviceData,
-              members: this.membersFormArray?.value || []
+              members: this.ownersFormArray?.value || [] // Mapear ownersFormArray a members en el payload
             };
           } else if (serviceType === 'cuenta-bancaria') {
             requestData.cuentaBancariaData = {
@@ -341,7 +344,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
           const createdRequest = await this.requestsService.createRequest(requestData);
           this.draftRequestId = createdRequest.id;
-          console.log('[processStripePayment] Request en borrador creada:', this.draftRequestId);
+          this.draftRequestUuid = createdRequest.uuid || null;
+          console.log('[processStripePayment] Request en borrador creada:', this.draftRequestId, 'UUID:', this.draftRequestUuid);
         } catch (error: any) {
           console.error('[processStripePayment] Error al crear request en borrador:', error);
           this.stripeProcessing = false;
@@ -364,10 +368,14 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         // El status se cambiará cuando se haga clic en "Crear Solicitud"
       };
 
-      try {
-        const updatedRequest = await this.requestsService.updateRequest(this.draftRequestId, paymentData);
-        console.log('[processStripePayment] Pago procesado exitosamente en el backend');
-        console.log('[processStripePayment] Request actualizada:', updatedRequest);
+        try {
+          const updatedRequest = await this.requestsService.updateRequest(this.draftRequestId, paymentData);
+          console.log('[processStripePayment] Pago procesado exitosamente en el backend');
+          console.log('[processStripePayment] Request actualizada:', updatedRequest);
+          // Actualizar UUID si viene en la respuesta
+          if (updatedRequest.uuid) {
+            this.draftRequestUuid = updatedRequest.uuid;
+          }
 
         // Verificar que el pago se procesó correctamente
         if (updatedRequest.stripeChargeId) {
@@ -461,8 +469,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         return;
       }
 
-      // Guardar el ID de la request en borrador
+      // Guardar el ID y UUID de la request en borrador
       this.draftRequestId = request.id;
+      this.draftRequestUuid = request.uuid || null;
 
       // Cargar datos del cliente si existe (PRIMERO, antes de establecer el paso)
       if (request.clientId) {
@@ -574,6 +583,7 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
                   dateOfBirth: member.dateOfBirth || member.date_of_birth || '',
                   percentageOfParticipation: member.percentageOfParticipation || member.percentage_of_participation || 0,
                   validatesBankAccount: member.validatesBankAccount || member.validates_bank_account || false,
+                  scannedPassportUrl: member.scannedPassportUrl || member.scanned_passport_url || '',
                   // Cargar dirección del miembro si existe
                   ...(member.memberAddress ? {
                     memberAddress: {
@@ -608,9 +618,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
         
         if (serviceDataForm) {
-          // Cargar todos los datos disponibles (excepto owners que se maneja por separado)
+          // Cargar todos los datos disponibles (excepto members/owners que se maneja por separado)
           Object.keys(renovacionData).forEach(key => {
-            if (key !== 'currentStepNumber' && key !== 'requestId' && key !== 'owners' && serviceDataForm.get(key)) {
+            if (key !== 'currentStepNumber' && key !== 'requestId' && key !== 'owners' && key !== 'members' && serviceDataForm.get(key)) {
               const value = (renovacionData as any)[key];
               if (value !== null && value !== undefined && value !== '') {
                 serviceDataForm.patchValue({ [key]: value });
@@ -618,70 +628,73 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
             }
           });
           
-          // Cargar owners si existen
-          if (renovacionData.owners && Array.isArray(renovacionData.owners) && renovacionData.owners.length > 0) {
+          // Cargar members si existen (homologado: usar 'members' igual que apertura-llc)
+          // El backend devuelve 'members' pero también puede devolver 'owners' para compatibilidad
+          const membersData = (request as any).members || renovacionData.members || renovacionData.owners || [];
+          if (membersData && Array.isArray(membersData) && membersData.length > 0) {
             const ownersArray = this.ownersFormArray;
             // Limpiar owners existentes
             while (ownersArray.length > 0) {
               ownersArray.removeAt(0);
             }
-            // Agregar cada owner del borrador
-            renovacionData.owners.forEach((ownerData: any) => {
-              // Asegurar que phone se carga correctamente, incluso si es string vacío
-              const phoneValue = ownerData.phone !== null && ownerData.phone !== undefined ? ownerData.phone : '';
+            // Agregar cada member del borrador (mapear a formato de ownersFormArray)
+            membersData.forEach((memberData: any) => {
+              // Mapear desde Member (backend) a formato de ownersFormArray (frontend)
+              const phoneValue = memberData.phoneNumber !== null && memberData.phoneNumber !== undefined ? memberData.phoneNumber : '';
+              const taxCountryValue = memberData.taxFilingCountry 
+                ? (typeof memberData.taxFilingCountry === 'string' && memberData.taxFilingCountry.includes(',')
+                    ? memberData.taxFilingCountry.split(',').map((c: string) => c.trim())
+                    : [memberData.taxFilingCountry])
+                : [];
               
               const ownerGroup = this.fb.group({
-                name: [ownerData.name || ''],
-                lastName: [ownerData.lastName || ''],
-                dateOfBirth: [ownerData.dateOfBirth || ''],
-                email: [ownerData.email || '', Validators.email],
-                phone: [phoneValue], // Asegurar que phone se carga correctamente
-                fullAddress: [ownerData.fullAddress || ''],
-                unit: [ownerData.unit || ''],
-                city: [ownerData.city || ''],
-                stateRegion: [ownerData.stateRegion || ''],
-                postalCode: [ownerData.postalCode || ''],
-                country: [ownerData.country || ''],
-                nationality: [ownerData.nationality || ''],
-                passportNumber: [ownerData.passportNumber || ''],
-                ssnItin: [ownerData.ssnItin || ''],
-                cuit: [ownerData.cuit || ''],
-                capitalContributions: [ownerData.capitalContributions || 0],
-                loansToLLC: [ownerData.loansToLLC || 0],
-                loansRepaid: [ownerData.loansRepaid || 0],
-                capitalWithdrawals: [ownerData.capitalWithdrawals || 0],
-                hasInvestmentsInUSA: [ownerData.hasInvestmentsInUSA || ''],
-                isUSCitizen: [ownerData.isUSCitizen || ''],
-                taxCountry: [Array.isArray(ownerData.taxCountry) ? ownerData.taxCountry : (ownerData.taxCountry ? [ownerData.taxCountry] : [])],
-                wasInUSA31Days: [ownerData.wasInUSA31Days || ''],
-                participationPercentage: [ownerData.participationPercentage || 0, [Validators.min(0), Validators.max(100)]]
+                name: [memberData.firstName || memberData.name || ''],
+                lastName: [memberData.lastName || ''],
+                dateOfBirth: [memberData.dateOfBirth || ''],
+                email: [memberData.email || '', Validators.email],
+                phone: [phoneValue],
+                fullAddress: [memberData.memberAddress?.street || memberData.fullAddress || ''],
+                unit: [memberData.memberAddress?.unit || memberData.unit || ''],
+                city: [memberData.memberAddress?.city || memberData.city || ''],
+                stateRegion: [memberData.memberAddress?.stateRegion || memberData.stateRegion || ''],
+                postalCode: [memberData.memberAddress?.postalCode || memberData.postalCode || ''],
+                country: [memberData.memberAddress?.country || memberData.country || ''],
+                nationality: [memberData.nationality || ''],
+                passportNumber: [memberData.passportNumber || ''],
+                ssnItin: [memberData.ssnOrItin || ''],
+                cuit: [memberData.nationalTaxId || ''],
+                capitalContributions: [memberData.ownerContributions || memberData.capitalContributions || 0],
+                loansToLLC: [memberData.ownerLoansToLLC || memberData.loansToLLC || 0],
+                loansRepaid: [memberData.loansReimbursedByLLC || memberData.loansRepaid || 0],
+                capitalWithdrawals: [memberData.profitDistributions || memberData.capitalWithdrawals || 0],
+                hasInvestmentsInUSA: [memberData.hasUSFinancialInvestments || memberData.hasInvestmentsInUSA || ''],
+                isUSCitizen: [memberData.isUSCitizen || ''],
+                taxCountry: [taxCountryValue],
+                wasInUSA31Days: [memberData.spentMoreThan31DaysInUS || memberData.wasInUSA31Days || ''],
+                participationPercentage: [memberData.percentageOfParticipation || 0, [Validators.min(0), Validators.max(100)]]
               });
               ownersArray.push(ownerGroup);
             });
-            console.log('[loadDraftRequest] Owners cargados:', ownersArray.length, 'owners con phone:', renovacionData.owners.map((o: any) => ({ phone: o.phone, tipo: typeof o.phone })));
+            console.log('[loadDraftRequest] Members cargados (renovación):', ownersArray.length);
             
             // Forzar actualización del componente intl-tel-input después de un breve delay
-            // para asegurar que el componente se inicialice con el valor correcto
             setTimeout(() => {
               ownersArray.controls.forEach((control, index) => {
                 const phoneControl = control.get('phone');
-                if (phoneControl && renovacionData.owners[index]?.phone) {
-                  // Forzar actualización del valor para que intl-tel-input lo detecte
-                  phoneControl.setValue(renovacionData.owners[index].phone, { emitEvent: true });
+                if (phoneControl && membersData[index]?.phoneNumber) {
+                  phoneControl.setValue(membersData[index].phoneNumber, { emitEvent: true });
                 }
                 
                 // Forzar actualización del select múltiple taxCountry
                 const taxCountryControl = control.get('taxCountry');
                 if (taxCountryControl) {
-                  const taxCountryValue = renovacionData.owners[index]?.taxCountry;
+                  const taxCountryValue = membersData[index]?.taxFilingCountry;
                   if (taxCountryValue) {
-                    // Asegurar que sea un array
                     const taxCountryArray = Array.isArray(taxCountryValue) 
                       ? taxCountryValue 
                       : (typeof taxCountryValue === 'string' && taxCountryValue.includes(',')
                           ? taxCountryValue.split(',').map((c: string) => c.trim()).filter((c: string) => c.length > 0)
                           : [taxCountryValue]);
-                    // Establecer el valor después de un pequeño delay adicional para asegurar que el DOM esté listo
                     setTimeout(() => {
                       taxCountryControl.setValue(taxCountryArray, { emitEvent: false });
                     }, 50);
@@ -699,12 +712,120 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           // Cargar todos los datos disponibles
           Object.keys(cuentaData).forEach(key => {
             if (key !== 'currentStepNumber' && key !== 'requestId' && serviceDataForm.get(key)) {
-              const value = (cuentaData as any)[key];
+              let value = (cuentaData as any)[key];
+              
+              // Mapear llcType a isMultiMember
+              if (key === 'llcType') {
+                if (value === 'multi') {
+                  serviceDataForm.patchValue({ isMultiMember: 'yes' });
+                } else if (value === 'single') {
+                  serviceDataForm.patchValue({ isMultiMember: 'no' });
+                }
+                // No hacer patchValue para llcType directamente, ya que mapeamos a isMultiMember
+                return;
+              }
+              
+              // Mapear certificateOfConstitutionOrArticlesUrl a articlesOrCertificateUrl
+              if (key === 'certificateOfConstitutionOrArticlesUrl') {
+                serviceDataForm.patchValue({ articlesOrCertificateUrl: value });
+                return;
+              }
+              
+              // Mapear proofOfAddressUrl a serviceBillUrl
+              if (key === 'proofOfAddressUrl') {
+                serviceDataForm.patchValue({ serviceBillUrl: value });
+                return;
+              }
+              
+              // Formatear fechas para inputs type="date" (formato YYYY-MM-DD)
+              if (key === 'validatorDateOfBirth' && value) {
+                const dateValue = value instanceof Date 
+                  ? value.toISOString().split('T')[0] 
+                  : (typeof value === 'string' && value.includes('T') 
+                      ? new Date(value).toISOString().split('T')[0] 
+                      : value);
+                serviceDataForm.patchValue({ [key]: dateValue });
+                return;
+              }
+              
               if (value !== null && value !== undefined && value !== '') {
                 serviceDataForm.patchValue({ [key]: value });
               }
             }
           });
+          
+          // Cargar members y validators si existen
+          // Usar casting para acceder a propiedades dinámicas agregadas por el backend
+          const requestWithOwners = request as any;
+          // Cargar members (ahora se usan Member en lugar de BankAccountOwner para cuenta-bancaria)
+          if (requestWithOwners.members && requestWithOwners.members.length > 0) {
+            const ownersArray = this.ownersFormArray;
+            if (ownersArray) {
+              while (ownersArray.length > 0) {
+                ownersArray.removeAt(0);
+              }
+              requestWithOwners.members.forEach((member: any) => {
+                const ownerGroup = this.fb.group({
+                  firstName: [member.firstName || ''],
+                  lastName: [member.lastName || member.paternalLastName || ''],
+                  dateOfBirth: [member.dateOfBirth ? new Date(member.dateOfBirth).toISOString().split('T')[0] : ''],
+                  nationality: [member.nationality || ''],
+                  passportNumber: [member.passportNumber || member.passportOrNationalId || ''],
+                  ssnItin: [member.ssnOrItin || ''],
+                  cuit: [member.nationalTaxId || ''],
+                  participationPercentage: [member.percentageOfParticipation || ''],
+                  passportFileUrl: [member.identityDocumentUrl || member.scannedPassportUrl || ''],
+                  email: [member.email || ''],
+                  phoneNumber: [member.phoneNumber || ''],
+                  memberAddress: [member.memberAddress || {}],
+                });
+                ownersArray.push(ownerGroup);
+              });
+            }
+          }
+          
+          // Cargar validador desde CuentaBancariaRequest (ya no hay BankAccountValidator separado)
+          if (requestWithOwners.bankAccountValidator || (requestWithOwners.cuentaBancariaRequest && (requestWithOwners.cuentaBancariaRequest as any).validatorFirstName)) {
+            const validator = requestWithOwners.bankAccountValidator || {
+              firstName: (requestWithOwners.cuentaBancariaRequest as any)?.validatorFirstName || '',
+              lastName: (requestWithOwners.cuentaBancariaRequest as any)?.validatorLastName || '',
+              dateOfBirth: (requestWithOwners.cuentaBancariaRequest as any)?.validatorDateOfBirth || null,
+              nationality: (requestWithOwners.cuentaBancariaRequest as any)?.validatorNationality || '',
+              citizenship: (requestWithOwners.cuentaBancariaRequest as any)?.validatorCitizenship || '',
+              passportNumber: (requestWithOwners.cuentaBancariaRequest as any)?.validatorPassportNumber || '',
+              scannedPassportUrl: (requestWithOwners.cuentaBancariaRequest as any)?.validatorScannedPassportUrl || '',
+              workEmail: (requestWithOwners.cuentaBancariaRequest as any)?.validatorWorkEmail || '',
+              useEmailForRelayLogin: (requestWithOwners.cuentaBancariaRequest as any)?.validatorUseEmailForRelayLogin || false,
+              phone: (requestWithOwners.cuentaBancariaRequest as any)?.validatorPhone || '',
+              canReceiveSMS: (requestWithOwners.cuentaBancariaRequest as any)?.validatorCanReceiveSMS || false,
+              isUSResident: (requestWithOwners.cuentaBancariaRequest as any)?.validatorIsUSResident || false,
+            };
+            const validatorsArray = serviceDataForm.get('validators') as FormArray;
+            if (validatorsArray) {
+              while (validatorsArray.length > 0) {
+                validatorsArray.removeAt(0);
+              }
+              
+              const validatorGroup = this.fb.group({
+                firstName: [validator.firstName || ''],
+                lastName: [validator.lastName || ''],
+                dateOfBirth: [validator.dateOfBirth ? new Date(validator.dateOfBirth).toISOString().split('T')[0] : ''],
+                nationality: [validator.nationality || ''],
+                citizenship: [validator.citizenship || ''],
+                passportNumber: [validator.passportNumber || ''],
+                validatorPassportUrl: [validator.scannedPassportUrl || ''],
+                workEmail: [validator.workEmail || ''],
+                phone: [validator.phone || ''],
+                canReceiveSMS: [validator.canReceiveSMS || false],
+                isUSResident: [validator.isUSResident ? 'yes' : 'no'],
+                useEmailForRelayLogin: [validator.useEmailForRelayLogin || false],
+                title: [(requestWithOwners.cuentaBancariaRequest as any)?.validatorTitle || ''],
+                incomeSource: [(requestWithOwners.cuentaBancariaRequest as any)?.validatorIncomeSource || ''],
+                annualIncome: [(requestWithOwners.cuentaBancariaRequest as any)?.validatorAnnualIncome || ''],
+              });
+              validatorsArray.push(validatorGroup);
+            }
+          }
         }
       }
 
@@ -860,27 +981,33 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         
         console.log('[saveDraftRequest] Owners completos antes de enviar:', JSON.stringify(ownersValue, null, 2));
         
+        // Homologar: usar 'members' en lugar de 'owners' para ser consistente con apertura-llc
         requestData.renovacionLlcData = {
           ...serviceData,
-          owners: ownersValue
+          members: ownersValue // El backend procesa 'members' para renovación también
         };
       } else if (serviceType === 'cuenta-bancaria') {
         requestData.cuentaBancariaData = {
           ...serviceData,
-          owners: this.ownersFormArray.value || [],
+          owners: this.ownersFormArray.value || [], // El backend ahora los procesa como Members
           validators: serviceData.validators || []
         };
       }
 
       // Si ya existe una request en borrador, actualizarla
       if (this.draftRequestId) {
-        await this.requestsService.updateRequest(this.draftRequestId, requestData);
+        const updatedRequest = await this.requestsService.updateRequest(this.draftRequestId, requestData);
         console.log('Request en borrador actualizada:', this.draftRequestId);
+        // Actualizar UUID si viene en la respuesta
+        if (updatedRequest.uuid) {
+          this.draftRequestUuid = updatedRequest.uuid;
+        }
       } else {
         // Si no existe, crearla
         const createdRequest = await this.requestsService.createRequest(requestData);
         this.draftRequestId = createdRequest.id;
-        console.log('Request en borrador creada:', this.draftRequestId);
+        this.draftRequestUuid = createdRequest.uuid || null;
+        console.log('Request en borrador creada:', this.draftRequestId, 'UUID:', this.draftRequestUuid);
       }
     } catch (error: any) {
       console.error('Error al guardar request en borrador:', error);
@@ -1676,6 +1803,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         // Si es cualquier otra sección, actualizar la request existente
         await this.saveDraftRequest();
         
+        // Limpiar estado temporal de archivos al cambiar de sección
+        this.clearFileUploadStates();
+        
         this.serviceSection++;
         // Si avanzamos al paso 2 de renovación y no hay propietarios, inicializar uno
         if (this.getSelectedServiceType() === 'renovacion-llc' && this.serviceSection === 2) {
@@ -1698,6 +1828,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Si es la última sección, validar todo el paso y avanzar al siguiente paso del wizard
       if (this.validateStep3()) {
+        // Limpiar estado temporal de archivos al cambiar de paso
+        this.clearFileUploadStates();
+        
         // Avanzar al paso de pago (actualizar currentStep antes de guardar)
         if (this.selectedClientId) {
           this.currentStep = 3;
@@ -1863,6 +1996,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   previousStep(): void {
     // Si estamos en el paso "Datos del Servicio" y no es la primera sección, retroceder a la sección anterior
     if (this.isServiceDataStep() && this.serviceSection > 1) {
+      // Limpiar estado temporal de archivos al cambiar de sección
+      this.clearFileUploadStates();
+      
       this.serviceSection--;
       
       // Para cuenta bancaria, si retrocedemos y no es Multi-Member, asegurar que no estemos en el paso 6
@@ -2134,6 +2270,10 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           try {
             createdRequest = await this.requestsService.updateRequest(this.draftRequestId, requestData);
             console.log('[onSubmit] Request actualizada exitosamente:', createdRequest);
+            // Actualizar UUID si viene en la respuesta
+            if (createdRequest.uuid) {
+              this.draftRequestUuid = createdRequest.uuid;
+            }
           } catch (error) {
             console.error('[onSubmit] Error al actualizar request:', error);
             throw error;
@@ -2144,6 +2284,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
           try {
             createdRequest = await this.requestsService.createRequest(requestData);
             console.log('[onSubmit] Request creada exitosamente:', createdRequest);
+            // Guardar ID y UUID de la request creada
+            this.draftRequestId = createdRequest.id;
+            this.draftRequestUuid = createdRequest.uuid || null;
           } catch (error) {
             console.error('[onSubmit] Error al crear request:', error);
             throw error;
@@ -2319,6 +2462,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   /**
    * Sube un archivo genérico
+   * Si hay draftRequestUuid y servicio, usa la estructura request/{servicio}/{uuid}/
+   * Si no hay request pero hay cliente y servicio, crea el request primero
    */
   async uploadFile(file: File, formControlPath: string, fileKey: string): Promise<void> {
     if (!file) {
@@ -2331,8 +2476,28 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     this.errorMessage = null;
 
     try {
+      const serviceType = this.getSelectedServiceType();
+
       const formData = new FormData();
       formData.append('file', file);
+
+      // Estrategia mejorada: subir a request/{servicio}/ temporalmente
+      // Los archivos se moverán a request/{servicio}/{uuid}/ cuando se cree el request
+      if (serviceType) {
+        formData.append('servicio', serviceType);
+        
+        // Si ya hay UUID, subir directamente a la carpeta final
+        if (this.draftRequestUuid) {
+          formData.append('requestUuid', this.draftRequestUuid);
+          console.log(`[uploadFile] Subiendo archivo con estructura final: request/${serviceType}/${this.draftRequestUuid}/`);
+        } else {
+          // Si no hay UUID, subir a request/{servicio}/ temporalmente
+          // Los archivos se moverán cuando se cree el request
+          console.log(`[uploadFile] Subiendo archivo con estructura temporal: request/${serviceType}/`);
+        }
+      } else {
+        console.log(`[uploadFile] Subiendo archivo a la raíz del bucket (sin servicio)`);
+      }
 
       // Usar firstValueFrom para convertir Observable a Promise
       const response = await firstValueFrom(
@@ -2347,10 +2512,16 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         // Buscar el control en el formulario (puede estar en serviceData o en el root)
         const control = this.findFormControl(formControlPath);
         if (control) {
-          control.setValue(response.url);
+          // Establecer el valor y emitir evento para que Angular detecte el cambio
+          control.setValue(response.url, { emitEvent: true });
+          // Marcar el control como touched y dirty para que la validación se actualice
+          control.markAsTouched();
+          control.markAsDirty();
         }
         this.successMessage = 'Archivo subido exitosamente';
         this.fileUploadStates[fileKey].file = null;
+        console.log(`[uploadFile] Archivo subido exitosamente: ${response.url}`);
+        console.log(`[uploadFile] validateStep4 después de subir:`, this.validateStep4());
       }
     } catch (error: any) {
       console.error(`Error al subir archivo ${fileKey}:`, error);
@@ -2408,6 +2579,22 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     if (fileInput) {
       fileInput.value = '';
     }
+  }
+
+  /**
+   * Limpia el estado temporal de todos los archivos (archivo seleccionado, progreso, etc.)
+   * pero mantiene las URLs guardadas en el formulario
+   */
+  clearFileUploadStates(): void {
+    // Limpiar solo el estado temporal (file, uploading, progress)
+    // pero NO las URLs que están guardadas en el formulario
+    Object.keys(this.fileUploadStates).forEach(key => {
+      if (this.fileUploadStates[key]) {
+        this.fileUploadStates[key].file = null;
+        this.fileUploadStates[key].uploading = false;
+        this.fileUploadStates[key].progress = 0;
+      }
+    });
   }
 
   /**
