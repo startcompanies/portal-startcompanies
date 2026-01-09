@@ -245,40 +245,34 @@
       </div>
 
       <div class="text-center mb-4">
-        <h6 class="text-muted fw-bold" style="font-size: 1.5rem !important">
-          Compartir articulo
+        <h6 class="text-muted fw-bold share-article-title">
+          Compartir artículo
         </h6>
-        <div class="d-flex justify-content-evenly">
-          <button
-            type="button"
-            class="btn p-0 border-0 bg-transparent"
+        <div class="share-buttons-container">
+          <i
+            class="bi bi-whatsapp share-social-icon share-whatsapp-icon"
             (click)="shareOnWhatsApp()"
             [attr.aria-label]="'Compartir en WhatsApp'"
             title="Compartir en WhatsApp"
-            style="cursor: pointer;"
-          >
-            <i class="bi bi-whatsapp" style="color: green; font-size: 2rem"></i>
-          </button>
-          <button
-            type="button"
-            class="btn p-0 border-0 bg-transparent"
+            role="button"
+            tabindex="0"
+          ></i>
+          <i
+            class="bi bi-linkedin share-social-icon share-linkedin-icon"
             (click)="shareOnLinkedIn()"
             [attr.aria-label]="'Compartir en LinkedIn'"
             title="Compartir en LinkedIn"
-            style="cursor: pointer;"
-          >
-            <i class="bi bi-linkedin" style="color: blue; font-size: 2rem"></i>
-          </button>
-          <button
-            type="button"
-            class="btn p-0 border-0 bg-transparent"
+            role="button"
+            tabindex="0"
+          ></i>
+          <i
+            class="bi bi-facebook share-social-icon share-facebook-icon"
             (click)="shareOnFacebook()"
             [attr.aria-label]="'Compartir en Facebook'"
             title="Compartir en Facebook"
-            style="cursor: pointer;"
-          >
-            <i class="bi bi-facebook" style="color: blue; font-size: 2rem"></i>
-          </button>
+            role="button"
+            tabindex="0"
+          ></i>
         </div>
       </div>
 

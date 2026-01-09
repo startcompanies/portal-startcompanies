@@ -1,5 +1,13 @@
 /* Estilos para el contenido del post - aplicados globalmente debido a ViewEncapsulation.None */
 
+/* Clase para redondear y centrar imágenes en posts no landing */
+.post-image-rounded {
+  border-radius: 4rem !important;
+  display: block !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 /* Estilos para landing page (contenido con secciones) */
 .landing-page-row {
   margin-left: 0;

@@ -176,59 +176,128 @@
 }
 
 .author-info-card {
-  background-color: #02cae3;
-  /* Fondo de la card */
-  border-radius: 2rem;
-  /* Bordes redondeados */
-  color: var(--color-texto-oscuro);
-  /* Texto blanco */
-  padding: 20px;
-  /* Padding para espaciar contenido */
+  background-color: #283A48 !important;
+  border-radius: 2rem !important;
+  padding: 2.5rem !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  /* Sombra suave */
+  text-align: center;
 }
 
+.author-info-card .card-body {
+  padding: 0 !important;
+  text-align: center;
+}
+
+/* Estilos para el label "Autor" - el primer párrafo */
+.author-info-card .card-body > p:first-child,
+.author-info-card .card-body p.text-center:first-child,
+.author-info-card .autor-label {
+  font-size: 0.9rem !important;
+  color: #02CAE3 !important;
+  margin-bottom: 0.5rem !important;
+  margin-top: 0 !important;
+  font-weight: 600 !important;
+  display: block !important;
+  text-align: center !important;
+}
+
+/* Estilos para el nombre del autor */
+.author-info-card .card-title,
+.author-info-card h5.card-title,
+.author-info-card .autor-nombre {
+  font-size: 1.35rem !important;
+  color: #ffffff !important;
+  margin-bottom: 0.85rem !important;
+  font-weight: 700 !important;
+  display: block !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+}
+
+/* Estilos para la imagen del autor */
 .author-info-card img,
-.author-info-card i {
-  border-radius: 50%;
-  max-width: 80px;
-  max-height: 80px;
+.author-info-card img.rounded-circle {
+  width: 118px !important;
+  height: 118px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin: 0 auto 1rem auto !important;
+  display: block !important;
 }
 
-.author-info-card .card-title {
-  font-size: 1.2rem;
-  /* Título del autor */
-  font-weight: 600;
-  margin-top: 10px;
+.author-info-card i.bi-person-circle {
+  font-size: 118px !important;
+  color: #ffffff !important;
+  margin: 0 auto 1rem auto !important;
+  display: block !important;
+  line-height: 1 !important;
 }
 
-.author-info-card .card-text {
-  font-size: 0.875rem;
-  line-height: 1.6;
-  margin-top: 10px;
+/* Estilos para la descripción del autor - el párrafo con text-justify */
+.author-info-card p.text-justify,
+.author-info-card .card-text,
+.author-info-card p.card-text,
+.author-info-card .card-text.small,
+.author-info-card .autor-descripcion {
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+  text-align: left !important;
 }
 
-.author-info-card .btn-linkedin-profile {
-  background-color: #0077b5;
-  /* Estilo de LinkedIn */
-  color: white;
-  padding: 8px 16px;
-  border-radius: 25px;
-  margin-top: 15px;
-  text-decoration: none;
-  display: inline-block;
+.author-info-card .card-text p,
+.author-info-card .autor-descripcion p,
+.author-info-card p.text-justify p {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+  color: #ffffff !important;
+  text-align: left !important;
 }
 
-.author-info-card .btn-linkedin-profile:hover {
-  background-color: #005f83;
-  /* Hover */
-  text-decoration: none;
+/* El párrafo que contiene la imagen no debe tener estos estilos */
+.author-info-card .card-text.small:has(img),
+.author-info-card .card-text.small:has(i) {
+  text-align: center !important;
+  margin-bottom: 1rem !important;
 }
 
-/* Ajustes de imagen de perfil cuando no hay imagen */
-.author-info-card .bi-person-circle {
-  font-size: 80px;
-  color: #6c757d;
+/* Estilos para el botón de LinkedIn */
+.author-info-card .btn-linkedin-profile,
+.author-info-card .btn-linkedin-autor,
+.author-info-card a[class*="btn-linkedin"],
+.author-info-card button[class*="btn-linkedin"] {
+  background-color: #02CAE3 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.55rem 1.05rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 2rem !important;
+  margin-top: 1rem !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+
+.author-info-card .btn-linkedin-profile:hover,
+.author-info-card .btn-linkedin-autor:hover,
+.author-info-card a[class*="btn-linkedin"]:hover,
+.author-info-card button[class*="btn-linkedin"]:hover {
+  background-color: #02b8d0 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.author-info-card .btn-linkedin-profile i,
+.author-info-card .btn-linkedin-autor i,
+.author-info-card [class*="btn-linkedin"] i {
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  margin: 0 !important;
 }
 .post-cta-card {
   background: #243544; /* oscuro similar a captura */
@@ -610,4 +679,68 @@
   .sc-post-title {
     font-size: 3rem;
   }
+}
+
+/* Estilos para el componente de compartir artículo */
+.share-article-title {
+  font-size: 1.5rem !important;
+  color: #6c757d !important;
+  margin-bottom: 1rem;
+}
+
+.share-buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.share-social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  font-size: 1.25rem;
+  color: #ffffff;
+  user-select: none;
+}
+
+.share-social-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+.share-social-icon:focus {
+  outline: 2px solid rgba(0, 0, 0, 0.2);
+  outline-offset: 2px;
+}
+
+.share-whatsapp-icon {
+  background-color: #25D366;
+}
+
+.share-whatsapp-icon:hover {
+  background-color: #20BA5A;
+}
+
+.share-linkedin-icon {
+  background-color: #0077B5;
+}
+
+.share-linkedin-icon:hover {
+  background-color: #005885;
+}
+
+.share-facebook-icon {
+  background-color: #1877F2;
+}
+
+.share-facebook-icon:hover {
+  background-color: #1465D1;
 }

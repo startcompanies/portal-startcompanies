@@ -645,6 +645,28 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       }
     });
     
+    // Aplicar clase post-image-rounded a las imágenes en posts que NO son landing
+    if (!this.isLandingPage) {
+      content = content.replace(/(<img\s+[^>]*?)>/gi, (match, imgStart) => {
+        // Verificar si ya tiene la clase post-image-rounded
+        if (imgStart.includes('post-image-rounded')) {
+          return match;
+        }
+        
+        // Verificar si tiene atributo class
+        const classMatch = imgStart.match(/class\s*=\s*["']([^"']*)["']/i);
+        if (classMatch) {
+          // Agregar la clase a las clases existentes
+          const existingClasses = classMatch[1];
+          const newClasses = `${existingClasses} post-image-rounded`;
+          return imgStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClasses}"`) + '>';
+        } else {
+          // Agregar el atributo class con la clase
+          return imgStart + ' class="post-image-rounded">';
+        }
+      });
+    }
+    
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
