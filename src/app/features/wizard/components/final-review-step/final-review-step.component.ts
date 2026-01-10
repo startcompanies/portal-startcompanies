@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { WizardStateService } from '../../../../shared/services/wizard-state.service';
+import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 
 /**
@@ -30,8 +30,21 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     
+    /**
+     * CAMPOS OPCIONALES - Se puede finalizar sin confirmar
+     * - confirm: Checkbox de confirmación (opcional)
+     * 
+     * NOTA: Este es el último paso del wizard. Al finalizar, se debería:
+     * - Enviar todos los datos al backend
+     * - Enviar datos a Zoho CRM (si aplica)
+     * - Mostrar mensaje de éxito/error
+     * 
+     * ACTUALMENTE: Solo muestra los datos en consola, no envía a ningún lado.
+     * 
+     * NOTA: Ya no es obligatorio confirmar para finalizar el wizard.
+     */
     this.form = new FormGroup({
-      confirm: new FormControl(savedData.confirm || false, [Validators.requiredTrue]),
+      confirm: new FormControl(savedData.confirm || false),
     });
   }
 

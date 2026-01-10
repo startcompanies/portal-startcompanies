@@ -307,6 +307,7 @@
     "description": "We solve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.",
     "name": "Name",
     "email": "Email",
+    "email_required": "Email is required",
     "message": "Message",
     "send": "Send",
     "advice": {
@@ -911,7 +912,19 @@
       "payment": "Payment",
       "client": "Client Data",
       "review": "Final Review",
-      "zoho": "Send to Zoho CRM"
+      "zoho": "Send to Zoho CRM",
+      "state_plan": "State and Plan",
+      "llc_info": "LLC Information"
+    },
+    "basic_register": {
+      "full_name": "Full Name",
+      "full_name_required": "Full name is required.",
+      "phone": "Phone",
+      "phone_required": "Phone is required.",
+      "email": "Email",
+      "email_required": "Email is required.",
+      "password": "Password",
+      "password_required": "Password is required."
     },
     "password": "Password",
     "state": "State",
@@ -1111,6 +1124,49 @@
         "step6": "Owners",
         "step7": "Certification"
       }
+    },
+    "llc_info_step": {
+      "llc_name_one": "LLC Name - Option 1",
+      "llc_name_one_required": "LLC name (option 1) is required.",
+      "llc_name_two": "LLC Name - Option 2",
+      "llc_name_two_required": "LLC name (option 2) is required.",
+      "llc_name_three": "LLC Name - Option 3",
+      "llc_name_three_required": "LLC name (option 3) is required.",
+      "llc_sufix": "Remember that 'LLC' must go at the end of the name.",
+      "llc_main_activity": "Main Activity of the LLC",
+      "llc_main_activity_required": "Main activity is required.",
+      "llc_corporate_structure": "Corporate Structure",
+      "llc_corporate_structure_placeholder": "Select...",
+      "options_corporate_structure": {
+        "single_member": "Single Member LLC",
+        "multi_member": "Multi Member LLC"
+      },
+      "add_propietaries": "Add Owners",
+      "add_owner": "Add owner",
+      "return_to_info": "Return to information"
+    },
+    "state_plan_step": {
+      "plan": "Plan",
+      "plan_label": "Select a plan",
+      "plan_required": "Plan is required.",
+      "state": "State",
+      "state_label": "Select a state",
+      "state_required": "State is required.",
+      "state_new_mexico": "New Mexico",
+      "state_texas": "Texas",
+      "other_option": "Other option",
+      "planes_options": {
+        "entrepreneur": "Entrepreneur Pack",
+        "elite": "Elite Pack",
+        "premium": "Premium Pack"
+      },
+      "options": {
+        "new_mexico": "New Mexico",
+        "texas": "Texas"
+      }
+    },
+    "checkout": {
+      "pay_button": "Pay ${{amount}}"
     }
   }
 }

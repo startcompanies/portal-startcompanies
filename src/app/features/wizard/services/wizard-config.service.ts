@@ -40,7 +40,7 @@ export interface WizardFlowConfig {
   providedIn: 'root'
 })
 export class WizardConfigService {
-  
+
   /**
    * Obtiene la configuración de un flujo específico
    */
@@ -81,7 +81,7 @@ export class WizardConfigService {
           stepNumber: 2,
           component: null as any,
           icon: 'bi-geo-alt',
-          translationKey: 'WIZARD.steps.state',
+          translationKey: 'WIZARD.steps.state_plan',
           required: true
         },
         {
@@ -94,8 +94,8 @@ export class WizardConfigService {
         {
           stepNumber: 4,
           component: null as any,
-          icon: 'bi-person-vcard',
-          translationKey: 'WIZARD.steps.client',
+          icon: 'bi-briefcase',
+          translationKey: 'WIZARD.steps.llc_info',
           required: true
         },
         {

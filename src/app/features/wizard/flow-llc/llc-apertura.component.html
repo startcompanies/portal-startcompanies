@@ -1,43 +1,154 @@
-<app-wizard-base
-  *ngIf="flowConfig"
-  [totalSteps]="flowConfig.totalSteps"
-  [currentStepIndex]="currentStepIndex"
-  [stepTitles]="stepTitles"
-  [stepIcons]="stepIcons"
-  [steps]="flowConfig.steps"
-  (stepChanged)="onStepChanged($event)"
-  (finish)="onFinish()"
-  (cancel)="onCancel()"
->
-  <mat-stepper 
-    #stepper
-    [linear]="false"
-    (selectionChange)="onStepChanged($event.selectedIndex)"
-    class="custom-stepper"
-  >
-    <!-- Paso 1: Registro Básico -->
-    <mat-step [label]="stepTitles[1] || ('WIZARD.steps.register' | transloco)">
-      <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
-    </mat-step>
+<div class="wizard-wrapper">
+  <!-- Fondo moderno con elementos de marca -->
+  <div class="wizard-background">
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+  </div>
 
-    <!-- Paso 2: Selección de Estado -->
-    <mat-step [label]="stepTitles[2] || ('WIZARD.steps.state' | transloco)">
-      <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
-    </mat-step>
+  <!-- Contenido del wizard -->
+  <div class="llc-apertura-container">
+    <div class="request-header">
+      <h2>Apertura de LLC</h2>
+      <p class="text-muted">Completa el proceso para abrir tu LLC en Estados Unidos</p>
+    </div>
 
-    <!-- Paso 3: Pago -->
-    <mat-step [label]="stepTitles[3] || ('WIZARD.steps.payment' | transloco)">
-      <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2"></app-wizard-payment-step>
-    </mat-step>
+  <!-- Progress Steps Indicator (igual que new-request) -->
+  <div class="steps-indicator">
+    <div class="step-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+      <div class="step-number">1</div>
+      <div class="step-label">{{ stepTitles[1] || 'Registro Básico' }}</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+      <div class="step-number">2</div>
+      <div class="step-label">{{ stepTitles[2] || 'Estado y Plan' }}</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+      <div class="step-number">3</div>
+      <div class="step-label">{{ stepTitles[3] || 'Pago' }}</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 4" [class.completed]="currentStep > 4">
+      <div class="step-number">4</div>
+      <div class="step-label">{{ stepTitles[4] || 'Información de la LLC' }}</div>
+    </div>
+    <div class="step-item" [class.active]="currentStep >= 5" [class.completed]="currentStep > 5">
+      <div class="step-number">5</div>
+      <div class="step-label">{{ stepTitles[5] || 'Revisión Final' }}</div>
+    </div>
+  </div>
 
-    <!-- Paso 4: Formulario de Cliente (Específico de LLC) -->
-    <mat-step [label]="stepTitles[4] || ('WIZARD.steps.client' | transloco)">
-      <app-client-form-llc [stepNumber]="4"></app-client-form-llc>
-    </mat-step>
+  <!-- Paso 1: Registro Básico -->
+  <div *ngIf="currentStep === 1" class="form-step">
+    <h3>{{ stepTitles[1] || 'Registro Básico' }}</h3>
+    <app-wizard-basic-register-step 
+      [stepNumber]="1"
+      (userCreated)="onUserCreated($event)"
+    ></app-wizard-basic-register-step>
+    
+    <div class="step-actions">
+      <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+        Cancelar
+      </button>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Siguiente
+      </button>
+    </div>
+  </div>
 
-    <!-- Paso 5: Revisión Final -->
-    <mat-step [label]="stepTitles[5] || ('WIZARD.steps.review' | transloco)">
-      <app-wizard-final-review-step [stepNumber]="5" [previousSteps]="[1, 2, 3, 4]"></app-wizard-final-review-step>
-    </mat-step>
-  </mat-stepper>
-</app-wizard-base>
+  <!-- Paso 2: Estado y Plan -->
+  <div *ngIf="currentStep === 2" class="form-step">
+    <app-wizard-state-plan-selection-step 
+      [stepNumber]="2"
+      [previousStepNumber]="1"
+    ></app-wizard-state-plan-selection-step>
+    
+    <div class="step-actions">
+      <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+        Anterior
+      </button>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- Paso 3: Pago -->
+  <div *ngIf="currentStep === 3" class="form-step">
+    <h3>{{ stepTitles[3] || 'Pago' }}</h3>
+    <app-wizard-payment-step 
+      [stepNumber]="3" 
+      [previousStepNumber]="2"
+    ></app-wizard-payment-step>
+    
+    <div class="step-actions">
+      <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+        Anterior
+      </button>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- Paso 4: Información de la LLC -->
+  <div *ngIf="currentStep === 4" class="form-step">
+    <app-wizard-llc-information-step 
+      [stepNumber]="4" 
+      [previousStepNumber]="3"
+      (sectionChanged)="llcInfoCurrentSection = $event"
+    ></app-wizard-llc-information-step>
+    
+    <!-- Solo mostrar botones del wizard cuando estamos en la última sección (3) -->
+    <div class="step-actions" *ngIf="llcInfoCurrentSection === 3">
+      <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+        Anterior
+      </button>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <!-- Paso 5: Revisión Final -->
+  <div *ngIf="currentStep === 5" class="form-step">
+    <h3>{{ stepTitles[5] || 'Revisión Final' }}</h3>
+    <app-wizard-final-review-step 
+      [stepNumber]="5" 
+      [previousSteps]="[1, 2, 3, 4]"
+    ></app-wizard-final-review-step>
+    
+    <div class="step-actions">
+      <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+        Anterior
+      </button>
+      <button 
+        type="button" 
+        class="btn btn-success" 
+        (click)="onFinish()"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">
+          <i class="bi bi-check-circle me-2"></i>
+          Enviar Solicitud
+        </span>
+        <span *ngIf="isLoading">
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Enviando...
+        </span>
+      </button>
+    </div>
+    
+    <!-- Mensajes de éxito/error -->
+    <div *ngIf="successMessage" class="alert alert-success mt-3">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>
+</div>

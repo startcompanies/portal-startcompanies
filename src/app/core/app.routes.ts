@@ -481,6 +481,10 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+          },
+          {
+            path: ':uuid',
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
           }
         ],
         data: {
@@ -747,6 +751,10 @@ export const routes: Routes = [
         pathMatch: 'full'
       },
       // Wizard routes - English
+      {
+        path: 'wizard/verify-email',
+        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.EmailVerificationComponent),
+      },
       {
         path: 'wizard/llc-opening',
         loadComponent: () => import('../features/wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),

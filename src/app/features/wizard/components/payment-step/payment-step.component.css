@@ -64,3 +64,37 @@
   font-size: 0.875rem;
   color: #dc2626;
 }
+
+.stripe-field {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.pay-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: none;
+
+  background-color: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pay-button:hover {
+  background-color: #1d4ed8;
+}
+
+.stripe-logo {
+  width: 15%;
+  height: 30px;
+  opacity: 0.9;
+}

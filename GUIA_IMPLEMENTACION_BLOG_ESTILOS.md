@@ -387,3 +387,6 @@ Después de implementar estos cambios:
 **Última actualización:** 2025
 **Versión:** 1.0
 
+
+
+
