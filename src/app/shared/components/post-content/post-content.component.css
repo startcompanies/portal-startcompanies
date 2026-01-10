@@ -6,6 +6,172 @@
   display: block !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* Clase para contenedor de columna de contenido */
+.content-column-container {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* Clase para card de estados con listas */
+.app-post-content .states-card,
+.states-card {
+  background-color: #293b49;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-family: Arial, sans-serif;
+  min-height: 300px;
+}
+
+.app-post-content .states-card > div,
+.states-card > div {
+  margin-bottom: 24px;
+  flex: 1;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-post-content .states-card > div h3,
+.states-card > div h3 {
+  text-align: left;
+}
+
+.app-post-content .states-card > div ul,
+.states-card > div ul {
+  text-align: left;
+}
+
+.app-post-content .states-card h3,
+.states-card h3 {
+  margin: 0 0 0.5rem 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.app-post-content .states-card ul,
+.states-card ul {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+
+.app-post-content .states-card li,
+.states-card li {
+  margin-bottom: 0.25rem;
+  padding-left: 1.5rem;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.app-post-content .states-card li i,
+.states-card li i {
+  position: absolute;
+  left: 0;
+  top: 0.15rem;
+  color: #00bcd4;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.app-post-content .states-card .states-card-link,
+.states-card .states-card-link {
+  display: block;
+  width: fit-content;
+  margin: 0.5rem auto 0;
+  background-color: #00bcd4 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.25rem;
+  border-radius: 1.5rem;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 188, 212, 0.2);
+  text-align: center;
+}
+
+.app-post-content .states-card .states-card-link:hover,
+.states-card .states-card-link:hover {
+  background-color: #00a0b8 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 188, 212, 0.3);
+}
+
+.app-post-content .states-card .states-card-link:active,
+.states-card .states-card-link:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 188, 212, 0.2);
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .app-post-content .states-card,
+  .states-card {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .app-post-content .states-card > div,
+  .states-card > div {
+    min-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .app-post-content .states-card h3,
+  .states-card h3 {
+    font-size: 1.25rem;
+  }
+
+  .app-post-content .states-card ul,
+  .states-card ul {
+    padding-left: 1.25rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .app-post-content .states-card,
+  .states-card {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .app-post-content .states-card h3,
+  .states-card h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Responsividad adicional para imágenes en posts no landing */
+@media (max-width: 768px) {
+  .post-image-rounded {
+    border-radius: 2rem !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .post-image-rounded {
+    border-radius: 1.5rem !important;
+    max-width: 100% !important;
+  }
 }
 
 /* Estilos para landing page (contenido con secciones) */
@@ -492,66 +658,98 @@ section[style*="background-image"] a {
   background-color: #00bcd4;
   font-family: Arial, sans-serif;
   max-width: 100%;
+  border-radius: 2rem !important;
+  padding: 2rem 1.5rem !important;
+  text-align: center;
 }
 
 .app-post-content .costos-florida-section-title,
 .costos-florida-section-title {
   color: #293B49;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 800;
+  margin-bottom: 1rem;
 }
 
 .app-post-content .costos-florida-main-price,
 .costos-florida-main-price {
   color: #ffffff;
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: 800;
   line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .app-post-content .costos-florida-subtitle,
 .costos-florida-subtitle {
   color: #293B49;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
 }
 
 .app-post-content .costos-florida-option-card,
 .costos-florida-option-card {
   background-color: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 1rem;
+  text-align: center;
 }
 
 .app-post-content .costos-florida-option-label,
 .costos-florida-option-label {
   color: #293B49;
-  font-size: 1.1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
 }
 
 .app-post-content .costos-florida-option-price,
 .costos-florida-option-price {
   color: #ffffff;
-  font-size: 1.8rem;
+  font-size: 2.5rem;
   font-weight: 800;
   line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .app-post-content .costos-florida-option-time,
 .costos-florida-option-time {
   color: #293B49;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
 }
 
 .app-post-content .costos-florida-btn,
 .costos-florida-btn {
-  background-color: #2d3748;
-  color: #ffffff;
-  border: none;
-  font-size: 1rem;
-  max-width: 100%;
+  background-color: #2d3748 !important;
+  color: #ffffff !important;
+  border: none !important;
+  font-size: clamp(0.85rem, 2.5vw, 1rem) !important;
+  font-weight: 600 !important;
+  padding: clamp(0.5rem, 1.5vw, 0.6rem) clamp(1rem, 4vw, 1.5rem) !important;
+  border-radius: 2rem !important;
+  width: auto !important;
+  max-width: none !important;
+  margin-top: 0.5rem !important;
+  display: inline-block !important;
+  white-space: nowrap !important;
 }
 @media (max-width: 768px) {
   .app-post-content .costos-florida-btn,
   .costos-florida-btn {
-    font-size: 0.8rem;
+    font-size: clamp(0.75rem, 3vw, 0.9rem) !important;
+    padding: clamp(0.45rem, 2vw, 0.6rem) clamp(0.9rem, 5vw, 1.3rem) !important;
+  }
+  
+  .app-post-content .costos-florida-main-price,
+  .costos-florida-main-price {
+    font-size: 2.5rem;
+  }
+  
+  .app-post-content .costos-florida-option-price,
+  .costos-florida-option-price {
+    font-size: 2rem;
   }
 }
 /* Estilos para preguntas-frecuentes-card */

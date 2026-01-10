@@ -667,6 +667,149 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       });
     }
     
+    // Procesar states-card: agregar iconos a los li y enlaces al final
+    if (this.isBrowser) {
+      try {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        
+        const statesCards = tempDiv.querySelectorAll('.states-card');
+        statesCards.forEach((card: Element) => {
+          // Procesar todos los li dentro de la card y agregar iconos
+          const listItems = card.querySelectorAll('li');
+          listItems.forEach((li: Element) => {
+            // Verificar si ya tiene un icono
+            if (li.querySelector('i.bi')) {
+              return;
+            }
+            
+            const text = li.textContent?.trim() || '';
+            let iconClass = 'bi-check-circle';
+            
+            // Seleccionar icono según el contenido del texto
+            if (/popular|favore|beneficio|ventaja/i.test(text)) {
+              iconClass = 'bi-star-fill';
+            } else if (/tax|impuesto|fee|precio|costo/i.test(text)) {
+              iconClass = 'bi-cash-stack';
+            } else if (/anual|reporte|filing/i.test(text)) {
+              iconClass = 'bi-calendar-check';
+            } else if (/anonimo|proteccion|legal/i.test(text)) {
+              iconClass = 'bi-shield-check';
+            } else if (/economico|economia|barato/i.test(text)) {
+              iconClass = 'bi-currency-dollar';
+            } else if (/facil|sencillo|simple/i.test(text)) {
+              iconClass = 'bi-check-circle-fill';
+            } else {
+              iconClass = 'bi-check-circle';
+            }
+            
+            // Agregar el icono al inicio del li
+            const icon = document.createElement('i');
+            icon.className = `bi ${iconClass}`;
+            li.insertBefore(icon, li.firstChild);
+          });
+          
+          // Buscar divs hijos que contengan h3 y agregar enlaces
+          const childDivs = Array.from(card.children).filter(child => child.tagName === 'DIV');
+          childDivs.forEach((div: Element) => {
+            const h3 = div.querySelector('h3');
+            if (h3 && h3.textContent) {
+              // Verificar si ya tiene un enlace
+              if (div.querySelector('a.states-card-link')) {
+                return;
+              }
+              
+              const title = h3.textContent.trim();
+              const slug = title
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/[^\w-]+/g, '');
+              
+              if (slug) {
+                const link = document.createElement('a');
+                link.href = `${this.baseUrl}/blog/${slug}`;
+                link.setAttribute('data-internal-link', slug);
+                link.className = 'states-card-link';
+                link.textContent = `Ver más sobre ${title}`;
+                div.appendChild(link);
+              }
+            }
+          });
+        });
+        
+        content = tempDiv.innerHTML;
+      } catch (error) {
+        console.warn('Error procesando states-card:', error);
+      }
+    } else {
+      // Fallback para SSR: procesar con regex
+      // Reemplazar bullets por iconos en los li dentro de states-card
+      content = content.replace(/(<li[^>]*>)([\s\S]*?)(<\/li>)/gi, (liMatch, liStart, liContent, liEnd) => {
+        // Solo procesar si está dentro de una states-card
+        const matchIndex = content.indexOf(liMatch);
+        const contextBefore = content.substring(Math.max(0, matchIndex - 2000), matchIndex);
+        if (!contextBefore.includes('states-card')) {
+          return liMatch;
+        }
+        
+        // Verificar si ya tiene un icono
+        if (liStart.includes('bi-') || liContent.includes('<i class="bi')) {
+          return liMatch;
+        }
+        
+        const text = liContent.replace(/<[^>]*>/g, '').trim();
+        let iconClass = 'bi-check-circle';
+        
+        if (/popular|favore|beneficio|ventaja/i.test(text)) {
+          iconClass = 'bi-star-fill';
+        } else if (/tax|impuesto|fee|precio|costo/i.test(text)) {
+          iconClass = 'bi-cash-stack';
+        } else if (/anual|reporte|filing/i.test(text)) {
+          iconClass = 'bi-calendar-check';
+        } else if (/anonimo|proteccion|legal/i.test(text)) {
+          iconClass = 'bi-shield-check';
+        } else if (/economico|economia|barato/i.test(text)) {
+          iconClass = 'bi-currency-dollar';
+        } else if (/facil|sencillo|simple/i.test(text)) {
+          iconClass = 'bi-check-circle-fill';
+        }
+        
+        return `${liStart}<i class="bi ${iconClass}"></i>${liContent}${liEnd}`;
+      });
+      
+      // Agregar enlaces al final de divs que tengan h3 dentro de states-card
+      content = content.replace(/(<div[^>]*>[\s\S]*?<h3[^>]*>([^<]+)<\/h3>[\s\S]*?)(<\/div>)/gi, (divMatch, divBefore, title, divClose) => {
+        // Verificar si está dentro de una states-card
+        const matchIndex = content.indexOf(divMatch);
+        const contextBefore = content.substring(Math.max(0, matchIndex - 2000), matchIndex);
+        if (!contextBefore.includes('states-card')) {
+          return divMatch;
+        }
+        
+        // Verificar si ya tiene un enlace
+        if (divBefore.includes('data-internal-link') || divBefore.includes('states-card-link')) {
+          return divMatch;
+        }
+        
+        const cleanTitle = title.trim();
+        const slug = cleanTitle
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '');
+        
+        if (slug) {
+          const link = `<a href="${this.baseUrl}/blog/${slug}" data-internal-link="${slug}" class="states-card-link">Ver más sobre ${cleanTitle}</a>`;
+          return `${divBefore}${link}${divClose}`;
+        }
+        
+        return divMatch;
+      });
+    }
+    
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
