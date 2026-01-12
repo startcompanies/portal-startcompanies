@@ -822,6 +822,37 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       });
     }
     
+    // Aplicar clase cta-card a elementos con estilos específicos de CTA
+    // Detectar elementos div con background-color: #2d3748 y border: 2px solid #38B2AC
+    content = content.replace(/(<div\s+[^>]*style\s*=\s*["']([^"']*)["'][^>]*>)/gi, (match, divStart, styleContent) => {
+      // Verificar si tiene los estilos característicos de cta-card
+      const hasBackgroundColor = /background-color:\s*#2d3748/i.test(styleContent);
+      const hasBorder = /border:\s*2px\s+solid\s+#38B2AC/i.test(styleContent);
+      
+      if (hasBackgroundColor && hasBorder) {
+        // Verificar si ya tiene la clase cta-card
+        const hasClass = /class\s*=\s*["'][^"']*cta-card[^"']*["']/i.test(divStart);
+        if (hasClass) {
+          // Ya tiene la clase, retornar sin cambios
+          return match;
+        }
+        
+        // Verificar si tiene atributo class
+        const classMatch = divStart.match(/class\s*=\s*["']([^"']*)["']/i);
+        if (classMatch) {
+          // Agregar la clase a las clases existentes
+          const existingClasses = classMatch[1];
+          const newClasses = `${existingClasses} cta-card`;
+          return divStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClasses}"`);
+        } else {
+          // Agregar el atributo class con la clase
+          return divStart.replace(/>$/, ' class="cta-card">');
+        }
+      }
+      
+      return match;
+    });
+    
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
