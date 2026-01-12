@@ -653,6 +653,18 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
           return match;
         }
         
+        // Verificar si está dentro de elementos que no deben tener la clase
+        const matchIndex = content.indexOf(match);
+        const contextStart = Math.max(0, matchIndex - 2000);
+        const contextBefore = content.substring(contextStart, matchIndex);
+        if (contextBefore.includes('promo-card') || 
+            contextBefore.includes('veredicto-defentux-card') ||
+            contextBefore.includes('metric') || 
+            contextBefore.includes('logo-wrap') ||
+            contextBefore.includes('content-column-container')) {
+          return match;
+        }
+        
         // Verificar si tiene atributo class
         const classMatch = imgStart.match(/class\s*=\s*["']([^"']*)["']/i);
         if (classMatch) {
