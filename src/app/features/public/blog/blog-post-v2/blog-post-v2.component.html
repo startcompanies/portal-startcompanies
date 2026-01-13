@@ -191,8 +191,8 @@
   </div>
 </section>
 
-<!-- Breadcrumb para todos los posts -->
-<section *ngIf="postArticle" class="breadcrumb-section">
+<!-- Breadcrumb para posts tipo landing (mantiene estilo actual) -->
+<section *ngIf="hasSections && postArticle" class="breadcrumb-section">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 col-md-12 col-lg-12 col-xl-10">
@@ -216,6 +216,23 @@
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
   <div class="row">
+    <!-- Breadcrumb para posts no-landing (al mismo nivel que el contenido) -->
+    <div *ngIf="!hasSections && postArticle" class="col-lg-9">
+      <nav aria-label="breadcrumb" class="breadcrumb-container mb-3">
+        <ol class="breadcrumb mb-0 mx-4">
+          <li class="breadcrumb-item">
+            <a [langRouterLink]="''" class="breadcrumb-link">Inicio</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a [langRouterLink]="'blog'" class="breadcrumb-link">Blog</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            {{ postArticle.title }}
+          </li>
+        </ol>
+      </nav>
+    </div>
+    
     <main
       [class]="hasSections ? 'col-12' : 'col-lg-9'"
       *ngIf="postArticle && postArticle.content; else noArticle"
