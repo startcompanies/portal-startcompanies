@@ -1,7 +1,7 @@
 <div class="row" [ngClass]="{ 'landing-page-row': isLandingPage }">
   <div
     #contentContainer
-    class="mt-5 app-post-content"
+    class="app-post-content"
     [ngClass]="isLandingPage ? 'col-12' : 'col-12 col-md-12 col-lg-12'"
     *ngIf="isBrowser"
     [innerHTML]="sanitizedHtml"

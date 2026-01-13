@@ -191,7 +191,30 @@
   </div>
 </section>
 
-<div [ngClass]="hasSections ? 'container-fluid my-5' : 'container my-5'" [class.landing-page-container]="hasSections">
+<!-- Breadcrumb para todos los posts -->
+<section *ngIf="postArticle" class="breadcrumb-section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-12 col-lg-12 col-xl-10">
+        <nav aria-label="breadcrumb" class="breadcrumb-container">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+              <a [langRouterLink]="''" class="breadcrumb-link">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a [langRouterLink]="'blog'" class="breadcrumb-link">Blog</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ postArticle.title }}
+            </li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
   <div class="row">
     <main
       [class]="hasSections ? 'col-12' : 'col-lg-9'"
