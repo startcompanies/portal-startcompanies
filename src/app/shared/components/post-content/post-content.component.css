@@ -1,6 +1,3 @@
-/* Estilos para el contenido del post - aplicados globalmente debido a ViewEncapsulation.None */
-
-/* Clase para redondear y centrar imágenes en posts no landing */
 .post-image-rounded {
   border-radius: 4rem !important;
   display: block !important;
@@ -12,7 +9,6 @@
   border: 2px solid #F4F7FC;
 }
 
-/* Clase para contenedor de columna de contenido */
 .content-column-container {
   margin: 0 auto;
   padding: 20px;
@@ -20,7 +16,6 @@
   line-height: 1.6;
 }
 
-/* Clase para card de estados con listas */
 .app-post-content .states-card,
 .states-card {
   background-color: #293b49;
@@ -122,7 +117,6 @@
   box-shadow: 0 2px 4px rgba(0, 188, 212, 0.2);
 }
 
-/* Responsive para pantallas pequeñas */
 @media (max-width: 768px) {
 
   .app-post-content .states-card,
@@ -162,7 +156,6 @@
   }
 }
 
-/* Responsividad adicional para imágenes en posts no landing */
 @media (max-width: 768px) {
   .post-image-rounded {
     border-radius: 2rem !important;
@@ -177,7 +170,6 @@
   }
 }
 
-/* Estilos para landing page (contenido con secciones) */
 .landing-page-row {
   margin-left: 0;
   margin-right: 0;
@@ -195,14 +187,12 @@
   }
 }
 
-/* Estilos para secciones con background image */
 .app-post-content section[style*="background-image"],
 section[style*="background-image"] {
   width: 100%;
   padding: 3rem 0;
 }
 
-/* Estilos para contenedores dentro de secciones con background image */
 .app-post-content section[style*="background-image"] .container,
 section[style*="background-image"] .container {
   width: 100%;
@@ -220,7 +210,6 @@ section[style*="background-image"] .row {
   gap: 0;
 }
 
-/* Columnas dentro de secciones con background image - estilo cuadrado tipo Word */
 .app-post-content section[style*="background-image"] [class*="col-"],
 section[style*="background-image"] [class*="col-"] {
   display: flex;
@@ -233,7 +222,6 @@ section[style*="background-image"] [class*="col-"] {
   min-height: 100%;
 }
 
-/* Columnas con imágenes - alineación superior cuadrada */
 .app-post-content section[style*="background-image"] [class*="col-"]:has(img),
 section[style*="background-image"] [class*="col-"]:has(img) {
   display: flex;
@@ -243,7 +231,6 @@ section[style*="background-image"] [class*="col-"]:has(img) {
   padding: 2rem 1.5rem;
 }
 
-/* Alternativa para navegadores que no soportan :has() - imágenes dentro de columnas */
 .app-post-content section[style*="background-image"] [class*="col-"] img,
 section[style*="background-image"] [class*="col-"] img {
   display: block;
@@ -256,7 +243,6 @@ section[style*="background-image"] [class*="col-"] img {
   min-height: 300px;
 }
 
-/* Alinear texto en secciones con background image - alineación izquierda tipo Word */
 .app-post-content section[style*="background-image"] p,
 section[style*="background-image"] p {
   text-align: left !important;
@@ -283,7 +269,6 @@ section[style*="background-image"] h6 {
   margin-bottom: 1rem;
 }
 
-/* Alinear imágenes en secciones con background image - estilo cuadrado tipo Word */
 .app-post-content section[style*="background-image"] img,
 section[style*="background-image"] img {
   display: block !important;
@@ -297,7 +282,6 @@ section[style*="background-image"] img {
   aspect-ratio: 4 / 3;
 }
 
-/* Estilos para enlaces dentro de secciones con background image */
 .app-post-content section[style*="background-image"] a,
 section[style*="background-image"] a {
   font-size: 16px !important;
@@ -309,7 +293,6 @@ section[style*="background-image"] a {
   margin-top: 0.5rem;
 }
 
-/* Estilos para abre-corp-card */
 .app-post-content .abre-corp-card,
 .abre-corp-card {
   background-color: #2d3748 !important;
@@ -384,7 +367,6 @@ section[style*="background-image"] a {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Estilos para el contenedor del calendario Calendly dentro del post */
 .app-post-content #my-cal-inline,
 #my-cal-inline {
   max-height: 600px !important;
@@ -399,8 +381,6 @@ section[style*="background-image"] a {
   max-width: 100% !important;
 }
 
-/* Estilos para mercury */
-/* .promo-card: contenedor principal */
 .app-post-content .promo-card,
 .promo-card {
   border-radius: 1rem !important;
@@ -410,7 +390,6 @@ section[style*="background-image"] a {
   background: #fff;
 }
 
-/* logo responsive */
 .app-post-content .card-logo,
 .card-logo {
   display: block;
@@ -420,14 +399,11 @@ section[style*="background-image"] a {
   object-fit: contain;
 }
 
-/* metric styling */
-/* Alinear correctamente todos los íconos dentro de .metric */
 .app-post-content .metric,
 .metric {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  /* separa icono ↔ texto */
 }
 
 .app-post-content .metric img,
@@ -437,10 +413,8 @@ section[style*="background-image"] a {
   object-fit: contain;
   flex-shrink: 0;
   margin-top: 1px;
-  /* fine-tuning vertical */
 }
 
-/* Alinear textos internos */
 .app-post-content .metric .metric-label,
 .app-post-content .metric strong,
 .app-post-content .metric small,
@@ -453,13 +427,11 @@ section[style*="background-image"] a {
   line-height: 1.2;
 }
 
-/* Evitar que strong afecte alineación */
 .app-post-content .metric strong,
 .metric strong {
   font-weight: 600;
 }
 
-/* CTA */
 .app-post-content .btn-cta,
 .btn-cta {
   background: #00c2ff !important;
@@ -470,7 +442,6 @@ section[style*="background-image"] a {
   font-weight: 600;
 }
 
-/* details / summary */
 .app-post-content .promo-details,
 .promo-details {
   border-top: 1px solid #e9ecef;
@@ -516,39 +487,26 @@ section[style*="background-image"] a {
   transform: rotate(180deg);
 }
 
-/* feature list with icon */
-/* ---------- Lista de features: marcador coloreado + alineado ---------- */
-
-/* Mantener estructura semántica */
 .app-post-content .feature-list,
 .feature-list {
   margin: 0;
   padding-left: 1.2rem;
-  /* espacio para el marcador nativo */
   list-style: disc;
-  /* usamos disco (default) para consistencia */
 }
 
-/* Separación y lectura */
 .app-post-content .feature-list li,
 .feature-list li {
   margin: 0.35rem 0;
   line-height: 1.4;
 }
 
-/* ===== Modern browsers: colorear el marker nativo ===== */
 .app-post-content .feature-list li::marker,
 .feature-list li::marker {
   font-size: 0.9em;
-  /* ligero ajuste del tamaño si quieres, usa 1em para tamaño por defecto */
 }
 
-/* ===== Fallback para navegadores sin ::marker (ej: algunos motores antiguos) =====
-   Si el navegador no aplica ::marker, escondemos el marker nativo y usamos ::before
-   (el tamaño aquí se mantiene en unidades relativas para imitar al marcador nativo) */
 .app-post-content .feature-list.no-marker-support,
 .feature-list.no-marker-support {
-  /* añade esta clase si necesitas forzar fallback */
   list-style: none;
   padding-left: 0;
 }
@@ -565,15 +523,12 @@ section[style*="background-image"] a {
 .feature-list.no-marker-support li::before {
   content: "";
   width: 0.6em;
-  /* tamaño relativo: similar al marcador nativo */
   height: 0.6em;
   margin-top: 0.22em;
-  /* alinea verticalmente con la primera línea del texto */
   border-radius: 50%;
   flex: 0 0 auto;
 }
 
-/* Ajustes responsivos: reducir un poco en móviles */
 @media (max-width: 576px) {
 
   .app-post-content .feature-list,
@@ -593,15 +548,12 @@ section[style*="background-image"] a {
   }
 }
 
-/* Alineación con los títulos (ej. "Ventajas:") en columnas:
-   nos aseguramos que el título (elemento <strong>) no interfiera con el marcador */
 .app-post-content .promo-content>.row>[class*="col-"]>strong,
 .promo-content>.row>[class*="col-"]>strong {
   display: block;
   margin-bottom: 0.5rem;
 }
 
-/* Estilos para ayuda-profesional-card */
 .app-post-content .ayuda-profesional-card,
 .ayuda-profesional-card {
   background-color: #2d3748;
@@ -654,7 +606,6 @@ section[style*="background-image"] a {
   white-space: nowrap;
 }
 
-/* Responsive para ayuda-profesional-card */
 @media (max-width: 992px) {
 
   .app-post-content .ayuda-profesional-title,
@@ -730,14 +681,12 @@ section[style*="background-image"] a {
   object-position: center;
 }
 
-/* Clase para contenedor del card de costos */
 .app-post-content .costos-card-container,
 .costos-card-container {
   display: flex;
   justify-content: center;
 }
 
-/* Estilos para costos-florida-card */
 .app-post-content .costos-florida-card,
 .costos-florida-card {
   background-color: #00bcd4;
@@ -841,7 +790,6 @@ section[style*="background-image"] a {
   }
 }
 
-/* Estilos para preguntas-frecuentes-card */
 .app-post-content .preguntas-frecuentes-card,
 .preguntas-frecuentes-card {
   background-color: #2d3748;
@@ -887,14 +835,12 @@ section[style*="background-image"] a {
   margin-left: 1rem;
 }
 
-/* Estilos para el header del acordeón de preguntas frecuentes */
 .app-post-content .custom-accordion-header,
 .custom-accordion-header {
   margin: 0;
   padding: 0;
 }
 
-/* Estilos para el botón del acordeón de preguntas frecuentes */
 .app-post-content .custom-accordion-button,
 .custom-accordion-button {
   text-align: left !important;
@@ -908,7 +854,6 @@ section[style*="background-image"] a {
   /*width: 100% !important;*/
 }
 
-/* Estilos para el h2 dentro del botón del acordeón */
 .app-post-content .custom-accordion-button h2,
 .custom-accordion-button h2 {
   font-size: 1.1rem !important;
@@ -916,7 +861,6 @@ section[style*="background-image"] a {
   font-weight: inherit;
 }
 
-/* Estilos para el icono del acordeón de preguntas frecuentes */
 .app-post-content .faq-arrow-icon,
 .faq-arrow-icon {
   margin: 0 0.5rem !important;
@@ -925,7 +869,6 @@ section[style*="background-image"] a {
   font-size: 1rem !important;
 }
 
-/* Estilos para renovar-llc-card */
 .app-post-content .renovar-llc-card,
 .renovar-llc-card {
   background-color: #F4F7FC;
@@ -965,7 +908,6 @@ section[style*="background-image"] a {
   padding-left: 1.5rem;
 }
 
-/* Estilos para veredicto-card */
 .app-post-content .veredicto-card,
 .veredicto-card {
   background-color: #F4F7FC;
@@ -1076,7 +1018,6 @@ section[style*="background-image"] a {
   font-size: clamp(0.95rem, 2vw, 1rem);
 }
 
-/* Estilos para landing-index-card (card de índice para posts tipo landing) */
 .app-post-content .landing-index-card,
 .landing-index-card {
   background: #02CAE3;
@@ -1090,12 +1031,10 @@ section[style*="background-image"] a {
   color: #FFFFFF !important;
 }
 
-/* Estilos para imágenes en posts tipo landing */
 .landing-page-row .app-post-content img {
   border-radius: 4rem !important;
 }
 
-/* Estilos para tablas dentro del contenido del post */
 .app-post-content .table-custom-container,
 .app-post-content .table-responsive.table-custom-container {
   border-radius: 15px 15px 0 0;
@@ -1116,7 +1055,6 @@ section[style*="background-image"] a {
   border-collapse: collapse;
 }
 
-/* Estilo del encabezado oscuro */
 .app-post-content .table-custom-container .table-custom thead tr,
 .app-post-content .table-responsive.table-custom-container .table-custom thead tr {
   background-color: #293B49 !important;
@@ -1149,7 +1087,6 @@ section[style*="background-image"] a {
   border-right: none !important;
 }
 
-/* Estilo de las celdas del cuerpo */
 .app-post-content .table-custom-container .table-custom tbody td,
 .app-post-content .table-responsive.table-custom-container .table-custom tbody td {
   padding: 1.2rem 1rem;
@@ -1180,13 +1117,11 @@ section[style*="background-image"] a {
   border-bottom: none !important;
 }
 
-/* Bordes internos sutiles */
 .app-post-content .table-custom-container .table-bordered,
 .app-post-content .table-responsive.table-custom-container .table-bordered {
   border: none;
 }
 
-/* Estilos para el título de preguntas frecuentes */
 .app-post-content .preguntas-frecuentes-title,
 .preguntas-frecuentes-title {
   text-align: center !important;
@@ -1199,7 +1134,6 @@ section[style*="background-image"] a {
   color: #02CAE3 !important;
 }
 
-/* Estilos para el botón de descarga de template */
 .app-post-content .btn-descarga-template,
 .btn-descarga-template {
   background: #02CAE3 !important;
@@ -1209,14 +1143,11 @@ section[style*="background-image"] a {
   padding: 7px !important;
 }
 
-/* Estilos para la card de autor */
 .app-post-content .card-autor,
 .card-autor {
   background-color: #283A48 !important;
   border-radius: 2.5rem !important;
-  /* Más redondeado según captura */
   padding: 2.5rem !important;
-  /* Más espacio interno */
   border: none !important;
 }
 
@@ -1224,39 +1155,30 @@ section[style*="background-image"] a {
 .app-post-content .card-autor img.rounded-circle,
 .card-autor img.rounded-circle {
   width: 200px !important;
-  /* Aumentado para igualar la captura */
   height: 200px !important;
   object-fit: cover !important;
   border: 3px solid rgba(255, 255, 255, 0.2) !important;
-  /* Toque de calidad */
 }
 
-/* Estilos para el label "Autor" */
 .app-post-content .card-autor .autor-label,
 .card-autor .autor-label {
   font-size: 0.9rem !important;
   color: #ffffff !important;
-  /* Negro suave de la captura */
   margin-bottom: 0.2rem !important;
   font-weight: 700 !important;
 }
 
-/* Estilos para el nombre del autor */
 .app-post-content .card-autor .autor-nombre,
 .card-autor .autor-nombre {
   font-size: 1.8rem !important;
-  /* Más grande y pesado */
   color: #ffffff !important;
   margin-bottom: 0.8rem !important;
   font-weight: 800 !important;
-  /* Extra bold como en la imagen */
 }
 
-/* Estilos para la descripción del autor */
 .app-post-content .card-autor .autor-descripcion,
 .card-autor .autor-descripcion {
   color: #ffffff !important;
-  /* Mejor contraste sobre el cian */
   font-size: 1rem !important;
   margin-bottom: 1.5rem !important;
   line-height: 1.5 !important;
@@ -1267,14 +1189,12 @@ section[style*="background-image"] a {
   margin: 0 !important;
 }
 
-/* Estilos para el botón de LinkedIn del autor */
 .app-post-content .card-autor .btn-linkedin-autor,
 .card-autor .btn-linkedin-autor {
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
   background-color: #2d2d2d !important;
-  /* Fondo gris oscuro de la captura */
   border: none !important;
   padding: 0.7rem 1.5rem !important;
   font-weight: 600 !important;
@@ -1287,7 +1207,6 @@ section[style*="background-image"] a {
   transform: translateY(-2px);
 }
 
-/* Clase para CTA card con fondo oscuro y borde teal */
 .app-post-content .cta-card,
 .cta-card {
   background-color: #2d3748 !important;
@@ -1305,7 +1224,6 @@ section[style*="background-image"] a {
   box-shadow: none !important;
 }
 
-/* Responsive para cta-card */
 @media (max-width: 768px) {
   .app-post-content .cta-card,
   .cta-card {
@@ -1322,199 +1240,134 @@ section[style*="background-image"] a {
   }
 }
 
-/* ============================================
-   ESTILOS CONSOLIDADOS PARA POSTS
-   Solo clases para reemplazar estilos inline existentes
-   ============================================ */
+.app-post-content .style-font-size-2rem,.style-font-size-2rem{font-size:2rem}
+.app-post-content .style-font-size-1-75rem,.style-font-size-1-75rem{font-size:1.75rem}
+.app-post-content .style-font-size-1-5rem,.style-font-size-1-5rem{font-size:1.5rem}
+.app-post-content .style-font-size-1-25rem,.style-font-size-1-25rem{font-size:1.25rem}
+.app-post-content .style-font-size-1-125rem,.style-font-size-1-125rem{font-size:1.125rem}
+.app-post-content .style-font-size-1-1rem,.style-font-size-1-1rem{font-size:1.1rem}
+.app-post-content .style-font-size-1rem,.style-font-size-1rem{font-size:1rem}
+.app-post-content .style-font-size-0-95rem,.style-font-size-0-95rem{font-size:0.95rem}
+.app-post-content .style-display-none,.style-display-none{display:none}
+.app-post-content .style-display-inline,.style-display-inline{display:inline}
+.app-post-content .style-cursor-pointer,.style-cursor-pointer{cursor:pointer}
+.app-post-content .style-anchor-offset,.style-anchor-offset{display:block;position:relative;top:-80px;visibility:hidden}
+.app-post-content .style-display-inline-flex,.style-display-inline-flex{display:inline-flex;align-items:center;gap:0.5rem}
+.app-post-content .style-border-bottom-accordion,.style-border-bottom-accordion{border-bottom:1px solid #dee2e6}
+.app-post-content .style-table-header-dark,.style-table-header-dark{background-color:#333333;color:#ffffff}
+.app-post-content .style-table-header-dark a,.style-table-header-dark a{color:#ffffff}
+.app-post-content .style-accordion-button,.style-accordion-button{width:100%;text-align:left;background:none;border:none;padding:1rem 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.app-post-content .style-accordion-content,.style-accordion-content{display:none;padding:0 0 1rem 0}
+.app-post-content .style-section-bg-image,.style-section-bg-image{background-size:cover;background-position:center;background-repeat:no-repeat}
+.app-post-content .style-section-bg-light,.style-section-bg-light{background-color:#fafafa}
+.app-post-content .style-calendar-container,.style-calendar-container{width:100%;max-height:500px;overflow-y:auto;border:1px solid #ddd;border-radius:8px}
+.app-post-content .style-text-disclaimer,.style-text-disclaimer{font-size:0.95rem;color:#6c757d}
+.app-post-content .style-font-weight-bold,.style-font-weight-bold{font-weight:bold}
 
-/* ============================================
-   TIPOGRAFÍA - TAMAÑOS DE FUENTE
-   ============================================ */
+.app-post-content .sc-this-post,.sc-this-post{border-radius:1rem !important}
+.app-post-content .sc-header,.sc-header{border-radius:1rem 1rem 0 0;background-color:var(--color-texto-oscuro) !important;color:var(--color-fondo-claro) !important;font-weight:bold;font-size:1rem}
+.app-post-content .sc-body,.sc-body{background-color:var(--color-fondo-gris) !important;border-radius:1rem}
+.app-post-content .sc-post-toc,.sc-post-toc{border:none;background:transparent;font-size:0.95rem;color:#a0aec0;list-style:none;padding-left:0}
 
-/* Títulos principales H1 */
-.app-post-content .style-font-size-2rem,
-.style-font-size-2rem {
-  font-size: 2rem;
+.app-post-content .sc-post-toc .list-group-item,
+.sc-post-toc .list-group-item {
+  border: none;
+  background: transparent;
+  color: #a0aec0;
+  padding: 6px 0;
+  font-weight: 500;
+  transition: color 0.2s ease;
 }
 
-/* Subtítulos H2 */
-.app-post-content .style-font-size-1-75rem,
-.style-font-size-1-75rem {
-  font-size: 1.75rem;
-}
+.app-post-content .sc-post-toc .list-group-item:hover,.sc-post-toc .list-group-item:hover{color:#0d6efd;cursor:pointer}
 
-/* Subtítulos H3 */
-.app-post-content .style-font-size-1-5rem,
-.style-font-size-1-5rem {
-  font-size: 1.5rem;
-}
-
-/* Títulos de sección */
-.app-post-content .style-font-size-1-25rem,
-.style-font-size-1-25rem {
-  font-size: 1.25rem;
-}
-
-/* Párrafos destacados */
-.app-post-content .style-font-size-1-125rem,
-.style-font-size-1-125rem {
-  font-size: 1.125rem;
-}
-
-/* Títulos de índice */
-.app-post-content .style-font-size-1-1rem,
-.style-font-size-1-1rem {
-  font-size: 1.1rem;
-}
-
-/* Texto normal */
-.app-post-content .style-font-size-1rem,
-.style-font-size-1rem {
+.app-post-content .sc-post-toc .list-group-item::before,
+.sc-post-toc .list-group-item::before {
+  content: "•";
+  color: #a0aec0;
+  margin-right: 8px;
   font-size: 1rem;
 }
 
-/* Texto pequeño */
-.app-post-content .style-font-size-0-95rem,
-.style-font-size-0-95rem {
-  font-size: 0.95rem;
-}
+.app-post-content .open-llc-card,.open-llc-card{background:#293b49 !important;border-radius:1rem !important;color:var(--color-fondo-claro) !important}
+.app-post-content .title,.title{margin:0 !important}
+.app-post-content .title-hightlight,.title-hightlight{color:var(--color-secundario-tecnico) !important}
+.app-post-content .sc-btn-accent,.sc-btn-accent{background-color:var(--color-secundario-tecnico);color:var(--color-fondo-claro);border:none;border-radius:2.5rem;padding:0.75rem 1.5rem;font-weight:600;font-size:1rem;display:inline-flex;align-items:center;justify-content:center;transition:background-color 0.3s ease}
 
-/* ============================================
-   DISPLAY Y VISIBILIDAD
-   ============================================ */
-
-/* Ocultar elemento */
-.app-post-content .style-display-none,
-.style-display-none {
-  display: none;
-}
-
-/* Mostrar inline */
-.app-post-content .style-display-inline,
-.style-display-inline {
-  display: inline;
-}
-
-/* Cursor pointer */
-.app-post-content .style-cursor-pointer,
-.style-cursor-pointer {
-  cursor: pointer;
-}
-
-/* Ancla de navegación (para scroll suave) */
-.app-post-content .style-anchor-offset,
-.style-anchor-offset {
-  display: block;
-  position: relative;
-  top: -80px;
-  visibility: hidden;
-}
-
-/* Display inline-flex con gap */
-.app-post-content .style-display-inline-flex,
-.style-display-inline-flex {
+.app-post-content .btn-linkedin-profile,
+.btn-linkedin-profile {
+  background: #293b49 !important;
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  transition: background-color 0.3s ease;
 }
 
-/* ============================================
-   BORDES
-   ============================================ */
-
-/* Borde inferior para acordeones */
-.app-post-content .style-border-bottom-accordion,
-.style-border-bottom-accordion {
-  border-bottom: 1px solid #dee2e6;
+.app-post-content .author-info-card,
+.author-info-card {
+  background-color: #283A48 !important;
+  border-radius: 2rem !important;
+  padding: 2.5rem !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-/* ============================================
-   TABLAS
-   ============================================ */
-
-/* Encabezado de tabla oscuro */
-.app-post-content .style-table-header-dark,
-.style-table-header-dark {
-  background-color: #333333;
-  color: #ffffff;
+.app-post-content .author-info-card .card-body,
+.author-info-card .card-body {
+  padding: 0 !important;
+  text-align: center;
 }
 
-/* Enlaces en encabezado de tabla */
-.app-post-content .style-table-header-dark a,
-.style-table-header-dark a {
-  color: #ffffff;
+.app-post-content .author-info-card .card-body>p:first-child,.app-post-content .author-info-card .card-body p.text-center:first-child,.app-post-content .author-info-card .autor-label,.author-info-card .card-body>p:first-child,.author-info-card .card-body p.text-center:first-child,.author-info-card .autor-label{font-size:0.9rem !important;color:#02CAE3 !important;margin-bottom:0.5rem !important;margin-top:0 !important;font-weight:600 !important;display:block !important;text-align:center !important}
+.app-post-content .author-info-card .card-title,.app-post-content .author-info-card h5.card-title,.app-post-content .author-info-card .autor-nombre,.author-info-card .card-title,.author-info-card h5.card-title,.author-info-card .autor-nombre{font-size:1.35rem !important;color:#ffffff !important;margin-bottom:0.85rem !important;font-weight:700 !important;display:block !important;line-height:1.2 !important;text-align:center !important}
+
+/* Estilos para la imagen del autor */
+.app-post-content .author-info-card img,
+.app-post-content .author-info-card img.rounded-circle,
+.author-info-card img,
+.author-info-card img.rounded-circle {
+  width: 118px !important;
+  height: 118px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin: 0 auto 1rem auto !important;
+  display: block !important;
 }
 
-/* ============================================
-   BOTONES DE ACORDEÓN
-   ============================================ */
-
-/* Botón de acordeón personalizado */
-.app-post-content .style-accordion-button,
-.style-accordion-button {
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  padding: 1rem 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
+.app-post-content .author-info-card i.bi-person-circle,
+.author-info-card i.bi-person-circle {
+  font-size: 118px !important;
+  color: #ffffff !important;
+  margin: 0 auto 1rem auto !important;
+  display: block !important;
+  line-height: 1 !important;
 }
 
-/* Contenido de acordeón */
-.app-post-content .style-accordion-content,
-.style-accordion-content {
-  display: none;
-  padding: 0 0 1rem 0;
-}
+.app-post-content .author-info-card p.text-justify,.app-post-content .author-info-card .card-text,.app-post-content .author-info-card p.card-text,.app-post-content .author-info-card .card-text.small,.app-post-content .author-info-card .autor-descripcion,.author-info-card p.text-justify,.author-info-card .card-text,.author-info-card p.card-text,.author-info-card .card-text.small,.author-info-card .autor-descripcion{color:#ffffff !important;font-size:0.95rem !important;line-height:1.5 !important;margin-bottom:1rem !important;margin-top:0 !important;text-align:left !important}
+.app-post-content .author-info-card .card-text p,.app-post-content .author-info-card .autor-descripcion p,.app-post-content .author-info-card p.text-justify p,.author-info-card .card-text p,.author-info-card .autor-descripcion p,.author-info-card p.text-justify p{margin:0 !important;line-height:1.5 !important;color:#ffffff !important;text-align:left !important}
+.app-post-content .author-info-card .card-text.small:has(img),.app-post-content .author-info-card .card-text.small:has(i),.author-info-card .card-text.small:has(img),.author-info-card .card-text.small:has(i){text-align:center !important;margin-bottom:1rem !important}
 
-/* ============================================
-   SECCIONES CON BACKGROUND
-   ============================================ */
+.app-post-content .author-info-card .btn-linkedin-profile,.app-post-content .author-info-card .btn-linkedin-autor,.app-post-content .author-info-card a[class*="btn-linkedin"],.app-post-content .author-info-card button[class*="btn-linkedin"],.author-info-card .btn-linkedin-profile,.author-info-card .btn-linkedin-autor,.author-info-card a[class*="btn-linkedin"],.author-info-card button[class*="btn-linkedin"]{background-color:#02CAE3 !important;color:#ffffff !important;border:none !important;padding:0.55rem 1.05rem !important;font-size:0.95rem !important;border-radius:2rem !important;margin-top:1rem !important;text-decoration:none !important;display:inline-flex !important;align-items:center !important;gap:0.5rem !important;font-weight:600 !important;cursor:pointer}
+.app-post-content .author-info-card .btn-linkedin-profile:hover,.app-post-content .author-info-card .btn-linkedin-autor:hover,.app-post-content .author-info-card a[class*="btn-linkedin"]:hover,.app-post-content .author-info-card button[class*="btn-linkedin"]:hover,.author-info-card .btn-linkedin-profile:hover,.author-info-card .btn-linkedin-autor:hover,.author-info-card a[class*="btn-linkedin"]:hover,.author-info-card button[class*="btn-linkedin"]:hover{background-color:#02b8d0 !important;color:#ffffff !important;text-decoration:none !important}
+.app-post-content .author-info-card .btn-linkedin-profile i,.app-post-content .author-info-card .btn-linkedin-autor i,.app-post-content .author-info-card [class*="btn-linkedin"] i,.author-info-card .btn-linkedin-profile i,.author-info-card .btn-linkedin-autor i,.author-info-card [class*="btn-linkedin"] i{font-size:1rem !important;line-height:1 !important;margin:0 !important}
 
-/* Sección con imagen de fondo */
-.app-post-content .style-section-bg-image,
-.style-section-bg-image {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-/* Sección con fondo gris claro */
-.app-post-content .style-section-bg-light,
-.style-section-bg-light {
-  background-color: #fafafa;
-}
-
-/* ============================================
-   CALENDARIO CONTAINER
-   ============================================ */
-
-/* Contenedor de calendario con estilos específicos */
-.app-post-content .style-calendar-container,
-.style-calendar-container {
-  width: 100%;
-  max-height: 500px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-/* ============================================
-   UTILIDADES ADICIONALES
-   ============================================ */
-
-/* Texto de disclaimer */
-.app-post-content .style-text-disclaimer,
-.style-text-disclaimer {
-  font-size: 0.95rem;
-  color: #6c757d;
-}
-
-/* Font weight bold */
-.app-post-content .style-font-weight-bold,
-.style-font-weight-bold {
-  font-weight: bold;
+.app-post-content .post-cta-card,.post-cta-card{background:#243544;color:#fff;border-radius:20px;padding:32px;box-shadow:0 6px 18px rgba(0,0,0,0.12);max-width:920px;margin-left:auto;margin-right:auto}
+.app-post-content .post-cta-title,.post-cta-title{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:0.25rem}
+.app-post-content .post-cta-subtitle,.post-cta-subtitle{color:#6fe0ff;font-size:1.125rem;margin-bottom:1rem}
+.app-post-content .btn-cta-primary,.btn-cta-primary{background:#2dd1ea;color:#07222b;border:none;font-weight:600;box-shadow:0 3px 8px rgba(45,209,234,0.25)}
+.app-post-content .btn-cta-primary:hover,.btn-cta-primary:hover{opacity:0.95;text-decoration:none;color:#07222b}
+.app-post-content .btn-cta-ws,.btn-cta-ws{background:#2ed573;color:#07222b;border:none;font-weight:600;box-shadow:0 3px 8px rgba(46,213,115,0.18)}
+.app-post-content .btn-cta-ws:hover,.btn-cta-ws:hover{opacity:0.95;text-decoration:none;color:#07222b}
+@media (max-width:768px){
+.app-post-content .post-cta-card,.post-cta-card{padding:20px;border-radius:12px}
+.app-post-content .post-cta-title,.post-cta-title{font-size:1.25rem}
+.app-post-content .post-cta-subtitle,.post-cta-subtitle{font-size:1rem}
+.app-post-content .d-flex.gap-3,.d-flex.gap-3{gap:0.5rem;flex-direction:column}
+.app-post-content .btn-cta-primary,.app-post-content .btn-cta-ws,.btn-cta-primary,.btn-cta-ws{display:block;width:100%}
 }
