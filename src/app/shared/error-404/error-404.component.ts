@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { SeoBaseComponent } from '../components/seo-base/seo-base.component';
-import { ScHeaderComponent } from '../../sc-header/sc-header.component';
-import { ScFooterComponent } from '../../sc-footer/sc-footer.component';
+import { ScHeaderComponent } from '../components/header/sc-header.component';
+import { ScFooterComponent } from '../components/footer/sc-footer.component';
 import { ResponsiveImageComponent } from '../components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LangRouterLinkDirective } from '../directives/lang-router-link.directive';

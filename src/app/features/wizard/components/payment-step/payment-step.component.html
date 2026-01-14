@@ -1,0 +1,107 @@
+<div class="payment-step">
+  <h4 class="mb-3">Pago</h4>
+  <p class="text-muted mb-4">Completa el pago para continuar con tu solicitud</p>
+
+  <!-- Resumen del servicio -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title mb-3">
+        <i class="bi bi-receipt me-2"></i>
+        Resumen de tu solicitud
+      </h5>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-box-seam me-2 text-primary"></i>
+            <strong class="me-2">Plan:</strong>
+          </div>
+          <p class="ms-4 mb-0">
+            <span *ngIf="packId; else noPlan">
+              {{ packId }}
+            </span>
+            <ng-template #noPlan>
+              <span class="text-muted">No especificado</span>
+            </ng-template>
+          </p>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-geo-alt me-2 text-primary"></i>
+            <strong class="me-2">Estado:</strong>
+          </div>
+          <p class="ms-4 mb-0">
+            <span *ngIf="state; else noState">{{ state }}</span>
+            <ng-template #noState>
+              <span class="text-muted">No seleccionado</span>
+            </ng-template>
+          </p>
+        </div>
+        <div class="col-md-12" *ngIf="totalAmount > 0">
+          <hr>
+          <div class="d-flex justify-content-between align-items-center">
+            <strong class="fs-5">Total a pagar:</strong>
+            <span class="fs-4 fw-bold text-primary">${{ totalAmount }} USD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form">
+    <!-- Componente de Stripe integrado -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5 class="mb-0">
+          <i class="bi bi-credit-card me-2"></i>
+          Información de la Tarjeta <span class="text-danger">*</span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <app-stripe-payment-form
+          [amount]="totalAmount"
+          [currency]="currency || 'usd'"
+          [showAmount]="false"
+          [disabled]="stripePaymentProcessed"
+          (paymentSuccess)="onStripePaymentSuccess($event)"
+          (paymentError)="handlePaymentError($event)"
+        ></app-stripe-payment-form>
+      </div>
+    </div>
+
+    <!-- Botón para procesar pago -->
+    <div class="d-grid gap-2" *ngIf="!stripePaymentProcessed">
+      <button 
+        type="button"
+        class="btn btn-primary btn-lg" 
+        (click)="processStripePayment()"
+        [disabled]="stripeProcessing || totalAmount <= 0"
+      >
+        <span *ngIf="!stripeProcessing">
+          <i class="bi bi-credit-card me-2"></i>
+          Pagar ${{ totalAmount }} USD
+        </span>
+        <span *ngIf="stripeProcessing">
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Procesando pago...
+        </span>
+      </button>
+      <small class="text-muted text-center" *ngIf="totalAmount <= 0">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        Por favor, selecciona un plan y estado para calcular el monto.
+      </small>
+    </div>
+
+    <!-- Mensaje de éxito cuando el pago está procesado -->
+    <div *ngIf="stripePaymentProcessed" class="alert alert-success">
+      <div class="d-flex align-items-start">
+        <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+        <div>
+          <h6 class="alert-heading mb-2">Pago procesado exitosamente</h6>
+          <p class="mb-0">
+            Los datos de tu tarjeta están bloqueados y no se pueden modificar. Puedes continuar al siguiente paso.
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

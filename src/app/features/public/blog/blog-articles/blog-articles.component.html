@@ -1,0 +1,99 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 col-lg-8">
+      <div class="article-section">
+        <h2 class="article-title">
+          {{ "BLOG.articles" | transloco }}
+          <span class="highlighted-text">{{
+            "BLOG.featured" | transloco
+          }}</span>
+        </h2>
+        <div class="row">
+          <div class="col-12 mb-4">
+            <div
+              *ngFor="let topArticle of topArticles"
+              class="card article-card mb-4"
+            >
+              <div class="row g-0">
+                <div
+                  class="col-md-5 d-flex align-items-center justify-content-center"
+                >
+                  <img
+                    src="{{ topArticle.image_url }}"
+                    class="img-fluid"
+                    alt="Imagen del artículo"
+                  />
+                </div>
+                <div class="col-md-7 d-flex flex-column justify-content-center">
+                  <div class="card-body">
+                    <h3 class="card-title">{{ topArticle.title }}</h3>
+                    <!--<a
+                      href="/blog/post/{{ topArticle.slug }}"
+                      class="btn btn-light rounded-pill mt-3"
+                      >{{ "CONTENT.blog.button" | transloco }}</a
+                    >-->
+                    <a
+                      [langRouterLink]="['/blog', topArticle.slug]"
+                      class="btn btn-light rounded-pill mt-3"
+                      >{{ "CONTENT.blog.button" | transloco }}</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 categories-column">
+      <div class="category-section p-4 rounded">
+        <h4 class="category-title">{{ "BLOG.categories" | transloco }}</h4>
+        <ul class="list-unstyled mb-0 category-list">
+          <li *ngFor="let category of categories">
+            <!--<a href="/blog/category/{{ category.slug }}">{{ category.name }}</a>-->
+            <a [langRouterLink]="['/blog', 'category', category.slug]">{{
+              category.name
+            }}</a>
+            <span class="badge text-secondary">({{ category.count }})</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div *ngFor="let mainArticle of mainArticles" class="col-md-6 mb-4">
+      <div class="card horizontal-card">
+        <div class="row g-0">
+          <div class="col-4">
+            <img
+              src="{{ mainArticle.image_url }}"
+              class="img-fluid rounded-start"
+              alt="Artículo pequeño"
+            />
+          </div>
+          <div class="col-8">
+            <div class="card-body">
+              <h5 class="card-title">{{ mainArticle.title }}</h5>
+              <p class="card-text small text-muted">
+                {{ stripHtmlTags(mainArticle.excerpt) }}
+              </p>
+              <div class="container">
+                <!--<a
+                  href="/blog/post/{{ mainArticle.slug }}"
+                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
+                  >{{ "CONTENT.blog.button" | transloco }}</a
+                >-->
+                <a
+                  [langRouterLink]="['/blog', mainArticle.slug]"
+                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
+                  >{{ "CONTENT.blog.button" | transloco }}</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

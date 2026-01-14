@@ -1,0 +1,478 @@
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Meta, Title } from '@angular/platform-browser';
+import { isPlatformBrowser } from '@angular/common';
+import { TranslocoService } from '@jsverse/transloco';
+import { Router } from '@angular/router';
+
+export interface MultilingualSeoData {
+  title: string;
+  description: string;
+  keywords: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  ogUrl?: string;
+  ogType?: string;
+  canonical?: string;
+  twitterCard?: string;
+  twitterTitle?: string;
+  twitterDescription?: string;
+  twitterImage?: string;
+  twitterSite?: string;
+  hreflang?: { [lang: string]: string }; // Para hreflang tags
+}
+
+export interface SeoRouteConfig {
+  [routeKey: string]: {
+    [lang: string]: MultilingualSeoData;
+  };
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MultilingualSeoService {
+  private readonly baseUrl = 'https://startcompanies.us';
+  private readonly defaultImage = '/assets/logo-dark.webp';
+
+  constructor(
+    private meta: Meta,
+    private title: Title,
+    private transloco: TranslocoService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
+
+  /**
+   * Aplica SEO multilingüe basado en la ruta y idioma actual
+   */
+  updateSeoForRoute(routeKey: string, customData?: Partial<MultilingualSeoData>): void {
+    const currentLang = this.transloco.getActiveLang() || 'es';
+    const seoData = this.getSeoDataForRoute(routeKey, currentLang);
+    
+    if (customData) {
+      Object.assign(seoData, customData);
+    }
+
+    this.applySeoData(seoData, currentLang);
+  }
+
+  /**
+   * Aplica SEO con datos personalizados
+   */
+  updateSeoData(data: MultilingualSeoData, lang?: string): void {
+    const currentLang = lang || this.transloco.getActiveLang() || 'es';
+    this.applySeoData(data, currentLang);
+  }
+
+  /**
+   * Obtiene datos SEO para una ruta específica y idioma
+   */
+  private getSeoDataForRoute(routeKey: string, lang: string): MultilingualSeoData {
+    const routeConfig = this.getRouteSeoConfig();
+    const routeData = routeConfig[routeKey];
+    
+    if (!routeData) {
+      return this.getDefaultSeoData(lang);
+    }
+
+    const langData = routeData[lang];
+    if (!langData) {
+      // Fallback al español si no existe la traducción
+      return routeData['es'] || this.getDefaultSeoData(lang);
+    }
+
+    return langData;
+  }
+
+  /**
+   * Aplica los datos SEO al DOM
+   */
+  private applySeoData(data: MultilingualSeoData, lang: string): void {
+    // Title principal
+    this.title.setTitle(data.title);
+
+    // Meta tags básicos
+    this.meta.updateTag({ name: 'description', content: data.description });
+    this.meta.updateTag({ name: 'keywords', content: data.keywords });
+    this.meta.updateTag({ name: 'language', content: this.getLanguageCode(lang) });
+
+    // Open Graph tags
+    this.meta.updateTag({ property: 'og:title', content: data.ogTitle || data.title });
+    this.meta.updateTag({ property: 'og:description', content: data.ogDescription || data.description });
+    this.meta.updateTag({ property: 'og:image', content: data.ogImage || this.defaultImage });
+    this.meta.updateTag({ property: 'og:type', content: data.ogType || 'website' });
+    this.meta.updateTag({ property: 'og:locale', content: this.getOgLocale(lang) });
+    
+    // og:url dinámico
+    if (isPlatformBrowser(this.platformId)) {
+      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || window.location.href });
+    }
+
+    // Twitter Card tags
+    this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
+    this.meta.updateTag({ name: 'twitter:title', content: data.twitterTitle || data.title });
+    this.meta.updateTag({ name: 'twitter:description', content: data.twitterDescription || data.description });
+    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || this.defaultImage });
+    
+    if (data.twitterSite) {
+      this.meta.updateTag({ name: 'twitter:site', content: data.twitterSite });
+    }
+
+    // Canonical URL
+    if (data.canonical) {
+      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
+    }
+
+    // Hreflang tags para SEO multilingüe
+    this.updateHreflangTags(data.hreflang || this.generateHreflangTags());
+  }
+
+  /**
+   * Actualiza los tags hreflang para SEO multilingüe
+   */
+  private updateHreflangTags(hreflangData: { [lang: string]: string }): void {
+    // Limpiar hreflang existentes
+    const existingHreflang = this.meta.getTags('name="hreflang"');
+    existingHreflang.forEach(tag => this.meta.removeTagElement(tag));
+
+    // Agregar nuevos hreflang
+    Object.entries(hreflangData).forEach(([lang, url]) => {
+      this.meta.addTag({ name: 'hreflang', content: `${lang}:${url}` });
+    });
+  }
+
+  /**
+   * Genera automáticamente los hreflang tags basado en la URL actual
+   */
+  private generateHreflangTags(): { [lang: string]: string } {
+    const currentUrl = this.router.url;
+    const hreflang: { [lang: string]: string } = {};
+
+    // Generar URLs para ambos idiomas
+    ['es', 'en'].forEach(lang => {
+      const url = this.generateUrlForLanguage(currentUrl, lang);
+      hreflang[lang] = `${this.baseUrl}${url}`;
+    });
+
+    return hreflang;
+  }
+
+  /**
+   * Genera URL para un idioma específico
+   */
+  private generateUrlForLanguage(currentUrl: string, targetLang: string): string {
+    const segments = currentUrl.split('/').filter(seg => seg.length > 0);
+    
+    // Si ya tiene idioma, reemplazarlo
+    if (segments.length > 0 && ['es', 'en'].includes(segments[0])) {
+      segments[0] = targetLang;
+    } else {
+      // Si no tiene idioma, agregarlo al inicio
+      segments.unshift(targetLang);
+    }
+
+    return '/' + segments.join('/');
+  }
+
+  /**
+   * Obtiene el código de idioma para meta tags
+   */
+  private getLanguageCode(lang: string): string {
+    const languageMap: { [key: string]: string } = {
+      'es': 'Spanish',
+      'en': 'English'
+    };
+    return languageMap[lang] || 'Spanish';
+  }
+
+  /**
+   * Obtiene el locale para Open Graph
+   */
+  private getOgLocale(lang: string): string {
+    const localeMap: { [key: string]: string } = {
+      'es': 'es_ES',
+      'en': 'en_US'
+    };
+    return localeMap[lang] || 'es_ES';
+  }
+
+  /**
+   * Configuración SEO por ruta e idioma
+   */
+  private getRouteSeoConfig(): SeoRouteConfig {
+    return {
+      'home': {
+        'es': {
+          title: 'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
+          description: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
+          keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
+          ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
+          ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
+          canonical: `${this.baseUrl}/`
+        },
+        'en': {
+          title: 'Start Companies LLC - US Bank Account Opening Services',
+          description: 'We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.',
+          keywords: 'LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services',
+          ogTitle: 'Start Companies LLC - US Bank Account Services',
+          ogDescription: 'We open bank accounts for LLCs in the United States. 100% online service with no fees.',
+          canonical: `${this.baseUrl}/en/home`
+        }
+      },
+      'inicio': {
+        'es': {
+          title: 'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
+          description: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
+          keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
+          ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
+          ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
+          canonical: `${this.baseUrl}/`
+        },
+        'en': {
+          title: 'Start Companies LLC - US Bank Account Opening Services',
+          description: 'We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.',
+          keywords: 'LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services',
+          ogTitle: 'Start Companies LLC - US Bank Account Services',
+          ogDescription: 'We open bank accounts for LLCs in the United States. 100% online service with no fees.',
+          canonical: `${this.baseUrl}/en/home`
+        }
+      },
+      'nosotros': {
+        'es': {
+          title: 'Nosotros - Start Companies LLC | Experiencia en Servicios Financieros',
+          description: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.',
+          keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
+          ogTitle: 'Nosotros - Start Companies LLC',
+          ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
+          canonical: `${this.baseUrl}/nosotros`
+        },
+        'en': {
+          title: 'About Us - Start Companies LLC | Financial Services Experience',
+          description: 'Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.',
+          keywords: 'Start Companies team, financial services experience, about us, entrepreneur trust',
+          ogTitle: 'About Us - Start Companies LLC',
+          ogDescription: 'Meet our team and experience in financial services for LLCs in the United States.',
+          canonical: `${this.baseUrl}/en/about-us`
+        }
+      },
+      'contacto': {
+        'es': {
+          title: 'Contacto - Start Companies LLC | Habla con Nuestros Expertos',
+          description: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.',
+          keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
+          ogTitle: 'Contacto - Start Companies LLC',
+          ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
+          canonical: `${this.baseUrl}/contacto`
+        },
+        'en': {
+          title: 'Contact - Start Companies LLC | Talk to Our Experts',
+          description: 'Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.',
+          keywords: 'Start Companies contact, LLC support, financial services experts, bank account help',
+          ogTitle: 'Contact - Start Companies LLC',
+          ogDescription: 'Contact our experts in financial services for LLCs in the United States.',
+          canonical: `${this.baseUrl}/en/contact`
+        }
+      },
+      'planes': {
+        'es': {
+          title: 'Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.',
+          description: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.',
+          keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
+          ogTitle: 'Planes y Precios - Start Companies LLC',
+          ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
+          canonical: `${this.baseUrl}/planes`
+        },
+        'en': {
+          title: 'Plans and Pricing - Start Companies LLC | US LLC Services',
+          description: 'Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.',
+          keywords: 'US LLC plans, bank account pricing, Start Companies services, LLC formation USA',
+          ogTitle: 'Plans and Pricing - Start Companies LLC',
+          ogDescription: 'Discover our plans for LLC formation and bank accounts in the United States.',
+          canonical: `${this.baseUrl}/en/plans`
+        }
+      },
+      'blog': {
+        'es': {
+          title: 'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
+          description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
+          keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
+          ogTitle: 'Blog - Start Companies LLC',
+          ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
+          canonical: `${this.baseUrl}/blog`
+        },
+        'en': {
+          title: 'Blog - Start Companies LLC | News and Tips for US LLCs',
+          description: 'Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.',
+          keywords: 'US LLC blog, bank account tips, financial news, Start Companies blog',
+          ogTitle: 'Blog - Start Companies LLC',
+          ogDescription: 'Stay informed about LLCs, bank accounts and financial services in the United States.',
+          canonical: `${this.baseUrl}/blog` // Redirigir al blog en español
+        }
+      },
+      'abre-tu-llc': {
+        'es': {
+          title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+          description: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
+          keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
+          ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+          ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
+          canonical: `${this.baseUrl}/abre-tu-llc`
+        },
+        'en': {
+          title: 'Open your LLC in the United States - Start Companies LLC',
+          description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
+          keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
+          ogTitle: 'Open your LLC in the United States - Start Companies LLC',
+          ogDescription: 'We open your LLC in the United States quickly and safely.',
+          canonical: `${this.baseUrl}/en/llc-formation`
+        }
+      },
+      'apertura-banco-relay': {
+        'es': {
+          title: 'Apertura de Banco Relay - Start Companies LLC',
+          description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Proceso simple y 100% online.',
+          keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
+          ogTitle: 'Apertura de Banco Relay - Start Companies LLC',
+          ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
+          canonical: `${this.baseUrl}/apertura-banco-relay`
+        },
+        'en': {
+          title: 'Relay Bank Opening - Start Companies LLC',
+          description: 'We open your Relay bank account for LLCs in the United States. Simple process and 100% online.',
+          keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
+          ogTitle: 'Relay Bank Opening - Start Companies LLC',
+          ogDescription: 'We open your Relay bank account for LLCs in the United States.',
+          canonical: `${this.baseUrl}/en/relay-account-opening`
+        }
+      },
+      'agendar': {
+        'es': {
+          title: 'Agendar - Start Companies LLC',
+          description: 'Agenda una consulta con nuestros expertos.',
+          keywords: 'agendar consulta, Start Companies, asesoría experta',
+          ogTitle: 'Agendar',
+          ogDescription: 'Agenda una consulta con nuestros expertos.',
+          canonical: `${this.baseUrl}/agendar`
+        },
+        'en': {
+          title: 'Schedule - Start Companies LLC',
+          description: 'Schedule a consultation with our experts.',
+          keywords: 'schedule consultation, Start Companies, expert advice',
+          ogTitle: 'Schedule',
+          ogDescription: 'Schedule a consultation with our experts.',
+          canonical: `${this.baseUrl}/en/schedule`
+        }
+      },
+      'apertura-llc': {
+        'es': {
+          title: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
+          description: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
+          keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
+          ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
+          ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
+          canonical: `${this.baseUrl}/apertura-llc`
+        },
+        'en': {
+          title: 'LLC Opening in the United States - Start Companies LLC',
+          description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
+          keywords: 'LLC opening United States, create LLC USA, business formation USA, Start Companies',
+          ogTitle: 'LLC Opening in the United States - Start Companies LLC',
+          ogDescription: 'We open your LLC in the United States quickly and safely.',
+          canonical: `${this.baseUrl}/en/llc-opening`
+        }
+      },
+      'renovar-llc': {
+        'es': {
+          title: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
+          description: 'Renovamos tu LLC en Estados Unidos antes de que expire. Evita multas y mantén tu empresa activa.',
+          keywords: 'renovación LLC Estados Unidos, renovar LLC USA, mantener LLC activa, Start Companies',
+          ogTitle: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
+          ogDescription: 'Renovamos tu LLC en Estados Unidos antes de que expire.',
+          canonical: `${this.baseUrl}/renovar-llc`
+        },
+        'en': {
+          title: 'LLC Renewal in the United States - Start Companies LLC',
+          description: 'We renew your LLC in the United States before it expires. Avoid penalties and keep your business active.',
+          keywords: 'LLC renewal United States, renew LLC USA, keep LLC active, Start Companies',
+          ogTitle: 'LLC Renewal in the United States - Start Companies LLC',
+          ogDescription: 'We renew your LLC in the United States before it expires.',
+          canonical: `${this.baseUrl}/en/llc-renewal`
+        }
+      },
+      'form-apertura-relay': {
+        'es': {
+          title: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
+          description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
+          keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
+          ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
+          ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
+          canonical: `${this.baseUrl}/form-apertura-relay`
+        },
+        'en': {
+          title: 'Relay Bank Account Opening - Start Companies LLC',
+          description: 'We open your Relay bank account for LLCs in the United States. Simple form and 100% online process.',
+          keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
+          ogTitle: 'Relay Bank Account Opening - Start Companies LLC',
+          ogDescription: 'We open your Relay bank account for LLCs in the United States.',
+          canonical: `${this.baseUrl}/en/relay-opening-form`
+        }
+      }
+    };
+  }
+
+  /**
+   * Datos SEO por defecto
+   */
+  private getDefaultSeoData(lang: string): MultilingualSeoData {
+    const defaultData = {
+      title: 'Start Companies LLC - Servicios Financieros para LLC en EE.UU.',
+      description: 'Servicios completos para apertura de LLC y cuentas bancarias en Estados Unidos.',
+      keywords: 'LLC Estados Unidos, servicios financieros, Start Companies',
+      canonical: `${this.baseUrl}/${lang}`
+    };
+
+    if (lang === 'en') {
+      return {
+        ...defaultData,
+        title: 'Start Companies LLC - Financial Services for US LLCs',
+        description: 'Complete services for LLC formation and bank accounts in the United States.',
+        keywords: 'US LLC, financial services, Start Companies'
+      };
+    }
+
+    return defaultData;
+  }
+
+  /**
+   * Limpia todos los meta tags personalizados
+   */
+  clearSeoData(): void {
+    // Limpiar meta tags básicos
+    this.meta.removeTag('name="description"');
+    this.meta.removeTag('name="keywords"');
+    this.meta.removeTag('name="language"');
+
+    // Limpiar Open Graph tags
+    this.meta.removeTag('property="og:title"');
+    this.meta.removeTag('property="og:description"');
+    this.meta.removeTag('property="og:image"');
+    this.meta.removeTag('property="og:url"');
+    this.meta.removeTag('property="og:type"');
+    this.meta.removeTag('property="og:locale"');
+
+    // Limpiar Twitter Card tags
+    this.meta.removeTag('name="twitter:card"');
+    this.meta.removeTag('name="twitter:title"');
+    this.meta.removeTag('name="twitter:description"');
+    this.meta.removeTag('name="twitter:image"');
+    this.meta.removeTag('name="twitter:site"');
+
+    // Limpiar canonical URL
+    this.meta.removeTag('rel="canonical"');
+
+    // Limpiar hreflang tags
+    const existingHreflang = this.meta.getTags('name="hreflang"');
+    existingHreflang.forEach(tag => this.meta.removeTagElement(tag));
+  }
+}

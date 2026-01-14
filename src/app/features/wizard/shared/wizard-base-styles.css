@@ -1,0 +1,294 @@
+/* Estilos base compartidos para todos los wizards */
+
+/* Wrapper principal con fondo moderno */
+.wizard-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: var(--color-fondo-claro);
+  overflow-x: hidden;
+}
+
+/* Fondo moderno con elementos de marca */
+.wizard-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Degradado principal visible usando los colores de la marca */
+.bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(1, 201, 226, 0.4) 0%, rgba(0, 104, 189, 0.6) 100%);
+  opacity: 1;
+}
+
+/* Patrón geométrico visible con colores de marca */
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 15% 30%, rgba(1, 201, 226, 0.25) 0%, transparent 50%),
+    radial-gradient(circle at 85% 70%, rgba(0, 104, 189, 0.32) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(1, 201, 226, 0.18) 0%, transparent 60%);
+  background-size: 100% 100%;
+  opacity: 1;
+}
+
+/* Formas decorativas flotantes más visibles con colores de marca */
+.bg-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  animation: float 25s infinite ease-in-out;
+}
+
+.shape-1 {
+  width: 500px;
+  height: 500px;
+  top: -250px;
+  right: -250px;
+  background: radial-gradient(circle, rgba(1, 201, 226, 0.2) 0%, rgba(1, 201, 226, 0.05) 50%, transparent 70%);
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 400px;
+  height: 400px;
+  bottom: -200px;
+  left: 5%;
+  background: radial-gradient(circle, rgba(0, 104, 189, 0.18) 0%, rgba(0, 104, 189, 0.05) 50%, transparent 70%);
+  animation-delay: 8s;
+}
+
+.shape-3 {
+  width: 350px;
+  height: 350px;
+  top: 25%;
+  right: 10%;
+  background: radial-gradient(circle, rgba(1, 201, 226, 0.15) 0%, rgba(1, 201, 226, 0.04) 50%, transparent 70%);
+  animation-delay: 15s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translate(40px, -40px) scale(1.15);
+    opacity: 0.9;
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+/* Contenedor principal del contenido */
+.llc-apertura-container {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.request-header {
+  margin-bottom: 2rem;
+}
+
+.request-header h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+/* Steps Indicator */
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #e9ecef;
+  z-index: 0;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e9ecef;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s;
+}
+
+.step-item.active .step-number {
+  background: var(--color-degradado);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(1, 201, 226, 0.2);
+}
+
+.step-item.completed .step-number {
+  background: #28a745;
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.step-item.completed .step-number::after {
+  content: '✓';
+  font-size: 1.2rem;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  color: #6c757d;
+  text-align: center;
+}
+
+.step-item.active .step-label {
+  color: var(--color-texto-oscuro);
+  font-weight: 500;
+}
+
+/* Form Steps */
+.form-step {
+  background: var(--color-fondo-claro);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-step h3 {
+  color: var(--color-texto-oscuro);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+/* Step Actions */
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.step-actions .btn {
+  min-width: 120px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wizard-wrapper {
+    min-height: auto;
+  }
+
+  .wizard-background {
+    position: absolute;
+  }
+
+  .llc-apertura-container {
+    padding: 2rem 1rem;
+  }
+
+  .request-header h2 {
+    font-size: 2rem;
+  }
+
+  .request-header .text-muted {
+    font-size: 1rem;
+  }
+  
+  .form-step {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .step-label {
+    font-size: 0.75rem;
+  }
+  
+  .step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .steps-indicator {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .steps-indicator::before {
+    display: none;
+  }
+
+  .step-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .step-label {
+    text-align: left;
+  }
+
+  .step-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .step-actions button {
+    width: 100%;
+  }
+
+  .shape {
+    display: none;
+  }
+}
+

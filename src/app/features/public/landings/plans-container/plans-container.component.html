@@ -1,0 +1,78 @@
+<div class="container">
+  <div class="row justify-content-center g-5 equal-height pt-5">
+    <div class="col-12 col-lg-4">
+      <div class="card card-left">
+        <div class="card-body">
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <a
+                routerLink="/wizard/cuenta-bancaria"
+                class="btn btn-lg btn-primary"
+                (click)="onFreeApplicationClick()"
+              >
+                {{ "LANDINGS.pricing_options.card_free.cta" | transloco }}
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+          <h1 class="card-title pricing-card-title m-4">
+            {{ "LANDINGS.pricing_options.card_free.title" | transloco }}
+          </h1>
+          <ul class="mt-3 mb-4 text-start">
+            <li>
+              {{ "LANDINGS.pricing_options.card_free.list.item1" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_free.list.item2" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_free.list.item3" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_free.list.item4" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_free.list.item5" | transloco }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-4">
+      <div class="card card-right">
+        <div class="card-body">
+          <div class="row justify-content-center">
+            <div class="col-auto">
+              <a
+                target="_blank"
+                href="https://api.whatsapp.com/send/?phone=17869354213&text=Hola+vengo+de+Start+Companies+y+quiero+mi+aplicacion+asistida+por+%2499&type=phone_number&app_absent=0"
+                class="btn btn-lg btn-primary"
+                (click)="onPaidApplicationClick()"
+              >
+                {{ "LANDINGS.pricing_options.card_paid.cta" | transloco }}
+                <i class="bi bi-arrow-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+          <h1 class="card-title pricing-card-title m-4">
+            {{ "LANDINGS.pricing_options.card_paid.title" | transloco }}
+          </h1>
+          <ul class="mt-3 mb-4 text-start">
+            <li>
+              {{ "LANDINGS.pricing_options.card_paid.list.item1" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_paid.list.item2" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_paid.list.item3" | transloco }}
+            </li>
+            <li>
+              {{ "LANDINGS.pricing_options.card_paid.list.item4" | transloco }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

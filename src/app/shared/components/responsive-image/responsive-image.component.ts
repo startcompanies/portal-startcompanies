@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, HostBind
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { ResponsiveImage } from '../../../services/responsive-image.service';
+import { ResponsiveImage } from '../../../shared/services/responsive-image.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 

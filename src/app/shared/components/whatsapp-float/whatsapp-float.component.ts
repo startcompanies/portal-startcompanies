@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { whatsappConfig } from '../../../config/whatsapp.config';
+import { whatsappConfig } from '../../../core/config/whatsapp.config';
 
 @Component({
   selector: 'app-whatsapp-float',

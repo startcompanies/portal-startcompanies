@@ -1,0 +1,435 @@
+/* Sección completa */
+.wizard-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Fondo azul hero */
+.sc-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Layout principal: dos columnas horizontales */
+.wizard-layout {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* Columna izquierda (fondo azul, 20%) */
+.wizard-left {
+  flex: 0 0 20%;
+  max-width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Columna derecha (panel blanco) */
+.wizard-right {
+  flex: 1 1 80%;
+  background-color: #fff;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-left: 4px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  /*overflow-y: auto;*/
+  border-radius: 1rem 0rem 0rem 1rem;
+}
+
+/* Contenido del wizard */
+.wizard-inner {
+  width: 100%;
+  max-width: 86%;
+  margin: 1% 7% 1% 7%;
+  padding: 2rem 1rem;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wizard-step-content {
+  flex: 1;
+  overflow-y: auto;
+
+  /* scroll suave */
+  scrollbar-gutter: stable;
+}
+
+.wizard-progress-indicator,
+.wizard-custom-navigation {
+  flex-shrink: 0;
+}
+
+/* Estilos personalizados para Angular Material Stepper - Diseño moderno */
+::ng-deep .custom-stepper {
+  background: transparent;
+}
+
+/* Ocultar el header de pasos de Material Stepper - usamos nuestro indicador personalizado */
+::ng-deep .custom-stepper .mat-step-header {
+  display: none !important;
+}
+
+::ng-deep .custom-stepper .mat-stepper-horizontal-line {
+  display: none !important;
+}
+
+::ng-deep .custom-stepper .mat-stepper-horizontal {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .custom-stepper .mat-step-content {
+  padding: 0;
+  min-height: 300px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Indicador de progreso personalizado - Estilo moderno */
+.wizard-progress-indicator {
+  margin-bottom: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wizard-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+}
+
+.wizard-progress-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.wizard-progress-steps-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.wizard-steps-nav-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #6b7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  opacity: 1;
+  visibility: visible;
+}
+
+.wizard-steps-nav-button:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: var(--color-primario, #0068BD);
+  color: var(--color-primario, #0068BD);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transform: scale(1.05);
+}
+
+.wizard-steps-nav-button:disabled {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.wizard-steps-nav-button mat-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+}
+
+.wizard-progress-steps {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+  padding: 0.5rem 0;
+  /* Mostrar siempre 4 pasos visibles */
+  width: 100%;
+  /* Ocultar scrollbar pero mantener funcionalidad */
+}
+
+.wizard-progress-steps::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.wizard-progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  /* Ancho fijo para cada paso: 25% del contenedor (4 pasos visibles) */
+  width: calc(25% - 0.75rem);
+  min-width: calc(25% - 0.75rem);
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.wizard-progress-step-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 0.75rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+  color: #9ca3af;
+  position: relative;
+  z-index: 2;
+}
+
+.wizard-progress-step.active .wizard-progress-step-icon {
+  background: var(--color-primario, #0068BD);
+  border-color: var(--color-primario, #0068BD);
+  color: #ffffff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 104, 189, 0.3);
+}
+
+.wizard-progress-step.completed .wizard-progress-step-icon {
+  background: var(--color-secundario-tecnico, #01C9E2);
+  border-color: var(--color-secundario-tecnico, #01C9E2);
+  color: #ffffff;
+}
+
+.wizard-progress-step-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  line-height: 1.3;
+  max-width: 100px;
+}
+
+.wizard-progress-step.active .wizard-progress-step-label {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.wizard-progress-step.completed .wizard-progress-step-label {
+  color: var(--color-secundario-tecnico, #01C9E2);
+}
+
+/* Línea conectora entre pasos */
+.wizard-progress-step::after {
+  content: '';
+  position: absolute;
+  top: 28px;
+  left: calc(50% + 28px);
+  width: calc(100% - 56px);
+  height: 2px;
+  background: #e5e7eb;
+  z-index: 1;
+}
+
+.wizard-progress-step:last-child::after {
+  display: none;
+}
+
+.wizard-progress-step.completed::after {
+  background: var(--color-secundario-tecnico, #01C9E2);
+}
+
+/* Botones de navegación personalizados - Diseño moderno y minimalista */
+.wizard-custom-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f3f4f6;
+  gap: 1rem;
+}
+
+.wizard-nav-button {
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: none;
+  letter-spacing: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wizard-nav-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.wizard-nav-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.wizard-nav-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.wizard-nav-button-previous {
+  background: #f9fafb;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.wizard-nav-button-previous:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+}
+
+.wizard-nav-button-next {
+  background: var(--color-degradado, linear-gradient(135deg, #01C9E2 0%, #0068BD 100%));
+  color: #ffffff;
+  margin-left: auto;
+}
+
+.wizard-nav-button-next:hover:not(:disabled) {
+  background: linear-gradient(135deg, #01B8D4 0%, #005A9E 100%);
+  box-shadow: 0 4px 16px rgba(0, 104, 189, 0.4);
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive: móvil => panel blanco ocupa todo, sin borde */
+@media (max-width: 768px) {
+  .wizard-layout {
+    flex-direction: column;
+  }
+
+  .wizard-left {
+    display: none;
+  }
+
+  .wizard-right {
+    flex: 1 1 100%;
+    border-left: none;
+    height: auto;
+    justify-content: flex-start;
+    border-radius: 0;
+  }
+
+  .wizard-inner {
+    padding: 1rem;
+  }
+
+  .wizard-progress-indicator {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    min-height: 120px;
+  }
+
+  .wizard-progress-header {
+    margin-bottom: 0.8rem;
+  }
+
+  .wizard-progress-text {
+    font-size: 14px;
+  }
+
+  .wizard-progress-steps-container {
+    gap: 0.25rem;
+  }
+
+  .wizard-steps-nav-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .wizard-steps-nav-button mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .wizard-progress-steps {
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wizard-progress-step {
+    flex: 0 0 calc(50% - 0.25rem); /* 2 pasos visibles en móvil */
+    min-width: calc(50% - 0.25rem);
+    max-width: calc(50% - 0.25rem);
+  }
+
+  .wizard-progress-step-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .wizard-progress-step-label {
+    font-size: 10px;
+    max-width: 70px;
+  }
+
+  .wizard-progress-step::after {
+    display: none;
+  }
+
+  .wizard-custom-navigation {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .wizard-nav-button {
+    width: 100%;
+    padding: 14px 24px;
+    justify-content: center;
+  }
+}

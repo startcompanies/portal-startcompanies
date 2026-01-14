@@ -1,0 +1,145 @@
+<div class="client-form-cuenta">
+    <h4 class="mb-3">
+        {{ 'WIZARD.bank_account.applicant.title' | transloco }}
+    </h4>
+
+    <form [formGroup]="form">
+
+        <!-- Email -->
+        <div class="form-group mb-3">
+            <label for="applicantEmail">
+                {{ 'WIZARD.bank_account.applicant.email' | transloco }}
+            </label>
+            <input id="applicantEmail" type="email" class="form-control" formControlName="applicantEmail"
+                [placeholder]="'WIZARD.bank_account.applicant.email_placeholder' | transloco" />
+            <div *ngIf="form.get('applicantEmail')?.touched && form.get('applicantEmail')?.invalid"
+                class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.applicant.email_invalid' | transloco }}
+            </div>
+        </div>
+
+        <!-- Nombre(s) -->
+        <div class="form-group mb-3">
+            <label for="applicantFirstName">
+                {{ 'WIZARD.bank_account.applicant.first_name' | transloco }}
+            </label>
+            <input id="applicantFirstName" class="form-control" formControlName="applicantFirstName" [placeholder]="'WIZARD.bank_account.applicant.first_name_placeholder' | transloco" />
+            <div *ngIf="form.get('applicantFirstName')?.touched && form.get('applicantFirstName')?.invalid"
+                class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.applicant.first_name_required' | transloco }}
+            </div>
+        </div>
+
+        <!-- Apellido Paterno -->
+        <div class="form-group mb-3">
+            <label for="applicantPaternalLastName">
+                {{ 'WIZARD.bank_account.applicant.paternal_last_name' | transloco }}
+            </label>
+            <input id="applicantPaternalLastName" class="form-control" formControlName="applicantPaternalLastName" [placeholder]="'WIZARD.bank_account.applicant.paternal_last_name_placeholder' | transloco" />
+        </div>
+
+        <!-- Apellido Materno -->
+        <div class="form-group mb-3">
+            <label for="applicantMaternalLastName">
+                {{ 'WIZARD.bank_account.applicant.maternal_last_name' | transloco }}
+            </label>
+            <input id="applicantMaternalLastName" class="form-control" formControlName="applicantMaternalLastName" [placeholder]="'WIZARD.bank_account.applicant.maternal_last_name_placeholder' | transloco" />
+        </div>
+
+        <!-- Teléfono -->
+        <div class="form-group mb-3">
+            <label for="applicantPhone">
+                {{ 'WIZARD.bank_account.applicant.phone' | transloco }}
+            </label>
+            <input id="applicantPhone" class="form-control" formControlName="applicantPhone" [placeholder]="'WIZARD.bank_account.applicant.phone_placeholder' | transloco" />
+        </div>
+
+        <!-- Tipo de cuenta -->
+        <div class="form-group mb-3">
+            <label for="accountType">
+                {{ 'WIZARD.bank_account.applicant.account_type' | transloco }}
+            </label>
+            <select id="accountType" class="form-control" formControlName="accountType">
+                <option value="">{{ 'COMMON.select_option' | transloco }}</option>
+                <option value="personal">Personal</option>
+                <option value="business">Empresarial</option>
+            </select>
+            <div *ngIf="form.get('accountType')?.touched && form.get('accountType')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.applicant.account_type_required' | transloco }}
+            </div>
+        </div>
+
+        <!-- Tipo de negocio -->
+        <div class="form-group mb-3">
+            <label for="businessType">
+                {{ 'WIZARD.bank_account.applicant.business_type' | transloco }}
+            </label>
+            <select id="businessType" class="form-control" formControlName="businessType">
+                <option value="">{{ 'COMMON.select_option' | transloco }}</option>
+                <option value="llc">LLC</option>
+                <option value="corp">Corporation</option>
+                <option value="sole">Sole Proprietor</option>
+            </select>
+        </div>
+
+        <!-- Identificador legal -->
+        <div class="form-group mb-3">
+            <label for="legalBusinessIdentifier">
+                {{ 'WIZARD.bank_account.applicant.legal_identifier' | transloco }}
+            </label>
+            <input id="legalBusinessIdentifier" class="form-control" formControlName="legalBusinessIdentifier" [placeholder]="'WIZARD.bank_account.applicant.legal_identifier_placeholder' | transloco" />
+        </div>
+
+        <!-- Industria -->
+        <div class="form-group mb-3">
+            <label for="industry">
+                {{ 'WIZARD.bank_account.applicant.industry' | transloco }}
+            </label>
+            <select id="industry" class="form-control" formControlName="industry">
+                <option value="">{{ 'COMMON.select_option' | transloco }}</option>
+                <option value="technology">Tecnología</option>
+                <option value="commerce">Comercio</option>
+                <option value="services">Servicios</option>
+            </select>
+        </div>
+
+        <!-- Actividad económica -->
+        <div class="form-group mb-3">
+            <label for="economicActivity">
+                {{ 'WIZARD.bank_account.applicant.economic_activity' | transloco }}
+            </label>
+            <textarea id="economicActivity" class="form-control" rows="3" maxlength="200"
+                formControlName="economicActivity" [placeholder]="'WIZARD.bank_account.applicant.economic_activity_placeholder' | transloco"></textarea>
+        </div>
+
+        <!-- EIN -->
+        <div class="form-group mb-3">
+            <label for="ein">
+                {{ 'WIZARD.bank_account.applicant.ein' | transloco }}
+            </label>
+            <input id="ein" class="form-control" placeholder="12-3456789" formControlName="ein" />
+            <div *ngIf="form.get('ein')?.touched && form.get('ein')?.invalid" class="text-danger mt-1">
+                {{ 'WIZARD.bank_account.applicant.ein_invalid' | transloco }}
+            </div>
+        </div>
+
+        <!-- Certificado -->
+        <div class="form-group mb-3">
+            <label>
+                {{ 'WIZARD.bank_account.applicant.certificate' | transloco }}
+            </label>
+            <input type="file" class="form-control" accept="application/pdf"
+                (change)="onFileChange($event, 'certificateOfConstitutionOrArticles')" />
+        </div>
+
+        <!-- Operating Agreement -->
+        <div class="form-group mb-3">
+            <label>
+                {{ 'WIZARD.bank_account.applicant.operating_agreement' | transloco }}
+            </label>
+            <input type="file" class="form-control" accept="application/pdf"
+                (change)="onFileChange($event, 'operatingAgreement')" />
+        </div>
+
+    </form>
+</div>

@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { SeoService, SeoData } from '../../../services/seo.service';
+import { SeoService, SeoData } from '../../../shared/services/seo.service';
 
 @Component({
   selector: 'app-seo-base',

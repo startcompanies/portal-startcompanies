@@ -1,0 +1,293 @@
+<div class="partners-container">
+  <div class="partners-header">
+    <div>
+      <h2>Gestión de Partners</h2>
+      <p class="text-muted">Administra los partners y sus clientes</p>
+    </div>
+    <button class="btn btn-primary" (click)="openNewPartnerModal()">
+      <i class="bi bi-plus-circle me-2"></i>
+      Nuevo Partner
+    </button>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <!-- Filtros -->
+    <div class="filters-section">
+      <div class="row g-3">
+        <div class="col-md-8">
+          <label for="search" class="form-label">Buscar</label>
+          <input
+            type="text"
+            id="search"
+            class="form-control"
+            placeholder="Nombre, email o empresa..."
+            [(ngModel)]="searchTerm"
+            (input)="onSearchChange()"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="statusFilter" class="form-label">Estado</label>
+          <select
+            id="statusFilter"
+            class="form-select"
+            [(ngModel)]="selectedStatus"
+            (change)="onStatusChange()"
+          >
+            <option *ngFor="let option of statusOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de Partners -->
+    <div class="partners-section">
+      <div class="section-header">
+        <h3>Partners ({{ filteredPartners.length }})</h3>
+      </div>
+
+      <div *ngIf="filteredPartners.length === 0" class="empty-state">
+        <i class="bi bi-handshake" style="font-size: 4rem; color: #ccc;"></i>
+        <h3>No se encontraron partners</h3>
+        <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+      </div>
+
+      <div *ngIf="filteredPartners.length > 0" class="partners-grid">
+        <div class="partner-card" *ngFor="let partner of filteredPartners">
+          <div class="partner-header">
+            <div class="partner-info">
+              <h4>{{ getPartnerName(partner) }}</h4>
+              <p class="partner-email">{{ partner.email }}</p>
+              <p *ngIf="partner.company" class="partner-company">{{ partner.company }}</p>
+            </div>
+            <span [class]="getStatusClass(partner.status)">
+              {{ getStatusLabel(partner.status) }}
+            </span>
+          </div>
+
+          <div class="partner-stats">
+            <div class="stat-item">
+              <i class="bi bi-people"></i>
+              <div>
+                <strong>{{ partner.totalClients }}</strong>
+                <span>Clientes</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <i class="bi bi-file-earmark-text"></i>
+              <div>
+                <strong>{{ partner.totalRequests }}</strong>
+                <span>Solicitudes</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="partner-meta">
+            <small class="text-muted">
+              <i class="bi bi-calendar3 me-1"></i>
+              Creado: {{ partner.createdAt | date:'short' }}
+            </small>
+            <small *ngIf="partner.lastActivity" class="text-muted">
+              <i class="bi bi-clock-history me-1"></i>
+              Última actividad: {{ partner.lastActivity | date:'short' }}
+            </small>
+          </div>
+
+          <div class="partner-actions">
+            <button 
+              class="btn btn-sm btn-outline-primary"
+              (click)="openEditPartnerModal(partner)"
+            >
+              <i class="bi bi-pencil me-1"></i>
+              Editar
+            </button>
+            <button 
+              class="btn btn-sm"
+              [class.btn-success]="!partner.status"
+              [class.btn-secondary]="partner.status"
+              (click)="togglePartnerStatus(partner)"
+            >
+              <i [class]="partner.status ? 'bi-pause' : 'bi-play'"></i>
+              {{ partner.status ? 'Desactivar' : 'Activar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Nuevo Partner -->
+  <div *ngIf="showNewPartnerModal" class="modal-overlay" (click)="closeNewPartnerModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>Nuevo Partner</h4>
+        <button type="button" class="btn-close" (click)="closeNewPartnerModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="createError" class="alert alert-danger">
+          {{ createError }}
+        </div>
+
+        <div class="mb-3">
+          <label for="partnerName" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="partnerName"
+            class="form-control"
+            [(ngModel)]="newPartner.name"
+            placeholder="Juan Pérez"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="partnerEmail" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+          <input
+            type="email"
+            id="partnerEmail"
+            class="form-control"
+            [(ngModel)]="newPartner.email"
+            placeholder="partner@example.com"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="partnerCompany" class="form-label">Empresa (opcional)</label>
+          <input
+            type="text"
+            id="partnerCompany"
+            class="form-control"
+            [(ngModel)]="newPartner.company"
+            placeholder="Nombre de la empresa"
+          />
+        </div>
+
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          <strong>Nota:</strong> Se generará automáticamente una contraseña temporal y se enviará un email de invitación al partner con un link para establecer su contraseña.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeNewPartnerModal()" [disabled]="isCreating">
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="createPartner()"
+          [disabled]="isCreating || !newPartner.name || !newPartner.email"
+        >
+          <span *ngIf="!isCreating">
+            <i class="bi bi-check-circle me-2"></i>
+            Crear Partner
+          </span>
+          <span *ngIf="isCreating">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Creando...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Editar Partner -->
+  <div *ngIf="showEditPartnerModal" class="modal-overlay" (click)="closeEditPartnerModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h4>Editar Partner</h4>
+        <button type="button" class="btn-close" (click)="closeEditPartnerModal()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="updateError" class="alert alert-danger">
+          {{ updateError }}
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerName" class="form-label">Nombre Completo <span class="text-danger">*</span></label>
+          <input
+            type="text"
+            id="editPartnerName"
+            class="form-control"
+            [(ngModel)]="editPartner.name"
+            placeholder="Juan Pérez"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerEmail" class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+          <input
+            type="email"
+            id="editPartnerEmail"
+            class="form-control"
+            [(ngModel)]="editPartner.email"
+            placeholder="partner@example.com"
+            required
+            disabled
+          />
+          <small class="text-muted">El email no se puede modificar</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerCompany" class="form-label">Empresa (opcional)</label>
+          <input
+            type="text"
+            id="editPartnerCompany"
+            class="form-control"
+            [(ngModel)]="editPartner.company"
+            placeholder="Nombre de la empresa"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="editPartnerPhone" class="form-label">Teléfono (opcional)</label>
+          <input
+            type="tel"
+            id="editPartnerPhone"
+            class="form-control"
+            [(ngModel)]="editPartner.phone"
+            placeholder="+1 555-0100"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEditPartnerModal()" [disabled]="isUpdating">
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="updatePartner()"
+          [disabled]="isUpdating || !editPartner.name || !editPartner.email"
+        >
+          <span *ngIf="!isUpdating">
+            <i class="bi bi-check-circle me-2"></i>
+            Guardar Cambios
+          </span>
+          <span *ngIf="isUpdating">
+            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+            Guardando...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
