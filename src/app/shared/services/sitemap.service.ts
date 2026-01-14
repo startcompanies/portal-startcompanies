@@ -37,7 +37,7 @@ export class SitemapService {
    * Genera entrada de URL para un post
    */
   private generateUrlEntry(post: Post): string {
-    const url = `${this.baseUrl}/blog/post/${post.slug}`;
+    const url = `${this.baseUrl}/blog/${post.slug}`;
     const lastmod = new Date(post.published_at).toISOString().split('T')[0];
     
     return `

@@ -1,6 +1,8 @@
 import { Component, Input, Inject, PLATFORM_ID, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { Router } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 declare global {
   interface Window {
@@ -24,9 +26,12 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
   private calendlyInitialized = new Set<string>();
 
+  baseUrl = environment.baseUrl;
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
   ) {
     this.isBrowser = isPlatformBrowser(this.platformId);
     if (this.isBrowser) {
@@ -43,6 +48,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
+        this.processInternalLinks();
       }, 200);
     }
   }
@@ -58,6 +64,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       setTimeout(() => {
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
+        this.processInternalLinks();
       }, 200);
     }
   }
@@ -174,20 +181,39 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       // Solo actualizar si no es el botón del acordeón actual
       if (buttonElement !== button) {
         buttonElement.setAttribute('aria-expanded', 'false');
+        // Cambiar el icono de preguntas frecuentes a chevron-down cuando se cierra
+        const otherFaqArrowIcon = buttonElement.querySelector('.faq-arrow-icon') as HTMLElement;
+        if (otherFaqArrowIcon) {
+          otherFaqArrowIcon.classList.remove('bi-chevron-up');
+          otherFaqArrowIcon.classList.add('bi-chevron-down');
+        }
       }
     });
 
+    // Buscar el icono de preguntas frecuentes (faq-arrow-icon) dentro del botón
+    const faqArrowIcon = button.querySelector('.faq-arrow-icon') as HTMLElement;
+    
     // Toggle del acordeón actual
     if (content.style.display === 'none' || content.style.display === '') {
       content.style.display = 'block';
       if (icon) {
         icon.style.transform = 'rotate(90deg)';
       }
+      // Cambiar el icono de chevron-down a chevron-up cuando está abierto
+      if (faqArrowIcon) {
+        faqArrowIcon.classList.remove('bi-chevron-down');
+        faqArrowIcon.classList.add('bi-chevron-up');
+      }
       button.setAttribute('aria-expanded', 'true');
     } else {
       content.style.display = 'none';
       if (icon) {
         icon.style.transform = 'rotate(0deg)';
+      }
+      // Cambiar el icono de chevron-up a chevron-down cuando está cerrado
+      if (faqArrowIcon) {
+        faqArrowIcon.classList.remove('bi-chevron-up');
+        faqArrowIcon.classList.add('bi-chevron-down');
       }
       button.setAttribute('aria-expanded', 'false');
     }
@@ -206,10 +232,42 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     content = content.replace(/\\n/g, ''); // eliminar escapes de newline
     content = content.replace(/<p>\s*<\/p>/g, ''); // eliminar párrafos vacíos
     
-    // Procesar enlaces externos preservando TODOS los atributos existentes (style, class, etc.)
-    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>/gi, (match, beforeHref, href, afterHref) => {
-      // Si es un enlace externo, agregar target y rel sin romper atributos existentes
-      if (href && !href.startsWith('/') && !href.startsWith('#') && !href.startsWith('mailto:')) {
+    // Procesar enlaces a businessenusa.com y convertirlos a enlaces internos de Angular
+    content = content.replace(/<a\s+([^>]*?)href\s*=\s*["']([^"']*)["']([^>]*?)>([\s\S]*?)<\/a>/gi, (match, beforeHref, href, afterHref, linkContent) => {
+      // Verificar si el enlace apunta a businessenusa.com
+      if (href && href.includes('businessenusa.com')) {
+        try {
+          const url = new URL(href);
+          // Extraer la ruta (por ejemplo, 'que-es-llc' de 'https://businessenusa.com/que-es-llc')
+          const path = url.pathname.replace(/^\//, ''); // Remover el slash inicial
+          
+          if (path) {
+            // Marcar el enlace con un atributo data para procesarlo después
+            // Preservar todos los atributos existentes
+            const allAttrs = beforeHref + afterHref;
+            const hasTarget = /target\s*=/i.test(allAttrs);
+            const hasDataLink = /data-internal-link\s*=/i.test(allAttrs);
+            
+            let newAttrs = '';
+            if (!hasDataLink) {
+              newAttrs += ` data-internal-link="${path}"`;
+            }
+            // Mantener target="_blank" si ya existe, o agregarlo si no existe
+            if (!hasTarget) {
+              newAttrs += ' target="_blank"';
+            }
+            
+            // Preservar todos los atributos originales y agregar el marcador
+            return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>${linkContent}</a>`;
+          }
+        } catch (e) {
+          // Si hay error al parsear la URL, continuar con el procesamiento normal
+          console.warn('Error parsing URL:', href, e);
+        }
+      }
+      
+      // Para otros enlaces externos, agregar target y rel sin romper atributos existentes
+      if (href && !href.startsWith('/') && !href.startsWith('#') && !href.startsWith('mailto:') && !href.includes('businessenusa.com')) {
         // Verificar si ya tiene target o rel
         const hasTarget = /target\s*=/i.test(beforeHref + afterHref);
         const hasRel = /rel\s*=/i.test(beforeHref + afterHref);
@@ -223,7 +281,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         }
         
         // Preservar todos los atributos originales (style, class, etc.)
-        return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>`;
+        return `<a ${beforeHref}href="${href}"${afterHref}${newAttrs}>${linkContent}</a>`;
       }
       return match;
     });
@@ -587,9 +645,280 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       }
     });
     
+    // Aplicar clase post-image-rounded a las imágenes en posts que NO son landing
+    if (!this.isLandingPage) {
+      content = content.replace(/(<img\s+[^>]*?)>/gi, (match, imgStart) => {
+        // Verificar si ya tiene la clase post-image-rounded
+        if (imgStart.includes('post-image-rounded')) {
+          return match;
+        }
+        
+        // Verificar si está dentro de elementos que no deben tener la clase
+        const matchIndex = content.indexOf(match);
+        const contextStart = Math.max(0, matchIndex - 2000);
+        const contextBefore = content.substring(contextStart, matchIndex);
+        if (contextBefore.includes('promo-card') || 
+            contextBefore.includes('veredicto-defentux-card') ||
+            contextBefore.includes('metric') || 
+            contextBefore.includes('logo-wrap') ||
+            contextBefore.includes('content-column-container')) {
+          return match;
+        }
+        
+        // Verificar si tiene atributo class
+        const classMatch = imgStart.match(/class\s*=\s*["']([^"']*)["']/i);
+        if (classMatch) {
+          // Agregar la clase a las clases existentes
+          const existingClasses = classMatch[1];
+          const newClasses = `${existingClasses} post-image-rounded`;
+          return imgStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClasses}"`) + '>';
+        } else {
+          // Agregar el atributo class con la clase
+          return imgStart + ' class="post-image-rounded">';
+        }
+      });
+    }
+    
+    // Procesar states-card: agregar iconos a los li y enlaces al final
+    if (this.isBrowser) {
+      try {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        
+        const statesCards = tempDiv.querySelectorAll('.states-card');
+        statesCards.forEach((card: Element) => {
+          // Procesar todos los li dentro de la card y agregar iconos
+          const listItems = card.querySelectorAll('li');
+          listItems.forEach((li: Element) => {
+            // Verificar si ya tiene un icono
+            if (li.querySelector('i.bi')) {
+              return;
+            }
+            
+            const text = li.textContent?.trim() || '';
+            let iconClass = 'bi-check-circle';
+            
+            // Seleccionar icono según el contenido del texto
+            if (/popular|favore|beneficio|ventaja/i.test(text)) {
+              iconClass = 'bi-star-fill';
+            } else if (/tax|impuesto|fee|precio|costo/i.test(text)) {
+              iconClass = 'bi-cash-stack';
+            } else if (/anual|reporte|filing/i.test(text)) {
+              iconClass = 'bi-calendar-check';
+            } else if (/anonimo|proteccion|legal/i.test(text)) {
+              iconClass = 'bi-shield-check';
+            } else if (/economico|economia|barato/i.test(text)) {
+              iconClass = 'bi-currency-dollar';
+            } else if (/facil|sencillo|simple/i.test(text)) {
+              iconClass = 'bi-check-circle-fill';
+            } else {
+              iconClass = 'bi-check-circle';
+            }
+            
+            // Agregar el icono al inicio del li
+            const icon = document.createElement('i');
+            icon.className = `bi ${iconClass}`;
+            li.insertBefore(icon, li.firstChild);
+          });
+          
+          // Buscar divs hijos que contengan h3 y agregar enlaces
+          const childDivs = Array.from(card.children).filter(child => child.tagName === 'DIV');
+          childDivs.forEach((div: Element) => {
+            const h3 = div.querySelector('h3');
+            if (h3 && h3.textContent) {
+              // Verificar si ya tiene un enlace
+              if (div.querySelector('a.states-card-link')) {
+                return;
+              }
+              
+              const title = h3.textContent.trim();
+              const slug = title
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/[^\w-]+/g, '');
+              
+              if (slug) {
+                const link = document.createElement('a');
+                link.href = `${this.baseUrl}/blog/${slug}`;
+                link.setAttribute('data-internal-link', slug);
+                link.className = 'states-card-link';
+                link.textContent = `Ver más sobre ${title}`;
+                div.appendChild(link);
+              }
+            }
+          });
+        });
+        
+        content = tempDiv.innerHTML;
+      } catch (error) {
+        console.warn('Error procesando states-card:', error);
+      }
+    } else {
+      // Fallback para SSR: procesar con regex
+      // Reemplazar bullets por iconos en los li dentro de states-card
+      content = content.replace(/(<li[^>]*>)([\s\S]*?)(<\/li>)/gi, (liMatch, liStart, liContent, liEnd) => {
+        // Solo procesar si está dentro de una states-card
+        const matchIndex = content.indexOf(liMatch);
+        const contextBefore = content.substring(Math.max(0, matchIndex - 2000), matchIndex);
+        if (!contextBefore.includes('states-card')) {
+          return liMatch;
+        }
+        
+        // Verificar si ya tiene un icono
+        if (liStart.includes('bi-') || liContent.includes('<i class="bi')) {
+          return liMatch;
+        }
+        
+        const text = liContent.replace(/<[^>]*>/g, '').trim();
+        let iconClass = 'bi-check-circle';
+        
+        if (/popular|favore|beneficio|ventaja/i.test(text)) {
+          iconClass = 'bi-star-fill';
+        } else if (/tax|impuesto|fee|precio|costo/i.test(text)) {
+          iconClass = 'bi-cash-stack';
+        } else if (/anual|reporte|filing/i.test(text)) {
+          iconClass = 'bi-calendar-check';
+        } else if (/anonimo|proteccion|legal/i.test(text)) {
+          iconClass = 'bi-shield-check';
+        } else if (/economico|economia|barato/i.test(text)) {
+          iconClass = 'bi-currency-dollar';
+        } else if (/facil|sencillo|simple/i.test(text)) {
+          iconClass = 'bi-check-circle-fill';
+        }
+        
+        return `${liStart}<i class="bi ${iconClass}"></i>${liContent}${liEnd}`;
+      });
+      
+      // Agregar enlaces al final de divs que tengan h3 dentro de states-card
+      content = content.replace(/(<div[^>]*>[\s\S]*?<h3[^>]*>([^<]+)<\/h3>[\s\S]*?)(<\/div>)/gi, (divMatch, divBefore, title, divClose) => {
+        // Verificar si está dentro de una states-card
+        const matchIndex = content.indexOf(divMatch);
+        const contextBefore = content.substring(Math.max(0, matchIndex - 2000), matchIndex);
+        if (!contextBefore.includes('states-card')) {
+          return divMatch;
+        }
+        
+        // Verificar si ya tiene un enlace
+        if (divBefore.includes('data-internal-link') || divBefore.includes('states-card-link')) {
+          return divMatch;
+        }
+        
+        const cleanTitle = title.trim();
+        const slug = cleanTitle
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/[^\w-]+/g, '');
+        
+        if (slug) {
+          const link = `<a href="${this.baseUrl}/blog/${slug}" data-internal-link="${slug}" class="states-card-link">Ver más sobre ${cleanTitle}</a>`;
+          return `${divBefore}${link}${divClose}`;
+        }
+        
+        return divMatch;
+      });
+    }
+    
+    // Aplicar clase cta-card a elementos con estilos específicos de CTA
+    // Detectar elementos div con background-color: #2d3748 y border: 2px solid #38B2AC
+    content = content.replace(/(<div\s+[^>]*style\s*=\s*["']([^"']*)["'][^>]*>)/gi, (match, divStart, styleContent) => {
+      // Verificar si tiene los estilos característicos de cta-card
+      const hasBackgroundColor = /background-color:\s*#2d3748/i.test(styleContent);
+      const hasBorder = /border:\s*2px\s+solid\s+#38B2AC/i.test(styleContent);
+      
+      if (hasBackgroundColor && hasBorder) {
+        // Verificar si ya tiene la clase cta-card
+        const hasClass = /class\s*=\s*["'][^"']*cta-card[^"']*["']/i.test(divStart);
+        if (hasClass) {
+          // Ya tiene la clase, retornar sin cambios
+          return match;
+        }
+        
+        // Verificar si tiene atributo class
+        const classMatch = divStart.match(/class\s*=\s*["']([^"']*)["']/i);
+        if (classMatch) {
+          // Agregar la clase a las clases existentes
+          const existingClasses = classMatch[1];
+          const newClasses = `${existingClasses} cta-card`;
+          return divStart.replace(/class\s*=\s*["'][^"']*["']/i, `class="${newClasses}"`);
+        } else {
+          // Agregar el atributo class con la clase
+          return divStart.replace(/>$/, ' class="cta-card">');
+        }
+      }
+      
+      return match;
+    });
+    
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
     this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
+  }
+
+  /**
+   * Procesa los enlaces internos marcados con data-internal-link y los convierte a enlaces de Angular
+   */
+  private processInternalLinks(): void {
+    if (!this.isBrowser || !this.contentContainer?.nativeElement) {
+      return;
+    }
+
+    const container = this.contentContainer.nativeElement;
+    const internalLinks = container.querySelectorAll('a[data-internal-link]') as NodeListOf<HTMLAnchorElement>;
+
+    internalLinks.forEach((link) => {
+      const route = link.getAttribute('data-internal-link');
+      if (!route) return;
+
+      // Verificar si ya se procesó este enlace
+      if (link.hasAttribute('data-processed-internal-link')) {
+        return;
+      }
+
+      // Marcar como procesado
+      link.setAttribute('data-processed-internal-link', 'true');
+
+      // Remover el atributo data-internal-link para limpiar
+      link.removeAttribute('data-internal-link');
+
+      // Agregar event listener para navegación con Angular Router
+      link.addEventListener('click', (event: MouseEvent) => {
+        // Permitir middle/ctrl/meta/shift/alt clicks y enlaces con target distinto
+        if (
+          event.button !== 0 ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.shiftKey ||
+          event.altKey
+        ) {
+          return; // dejar comportamiento por defecto
+        }
+
+        const target = link.getAttribute('target');
+        if (target && target !== '_self') {
+          return; // permitir abrir en nueva pestaña si piden
+        }
+
+        // Prevenir el comportamiento por defecto y navegar con Angular Router
+        event.preventDefault();
+        
+        // Navegar usando el Router de Angular
+        // La ruta puede ser un string simple o un array
+        // Agregar 'blog' antes de la ruta
+        const routeArray = route.split('/').filter(segment => segment.length > 0);
+        this.router.navigate(['blog', ...routeArray]).catch((error) => {
+          console.warn('Error navegando a ruta:', route, error);
+        });
+      });
+
+      // Actualizar el href para que funcione con "abrir en nueva pestaña" y sea SEO-friendly
+      // Construir la URL completa usando baseUrl con 'blog' en medio
+      const fullUrl = `${this.baseUrl}/blog/${route}`;
+      link.setAttribute('href', fullUrl);
+    });
   }
 
   /**

@@ -3,6 +3,7 @@ import {
   HostListener,
   Inject,
   OnInit,
+  AfterViewInit,
   PLATFORM_ID,
   ChangeDetectorRef,
   ElementRef,
@@ -25,7 +26,7 @@ import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-
   templateUrl: './sc-header.component.html',
   styleUrl: './sc-header.component.css',
 })
-export class ScHeaderComponent implements OnInit {
+export class ScHeaderComponent implements OnInit, AfterViewInit {
   @ViewChild('navbar', { static: false }) navbar?: ElementRef<HTMLElement>;
 
   isOpen = false;
@@ -81,6 +82,74 @@ export class ScHeaderComponent implements OnInit {
     this.getCurrentRoute();
   }
 
+  ngAfterViewInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      // Asegurar que el menú esté cerrado después de que la vista se inicialice
+      setTimeout(() => {
+        this.forceCloseMenu();
+      }, 0);
+      
+      // Prevenir que Bootstrap inicialice automáticamente el collapse
+      this.preventBootstrapAutoInit();
+      
+      // Interceptar eventos de Bootstrap que puedan abrir el menú
+      this.interceptBootstrapEvents();
+    }
+  }
+
+  private interceptBootstrapEvents(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    const navbarCollapse = document.getElementById('navbarNav');
+    if (!navbarCollapse) return;
+    
+    // Observar cambios en el DOM para detectar cuando Bootstrap agrega la clase 'show'
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+          const target = mutation.target as HTMLElement;
+          // Si Bootstrap agregó 'show' sin nuestro permiso, removerlo
+          if (target.classList.contains('show') && !this.isOpen) {
+            target.classList.remove('show');
+            target.classList.remove('collapsing');
+            target.style.display = '';
+          }
+        }
+      });
+    });
+    
+    observer.observe(navbarCollapse, {
+      attributes: true,
+      attributeFilter: ['class', 'style']
+    });
+  }
+
+  private preventBootstrapAutoInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    
+    // Remover cualquier instancia de Bootstrap Collapse que pueda existir
+    const navbarCollapse = document.getElementById('navbarNav');
+    if (navbarCollapse) {
+      // Remover cualquier data attribute que Bootstrap pueda usar
+      navbarCollapse.removeAttribute('data-bs-parent');
+      navbarCollapse.removeAttribute('data-bs-toggle');
+      
+      // Asegurar que no tenga la clase 'show'
+      navbarCollapse.classList.remove('show');
+      navbarCollapse.classList.remove('collapsing');
+      
+      // Forzar el estado cerrado
+      navbarCollapse.style.display = '';
+    }
+  }
+
+  private forceCloseMenu(): void {
+    this.isOpen = false;
+    this.updateMenuVisibility();
+    this.updateLogoImages();
+    this.cdr.detectChanges();
+  }
+
   private getCurrentRoute(): void {
     this.currentRoute = this.router.url;
 
@@ -102,6 +171,10 @@ export class ScHeaderComponent implements OnInit {
   onWindowScroll() {
     if (isPlatformBrowser(this.platformId)) {
       this.navbarScroll();
+      // Cerrar el menú al hacer scroll
+      if (this.isOpen) {
+        this.closeMenu();
+      }
     }
   }
 
@@ -122,7 +195,32 @@ export class ScHeaderComponent implements OnInit {
   toggleMenu(): void {
     this.isOpen = !this.isOpen;
     this.updateLogoImages();
+    this.updateMenuVisibility();
     this.cdr.detectChanges();
+  }
+
+  closeMenu(): void {
+    this.isOpen = false;
+    this.updateMenuVisibility();
+    this.updateLogoImages();
+    this.cdr.detectChanges();
+  }
+
+  private updateMenuVisibility(): void {
+    // Prevenir que Bootstrap abra el menú automáticamente
+    if (isPlatformBrowser(this.platformId)) {
+      const navbarCollapse = document.getElementById('navbarNav');
+      if (navbarCollapse) {
+        if (this.isOpen) {
+          navbarCollapse.classList.add('show');
+          navbarCollapse.style.display = 'block';
+        } else {
+          navbarCollapse.classList.remove('show');
+          navbarCollapse.classList.remove('collapsing');
+          navbarCollapse.style.display = '';
+        }
+      }
+    }
   }
 
   navigateToPlansSection() {

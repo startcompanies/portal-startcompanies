@@ -11,7 +11,7 @@ export interface Post {
   image_url: string;
   published_at: string; // O Date, si planeas parsearlo
   is_published: boolean;
-  user: User;
+  user?: User; // Opcional ya que el API puede devolver posts sin información de usuario
   categories: Category[];
   tags: Tag[];
 }

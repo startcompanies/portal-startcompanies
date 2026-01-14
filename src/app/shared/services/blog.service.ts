@@ -11,6 +11,7 @@ export class BlogService {
   apiUrl: string = environment.apiUrl;
   postsEndpoint: string = environment.postsEndpoint ?? '/posts/get-from-portal';
   categoriesEndpoint: string = environment.categoriesEndpoint ?? '/categories/with-posts-count';
+  sandboxPostsEndpoint: string = environment.sandboxPostsEndpoint ?? '/posts/get-sandbox-posts/category';
 
   constructor(private http: HttpClient) {}
 
@@ -37,8 +38,11 @@ export class BlogService {
 
   // Nuevo método para obtener posts por slug de categoría
   getPostsByCategorySlug(categorySlug: string): Observable<Post[]> {
-    return this.http.get<Post[]>(
+    /*return this.http.get<Post[]>(
       `${this.apiUrl}/posts/get-from-portal/category/${categorySlug}`
+    );*/
+    return this.http.get<Post[]>(
+      `${this.apiUrl}${this.sandboxPostsEndpoint}/${categorySlug}`
     );
   }
 }
