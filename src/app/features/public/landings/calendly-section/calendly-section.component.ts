@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 declare global {
   interface Window {
@@ -18,25 +19,31 @@ declare global {
 export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
   @Output() calendlyClick = new EventEmitter<void>();
 
-  constructor(private facebookPixelService: FacebookPixelService) {}
+  constructor(
+    private facebookPixelService: FacebookPixelService,
+    private browser: BrowserService
+  ) {}
 
   ngOnDestroy(): void {
     console.log('CalendlySectionComponent destroyed');
   }
 
   ngAfterViewInit(): void {
-    this.loadCalComWidget();
+    if (this.browser.isBrowser) {
+      this.loadCalComWidget();
+    }
   }
 
   /**
    * Lee una cookie por su nombre
    */
   private getCookie(name: string): string | null {
-    if (typeof document === 'undefined') {
+    const doc = this.browser.document;
+    if (!doc) {
       return null;
     }
     const nameEQ = name + '=';
-    const ca = document.cookie.split(';');
+    const ca = doc.cookie.split(';');
     for (let i = 0; i < ca.length; i++) {
       let c = ca[i];
       while (c.charAt(0) === ' ') c = c.substring(1, c.length);
@@ -141,7 +148,8 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
   }
 
   private async loadCalComWidget(): Promise<void> {
-    if (typeof window === 'undefined') {
+    const win = this.browser.window;
+    if (!win) {
       // Prevent execution on the server
       return;
     }
@@ -157,10 +165,10 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     }
 
     // Obtener userAgent (parámetro original)
-    const userAgent = navigator.userAgent;
+    const userAgent = win.navigator.userAgent;
 
     // Obtener fbclid de la URL (parámetro original)
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(win.location.search);
     const fbclid = urlParams.get('fbclid');
 
     // Leer cookies de Facebook Pixel (nuevos parámetros)
@@ -204,6 +212,9 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     const finalQuery = queryParams.toString();
     if (finalQuery) calLink += `?${finalQuery}`;
 
+    const doc = this.browser.document;
+    if (!doc) return;
+
     // Lógica de inicialización del script de Cal.com
     // Adaptado de la función IIFE (Immediately Invoked Function Expression) original
     (function (C: Window, A: string, L: string) {
@@ -240,23 +251,23 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
           }
           p(cal, ar);
         };
-    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    })(win, 'https://app.cal.com/embed/embed.js', 'init');
 
     // Configuración y carga del widget
-    if (window.Cal) {
+    if ((win as any).Cal) {
       // Asegurarse de que Cal esté disponible
-      window.Cal.config = window.Cal.config || {};
-      window.Cal.config.forwardQueryParams = true;
+      (win as any).Cal.config = (win as any).Cal.config || {};
+      (win as any).Cal.config.forwardQueryParams = true;
 
-      window.Cal('init', '30min', { origin: 'https://cal.com' });
+      (win as any).Cal('init', '30min', { origin: 'https://cal.com' });
 
-      window.Cal.ns['30min']('inline', {
+      (win as any).Cal.ns['30min']('inline', {
         elementOrSelector: '#my-cal-inline',
         config: { layout: 'month_view', forwardQueryParams: true },
         calLink: calLink,
       });
 
-      window.Cal.ns['30min']('ui', {
+      (win as any).Cal.ns['30min']('ui', {
         cssVarsPerTheme: {
           light: { 'cal-brand': '#006AFE' },
           dark: { 'cal-brand': '#fafafa' },
@@ -277,6 +288,10 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
    * Cal.com usa postMessage para comunicarse entre el iframe y la página padre
    */
   private setupCalComEventListeners(): void {
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    
     // Cal.com comunica eventos a través de postMessage
     // Escuchar mensajes del iframe de Cal.com
     const messageHandler = (event: MessageEvent) => {
@@ -321,11 +336,11 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     };
 
     // Agregar listener de mensajes
-    window.addEventListener('message', messageHandler);
+    win.addEventListener('message', messageHandler);
     
     // También escuchar eventos del DOM del iframe cuando esté disponible
     const setupDOMListeners = () => {
-      const calIframe = document.querySelector('#my-cal-inline iframe') as HTMLIFrameElement;
+      const calIframe = doc.querySelector('#my-cal-inline iframe') as HTMLIFrameElement;
       if (calIframe) {
         // El iframe puede disparar eventos cuando se carga
         calIframe.addEventListener('load', () => {
@@ -334,16 +349,16 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
         });
       } else {
         // Reintentar si el iframe aún no está disponible
-        setTimeout(setupDOMListeners, 500);
+        win.setTimeout(setupDOMListeners, 500);
       }
     };
 
     // Esperar a que el DOM esté listo
-    setTimeout(setupDOMListeners, 1000);
+    win.setTimeout(setupDOMListeners, 1000);
 
     // Limpiar listener cuando el componente se destruya
     this.ngOnDestroy = () => {
-      window.removeEventListener('message', messageHandler);
+      win.removeEventListener('message', messageHandler);
       console.log('CalendlySectionComponent destroyed');
     };
 

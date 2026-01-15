@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit, AfterViewInit, PLATFORM_ID, SecurityContext } from '@angular/core';
+import { Component, inject, OnInit, AfterViewInit, SecurityContext } from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
 import { BlogService } from '../../../../shared/services/blog.service';
@@ -6,13 +6,13 @@ import { Post } from '../../../../shared/models/post.model';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
 import { BlogSeoService } from '../../../../shared/services/blog-seo.service';
-import { isPlatformBrowser } from '@angular/common';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { PostContentComponent } from '../../../../shared/components/post-content/post-content.component';
 import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
 import { environment } from '../../../../../environments/environment';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -34,7 +34,6 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   baseUrl = environment.baseUrl;
 
   postArticle?: Post;
-  isBrowser = false;
   contentBlocks: any[] = [];
   hasSections = false;
   firstSectionContent = '';
@@ -42,6 +41,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   remainingContent = '';
   heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
+  
+  // Getter para acceso desde el template
+  get isBrowser(): boolean {
+    return this.browser.isBrowser;
+  }
 
   heroImages = {
     mobile: '/assets/hero-bg-mobile.webp',
@@ -76,11 +80,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   constructor(
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
-    @Inject(PLATFORM_ID) private platformId: Object,
+    private browser: BrowserService,
     private sanitizer: DomSanitizer
-  ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-  }
+  ) {}
 
   ngOnInit(): void {
     /*const slug = this.route.snapshot.paramMap.get('slug');
@@ -106,13 +108,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       this.firstSectionContent = '';
       this.firstSectionImage = '';
       this.postArticle = post;
-      if (this.isBrowser) window.scrollTo({ top: 0, behavior: 'smooth' });
+      const win = this.browser.window;
+      if (win) win.scrollTo({ top: 0, behavior: 'smooth' });
 
       // ✅ SEO dinámico
       this.blogSeoService.setPostSeo(post);
 
       // ✅ Parseo del contenido HTML (solo en el navegador)
-      if (this.isBrowser && post.content) {
+      if (this.browser.isBrowser && post.content) {
         this.contentBlocks = this.parseHtmlContent(post.content);
         // Detectar si el contenido tiene secciones <section></section>
         // Solo considerar como landing si hay secciones al inicio del contenido
@@ -127,7 +130,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       }
       
       // Extraer enlaces del contenido para el TOC (solo si no es landing)
-      if (this.isBrowser && !this.hasSections && post.content) {
+      if (this.browser.isBrowser && !this.hasSections && post.content) {
         this.tocLinks = this.extractTOCLinks(post.content);
         // Asignar IDs a los encabezados después de que se renderice el contenido
         setTimeout(() => {
@@ -138,7 +141,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       }
       
       // Inicializar TOC después de que el contenido se renderice
-      if (this.isBrowser) {
+      if (this.browser.isBrowser) {
         // Para posts tipo landing, esperar más tiempo para que el contenido se renderice completamente
         const timeout = this.hasSections ? 1200 : 800;
         setTimeout(() => {
@@ -158,8 +161,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   private parseHtmlContent(content: string): any[] {
+    const doc = this.browser.document;
+    if (!doc) return [];
+    
     const blocks: any[] = [];
-    const container = document.createElement('div');
+    const container = doc.createElement('div');
     container.innerHTML = content;
 
     Array.from(container.childNodes).forEach((node) => {
@@ -203,7 +209,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   private extractFirstSection(content: string): void {
-    if (!this.isBrowser || !content) return;
+    const doc = this.browser.document;
+    if (!doc || !content) return;
 
     // Encontrar el inicio de la primera sección
     const firstSectionStart = content.indexOf('<section');
@@ -427,11 +434,12 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * 2. Convierte cualquier col-* dentro de un row a col-lg-12 para que ocupe todo el ancho
    */
   private processBootstrapColumns(html: string): string {
-    if (!html || !this.isBrowser) return html;
+    const doc = this.browser.document;
+    if (!html || !doc) return html;
 
     try {
       // Usar DOM parsing para encontrar y procesar rows con columnas
-      const tempDiv = document.createElement('div');
+      const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = html;
 
       // Buscar todos los divs con clase "row"
@@ -486,10 +494,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Elimina videos (iframe, video tags, etc.) y las columnas que los contienen
    */
   private removeVideos(html: string): string {
-    if (!html || !this.isBrowser) return html;
+    const doc = this.browser.document;
+    if (!html || !doc) return html;
 
     try {
-      const tempDiv = document.createElement('div');
+      const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = html;
 
       // Buscar todos los divs y verificar si contienen videos
@@ -569,11 +578,12 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Elimina un div completo por su data-id, manejando correctamente divs anidados
    */
   private removeDivByDataId(html: string, dataId: string): string {
-    if (!html || !this.isBrowser) return html;
+    const doc = this.browser.document;
+    if (!html || !doc) return html;
     
     try {
       // Crear un contenedor temporal para parsear el HTML parcial
-      const tempDiv = document.createElement('div');
+      const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = html;
       
       const divToRemove = tempDiv.querySelector(`div[data-id="${dataId}"]`);
@@ -612,10 +622,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Extrae el primer párrafo del post para mostrar en la card hero (posts no-landing)
    */
   private extractHeroCardContent(content: string): void {
-    if (!this.isBrowser || !content) return;
+    const doc = this.browser.document;
+    if (!doc || !content) return;
 
     try {
-      const tempDiv = document.createElement('div');
+      const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = content;
 
       // Extraer solo el primer párrafo <p></p>
@@ -642,10 +653,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Limpia el contenido extraído para la card hero
    */
   private cleanHeroCardContent(html: string): string {
-    if (!html || !this.isBrowser) return html;
+    const doc = this.browser.document;
+    if (!html || !doc) return html;
 
     try {
-      const tempDiv = document.createElement('div');
+      const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = html;
 
       // Remover videos
@@ -677,8 +689,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   getCurrentUrl(): string {
-    if (this.isBrowser) {
-      return window.location.href;
+    const win = this.browser.window;
+    if (win) {
+      return win.location.href;
     }
     return '';
   }
@@ -691,32 +704,36 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   shareOnWhatsApp(): void {
-    if (!this.isBrowser) return;
+    const win = this.browser.window;
+    if (!win) return;
     const url = encodeURIComponent(this.getCurrentUrl());
     const text = encodeURIComponent(this.getShareText());
     const whatsappUrl = `https://wa.me/?text=${text}%20${url}`;
-    window.open(whatsappUrl, '_blank');
+    win.open(whatsappUrl, '_blank');
   }
 
   shareOnLinkedIn(): void {
-    if (!this.isBrowser) return;
+    const win = this.browser.window;
+    if (!win) return;
     const url = encodeURIComponent(this.getCurrentUrl());
     const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-    window.open(linkedinUrl, '_blank');
+    win.open(linkedinUrl, '_blank');
   }
 
   shareOnFacebook(): void {
-    if (!this.isBrowser) return;
+    const win = this.browser.window;
+    if (!win) return;
     const url = encodeURIComponent(this.getCurrentUrl());
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    window.open(facebookUrl, '_blank');
+    win.open(facebookUrl, '_blank');
   }
 
   shareNative(): void {
-    if (!this.isBrowser) return;
+    const win = this.browser.window;
+    if (!win) return;
     
-    if (navigator.share) {
-      navigator.share({
+    if (win.navigator.share) {
+      win.navigator.share({
         title: this.postArticle?.title || 'Start Companies',
         text: this.getShareText(),
         url: this.getCurrentUrl(),
@@ -730,10 +747,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   private copyToClipboard(): void {
-    if (!this.isBrowser) return;
+    const win = this.browser.window;
+    if (!win) return;
     
     const url = this.getCurrentUrl();
-    navigator.clipboard.writeText(url).then(() => {
+    win.navigator.clipboard.writeText(url).then(() => {
       // Opcional: mostrar un mensaje de confirmación
       alert('Enlace copiado al portapapeles');
     }).catch((error) => {
@@ -742,10 +760,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   private initializeTOC(): void {
-    if (!this.isBrowser) return;
+    const doc = this.browser.document;
+    if (!doc) return;
 
     // Buscar el card-header que contiene "Indice del artículo" o "Índice del artículo"
-    const cardHeaders = document.querySelectorAll('.card-header');
+    const cardHeaders = doc.querySelectorAll('.card-header');
     cardHeaders.forEach((header) => {
       const h5 = header.querySelector('h5');
       if (h5) {
@@ -756,7 +775,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
           
           // Añadir el icono de toggle si no existe
           if (!header.querySelector('#toc-toggle-icon')) {
-            const icon = document.createElement('i');
+            const icon = doc.createElement('i');
             icon.id = 'toc-toggle-icon';
             icon.className = 'bi bi-chevron-down';
             icon.style.transition = 'transform 0.3s ease';
@@ -790,7 +809,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Inicializa la navegación por scroll para los enlaces del índice en posts tipo landing
    */
   private initializeTOCLinksNavigation(tocCard: Element): void {
-    if (!this.isBrowser) return;
+    if (!this.browser.isBrowser) return;
 
     const tocBody = tocCard.querySelector('#toc-body');
     if (!tocBody) return;
@@ -817,10 +836,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   toggleTOC(): void {
-    if (!this.isBrowser) return;
+    const doc = this.browser.document;
+    if (!doc) return;
     
-    const tocBody = document.getElementById('toc-body');
-    const toggleIcon = document.getElementById('toc-toggle-icon');
+    const tocBody = doc.getElementById('toc-body');
+    const toggleIcon = doc.getElementById('toc-toggle-icon');
     
     if (tocBody && toggleIcon) {
       if (tocBody.style.display === 'none' || tocBody.style.display === '') {
@@ -854,10 +874,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Extrae los encabezados y enlaces del contenido HTML del post para generar el TOC
    */
   private extractTOCLinks(content: string): Array<{ href: string; text: string; isHeading?: boolean }> {
-    if (!content || !this.isBrowser) return [];
+    const doc = this.browser.document;
+    if (!content || !doc) return [];
 
     const links: Array<{ href: string; text: string; isHeading?: boolean }> = [];
-    const container = document.createElement('div');
+    const container = doc.createElement('div');
     container.innerHTML = content;
 
     // Primero, buscar todos los encabezados (h1, h2, h3, h4, h5, h6)
@@ -915,13 +936,16 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
               links.push({ href: anchorPart, text, isHeading: false });
             }
           }
-        } else if (href.includes('#') && (href.includes(window.location.hostname) || !href.startsWith('http'))) {
+        } else {
+          const win = this.browser.window;
+          if (win && href.includes('#') && (href.includes(win.location.hostname) || !href.startsWith('http'))) {
           // URLs absolutas o relativas con anclas
-          const hashIndex = href.indexOf('#');
-          if (hashIndex !== -1) {
-            const anchorPart = href.substring(hashIndex);
-            if (!links.some(link => link.href === anchorPart)) {
-              links.push({ href: anchorPart, text, isHeading: false });
+            const hashIndex = href.indexOf('#');
+            if (hashIndex !== -1) {
+              const anchorPart = href.substring(hashIndex);
+              if (!links.some(link => link.href === anchorPart)) {
+                links.push({ href: anchorPart, text, isHeading: false });
+              }
             }
           }
         }
@@ -935,9 +959,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
    * Asigna IDs a los encabezados que no los tengan para permitir navegación
    */
   private assignHeadingIds(): void {
-    if (!this.isBrowser) return;
+    const doc = this.browser.document;
+    if (!doc) return;
 
-    const contentContainer = document.querySelector('.app-post-content');
+    const contentContainer = doc.querySelector('.app-post-content');
     if (!contentContainer) return;
 
     const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
@@ -954,7 +979,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
           // Asegurar que el ID sea único en el documento
           let uniqueId = generatedId;
           let counter = 1;
-          while (document.getElementById(uniqueId)) {
+          while (doc.getElementById(uniqueId)) {
             uniqueId = `${generatedId}-${counter}`;
             counter++;
           }
@@ -973,7 +998,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       event.preventDefault();
     }
 
-    if (!this.isBrowser || !href) return;
+    const doc = this.browser.document;
+    const win = this.browser.window;
+    if (!doc || !win || !href) return;
 
     // Normalizar el href para asegurarse de que tenga el #
     const normalizedHref = href.startsWith('#') ? href : `#${href}`;
@@ -992,8 +1019,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       // Para posts tipo landing, buscar en todo el documento
       // Para posts no landing, buscar solo en el contenedor de contenido
       const defaultContainer = this.hasSections 
-        ? document.body  // Para landing, buscar en todo el body
-        : document.querySelector('.app-post-content'); // Para no landing, solo en el contenido
+        ? doc.body  // Para landing, buscar en todo el body
+        : doc.querySelector('.app-post-content'); // Para no landing, solo en el contenido
       
       if (!defaultContainer && !this.hasSections) {
         console.warn('No se encontró el contenedor de contenido');
@@ -1002,7 +1029,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Primero, asegurar que los encabezados tengan IDs asignados (solo para posts no landing)
       if (!this.hasSections) {
-        const contentContainer = document.querySelector('.app-post-content');
+        const contentContainer = doc.querySelector('.app-post-content');
         if (contentContainer) {
           this.assignHeadingIds();
         }
@@ -1010,7 +1037,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Estrategia 1: Buscar elemento por ID directamente
       try {
-        targetElement = document.getElementById(anchorId);
+        targetElement = doc.getElementById(anchorId);
       } catch (e) {
         // Ignorar errores de ID inválido
       }
@@ -1020,7 +1047,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         try {
           const escapedId = CSS.escape(anchorId);
           // Para posts tipo landing, buscar en todo el contenido renderizado
-          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          const searchContainer = this.hasSections ? doc.body : defaultContainer;
           if (searchContainer) {
             targetElement = searchContainer.querySelector(`#${escapedId}`) as HTMLElement;
           }
@@ -1033,7 +1060,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (!targetElement) {
         try {
           const escapedId = CSS.escape(anchorId);
-          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          const searchContainer = this.hasSections ? doc.body : defaultContainer;
           if (searchContainer) {
             const allElements = searchContainer.querySelectorAll(`#${escapedId}`);
             if (allElements.length > 0) {
@@ -1047,7 +1074,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Estrategia 3.5: Buscar encabezados por texto si no se encuentra por ID (solo para posts no landing)
       if (!targetElement && !this.hasSections) {
-        const contentContainer = document.querySelector('.app-post-content');
+        const contentContainer = doc.querySelector('.app-post-content');
         if (contentContainer) {
           // Primero asegurar que los encabezados tengan IDs
           this.assignHeadingIds();
@@ -1072,7 +1099,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Estrategia 4: Buscar el enlace que apunta a este href
       if (!targetElement) {
-        const searchContainer = this.hasSections ? document.body : defaultContainer;
+        const searchContainer = this.hasSections ? doc.body : defaultContainer;
         if (searchContainer) {
           const allLinks = searchContainer.querySelectorAll('a[href]');
           
@@ -1092,7 +1119,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
                 // Encontramos el enlace, ahora buscar su destino
                 
                 // Primero buscar si hay un elemento con el ID objetivo en el documento completo
-                const possibleTarget = document.getElementById(anchorId);
+                const possibleTarget = doc.getElementById(anchorId);
                 if (possibleTarget) {
                   targetElement = possibleTarget;
                   break;
@@ -1156,7 +1183,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (!targetElement) {
         try {
           const escapedId = CSS.escape(anchorId);
-          const searchContainer = this.hasSections ? document.body : defaultContainer;
+          const searchContainer = this.hasSections ? doc.body : defaultContainer;
           if (searchContainer) {
             targetElement = searchContainer.querySelector(`a[name="${escapedId}"], [name="${escapedId}"]`) as HTMLElement;
           }
@@ -1170,7 +1197,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         const headerOffset = 120;
         
         // Calcular posición
-        const elementTop = targetElement.getBoundingClientRect().top + window.pageYOffset;
+        const elementTop = targetElement.getBoundingClientRect().top + win.pageYOffset;
         const offsetPosition = elementTop - headerOffset;
 
         // Usar scrollIntoView primero
@@ -1182,7 +1209,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
         // Ajustar manualmente después del scroll
         setTimeout(() => {
-          window.scrollTo({
+          win.scrollTo({
             top: offsetPosition,
             behavior: 'auto'
           });
@@ -1191,14 +1218,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         // Estrategia final: Usar navegación nativa del navegador
         try {
           // Establecer el hash
-          window.location.hash = normalizedHref;
+          win.location.hash = normalizedHref;
           
           // Después de un momento, intentar scroll suave si se encontró el elemento
           setTimeout(() => {
-            const element = document.getElementById(anchorId);
+            const element = doc.getElementById(anchorId);
             if (element) {
               const headerOffset = 120;
-              const elementTop = element.getBoundingClientRect().top + window.pageYOffset;
+              const elementTop = element.getBoundingClientRect().top + win.pageYOffset;
               
               element.scrollIntoView({ 
                 behavior: 'smooth', 
@@ -1206,7 +1233,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
               });
               
               setTimeout(() => {
-                window.scrollTo({
+                win.scrollTo({
                   top: elementTop - headerOffset,
                   behavior: 'auto'
                 });

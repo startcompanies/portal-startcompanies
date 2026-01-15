@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BrowserService } from './browser.service';
 
 declare global {
   interface Window {
@@ -11,7 +12,7 @@ declare global {
 })
 export class AnalyticsService {
 
-  constructor() { }
+  constructor(private browser: BrowserService) { }
 
   /**
    * Envía un evento personalizado a Google Analytics
@@ -21,8 +22,9 @@ export class AnalyticsService {
    * @param value - Valor numérico opcional
    */
   trackEvent(action: string, category: string, label?: string, value?: number): void {
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', action, {
+    const win = this.browser.window;
+    if (win && win.gtag) {
+      win.gtag('event', action, {
         event_category: category,
         event_label: label,
         value: value

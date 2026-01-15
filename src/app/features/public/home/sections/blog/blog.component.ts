@@ -4,7 +4,7 @@ import { BlogService } from '../../../../../shared/services/blog.service';
 import { SharedModule } from '../../../../../shared/shared/shared.module';
 import { Post } from '../../../../../shared/models/post.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
+import { BrowserService } from '../../../../../shared/services/browser.service';
 import { LangRouterLinkDirective } from '../../../../../shared/directives/lang-router-link.directive';
 
 @Component({
@@ -22,7 +22,7 @@ export class BlogComponent implements OnInit {
 
   constructor(
     private sanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -65,13 +65,14 @@ export class BlogComponent implements OnInit {
   stripHtmlTags(htmlString: string): string {
     if (!htmlString) return '';
     
+    const doc = this.browser.document;
     // Durante SSR, usar regex simple para extraer texto
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!doc) {
       return htmlString.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...';
     }
     
     // Crear un elemento temporal para parsear el HTML
-    const tempDiv = document.createElement('div');
+    const tempDiv = doc.createElement('div');
     tempDiv.innerHTML = htmlString;
     
     // Extraer solo el texto

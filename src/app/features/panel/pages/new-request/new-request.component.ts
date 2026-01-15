@@ -15,6 +15,7 @@ import { CuentaBancariaFormComponent } from './cuenta-bancaria-form/cuenta-banca
 import { StripePaymentFormComponent, StripePaymentResult } from '../../components/stripe-payment-form/stripe-payment-form.component';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-new-request',
@@ -154,7 +155,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     private stripeService: StripeService,
     private http: HttpClient,
     private partnerClientsService: PartnerClientsService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private browser: BrowserService
   ) {
     this.requestForm = this.fb.group({
       // Paso 1: Tipo de servicio
@@ -2667,9 +2669,12 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     }
     
     // Resetear el input file
-    const fileInput = document.getElementById(inputId) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
+    const doc = this.browser.document;
+    if (doc) {
+      const fileInput = doc.getElementById(inputId) as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     }
   }
 

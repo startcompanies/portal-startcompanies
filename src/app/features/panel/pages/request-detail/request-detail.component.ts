@@ -8,6 +8,7 @@ import { AuthService } from '../../services/auth.service';
 import { DocumentsService } from '../../services/documents.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { RequestsService, Request as ApiRequest } from '../../services/requests.service';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 interface ProcessStep {
   id: number;
@@ -90,7 +91,8 @@ export class RequestDetailComponent implements OnInit {
     private documentsService: DocumentsService,
     private notificationsService: NotificationsService,
     private requestsService: RequestsService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private browser: BrowserService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -566,19 +568,27 @@ export class RequestDetailComponent implements OnInit {
       return;
     }
 
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    
     try {
       const jsonString = this.getFullDataAsJson();
-      await navigator.clipboard.writeText(jsonString);
-      alert('JSON copiado al portapapeles');
+      if (win.navigator.clipboard) {
+        await win.navigator.clipboard.writeText(jsonString);
+        alert('JSON copiado al portapapeles');
+      } else {
+        throw new Error('Clipboard API not available');
+      }
     } catch (error) {
       console.error('Error al copiar al portapapeles:', error);
       // Fallback: crear un elemento temporal
-      const textarea = document.createElement('textarea');
+      const textarea = doc.createElement('textarea');
       textarea.value = this.getFullDataAsJson();
-      document.body.appendChild(textarea);
+      doc.body.appendChild(textarea);
       textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
+      doc.execCommand('copy');
+      doc.body.removeChild(textarea);
       alert('JSON copiado al portapapeles');
     }
   }
@@ -873,8 +883,9 @@ export class RequestDetailComponent implements OnInit {
     // TODO: Implementar descarga de documentos
     console.log('Descargar documento:', document);
     // En producción, esto haría una petición al backend para obtener el archivo
-    if (document.url && document.url !== '#') {
-      window.open(document.url, '_blank');
+    const win = this.browser.window;
+    if (win && document.url && document.url !== '#') {
+      win.open(document.url, '_blank');
     }
   }
 
@@ -963,7 +974,10 @@ export class RequestDetailComponent implements OnInit {
   }
 
   deleteDocument(document: Document): void {
-    if (!confirm(`¿Estás seguro de que deseas eliminar "${document.name}"?`)) {
+    const win = this.browser.window;
+    if (!win) return;
+    
+    if (!win.confirm(`¿Estás seguro de que deseas eliminar "${document.name}"?`)) {
       return;
     }
 

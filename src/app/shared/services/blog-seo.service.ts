@@ -1,8 +1,8 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
 import { Post } from '../models/post.model';
 import { SeoData } from './seo.service';
+import { BrowserService } from './browser.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,7 @@ export class BlogSeoService {
   constructor(
     private meta: Meta,
     private title: Title,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) { }
 
   /**
@@ -191,7 +191,7 @@ export class BlogSeoService {
    * Añade datos estructurados Schema.org para artículos
    */
   private addStructuredData(post: Post): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.browser.isBrowser) return;
 
     const structuredData = {
       "@context": "https://schema.org",
@@ -230,7 +230,7 @@ export class BlogSeoService {
    * Añade datos estructurados para la página principal del blog
    */
   private addBlogStructuredData(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.browser.isBrowser) return;
 
     const structuredData = {
       "@context": "https://schema.org",
@@ -263,22 +263,18 @@ export class BlogSeoService {
    * Solo se ejecuta en el navegador (no en SSR)
    */
   private addJsonLdScript(data: any): void {
-    // Verificar que estamos en el navegador antes de acceder a document
-    if (!isPlatformBrowser(this.platformId)) {
-      return; // No hacer nada en SSR
-    }
+    const doc = this.browser.document;
+    if (!doc) return;
 
-    // Remover script anterior si existe
-    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    const existingScript = doc.querySelector('script[type="application/ld+json"]');
     if (existingScript) {
       existingScript.remove();
     }
 
-    // Crear nuevo script
-    const script = document.createElement('script');
+    const script = doc.createElement('script');
     script.type = 'application/ld+json';
     script.text = JSON.stringify(data);
-    document.head.appendChild(script);
+    doc.head.appendChild(script);
   }
 
   /**

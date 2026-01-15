@@ -6,6 +6,7 @@ import { UsersService, User } from '../../services/users.service';
 import { ZohoConfigService, ZohoConfig } from '../../services/zoho-config.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 interface UserPreferences {
   language: 'es' | 'en';
@@ -61,7 +62,8 @@ export class SettingsComponent implements OnInit {
     private authService: AuthService,
     private usersService: UsersService,
     private zohoConfigService: ZohoConfigService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private browser: BrowserService
   ) {
     this.profileForm = this.fb.group({
       full_name: ['', Validators.required], // Nombre completo en un solo campo
@@ -453,13 +455,16 @@ export class SettingsComponent implements OnInit {
         )
       );
 
+      const win = this.browser.window;
+      if (!win) return;
+      
       // Abrir popup para autorización
       const width = 600;
       const height = 700;
-      const left = (window.screen.width - width) / 2;
-      const top = (window.screen.height - height) / 2;
+      const left = (win.screen.width - width) / 2;
+      const top = (win.screen.height - height) / 2;
 
-      const popup = window.open(
+      const popup = win.open(
         response.url,
         'Zoho OAuth',
         `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
@@ -480,8 +485,11 @@ export class SettingsComponent implements OnInit {
   }
 
   setupOAuthListener(): void {
+    const win = this.browser.window;
+    if (!win) return;
+    
     // Escuchar mensajes del popup de OAuth
-    window.addEventListener('message', (event) => {
+    win.addEventListener('message', (event) => {
       if (event.data.status === 'success') {
         this.isOAuthInProgress = false;
         this.saveSuccess = true;

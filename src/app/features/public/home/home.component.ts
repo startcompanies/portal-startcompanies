@@ -16,7 +16,7 @@ import { SectionsModule } from './sections/sections.module';
 import { TestimonialsComponent } from './sections/testimonials/testimonials.component';
 import { FaqComponent } from './sections/faq/faq.component';
 import { Router } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { BrowserService } from '../../../shared/services/browser.service';
 import { MultilingualSeoComponent } from '../../../shared/components/multilingual-seo/multilingual-seo.component';
 import { ResponsiveImageComponent } from '../../../shared/components/responsive-image/responsive-image.component';
 import { IMAGE_CONFIG, ImageConfig } from '../../../core/config/image-config';
@@ -55,7 +55,7 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   constructor(
     private scrollService: ScrollService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngAfterViewInit() {
@@ -66,13 +66,16 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
     );
 
     // Inicializar el carrusel de Bootstrap
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.initializeCarousel();
     }
 
     // Si se entra directamente a /planes, hacer scroll a pricingSection
-    if (isPlatformBrowser(this.platformId) && this.router.url === '/planes') {
-      requestAnimationFrame(() => this.scrollToTargetSection('pricingSection'));
+    if (this.browser.isBrowser && this.router.url === '/planes') {
+      const win = this.browser.window;
+      if (win) {
+        win.requestAnimationFrame(() => this.scrollToTargetSection('pricingSection'));
+      }
     }
   }
 
@@ -88,9 +91,13 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   }
 
   private initializeCarousel() {
-    const carouselElement = document.getElementById('carouselExampleIndicators');
-    if (carouselElement && typeof bootstrap !== 'undefined') {
-      this.carousel = new bootstrap.Carousel(carouselElement, {
+    const doc = this.browser.document;
+    const win = this.browser.window;
+    if (!doc || !win || typeof (win as any).bootstrap === 'undefined') return;
+    
+    const carouselElement = doc.getElementById('carouselExampleIndicators');
+    if (carouselElement) {
+      this.carousel = new (win as any).bootstrap.Carousel(carouselElement, {
         interval: 12000, // Cambiar cada 10 segundos
         wrap: true, // Loop infinito
         keyboard: true, // Navegación con teclado

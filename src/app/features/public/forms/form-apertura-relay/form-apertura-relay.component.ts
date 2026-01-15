@@ -1,11 +1,11 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 import { SeoBaseComponent } from '../../../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-form-apertura-relay',
@@ -28,12 +28,12 @@ export class FormAperturaRelayComponent implements OnInit {
 
   constructor(
     private facebookPixelService: FacebookPixelService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
     // Trackear cuando el usuario llega a la página del formulario
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.facebookPixelService.trackViewContent(
         'Formulario Apertura Relay',
         'Banking Services'
@@ -49,6 +49,9 @@ export class FormAperturaRelayComponent implements OnInit {
   }
 
   openUrl(url: string) {
-    window.open(url, '_blank');
+    const win = this.browser.window;
+    if (win) {
+      win.open(url, '_blank');
+    }
   }
 }

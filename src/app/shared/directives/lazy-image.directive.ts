@@ -1,4 +1,5 @@
 import { Directive, ElementRef, Input, OnInit, Renderer2 } from '@angular/core';
+import { BrowserService } from '../services/browser.service';
 
 @Directive({
   selector: '[appLazyImage]',
@@ -15,12 +16,17 @@ export class LazyImageDirective implements OnInit {
 
   constructor(
     private el: ElementRef,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private browser: BrowserService
   ) {
     this.img = this.el.nativeElement;
   }
 
   ngOnInit() {
+    if (!this.browser.isBrowser) {
+      return; // No ejecutar en SSR
+    }
+    
     if (this.loading === 'eager') {
       this.loadImage();
     } else {
@@ -29,6 +35,10 @@ export class LazyImageDirective implements OnInit {
   }
 
   private setupLazyLoading() {
+    if (!this.browser.isBrowser) {
+      return; // No ejecutar en SSR
+    }
+    
     // Configurar Intersection Observer para lazy loading
     this.observer = new IntersectionObserver(
       (entries) => {
@@ -93,7 +103,12 @@ export class LazyImageDirective implements OnInit {
   }
 
   private checkWebPSupport(): boolean {
-    const canvas = document.createElement('canvas');
+    const doc = this.browser.document;
+    if (!doc) {
+      return false; // En SSR, asumir que no hay soporte WebP
+    }
+    
+    const canvas = doc.createElement('canvas');
     canvas.width = 1;
     canvas.height = 1;
     return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;

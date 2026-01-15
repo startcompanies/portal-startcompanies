@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { whatsappConfig } from '../../../core/config/whatsapp.config';
+import { BrowserService } from '../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-whatsapp-float',
@@ -16,7 +17,10 @@ export class WhatsappFloatComponent implements OnInit {
   defaultMessage = whatsappConfig.defaultMessage;
   tooltipText = whatsappConfig.tooltipText;
 
-  constructor(public router: Router) {}
+  constructor(
+    public router: Router,
+    private browser: BrowserService
+  ) {}
 
   ngOnInit(): void {
     this.checkCurrentRoute();
@@ -37,8 +41,11 @@ export class WhatsappFloatComponent implements OnInit {
   }
 
   openWhatsApp(): void {
+    const win = this.browser.window;
+    if (!win) return;
+    
     const encodedMessage = encodeURIComponent(this.defaultMessage);
     const whatsappUrl = `https://wa.me/${this.phoneNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+    win.open(whatsappUrl, '_blank');
   }
 }

@@ -2,8 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Inject,
-  PLATFORM_ID,
   ViewChild,
   OnInit,
   HostListener,
@@ -21,8 +19,8 @@ import { Subscription } from 'rxjs';
 import { ScrollService } from '../../../../shared/services/scroll.service';
 import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
-import { isPlatformBrowser } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-landing-abre-tu-llc',
@@ -62,8 +60,8 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
 
   constructor(
     private scrollService: ScrollService,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private facebookPixelService: FacebookPixelService
+    private facebookPixelService: FacebookPixelService,
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -77,8 +75,7 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
     );
 
     // Trackear scroll inicial
-    //this.checkScrollDepth();
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.checkScrollDepth();
     }
   }
@@ -89,17 +86,24 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
         this.scrollTargetSection(sectionId);
       }
     );
-    if (isPlatformBrowser(this.platformId)) {
-      window.addEventListener('scroll', () => {
-        this.checkScrollForFloatingButton();
-      });
+    if (this.browser.isBrowser) {
+      const win = this.browser.window;
+      if (win) {
+        win.addEventListener('scroll', () => {
+          this.checkScrollForFloatingButton();
+        });
+      }
     }
   }
 
   private checkScrollForFloatingButton() {
+    const doc = this.browser.document;
+    const win = this.browser.window;
+    if (!doc || !win) return;
+    
     // Buscar las secciones en el DOM
-    const heroSection = document.querySelector('.hero-section');
-    const calendlySection = document.querySelector('.calendly-cta-section');
+    const heroSection = doc.querySelector('.hero-section');
+    const calendlySection = doc.querySelector('.calendly-cta-section');
 
     if (heroSection && calendlySection) {
       const heroRect = heroSection.getBoundingClientRect();
@@ -111,22 +115,26 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
 
       // Mostrar botón solo en mobile y cuando ambas secciones estén fuera de vista
       this.showFloatingButton =
-        window.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
+        win.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
     }
   }
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.checkScrollDepth();
       this.checkFloatingButton();
     }
   }
 
   private checkScrollDepth(): void {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    
+    const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
+    const windowHeight = win.innerHeight;
+    const documentHeight = doc.documentElement.scrollHeight;
     const scrollPercentage = Math.round(
       (scrollTop / (documentHeight - windowHeight)) * 100
     );
@@ -145,7 +153,11 @@ export class LandingAbreTuLlcComponent implements AfterViewInit, OnInit {
   }
 
   private checkFloatingButton(): void {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    
+    const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
     this.showFloatingButton = scrollTop > 300;
   }
 

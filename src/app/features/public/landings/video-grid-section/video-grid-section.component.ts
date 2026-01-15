@@ -1,6 +1,7 @@
-import { Component, Input, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { LazyWistiaDirective } from '../../../../shared/directives/lazy-wistia.directive';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-video-grid-section',
@@ -16,16 +17,20 @@ export class VideoGridSectionComponent {
   @Input() maxVideosPerRow: number = 3;
   isMobile: boolean = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
-    if (isPlatformBrowser(this.platformId)) {
+  constructor(private browser: BrowserService) {
+    if (this.browser.isBrowser) {
       this.checkScreenSize();
-      window.addEventListener('resize', () => this.checkScreenSize());
+      const win = this.browser.window;
+      if (win) {
+        win.addEventListener('resize', () => this.checkScreenSize());
+      }
     }
   }
 
   private checkScreenSize(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.isMobile = window.innerWidth <= 768;
+    const win = this.browser.window;
+    if (win) {
+      this.isMobile = win.innerWidth <= 768;
     }
   }
 }

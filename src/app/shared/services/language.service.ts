@@ -1,9 +1,9 @@
 // src/app/services/language.service.ts
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
-import { isPlatformBrowser } from '@angular/common';
 import { filter } from 'rxjs/operators';
+import { BrowserService } from './browser.service';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -13,7 +13,7 @@ export class LanguageService {
   constructor(
     private transloco: TranslocoService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {
     // Escuchar navegaciones posteriores (asegura sincronía durante runtime)
     this.router.events
@@ -37,10 +37,10 @@ export class LanguageService {
   /** Método que forzará la inicialización al bootstrap con APP_INITIALIZER */
   async init(): Promise<void> {
     // Determinar URL inicial de forma robusta (browser o server)
-    const initialUrl =
-      isPlatformBrowser(this.platformId) && typeof window !== 'undefined'
-        ? (window.location.pathname + (window.location.search || ''))
-        : this.router.url || '/';
+    const win = this.browser.window;
+    const initialUrl = win
+      ? (win.location.pathname + (win.location.search || ''))
+      : this.router.url || '/';
 
     const initialLang = this.getLangFromUrl(initialUrl) || this.defaultLang;
 

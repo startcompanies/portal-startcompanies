@@ -1,8 +1,9 @@
-import { Component, Input, Inject, PLATFORM_ID, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Input, OnChanges, AfterViewInit, OnDestroy, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { BrowserService } from '../../services/browser.service';
 
 declare global {
   interface Window {
@@ -22,25 +23,28 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   @Input() html: string = '';
   @Input() isLandingPage = false;
   sanitizedHtml: SafeHtml = '';
-  isBrowser = false;
   @ViewChild('contentContainer', { static: false }) contentContainer?: ElementRef;
   private calendlyInitialized = new Set<string>();
 
   baseUrl = environment.baseUrl;
+  
+  // Getter para acceso desde el template
+  get isBrowser(): boolean {
+    return this.browser.isBrowser;
+  }
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    private browser: BrowserService,
     private sanitizer: DomSanitizer,
     private router: Router
   ) {
-    this.isBrowser = isPlatformBrowser(this.platformId);
-    if (this.isBrowser) {
+    if (this.browser.isBrowser) {
       this.sanitizeHtml();
     }
   }
 
   ngOnChanges() {
-    if (this.isBrowser) {
+    if (this.browser.isBrowser) {
       this.sanitizeHtml();
       // Resetear los IDs inicializados cuando cambia el contenido
       this.calendlyInitialized.clear();
@@ -54,33 +58,36 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   }
 
   ngAfterViewInit(): void {
-    if (this.isBrowser) {
-      // Exponer toggleAccordion globalmente para que funcione con onclick en el HTML
-      (window as any).toggleAccordion = (id: string) => {
-        this.toggleAccordion(id);
-      };
-      
-      // Esperar a que el contenido se renderice
-      setTimeout(() => {
-        this.loadCalendlyIfNeeded();
-        this.initializeAccordions();
-        this.processInternalLinks();
-      }, 200);
-    }
+    const win = this.browser.window;
+    if (!win) return;
+    
+    // Exponer toggleAccordion globalmente para que funcione con onclick en el HTML
+    (win as any).toggleAccordion = (id: string) => {
+      this.toggleAccordion(id);
+    };
+    
+    // Esperar a que el contenido se renderice
+    setTimeout(() => {
+      this.loadCalendlyIfNeeded();
+      this.initializeAccordions();
+      this.processInternalLinks();
+    }, 200);
   }
 
   ngOnDestroy(): void {
     // Limpiar la función global
-    if (this.isBrowser && (window as any).toggleAccordion) {
-      delete (window as any).toggleAccordion;
+    const win = this.browser.window;
+    if (win && (win as any).toggleAccordion) {
+      delete (win as any).toggleAccordion;
     }
   }
 
   private initializeAccordions(): void {
-    if (!this.isBrowser) return;
+    const doc = this.browser.document;
+    if (!doc) return;
 
     // Buscar todos los botones de acordeón y añadir event listeners
-    const accordionButtons = document.querySelectorAll('.custom-accordion-button');
+    const accordionButtons = doc.querySelectorAll('.custom-accordion-button');
     accordionButtons.forEach((button) => {
       const buttonElement = button as HTMLElement;
       // Verificar si ya tiene el listener para evitar duplicados
@@ -127,9 +134,10 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
   }
 
   toggleAccordion(id: string): void {
-    if (!this.isBrowser) return;
+    const doc = this.browser.document;
+    if (!doc) return;
 
-    const content = document.getElementById(id) as HTMLElement;
+    const content = doc.getElementById(id) as HTMLElement;
     if (!content) return;
 
     // Buscar el botón asociado
@@ -149,7 +157,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     
     // Si aún no se encuentra, buscar por aria-controls
     if (!button) {
-      button = document.querySelector(`button[aria-controls="${id}"], button[data-target="#${id}"]`) as HTMLElement;
+      button = doc.querySelector(`button[aria-controls="${id}"], button[data-target="#${id}"]`) as HTMLElement;
     }
     
     if (!button) return;
@@ -157,9 +165,9 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     const icon = button.querySelector('.accordion-icon') as HTMLElement;
 
     // Cerrar todos los demás acordeones
-    const allContents = document.querySelectorAll('.custom-accordion-content');
-    const allIcons = document.querySelectorAll('.accordion-icon');
-    const allButtons = document.querySelectorAll('.custom-accordion-button');
+    const allContents = doc.querySelectorAll('.custom-accordion-content');
+    const allIcons = doc.querySelectorAll('.accordion-icon');
+    const allButtons = doc.querySelectorAll('.custom-accordion-button');
 
     allContents.forEach((item) => {
       const itemElement = item as HTMLElement;
@@ -225,6 +233,13 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     
     if (!content) {
       this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml('');
+      return;
+    }
+    
+    // Protección SSR: si no estamos en el navegador, sanitizar sin manipulación DOM
+    const doc = this.browser.document;
+    if (!doc) {
+      this.sanitizedHtml = this.sanitizer.bypassSecurityTrustHtml(content);
       return;
     }
     
@@ -393,13 +408,14 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     });
     
     // Añadir enlace de WhatsApp después del contenido de cada item de FAQ
-    if (this.isBrowser) {
+    const docForWhatsApp = this.browser.document;
+    if (docForWhatsApp) {
       try {
         const whatsappUrl = 'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0';
         const whatsappLinkHtml = `<a href="${whatsappUrl}" target="_blank" style="background-color: var(--color-secundario-tecnico); color: var(--color-fondo-claro); border: none; border-radius: 2.5rem; padding: .6rem 1.2rem; font-weight: 600; font-size: .9rem; display: inline-flex; align-items: center; transition: background-color .3s ease; white-space: nowrap; text-decoration: none; margin-top: 1rem;">Contáctanos por WhatsApp</a>`;
         
         // Usar DOM parsing para encontrar correctamente los divs custom-accordion-content
-        const tempDiv = document.createElement('div');
+        const tempDiv = docForWhatsApp.createElement('div');
         tempDiv.innerHTML = content;
         
         const accordionContents = tempDiv.querySelectorAll('.custom-accordion-content');
@@ -680,9 +696,10 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     }
     
     // Procesar states-card: agregar iconos a los li y enlaces al final
-    if (this.isBrowser) {
+    const docForStates = this.browser.document;
+    if (docForStates) {
       try {
-        const tempDiv = document.createElement('div');
+        const tempDiv = docForStates.createElement('div');
         tempDiv.innerHTML = content;
         
         const statesCards = tempDiv.querySelectorAll('.states-card');
@@ -716,7 +733,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
             }
             
             // Agregar el icono al inicio del li
-            const icon = document.createElement('i');
+            const icon = docForStates.createElement('i');
             icon.className = `bi ${iconClass}`;
             li.insertBefore(icon, li.firstChild);
           });
@@ -740,7 +757,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
                 .replace(/[^\w-]+/g, '');
               
               if (slug) {
-                const link = document.createElement('a');
+                const link = docForStates.createElement('a');
                 link.href = `${this.baseUrl}/blog/${slug}`;
                 link.setAttribute('data-internal-link', slug);
                 link.className = 'states-card-link';
@@ -862,7 +879,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
    * Procesa los enlaces internos marcados con data-internal-link y los convierte a enlaces de Angular
    */
   private processInternalLinks(): void {
-    if (!this.isBrowser || !this.contentContainer?.nativeElement) {
+    if (!this.browser.isBrowser || !this.contentContainer?.nativeElement) {
       return;
     }
 
@@ -925,7 +942,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
    * Detecta si hay divs con id "my-cal-inline" y carga todos los Calendly inline
    */
   private loadCalendlyIfNeeded(): void {
-    if (!this.isBrowser) {
+    if (!this.browser.isBrowser) {
       return;
     }
 
@@ -980,14 +997,13 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
    * Inicializa el widget de Calendly inline para un elemento específico
    */
   private async initializeCalendly(elementId: string, index: number): Promise<void> {
-    if (typeof window === 'undefined') {
-      return;
-    }
+    const win = this.browser.window;
+    if (!win) return;
 
     let userIp: string | null = null;
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(win.location.search);
     const fbclid = urlParams.get('fbclid');
-    const userAgent = navigator.userAgent;
+    const userAgent = win.navigator.userAgent;
 
     try {
       const response = await fetch('https://api.ipify.org?format=json');
@@ -1006,6 +1022,9 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     if (finalQuery) calLink += `?${finalQuery}`;
 
     // Inicializar el script de Cal.com si no está cargado
+    const docForCal = this.browser.document;
+    if (!docForCal) return;
+    
     (function (C: Window, A: string, L: string) {
       let p = function (a: any, ar: any) {
         a.q.push(ar);
@@ -1039,27 +1058,27 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
           }
           p(cal, ar);
         };
-    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+    })(win, 'https://app.cal.com/embed/embed.js', 'init');
 
     // Crear un namespace único para cada instancia de Calendly
     const namespace = `30min-${index}`;
 
     // Esperar a que Cal esté disponible y luego inicializar
     const initCalendly = () => {
-      if (window.Cal) {
-        window.Cal.config = window.Cal.config || {};
-        window.Cal.config.forwardQueryParams = true;
+      if (win.Cal) {
+        win.Cal.config = win.Cal.config || {};
+        win.Cal.config.forwardQueryParams = true;
 
         // Inicializar el namespace único para este Calendly
-        window.Cal('init', namespace, { origin: 'https://cal.com' });
+        win.Cal('init', namespace, { origin: 'https://cal.com' });
 
         // Inicializar el widget inline en el elemento específico
-        window.Cal.ns[namespace]('inline', {
+        win.Cal.ns[namespace]('inline', {
           elementOrSelector: `#${elementId}`,
           calLink: calLink,
         });
 
-        window.Cal.ns[namespace]('ui', {
+        win.Cal.ns[namespace]('ui', {
           cssVarsPerTheme: {
             light: { 'cal-brand': '#006AFE' },
             dark: { 'cal-brand': '#fafafa' },
@@ -1074,7 +1093,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     };
 
     // Intentar inicializar inmediatamente o después de un delay
-    if (window.Cal && window.Cal.loaded) {
+    if (win.Cal && win.Cal.loaded) {
       initCalendly();
     } else {
       // Esperar a que el script se cargue

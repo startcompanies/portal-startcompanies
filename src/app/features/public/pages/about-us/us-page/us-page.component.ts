@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, Inject, OnDestroy, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { ScHeaderComponent } from '../../../../../shared/components/header/sc-header.component';
 import { ScFooterComponent } from '../../../../../shared/components/footer/sc-footer.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { UsPotentialComponent } from '../us-potential/us-potential.component';
 import { UsProposalComponent } from "../us-proposal/us-proposal.component";
 import { VideoSectionComponent } from "../../../landings/video-section/video-section.component";
-import { isPlatformBrowser } from '@angular/common';
 import { SeoBaseComponent } from '../../../../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../../../../shared/components/responsive-image/responsive-image.component';
+import { BrowserService } from '../../../../../shared/services/browser.service';
 
 declare var bootstrap: any;
 
@@ -51,11 +51,11 @@ export class UsPageComponent implements AfterViewInit, OnDestroy {
     }
   };
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private browser: BrowserService) {}
 
   ngAfterViewInit() {
     // Inicializar el carrusel de Bootstrap
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.initializeCarousel();
     }
   }
@@ -68,9 +68,13 @@ export class UsPageComponent implements AfterViewInit, OnDestroy {
   }
 
   private initializeCarousel() {
-    const carouselElement = document.getElementById('carouselExampleIndicators');
-    if (carouselElement && typeof bootstrap !== 'undefined') {
-      this.carousel = new bootstrap.Carousel(carouselElement, {
+    const doc = this.browser.document;
+    const win = this.browser.window;
+    if (!doc || !win || typeof (win as any).bootstrap === 'undefined') return;
+    
+    const carouselElement = doc.getElementById('carouselExampleIndicators');
+    if (carouselElement) {
+      this.carousel = new (win as any).bootstrap.Carousel(carouselElement, {
         interval: 5000, // Cambiar cada 5 segundos
         wrap: true, // Loop infinito
         keyboard: true, // Navegación con teclado
