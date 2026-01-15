@@ -1,5 +1,38 @@
 <app-sc-header></app-sc-header>
 
+<!-- Hero para artículo no disponible -->
+<section *ngIf="!postArticle" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+
+  <div class="container position-relative">
+    <div class="mission-card row align-items-center my-5 g-5 py-5">
+      <div class="col-lg-6 mt-0">
+        <div class="mission-image-container">
+          <img
+            src="/assets/blog/article-not-found.webp"
+            alt="Artículo no disponible"
+            class="mission-image img-fluid"
+          />
+        </div>
+      </div>
+      <div class="col-lg-6 mt-0">
+        <div class="mission-content">
+          <h2 class="mission-title">Artículo no disponible</h2>
+          <div class="mission-description">
+            <p class="mb-0">Lo sentimos, este artículo no está disponible o aún se está cargando. Por favor, intenta más tarde o explora otros artículos de nuestro blog.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Card de primera sección para landing page -->
 <section *ngIf="hasSections && postArticle" class="mb-5 py-5 sc-hero landing-hero-section">
   <app-responsive-image
@@ -235,16 +268,11 @@
     
     <main
       [class]="hasSections ? 'col-12' : 'col-lg-9'"
-      *ngIf="postArticle && postArticle.content; else noArticle"
+      *ngIf="postArticle && postArticle.content"
     >
       <app-post-content [html]="hasSections ? remainingContent : postArticle.content" [isLandingPage]="hasSections"></app-post-content>
     </main>
 
-    <ng-template #noArticle>
-      <main [class]="hasSections ? 'col-12' : 'col-lg-9'">
-        <div class="alert alert-info">Artículo no disponible o cargando...</div>
-      </main>
-    </ng-template>
 
     <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
       <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">

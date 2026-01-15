@@ -536,6 +536,65 @@
   position: relative;
 }
 
+/* Hero para artículo no disponible - mantiene el mismo estilo pero sin botones */
+.no-article-hero {
+  /* Mantiene el fondo con imagen como el hero normal */
+}
+
+.no-article-hero .mission-card {
+  /* Mantiene el mismo estilo que el hero normal */
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.no-article-hero .mission-image-container {
+  /* Asegurar que la imagen se vea correctamente */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
+
+.no-article-hero .mission-image {
+  /* Ajustar para imagen cuadrada - usar contain en lugar de cover */
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+}
+
+.no-article-hero .mission-content {
+  /* Mantiene el mismo estilo de texto blanco y centrado */
+  color: #ffffff;
+  text-align: center;
+}
+
+.no-article-hero .mission-title {
+  /* Mantiene el mismo estilo de título blanco y centrado */
+  color: #ffffff;
+  text-align: center;
+}
+
+.no-article-hero .mission-description {
+  /* Mantiene el mismo estilo de descripción blanca y centrada */
+  color: #ffffff;
+  text-align: center;
+}
+
+.no-article-hero .mission-description p {
+  color: #ffffff;
+  opacity: 0.95;
+  text-align: center;
+}
+
+/* Ocultar botones de compartir en hero sin artículo */
+.no-article-hero .social-share-buttons {
+  display: none;
+}
+
 /* Quitar background color de enlaces en secciones con background image */
 .sc-hero a,
 .landing-hero-section a,

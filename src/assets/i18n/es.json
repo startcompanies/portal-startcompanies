@@ -145,7 +145,7 @@
       },
       "elite_pack": {
         "title": "Pack Elite",
-        "price": "$599",
+        "price": "$600",
         "description": {
           "1": "Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos",
           "2": "Constitución de LLC en cualquier estado (Single Member o Partnership)"
@@ -159,10 +159,10 @@
       },
       "premium_pack": {
         "title": "Pack Premium",
-        "price": "$699",
+        "price": "$999",
         "description": {
           "1": "Ideal para emprendedores. Solución integral con soporte fiscal y renovación automática.",
-          "2": "Constitución de LLC en cualquier estado (Single Member o Partnership)"
+          "2": "Solo para LLCS *Single member en New Mexico o Wyoming*"
         },
         "button": "Comienza tu LLC hoy",
         "includes": {
