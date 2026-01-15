@@ -53,6 +53,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
         this.processInternalLinks();
+        this.styleLinks();
       }, 200);
     }
   }
@@ -71,6 +72,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       this.loadCalendlyIfNeeded();
       this.initializeAccordions();
       this.processInternalLinks();
+      this.styleLinks();
     }, 200);
   }
 
@@ -1099,5 +1101,45 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       // Esperar a que el script se cargue
       setTimeout(initCalendly, 500);
     }
+  }
+
+  /**
+   * Aplica estilos directamente a los enlaces para quitar azul y subrayado
+   * Se ejecuta después de renderizar para asegurar que se apliquen sobre Bootstrap
+   */
+  private styleLinks(): void {
+    if (!this.browser.isBrowser || !this.contentContainer?.nativeElement) {
+      return;
+    }
+
+    const container = this.contentContainer.nativeElement;
+    const links = container.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>;
+
+    links.forEach((link) => {
+      // Excluir botones y elementos especiales
+      if (
+        link.classList.contains('btn') ||
+        link.classList.contains('btn-cta') ||
+        link.classList.contains('abre-corp-btn') ||
+        link.classList.contains('costos-florida-btn') ||
+        link.classList.contains('ayuda-profesional-btn') ||
+        link.classList.contains('veredicto-btn') ||
+        link.classList.contains('states-card-link') ||
+        link.classList.contains('btn-linkedin-profile') ||
+        link.classList.contains('btn-linkedin-autor') ||
+        link.closest('.btn') ||
+        link.hasAttribute('data-cal-link')
+      ) {
+        return; // No aplicar estilos a botones
+      }
+
+      // Aplicar estilos directamente
+      link.style.color = 'inherit';
+      link.style.textDecoration = 'none';
+      link.style.textDecorationLine = 'none';
+      link.style.textDecorationStyle = 'none';
+      link.style.textDecorationColor = 'transparent';
+      link.style.borderBottom = 'none';
+    });
   }
 }

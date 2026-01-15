@@ -9,6 +9,12 @@ html, body {
   overflow-x: hidden;
   max-width: 100vw;
   position: relative;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Asegurar que body use Poppins (sobrescribir Bootstrap) */
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 :root {
@@ -18,6 +24,8 @@ html, body {
   --color-texto-oscuro: #283A48;
   --color-degradado: linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
   --color-fondo-gris: #f8f9fa;
+  /* Sobrescribir fuente de Bootstrap para usar Poppins */
+  --bs-body-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Estilos específicos para Safari para corregir problemas con imágenes */
