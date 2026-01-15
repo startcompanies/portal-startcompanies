@@ -54,6 +54,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         this.initializeAccordions();
         this.processInternalLinks();
         this.styleLinks();
+        this.styleAuthorTitles();
       }, 200);
     }
   }
@@ -67,13 +68,14 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       this.toggleAccordion(id);
     };
     
-    // Esperar a que el contenido se renderice
-    setTimeout(() => {
-      this.loadCalendlyIfNeeded();
-      this.initializeAccordions();
-      this.processInternalLinks();
-      this.styleLinks();
-    }, 200);
+      // Esperar a que el contenido se renderice
+      setTimeout(() => {
+        this.loadCalendlyIfNeeded();
+        this.initializeAccordions();
+        this.processInternalLinks();
+        this.styleLinks();
+        this.styleAuthorTitles();
+      }, 200);
   }
 
   ngOnDestroy(): void {
@@ -1140,6 +1142,49 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       link.style.textDecorationStyle = 'none';
       link.style.textDecorationColor = 'transparent';
       link.style.borderBottom = 'none';
+    });
+  }
+
+  /**
+   * Detecta y estiliza el título "Sobre los autores" para que tenga el mismo estilo
+   * que "Preguntas Frecuentes" y "¿Deseas conocer más?"
+   */
+  private styleAuthorTitles(): void {
+    if (!this.browser.isBrowser || !this.contentContainer?.nativeElement) {
+      return;
+    }
+
+    const container = this.contentContainer.nativeElement;
+    
+    // Buscar todos los títulos h2 y h3
+    const headings = container.querySelectorAll('h2, h3') as NodeListOf<HTMLElement>;
+    
+    headings.forEach((heading) => {
+      const text = heading.textContent?.trim().toLowerCase() || '';
+      
+      // Verificar si el título contiene "sobre los autores" o variaciones
+      if (
+        text.includes('sobre los autores') ||
+        text.includes('sobre los autor') ||
+        text === 'sobre los autores' ||
+        text === 'sobre los autor'
+      ) {
+        // Agregar la clase para aplicar los estilos
+        heading.classList.add('sobre-autores-title');
+        
+        // Aplicar estilos directamente también para asegurar que se apliquen (con !important)
+        heading.style.setProperty('text-align', 'center', 'important');
+        heading.style.setProperty('margin-bottom', '3rem', 'important');
+        heading.style.setProperty('font-size', '1.75rem', 'important');
+        heading.style.setProperty('font-weight', '800', 'important');
+        heading.style.setProperty('line-height', '1.3', 'important');
+        
+        // Si tiene un span dentro, aplicar color turquesa
+        const span = heading.querySelector('span') as HTMLElement;
+        if (span) {
+          span.style.setProperty('color', '#02CAE3', 'important');
+        }
+      }
     });
   }
 }

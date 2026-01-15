@@ -101,13 +101,13 @@ div.app-post-content a:active {
   text-align: justify !important;
 }
 
-/* Mantener títulos sin justificar */
-.app-post-content h1,
-.app-post-content h2,
-.app-post-content h3,
-.app-post-content h4,
-.app-post-content h5,
-.app-post-content h6 {
+/* Mantener títulos sin justificar (excepto títulos especiales como sobre-autores-title) */
+.app-post-content h1:not(.sobre-autores-title),
+.app-post-content h2:not(.sobre-autores-title),
+.app-post-content h3:not(.sobre-autores-title),
+.app-post-content h4:not(.sobre-autores-title),
+.app-post-content h5:not(.sobre-autores-title),
+.app-post-content h6:not(.sobre-autores-title) {
   text-align: left !important;
 }
 
@@ -1342,6 +1342,94 @@ section .custom-accordion-content {
 
 .app-post-content .preguntas-frecuentes-title span,
 .preguntas-frecuentes-title span {
+  color: #02CAE3 !important;
+}
+
+/* ============================================================================
+   TÍTULO "SOBRE LOS AUTORES" - Estilo similar a Preguntas Frecuentes
+   ============================================================================ */
+/* Estilos para títulos de sección de autores - aplicar a h2/h3 con clase específica */
+/* Mayor especificidad para sobrescribir reglas generales */
+.app-post-content h2.sobre-autores-title,
+.app-post-content h3.sobre-autores-title,
+.app-post-content h2[class*="sobre-autor"],
+.app-post-content h3[class*="sobre-autor"],
+div.app-post-content h2.sobre-autores-title,
+div.app-post-content h3.sobre-autores-title,
+.sobre-autores-title {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content h2.sobre-autores-title span,
+.app-post-content h3.sobre-autores-title span,
+div.app-post-content h2.sobre-autores-title span,
+div.app-post-content h3.sobre-autores-title span,
+.sobre-autores-title span {
+  color: #02CAE3 !important;
+}
+
+/* Estilos para h2/h3 que están antes de secciones de autores (usando :has cuando esté disponible) */
+.app-post-content h2:has(+ .card-autor),
+.app-post-content h2:has(+ .author-info-card),
+.app-post-content h2:has(+ * .card-autor),
+.app-post-content h2:has(+ * .author-info-card),
+.app-post-content h3:has(+ .card-autor),
+.app-post-content h3:has(+ .author-info-card),
+.app-post-content h3:has(+ * .card-autor),
+.app-post-content h3:has(+ * .author-info-card) {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content h2:has(+ .card-autor) span,
+.app-post-content h2:has(+ .author-info-card) span,
+.app-post-content h3:has(+ .card-autor) span,
+.app-post-content h3:has(+ .author-info-card) span {
+  color: #02CAE3 !important;
+}
+
+/* Estilos para títulos que preceden a secciones de autores (selector alternativo más compatible) */
+.app-post-content .card-autor ~ h2,
+.app-post-content .author-info-card ~ h2,
+.app-post-content .card-autor ~ h3,
+.app-post-content .author-info-card ~ h3,
+.app-post-content h2 + .card-autor,
+.app-post-content h2 + .author-info-card,
+.app-post-content h3 + .card-autor,
+.app-post-content h3 + .author-info-card {
+  /* Estos estilos se aplicarán a los elementos hermanos */
+}
+
+/* Estilo específico para títulos que están en la misma sección que .card-autor o .author-info-card */
+.app-post-content section:has(.card-autor) h2,
+.app-post-content section:has(.author-info-card) h2,
+.app-post-content section:has(.card-autor) h3,
+.app-post-content section:has(.author-info-card) h3,
+.app-post-content div:has(.card-autor) h2,
+.app-post-content div:has(.author-info-card) h2,
+.app-post-content div:has(.card-autor) h3,
+.app-post-content div:has(.author-info-card) h3 {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content section:has(.card-autor) h2 span,
+.app-post-content section:has(.author-info-card) h2 span,
+.app-post-content section:has(.card-autor) h3 span,
+.app-post-content section:has(.author-info-card) h3 span {
   color: #02CAE3 !important;
 }
 
