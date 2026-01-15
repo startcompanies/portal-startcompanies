@@ -1,7 +1,7 @@
 <app-sc-header></app-sc-header>
 
-<!-- Hero para artículo no disponible -->
-<section *ngIf="!postArticle" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
+<!-- Hero para artículo no disponible - Solo mostrar si realmente no existe (después de cargar) -->
+<section *ngIf="postNotFound && !isLoading" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
   <app-responsive-image
     [images]="heroImages"
     context="hero"

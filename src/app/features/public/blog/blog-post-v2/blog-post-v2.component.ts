@@ -41,6 +41,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   remainingContent = '';
   heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
+  isLoading = true; // Estado de carga
+  postNotFound = false; // Estado para indicar que el post no existe
   
   // Getter para acceso desde el template
   get isBrowser(): boolean {
@@ -98,9 +100,25 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   private async loadPost(slug: string): Promise<void> {
+    // Resetear estados
+    this.isLoading = true;
+    this.postNotFound = false;
+    this.postArticle = undefined;
+    
     try {
-      const post = await this.blogService.getPostsBySlug(slug);
-      if (!post) return;
+      const response = await this.blogService.getPostsBySlug(slug);
+      
+      // El servicio devuelve un array, tomar el primer elemento
+      const post = Array.isArray(response) ? (response.length > 0 ? response[0] : null) : response;
+      
+      // Verificar si el post existe
+      if (!post || (typeof post === 'object' && Object.keys(post).length === 0)) {
+        // Esperar un momento antes de marcar como no encontrado para evitar parpadeo
+        await new Promise(resolve => setTimeout(resolve, 500));
+        this.postNotFound = true;
+        this.isLoading = false;
+        return;
+      }
 
       // Resetear hasSections antes de cargar el nuevo post
       this.hasSections = false;
@@ -108,6 +126,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       this.firstSectionContent = '';
       this.firstSectionImage = '';
       this.postArticle = post;
+      this.postNotFound = false;
       const win = this.browser.window;
       if (win) win.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -155,8 +174,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         }, timeout);
       }
       //console.log(this.postArticle)
+      this.isLoading = false;
     } catch (error) {
       console.error('❌ Error cargando post:', error);
+      // Esperar un momento antes de marcar como no encontrado
+      await new Promise(resolve => setTimeout(resolve, 500));
+      this.postNotFound = true;
+      this.isLoading = false;
     }
   }
 
