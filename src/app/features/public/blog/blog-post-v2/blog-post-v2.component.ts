@@ -1,4 +1,10 @@
-import { Component, inject, OnInit, AfterViewInit, SecurityContext } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  AfterViewInit,
+  SecurityContext,
+} from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
 import { BlogService } from '../../../../shared/services/blog.service';
@@ -43,7 +49,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   tocLinks: Array<{ href: string; text: string }> = [];
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
-  
+
   // Getter para acceso desde el template
   get isBrowser(): boolean {
     return this.browser.isBrowser;
@@ -104,17 +110,24 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     this.isLoading = true;
     this.postNotFound = false;
     this.postArticle = undefined;
-    
+
     try {
       const response = await this.blogService.getPostsBySlug(slug);
-      
+
       // El servicio devuelve un array, tomar el primer elemento
-      const post = Array.isArray(response) ? (response.length > 0 ? response[0] : null) : response;
-      
+      const post = Array.isArray(response)
+        ? response.length > 0
+          ? response[0]
+          : null
+        : response;
+
       // Verificar si el post existe
-      if (!post || (typeof post === 'object' && Object.keys(post).length === 0)) {
+      if (
+        !post ||
+        (typeof post === 'object' && Object.keys(post).length === 0)
+      ) {
         // Esperar un momento antes de marcar como no encontrado para evitar parpadeo
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
         this.postNotFound = true;
         this.isLoading = false;
         return;
@@ -147,7 +160,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
           this.extractHeroCardContent(post.content);
         }
       }
-      
+
       // Extraer enlaces del contenido para el TOC (solo si no es landing)
       if (this.browser.isBrowser && !this.hasSections && post.content) {
         this.tocLinks = this.extractTOCLinks(post.content);
@@ -158,7 +171,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       } else {
         this.tocLinks = [];
       }
-      
+
       // Inicializar TOC después de que el contenido se renderice
       if (this.browser.isBrowser) {
         // Para posts tipo landing, esperar más tiempo para que el contenido se renderice completamente
@@ -178,7 +191,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     } catch (error) {
       console.error('❌ Error cargando post:', error);
       // Esperar un momento antes de marcar como no encontrado
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       this.postNotFound = true;
       this.isLoading = false;
     }
@@ -187,7 +200,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   private parseHtmlContent(content: string): any[] {
     const doc = this.browser.document;
     if (!doc) return [];
-    
+
     const blocks: any[] = [];
     const container = doc.createElement('div');
     container.innerHTML = content;
@@ -288,9 +301,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
     // Extraer la primera sección completa
     const fullFirstSection = content.substring(firstSectionStart, sectionEnd);
-    
+
     // Extraer solo el contenido interno (sin las etiquetas section)
-    const sectionContentMatch = fullFirstSection.match(/<section[^>]*>([\s\S]*)<\/section>/i);
+    const sectionContentMatch = fullFirstSection.match(
+      /<section[^>]*>([\s\S]*)<\/section>/i
+    );
     let firstSectionHtml = sectionContentMatch ? sectionContentMatch[1] : '';
 
     // Extraer imagen de la primera sección
@@ -306,13 +321,19 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     }
 
     // Remover títulos (h1, h2, h3) del contenido para evitar duplicación con el título del post
-    firstSectionHtml = firstSectionHtml.replace(/<h[1-3][^>]*>[\s\S]*?<\/h[1-3]>/gi, '').trim();
+    firstSectionHtml = firstSectionHtml
+      .replace(/<h[1-3][^>]*>[\s\S]*?<\/h[1-3]>/gi, '')
+      .trim();
 
     // Remover el div completo que contiene "Fact Checked por nuestro experto legal" (data-id="4c70b4c0")
-    firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="4c70b4c0"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
+    firstSectionHtml = firstSectionHtml
+      .replace(/<div[^>]*data-id="4c70b4c0"[^>]*>[\s\S]*?<\/div>/gi, '')
+      .trim();
 
     // Remover el div completo que contiene "Sobre los autores" (data-id="65935626")
-    firstSectionHtml = firstSectionHtml.replace(/<div[^>]*data-id="65935626"[^>]*>[\s\S]*?<\/div>/gi, '').trim();
+    firstSectionHtml = firstSectionHtml
+      .replace(/<div[^>]*data-id="65935626"[^>]*>[\s\S]*?<\/div>/gi, '')
+      .trim();
 
     // Remover el div completo que genera espacio innecesario en móviles (data-id="741d5f43")
     // Usar DOM parsing para manejar correctamente divs anidados
@@ -335,37 +356,51 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         const cleanContent = linkContent.replace(/<[^>]*>/g, '').trim();
         const hasAbrirLLCText = /abrir\s+tu\s+llc/i.test(cleanContent);
         const hasAbreLLCText = /abre\s+tu\s+llc/i.test(cleanContent);
-        const hasAbreCorpText = /abre\s+tu\s+corporation|abre\s+tu\s+corp/i.test(cleanContent);
-        
+        const hasAbreCorpText =
+          /abre\s+tu\s+corporation|abre\s+tu\s+corp/i.test(cleanContent);
+
         if (hasAbrirLLCText || hasAbreLLCText || hasAbreCorpText) {
           // Verificar si ya tiene el icono
-          const hasIcon = linkContent.includes('bi-arrow-right') || linkContent.includes('<i class="bi bi-arrow-right');
-          
+          const hasIcon =
+            linkContent.includes('bi-arrow-right') ||
+            linkContent.includes('<i class="bi bi-arrow-right');
+
           // Construir los estilos según las especificaciones del usuario
-          const forcedStyles = 'background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;';
-          
+          const forcedStyles =
+            'background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 400 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;';
+          const forcedStylesWithText = `${forcedStyles} text-decoration: none !important; text-transform: none !important;`;
+
           // Obtener los atributos existentes
           const allAttrs = beforeHref + afterHref;
           const classMatch = allAttrs.match(/class\s*=\s*["']([^"']*)["']/i);
           const styleMatch = allAttrs.match(/style\s*=\s*["']([^"']*)["']/i);
-          
+
           // Construir los nuevos atributos
           let newBeforeHref = beforeHref;
           let newAfterHref = afterHref;
-          
+
           // Reemplazar o agregar style - FORZAR los estilos
           if (styleMatch) {
             // Reemplazar style existente con los estilos forzados
             if (beforeHref.includes('style')) {
-              newBeforeHref = beforeHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${forcedStyles}"`);
+              newBeforeHref = beforeHref.replace(
+                /style\s*=\s*["'][^"']*["']/i,
+                `style="${forcedStylesWithText}"`
+              );
             } else if (afterHref.includes('style')) {
-              newAfterHref = afterHref.replace(/style\s*=\s*["'][^"']*["']/i, `style="${forcedStyles}"`);
+              newAfterHref = afterHref.replace(
+                /style\s*=\s*["'][^"']*["']/i,
+                `style="${forcedStylesWithText}"`
+              );
             }
           } else {
             // Agregar style nuevo
-            newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `style="${forcedStyles}"`;
+            newAfterHref =
+              newAfterHref +
+              (newAfterHref.trim() ? ' ' : '') +
+              `style="${forcedStylesWithText}"`;
           }
-          
+
           // Remover clases Bootstrap existentes
           if (classMatch) {
             let existingClasses = classMatch[1];
@@ -377,78 +412,105 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
               .replace(/\bmt-3\b/g, '')
               .replace(/\s+/g, ' ')
               .trim();
-            
+
             if (existingClasses) {
               if (beforeHref.includes('class')) {
-                newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${existingClasses}"`);
+                newBeforeHref = newBeforeHref.replace(
+                  /class\s*=\s*["'][^"']*["']/i,
+                  `class="${existingClasses}"`
+                );
               } else if (afterHref.includes('class')) {
-                newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, `class="${existingClasses}"`);
+                newAfterHref = newAfterHref.replace(
+                  /class\s*=\s*["'][^"']*["']/i,
+                  `class="${existingClasses}"`
+                );
               } else {
-                newAfterHref = newAfterHref + (newAfterHref.trim() ? ' ' : '') + `class="${existingClasses}"`;
+                newAfterHref =
+                  newAfterHref +
+                  (newAfterHref.trim() ? ' ' : '') +
+                  `class="${existingClasses}"`;
               }
             } else {
               // Si no quedan clases, remover el atributo class
-              newBeforeHref = newBeforeHref.replace(/class\s*=\s*["'][^"']*["']/i, '');
-              newAfterHref = newAfterHref.replace(/class\s*=\s*["'][^"']*["']/i, '');
+              newBeforeHref = newBeforeHref.replace(
+                /class\s*=\s*["'][^"']*["']/i,
+                ''
+              );
+              newAfterHref = newAfterHref.replace(
+                /class\s*=\s*["'][^"']*["']/i,
+                ''
+              );
             }
           }
-          
+
           // Preparar el contenido con el icono después del texto (adelante = después del texto)
           let finalContent = linkContent.trim();
           if (!hasIcon) {
             // Limpiar espacios y agregar el icono después del texto
             // Reemplazar "Abrir tu LLC", "Abre tu LLC" o "Abre tu corporation" con el texto + icono
             if (hasAbrirLLCText) {
-              finalContent = finalContent.replace(/(Abrir\s+tu\s+LLC)/gi, (match: string) => {
-                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
-              });
+              finalContent = finalContent.replace(
+                /(Abrir\s+tu\s+LLC)/gi,
+                (match: string) => {
+                  return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+                }
+              );
             } else if (hasAbreLLCText) {
-              finalContent = finalContent.replace(/(Abre\s+tu\s+LLC)/gi, (match: string) => {
-                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
-              });
+              finalContent = finalContent.replace(
+                /(Abre\s+tu\s+LLC)/gi,
+                (match: string) => {
+                  return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+                }
+              );
             } else if (hasAbreCorpText) {
-              finalContent = finalContent.replace(/(Abre\s+tu\s+corporation|Abre\s+tu\s+corp)/gi, (match: string) => {
-                return match + ' <i class="bi bi-arrow-right ms-2"></i>';
-              });
+              finalContent = finalContent.replace(
+                /(Abre\s+tu\s+corporation|Abre\s+tu\s+corp)/gi,
+                (match: string) => {
+                  return match + ' <i class="bi bi-arrow-right ms-2"></i>';
+                }
+              );
             }
             // Si no se encontró el texto exacto, agregar al final
             if (finalContent === linkContent.trim()) {
-              finalContent = linkContent.trim() + ' <i class="bi bi-arrow-right ms-2"></i>';
+              finalContent =
+                linkContent.trim() + ' <i class="bi bi-arrow-right ms-2"></i>';
             }
           }
-          
+
           // Construir el nuevo enlace con estilos forzados
           // Asegurar que el style attribute esté presente
           let finalBeforeHref = newBeforeHref.trim();
           let finalAfterHref = newAfterHref.trim();
-          
+
           // Verificar si ya tiene style
-          if (!finalBeforeHref.includes('style=') && !finalAfterHref.includes('style=')) {
-            finalAfterHref = finalAfterHref + (finalAfterHref ? ' ' : '') + `style="${forcedStyles}"`;
+          if (
+            !finalBeforeHref.includes('style=') &&
+            !finalAfterHref.includes('style=')
+          ) {
+            finalAfterHref =
+              (finalAfterHref ? `${finalAfterHref} ` : '') +
+              `style="${forcedStylesWithText}"`;
           }
-          
-          // Limpiar espacios extra
-          if (finalBeforeHref && !finalBeforeHref.endsWith(' ') && !finalBeforeHref.endsWith('"')) {
-            finalBeforeHref += ' ';
-          }
-          if (finalAfterHref && !finalAfterHref.startsWith(' ')) {
-            finalAfterHref = ' ' + finalAfterHref;
-          }
-          
+
+          const beforeAttr = finalBeforeHref ? ` ${finalBeforeHref}` : '';
+          const afterAttr = finalAfterHref ? ` ${finalAfterHref}` : '';
+
           // Mantener el href original (puede ser "#contact" o "../#contact")
-          return `<a${finalBeforeHref}href="${href}"${finalAfterHref}>${finalContent}</a>`;
+          return `<a${beforeAttr} href="${href}"${afterAttr}>${finalContent}</a>`;
         }
         return match;
       }
     );
+
+    // Limpiar wrappers, plantillas y bloques vacios que generan espacios extra
+    firstSectionHtml = this.cleanMissionDescriptionHtml(firstSectionHtml);
 
     // Sanitizar el contenido de la primera sección
     this.firstSectionContent = this.sanitizeHtmlString(firstSectionHtml);
 
     // Remover la primera sección completa del contenido original
     this.remainingContent = (
-      content.substring(0, firstSectionStart) + 
-      content.substring(sectionEnd)
+      content.substring(0, firstSectionStart) + content.substring(sectionEnd)
     ).trim();
   }
 
@@ -468,37 +530,43 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Buscar todos los divs con clase "row"
       const rows = tempDiv.querySelectorAll('div.row');
-      
+
       rows.forEach((row) => {
         const columns = row.querySelectorAll('div[class*="col-"]');
-        
+
         // Verificar si hay columnas vacías o que necesitan ser convertidas
         columns.forEach((col: Element) => {
           const colElement = col as HTMLElement;
           const classList = colElement.className;
           const content = colElement.textContent?.trim() || '';
           const innerHTML = colElement.innerHTML.trim();
-          
+
           // Eliminar columnas vacías (solo &nbsp; o vacías, especialmente las d-none d-lg-block)
-          if ((content === '' || content === '&nbsp;' || content === '\u00A0' || innerHTML === '&nbsp;' || innerHTML === '') && 
-              (classList.includes('d-none') || classList.includes('col-lg-2'))) {
+          if (
+            (content === '' ||
+              content === '&nbsp;' ||
+              content === '\u00A0' ||
+              innerHTML === '&nbsp;' ||
+              innerHTML === '') &&
+            (classList.includes('d-none') || classList.includes('col-lg-2'))
+          ) {
             colElement.remove();
           } else {
             // Si la columna tiene contenido, convertirla a col-lg-12
             // Eliminar todas las clases col-* y agregar solo col-lg-12
             let newClasses = classList
               .split(/\s+/)
-              .filter(cls => !cls.startsWith('col-'))
+              .filter((cls) => !cls.startsWith('col-'))
               .join(' ')
               .trim();
-            
+
             // Agregar col-lg-12 si no está vacía
             if (newClasses) {
               newClasses = `col-lg-12 ${newClasses}`;
             } else {
               newClasses = 'col-lg-12';
             }
-            
+
             colElement.className = newClasses;
           }
         });
@@ -513,6 +581,58 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     }
   }
 
+  private cleanMissionDescriptionHtml(html: string): string {
+    const doc = this.browser.document;
+    if (!html || !doc) return html;
+
+    try {
+      const tempDiv = doc.createElement('div');
+      tempDiv.innerHTML = html;
+
+      // Remover templates/share buttons embebidos que duplican funcionalidad
+      tempDiv
+        .querySelectorAll(
+          '[data-widget_type="template.default"], [data-widget_type="share-buttons.default"], .elementor-share-buttons'
+        )
+        .forEach((el) => el.remove());
+
+      this.removeEmptyNodes(tempDiv);
+
+      return tempDiv.innerHTML.trim();
+    } catch (error) {
+      console.warn('Error limpiando HTML de mission-description:', error);
+      return html;
+    }
+  }
+
+  private removeEmptyNodes(root: HTMLElement): void {
+    const candidates = Array.from(
+      root.querySelectorAll(
+        'section, div, article, header, footer, p, span, h1, h2, h3, h4, h5, h6, ul, ol, li'
+      )
+    );
+
+    for (let i = candidates.length - 1; i >= 0; i--) {
+      const element = candidates[i] as HTMLElement;
+      if (!this.hasMeaningfulContent(element)) {
+        element.remove();
+      }
+    }
+  }
+
+  private hasMeaningfulContent(element: Element): boolean {
+    const text = (element.textContent || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, '')
+      .trim();
+    if (text.length > 0) return true;
+
+    return Boolean(
+      element.querySelector(
+        'img, svg, picture, video, iframe, ul, ol, li, table, blockquote, pre, code, hr, button, input, select, textarea, a[href]'
+      )
+    );
+  }
 
   /**
    * Elimina videos (iframe, video tags, etc.) y las columnas que los contienen
@@ -527,60 +647,88 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
       // Buscar todos los divs y verificar si contienen videos
       const allDivs = Array.from(tempDiv.querySelectorAll('div'));
-      
+
       // Procesar de atrás hacia adelante para evitar problemas al eliminar
       for (let i = allDivs.length - 1; i >= 0; i--) {
         const divElement = allDivs[i] as HTMLElement;
-        
+
         // Verificar si el div contiene video, iframe, o elementos relacionados
-        const hasVideo = divElement.querySelector('video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"]');
-        const hasRatio = divElement.classList.contains('ratio') || divElement.classList.contains('ratio-16x9') || 
-                         divElement.classList.contains('ratio-21x9') || divElement.classList.contains('ratio-4x3') ||
-                         divElement.querySelector('[class*="ratio-"]');
-        
+        const hasVideo = divElement.querySelector(
+          'video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"]'
+        );
+        const hasRatio =
+          divElement.classList.contains('ratio') ||
+          divElement.classList.contains('ratio-16x9') ||
+          divElement.classList.contains('ratio-21x9') ||
+          divElement.classList.contains('ratio-4x3') ||
+          divElement.querySelector('[class*="ratio-"]');
+
         if (hasVideo || hasRatio) {
           // Obtener el contenido sin el video para verificar si hay algo más
           const clone = divElement.cloneNode(true) as HTMLElement;
-          clone.querySelectorAll('video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"], [class*="ratio"]').forEach(el => el.remove());
-          
+          clone
+            .querySelectorAll(
+              'video, iframe, [class*="video"], [class*="embed"], [class*="youtube"], [class*="vimeo"], [class*="ratio"]'
+            )
+            .forEach((el) => el.remove());
+
           const textContent = clone.textContent?.trim() || '';
           const innerHTML = clone.innerHTML.trim();
-          
+
           // Si el div solo contiene el video/ratio (sin contenido relevante), eliminar el div completo
           // También eliminar si es una col que contiene solo video/ratio
-          if (textContent.length < 20 && (innerHTML.length < 100 || innerHTML.replace(/<[^>]+>/g, '').trim().length < 10)) {
+          if (
+            textContent.length < 20 &&
+            (innerHTML.length < 100 ||
+              innerHTML.replace(/<[^>]+>/g, '').trim().length < 10)
+          ) {
             divElement.remove();
           }
         }
       }
 
       // Eliminar elementos video, iframe y ratio que puedan quedar sueltos
-      tempDiv.querySelectorAll('video, iframe, [class*="ratio-16x9"], [class*="ratio-21x9"], [class*="ratio-4x3"], .ratio').forEach(el => {
-        const element = el as HTMLElement;
-        // Si está dentro de un div que solo contiene este elemento, eliminar el div padre
-        const parent = element.parentElement;
-        if (parent && parent.tagName === 'DIV') {
-          const parentText = parent.textContent?.trim() || '';
-          const parentClone = parent.cloneNode(true) as HTMLElement;
-          parentClone.querySelectorAll('video, iframe, [class*="ratio"]').forEach(v => v.remove());
-          const parentContent = parentClone.innerHTML.trim().replace(/<[^>]+>/g, '').trim();
-          
-          if (parentText.length < 20 && parentContent.length < 10) {
-            parent.remove();
+      tempDiv
+        .querySelectorAll(
+          'video, iframe, [class*="ratio-16x9"], [class*="ratio-21x9"], [class*="ratio-4x3"], .ratio'
+        )
+        .forEach((el) => {
+          const element = el as HTMLElement;
+          // Si está dentro de un div que solo contiene este elemento, eliminar el div padre
+          const parent = element.parentElement;
+          if (parent && parent.tagName === 'DIV') {
+            const parentText = parent.textContent?.trim() || '';
+            const parentClone = parent.cloneNode(true) as HTMLElement;
+            parentClone
+              .querySelectorAll('video, iframe, [class*="ratio"]')
+              .forEach((v) => v.remove());
+            const parentContent = parentClone.innerHTML
+              .trim()
+              .replace(/<[^>]+>/g, '')
+              .trim();
+
+            if (parentText.length < 20 && parentContent.length < 10) {
+              parent.remove();
+            } else {
+              element.remove();
+            }
           } else {
             element.remove();
           }
-        } else {
-          element.remove();
-        }
-      });
+        });
 
       html = tempDiv.innerHTML;
-      
+
       // Limpiar con regex también (fallback para casos edge)
       // Eliminar divs que contengan solo ratio/video
-      html = html.replace(/<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi, '');
-      html = html.replace(/<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(
+        /<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi,
+        ''
+      );
+      html = html.replace(
+        /<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi,
+        ''
+      );
       html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
       html = html.replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '');
       html = html.replace(/<source[^>]*>/gi, '');
@@ -589,8 +737,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     } catch (error) {
       console.warn('Error eliminando videos:', error);
       // Fallback: usar solo regex
-      html = html.replace(/<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi, '');
-      html = html.replace(/<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi, '');
+      html = html.replace(
+        /<div[^>]*class\s*=\s*["'][^"']*\bcol-[^"']*["'][^>]*>[\s\S]*?<div[^>]*class\s*=\s*["'][^"']*\bratio[^"']*["'][^>]*>[\s\S]*?<\/div>[\s\S]*?<\/div>/gi,
+        ''
+      );
+      html = html.replace(
+        /<div[^>]*>[\s\S]*?<(video|iframe)[^>]*>[\s\S]*?<\/(video|iframe)>[\s\S]*?<\/div>/gi,
+        ''
+      );
       html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, '');
       html = html.replace(/<video[^>]*>[\s\S]*?<\/video>/gi, '');
       html = html.replace(/<source[^>]*>/gi, '');
@@ -604,14 +758,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   private removeDivByDataId(html: string, dataId: string): string {
     const doc = this.browser.document;
     if (!html || !doc) return html;
-    
+
     try {
       // Crear un contenedor temporal para parsear el HTML parcial
       const tempDiv = doc.createElement('div');
       tempDiv.innerHTML = html;
-      
+
       const divToRemove = tempDiv.querySelector(`div[data-id="${dataId}"]`);
-      
+
       if (divToRemove) {
         divToRemove.remove();
         return tempDiv.innerHTML.trim();
@@ -619,9 +773,17 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     } catch (error) {
       console.warn('Error al eliminar div por data-id:', error);
       // Fallback a regex si falla el parsing DOM
-      return html.replace(new RegExp(`<div[^>]*data-id="${dataId}"[^>]*>[\\s\\S]*?</div>`, 'gi'), '').trim();
+      return html
+        .replace(
+          new RegExp(
+            `<div[^>]*data-id="${dataId}"[^>]*>[\\s\\S]*?</div>`,
+            'gi'
+          ),
+          ''
+        )
+        .trim();
     }
-    
+
     return html;
   }
 
@@ -685,10 +847,12 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       tempDiv.innerHTML = html;
 
       // Remover videos
-      tempDiv.querySelectorAll('video, iframe, [class*="video"], [class*="embed"]').forEach(el => el.remove());
+      tempDiv
+        .querySelectorAll('video, iframe, [class*="video"], [class*="embed"]')
+        .forEach((el) => el.remove());
 
       // Remover imágenes grandes o que puedan afectar el diseño
-      tempDiv.querySelectorAll('img').forEach(img => {
+      tempDiv.querySelectorAll('img').forEach((img) => {
         const imgElement = img as HTMLImageElement;
         // Mantener solo imágenes pequeñas o con clases específicas
         if (imgElement.width && imgElement.width > 300) {
@@ -697,7 +861,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       });
 
       // Remover enlaces que puedan causar problemas
-      tempDiv.querySelectorAll('a[href^="#"]').forEach(link => {
+      tempDiv.querySelectorAll('a[href^="#"]').forEach((link) => {
         // Mantener los enlaces pero simplificarlos si es necesario
         const linkElement = link as HTMLAnchorElement;
         if (linkElement.href.includes('#contact')) {
@@ -755,15 +919,17 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   shareNative(): void {
     const win = this.browser.window;
     if (!win) return;
-    
+
     if (win.navigator.share) {
-      win.navigator.share({
-        title: this.postArticle?.title || 'Start Companies',
-        text: this.getShareText(),
-        url: this.getCurrentUrl(),
-      }).catch((error) => {
-        console.log('Error al compartir:', error);
-      });
+      win.navigator
+        .share({
+          title: this.postArticle?.title || 'Start Companies',
+          text: this.getShareText(),
+          url: this.getCurrentUrl(),
+        })
+        .catch((error) => {
+          console.log('Error al compartir:', error);
+        });
     } else {
       // Fallback: copiar al portapapeles
       this.copyToClipboard();
@@ -773,14 +939,17 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   private copyToClipboard(): void {
     const win = this.browser.window;
     if (!win) return;
-    
+
     const url = this.getCurrentUrl();
-    win.navigator.clipboard.writeText(url).then(() => {
-      // Opcional: mostrar un mensaje de confirmación
-      alert('Enlace copiado al portapapeles');
-    }).catch((error) => {
-      console.log('Error al copiar:', error);
-    });
+    win.navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        // Opcional: mostrar un mensaje de confirmación
+        alert('Enlace copiado al portapapeles');
+      })
+      .catch((error) => {
+        console.log('Error al copiar:', error);
+      });
   }
 
   private initializeTOC(): void {
@@ -794,9 +963,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (h5) {
         const headerText = h5.textContent?.trim() || '';
         // Buscar variaciones del texto
-        if (headerText.includes('Indice') || headerText.includes('Índice') || headerText.includes('indice')) {
+        if (
+          headerText.includes('Indice') ||
+          headerText.includes('Índice') ||
+          headerText.includes('indice')
+        ) {
           const headerElement = header as HTMLElement;
-          
+
           // Añadir el icono de toggle si no existe
           if (!header.querySelector('#toc-toggle-icon')) {
             const icon = doc.createElement('i');
@@ -840,16 +1013,16 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
 
     // Buscar todos los enlaces dentro del índice
     const tocLinks = tocBody.querySelectorAll('a[href]');
-    
+
     tocLinks.forEach((link) => {
       const linkElement = link as HTMLAnchorElement;
       const href = linkElement.getAttribute('href');
-      
+
       if (href && href.startsWith('#')) {
         // Verificar si ya tiene un listener para evitar duplicados
         if (!linkElement.hasAttribute('data-toc-link-initialized')) {
           linkElement.setAttribute('data-toc-link-initialized', 'true');
-          
+
           linkElement.addEventListener('click', (event) => {
             event.preventDefault();
             this.scrollToSection(href, event);
@@ -862,10 +1035,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   toggleTOC(): void {
     const doc = this.browser.document;
     if (!doc) return;
-    
+
     const tocBody = doc.getElementById('toc-body');
     const toggleIcon = doc.getElementById('toc-toggle-icon');
-    
+
     if (tocBody && toggleIcon) {
       if (tocBody.style.display === 'none' || tocBody.style.display === '') {
         tocBody.style.display = 'block';
@@ -897,42 +1070,45 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   /**
    * Extrae los encabezados y enlaces del contenido HTML del post para generar el TOC
    */
-  private extractTOCLinks(content: string): Array<{ href: string; text: string; isHeading?: boolean }> {
+  private extractTOCLinks(
+    content: string
+  ): Array<{ href: string; text: string; isHeading?: boolean }> {
     const doc = this.browser.document;
     if (!content || !doc) return [];
 
-    const links: Array<{ href: string; text: string; isHeading?: boolean }> = [];
+    const links: Array<{ href: string; text: string; isHeading?: boolean }> =
+      [];
     const container = doc.createElement('div');
     container.innerHTML = content;
 
     // Primero, buscar todos los encabezados (h1, h2, h3, h4, h5, h6)
     const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+
     headings.forEach((heading) => {
       const headingElement = heading as HTMLElement;
       const text = headingElement.textContent?.trim() || '';
-      
+
       if (text) {
         // Obtener o generar ID para el encabezado
         let headingId = headingElement.id;
-        
+
         if (!headingId) {
           // Generar un ID basado en el texto
           headingId = this.generateHeadingId(text);
           // Asegurar que el ID sea único añadiendo un contador si es necesario
           let uniqueId = headingId;
           let counter = 1;
-          while (links.some(link => link.href === `#${uniqueId}`)) {
+          while (links.some((link) => link.href === `#${uniqueId}`)) {
             uniqueId = `${headingId}-${counter}`;
             counter++;
           }
           headingId = uniqueId;
         }
-        
-        links.push({ 
-          href: `#${headingId}`, 
+
+        links.push({
+          href: `#${headingId}`,
           text,
-          isHeading: true 
+          isHeading: true,
         });
       }
     });
@@ -942,13 +1118,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     anchorElements.forEach((anchor) => {
       const href = anchor.getAttribute('href');
       const anchorElement = anchor as HTMLElement;
-      let text = anchor.textContent?.trim() || anchorElement.innerText?.trim() || '';
+      let text =
+        anchor.textContent?.trim() || anchorElement.innerText?.trim() || '';
 
       if (href && text) {
         // Solo incluir enlaces que sean anclas internas (empiezan con #)
         if (href.startsWith('#')) {
           // Verificar que no esté ya en la lista
-          if (!links.some(link => link.href === href)) {
+          if (!links.some((link) => link.href === href)) {
             links.push({ href, text, isHeading: false });
           }
         } else if (href.startsWith('/')) {
@@ -956,18 +1133,22 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
           const hashIndex = href.indexOf('#');
           if (hashIndex !== -1) {
             const anchorPart = href.substring(hashIndex);
-            if (!links.some(link => link.href === anchorPart)) {
+            if (!links.some((link) => link.href === anchorPart)) {
               links.push({ href: anchorPart, text, isHeading: false });
             }
           }
         } else {
           const win = this.browser.window;
-          if (win && href.includes('#') && (href.includes(win.location.hostname) || !href.startsWith('http'))) {
-          // URLs absolutas o relativas con anclas
+          if (
+            win &&
+            href.includes('#') &&
+            (href.includes(win.location.hostname) || !href.startsWith('http'))
+          ) {
+            // URLs absolutas o relativas con anclas
             const hashIndex = href.indexOf('#');
             if (hashIndex !== -1) {
               const anchorPart = href.substring(hashIndex);
-              if (!links.some(link => link.href === anchorPart)) {
+              if (!links.some((link) => link.href === anchorPart)) {
                 links.push({ href: anchorPart, text, isHeading: false });
               }
             }
@@ -989,17 +1170,19 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     const contentContainer = doc.querySelector('.app-post-content');
     if (!contentContainer) return;
 
-    const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+    const headings = contentContainer.querySelectorAll(
+      'h1, h2, h3, h4, h5, h6'
+    );
+
     headings.forEach((heading) => {
       const headingElement = heading as HTMLElement;
-      
+
       // Solo asignar ID si no tiene uno
       if (!headingElement.id) {
         const text = headingElement.textContent?.trim() || '';
         if (text) {
           const generatedId = this.generateHeadingId(text);
-          
+
           // Asegurar que el ID sea único en el documento
           let uniqueId = generatedId;
           let counter = 1;
@@ -1007,7 +1190,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
             uniqueId = `${generatedId}-${counter}`;
             counter++;
           }
-          
+
           headingElement.id = uniqueId;
         }
       }
@@ -1039,13 +1222,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // Función auxiliar para hacer scroll
     const performScroll = () => {
       let targetElement: HTMLElement | null = null;
-      
+
       // Para posts tipo landing, buscar en todo el documento
       // Para posts no landing, buscar solo en el contenedor de contenido
-      const defaultContainer = this.hasSections 
-        ? doc.body  // Para landing, buscar en todo el body
+      const defaultContainer = this.hasSections
+        ? doc.body // Para landing, buscar en todo el body
         : doc.querySelector('.app-post-content'); // Para no landing, solo en el contenido
-      
+
       if (!defaultContainer && !this.hasSections) {
         console.warn('No se encontró el contenedor de contenido');
         return;
@@ -1071,9 +1254,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         try {
           const escapedId = CSS.escape(anchorId);
           // Para posts tipo landing, buscar en todo el contenido renderizado
-          const searchContainer = this.hasSections ? doc.body : defaultContainer;
+          const searchContainer = this.hasSections
+            ? doc.body
+            : defaultContainer;
           if (searchContainer) {
-            targetElement = searchContainer.querySelector(`#${escapedId}`) as HTMLElement;
+            targetElement = searchContainer.querySelector(
+              `#${escapedId}`
+            ) as HTMLElement;
           }
         } catch (e) {
           // Ignorar errores
@@ -1084,9 +1271,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (!targetElement) {
         try {
           const escapedId = CSS.escape(anchorId);
-          const searchContainer = this.hasSections ? doc.body : defaultContainer;
+          const searchContainer = this.hasSections
+            ? doc.body
+            : defaultContainer;
           if (searchContainer) {
-            const allElements = searchContainer.querySelectorAll(`#${escapedId}`);
+            const allElements = searchContainer.querySelectorAll(
+              `#${escapedId}`
+            );
             if (allElements.length > 0) {
               targetElement = allElements[0] as HTMLElement;
             }
@@ -1102,17 +1293,24 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         if (contentContainer) {
           // Primero asegurar que los encabezados tengan IDs
           this.assignHeadingIds();
-          
+
           // Buscar el enlace correspondiente en tocLinks para obtener el texto
-          const tocLink = this.tocLinks.find(link => link.href === normalizedHref || link.href === href);
+          const tocLink = this.tocLinks.find(
+            (link) => link.href === normalizedHref || link.href === href
+          );
           if (tocLink) {
-            const headings = contentContainer.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            const headings = contentContainer.querySelectorAll(
+              'h1, h2, h3, h4, h5, h6'
+            );
             for (let i = 0; i < headings.length; i++) {
               const heading = headings[i] as HTMLElement;
               const headingText = heading.textContent?.trim() || '';
               // Comparar texto exacto o normalizado
-              if (headingText === tocLink.text || 
-                  headingText.toLowerCase().trim() === tocLink.text.toLowerCase().trim()) {
+              if (
+                headingText === tocLink.text ||
+                headingText.toLowerCase().trim() ===
+                  tocLink.text.toLowerCase().trim()
+              ) {
                 targetElement = heading;
                 break;
               }
@@ -1126,22 +1324,24 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         const searchContainer = this.hasSections ? doc.body : defaultContainer;
         if (searchContainer) {
           const allLinks = searchContainer.querySelectorAll('a[href]');
-          
+
           for (let i = 0; i < allLinks.length; i++) {
             const link = allLinks[i] as HTMLElement;
             const linkHref = link.getAttribute('href');
-            
+
             // Comparar hrefs de manera flexible
             if (linkHref) {
               const linkHrefNormalized = linkHref.trim();
-              const compareHref = linkHrefNormalized === normalizedHref || 
-                                 linkHrefNormalized === href ||
-                                 linkHrefNormalized.endsWith(normalizedHref) ||
-                                 (linkHrefNormalized.includes('#') && linkHrefNormalized.split('#')[1] === anchorId);
-              
+              const compareHref =
+                linkHrefNormalized === normalizedHref ||
+                linkHrefNormalized === href ||
+                linkHrefNormalized.endsWith(normalizedHref) ||
+                (linkHrefNormalized.includes('#') &&
+                  linkHrefNormalized.split('#')[1] === anchorId);
+
               if (compareHref) {
                 // Encontramos el enlace, ahora buscar su destino
-                
+
                 // Primero buscar si hay un elemento con el ID objetivo en el documento completo
                 const possibleTarget = doc.getElementById(anchorId);
                 if (possibleTarget) {
@@ -1152,24 +1352,37 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
                 // Buscar el siguiente elemento significativo después del enlace
                 let searchElement: Element | null = link.nextElementSibling;
                 let searchDepth = 0;
-                
+
                 // Buscar en los siguientes 10 elementos hermanos
                 while (searchElement && searchDepth < 10) {
                   const element = searchElement as HTMLElement;
-                  
+
                   // Si tiene el ID que buscamos, usar ese
                   if (element.id === anchorId) {
                     targetElement = element;
                     break;
                   }
-                  
+
                   // Si es un elemento de bloque significativo, usarlo
-                  if (element.tagName && 
-                      ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SECTION', 'DIV', 'ARTICLE', 'P'].includes(element.tagName)) {
+                  if (
+                    element.tagName &&
+                    [
+                      'H1',
+                      'H2',
+                      'H3',
+                      'H4',
+                      'H5',
+                      'H6',
+                      'SECTION',
+                      'DIV',
+                      'ARTICLE',
+                      'P',
+                    ].includes(element.tagName)
+                  ) {
                     targetElement = element;
                     break;
                   }
-                  
+
                   searchElement = searchElement.nextElementSibling;
                   searchDepth++;
                 }
@@ -1182,8 +1395,20 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
                       targetElement = parent;
                       break;
                     }
-                    if (parent.tagName && 
-                        ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'SECTION', 'DIV', 'ARTICLE'].includes(parent.tagName)) {
+                    if (
+                      parent.tagName &&
+                      [
+                        'H1',
+                        'H2',
+                        'H3',
+                        'H4',
+                        'H5',
+                        'H6',
+                        'SECTION',
+                        'DIV',
+                        'ARTICLE',
+                      ].includes(parent.tagName)
+                    ) {
                       targetElement = parent;
                       break;
                     }
@@ -1195,7 +1420,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
                 if (!targetElement) {
                   targetElement = link;
                 }
-                
+
                 break;
               }
             }
@@ -1207,9 +1432,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       if (!targetElement) {
         try {
           const escapedId = CSS.escape(anchorId);
-          const searchContainer = this.hasSections ? doc.body : defaultContainer;
+          const searchContainer = this.hasSections
+            ? doc.body
+            : defaultContainer;
           if (searchContainer) {
-            targetElement = searchContainer.querySelector(`a[name="${escapedId}"], [name="${escapedId}"]`) as HTMLElement;
+            targetElement = searchContainer.querySelector(
+              `a[name="${escapedId}"], [name="${escapedId}"]`
+            ) as HTMLElement;
           }
         } catch (e) {
           // Ignorar errores
@@ -1219,23 +1448,24 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       // Hacer scroll al elemento si se encontró
       if (targetElement) {
         const headerOffset = 120;
-        
+
         // Calcular posición
-        const elementTop = targetElement.getBoundingClientRect().top + win.pageYOffset;
+        const elementTop =
+          targetElement.getBoundingClientRect().top + win.pageYOffset;
         const offsetPosition = elementTop - headerOffset;
 
         // Usar scrollIntoView primero
         targetElement.scrollIntoView({
           behavior: 'smooth',
           block: 'start',
-          inline: 'nearest'
+          inline: 'nearest',
         });
 
         // Ajustar manualmente después del scroll
         setTimeout(() => {
           win.scrollTo({
             top: offsetPosition,
-            behavior: 'auto'
+            behavior: 'auto',
           });
         }, 350);
       } else {
@@ -1243,23 +1473,24 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
         try {
           // Establecer el hash
           win.location.hash = normalizedHref;
-          
+
           // Después de un momento, intentar scroll suave si se encontró el elemento
           setTimeout(() => {
             const element = doc.getElementById(anchorId);
             if (element) {
               const headerOffset = 120;
-              const elementTop = element.getBoundingClientRect().top + win.pageYOffset;
-              
-              element.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'start' 
+              const elementTop =
+                element.getBoundingClientRect().top + win.pageYOffset;
+
+              element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
               });
-              
+
               setTimeout(() => {
                 win.scrollTo({
                   top: elementTop - headerOffset,
-                  behavior: 'auto'
+                  behavior: 'auto',
                 });
               }, 350);
             }

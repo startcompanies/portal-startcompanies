@@ -66,7 +66,6 @@ div.app-post-content a:link,
 div.app-post-content a:visited,
 div.app-post-content a:hover,
 div.app-post-content a:active {
-  color: inherit !important;
   text-decoration: none !important;
   border-bottom: none !important;
 }
@@ -80,35 +79,39 @@ div.app-post-content a:active {
   line-height: 1.7 !important;
 }
 
-/* Párrafos justificados con tamaño aumentado */
+/* Párrafos balanceados con tamaño aumentado */
 .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
-  text-align: justify !important;
+  text-align: left !important;
+  text-wrap: pretty !important;
   font-size: 1.1rem !important;
   line-height: 1.7 !important;
   margin-bottom: 1.25rem !important;
 }
 
+@media (max-width: 768px) {
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+    font-size: 1rem !important;
+  }
+}
+
 /* Listas justificadas con tamaño aumentado */
 .app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
 .app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
-  text-align: justify !important;
+  text-align: left !important;
+  text-wrap: pretty !important;
   font-size: 1.1rem !important;
   line-height: 1.7 !important;
 }
 
-/* Texto en divs generales (excluyendo componentes especiales) */
-.app-post-content > div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
-  text-align: justify !important;
+/* Dark text color en post content */
+.app-post-content section {
+  color: #293B49;
 }
 
-/* Mantener títulos sin justificar (excepto títulos especiales como sobre-autores-title) */
-.app-post-content h1:not(.sobre-autores-title),
-.app-post-content h2:not(.sobre-autores-title),
-.app-post-content h3:not(.sobre-autores-title),
-.app-post-content h4:not(.sobre-autores-title),
-.app-post-content h5:not(.sobre-autores-title),
-.app-post-content h6:not(.sobre-autores-title) {
+/* Texto en divs generales (excluyendo componentes especiales) */
+.app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
   text-align: left !important;
+  text-wrap: pretty !important;
 }
 
 .post-image-rounded {
@@ -376,7 +379,6 @@ section[style*="background-image"] h3,
 section[style*="background-image"] h4,
 section[style*="background-image"] h5,
 section[style*="background-image"] h6 {
-  text-align: left !important;
   max-width: 100%;
   margin-top: 0;
   margin-bottom: 1rem;
@@ -409,7 +411,6 @@ section[style*="background-image"] a {
 .app-post-content .abre-corp-card,
 .abre-corp-card {
   background-color: #2d3748 !important;
-  font-family: Arial, sans-serif !important;
   max-width: 100% !important;
   min-height: 450px !important;
   padding: 1.5rem 2rem !important;
@@ -424,6 +425,19 @@ section[style*="background-image"] a {
   font-weight: 800 !important;
   line-height: 1.3 !important;
   margin-bottom: 1rem !important;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content .abre-corp-card,
+  .abre-corp-card {
+    padding: 2.5rem 2rem !important;
+  }
+
+  .app-post-content .abre-corp-title,
+  .abre-corp-title {
+    font-size: 1.6rem;
+  }
 }
 
 .app-post-content .abre-corp-highlight,
@@ -455,12 +469,19 @@ section[style*="background-image"] a {
   color: #ffffff !important;
   border: none !important;
   font-size: 1rem !important;
-  white-space: nowrap !important;
-  padding: 0.75rem 0 !important;
+  padding: 0.75rem 1.5rem !important;
   border-radius: 50px !important;
   font-weight: 700 !important;
   cursor: pointer !important;
   transition: background-color 0.3s ease !important;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content .abre-corp-btn,
+  .abre-corp-btn {
+    font-size: .9rem !important;
+  }
 }
 
 .app-post-content .abre-corp-btn:hover,
@@ -929,7 +950,7 @@ section .preguntas-frecuentes-card,
 
 /* Si el FAQ está dentro de una sección, forzar el fondo claro en todos los elementos */
 .faq-card-container .preguntas-frecuentes-card,
-.faq-card-container > .preguntas-frecuentes-card,
+.faq-card-container>.preguntas-frecuentes-card,
 .faq-card-container .custom-accordion {
   background-color: #FAFAFA !important;
 }
@@ -1231,7 +1252,6 @@ section .custom-accordion-content {
 
 .app-post-content .landing-index-card,
 .landing-index-card {
-  background: #02CAE3;
   color: #FFFFFF;
   border-radius: 1rem;
   border: none;
@@ -1248,7 +1268,7 @@ section .custom-accordion-content {
 
 .app-post-content .table-custom-container,
 .app-post-content .table-responsive.table-custom-container {
-  border-radius: 15px 15px 0 0;
+  border-radius: 15px;
   overflow-x: auto;
   overflow-y: hidden;
   border: 1px solid #dee2e6;
@@ -1398,14 +1418,14 @@ div.app-post-content h3.sobre-autores-title span,
 }
 
 /* Estilos para títulos que preceden a secciones de autores (selector alternativo más compatible) */
-.app-post-content .card-autor ~ h2,
-.app-post-content .author-info-card ~ h2,
-.app-post-content .card-autor ~ h3,
-.app-post-content .author-info-card ~ h3,
-.app-post-content h2 + .card-autor,
-.app-post-content h2 + .author-info-card,
-.app-post-content h3 + .card-autor,
-.app-post-content h3 + .author-info-card {
+.app-post-content .card-autor~h2,
+.app-post-content .author-info-card~h2,
+.app-post-content .card-autor~h3,
+.app-post-content .author-info-card~h3,
+.app-post-content h2+.card-autor,
+.app-post-content h2+.author-info-card,
+.app-post-content h3+.card-autor,
+.app-post-content h3+.author-info-card {
   /* Estos estilos se aplicarán a los elementos hermanos */
 }
 
@@ -1433,13 +1453,17 @@ div.app-post-content h3.sobre-autores-title span,
   color: #02CAE3 !important;
 }
 
-.app-post-content .btn-descarga-template,
-.btn-descarga-template {
-  background: #02CAE3 !important;
+.app-post-content a.btn-descarga-template,
+a.btn-descarga-template {
+  background-color: #00bcd4 !important;
   border: none !important;
-  border-radius: 1rem !important;
   font-size: 1rem !important;
-  padding: 7px !important;
+  padding: 0.45rem 1.5rem !important;
+  border-radius: 50px !important;
+  font-weight: 300 !important;
+  cursor: pointer !important;
+  transition: background-color 0.3s ease !important;
+  color: #fff !important;
 }
 
 .app-post-content .card-autor,
@@ -1465,6 +1489,7 @@ div.app-post-content h3.sobre-autores-title span,
   color: #ffffff !important;
   margin-bottom: 0.2rem !important;
   font-weight: 700 !important;
+  line-height: 1;
 }
 
 .app-post-content .card-autor .autor-nombre,
@@ -1473,6 +1498,32 @@ div.app-post-content h3.sobre-autores-title span,
   color: #ffffff !important;
   margin-bottom: 0.8rem !important;
   font-weight: 800 !important;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content .card-autor .autor-nombre,
+  .card-autor .autor-nombre,
+  .app-post-content .card-autor .autor-label,
+  .card-autor .autor-label {
+    text-align: center !important;
+  }
+
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*=btn]):not([class*=title]):not([class*=subtitle]) {
+    font-size: .9rem !important;
+  }
+
+  .app-post-content .card-autor .col-12 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-post-content .card-autor,
+  .card-autor {
+    padding: 2.5rem 1.5rem !important;
+  }
+
 }
 
 .app-post-content .card-autor .autor-descripcion,
@@ -1511,6 +1562,10 @@ div.app-post-content h3.sobre-autores-title span,
   text-decoration: none !important;
 }
 
+.app-post-content .card-autor i.bi.bi-linkedin.me-1 {
+  font-size: 20px;
+}
+
 .app-post-content .cta-card,
 .cta-card {
   background-color: #E6EFFF !important;
@@ -1529,6 +1584,7 @@ div.app-post-content h3.sobre-autores-title span,
 }
 
 @media (max-width: 768px) {
+
   .app-post-content .cta-card,
   .cta-card {
     padding: 40px 30px !important;
@@ -1537,6 +1593,7 @@ div.app-post-content h3.sobre-autores-title span,
 }
 
 @media (max-width: 576px) {
+
   .app-post-content .cta-card,
   .cta-card {
     padding: 30px 20px !important;
@@ -1544,29 +1601,142 @@ div.app-post-content h3.sobre-autores-title span,
   }
 }
 
-.app-post-content .style-font-size-2rem,.style-font-size-2rem{font-size:2rem}
-.app-post-content .style-font-size-1-75rem,.style-font-size-1-75rem{font-size:1.75rem}
-.app-post-content .style-font-size-1-5rem,.style-font-size-1-5rem{font-size:1.5rem}
-.app-post-content .style-font-size-1-25rem,.style-font-size-1-25rem{font-size:1.25rem}
-.app-post-content .style-font-size-1-125rem,.style-font-size-1-125rem{font-size:1.125rem}
-.app-post-content .style-font-size-1-1rem,.style-font-size-1-1rem{font-size:1.1rem}
-.app-post-content .style-font-size-1rem,.style-font-size-1rem{font-size:1rem}
-.app-post-content .style-font-size-0-95rem,.style-font-size-0-95rem{font-size:0.95rem}
-.app-post-content .style-display-none,.style-display-none{display:none}
-.app-post-content .style-display-inline,.style-display-inline{display:inline}
-.app-post-content .style-cursor-pointer,.style-cursor-pointer{cursor:pointer}
-.app-post-content .style-anchor-offset,.style-anchor-offset{display:block;position:relative;top:-80px;visibility:hidden}
-.app-post-content .style-display-inline-flex,.style-display-inline-flex{display:inline-flex;align-items:center;gap:0.5rem}
-.app-post-content .style-border-bottom-accordion,.style-border-bottom-accordion{border-bottom:1px solid #dee2e6}
-.app-post-content .style-table-header-dark,.style-table-header-dark{background-color:#333333;color:#ffffff}
-.app-post-content .style-table-header-dark a,.style-table-header-dark a{color:#ffffff}
-.app-post-content .style-accordion-button,.style-accordion-button{width:100%;text-align:left;background:none;border:none;padding:1rem 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
-.app-post-content .style-accordion-content,.style-accordion-content{display:none;padding:0 0 1rem 0}
-.app-post-content .style-section-bg-image,.style-section-bg-image{background-size:cover;background-position:center;background-repeat:no-repeat}
-.app-post-content .style-section-bg-light,.style-section-bg-light{background-color:#fafafa}
-.app-post-content .style-calendar-container,.style-calendar-container{width:100%;max-height:500px;overflow-y:auto;border:1px solid #ddd;border-radius:8px}
-.app-post-content .style-text-disclaimer,.style-text-disclaimer{font-size:0.95rem;color:#6c757d}
-.app-post-content .style-font-weight-bold,.style-font-weight-bold{font-weight:bold}
+.app-post-content .style-font-size-2rem,
+.style-font-size-2rem {
+  font-size: 2rem
+}
+
+.app-post-content .style-font-size-1-75rem,
+.style-font-size-1-75rem {
+  font-size: 1.75rem
+}
+
+.app-post-content .style-font-size-1-5rem,
+.style-font-size-1-5rem {
+  font-size: 1.5rem
+}
+
+.app-post-content .style-font-size-1-25rem,
+.style-font-size-1-25rem {
+  font-size: 1.25rem
+}
+
+.app-post-content .style-font-size-1-125rem,
+.style-font-size-1-125rem {
+  font-size: 1.125rem
+}
+
+.app-post-content .style-font-size-1-1rem,
+.style-font-size-1-1rem {
+  font-size: 1.1rem
+}
+
+.app-post-content .style-font-size-1rem,
+.style-font-size-1rem {
+  font-size: 1rem
+}
+
+.app-post-content .style-font-size-0-95rem,
+.style-font-size-0-95rem {
+  font-size: 0.95rem
+}
+
+.app-post-content .style-display-none,
+.style-display-none {
+  display: none
+}
+
+.app-post-content .style-display-inline,
+.style-display-inline {
+  display: inline
+}
+
+.app-post-content .style-cursor-pointer,
+.style-cursor-pointer {
+  cursor: pointer
+}
+
+.app-post-content .style-anchor-offset,
+.style-anchor-offset {
+  display: block;
+  position: relative;
+  top: -80px;
+  visibility: hidden
+}
+
+.app-post-content .style-display-inline-flex,
+.style-display-inline-flex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem
+}
+
+.app-post-content .style-border-bottom-accordion,
+.style-border-bottom-accordion {
+  border-bottom: 1px solid #dee2e6
+}
+
+.app-post-content .style-table-header-dark,
+.style-table-header-dark {
+  background-color: #333333;
+  color: #ffffff
+}
+
+.app-post-content .style-table-header-dark a,
+.style-table-header-dark a {
+  color: #ffffff
+}
+
+.app-post-content .style-accordion-button,
+.style-accordion-button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer
+}
+
+.app-post-content .style-accordion-content,
+.style-accordion-content {
+  display: none;
+  padding: 0 0 1rem 0
+}
+
+.app-post-content .style-section-bg-image,
+.style-section-bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat
+}
+
+.app-post-content .style-section-bg-light,
+.style-section-bg-light {
+  background-color: #fafafa
+}
+
+.app-post-content .style-calendar-container,
+.style-calendar-container {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px
+}
+
+.app-post-content .style-text-disclaimer,
+.style-text-disclaimer {
+  font-size: 0.95rem;
+  color: #6c757d
+}
+
+.app-post-content .style-font-weight-bold,
+.style-font-weight-bold {
+  font-weight: bold
+}
 
 /* ============================================================================
    SIDEBAR STYLES - Tabla de Contenidos (TOC) Card
@@ -1785,8 +1955,35 @@ button.sc-btn-accent:hover,
   text-align: center;
 }
 
-.app-post-content .author-info-card .card-body>p:first-child,.app-post-content .author-info-card .card-body p.text-center:first-child,.app-post-content .author-info-card .autor-label,.author-info-card .card-body>p:first-child,.author-info-card .card-body p.text-center:first-child,.author-info-card .autor-label{font-size:0.9rem !important;color:#02CAE3 !important;margin-bottom:0.5rem !important;margin-top:0 !important;font-weight:600 !important;display:block !important;text-align:center !important}
-.app-post-content .author-info-card .card-title,.app-post-content .author-info-card h5.card-title,.app-post-content .author-info-card .autor-nombre,.author-info-card .card-title,.author-info-card h5.card-title,.author-info-card .autor-nombre{font-size:1.35rem !important;color:#ffffff !important;margin-bottom:0.85rem !important;font-weight:700 !important;display:block !important;line-height:1.2 !important;text-align:center !important}
+.app-post-content .author-info-card .card-body>p:first-child,
+.app-post-content .author-info-card .card-body p.text-center:first-child,
+.app-post-content .author-info-card .autor-label,
+.author-info-card .card-body>p:first-child,
+.author-info-card .card-body p.text-center:first-child,
+.author-info-card .autor-label {
+  font-size: 0.9rem !important;
+  color: #02CAE3 !important;
+  margin-bottom: 0.5rem !important;
+  margin-top: 0 !important;
+  font-weight: 600 !important;
+  display: block !important;
+  text-align: center !important
+}
+
+.app-post-content .author-info-card .card-title,
+.app-post-content .author-info-card h5.card-title,
+.app-post-content .author-info-card .autor-nombre,
+.author-info-card .card-title,
+.author-info-card h5.card-title,
+.author-info-card .autor-nombre {
+  font-size: 1.35rem !important;
+  color: #ffffff !important;
+  margin-bottom: 0.85rem !important;
+  font-weight: 700 !important;
+  display: block !important;
+  line-height: 1.2 !important;
+  text-align: center !important
+}
 
 /* Estilos para la imagen del autor */
 .app-post-content .author-info-card img,
@@ -1810,13 +2007,90 @@ button.sc-btn-accent:hover,
   line-height: 1 !important;
 }
 
-.app-post-content .author-info-card p.text-justify,.app-post-content .author-info-card .card-text,.app-post-content .author-info-card p.card-text,.app-post-content .author-info-card .card-text.small,.app-post-content .author-info-card .autor-descripcion,.author-info-card p.text-justify,.author-info-card .card-text,.author-info-card p.card-text,.author-info-card .card-text.small,.author-info-card .autor-descripcion{color:#ffffff !important;font-size:0.95rem !important;line-height:1.5 !important;margin-bottom:1rem !important;margin-top:0 !important;text-align:left !important}
-.app-post-content .author-info-card .card-text p,.app-post-content .author-info-card .autor-descripcion p,.app-post-content .author-info-card p.text-justify p,.author-info-card .card-text p,.author-info-card .autor-descripcion p,.author-info-card p.text-justify p{margin:0 !important;line-height:1.5 !important;color:#ffffff !important;text-align:left !important}
-.app-post-content .author-info-card .card-text.small:has(img),.app-post-content .author-info-card .card-text.small:has(i),.author-info-card .card-text.small:has(img),.author-info-card .card-text.small:has(i){text-align:center !important;margin-bottom:1rem !important}
+.app-post-content .author-info-card p.text-justify,
+.app-post-content .author-info-card .card-text,
+.app-post-content .author-info-card p.card-text,
+.app-post-content .author-info-card .card-text.small,
+.app-post-content .author-info-card .autor-descripcion,
+.author-info-card p.text-justify,
+.author-info-card .card-text,
+.author-info-card p.card-text,
+.author-info-card .card-text.small,
+.author-info-card .autor-descripcion {
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  margin-bottom: 1rem !important;
+  margin-top: 0 !important;
+  text-align: left !important
+}
 
-.app-post-content .author-info-card .btn-linkedin-profile,.app-post-content .author-info-card .btn-linkedin-autor,.app-post-content .author-info-card a[class*="btn-linkedin"],.app-post-content .author-info-card button[class*="btn-linkedin"],.author-info-card .btn-linkedin-profile,.author-info-card .btn-linkedin-autor,.author-info-card a[class*="btn-linkedin"],.author-info-card button[class*="btn-linkedin"]{background-color:#02CAE3 !important;color:#ffffff !important;border:none !important;padding:0.55rem 1.05rem !important;font-size:0.95rem !important;border-radius:2rem !important;margin-top:1rem !important;text-decoration:none !important;display:inline-flex !important;align-items:center !important;gap:0.5rem !important;font-weight:600 !important;cursor:pointer}
-.app-post-content .author-info-card .btn-linkedin-profile:hover,.app-post-content .author-info-card .btn-linkedin-autor:hover,.app-post-content .author-info-card a[class*="btn-linkedin"]:hover,.app-post-content .author-info-card button[class*="btn-linkedin"]:hover,.author-info-card .btn-linkedin-profile:hover,.author-info-card .btn-linkedin-autor:hover,.author-info-card a[class*="btn-linkedin"]:hover,.author-info-card button[class*="btn-linkedin"]:hover{background-color:#02b8d0 !important;color:#ffffff !important;text-decoration:none !important}
-.app-post-content .author-info-card .btn-linkedin-profile i,.app-post-content .author-info-card .btn-linkedin-autor i,.app-post-content .author-info-card [class*="btn-linkedin"] i,.author-info-card .btn-linkedin-profile i,.author-info-card .btn-linkedin-autor i,.author-info-card [class*="btn-linkedin"] i{font-size:1rem !important;line-height:1 !important;margin:0 !important}
+.app-post-content .author-info-card .card-text p,
+.app-post-content .author-info-card .autor-descripcion p,
+.app-post-content .author-info-card p.text-justify p,
+.author-info-card .card-text p,
+.author-info-card .autor-descripcion p,
+.author-info-card p.text-justify p {
+  margin: 0 !important;
+  line-height: 1.5 !important;
+  color: #ffffff !important;
+  text-align: left !important
+}
+
+.app-post-content .author-info-card .card-text.small:has(img),
+.app-post-content .author-info-card .card-text.small:has(i),
+.author-info-card .card-text.small:has(img),
+.author-info-card .card-text.small:has(i) {
+  text-align: center !important;
+  margin-bottom: 1rem !important
+}
+
+.app-post-content .author-info-card .btn-linkedin-profile,
+.app-post-content .author-info-card .btn-linkedin-autor,
+.app-post-content .author-info-card a[class*="btn-linkedin"],
+.app-post-content .author-info-card button[class*="btn-linkedin"],
+.author-info-card .btn-linkedin-profile,
+.author-info-card .btn-linkedin-autor,
+.author-info-card a[class*="btn-linkedin"],
+.author-info-card button[class*="btn-linkedin"] {
+  background-color: #02CAE3 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0.55rem 1.05rem !important;
+  font-size: 0.95rem !important;
+  border-radius: 2rem !important;
+  margin-top: 1rem !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  font-weight: 600 !important;
+  cursor: pointer
+}
+
+.app-post-content .author-info-card .btn-linkedin-profile:hover,
+.app-post-content .author-info-card .btn-linkedin-autor:hover,
+.app-post-content .author-info-card a[class*="btn-linkedin"]:hover,
+.app-post-content .author-info-card button[class*="btn-linkedin"]:hover,
+.author-info-card .btn-linkedin-profile:hover,
+.author-info-card .btn-linkedin-autor:hover,
+.author-info-card a[class*="btn-linkedin"]:hover,
+.author-info-card button[class*="btn-linkedin"]:hover {
+  background-color: #02b8d0 !important;
+  color: #ffffff !important;
+  text-decoration: none !important
+}
+
+.app-post-content .author-info-card .btn-linkedin-profile i,
+.app-post-content .author-info-card .btn-linkedin-autor i,
+.app-post-content .author-info-card [class*="btn-linkedin"] i,
+.author-info-card .btn-linkedin-profile i,
+.author-info-card .btn-linkedin-autor i,
+.author-info-card [class*="btn-linkedin"] i {
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  margin: 0 !important
+}
 
 /* ============================================================================
    POST CTA CARD - Componente reutilizable de llamada a la acción
@@ -1888,28 +2162,29 @@ button.sc-btn-accent:hover,
 
 /* Responsive */
 @media (max-width: 768px) {
+
   .app-post-content .post-cta-card,
   .post-cta-card {
     padding: 20px !important;
     border-radius: 12px !important;
   }
-  
+
   .app-post-content .post-cta-title,
   .post-cta-title {
     font-size: 1.25rem !important;
   }
-  
+
   .app-post-content .post-cta-subtitle,
   .post-cta-subtitle {
     font-size: 1rem !important;
   }
-  
+
   .app-post-content .d-flex.gap-3,
   .d-flex.gap-3 {
     gap: 0.5rem !important;
     flex-direction: column !important;
   }
-  
+
   .app-post-content .btn-cta-primary,
   .app-post-content .btn-cta-ws,
   .btn-cta-primary,
