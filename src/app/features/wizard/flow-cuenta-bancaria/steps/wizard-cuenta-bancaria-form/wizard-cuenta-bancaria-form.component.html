@@ -1,7 +1,7 @@
 <div [formGroup]="serviceDataForm">
   <!-- SECCIÓN: INFORMACIÓN DE LA LLC -->
   <div *ngIf="currentSection === 1" class="form-section">
-    <h4 class="section-title">INFORMACIÓN DE LA LLC</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
     <div class="row g-3">
       <!-- Tipo de negocio -->
       <div class="col-md-6">
@@ -107,7 +107,7 @@
 
   <!-- Dirección del Registered Agent -->
   <div *ngIf="currentSection === 2" class="form-section">
-    <h4 class="section-title">Dirección del Registered Agent</h4>
+    <h4 class="section-title"><strong>SECCIÓN: DIRECCIÓN DEL REGISTERED AGENT</strong></h4>
     <div class="row g-3">
       <!-- Subtítulo: Dirección de tu empresa en USA -->
       <div class="col-md-12">
@@ -189,7 +189,7 @@
 
   <!-- Información de la persona que verificará la cuenta bancaria -->
   <div *ngIf="currentSection === 3" class="form-section">
-    <h4 class="section-title">Información de la persona que verificará la cuenta bancaria</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DEL VERIFICADOR</strong></h4>
     <div class="row g-3">
       <!-- Nombre(s) -->
       <div class="col-md-6">
@@ -332,7 +332,7 @@
 
   <!-- Dirección personal del propietario -->
   <div *ngIf="currentSection === 4" class="form-section">
-    <h4 class="section-title">Dirección personal del propietario</h4>
+    <h4 class="section-title"><strong>SECCIÓN: DIRECCIÓN PERSONAL DEL PROPIETARIO</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <small class="form-text text-muted">Ingresa la dirección personal del propietario para validar los domicilios.</small>
@@ -406,7 +406,7 @@
 
   <!-- Tipo de LLC -->
   <div *ngIf="currentSection === 5" class="form-section">
-    <h4 class="section-title">Tipo de LLC</h4>
+    <h4 class="section-title"><strong>SECCIÓN: TIPO DE LLC</strong></h4>
     <div class="row g-3">
       <!-- ¿Tu LLC es Multi-Member? -->
       <div class="col-md-12">
@@ -425,7 +425,7 @@
 
   <!-- Información de los propietarios (solo si es Multi-Member) -->
   <div *ngIf="currentSection === 6 && isMultiMember" class="form-section">
-    <h4 class="section-title">Información de los propietarios</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LOS PROPIETARIOS</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <small class="form-text text-muted">Proporciona la información de todos los propietarios o socios.</small>

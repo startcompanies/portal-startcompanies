@@ -1,15 +1,17 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
+import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest } from 'rxjs';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
+import { WizardEmailVerificationComponent } from '../components/email-verification/email-verification.component';
 import { WizardPaymentStepComponent } from '../components/payment-step/payment-step.component';
 import { WizardFinalReviewStepComponent } from '../components/final-review-step/final-review-step.component';
 
@@ -19,6 +21,7 @@ import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cue
 /**
  * Componente principal para el flujo de cuenta bancaria
  * Soporta dos variantes: con pago y sin pago
+ * Usa los endpoints del wizard para registro y creación de solicitud
  */
 @Component({
   selector: 'app-cuenta-bancaria',
@@ -27,6 +30,7 @@ import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cue
     CommonModule,
     TranslocoPipe,
     WizardBasicRegisterStepComponent,
+    WizardEmailVerificationComponent,
     WizardPaymentStepComponent,
     WizardFinalReviewStepComponent,
     WizardCuentaBancariaInformationStepComponent
@@ -35,6 +39,8 @@ import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cue
   styleUrls: ['./cuenta-bancaria.component.css']
 })
 export class CuentaBancariaComponent implements OnInit {
+  @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  
   withPayment: boolean = false;
 
   flowConfig!: any;
@@ -42,6 +48,15 @@ export class CuentaBancariaComponent implements OnInit {
   stepTitles: { [key: number]: string } = {};
   stepIcons: { [key: number]: string } = {};
   currentLang = 'es';
+  
+  // Estado del registro
+  registeredEmail: string = '';
+  registeredPassword: string = '';
+  showEmailVerification = false;
+  
+  isLoading = false;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
 
   // Para controlar la visibilidad de botones en el paso de información de cuenta bancaria
   cuentaBancariaInfoCurrentSection = 1;
@@ -109,6 +124,7 @@ export class CuentaBancariaComponent implements OnInit {
   constructor(
     private wizardConfigService: WizardConfigService,
     private wizardStateService: WizardStateService,
+    private wizardApiService: WizardApiService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
     public translocoService: TranslocoService,
@@ -165,15 +181,118 @@ export class CuentaBancariaComponent implements OnInit {
 
   onStepChanged(index: number): void {
     this.currentStepIndex = index;
-    // No ejecutar onFinish automáticamente, el usuario debe hacer clic en el botón
   }
 
-  onFinish(): void {
-    const allData = this.wizardStateService.getAllData();
-    console.log('✅ Datos finales del wizard Cuenta Bancaria:', allData);
-    /*this.currentLang === 'es'
-      ? this.router.navigate(['/'])
-      : this.router.navigate(['/en']);*/
+  /**
+   * Maneja el evento cuando el usuario se registra
+   */
+  onUserCreated(event: { userId: number; email: string }): void {
+    console.log('[CuentaBancariaComponent] Usuario registrado:', event);
+    this.registeredEmail = event.email;
+    const stepData = this.wizardStateService.getStepData(1);
+    this.registeredPassword = stepData.password || '';
+    this.showEmailVerification = true;
+  }
+
+  /**
+   * Maneja la verificación exitosa del email
+   */
+  onEmailVerified(): void {
+    console.log('[CuentaBancariaComponent] Email verificado exitosamente');
+    this.showEmailVerification = false;
+    this.currentStepIndex = 1; // Avanzar al siguiente paso
+  }
+
+  /**
+   * Maneja el reenvío del código de verificación
+   */
+  async onResendCode(): Promise<void> {
+    if (this.registerStep) {
+      await this.registerStep.resendVerificationEmail();
+    }
+  }
+
+  /**
+   * Envía la solicitud al backend usando el endpoint del wizard
+   */
+  async onFinish(): Promise<void> {
+    if (this.isLoading) return;
+
+    // Verificar que el usuario esté autenticado en el wizard
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = 'Por favor, verifica tu email antes de enviar la solicitud.';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+
+    try {
+      const allData = this.wizardStateService.getAllData();
+      console.log('[CuentaBancariaComponent] Datos finales del wizard:', allData);
+
+      const step1Data = allData.step1 || {};
+      const step2Data = allData.step2 || {};
+      const step3Data = allData.step3 || {};
+      const serviceData = this.serviceDataForm.value;
+
+      // Verificar pago si es con pago
+      if (this.withPayment && (!step3Data.stripePaymentProcessed || !step3Data.stripePaymentToken)) {
+        this.errorMessage = 'Por favor, completa el pago antes de enviar la solicitud.';
+        this.isLoading = false;
+        return;
+      }
+
+      const user = this.wizardApiService.getUser();
+      if (!user) {
+        this.errorMessage = 'Error de autenticación. Por favor, vuelve a verificar tu email.';
+        this.isLoading = false;
+        return;
+      }
+
+      const requestData = {
+        type: 'cuenta-bancaria' as const,
+        currentStepNumber: 7,
+        currentStep: this.flowConfig.totalSteps,
+        status: 'pendiente' as const,
+        notes: '',
+        stripeToken: step3Data.stripePaymentToken || 'no-payment',
+        paymentAmount: step3Data.amount || step2Data.amount || 0,
+        paymentMethod: this.withPayment ? 'stripe' as const : 'transferencia' as const,
+        clientData: {
+          firstName: step1Data.firstName || user.firstName || '',
+          lastName: step1Data.lastName || user.lastName || '',
+          email: step1Data.email || user.email,
+          phone: step1Data.phone || user.phone || '',
+          password: step1Data.password || ''
+        },
+        cuentaBancariaData: {
+          ...serviceData,
+          owners: serviceData.owners || []
+        }
+      };
+
+      console.log('[CuentaBancariaComponent] Enviando solicitud al wizard:', requestData);
+
+      const response = await this.wizardApiService.createRequest(requestData).toPromise();
+
+      console.log('[CuentaBancariaComponent] Solicitud creada exitosamente:', response);
+      
+      this.successMessage = '¡Solicitud creada exitosamente!';
+      this.isLoading = false;
+
+      this.wizardStateService.clear();
+
+      setTimeout(() => {
+        this.router.navigate(['/panel/my-requests']);
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('[CuentaBancariaComponent] Error al crear solicitud:', error);
+      this.errorMessage = error?.error?.message || 'Error al crear la solicitud. Por favor, intenta nuevamente.';
+      this.isLoading = false;
+    }
   }
 
   onCancel(): void {

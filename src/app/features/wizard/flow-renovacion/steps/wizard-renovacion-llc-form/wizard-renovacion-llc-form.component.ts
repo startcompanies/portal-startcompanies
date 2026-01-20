@@ -68,6 +68,7 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
   @Output() removeOwnerRequested = new EventEmitter<number>();
 
   totalSections = 5; // Total de secciones para Renovación LLC
+  currentYear = new Date().getFullYear();
   
   private destroy$ = new Subject<void>();
   private llcTypeSubscriptionSet = false;

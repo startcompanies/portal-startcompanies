@@ -753,7 +753,7 @@ export const routes: Routes = [
       // Wizard routes - English
       {
         path: 'wizard/verify-email',
-        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.EmailVerificationComponent),
+        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.WizardEmailVerificationComponent),
       },
       {
         path: 'wizard/llc-opening',

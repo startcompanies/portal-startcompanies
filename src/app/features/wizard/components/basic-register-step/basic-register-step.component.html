@@ -90,9 +90,9 @@
     </div>
   </div>
   
-  <div *ngIf="createdUserId && createdClientId && !waitingEmailVerification" class="alert alert-success mt-3">
+  <div *ngIf="registeredUserId && !waitingEmailVerification && isUserAuthenticated()" class="alert alert-success mt-3">
     <i class="bi bi-check-circle me-2"></i>
-    Cuenta creada exitosamente. Puedes continuar al siguiente paso.
+    Cuenta verificada exitosamente. Puedes continuar al siguiente paso.
   </div>
   
   <div *ngIf="isLoading" class="alert alert-info mt-3">

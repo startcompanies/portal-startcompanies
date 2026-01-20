@@ -1,7 +1,7 @@
 <div [formGroup]="serviceDataForm">
   <!-- Sección 1: Información General de la LLC -->
   <div *ngIf="currentSection === 1" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <label for="renovacionLlcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
@@ -138,7 +138,7 @@
 
   <!-- Sección 2: Información de Propietarios (single o multimember) -->
   <div *ngIf="currentSection === 2" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN DEL PROPIETARIO</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DEL PROPIETARIO</strong></h4>
     
     <div formArrayName="owners">
       <div *ngIf="ownersFormArray && ownersFormArray.length === 0" class="alert alert-info">
@@ -313,7 +313,7 @@
 
   <!-- Sección 3: Información Contable de la LLC -->
   <div *ngIf="currentSection === 3" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN CONTABLE DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN CONTABLE DE LA LLC</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
@@ -366,25 +366,25 @@
     </div>
   </div>
 
-  <!-- Sección 4: Movimientos Financieros de la LLC en 2025 -->
+  <!-- Sección 4: Movimientos Financieros de la LLC -->
   <div *ngIf="currentSection === 4" class="form-section">
-    <h4 class="section-title"><strong>MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN {{ currentYear }}</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
-        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en 2025</label>
+        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en {{ currentYear }}</label>
         <div class="input-group">
           <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0">
           <span class="input-group-text">USD</span>
         </div>
-        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de 2025, considerando todas las cuentas bancarias asociadas.</small>
+        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de {{ currentYear }}, considerando todas las cuentas bancarias asociadas.</small>
       </div>
     </div>
   </div>
 
   <!-- Sección 5: Información Adicional de la LLC -->
   <div *ngIf="currentSection === 5" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN ADICIONAL DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN ADICIONAL DE LA LLC</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
