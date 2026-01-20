@@ -5,7 +5,7 @@ import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { RequestsService } from '../../services/requests.service';
+import { RequestsService, Request as PanelRequest } from '../../services/requests.service';
 import { StripeService } from '../../services/stripe.service';
 import { PartnerClientsService } from '../../services/partner-clients.service';
 import { environment } from '../../../../../environments/environment';
@@ -37,6 +37,13 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   currentStep = 1;
   totalSteps = 4;
   serviceSection = 1; // Sección actual dentro del paso "Datos del Servicio"
+  // Recordar la última sección del servicio para poder volver desde Pago sin perder el contexto
+  lastServiceSection = 1;
+
+  // Cache del último request cargado (útil para re-hidratar el formulario al navegar entre pasos)
+  private lastLoadedRequest: PanelRequest | null = null;
+  // Flag para evitar autosaves/side-effects mientras rehidratamos el formulario desde API
+  private isHydratingDraft = false;
   stripeProcessing = false;
   stripePaymentProcessed = false; // Indica si el pago de Stripe fue procesado exitosamente
   stripePaymentToken: string | null = null; // Token del pago procesado
@@ -486,12 +493,17 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   /**
    * Carga una request en borrador por UUID para continuar editándola
    */
-  async loadDraftRequest(uuid: string): Promise<void> {
+  async loadDraftRequest(
+    uuid: string,
+    options?: { preserveUiState?: boolean }
+  ): Promise<void> {
+    this.isHydratingDraft = true;
     this.isLoading = true;
     this.errorMessage = null;
     
     try {
       const request = await this.requestsService.getRequestByUuid(uuid);
+      this.lastLoadedRequest = request;
       
       // Verificar que la request esté en estado pendiente
       if (request.status !== 'pendiente') {
@@ -504,48 +516,42 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       this.draftRequestId = request.id;
       this.draftRequestUuid = request.uuid || null;
 
+      // Determinar origen del request para interpretar pasos correctamente
+      // - createdFrom viene del backend (nuevo)
+      // - fallback: si no hay partner, normalmente viene del wizard (cliente final)
+      const createdFrom =
+        (request as any).createdFrom ||
+        ((request as any).partnerId ? 'panel' : 'wizard');
+
       // Cargar datos del cliente si existe (PRIMERO, antes de establecer el paso)
       if (request.clientId) {
         this.selectedClientId = request.clientId;
-        await this.loadClientData(request.clientId);
+        // Si el request ya trae el cliente (lo trae), usarlo para evitar efectos secundarios
+        // (loadClientData -> precargarDatosCliente) que pueden resetear pasos/secciones.
+        if ((request as any).client) {
+          this.selectedClient = (request as any).client;
+        } else if (!options?.preserveUiState) {
+          await this.loadClientData(request.clientId);
+        }
       }
 
       // Cargar tipo de servicio
       if (request.type) {
-        this.requestForm.patchValue({ serviceType: request.type });
+        // Evitar disparar valueChanges (que reinicializa el form) durante la carga/hidratación
+        this.requestForm.patchValue({ serviceType: request.type }, { emitEvent: false });
         this.initializeServiceForm(request.type);
         
         // Esperar a que el formulario se inicialice completamente
         await new Promise(resolve => setTimeout(resolve, 200));
       }
 
-      // Restaurar el paso principal del wizard si está guardado
-      if (request.currentStep !== undefined && request.currentStep !== null) {
-        this.currentStep = request.currentStep;
-      } else {
-        // Fallback: determinar el paso basándose en currentStepNumber (compatibilidad con requests antiguas)
-        let savedCurrentStepNumber = 1;
-        if (request.type === 'apertura-llc' && request.aperturaLlcRequest?.currentStepNumber) {
-          savedCurrentStepNumber = request.aperturaLlcRequest.currentStepNumber;
-        } else if (request.type === 'renovacion-llc' && request.renovacionLlcRequest?.currentStepNumber) {
-          savedCurrentStepNumber = request.renovacionLlcRequest.currentStepNumber;
-        } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest?.currentStepNumber) {
-          savedCurrentStepNumber = request.cuentaBancariaRequest.currentStepNumber;
-        }
+      // Calcular sección guardada (1..n) dentro de "Datos del Servicio"
+      const maxServiceSectionsByType: Record<string, number> = {
+        'apertura-llc': 3,
+        'renovacion-llc': 3,
+        'cuenta-bancaria': 3,
+      };
 
-        // Si currentStepNumber >= 1, significa que ya pasó el paso 1 (selección de servicio)
-        if (savedCurrentStepNumber >= 1) {
-          if (this.selectedClientId) {
-            // Si hay cliente, el paso 2 es "Datos del Servicio"
-            this.currentStep = 2;
-          } else {
-            // Si no hay cliente, el paso 3 es "Datos del Servicio"
-            this.currentStep = 3;
-          }
-        }
-      }
-
-      // Restaurar la sección dentro de "Datos del Servicio"
       let savedCurrentStepNumber = 1;
       if (request.type === 'apertura-llc' && request.aperturaLlcRequest?.currentStepNumber) {
         savedCurrentStepNumber = request.aperturaLlcRequest.currentStepNumber;
@@ -554,43 +560,70 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest?.currentStepNumber) {
         savedCurrentStepNumber = request.cuentaBancariaRequest.currentStepNumber;
       }
-      
-      // Solo establecer serviceSection si estamos en el paso de "Datos del Servicio"
-      if (this.isServiceDataStep() && savedCurrentStepNumber >= 1) {
-        this.serviceSection = savedCurrentStepNumber;
-      }
 
-      // Cargar datos específicos del servicio según el tipo
-      if (request.type === 'apertura-llc' && request.aperturaLlcRequest) {
-        const aperturaData = request.aperturaLlcRequest;
-        const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
-        
-        if (serviceDataForm) {
-          // Cargar llcType primero para que se inicialice el FormArray de members correctamente
-          if (aperturaData.llcType) {
-            serviceDataForm.patchValue({ llcType: aperturaData.llcType });
-            // Llamar a handleLlcTypeChange para inicializar miembros si es necesario
-            this.handleLlcTypeChange(aperturaData.llcType);
-            // Esperar un momento para que se inicialice el FormArray
-            await new Promise(resolve => setTimeout(resolve, 100));
-          }
-          
-          // Cargar todos los demás datos disponibles
-          Object.keys(aperturaData).forEach(key => {
-            if (key !== 'currentStepNumber' && key !== 'requestId' && key !== 'llcType' && serviceDataForm.get(key)) {
-              const value = (aperturaData as any)[key];
-              if (value !== null && value !== undefined && value !== '') {
-                serviceDataForm.patchValue({ [key]: value });
-              }
-            }
-          });
+      const maxSections = maxServiceSectionsByType[request.type] || 3;
+
+      // Si viene del wizard, es común que algunos flujos hayan guardado `currentStepNumber` con el orden del wizard.
+      // En ese caso, inferimos la sección por la data disponible (heurística) para que el panel precargue bien.
+      const inferSectionFromData = (): number => {
+        if (request.type === 'apertura-llc' && request.aperturaLlcRequest) {
+          const a: any = request.aperturaLlcRequest;
+          const hasBankSection =
+            !!a.serviceBillUrl ||
+            !!a.bankStatementUrl ||
+            !!a.periodicIncome10k ||
+            !!a.bankAccountLinkedEmail ||
+            !!a.bankAccountLinkedPhone ||
+            !!a.projectOrCompanyUrl;
+          if (hasBankSection) return 3;
+          const hasMembers = Array.isArray((request as any).members) && (request as any).members.length > 0;
+          if (hasMembers) return 2;
+          return 1;
         }
 
+        const hasMembers = Array.isArray((request as any).members) && (request as any).members.length > 0;
+        if (hasMembers) return 2;
+        return 1;
+      };
+
+      const normalizedSection =
+        createdFrom === 'wizard' && savedCurrentStepNumber > maxSections
+          ? inferSectionFromData()
+          : Math.min(Math.max(savedCurrentStepNumber, 1), maxSections);
+
+      if (!options?.preserveUiState) {
+        this.serviceSection = normalizedSection;
+        this.lastServiceSection = normalizedSection;
+      }
+
+      if (!options?.preserveUiState) {
+        // Restaurar el paso principal del panel
+        // Para wizard: forzar al paso de "Datos del Servicio" para que el usuario continúe donde dejó los datos.
+        if (createdFrom === 'wizard') {
+          this.currentStep = this.selectedClientId ? 2 : 3;
+        } else if (request.currentStep !== undefined && request.currentStep !== null) {
+          this.currentStep = request.currentStep;
+        } else {
+          // Fallback panel: si hay sección guardada, ya pasó el paso 1 (selección de servicio)
+          if (this.selectedClientId) {
+            this.currentStep = 2;
+          } else {
+            this.currentStep = 3;
+          }
+        }
+      }
+
+      // (Re)hidratar datos específicos del servicio (siempre)
+      await this.hydrateServiceFormFromRequest(request);
+
+      // Cargar estructuras complejas (arrays) según el tipo
+      if (request.type === 'apertura-llc' && request.aperturaLlcRequest) {
+        const aperturaData: any = request.aperturaLlcRequest;
         // Cargar miembros si existen
         if (request.members && request.members.length > 0) {
           // Esperar un poco más para asegurar que el FormArray esté inicializado
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
           // Verificar que el FormArray existe antes de usarlo
           const membersArray = this.membersFormArray;
           if (membersArray) {
@@ -612,34 +645,43 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
                   passportNumber: member.passportNumber || member.passport_number || '',
                   nationality: member.nationality || '',
                   dateOfBirth: member.dateOfBirth || member.date_of_birth || '',
-                  percentageOfParticipation: member.percentageOfParticipation || member.percentage_of_participation || 0,
-                  validatesBankAccount: member.validatesBankAccount || member.validates_bank_account || false,
-                  scannedPassportUrl: member.scannedPassportUrl || member.scanned_passport_url || '',
+                  percentageOfParticipation:
+                    member.percentageOfParticipation || member.percentage_of_participation || 0,
+                  validatesBankAccount:
+                    member.validatesBankAccount || member.validates_bank_account || false,
+                  scannedPassportUrl:
+                    member.scannedPassportUrl || member.scanned_passport_url || '',
                   // Cargar dirección del miembro si existe
-                  ...(member.memberAddress ? {
-                    memberAddress: {
-                      street: member.memberAddress.street || '',
-                      unit: member.memberAddress.unit || '',
-                      city: member.memberAddress.city || '',
-                      stateRegion: member.memberAddress.stateRegion || member.memberAddress.state_region || '',
-                      postalCode: member.memberAddress.postalCode || member.memberAddress.postal_code || '',
-                      country: member.memberAddress.country || ''
-                    }
-                  } : {})
+                  ...(member.memberAddress
+                    ? {
+                        memberAddress: {
+                          street: member.memberAddress.street || '',
+                          unit: member.memberAddress.unit || '',
+                          city: member.memberAddress.city || '',
+                          stateRegion:
+                            member.memberAddress.stateRegion ||
+                            member.memberAddress.state_region ||
+                            '',
+                          postalCode:
+                            member.memberAddress.postalCode ||
+                            member.memberAddress.postal_code ||
+                            '',
+                          country: member.memberAddress.country || '',
+                        },
+                      }
+                    : {}),
                 });
               }
             });
           }
         } else {
           // Si no hay miembros cargados, verificar si necesitamos agregar uno
-          await new Promise(resolve => setTimeout(resolve, 150));
+          await new Promise((resolve) => setTimeout(resolve, 150));
           const membersArray = this.membersFormArray;
           if (membersArray) {
             if (aperturaData.llcType === 'single' && membersArray.length === 0) {
-              // Si es single member y no hay miembros, agregar uno automáticamente
               this.addMember();
             } else if (aperturaData.llcType === 'multi' && membersArray.length === 0) {
-              // Si es multi member y no hay miembros, agregar al menos uno para que el usuario pueda empezar
               this.addMember();
             }
           }
@@ -647,15 +689,25 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (request.type === 'renovacion-llc' && request.renovacionLlcRequest) {
         const renovacionData = request.renovacionLlcRequest;
         const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
+
+        const snakeToCamel = (input: string): string =>
+          input.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
         
         if (serviceDataForm) {
           // Cargar todos los datos disponibles (excepto members/owners que se maneja por separado)
           Object.keys(renovacionData).forEach(key => {
-            if (key !== 'currentStepNumber' && key !== 'requestId' && key !== 'owners' && key !== 'members' && serviceDataForm.get(key)) {
-              const value = (renovacionData as any)[key];
-              if (value !== null && value !== undefined && value !== '') {
-                serviceDataForm.patchValue({ [key]: value });
-              }
+            if (key === 'currentStepNumber' || key === 'requestId' || key === 'owners' || key === 'members') return;
+
+            const value = (renovacionData as any)[key];
+            if (value === null || value === undefined || value === '') return;
+
+            const camelKey = snakeToCamel(key);
+            const targetKey = serviceDataForm.get(key)
+              ? key
+              : (serviceDataForm.get(camelKey) ? camelKey : null);
+
+            if (targetKey) {
+              serviceDataForm.patchValue({ [targetKey]: value });
             }
           });
           
@@ -738,6 +790,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest) {
         const cuentaData = request.cuentaBancariaRequest;
         const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
+
+        const snakeToCamel = (input: string): string =>
+          input.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
         
         if (serviceDataForm) {
           // Cargar todos los datos disponibles
@@ -782,6 +837,17 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
               if (value !== null && value !== undefined && value !== '') {
                 serviceDataForm.patchValue({ [key]: value });
               }
+            }
+          });
+
+          // Soportar también snake_case en cuenta-bancaria (si viniera así)
+          Object.keys(cuentaData).forEach(key => {
+            if (key === 'currentStepNumber' || key === 'requestId') return;
+            const value = (cuentaData as any)[key];
+            if (value === null || value === undefined || value === '') return;
+            const camelKey = snakeToCamel(key);
+            if (!serviceDataForm.get(key) && serviceDataForm.get(camelKey)) {
+              serviceDataForm.patchValue({ [camelKey]: value });
             }
           });
           
@@ -923,7 +989,8 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
       // Si el request tiene datos de pago, asegurarse de que estamos en el paso correcto
       // Si ya hay método de pago y monto, probablemente estamos en el paso de pago
-      if (request.paymentMethod && request.paymentAmount && request.paymentAmount > 0) {
+      // IMPORTANTE: cuando preserveUiState=true (ej: al volver desde Pago), NO debemos forzar a volver a Pago.
+      if (!options?.preserveUiState && request.paymentMethod && request.paymentAmount && request.paymentAmount > 0) {
         // Determinar el paso basado en si hay cliente seleccionado
         const paymentStep = this.selectedClientId ? 3 : 4;
         // Solo actualizar el paso si no estaba ya establecido o si el paso actual es menor
@@ -948,6 +1015,67 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(() => {
         this.router.navigate(['/panel/my-requests']);
       }, 2000);
+    } finally {
+      this.isHydratingDraft = false;
+    }
+  }
+
+  /**
+   * (Re)hidrata el formulario de serviceData a partir del request recibido del API
+   * - Soporta camelCase/snake_case
+   * - Carga members cuando aplica
+   */
+  private async hydrateServiceFormFromRequest(request: PanelRequest): Promise<void> {
+    if (!request?.type) return;
+
+    const serviceDataForm = this.requestForm.get('serviceData') as FormGroup;
+    if (!serviceDataForm) return;
+
+    const snakeToCamel = (input: string): string =>
+      input.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
+
+    const patchObject = async (data: any, exclusions: string[] = []) => {
+      if (!data) return;
+      Object.keys(data).forEach((key) => {
+        if (exclusions.includes(key)) return;
+        const value = data[key];
+        if (value === null || value === undefined || value === '') return;
+        const camelKey = snakeToCamel(key);
+        const targetKey = serviceDataForm.get(key) ? key : (serviceDataForm.get(camelKey) ? camelKey : null);
+        if (targetKey) {
+          serviceDataForm.patchValue({ [targetKey]: value });
+        }
+      });
+    };
+
+    if (request.type === 'apertura-llc' && (request as any).aperturaLlcRequest) {
+      const aperturaData: any = (request as any).aperturaLlcRequest;
+
+      // Cargar llcType primero para inicializar members
+      if (aperturaData.llcType) {
+        serviceDataForm.patchValue({ llcType: aperturaData.llcType });
+        this.handleLlcTypeChange(aperturaData.llcType);
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+
+      await patchObject(aperturaData, ['currentStepNumber', 'requestId', 'llcType']);
+      // Members
+      // La implementación existente ya carga members en el bloque grande de loadDraftRequest (más abajo),
+      // así que aquí solo aseguramos que el array exista; la carga detallada sigue igual.
+      // (No hacemos nada extra aquí para evitar duplicación)
+      return;
+    }
+
+    if (request.type === 'renovacion-llc' && (request as any).renovacionLlcRequest) {
+      const renovacionData: any = (request as any).renovacionLlcRequest;
+      await patchObject(renovacionData, ['currentStepNumber', 'requestId', 'owners', 'members']);
+      return;
+    }
+
+    if (request.type === 'cuenta-bancaria' && (request as any).cuentaBancariaRequest) {
+      const cuentaData: any = (request as any).cuentaBancariaRequest;
+      await patchObject(cuentaData, ['currentStepNumber', 'requestId']);
+      return;
     }
   }
 
@@ -1019,6 +1147,10 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
    * Se llama cuando se completa la primera sección y cada vez que se avanza de sección
    */
   async saveDraftRequest(): Promise<void> {
+    // Evitar sobrescribir datos con valores vacíos mientras estamos rehidratando desde API
+    if (this.isHydratingDraft) {
+      return;
+    }
     // Solo guardar si hay cliente seleccionado o creado
     if (!this.selectedClientId) {
       console.log('[saveDraftRequest] No hay cliente seleccionado, omitiendo guardado');
@@ -1888,13 +2020,16 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
               // se guarden con el currentStepNumber correcto (5 en este caso)
               await this.saveDraftRequest();
               
+              // Guardar la última sección antes de ir a Pago (para poder volver exactamente a donde estaba)
+              this.lastServiceSection = this.serviceSection;
               // Avanzar al paso de pago (actualizar currentStep)
               if (this.selectedClientId) {
                 this.currentStep = 3;
               } else {
                 this.currentStep = 4;
               }
-              // Resetear la sección DESPUÉS de guardar
+              // Resetear la sección DESPUÉS de guardar (solo para evitar inconsistencias en UI),
+              // pero conservamos lastServiceSection para volver correctamente.
               this.serviceSection = 1;
               
               // Calcular el monto antes de mostrar el paso de pago
@@ -1947,13 +2082,16 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
         // Limpiar mensajes de éxito al cambiar de paso principal
         this.successMessage = null;
         
+        // Guardar la última sección antes de ir a Pago (para poder volver exactamente a donde estaba)
+        this.lastServiceSection = this.serviceSection;
         // Avanzar al paso de pago (actualizar currentStep)
         if (this.selectedClientId) {
           this.currentStep = 3;
         } else {
           this.currentStep = 4;
         }
-        // Resetear la sección DESPUÉS de guardar
+        // Resetear la sección DESPUÉS de guardar (solo para evitar inconsistencias en UI),
+        // pero conservamos lastServiceSection para volver correctamente.
         this.serviceSection = 1;
         
         // Calcular el monto antes de mostrar el paso de pago
@@ -2145,6 +2283,7 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async previousStep(): Promise<void> {
+    const cameFromPayment = this.isPaymentStep();
     // Si estamos en el paso "Datos del Servicio" y no es la primera sección, retroceder a la sección anterior
     if (this.isServiceDataStep() && this.serviceSection > 1) {
       // Limpiar estado temporal de archivos al cambiar de sección
@@ -2186,7 +2325,21 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       this.currentStep--;
       // Si entramos al paso "Datos del Servicio", resetear a la primera sección
       if (this.isServiceDataStep()) {
-        this.serviceSection = 1;
+        // Volver a la última sección conocida (útil cuando venimos desde Pago)
+        const maxSections = this.getTotalServiceSections();
+        const safeSection = Math.min(Math.max(this.lastServiceSection || 1, 1), maxSections);
+        this.serviceSection = safeSection;
+
+        // Si venimos desde Pago, re-hidratar el form desde API/cache para evitar pantallas vacías
+        if (cameFromPayment) {
+          const uuidFromRoute = this.route.snapshot.params['uuid'];
+          const reqUuid = this.draftRequestUuid || uuidFromRoute;
+          if (reqUuid) {
+            await this.loadDraftRequest(reqUuid, { preserveUiState: true });
+          } else if (this.lastLoadedRequest) {
+            await this.hydrateServiceFormFromRequest(this.lastLoadedRequest);
+          }
+        }
       }
     }
   }

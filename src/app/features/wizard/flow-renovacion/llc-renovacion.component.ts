@@ -326,7 +326,6 @@ export class LLCRenovacionComponent implements OnInit {
       
       const updateData = {
         type: 'renovacion-llc',
-        currentStepNumber: this.currentStepIndex + 1,
         renovacionLlcData: {
           ...serviceData,
           state: step2Data.state || serviceData.state,
@@ -370,7 +369,6 @@ export class LLCRenovacionComponent implements OnInit {
       // Preparar datos para actualizar el request
       const updateData = {
         type: 'renovacion-llc',
-        currentStepNumber: 6, // Paso final
         status: 'solicitud-recibida',
         renovacionLlcData: {
           ...serviceData,

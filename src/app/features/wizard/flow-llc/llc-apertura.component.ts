@@ -219,13 +219,16 @@ export class LLCAperturaComponent implements OnInit {
       const allData = this.wizardStateService.getAllData();
       const step4Data = allData.step4 || {};
       
+      // IMPORTANTE:
+      // En el panel, `currentStepNumber` significa "sección dentro de Datos del Servicio".
+      // En wizard, `currentStep` es el paso del flujo (1..5). NO debemos sobreescribir `currentStepNumber`
+      // con el orden del wizard porque rompe la precarga al continuar en el panel.
       const updateData = {
         type: 'apertura-llc',
-        currentStepNumber: this.currentStep,
         aperturaLlcData: {
           ...step4Data,
-          members: step4Data.members || []
-        }
+          members: step4Data.members || [],
+        },
       };
       
       console.log('[LLCAperturaComponent] Actualizando request:', requestId, updateData);
@@ -335,15 +338,15 @@ export class LLCAperturaComponent implements OnInit {
       const step4Data = allData.step4 || {}; // Información LLC
 
       // Preparar datos para actualizar el request
+      // IMPORTANTE: no setear `currentStepNumber` con el paso final del wizard.
       const updateData = {
         type: 'apertura-llc',
-        currentStepNumber: 6, // Paso final
         status: 'solicitud-recibida',
         aperturaLlcData: {
           ...step4Data,
           incorporationState: step2Data.state || step4Data.incorporationState,
-          members: step4Data.members || []
-        }
+          members: step4Data.members || [],
+        },
       };
 
       console.log('[LLCAperturaComponent] Actualizando solicitud:', requestId, updateData);

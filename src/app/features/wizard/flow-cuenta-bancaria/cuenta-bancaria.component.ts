@@ -395,7 +395,6 @@ export class CuentaBancariaComponent implements OnInit {
       
       const updateData = {
         type: 'cuenta-bancaria',
-        currentStepNumber: this.currentStepIndex + 1,
         cuentaBancariaData: {
           ...serviceData,
           owners: serviceData.owners || []
@@ -442,7 +441,6 @@ export class CuentaBancariaComponent implements OnInit {
       // Preparar datos para actualizar el request
       const updateData = {
         type: 'cuenta-bancaria',
-        currentStepNumber: 7, // Paso final
         status: 'solicitud-recibida',
         cuentaBancariaData: {
           ...serviceData,

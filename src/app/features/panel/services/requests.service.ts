@@ -84,6 +84,7 @@ export interface Request {
   paymentStatus?: 'pending' | 'succeeded' | 'failed' | string;
   stripeChargeId?: string; // ID del cargo de Stripe
   paymentProofUrl?: string; // URL del comprobante de pago (para transferencias)
+  createdFrom?: 'panel' | 'wizard' | string;
 }
 
 export interface RequestFilters {
