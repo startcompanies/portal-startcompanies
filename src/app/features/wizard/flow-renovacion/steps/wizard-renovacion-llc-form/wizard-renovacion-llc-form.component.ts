@@ -207,5 +207,17 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
   }
+
+  /**
+   * Obtiene el label del estado con su abreviación para mostrar en modo readonly
+   */
+  getStateLabelWithAbbreviation(stateValue: string): string {
+    if (!stateValue || !this.usStates) return stateValue;
+    const state = this.usStates.find(s => s.value === stateValue);
+    if (state) {
+      return `${state.label} (${state.abbreviation})`;
+    }
+    return stateValue;
+  }
 }
 

@@ -44,6 +44,13 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   isUploadingPaymentProof = false;
   paymentProofUploadProgress = 0;
   
+  // Información del pago ya procesado (si existe)
+  paymentAlreadyProcessed = false;
+  processedPaymentMethod: string | null = null;
+  processedPaymentAmount: number | null = null;
+  processedPaymentStatus: string | null = null;
+  processedStripeChargeId: string | null = null;
+  
   // Estado de carga de archivos genérico
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
 
@@ -222,6 +229,14 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     // El componente de Stripe se inicializa automáticamente
+    // Si el pago ya fue procesado, deshabilitar el formulario después de que se inicialice
+    if (this.stripePaymentProcessed && this.stripePaymentForm) {
+      setTimeout(() => {
+        if (this.stripePaymentForm) {
+          this.stripePaymentForm.disableCardElement();
+        }
+      }, 500);
+    }
   }
 
   ngOnDestroy(): void {
@@ -414,8 +429,14 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async ngOnInit(): Promise<void> {
-    // Validar que el usuario sea partner
-    if (!this.authService.isPartner()) {
+    // Verificar si hay un UUID de request en la ruta (para continuar borrador)
+    // Verificar de manera síncrona primero para la validación de acceso
+    const requestUuid = this.route.snapshot.params['uuid'];
+    const hasRequestUuid = !!requestUuid;
+
+    // Validar que el usuario sea partner (solo si no está continuando una solicitud existente)
+    // Si hay UUID, permitir acceso a clientes también (para continuar su solicitud)
+    if (!hasRequestUuid && !this.authService.isPartner()) {
       this.router.navigate(['/panel/my-requests']);
       return;
     }
@@ -425,11 +446,16 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       this.detectedCountryCode = countryCode;
     });
 
-    // Verificar si hay un UUID de request en la ruta (para continuar borrador)
+    // Cargar la solicitud en borrador si hay UUID
+    if (requestUuid) {
+      await this.loadDraftRequest(requestUuid);
+    }
+
+    // Suscribirse a cambios en los parámetros de la ruta
     this.route.params.subscribe(async params => {
-      const requestUuid = params['uuid'];
-      if (requestUuid) {
-        await this.loadDraftRequest(requestUuid);
+      const uuid = params['uuid'];
+      if (uuid && uuid !== requestUuid) {
+        await this.loadDraftRequest(uuid);
       }
     });
 
@@ -856,6 +882,62 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
       if (request.notes) {
         this.requestForm.patchValue({ notes: request.notes });
       }
+
+      // Cargar datos de pago si existen
+      if (request.paymentMethod) {
+        this.requestForm.patchValue({ paymentMethod: request.paymentMethod });
+        console.log('[loadDraftRequest] Método de pago cargado:', request.paymentMethod);
+      }
+
+      if (request.paymentAmount !== undefined && request.paymentAmount !== null) {
+        this.requestForm.patchValue({ paymentAmount: request.paymentAmount });
+        console.log('[loadDraftRequest] Monto de pago cargado:', request.paymentAmount);
+      }
+
+      if (request.paymentProofUrl) {
+        this.requestForm.patchValue({ paymentProofUrl: request.paymentProofUrl });
+        console.log('[loadDraftRequest] URL de comprobante de pago cargada:', request.paymentProofUrl);
+      }
+
+      // Verificar si el pago ya fue procesado
+      if (request.paymentStatus === 'succeeded' || request.paymentStatus === 'completed') {
+        this.paymentAlreadyProcessed = true;
+        this.processedPaymentMethod = request.paymentMethod || null;
+        this.processedPaymentAmount = request.paymentAmount || null;
+        this.processedPaymentStatus = request.paymentStatus;
+        this.processedStripeChargeId = request.stripeChargeId || null;
+        
+        // Si es Stripe, también marcar como procesado
+        if (request.paymentMethod === 'stripe' && request.stripeChargeId) {
+          this.stripePaymentProcessed = true;
+          this.stripePaymentToken = 'processed';
+        }
+        
+        console.log('[loadDraftRequest] Pago ya procesado:', {
+          method: this.processedPaymentMethod,
+          amount: this.processedPaymentAmount,
+          status: this.processedPaymentStatus,
+          stripeChargeId: this.processedStripeChargeId
+        });
+      }
+
+      // Si el request tiene datos de pago, asegurarse de que estamos en el paso correcto
+      // Si ya hay método de pago y monto, probablemente estamos en el paso de pago
+      if (request.paymentMethod && request.paymentAmount && request.paymentAmount > 0) {
+        // Determinar el paso basado en si hay cliente seleccionado
+        const paymentStep = this.selectedClientId ? 3 : 4;
+        // Solo actualizar el paso si no estaba ya establecido o si el paso actual es menor
+        if (this.currentStep < paymentStep) {
+          this.currentStep = paymentStep;
+          console.log('[loadDraftRequest] Paso actualizado a:', paymentStep, 'porque hay datos de pago');
+        }
+      }
+
+      // Recalcular el monto después de cargar todos los datos (por si cambió el servicio o estado)
+      // Esperar un momento para que todos los formularios estén inicializados
+      setTimeout(() => {
+        this.calculatePaymentAmount();
+      }, 300);
 
       this.isLoading = false;
     } catch (error: any) {

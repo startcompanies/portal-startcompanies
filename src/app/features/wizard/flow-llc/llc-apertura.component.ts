@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
-import { combineLatest } from 'rxjs';
+import { combineLatest, firstValueFrom } from 'rxjs';
 
 // Componentes de paso
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -18,11 +18,19 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 
 /**
  * Componente principal para el flujo de apertura de LLC
- * Flujo: registro → verificación email → selección estado/precio → pago → información → revisión → envío
- * Usa los endpoints del wizard:
+ * 
+ * FLUJO:
+ * 1. Registro → verificación email
+ * 2. Selección estado/plan
+ * 3. Pago → SE CREA EL REQUEST EN BD
+ * 4. Información LLC → SE ACTUALIZA EL REQUEST
+ * 5. Revisión final → SE ACTUALIZA EL REQUEST (estado final)
+ * 
+ * Endpoints del wizard:
  * - POST /wizard/requests/register
  * - POST /wizard/requests/confirm-email
  * - POST /wizard/requests (crear solicitud con pago)
+ * - PATCH /wizard/requests/:id (actualizar solicitud)
  */
 @Component({
   selector: 'app-llc-apertura',
@@ -43,6 +51,7 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 })
 export class LLCAperturaComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
   
   currentStep = 1;
   totalSteps = 5; // Registro, Estado/Plan, Pago, Info LLC, Revisión
@@ -56,11 +65,17 @@ export class LLCAperturaComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  
+  // Control de envío exitoso
+  isSubmitted = false;
 
   stepTitles: { [key: number]: string } = {};
   
   // Para controlar la visibilidad de botones en el paso de Información LLC
   llcInfoCurrentSection = 1;
+  
+  // Control del pago
+  paymentProcessed = false;
 
   constructor(
     private wizardStateService: WizardStateService,
@@ -71,6 +86,18 @@ export class LLCAperturaComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    // Verificar si hay un estado guardado del mismo servicio
+    const savedServiceType = this.wizardStateService.getServiceType();
+    
+    // Si el servicio guardado es diferente, limpiar el estado
+    if (savedServiceType && savedServiceType !== 'apertura-llc') {
+      console.log('[LLCAperturaComponent] Servicio diferente guardado, limpiando estado');
+      this.wizardStateService.clear();
+    }
+    
+    // Establecer el tipo de servicio
+    this.wizardStateService.setServiceType('apertura-llc');
+    
     this.initializeStepTitles();
     this.currentLang = this.languageService.currentLang;
     this.transloco.langChanges$.subscribe((l) => {
@@ -78,11 +105,36 @@ export class LLCAperturaComponent implements OnInit {
       this.initializeStepTitles();
     });
 
+    // Restaurar el paso desde localStorage si existe
+    const savedStep = this.wizardStateService.getCurrentStep();
+    const savedStepNumber = this.wizardStateService.getCurrentStepNumber();
+    
     // Verificar si el usuario ya está autenticado en el wizard
     if (this.wizardApiService.isAuthenticated()) {
-      console.log('[LLCAperturaComponent] Usuario ya autenticado, saltando a paso 2');
-      // Si ya está autenticado, saltar el paso de registro y verificación
-      this.currentStep = 2;
+      console.log('[LLCAperturaComponent] Usuario ya autenticado');
+      
+      // Si ya existe un request, verificar el estado del pago
+      if (this.wizardStateService.hasRequest()) {
+        this.paymentProcessed = true;
+        
+        // Restaurar el paso guardado si es válido (después del pago)
+        if (savedStep >= 3) {
+          this.currentStep = savedStep;
+          this.llcInfoCurrentSection = savedStepNumber || 1;
+          console.log('[LLCAperturaComponent] Restaurando paso:', this.currentStep, 'sección:', this.llcInfoCurrentSection);
+        } else {
+          this.currentStep = 4; // Ir al paso de información si ya pagó
+        }
+      } else {
+        // Usuario autenticado pero sin request, ir al paso 2 o restaurar
+        this.currentStep = savedStep >= 2 ? savedStep : 2;
+      }
+    } else if (savedStep > 1) {
+      // No está autenticado pero hay un paso guardado mayor a 1
+      // Esto no debería pasar, resetear al paso 1
+      console.log('[LLCAperturaComponent] Estado inconsistente, reseteando');
+      this.wizardStateService.clear();
+      this.currentStep = 1;
     }
   }
 
@@ -107,9 +159,13 @@ export class LLCAperturaComponent implements OnInit {
 
   /**
    * Navega al siguiente paso
-   * En el paso 1, primero registra al usuario
+   * - Paso 1: Registra al usuario si no está autenticado
+   * - Paso 3: Procesa el pago y crea el request
+   * - Paso 4+: Actualiza el request existente
    */
   async nextStep(): Promise<void> {
+    this.errorMessage = null;
+    
     // Si estamos en el paso 1 (registro), intentar registrar primero
     if (this.currentStep === 1 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
@@ -132,9 +188,52 @@ export class LLCAperturaComponent implements OnInit {
       }
     }
     
+    // Si estamos en paso 3 (pago), verificar que el pago esté procesado
+    if (this.currentStep === 3 && !this.paymentProcessed) {
+      // No permitir avanzar si el pago no está procesado
+      // El pago se procesa con el botón "Pagar" dentro del componente payment-step
+      return;
+    }
+    
+    // Si estamos en paso 4+ y ya hay un request, actualizar los datos
+    if (this.currentStep >= 4 && this.wizardStateService.hasRequest()) {
+      await this.updateRequestData();
+    }
+    
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
       this.showEmailVerification = false;
+      // Guardar el paso actual en localStorage
+      this.wizardStateService.setCurrentStep(this.currentStep);
+    }
+  }
+  
+  /**
+   * Actualiza los datos del request en el backend
+   */
+  private async updateRequestData(): Promise<void> {
+    const requestId = this.wizardStateService.getRequestId();
+    if (!requestId) return;
+    
+    try {
+      const allData = this.wizardStateService.getAllData();
+      const step4Data = allData.step4 || {};
+      
+      const updateData = {
+        type: 'apertura-llc',
+        currentStepNumber: this.currentStep,
+        aperturaLlcData: {
+          ...step4Data,
+          members: step4Data.members || []
+        }
+      };
+      
+      console.log('[LLCAperturaComponent] Actualizando request:', requestId, updateData);
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
+      console.log('[LLCAperturaComponent] Request actualizado exitosamente');
+    } catch (error: any) {
+      console.error('[LLCAperturaComponent] Error al actualizar request:', error);
+      // No bloquear la navegación por errores de actualización
     }
   }
 
@@ -149,6 +248,8 @@ export class LLCAperturaComponent implements OnInit {
     
     if (this.currentStep > 1) {
       this.currentStep--;
+      // Guardar el paso actual en localStorage
+      this.wizardStateService.setCurrentStep(this.currentStep);
     }
   }
 
@@ -170,6 +271,7 @@ export class LLCAperturaComponent implements OnInit {
     console.log('[LLCAperturaComponent] Email verificado exitosamente');
     this.showEmailVerification = false;
     this.currentStep = 2; // Avanzar al paso de selección de estado/plan
+    this.wizardStateService.setCurrentStep(this.currentStep);
   }
 
   /**
@@ -182,15 +284,42 @@ export class LLCAperturaComponent implements OnInit {
   }
 
   /**
-   * Envía la solicitud al backend usando el endpoint del wizard
-   * POST /wizard/requests
+   * Maneja el evento cuando el pago y la creación del request son exitosos
+   */
+  onPaymentAndRequestCreated(event: { requestId: number; paymentInfo: any }): void {
+    console.log('[LLCAperturaComponent] Pago procesado y request creado:', event);
+    this.paymentProcessed = true;
+    this.successMessage = '¡Pago procesado exitosamente!';
+  }
+  
+  /**
+   * Maneja errores del pago
+   */
+  onPaymentError(error: string | null): void {
+    this.errorMessage = error;
+  }
+
+  /**
+   * Maneja el cambio de sección en el paso de información LLC
+   */
+  onLlcInfoSectionChanged(section: number): void {
+    this.llcInfoCurrentSection = section;
+    // Guardar la sección actual en localStorage
+    this.wizardStateService.setCurrentStepNumber(section);
+  }
+
+  /**
+   * Finaliza el wizard actualizando el request con los datos finales
+   * El request ya fue creado en el paso de pago
    */
   async onFinish(): Promise<void> {
     if (this.isLoading) return;
 
-    // Verificar que el usuario esté autenticado en el wizard
-    if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Por favor, verifica tu email antes de enviar la solicitud.';
+    const requestId = this.wizardStateService.getRequestId();
+    
+    // Verificar que existe un request
+    if (!requestId) {
+      this.errorMessage = 'Error: No se encontró la solicitud. Por favor, completa el pago primero.';
       return;
     }
 
@@ -202,44 +331,14 @@ export class LLCAperturaComponent implements OnInit {
       const allData = this.wizardStateService.getAllData();
       console.log('[LLCAperturaComponent] Datos finales del wizard:', allData);
 
-      // Obtener datos de cada paso
-      const step1Data = allData.step1 || {}; // Registro básico
       const step2Data = allData.step2 || {}; // Estado y plan
-      const step3Data = allData.step3 || {}; // Pago
       const step4Data = allData.step4 || {}; // Información LLC
 
-      // Verificar que el pago fue procesado
-      if (!step3Data.stripePaymentProcessed || !step3Data.stripePaymentToken) {
-        this.errorMessage = 'Por favor, completa el pago antes de enviar la solicitud.';
-        this.isLoading = false;
-        return;
-      }
-
-      // Obtener datos del usuario autenticado
-      const user = this.wizardApiService.getUser();
-      if (!user) {
-        this.errorMessage = 'Error de autenticación. Por favor, vuelve a verificar tu email.';
-        this.isLoading = false;
-        return;
-      }
-
-      // Preparar datos para el endpoint del wizard
-      const requestData = {
-        type: 'apertura-llc' as const,
-        currentStepNumber: 6, // Último paso
-        currentStep: 5,
-        status: 'pendiente' as const,
-        notes: '',
-        stripeToken: step3Data.stripePaymentToken,
-        paymentAmount: step3Data.amount || step2Data.amount || 0,
-        paymentMethod: 'stripe' as const,
-        clientData: {
-          firstName: step1Data.firstName || user.firstName || '',
-          lastName: step1Data.lastName || user.lastName || '',
-          email: step1Data.email || user.email,
-          phone: step1Data.phone || user.phone || '',
-          password: step1Data.password || '' // El backend ya tiene el usuario, pero lo requiere el DTO
-        },
+      // Preparar datos para actualizar el request
+      const updateData = {
+        type: 'apertura-llc',
+        currentStepNumber: 6, // Paso final
+        status: 'solicitud-recibida',
         aperturaLlcData: {
           ...step4Data,
           incorporationState: step2Data.state || step4Data.incorporationState,
@@ -247,29 +346,42 @@ export class LLCAperturaComponent implements OnInit {
         }
       };
 
-      console.log('[LLCAperturaComponent] Enviando solicitud al wizard:', requestData);
+      console.log('[LLCAperturaComponent] Actualizando solicitud:', requestId, updateData);
 
-      // Crear la solicitud usando el endpoint del wizard
-      const response = await this.wizardApiService.createRequest(requestData).toPromise();
+      // Actualizar la solicitud existente
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
 
-      console.log('[LLCAperturaComponent] Solicitud creada exitosamente:', response);
+      console.log('[LLCAperturaComponent] Solicitud actualizada exitosamente');
       
-      this.successMessage = '¡Solicitud creada exitosamente! Tu pago ha sido procesado.';
+      this.successMessage = '¡Solicitud enviada exitosamente!';
+      this.isSubmitted = true;
       this.isLoading = false;
 
-      // Limpiar estado del wizard
+      // Limpiar estado del wizard y tokens
       this.wizardStateService.clear();
-
-      // Redirigir al panel después de 2 segundos
-      setTimeout(() => {
-        this.router.navigate(['/panel/my-requests']);
-      }, 2000);
+      this.wizardApiService.clearToken();
 
     } catch (error: any) {
-      console.error('[LLCAperturaComponent] Error al crear solicitud:', error);
-      this.errorMessage = error?.error?.message || 'Error al crear la solicitud. Por favor, intenta nuevamente.';
+      console.error('[LLCAperturaComponent] Error al actualizar solicitud:', error);
+      this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
     }
+  }
+
+  /**
+   * Navega al panel del usuario
+   */
+  onGoToPanel(): void {
+    this.router.navigate(['/panel']);
+  }
+
+  /**
+   * Navega al home
+   */
+  onGoToHome(): void {
+    this.currentLang === 'es'
+      ? this.router.navigate(['/'])
+      : this.router.navigate(['/en']);
   }
 
   onCancel(): void {

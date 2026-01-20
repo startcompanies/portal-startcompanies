@@ -7,7 +7,7 @@ import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
-import { combineLatest } from 'rxjs';
+import { combineLatest, firstValueFrom } from 'rxjs';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -21,7 +21,13 @@ import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-reno
 
 /**
  * Componente principal para el flujo de renovación de LLC
- * Usa los endpoints del wizard para registro y creación de solicitud
+ * 
+ * FLUJO:
+ * 1. Registro → verificación email
+ * 2. Selección de estado
+ * 3. Pago → SE CREA EL REQUEST EN BD
+ * 4. Información de renovación → SE ACTUALIZA EL REQUEST
+ * 5. Revisión final
  */
 @Component({
   selector: 'app-llc-renovacion',
@@ -41,6 +47,7 @@ import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-reno
 })
 export class LLCRenovacionComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
   
   flowConfig!: any;
   currentStepIndex = 0;
@@ -55,6 +62,12 @@ export class LLCRenovacionComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  
+  // Control de envío exitoso
+  isSubmitted = false;
+  
+  // Control del pago
+  paymentProcessed = false;
   
   stepIcons: { [key: number]: string } = {
     1: 'bi-person-plus',
@@ -149,6 +162,18 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Verificar si hay un estado guardado del mismo servicio
+    const savedServiceType = this.wizardStateService.getServiceType();
+    
+    // Si el servicio guardado es diferente, limpiar el estado
+    if (savedServiceType && savedServiceType !== 'renovacion-llc') {
+      console.log('[LLCRenovacionComponent] Servicio diferente guardado, limpiando estado');
+      this.wizardStateService.clear();
+    }
+    
+    // Establecer el tipo de servicio
+    this.wizardStateService.setServiceType('renovacion-llc');
+    
     this.flowConfig = this.wizardConfigService.getFlowConfig(WizardFlowType.LLC_RENOVACION);
     this.initializeStepTitles();
     this.currentLang = this.languageService.currentLang;
@@ -156,6 +181,35 @@ export class LLCRenovacionComponent implements OnInit {
       this.currentLang = l;
       this.initializeStepTitles();
     });
+    
+    // Restaurar el paso desde localStorage si existe
+    const savedStep = this.wizardStateService.getCurrentStep();
+    const savedStepNumber = this.wizardStateService.getCurrentStepNumber();
+    
+    // Verificar si el usuario ya está autenticado y si hay un request existente
+    if (this.wizardApiService.isAuthenticated()) {
+      console.log('[LLCRenovacionComponent] Usuario ya autenticado');
+      if (this.wizardStateService.hasRequest()) {
+        this.paymentProcessed = true;
+        
+        // Restaurar el paso guardado si es válido (después del pago)
+        if (savedStep >= 2) {
+          this.currentStepIndex = savedStep - 1; // Convertir a índice base 0
+          this.renovacionInfoCurrentSection = savedStepNumber || 1;
+          console.log('[LLCRenovacionComponent] Restaurando paso:', this.currentStepIndex, 'sección:', this.renovacionInfoCurrentSection);
+        } else {
+          this.currentStepIndex = 3; // Ir al paso de información si ya pagó
+        }
+      } else {
+        // Usuario autenticado pero sin request
+        this.currentStepIndex = savedStep >= 1 ? savedStep - 1 : 1;
+      }
+    } else if (savedStep > 1) {
+      // No está autenticado pero hay un paso guardado mayor a 1
+      console.log('[LLCRenovacionComponent] Estado inconsistente, reseteando');
+      this.wizardStateService.clear();
+      this.currentStepIndex = 0;
+    }
   }
 
   private initializeStepTitles(): void {
@@ -178,6 +232,8 @@ export class LLCRenovacionComponent implements OnInit {
 
   onStepChanged(index: number): void {
     this.currentStepIndex = index;
+    // Guardar el paso actual en localStorage (convertir a base 1)
+    this.wizardStateService.setCurrentStep(index + 1);
   }
 
   /**
@@ -198,6 +254,7 @@ export class LLCRenovacionComponent implements OnInit {
     console.log('[LLCRenovacionComponent] Email verificado exitosamente');
     this.showEmailVerification = false;
     this.currentStepIndex = 1; // Avanzar al siguiente paso
+    this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
   }
 
   /**
@@ -208,16 +265,94 @@ export class LLCRenovacionComponent implements OnInit {
       await this.registerStep.resendVerificationEmail();
     }
   }
+  
+  /**
+   * Maneja el evento cuando el pago y la creación del request son exitosos
+   */
+  onPaymentAndRequestCreated(event: { requestId: number; paymentInfo: any }): void {
+    console.log('[LLCRenovacionComponent] Pago procesado y request creado:', event);
+    this.paymentProcessed = true;
+    this.successMessage = '¡Pago procesado exitosamente!';
+  }
+  
+  /**
+   * Maneja el cambio de sección en el paso de información de renovación
+   */
+  onRenovacionInfoSectionChanged(section: number): void {
+    this.renovacionInfoCurrentSection = section;
+    // Guardar la sección actual en localStorage
+    this.wizardStateService.setCurrentStepNumber(section);
+  }
+  
+  /**
+   * Maneja errores del pago
+   */
+  onPaymentError(error: string | null): void {
+    this.errorMessage = error;
+  }
+  
+  /**
+   * Procesa el pago y avanza al siguiente paso
+   */
+  async processPaymentAndContinue(): Promise<void> {
+    if (this.paymentProcessed) {
+      this.currentStepIndex = 3;
+      return;
+    }
+    
+    if (this.paymentStep) {
+      this.isLoading = true;
+      const success = await this.paymentStep.processStripePayment();
+      this.isLoading = false;
+      
+      if (success) {
+        this.paymentProcessed = true;
+        this.currentStepIndex = 3;
+      }
+    }
+  }
+  
+  /**
+   * Actualiza los datos del request en el backend
+   */
+  private async updateRequestData(): Promise<void> {
+    const requestId = this.wizardStateService.getRequestId();
+    if (!requestId) return;
+    
+    try {
+      const allData = this.wizardStateService.getAllData();
+      const step2Data = allData.step2 || {};
+      const serviceData = this.serviceDataForm.value;
+      
+      const updateData = {
+        type: 'renovacion-llc',
+        currentStepNumber: this.currentStepIndex + 1,
+        renovacionLlcData: {
+          ...serviceData,
+          state: step2Data.state || serviceData.state,
+          members: serviceData.owners || []
+        }
+      };
+      
+      console.log('[LLCRenovacionComponent] Actualizando request:', requestId, updateData);
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
+      console.log('[LLCRenovacionComponent] Request actualizado exitosamente');
+    } catch (error: any) {
+      console.error('[LLCRenovacionComponent] Error al actualizar request:', error);
+    }
+  }
 
   /**
-   * Envía la solicitud al backend usando el endpoint del wizard
+   * Finaliza el wizard actualizando el request con los datos finales
    */
   async onFinish(): Promise<void> {
     if (this.isLoading) return;
 
-    // Verificar que el usuario esté autenticado en el wizard
-    if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Por favor, verifica tu email antes de enviar la solicitud.';
+    const requestId = this.wizardStateService.getRequestId();
+    
+    // Verificar que existe un request
+    if (!requestId) {
+      this.errorMessage = 'Error: No se encontró la solicitud. Por favor, completa el pago primero.';
       return;
     }
 
@@ -227,43 +362,16 @@ export class LLCRenovacionComponent implements OnInit {
 
     try {
       const allData = this.wizardStateService.getAllData();
-      console.log('[LLCRenovacionComponent] Datos finales del wizard:', allData);
-
-      const step1Data = allData.step1 || {};
       const step2Data = allData.step2 || {};
-      const step3Data = allData.step3 || {};
       const serviceData = this.serviceDataForm.value;
+      
+      console.log('[LLCRenovacionComponent] Datos finales del wizard:', serviceData);
 
-      // Verificar pago
-      if (!step3Data.stripePaymentProcessed || !step3Data.stripePaymentToken) {
-        this.errorMessage = 'Por favor, completa el pago antes de enviar la solicitud.';
-        this.isLoading = false;
-        return;
-      }
-
-      const user = this.wizardApiService.getUser();
-      if (!user) {
-        this.errorMessage = 'Error de autenticación. Por favor, vuelve a verificar tu email.';
-        this.isLoading = false;
-        return;
-      }
-
-      const requestData = {
-        type: 'renovacion-llc' as const,
-        currentStepNumber: 6,
-        currentStep: this.flowConfig.totalSteps,
-        status: 'pendiente' as const,
-        notes: '',
-        stripeToken: step3Data.stripePaymentToken,
-        paymentAmount: step3Data.amount || step2Data.amount || 0,
-        paymentMethod: 'stripe' as const,
-        clientData: {
-          firstName: step1Data.firstName || user.firstName || '',
-          lastName: step1Data.lastName || user.lastName || '',
-          email: step1Data.email || user.email,
-          phone: step1Data.phone || user.phone || '',
-          password: step1Data.password || ''
-        },
+      // Preparar datos para actualizar el request
+      const updateData = {
+        type: 'renovacion-llc',
+        currentStepNumber: 6, // Paso final
+        status: 'solicitud-recibida',
         renovacionLlcData: {
           ...serviceData,
           state: step2Data.state || serviceData.state,
@@ -271,26 +379,42 @@ export class LLCRenovacionComponent implements OnInit {
         }
       };
 
-      console.log('[LLCRenovacionComponent] Enviando solicitud al wizard:', requestData);
+      console.log('[LLCRenovacionComponent] Actualizando solicitud:', requestId, updateData);
 
-      const response = await this.wizardApiService.createRequest(requestData).toPromise();
+      // Actualizar la solicitud existente
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
 
-      console.log('[LLCRenovacionComponent] Solicitud creada exitosamente:', response);
+      console.log('[LLCRenovacionComponent] Solicitud actualizada exitosamente');
       
-      this.successMessage = '¡Solicitud creada exitosamente! Tu pago ha sido procesado.';
+      this.successMessage = '¡Solicitud enviada exitosamente!';
+      this.isSubmitted = true;
       this.isLoading = false;
 
+      // Limpiar estado del wizard y tokens
       this.wizardStateService.clear();
-
-      setTimeout(() => {
-        this.router.navigate(['/panel/my-requests']);
-      }, 2000);
+      this.wizardApiService.clearToken();
 
     } catch (error: any) {
-      console.error('[LLCRenovacionComponent] Error al crear solicitud:', error);
-      this.errorMessage = error?.error?.message || 'Error al crear la solicitud. Por favor, intenta nuevamente.';
+      console.error('[LLCRenovacionComponent] Error al actualizar solicitud:', error);
+      this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
     }
+  }
+
+  /**
+   * Navega al panel del usuario
+   */
+  onGoToPanel(): void {
+    this.router.navigate(['/panel']);
+  }
+
+  /**
+   * Navega al home
+   */
+  onGoToHome(): void {
+    this.currentLang === 'es'
+      ? this.router.navigate(['/'])
+      : this.router.navigate(['/en']);
   }
 
   onCancel(): void {

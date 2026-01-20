@@ -143,5 +143,16 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
     this.removeMemberRequested.emit(index);
   }
 
+  /**
+   * Obtiene el label del estado con su abreviación
+   */
+  getStateLabelWithAbbreviation(stateValue: string): string {
+    const state = this.usStates.find(s => s.value === stateValue);
+    if (state) {
+      return `${state.label} (${state.abbreviation})`;
+    }
+    return stateValue;
+  }
+
 }
 

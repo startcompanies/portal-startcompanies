@@ -74,14 +74,30 @@
     <!-- Paso 3: Pago -->
     <div *ngIf="currentStepIndex === 2" class="form-step">
       <h3>{{ stepTitles[3] || 'Pago' }}</h3>
-      <app-wizard-payment-step [stepNumber]="3" [previousStepNumber]="2"></app-wizard-payment-step>
+      <app-wizard-payment-step 
+        #paymentStep
+        [stepNumber]="3" 
+        [previousStepNumber]="2"
+        (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
+        (paymentError)="onPaymentError($event)"
+      ></app-wizard-payment-step>
       
-      <div class="step-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(1)">
+      <div class="step-actions mt-4">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary" 
+          (click)="onStepChanged(1)" 
+          [disabled]="paymentProcessed"
+        >
           Anterior
         </button>
-        <button type="button" class="btn btn-primary" (click)="onStepChanged(3)">
-          Siguiente
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="onStepChanged(3)"
+          [disabled]="!paymentProcessed"
+        >
+          Continuar
         </button>
       </div>
     </div>
@@ -92,7 +108,7 @@
       <app-wizard-renovacion-llc-information-step
         [stepNumber]="4"
         [previousStepNumber]="3"
-        (sectionChanged)="renovacionInfoCurrentSection = $event"
+        (sectionChanged)="onRenovacionInfoSectionChanged($event)"
       ></app-wizard-renovacion-llc-information-step>
       
       <!-- Solo mostrar botones del wizard cuando estamos en la última sección (5) -->
@@ -108,16 +124,22 @@
 
     <!-- Paso 5: Revisión Final -->
     <div *ngIf="currentStepIndex === 4" class="form-step">
-      <h3>{{ stepTitles[5] || 'Revisión Final' }}</h3>
-      <app-wizard-final-review-step [stepNumber]="5" [previousSteps]="[1, 2, 3, 4]"></app-wizard-final-review-step>
+      <app-wizard-final-review-step 
+        [stepNumber]="5" 
+        [previousSteps]="[1, 2, 3, 4]"
+        [serviceType]="'renovacion-llc'"
+        [isSubmitted]="isSubmitted"
+        [isSubmitting]="isLoading"
+        [submitError]="errorMessage"
+        (submitRequest)="onFinish()"
+        (goToPanel)="onGoToPanel()"
+        (goToHome)="onGoToHome()"
+      ></app-wizard-final-review-step>
       
-      <div class="step-actions">
+      <!-- Botón Anterior (solo si no se ha enviado) -->
+      <div class="step-actions" *ngIf="!isSubmitted">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(3)">
           Anterior
-        </button>
-        <button type="button" class="btn btn-success" (click)="onFinish()">
-          <i class="bi bi-check-circle me-2"></i>
-          Enviar Solicitud
         </button>
       </div>
     </div>

@@ -36,6 +36,14 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   waitingEmailVerification = false;
   successMessage: string | null = null;
   detectedCountryCode: string = 'us';
+  
+  // Control de visibilidad de contraseña
+  showPassword = false;
+  
+  // Indicador de seguridad de contraseña
+  passwordStrength: 'weak' | 'medium' | 'strong' | null = null;
+  passwordStrengthText = '';
+  passwordStrengthClass = '';
 
   constructor(
     private wizardStateService: WizardStateService,
@@ -50,16 +58,72 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
      * - fullName: Nombre completo (opcional)
      * - phone: Teléfono (opcional)
      * - email: Correo electrónico (opcional, pero debe tener formato válido si se completa)
-     * - password: Contraseña (opcional)
+     * - password: Contraseña (mínimo 8 caracteres)
      * 
      * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
      */
     this.form = new FormGroup({
       fullName: new FormControl(savedData.fullName || ''),
       phone: new FormControl(savedData.phone || ''),
-      email: new FormControl(savedData.email || '', [Validators.email]), // Solo valida formato si se completa
-      password: new FormControl(savedData.password || ''),
+      email: new FormControl(savedData.email || '', [Validators.email]),
+      password: new FormControl(savedData.password || '', [Validators.minLength(8)]),
     });
+  }
+  
+  /**
+   * Alterna la visibilidad de la contraseña
+   */
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+  
+  /**
+   * Calcula la fortaleza de la contraseña
+   */
+  calculatePasswordStrength(password: string): void {
+    if (!password || password.length === 0) {
+      this.passwordStrength = null;
+      this.passwordStrengthText = '';
+      this.passwordStrengthClass = '';
+      return;
+    }
+    
+    let score = 0;
+    
+    // Longitud mínima
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    
+    // Contiene minúsculas
+    if (/[a-z]/.test(password)) score++;
+    
+    // Contiene mayúsculas
+    if (/[A-Z]/.test(password)) score++;
+    
+    // Contiene números
+    if (/[0-9]/.test(password)) score++;
+    
+    // Contiene caracteres especiales
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    
+    // Determinar nivel
+    if (password.length < 8) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 3) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 5) {
+      this.passwordStrength = 'medium';
+      this.passwordStrengthText = 'Media';
+      this.passwordStrengthClass = 'text-warning';
+    } else {
+      this.passwordStrength = 'strong';
+      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthClass = 'text-success';
+    }
   }
 
   ngOnInit(): void {

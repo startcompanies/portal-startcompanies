@@ -79,3 +79,33 @@
   border: 1px solid #c3e6cb;
   color: #155724;
 }
+
+/* Botón de mostrar/ocultar contraseña */
+.input-group .btn-outline-secondary {
+  border-color: #ddd;
+  color: #6b7280;
+  border-left: none;
+}
+
+.input-group .btn-outline-secondary:hover {
+  background-color: #f3f4f6;
+  border-color: #ddd;
+  color: #374151;
+}
+
+.input-group .btn-outline-secondary:focus {
+  box-shadow: none;
+  border-color: var(--color-secundario-tecnico);
+}
+
+.input-group .form-control {
+  border-right: none;
+}
+
+.input-group .form-control:focus {
+  border-right: none;
+}
+
+.input-group .form-control:focus + .btn-outline-secondary {
+  border-color: var(--color-secundario-tecnico);
+}

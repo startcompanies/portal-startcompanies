@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
+import { WizardApiService } from '../../../services/wizard-api.service';
 import { WizardAperturaLlcFormComponent } from '../wizard-apertura-llc-form/wizard-apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -82,10 +85,15 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   ];
 
   private formSubscription?: Subscription;
+  
+  isSaving = false;
+  saveError: string | null = null;
 
   constructor(
     private wizardStateService: WizardStateService,
-    private fb: FormBuilder
+    private wizardApiService: WizardApiService,
+    private fb: FormBuilder,
+    private http: HttpClient
   ) {
     // Inicializar formulario con estructura de apertura-llc-form
     this.serviceDataForm = this.fb.group({
@@ -204,50 +212,115 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja la selección de archivos
+   * Maneja la selección de archivos y los sube al S3
    */
-  onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): void {
+  async onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): Promise<void> {
     const input = event.event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
-    this.fileUploadStates[event.fileKey] = {
-      file: file,
-      uploading: false,
-      progress: 0
-    };
-
-    // Aquí se podría implementar la subida del archivo
-    // Por ahora solo guardamos el estado
-    const control = this.serviceDataForm.get(event.formControlPath);
-    if (control) {
-      control.setValue(file.name); // O la URL después de subir
-    }
+    await this.uploadFile(file, event.formControlPath, event.fileKey);
   }
 
   /**
-   * Maneja la selección de archivos de miembros
+   * Maneja la selección de archivos de miembros y los sube al S3
    */
-  onMemberFileSelected(event: { event: Event; memberIndex: number; formControlPath: string; fileKey: string }): void {
+  async onMemberFileSelected(event: { event: Event; memberIndex: number; formControlPath: string; fileKey: string }): Promise<void> {
     const input = event.event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
     const fileKey = `member${event.memberIndex}_${event.fileKey}`;
+    const fullPath = `members.${event.memberIndex}.${event.formControlPath}`;
+    
+    await this.uploadFile(file, fullPath, fileKey);
+  }
+
+  /**
+   * Sube un archivo al S3 y actualiza el control del formulario con la URL
+   */
+  async uploadFile(file: File, formControlPath: string, fileKey: string): Promise<void> {
+    if (!file) return;
+
+    // Inicializar estado de subida
     this.fileUploadStates[fileKey] = {
       file: file,
-      uploading: false,
+      uploading: true,
       progress: 0
     };
 
-    const membersArray = this.serviceDataForm.get('members') as FormArray;
-    const memberGroup = membersArray.at(event.memberIndex) as FormGroup;
-    if (memberGroup) {
-      const control = memberGroup.get(event.formControlPath);
-      if (control) {
-        control.setValue(file.name); // O la URL después de subir
+    try {
+      const serviceType = 'apertura-llc';
+      const requestId = this.wizardStateService.getRequestId();
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', serviceType);
+
+      // Si ya hay un request creado, incluir el UUID
+      if (requestId) {
+        formData.append('requestUuid', requestId.toString());
+        console.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+      } else {
+        console.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
+
+      const response = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+
+      if (response && response.url) {
+        // Buscar el control y establecer la URL
+        const control = this.findFormControl(formControlPath);
+        if (control) {
+          control.setValue(response.url, { emitEvent: true });
+          control.markAsTouched();
+          control.markAsDirty();
+          console.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
+        }
+        
+        // Limpiar el archivo del estado (ya fue subido)
+        this.fileUploadStates[fileKey].file = null;
+      }
+    } catch (error: any) {
+      console.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
+      this.fileUploadStates[fileKey].file = null;
+    } finally {
+      this.fileUploadStates[fileKey].uploading = false;
+      this.fileUploadStates[fileKey].progress = 0;
     }
+  }
+
+  /**
+   * Busca un control en el formulario por su ruta
+   */
+  findFormControl(path: string): any {
+    // Si el path contiene puntos, navegar por la estructura
+    if (path.includes('.')) {
+      const parts = path.split('.');
+      let current: any = this.serviceDataForm;
+      
+      for (const part of parts) {
+        if (current instanceof FormArray) {
+          const index = parseInt(part, 10);
+          current = current.at(index);
+        } else if (current instanceof FormGroup) {
+          current = current.get(part);
+        } else {
+          return null;
+        }
+        
+        if (!current) return null;
+      }
+      
+      return current;
+    }
+    
+    // Path simple
+    return this.serviceDataForm.get(path);
   }
 
   /**
@@ -330,12 +403,52 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navega a la siguiente sección
+   * Navega a la siguiente sección y guarda los datos en la API
    */
-  goToNextSection(): void {
+  async goToNextSection(): Promise<void> {
     if (this.currentSection < 3) {
+      // Guardar datos en la API antes de avanzar
+      await this.saveToApi();
+      
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
+    }
+  }
+  
+  /**
+   * Guarda los datos en la API
+   */
+  async saveToApi(): Promise<void> {
+    const requestId = this.wizardStateService.getRequestId();
+    if (!requestId) {
+      console.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
+      return;
+    }
+    
+    this.isSaving = true;
+    this.saveError = null;
+    
+    try {
+      const formData = this.serviceDataForm.value;
+      
+      const updateData = {
+        type: 'apertura-llc',
+        currentStepNumber: this.currentSection,
+        aperturaLlcData: {
+          ...formData,
+          members: formData.members || []
+        }
+      };
+      
+      console.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
+      console.log('[WizardLlcInformationStep] Datos guardados exitosamente');
+      
+    } catch (error: any) {
+      console.error('[WizardLlcInformationStep] Error al guardar:', error);
+      this.saveError = error?.error?.message || 'Error al guardar los datos';
+    } finally {
+      this.isSaving = false;
     }
   }
 

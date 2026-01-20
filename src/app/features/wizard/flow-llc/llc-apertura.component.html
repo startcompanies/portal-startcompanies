@@ -100,16 +100,29 @@
   <div *ngIf="currentStep === 3" class="form-step">
     <h3>{{ stepTitles[3] || 'Pago' }}</h3>
     <app-wizard-payment-step 
+      #paymentStep
       [stepNumber]="3" 
       [previousStepNumber]="2"
+      (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
+      (paymentError)="onPaymentError($event)"
     ></app-wizard-payment-step>
     
-    <div class="step-actions">
-      <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+    <div class="step-actions mt-4">
+      <button 
+        type="button" 
+        class="btn btn-outline-secondary" 
+        (click)="previousStep()" 
+        [disabled]="paymentProcessed"
+      >
         Anterior
       </button>
-      <button type="button" class="btn btn-primary" (click)="nextStep()">
-        Siguiente
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="nextStep()"
+        [disabled]="!paymentProcessed"
+      >
+        Continuar
       </button>
     </div>
   </div>
@@ -119,7 +132,7 @@
     <app-wizard-llc-information-step 
       [stepNumber]="4" 
       [previousStepNumber]="3"
-      (sectionChanged)="llcInfoCurrentSection = $event"
+      (sectionChanged)="onLlcInfoSectionChanged($event)"
     ></app-wizard-llc-information-step>
     
     <!-- Solo mostrar botones del wizard cuando estamos en la última sección (3) -->
@@ -135,35 +148,27 @@
 
   <!-- Paso 5: Revisión Final -->
   <div *ngIf="currentStep === 5" class="form-step">
-    <h3>{{ stepTitles[5] || 'Revisión Final' }}</h3>
     <app-wizard-final-review-step 
       [stepNumber]="5" 
       [previousSteps]="[1, 2, 3, 4]"
+      [serviceType]="'apertura-llc'"
+      [isSubmitted]="isSubmitted"
+      [isSubmitting]="isLoading"
+      [submitError]="errorMessage"
+      (submitRequest)="onFinish()"
+      (goToPanel)="onGoToPanel()"
+      (goToHome)="onGoToHome()"
     ></app-wizard-final-review-step>
     
-    <div class="step-actions">
+    <!-- Botón Anterior (solo si no se ha enviado) -->
+    <div class="step-actions" *ngIf="!isSubmitted">
       <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
         Anterior
       </button>
-      <button 
-        type="button" 
-        class="btn btn-success" 
-        (click)="onFinish()"
-        [disabled]="isLoading"
-      >
-        <span *ngIf="!isLoading">
-          <i class="bi bi-check-circle me-2"></i>
-          Enviar Solicitud
-        </span>
-        <span *ngIf="isLoading">
-          <span class="spinner-border spinner-border-sm me-2"></span>
-          Enviando...
-        </span>
-      </button>
     </div>
     
-    <!-- Mensajes de éxito/error -->
-    <div *ngIf="successMessage" class="alert alert-success mt-3">
+    <!-- Mensajes de éxito/error (legacy, ahora se manejan en el componente) -->
+    <div *ngIf="successMessage && !isSubmitted" class="alert alert-success mt-3">
       {{ successMessage }}
     </div>
     <div *ngIf="errorMessage" class="alert alert-danger mt-3">

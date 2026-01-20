@@ -11,7 +11,30 @@
       
       <div class="col-md-6">
         <label for="renovacionState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
-        <select id="renovacionState" class="form-select" formControlName="state">
+        <!-- Si el estado ya viene del paso anterior, mostrarlo como readonly -->
+        <div *ngIf="serviceDataForm.get('state')?.value" class="input-group">
+          <input 
+            type="text" 
+            id="renovacionState" 
+            class="form-control bg-light" 
+            [value]="getStateLabelWithAbbreviation(serviceDataForm.get('state')?.value)"
+            readonly
+          />
+          <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill text-muted"></i>
+          </span>
+        </div>
+        <small *ngIf="serviceDataForm.get('state')?.value" class="form-text text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          El estado fue seleccionado en el paso anterior y no puede modificarse.
+        </small>
+        <!-- Solo mostrar select si no hay estado seleccionado -->
+        <select 
+          *ngIf="!serviceDataForm.get('state')?.value"
+          id="renovacionState" 
+          class="form-select" 
+          formControlName="state"
+        >
           <option value="">Selecciona un estado...</option>
           <option *ngFor="let state of usStates" [value]="state.value">
             {{ state.label }} ({{ state.abbreviation }})
