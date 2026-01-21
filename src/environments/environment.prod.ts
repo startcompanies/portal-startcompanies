@@ -1,6 +1,5 @@
 export const environment = {
   production: true,
-  //apiUrl: 'http://localhost:5000',
   apiUrl: 'https://api-web.startcompanies.us',
   postsEndpoint: '/posts/get-from-portal',
   categoriesEndpoint: '/categories/whith-posts-count',
@@ -13,7 +12,6 @@ export const environment = {
   baseUrl: 'https://startcompanies.us',
   domain: 'startcompanies.us',
   stripe: {
-    // TODO: Reemplazar con tu clave pública de Stripe para producción
     publishableKey: 'pk_live_51...' // Clave de producción
   }
 };
