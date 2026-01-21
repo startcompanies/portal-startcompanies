@@ -35,9 +35,31 @@
       <div class="col">
         <div class="form-group">
           <label>{{ 'WIZARD.basic_register.email' | transloco }} <span class="text-danger">*</span></label>
-          <input class="form-control" formControlName="email" type="email" />
-          <div *ngIf="form.get('email')?.touched && form.get('email')?.invalid" class="text-danger mt-1">
-            {{ form.get('email')?.errors?.['email'] ? 'El formato del email no es válido' : 'WIZARD.basic_register.email_required' | transloco }}
+          <input 
+            class="form-control" 
+            formControlName="email" 
+            type="email"
+            [class.is-invalid]="form.get('email')?.invalid && (form.get('email')?.touched || form.get('email')?.dirty)"
+            [class.is-valid]="form.get('email')?.valid && form.get('email')?.touched && !form.get('email')?.pending"
+          />
+          <!-- Indicador de carga mientras valida -->
+          <div *ngIf="form.get('email')?.pending" class="text-info mt-1 small">
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            Verificando disponibilidad del email...
+          </div>
+          <!-- Error de formato de email -->
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email'] && !form.get('email')?.errors?.['emailTaken']" class="text-danger mt-1">
+            El formato del email no es válido
+          </div>
+          <!-- Error de email ya registrado -->
+          <div *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['emailTaken']" class="text-danger mt-1">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            {{ form.get('email')?.errors?.['emailTaken']?.message || 'Este email ya está registrado' }}
+          </div>
+          <!-- Mensaje de éxito cuando el email está disponible -->
+          <div *ngIf="form.get('email')?.valid && form.get('email')?.touched && !form.get('email')?.pending && !form.get('email')?.errors?.['emailTaken']" class="text-success mt-1 small">
+            <i class="bi bi-check-circle me-1"></i>
+            Email disponible
           </div>
         </div>
       </div>

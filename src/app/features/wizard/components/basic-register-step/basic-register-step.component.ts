@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription } from 'rxjs';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of, timer } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
 
@@ -65,9 +66,53 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     this.form = new FormGroup({
       fullName: new FormControl(savedData.fullName || ''),
       phone: new FormControl(savedData.phone || ''),
-      email: new FormControl(savedData.email || '', [Validators.email]),
+      email: new FormControl(
+        savedData.email || '', 
+        [Validators.email],
+        [this.emailAvailabilityValidator()]
+      ),
       password: new FormControl(savedData.password || '', [Validators.minLength(8)]),
     });
+  }
+
+  /**
+   * Validador asíncrono para verificar disponibilidad de email
+   * Usa debounce de 500ms para evitar demasiadas peticiones
+   */
+  private emailAvailabilityValidator(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      // Si el campo está vacío o no tiene formato válido, no validar
+      if (!control.value || control.value.trim() === '') {
+        return of(null);
+      }
+
+      // Validar formato de email primero
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(control.value)) {
+        return of(null); // Dejar que Validators.email maneje esto
+      }
+
+      // Debounce de 500ms antes de hacer la petición
+      return timer(500).pipe(
+        switchMap(() => {
+          return this.wizardApiService.checkEmailAvailability(control.value).pipe(
+            map((response) => {
+              if (response.available) {
+                return null; // Email disponible, no hay error
+              } else {
+                // Email no disponible, retornar error
+                return { emailTaken: { message: response.message } };
+              }
+            }),
+            catchError((error) => {
+              // En caso de error, no bloquear el formulario
+              console.error('[EmailValidator] Error al verificar email:', error);
+              return of(null);
+            })
+          );
+        })
+      );
+    };
   }
   
   /**
