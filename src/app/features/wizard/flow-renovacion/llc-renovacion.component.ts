@@ -47,6 +47,7 @@ import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-reno
 })
 export class LLCRenovacionComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
   
   flowConfig!: any;
@@ -237,6 +238,78 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   /**
+   * Para el paso 2 (estado + tipo LLC): solo permitir avanzar si hay amount calculado.
+   */
+  canProceedFromStateStep(): boolean {
+    const step2 = this.wizardStateService.getStepData(2) || {};
+    return !!(step2.state && step2.llcType && typeof step2.amount === 'number' && step2.amount > 0);
+  }
+
+  /**
+   * Navega al siguiente paso asegurando el flujo de registro → verificación de email.
+   */
+  async nextStep(): Promise<void> {
+    this.errorMessage = null;
+
+    // Paso 1 (index 0): registro + verificación
+    if (this.currentStepIndex === 0 && !this.wizardApiService.isAuthenticated()) {
+      if (this.showEmailVerification) {
+        return; // ya está en verificación
+      }
+
+      if (this.registerStep) {
+        const registered = await this.registerStep.registerUser();
+        if (!registered) {
+          // Si retorna false, significa que necesita verificación de email
+          const stepData = this.wizardStateService.getStepData(1);
+          if (stepData.email) {
+            this.registeredEmail = stepData.email;
+            this.registeredPassword = stepData.password || '';
+            this.showEmailVerification = true;
+          }
+          return;
+        }
+      }
+    }
+
+    // Paso 2 (index 1): estado + tipo LLC + amount requerido
+    if (this.currentStepIndex === 1 && !this.canProceedFromStateStep()) {
+      return;
+    }
+
+    // Paso 3 (index 2): pago debe estar procesado
+    if (this.currentStepIndex === 2 && !this.paymentProcessed) {
+      return;
+    }
+
+    // Si ya hay request (después de pago), podemos ir guardando datos
+    if (this.currentStepIndex >= 3 && this.wizardStateService.hasRequest()) {
+      await this.updateRequestData();
+    }
+
+    if (this.currentStepIndex < 4) {
+      this.currentStepIndex++;
+      this.showEmailVerification = false;
+      this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
+    }
+  }
+
+  /**
+   * Navega al paso anterior y permite volver desde la pantalla de verificación.
+   */
+  previousStep(): void {
+    if (this.showEmailVerification) {
+      this.showEmailVerification = false;
+      return;
+    }
+
+    if (this.currentStepIndex > 0) {
+      this.currentStepIndex--;
+      this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
+    }
+  }
+
+  /**
    * Maneja el evento cuando el usuario se registra
    */
   onUserCreated(event: { userId: number; email: string }): void {
@@ -261,8 +334,19 @@ export class LLCRenovacionComponent implements OnInit {
    * Maneja el reenvío del código de verificación
    */
   async onResendCode(): Promise<void> {
-    if (this.registerStep) {
+    if (!this.registerStep) {
+      this.emailVerificationStep?.notifyResendResult(false, 'Error: No se encontró el paso de registro.');
+      return;
+    }
+
+    try {
       await this.registerStep.resendVerificationEmail();
+      // Notificar éxito al componente de verificación
+      this.emailVerificationStep?.notifyResendResult(true, 'Código reenviado. Por favor, revisa tu bandeja de entrada.');
+    } catch (error: any) {
+      // Notificar error al componente de verificación
+      const errorMessage = error?.error?.message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+      this.emailVerificationStep?.notifyResendResult(false, errorMessage);
     }
   }
   

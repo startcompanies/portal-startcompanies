@@ -8,6 +8,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { StripeService } from '../../services/stripe.service';
 import { HttpClient } from '@angular/common/http';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
+import { WizardPlansService } from '../../services/wizard-plans.service';
 
 /**
  * Componente reutilizable para el paso de pago
@@ -60,6 +61,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
     private stripeService: StripeService,
+    private wizardPlansService: WizardPlansService,
     private http: HttpClient
   ) {
     // Cargar datos guardados si existen
@@ -87,24 +89,27 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       
       // Obtener plan y estado del paso anterior
       if (this.previousStepData) {
-        this.packId = this.previousStepData.plan || this.packId;
+        const rawPlanValue = this.previousStepData.plan;
+        // `plan` se usa en apertura (estado/plan). En renovación guardamos `service`.
+        this.packId = rawPlanValue
+          ? this.wizardPlansService.getPlanDisplayLabel(rawPlanValue)
+          : (this.previousStepData.service || this.packId);
         this.state = this.previousStepData.state || this.state;
         
         // Obtener monto del paso anterior
         if (this.previousStepData.amount) {
           this.totalAmount = this.previousStepData.amount;
         } else {
-          // Fallback: calcular según el plan (debe coincidir con /planes)
-          const planValue = this.previousStepData.plan || this.packId;
-          if (planValue === 'Entrepreneur') {
-            this.totalAmount = 499;
-          } else if (planValue === 'Elite') {
-            this.totalAmount = 600;
-          } else if (planValue === 'Premium') {
-            this.totalAmount = 999;
-          }
+          // Fallback: calcular según el plan (centralizado, consistente con /planes)
+          this.totalAmount = this.wizardPlansService.calculateAmount(rawPlanValue);
         }
       }
+    }
+
+    const serviceType = this.wizardStateService.getServiceType();
+    // Fallback de etiqueta de "Plan" para flujos sin plan (renovación/cuenta bancaria)
+    if (!this.packId) {
+      this.packId = this.wizardPlansService.getServiceLabel(serviceType);
     }
 
     // Cargar datos guardados

@@ -51,6 +51,7 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 })
 export class LLCAperturaComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
   
   currentStep = 1;
@@ -281,8 +282,19 @@ export class LLCAperturaComponent implements OnInit {
    * Maneja el reenvío del código de verificación
    */
   async onResendCode(): Promise<void> {
-    if (this.registerStep) {
+    if (!this.registerStep) {
+      this.emailVerificationStep?.notifyResendResult(false, 'Error: No se encontró el paso de registro.');
+      return;
+    }
+
+    try {
       await this.registerStep.resendVerificationEmail();
+      // Notificar éxito al componente de verificación
+      this.emailVerificationStep?.notifyResendResult(true, 'Código reenviado. Por favor, revisa tu bandeja de entrada.');
+    } catch (error: any) {
+      // Notificar error al componente de verificación
+      const errorMessage = error?.error?.message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+      this.emailVerificationStep?.notifyResendResult(false, errorMessage);
     }
   }
 

@@ -33,7 +33,7 @@ import { firstValueFrom } from 'rxjs';
               type="text" 
               class="form-control text-center code-digit"
               maxlength="1"
-              [(ngModel)]="codeDigits[i]"
+              [value]="codeDigits[i]"
               (input)="onDigitInput($event, i)"
               (keydown)="onKeyDown($event, i)"
               (paste)="onPaste($event)"
@@ -149,25 +149,37 @@ export class WizardEmailVerificationComponent implements OnInit {
    */
   onDigitInput(event: Event, index: number): void {
     const input = event.target as HTMLInputElement;
-    const value = input.value;
+    let value = input.value;
 
     // Solo permitir números
     if (!/^\d*$/.test(value)) {
       this.codeDigits[index] = '';
+      input.value = '';
       return;
     }
 
+    // Obtener solo el último carácter si se ingresó más de uno (por paste o autocompletado)
+    if (value.length > 1) {
+      value = value.slice(-1);
+    }
+
+    // Actualizar el dígito en el array
+    this.codeDigits[index] = value;
+    input.value = value;
+
     // Mover al siguiente input si se ingresó un dígito
     if (value && index < 5) {
-      const nextInput = document.getElementById(`digit-${index + 1}`);
-      if (nextInput) {
-        nextInput.focus();
-      }
+      setTimeout(() => {
+        const nextInput = document.getElementById(`digit-${index + 1}`);
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }, 0);
     }
 
     // Si se completó el código, verificar automáticamente
     if (this.isCodeComplete()) {
-      this.verifyCode();
+      setTimeout(() => this.verifyCode(), 100);
     }
   }
 
@@ -175,23 +187,48 @@ export class WizardEmailVerificationComponent implements OnInit {
    * Maneja las teclas especiales (backspace, flechas)
    */
   onKeyDown(event: KeyboardEvent, index: number): void {
-    if (event.key === 'Backspace' && !this.codeDigits[index] && index > 0) {
-      const prevInput = document.getElementById(`digit-${index - 1}`);
-      if (prevInput) {
-        prevInput.focus();
+    const input = event.target as HTMLInputElement;
+    
+    if (event.key === 'Backspace') {
+      // Si hay contenido, limpiarlo primero
+      if (this.codeDigits[index]) {
+        this.codeDigits[index] = '';
+        input.value = '';
+        event.preventDefault();
+        return;
+      }
+      // Si está vacío, mover al anterior
+      if (index > 0) {
+        const prevInput = document.getElementById(`digit-${index - 1}`) as HTMLInputElement;
+        if (prevInput) {
+          prevInput.focus();
+          prevInput.select();
+        }
+        event.preventDefault();
       }
     }
+    
     if (event.key === 'ArrowLeft' && index > 0) {
       const prevInput = document.getElementById(`digit-${index - 1}`);
       if (prevInput) {
-        prevInput.focus();
+        (prevInput as HTMLInputElement).focus();
+        (prevInput as HTMLInputElement).select();
       }
+      event.preventDefault();
     }
+    
     if (event.key === 'ArrowRight' && index < 5) {
       const nextInput = document.getElementById(`digit-${index + 1}`);
       if (nextInput) {
-        nextInput.focus();
+        (nextInput as HTMLInputElement).focus();
+        (nextInput as HTMLInputElement).select();
       }
+      event.preventDefault();
+    }
+    
+    // Prevenir que se ingresen caracteres no numéricos
+    if (event.key.length === 1 && !/^\d$/.test(event.key)) {
+      event.preventDefault();
     }
   }
 
@@ -287,20 +324,39 @@ export class WizardEmailVerificationComponent implements OnInit {
    * Reenvía el código de verificación
    */
   async resendCode(): Promise<void> {
+    if (!this.email) {
+      this.errorMessage = 'No se encontró el email. Por favor, vuelve al paso anterior.';
+      return;
+    }
+
     this.isResending = true;
     this.errorMessage = '';
     this.successMessage = '';
     
+    // Emitir evento para que el componente padre maneje el reenvío
+    // El componente padre debe llamar a registerStep.resendVerificationEmail()
+    // y luego notificar el resultado usando notifyResendResult()
     this.resendRequested.emit();
+  }
+
+  /**
+   * Método público para que el componente padre notifique el resultado del reenvío
+   * @param success - true si el reenvío fue exitoso, false si falló
+   * @param message - Mensaje opcional a mostrar
+   */
+  notifyResendResult(success: boolean, message?: string): void {
+    this.isResending = false;
     
-    // El componente padre manejará el reenvío
-    setTimeout(() => {
-      this.isResending = false;
-      this.successMessage = 'Código reenviado. Revisa tu bandeja de entrada.';
+    if (success) {
+      this.successMessage = message || 'Código reenviado. Por favor, revisa tu bandeja de entrada.';
+      this.errorMessage = '';
       setTimeout(() => {
         this.successMessage = '';
-      }, 3000);
-    }, 1000);
+      }, 5000);
+    } else {
+      this.errorMessage = message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+      this.successMessage = '';
+    }
   }
 }
 

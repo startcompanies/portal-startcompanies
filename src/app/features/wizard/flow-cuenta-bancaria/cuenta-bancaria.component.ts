@@ -8,6 +8,7 @@ import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
+import { WizardPlansService } from '../services/wizard-plans.service';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -50,6 +51,7 @@ import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cue
 })
 export class CuentaBancariaComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
+  @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
   
   withPayment: boolean = false;
@@ -77,6 +79,8 @@ export class CuentaBancariaComponent implements OnInit {
   
   // Control del pago
   paymentProcessed = false;
+
+  bankAccountFixedAmountUsd: number = 99;
 
   // Formulario de datos del servicio
   serviceDataForm!: FormGroup;
@@ -142,6 +146,7 @@ export class CuentaBancariaComponent implements OnInit {
     private wizardConfigService: WizardConfigService,
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
+    private wizardPlansService: WizardPlansService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
     public translocoService: TranslocoService,
@@ -152,6 +157,7 @@ export class CuentaBancariaComponent implements OnInit {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
     this.initializeCuentaBancariaForm(this.serviceDataForm);
+    this.bankAccountFixedAmountUsd = this.wizardPlansService.getBankAccountFixedAmountUsd();
   }
 
   ngOnInit(): void {
@@ -245,6 +251,54 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   /**
+   * Navega al siguiente paso asegurando el flujo de registro → verificación de email.
+   */
+  async nextStep(): Promise<void> {
+    this.errorMessage = null;
+
+    // Paso 1 (index 0): registro + verificación
+    if (this.currentStepIndex === 0 && !this.wizardApiService.isAuthenticated()) {
+      if (this.showEmailVerification) {
+        return;
+      }
+
+      if (this.registerStep) {
+        const registered = await this.registerStep.registerUser();
+        if (!registered) {
+          const stepData = this.wizardStateService.getStepData(1);
+          if (stepData.email) {
+            this.registeredEmail = stepData.email;
+            this.registeredPassword = stepData.password || '';
+            this.showEmailVerification = true;
+          }
+          return;
+        }
+      }
+    }
+
+    // Si el siguiente paso es pago, el propio PaymentStep controla la autenticación.
+    // Acá solo avanzamos de forma lineal.
+    this.currentStepIndex++;
+    this.showEmailVerification = false;
+    this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
+  }
+
+  /**
+   * Navega al paso anterior y permite volver desde la pantalla de verificación.
+   */
+  previousStep(): void {
+    if (this.showEmailVerification) {
+      this.showEmailVerification = false;
+      return;
+    }
+
+    if (this.currentStepIndex > 0) {
+      this.currentStepIndex--;
+      this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
+    }
+  }
+
+  /**
    * Maneja el evento cuando el usuario se registra
    */
   onUserCreated(event: { userId: number; email: string }): void {
@@ -269,8 +323,19 @@ export class CuentaBancariaComponent implements OnInit {
    * Maneja el reenvío del código de verificación
    */
   async onResendCode(): Promise<void> {
-    if (this.registerStep) {
+    if (!this.registerStep) {
+      this.emailVerificationStep?.notifyResendResult(false, 'Error: No se encontró el paso de registro.');
+      return;
+    }
+
+    try {
       await this.registerStep.resendVerificationEmail();
+      // Notificar éxito al componente de verificación
+      this.emailVerificationStep?.notifyResendResult(true, 'Código reenviado. Por favor, revisa tu bandeja de entrada.');
+    } catch (error: any) {
+      // Notificar error al componente de verificación
+      const errorMessage = error?.error?.message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+      this.emailVerificationStep?.notifyResendResult(false, errorMessage);
     }
   }
   
