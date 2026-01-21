@@ -1,17 +1,15 @@
 import {
   Component,
-  HostListener,
-  Inject,
   OnInit,
   AfterViewInit,
-  PLATFORM_ID,
+  OnDestroy,
   ChangeDetectorRef,
   ElementRef,
   ViewChild,
 } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
-import { isPlatformBrowser } from '@angular/common';
 import { ScrollService } from '../../../shared/services/scroll.service';
+import { BrowserService } from '../../../shared/services/browser.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, RouterModule } from '@angular/router';
 import { ResponsiveImageComponent } from '../responsive-image/responsive-image.component';
@@ -26,7 +24,7 @@ import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-
   templateUrl: './sc-header.component.html',
   styleUrl: './sc-header.component.css',
 })
-export class ScHeaderComponent implements OnInit, AfterViewInit {
+export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('navbar', { static: false }) navbar?: ElementRef<HTMLElement>;
 
   isOpen = false;
@@ -67,7 +65,7 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
   }
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    private browser: BrowserService,
     private scrollService: ScrollService,
     public translocoService: TranslocoService,
     private router: Router,
@@ -76,31 +74,36 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.navbarScroll();
     }
     this.getCurrentRoute();
   }
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      // Asegurar que el menú esté cerrado después de que la vista se inicialice
-      setTimeout(() => {
-        this.forceCloseMenu();
-      }, 0);
-      
-      // Prevenir que Bootstrap inicialice automáticamente el collapse
-      this.preventBootstrapAutoInit();
-      
-      // Interceptar eventos de Bootstrap que puedan abrir el menú
-      this.interceptBootstrapEvents();
-    }
+    const win = this.browser.window;
+    if (!win) return;
+    
+    // Registrar listener de scroll manualmente (en lugar de @HostListener para SSR)
+    win.addEventListener('scroll', this.onWindowScroll.bind(this));
+    
+    // Asegurar que el menú esté cerrado después de que la vista se inicialice
+    setTimeout(() => {
+      this.forceCloseMenu();
+    }, 0);
+    
+    // Prevenir que Bootstrap inicialice automáticamente el collapse
+    this.preventBootstrapAutoInit();
+    
+    // Interceptar eventos de Bootstrap que puedan abrir el menú
+    this.interceptBootstrapEvents();
   }
 
   private interceptBootstrapEvents(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    const doc = this.browser.document;
+    if (!doc) return;
     
-    const navbarCollapse = document.getElementById('navbarNav');
+    const navbarCollapse = doc.getElementById('navbarNav');
     if (!navbarCollapse) return;
     
     // Observar cambios en el DOM para detectar cuando Bootstrap agrega la clase 'show'
@@ -125,10 +128,11 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
   }
 
   private preventBootstrapAutoInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
+    const doc = this.browser.document;
+    if (!doc) return;
     
     // Remover cualquier instancia de Bootstrap Collapse que pueda existir
-    const navbarCollapse = document.getElementById('navbarNav');
+    const navbarCollapse = doc.getElementById('navbarNav');
     if (navbarCollapse) {
       // Remover cualquier data attribute que Bootstrap pueda usar
       navbarCollapse.removeAttribute('data-bs-parent');
@@ -167,22 +171,21 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
     return this.currentRoute === route || this.currentRoute.includes(route);
   }
 
-  @HostListener('window:scroll', [])
   onWindowScroll() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.navbarScroll();
-      // Cerrar el menú al hacer scroll
-      if (this.isOpen) {
-        this.closeMenu();
-      }
+    if (!this.browser.isBrowser) return;
+    this.navbarScroll();
+    // Cerrar el menú al hacer scroll
+    if (this.isOpen) {
+      this.closeMenu();
     }
   }
 
   private navbarScroll(): void {
-    if (!isPlatformBrowser(this.platformId) || !this.navbar) return;
+    const win = this.browser.window;
+    if (!win || !this.navbar) return;
 
     const wasShrunk = this.isNavbarShrunk;
-    const currentScrollY = window.scrollY;
+    const currentScrollY = win.scrollY;
 
     this.isNavbarShrunk = currentScrollY > 100;
 
@@ -208,8 +211,9 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
 
   private updateMenuVisibility(): void {
     // Prevenir que Bootstrap abra el menú automáticamente
-    if (isPlatformBrowser(this.platformId)) {
-      const navbarCollapse = document.getElementById('navbarNav');
+    const doc = this.browser.document;
+    if (doc) {
+      const navbarCollapse = doc.getElementById('navbarNav');
       if (navbarCollapse) {
         if (this.isOpen) {
           navbarCollapse.classList.add('show');
@@ -220,6 +224,13 @@ export class ScHeaderComponent implements OnInit, AfterViewInit {
           navbarCollapse.style.display = '';
         }
       }
+    }
+  }
+
+  ngOnDestroy(): void {
+    const win = this.browser.window;
+    if (win) {
+      win.removeEventListener('scroll', this.onWindowScroll.bind(this));
     }
   }
 

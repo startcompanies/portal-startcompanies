@@ -9,6 +9,12 @@ html, body {
   overflow-x: hidden;
   max-width: 100vw;
   position: relative;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Asegurar que body use Poppins (sobrescribir Bootstrap) */
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 :root {
@@ -18,6 +24,45 @@ html, body {
   --color-texto-oscuro: #283A48;
   --color-degradado: linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
   --color-fondo-gris: #f8f9fa;
+  /* Sobrescribir fuente de Bootstrap para usar Poppins */
+  --bs-body-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  --bs-font-sans-serif: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  /* Sobrescribir fuente de Angular Material para usar Poppins */
+  --mat-typography-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Forzar Poppins en todos los elementos de texto, sobrescribiendo Bootstrap y Angular Material */
+*:not(i):not(.material-icons):not(.bi):not([class*="icon"]):not([class*="Icon"]),
+*::before:not([class*="icon"]):not([class*="Icon"]),
+*::after:not([class*="icon"]):not([class*="Icon"]) {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Sobrescribir Angular Material typography */
+.mat-typography,
+.mat-body,
+.mat-body-1,
+.mat-body-2,
+.mat-headline,
+.mat-title,
+.mat-subheading-1,
+.mat-subheading-2,
+.mat-caption,
+.mat-display-1,
+.mat-display-2,
+.mat-display-3,
+.mat-display-4,
+[class*="mat-"] {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+/* Sobrescribir Bootstrap typography y componentes */
+p, span, div, a, li, td, th, label, input, textarea, select, button, 
+.btn, .form-control, .form-label, .card, .card-body, .card-title, .card-text, 
+h1, h2, h3, h4, h5, h6, .navbar, .nav, .nav-link, .dropdown, .dropdown-item,
+.table, .table th, .table td, .alert, .badge, .list-group, .list-group-item,
+.modal, .modal-body, .modal-title, .modal-header, .modal-footer {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 /* Estilos específicos para Safari para corregir problemas con imágenes */

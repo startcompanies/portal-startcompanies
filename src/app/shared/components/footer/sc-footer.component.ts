@@ -3,6 +3,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../components/responsive-image/responsive-image.component';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
 import { LanguageService } from '../../../shared/services/language.service';
+import { BrowserService } from '../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-sc-footer',
@@ -27,7 +28,8 @@ export class ScFooterComponent implements OnInit {
   constructor(
     private languageService: LanguageService,
     private translocoService: TranslocoService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -46,6 +48,9 @@ export class ScFooterComponent implements OnInit {
   }
 
   openUrl(url: string) {
-    window.open(url, '_blank');
+    const win = this.browser.window;
+    if (win) {
+      win.open(url, '_blank');
+    }
   }
 }

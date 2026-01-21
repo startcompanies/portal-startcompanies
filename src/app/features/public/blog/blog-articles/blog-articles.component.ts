@@ -1,12 +1,13 @@
-import { Component, inject, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { BlogService } from '../../../../shared/services/blog.service';
 import { BlogSeoService } from '../../../../shared/services/blog-seo.service';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LangRouterLinkDirective } from "../../../../shared/directives/lang-router-link.directive";
 import { Subscription } from 'rxjs';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-blog-articles',
@@ -26,7 +27,7 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -100,12 +101,13 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
     if (!htmlString) return '';
     
     // Durante SSR, usar regex simple para extraer texto
-    if (!isPlatformBrowser(this.platformId)) {
+    const doc = this.browser.document;
+    if (!doc) {
       return htmlString.replace(/<[^>]*>/g, '').substring(0, 150).trim() + '...';
     }
     
     // Crear un elemento temporal para parsear el HTML
-    const tempDiv = document.createElement('div');
+    const tempDiv = doc.createElement('div');
     tempDiv.innerHTML = htmlString;
     
     // Extraer solo el texto

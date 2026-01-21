@@ -1,7 +1,7 @@
 <div [formGroup]="serviceDataForm">
   <!-- SECCIÓN: INFORMACIÓN DE LA LLC -->
   <div *ngIf="currentSection === 1" class="form-section">
-    <h4 class="section-title">INFORMACIÓN DE LA LLC</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
     <div class="row g-3">
       <!-- Tipo de negocio -->
       <div class="col-md-6">
@@ -17,27 +17,43 @@
       <!-- Nombre legal del negocio -->
       <div class="col-md-6">
         <label for="legalBusinessName" class="form-label">Nombre legal del negocio <span class="text-danger">*</span></label>
-        <input type="text" id="legalBusinessName" class="form-control" formControlName="legalBusinessName" placeholder="123">
+        <input type="text" id="legalBusinessName" class="form-control" formControlName="legalBusinessName" placeholder="Nombre de la empresa"
+          [class.is-invalid]="serviceDataForm.get('legalBusinessName')?.invalid && serviceDataForm.get('legalBusinessName')?.touched">
         <small class="form-text text-muted">Debe coincidir exactamente como aparece en el Articles of Organization. No permitido es incluir 'LLC'.</small>
+        <div *ngIf="serviceDataForm.get('legalBusinessName')?.invalid && serviceDataForm.get('legalBusinessName')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Industria / Rubro -->
       <div class="col-md-6">
-        <label for="industry" class="form-label">Industria / Rubro</label>
-        <input type="text" id="industry" class="form-control" formControlName="industry" placeholder="Ej: Tecnología, Retail, Servicios">
+        <label for="industry" class="form-label">Industria / Rubro <span class="text-danger">*</span></label>
+        <input type="text" id="industry" class="form-control" formControlName="industry" placeholder="Ej: Tecnología, Retail, Servicios"
+          [class.is-invalid]="serviceDataForm.get('industry')?.invalid && serviceDataForm.get('industry')?.touched">
+        <div *ngIf="serviceDataForm.get('industry')?.invalid && serviceDataForm.get('industry')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Cantidad de empleados -->
       <div class="col-md-6">
         <label for="numberOfEmployees" class="form-label">Cantidad de empleados <span class="text-danger">*</span></label>
-        <input type="text" id="numberOfEmployees" class="form-control" formControlName="numberOfEmployees" placeholder="123">
+        <input type="text" id="numberOfEmployees" class="form-control" formControlName="numberOfEmployees" placeholder="1"
+          [class.is-invalid]="serviceDataForm.get('numberOfEmployees')?.invalid && serviceDataForm.get('numberOfEmployees')?.touched">
+        <div *ngIf="serviceDataForm.get('numberOfEmployees')?.invalid && serviceDataForm.get('numberOfEmployees')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Descripción breve -->
       <div class="col-md-12">
         <label for="briefDescription" class="form-label">Descripción breve <span class="text-danger">*</span></label>
-        <textarea id="briefDescription" class="form-control" formControlName="briefDescription" rows="4"></textarea>
+        <textarea id="briefDescription" class="form-control" formControlName="briefDescription" rows="4"
+          [class.is-invalid]="serviceDataForm.get('briefDescription')?.invalid && serviceDataForm.get('briefDescription')?.touched"></textarea>
         <small class="form-text text-muted">La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.</small>
+        <div *ngIf="serviceDataForm.get('briefDescription')?.invalid && serviceDataForm.get('briefDescription')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Sitio web o red social -->
@@ -107,7 +123,7 @@
 
   <!-- Dirección del Registered Agent -->
   <div *ngIf="currentSection === 2" class="form-section">
-    <h4 class="section-title">Dirección del Registered Agent</h4>
+    <h4 class="section-title"><strong>SECCIÓN: DIRECCIÓN DEL REGISTERED AGENT</strong></h4>
     <div class="row g-3">
       <!-- Subtítulo: Dirección de tu empresa en USA -->
       <div class="col-md-12">
@@ -116,8 +132,12 @@
 
       <!-- Calle y número -->
       <div class="col-md-12">
-        <label for="registeredAgentStreet" class="form-label">Calle y número</label>
-        <input type="text" id="registeredAgentStreet" class="form-control" formControlName="registeredAgentStreet">
+        <label for="registeredAgentStreet" class="form-label">Calle y número <span class="text-danger">*</span></label>
+        <input type="text" id="registeredAgentStreet" class="form-control" formControlName="registeredAgentStreet"
+          [class.is-invalid]="serviceDataForm.get('registeredAgentStreet')?.invalid && serviceDataForm.get('registeredAgentStreet')?.touched">
+        <div *ngIf="serviceDataForm.get('registeredAgentStreet')?.invalid && serviceDataForm.get('registeredAgentStreet')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Apto / Suite / PO Box -->
@@ -128,22 +148,34 @@
 
       <!-- Ciudad y Estado -->
       <div class="col-md-6">
-        <label for="registeredAgentCity" class="form-label">Ciudad</label>
-        <input type="text" id="registeredAgentCity" class="form-control" formControlName="registeredAgentCity">
+        <label for="registeredAgentCity" class="form-label">Ciudad <span class="text-danger">*</span></label>
+        <input type="text" id="registeredAgentCity" class="form-control" formControlName="registeredAgentCity"
+          [class.is-invalid]="serviceDataForm.get('registeredAgentCity')?.invalid && serviceDataForm.get('registeredAgentCity')?.touched">
+        <div *ngIf="serviceDataForm.get('registeredAgentCity')?.invalid && serviceDataForm.get('registeredAgentCity')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <div class="col-md-6">
-        <label for="registeredAgentState" class="form-label">Estado</label>
-        <select id="registeredAgentState" class="form-select" formControlName="registeredAgentState">
+        <label for="registeredAgentState" class="form-label">Estado <span class="text-danger">*</span></label>
+        <select id="registeredAgentState" class="form-select" formControlName="registeredAgentState"
+          [class.is-invalid]="serviceDataForm.get('registeredAgentState')?.invalid && serviceDataForm.get('registeredAgentState')?.touched">
           <option value="">-Select-</option>
           <option *ngFor="let state of usStates" [value]="state.value">{{ state.label }} ({{ state.abbreviation }})</option>
         </select>
+        <div *ngIf="serviceDataForm.get('registeredAgentState')?.invalid && serviceDataForm.get('registeredAgentState')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Postal / Zip Code y Country -->
       <div class="col-md-6">
-        <label for="registeredAgentZipCode" class="form-label">Postal / Zip Code</label>
-        <input type="text" id="registeredAgentZipCode" class="form-control" formControlName="registeredAgentZipCode">
+        <label for="registeredAgentZipCode" class="form-label">Postal / Zip Code <span class="text-danger">*</span></label>
+        <input type="text" id="registeredAgentZipCode" class="form-control" formControlName="registeredAgentZipCode"
+          [class.is-invalid]="serviceDataForm.get('registeredAgentZipCode')?.invalid && serviceDataForm.get('registeredAgentZipCode')?.touched">
+        <div *ngIf="serviceDataForm.get('registeredAgentZipCode')?.invalid && serviceDataForm.get('registeredAgentZipCode')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <div class="col-md-6">
@@ -189,33 +221,49 @@
 
   <!-- Información de la persona que verificará la cuenta bancaria -->
   <div *ngIf="currentSection === 3" class="form-section">
-    <h4 class="section-title">Información de la persona que verificará la cuenta bancaria</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DEL VERIFICADOR</strong></h4>
     <div class="row g-3">
       <!-- Nombre(s) -->
       <div class="col-md-6">
         <label for="validatorFirstName" class="form-label">Nombre(s) <span class="text-danger">*</span></label>
-        <input type="text" id="validatorFirstName" class="form-control" formControlName="validatorFirstName">
+        <input type="text" id="validatorFirstName" class="form-control" formControlName="validatorFirstName"
+          [class.is-invalid]="serviceDataForm.get('validatorFirstName')?.invalid && serviceDataForm.get('validatorFirstName')?.touched">
+        <div *ngIf="serviceDataForm.get('validatorFirstName')?.invalid && serviceDataForm.get('validatorFirstName')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Apellidos -->
       <div class="col-md-6">
         <label for="validatorLastName" class="form-label">Apellidos <span class="text-danger">*</span></label>
-        <input type="text" id="validatorLastName" class="form-control" formControlName="validatorLastName">
+        <input type="text" id="validatorLastName" class="form-control" formControlName="validatorLastName"
+          [class.is-invalid]="serviceDataForm.get('validatorLastName')?.invalid && serviceDataForm.get('validatorLastName')?.touched">
+        <div *ngIf="serviceDataForm.get('validatorLastName')?.invalid && serviceDataForm.get('validatorLastName')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Fecha de Nacimiento -->
       <div class="col-md-6">
         <label for="validatorDateOfBirth" class="form-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
-        <input type="text" id="validatorDateOfBirth" class="form-control" formControlName="validatorDateOfBirth" placeholder="dd-MMM-yyyy">
+        <input type="date" id="validatorDateOfBirth" class="form-control" formControlName="validatorDateOfBirth"
+          [class.is-invalid]="serviceDataForm.get('validatorDateOfBirth')?.invalid && serviceDataForm.get('validatorDateOfBirth')?.touched">
+        <div *ngIf="serviceDataForm.get('validatorDateOfBirth')?.invalid && serviceDataForm.get('validatorDateOfBirth')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Nacionalidad -->
       <div class="col-md-6">
         <label for="validatorNationality" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
-        <select id="validatorNationality" class="form-select" formControlName="validatorNationality">
+        <select id="validatorNationality" class="form-select" formControlName="validatorNationality"
+          [class.is-invalid]="serviceDataForm.get('validatorNationality')?.invalid && serviceDataForm.get('validatorNationality')?.touched">
           <option value="">-Select-</option>
           <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
         </select>
+        <div *ngIf="serviceDataForm.get('validatorNationality')?.invalid && serviceDataForm.get('validatorNationality')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Ciudadanía -->
@@ -230,7 +278,11 @@
       <!-- Número de pasaporte -->
       <div class="col-md-6">
         <label for="validatorPassportNumber" class="form-label">Número de pasaporte <span class="text-danger">*</span></label>
-        <input type="text" id="validatorPassportNumber" class="form-control" formControlName="validatorPassportNumber" placeholder="Como figura en el pasaporte, incluye letras y números">
+        <input type="text" id="validatorPassportNumber" class="form-control" formControlName="validatorPassportNumber" placeholder="Como figura en el pasaporte, incluye letras y números"
+          [class.is-invalid]="serviceDataForm.get('validatorPassportNumber')?.invalid && serviceDataForm.get('validatorPassportNumber')?.touched">
+        <div *ngIf="serviceDataForm.get('validatorPassportNumber')?.invalid && serviceDataForm.get('validatorPassportNumber')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Adjuntar pasaporte -->
@@ -260,19 +312,28 @@
 
       <!-- Email laboral -->
       <div class="col-md-6">
-        <label for="validatorWorkEmail" class="form-label">Email laboral</label>
-        <input type="email" id="validatorWorkEmail" class="form-control" formControlName="validatorWorkEmail" placeholder="Este correo se usará para ingresar a Relay">
+        <label for="validatorWorkEmail" class="form-label">Email laboral <span class="text-danger">*</span></label>
+        <input type="email" id="validatorWorkEmail" class="form-control" formControlName="validatorWorkEmail" placeholder="Este correo se usará para ingresar a Relay"
+          [class.is-invalid]="serviceDataForm.get('validatorWorkEmail')?.invalid && serviceDataForm.get('validatorWorkEmail')?.touched">
         <small class="form-text text-muted">Este correo se usará para ingresar a Relay</small>
+        <div *ngIf="serviceDataForm.get('validatorWorkEmail')?.invalid && serviceDataForm.get('validatorWorkEmail')?.touched" class="invalid-feedback d-block">
+          <span *ngIf="serviceDataForm.get('validatorWorkEmail')?.errors?.['required']">Este campo es obligatorio.</span>
+          <span *ngIf="serviceDataForm.get('validatorWorkEmail')?.errors?.['email']">Ingrese un email válido.</span>
+        </div>
       </div>
 
       <!-- Teléfono -->
       <div class="col-md-6">
-        <label for="validatorPhone" class="form-label">Teléfono</label>
+        <label for="validatorPhone" class="form-label">Teléfono <span class="text-danger">*</span></label>
         <app-intl-tel-input
           id="validatorPhone"
           formControlName="validatorPhone"
           placeholder="Teléfono"
+          [class.is-invalid]="serviceDataForm.get('validatorPhone')?.invalid && serviceDataForm.get('validatorPhone')?.touched"
         ></app-intl-tel-input>
+        <div *ngIf="serviceDataForm.get('validatorPhone')?.invalid && serviceDataForm.get('validatorPhone')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
         <div class="form-check mt-2">
           <input class="form-check-input" type="checkbox" id="canReceiveSMS" formControlName="canReceiveSMS">
           <label class="form-check-label" for="canReceiveSMS">Debe tener capacidad para recibir SMS</label>
@@ -294,8 +355,9 @@
 
       <!-- Cargo / Título / Ocupación -->
       <div class="col-md-6">
-        <label for="validatorTitle" class="form-label">Cargo / Título / Ocupación</label>
-        <select id="validatorTitle" class="form-select" formControlName="validatorTitle">
+        <label for="validatorTitle" class="form-label">Cargo / Título / Ocupación <span class="text-danger">*</span></label>
+        <select id="validatorTitle" class="form-select" formControlName="validatorTitle"
+          [class.is-invalid]="serviceDataForm.get('validatorTitle')?.invalid && serviceDataForm.get('validatorTitle')?.touched">
           <option value="">-Select-</option>
           <option value="ceo">CEO</option>
           <option value="president">President</option>
@@ -304,6 +366,9 @@
           <option value="owner">Owner</option>
           <option value="other">Other</option>
         </select>
+        <div *ngIf="serviceDataForm.get('validatorTitle')?.invalid && serviceDataForm.get('validatorTitle')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Fuente de ingreso personal -->
@@ -332,7 +397,7 @@
 
   <!-- Dirección personal del propietario -->
   <div *ngIf="currentSection === 4" class="form-section">
-    <h4 class="section-title">Dirección personal del propietario</h4>
+    <h4 class="section-title"><strong>SECCIÓN: DIRECCIÓN PERSONAL DEL PROPIETARIO</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <small class="form-text text-muted">Ingresa la dirección personal del propietario para validar los domicilios.</small>
@@ -341,7 +406,11 @@
       <!-- Calle y número -->
       <div class="col-md-8">
         <label for="ownerPersonalStreet" class="form-label">Calle y número <span class="text-danger">*</span></label>
-        <input type="text" id="ownerPersonalStreet" class="form-control" formControlName="ownerPersonalStreet">
+        <input type="text" id="ownerPersonalStreet" class="form-control" formControlName="ownerPersonalStreet"
+          [class.is-invalid]="serviceDataForm.get('ownerPersonalStreet')?.invalid && serviceDataForm.get('ownerPersonalStreet')?.touched">
+        <div *ngIf="serviceDataForm.get('ownerPersonalStreet')?.invalid && serviceDataForm.get('ownerPersonalStreet')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Calle y número interior -->
@@ -352,29 +421,45 @@
 
       <!-- Ciudad -->
       <div class="col-md-6">
-        <label for="ownerPersonalCity" class="form-label">Ciudad</label>
-        <input type="text" id="ownerPersonalCity" class="form-control" formControlName="ownerPersonalCity">
+        <label for="ownerPersonalCity" class="form-label">Ciudad <span class="text-danger">*</span></label>
+        <input type="text" id="ownerPersonalCity" class="form-control" formControlName="ownerPersonalCity"
+          [class.is-invalid]="serviceDataForm.get('ownerPersonalCity')?.invalid && serviceDataForm.get('ownerPersonalCity')?.touched">
+        <div *ngIf="serviceDataForm.get('ownerPersonalCity')?.invalid && serviceDataForm.get('ownerPersonalCity')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Estados / Provincias -->
       <div class="col-md-6">
-        <label for="ownerPersonalState" class="form-label">Estados / Provincias</label>
-        <select id="ownerPersonalState" class="form-select" formControlName="ownerPersonalState">
+        <label for="ownerPersonalState" class="form-label">Estados / Provincias <span class="text-danger">*</span></label>
+        <select id="ownerPersonalState" class="form-select" formControlName="ownerPersonalState"
+          [class.is-invalid]="serviceDataForm.get('ownerPersonalState')?.invalid && serviceDataForm.get('ownerPersonalState')?.touched">
           <option value="">Select</option>
           <option *ngFor="let state of usStates" [value]="state.value">{{ state.label }} ({{ state.abbreviation }})</option>
         </select>
+        <div *ngIf="serviceDataForm.get('ownerPersonalState')?.invalid && serviceDataForm.get('ownerPersonalState')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- País y/o Estado -->
       <div class="col-md-6">
-        <label for="ownerPersonalCountry" class="form-label">País y/o Estado</label>
-        <input type="text" id="ownerPersonalCountry" class="form-control" formControlName="ownerPersonalCountry">
+        <label for="ownerPersonalCountry" class="form-label">País y/o Estado <span class="text-danger">*</span></label>
+        <input type="text" id="ownerPersonalCountry" class="form-control" formControlName="ownerPersonalCountry"
+          [class.is-invalid]="serviceDataForm.get('ownerPersonalCountry')?.invalid && serviceDataForm.get('ownerPersonalCountry')?.touched">
+        <div *ngIf="serviceDataForm.get('ownerPersonalCountry')?.invalid && serviceDataForm.get('ownerPersonalCountry')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Código Postal -->
       <div class="col-md-6">
-        <label for="ownerPersonalPostalCode" class="form-label">Código Postal</label>
-        <input type="text" id="ownerPersonalPostalCode" class="form-control" formControlName="ownerPersonalPostalCode" placeholder="123">
+        <label for="ownerPersonalPostalCode" class="form-label">Código Postal <span class="text-danger">*</span></label>
+        <input type="text" id="ownerPersonalPostalCode" class="form-control" formControlName="ownerPersonalPostalCode" placeholder="123"
+          [class.is-invalid]="serviceDataForm.get('ownerPersonalPostalCode')?.invalid && serviceDataForm.get('ownerPersonalPostalCode')?.touched">
+        <div *ngIf="serviceDataForm.get('ownerPersonalPostalCode')?.invalid && serviceDataForm.get('ownerPersonalPostalCode')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
 
       <!-- Adjuntar factura de servicio -->
@@ -406,18 +491,23 @@
 
   <!-- Tipo de LLC -->
   <div *ngIf="currentSection === 5" class="form-section">
-    <h4 class="section-title">Tipo de LLC</h4>
+    <h4 class="section-title"><strong>SECCIÓN: TIPO DE LLC</strong></h4>
     <div class="row g-3">
       <!-- ¿Tu LLC es Multi-Member? -->
       <div class="col-md-12">
         <label class="form-label">¿Tu LLC es Multi-Member? <span class="text-danger">*</span></label>
         <div class="form-check">
-          <input class="form-check-input" type="radio" id="isMultiMemberYes" formControlName="isMultiMember" value="yes">
+          <input class="form-check-input" type="radio" id="isMultiMemberYes" formControlName="isMultiMember" value="yes"
+            [class.is-invalid]="serviceDataForm.get('isMultiMember')?.invalid && serviceDataForm.get('isMultiMember')?.touched">
           <label class="form-check-label" for="isMultiMemberYes">Sí</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" id="isMultiMemberNo" formControlName="isMultiMember" value="no">
+          <input class="form-check-input" type="radio" id="isMultiMemberNo" formControlName="isMultiMember" value="no"
+            [class.is-invalid]="serviceDataForm.get('isMultiMember')?.invalid && serviceDataForm.get('isMultiMember')?.touched">
           <label class="form-check-label" for="isMultiMemberNo">No</label>
+        </div>
+        <div *ngIf="serviceDataForm.get('isMultiMember')?.invalid && serviceDataForm.get('isMultiMember')?.touched" class="invalid-feedback d-block">
+          Debe seleccionar una opción.
         </div>
       </div>
     </div>
@@ -425,7 +515,7 @@
 
   <!-- Información de los propietarios (solo si es Multi-Member) -->
   <div *ngIf="currentSection === 6 && isMultiMember" class="form-section">
-    <h4 class="section-title">Información de los propietarios</h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LOS PROPIETARIOS</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <small class="form-text text-muted">Proporciona la información de todos los propietarios o socios.</small>
@@ -444,35 +534,55 @@
             <div class="row g-3">
               <!-- Nombre -->
               <div class="col-md-6">
-                <label [for]="'ownerFirstName' + i" class="form-label">Nombre</label>
-                <input type="text" [id]="'ownerFirstName' + i" class="form-control" formControlName="firstName">
+                <label [for]="'ownerFirstName' + i" class="form-label">Nombre <span class="text-danger">*</span></label>
+                <input type="text" [id]="'ownerFirstName' + i" class="form-control" formControlName="firstName"
+                  [class.is-invalid]="owner.get('firstName')?.invalid && owner.get('firstName')?.touched">
+                <div *ngIf="owner.get('firstName')?.invalid && owner.get('firstName')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio.
+                </div>
               </div>
 
               <!-- Apellido -->
               <div class="col-md-6">
-                <label [for]="'ownerLastName' + i" class="form-label">Apellido</label>
-                <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName">
+                <label [for]="'ownerLastName' + i" class="form-label">Apellido <span class="text-danger">*</span></label>
+                <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName"
+                  [class.is-invalid]="owner.get('lastName')?.invalid && owner.get('lastName')?.touched">
+                <div *ngIf="owner.get('lastName')?.invalid && owner.get('lastName')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio.
+                </div>
               </div>
 
               <!-- Fecha de nacimiento -->
               <div class="col-md-6">
-                <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
-                <input type="text" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth" placeholder="dd-MMM-yyyy">
+                <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento <span class="text-danger">*</span></label>
+                <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth"
+                  [class.is-invalid]="owner.get('dateOfBirth')?.invalid && owner.get('dateOfBirth')?.touched">
+                <div *ngIf="owner.get('dateOfBirth')?.invalid && owner.get('dateOfBirth')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio.
+                </div>
               </div>
 
               <!-- Nacionalidad -->
               <div class="col-md-6">
-                <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad</label>
-                <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
+                <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+                <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality"
+                  [class.is-invalid]="owner.get('nationality')?.invalid && owner.get('nationality')?.touched">
                   <option value="">-Select-</option>
                   <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
                 </select>
+                <div *ngIf="owner.get('nationality')?.invalid && owner.get('nationality')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio.
+                </div>
               </div>
 
               <!-- Número de pasaporte -->
               <div class="col-md-6">
-                <label [for]="'ownerPassportNumber' + i" class="form-label">Número de pasaporte</label>
-                <input type="text" [id]="'ownerPassportNumber' + i" class="form-control" formControlName="passportNumber">
+                <label [for]="'ownerPassportNumber' + i" class="form-label">Número de pasaporte <span class="text-danger">*</span></label>
+                <input type="text" [id]="'ownerPassportNumber' + i" class="form-control" formControlName="passportNumber"
+                  [class.is-invalid]="owner.get('passportNumber')?.invalid && owner.get('passportNumber')?.touched">
+                <div *ngIf="owner.get('passportNumber')?.invalid && owner.get('passportNumber')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio.
+                </div>
               </div>
 
               <!-- SSN / ITIN -->
@@ -489,10 +599,14 @@
 
               <!-- Porcentaje de participación -->
               <div class="col-md-6">
-                <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación</label>
+                <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación <span class="text-danger">*</span></label>
                 <div class="input-group">
-                  <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100">
+                  <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100"
+                    [class.is-invalid]="owner.get('participationPercentage')?.invalid && owner.get('participationPercentage')?.touched">
                   <span class="input-group-text">%</span>
+                </div>
+                <div *ngIf="owner.get('participationPercentage')?.invalid && owner.get('participationPercentage')?.touched" class="invalid-feedback d-block">
+                  Este campo es obligatorio (0-100).
                 </div>
               </div>
 

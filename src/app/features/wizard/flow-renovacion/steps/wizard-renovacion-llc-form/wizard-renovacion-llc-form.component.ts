@@ -68,6 +68,7 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
   @Output() removeOwnerRequested = new EventEmitter<number>();
 
   totalSections = 5; // Total de secciones para Renovación LLC
+  currentYear = new Date().getFullYear();
   
   private destroy$ = new Subject<void>();
   private llcTypeSubscriptionSet = false;
@@ -151,6 +152,12 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
           this.removeOwnerRequested.emit(ownersArray.length - 1);
         }
       }
+      // Regla: si es Single Member, el porcentaje siempre es 100% (si ya existe el owner 0)
+      const owner0 = ownersArray.at(0);
+      const pctControl = owner0?.get('participationPercentage');
+      if (pctControl) {
+        pctControl.setValue(100);
+      }
     }
     // Si es 'multi', no hacer nada especial, el usuario puede agregar propietarios manualmente
   }
@@ -205,6 +212,18 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
 
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
+  }
+
+  /**
+   * Obtiene el label del estado con su abreviación para mostrar en modo readonly
+   */
+  getStateLabelWithAbbreviation(stateValue: string): string {
+    if (!stateValue || !this.usStates) return stateValue;
+    const state = this.usStates.find(s => s.value === stateValue);
+    if (state) {
+      return `${state.label} (${state.abbreviation})`;
+    }
+    return stateValue;
   }
 }
 

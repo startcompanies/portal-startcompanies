@@ -6,6 +6,7 @@ import { HeaderManejoComponent } from '../header-manejo/header-manejo.component'
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-form-apertura-fixcal',
@@ -32,7 +33,12 @@ export class FormAperturaFixcalComponent {
     priority: false
   };
 
+  constructor(private browser: BrowserService) {}
+
   openUrl(url: string): void {
-    window.open(url, '_blank');
+    const win = this.browser.window;
+    if (win) {
+      win.open(url, '_blank');
+    }
   }
 }

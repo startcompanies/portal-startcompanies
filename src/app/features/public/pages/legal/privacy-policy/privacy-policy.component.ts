@@ -1,8 +1,8 @@
-import { Component, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component } from '@angular/core';
 import { HeaderManejoComponent } from '../../../../../features/public/forms/header-manejo/header-manejo.component';
 import { ScFooterComponent } from '../../../../../shared/components/footer/sc-footer.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -12,15 +12,13 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrls: ['./privacy-policy.component.css']
 })
 export class PrivacyPolicyComponent {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private browser: BrowserService) {}
 
   scrollToSection(sectionId: string): void {
-    // Solo ejecutar en el navegador (no en SSR)
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
+    const doc = this.browser.document;
+    if (!doc) return;
 
-    const element = document.getElementById(sectionId);
+    const element = doc.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }

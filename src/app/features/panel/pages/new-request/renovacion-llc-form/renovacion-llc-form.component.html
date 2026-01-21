@@ -5,8 +5,12 @@
     <div class="row g-3">
       <div class="col-md-12">
         <label for="renovacionLlcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
-        <input type="text" id="renovacionLlcName" class="form-control" formControlName="llcName" placeholder="Debe coincidir exactamente como aparece en el Articles of Organization">
+        <input type="text" id="renovacionLlcName" class="form-control" formControlName="llcName" placeholder="Debe coincidir exactamente como aparece en el Articles of Organization"
+          [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
         <small class="form-text text-muted">Debe coincidir exactamente como aparece en el Articles of Organization.</small>
+        <div *ngIf="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
       
       <div class="col-md-6">
@@ -21,10 +25,14 @@
       
       <div class="col-md-6">
         <label for="llcTypeRenovacion" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
-        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType">
+        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType"
+          [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
           <option value="">Selecciona...</option>
           <option *ngFor="let type of llcTypes" [value]="type.value">{{ type.label }}</option>
         </select>
+        <div *ngIf="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
+          Debe seleccionar una estructura societaria.
+        </div>
       </div>
       
       <div class="col-md-12">

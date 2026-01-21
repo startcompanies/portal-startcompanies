@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-steps-section',
@@ -23,9 +24,14 @@ export class StepsSectionComponent {
     priority: false
   };
 
+  constructor(private browser: BrowserService) {}
+
   scrollToCalendly(): void {
+    const doc = this.browser.document;
+    if (!doc) return;
+    
     // Buscar la sección de calendly en el DOM
-    const calendlySection = document.querySelector('.calendly-cta-section');
+    const calendlySection = doc.querySelector('.calendly-cta-section');
     if (calendlySection) {
       calendlySection.scrollIntoView({ 
         behavior: 'smooth',

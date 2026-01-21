@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../../shared/shared/shared.module';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 import { StripeService } from '../../../services/stripe.service';
@@ -13,7 +13,7 @@ import { StripeService } from '../../../services/stripe.service';
 @Component({
     selector: 'app-wizard-state-plan-selection-step',
     standalone: true,
-    imports: [SharedModule, TranslocoPipe, ReactiveFormsModule],
+    imports: [SharedModule, ReactiveFormsModule],
     templateUrl: './state-plan-selection-step.component.html',
     styleUrls: ['./state-plan-selection-step.component.css'],
 })
@@ -100,7 +100,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         { 
             value: 'Elite', 
             label: 'Pack Elite', 
-            price: 599, 
+            price: 600, 
             states: ['all'],
             recommended: false,
             description: 'Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos',
@@ -119,11 +119,11 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         { 
             value: 'Premium', 
             label: 'Pack Premium', 
-            price: 699, 
-            states: ['all'],
+            price: 999, 
+            states: ['New Mexico', 'Wyoming'],
             recommended: false,
             description: 'Ideal para emprendedores. Solución integral con soporte fiscal y renovación automática.',
-            subtitle: 'Constitución de LLC en cualquier estado (Single Member o Partnership)',
+            subtitle: 'Solo para LLCs Single Member en New Mexico o Wyoming',
             features: [
                 'Documentación completa: Artículos de organización, Operating Agreement, EIN.',
                 'Consulta gratuita de planificación fiscal.',
@@ -221,10 +221,6 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
 
     /**
      * Calcula el monto según el plan y estado seleccionado
-     * Reglas de precios (igual que en new-request):
-     * - New Mexico: $649
-     * - Texas: $850
-     * - Otros estados: $750
      */
     calculateAmount(): void {
         const plan = this.form.get('plan')?.value;
@@ -235,18 +231,10 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             return;
         }
 
-        // Obtener precio base según el estado (igual que en new-request)
-        // Los planes son categorías de servicio, el precio final depende del estado
-        let baseAmount = 0;
-        if (state === 'New Mexico') {
-            baseAmount = 649;
-        } else if (state === 'Texas') {
-            baseAmount = 850;
-        } else {
-            baseAmount = 750;
-        }
-
-        this.calculatedAmount = baseAmount;
+        // El monto a pagar debe ser consistente con los precios mostrados en /planes.
+        // Por eso se calcula por plan (no por estado).
+        const selectedPlanObj = this.planes.find(p => p.value === plan);
+        this.calculatedAmount = selectedPlanObj?.price ?? 0;
         
         // Guardar monto en el estado del wizard
         this.wizardStateService.setStepData(this.stepNumber, {

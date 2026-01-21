@@ -9,40 +9,63 @@ import { Observable } from 'rxjs';
 })
 export class BlogService {
   apiUrl: string = environment.apiUrl;
-  postsEndpoint: string = environment.postsEndpoint ?? '/posts/get-from-portal';
-  categoriesEndpoint: string = environment.categoriesEndpoint ?? '/categories/with-posts-count';
-  sandboxPostsEndpoint: string = environment.sandboxPostsEndpoint ?? '/posts/get-sandbox-posts/category';
+  postsEndpoint: string = environment.postsEndpoint ?? '/blog/posts/get-from-portal';
+  categoriesEndpoint: string =
+    environment.categoriesEndpoint ?? '/blog/categories/with-posts-count';
+  sandboxPostsEndpoint: string =
+    environment.sandboxPostsEndpoint ?? '/blog/posts/get-sandbox-posts/category';
+
+  private readonly isSandboxMode: boolean =
+    // Staging explícito
+    Boolean((environment as any).staging) ||
+    // O inferido por el endpoint configurado
+    (this.postsEndpoint?.includes('get-sandbox-posts') ?? false) ||
+    (this.categoriesEndpoint?.includes('sandbox') ?? false);
 
   constructor(private http: HttpClient) {}
 
+  private joinUrl(base: string, path: string): string {
+    const normalizedBase = (base || '').replace(/\/+$/, '');
+    const normalizedPath = (path || '').startsWith('/') ? path : `/${path}`;
+    return `${normalizedBase}${normalizedPath}`;
+  }
+
   getCategories(): Promise<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}${this.categoriesEndpoint}`)
+      .get<any[]>(this.joinUrl(this.apiUrl, this.categoriesEndpoint))
       .toPromise()
       .then((res) => res ?? []);
   }
 
   getAllPosts(): Promise<any[]> {
     return this.http
-      .get<any[]>(`${this.apiUrl}${this.postsEndpoint}`)
+      .get<any[]>(this.joinUrl(this.apiUrl, this.postsEndpoint))
       .toPromise()
       .then((res) => res ?? []);
   }
 
   getPostsBySlug(slug: string): Promise<any> {
+    // Nota: en el backend existe get-from-portal/:slug. No hay get-sandbox-posts/:slug.
+    // En staging, si el post no está publicado, este endpoint devolverá vacío/404.
     return this.http
-      .get<any[]>(`${this.apiUrl}/posts/get-from-portal/${slug}`)
+      .get<any[]>(
+        this.joinUrl(this.apiUrl, `/blog/posts/get-from-portal/${slug}`)
+      )
       .toPromise()
       .then((res) => res ?? []);
   }
 
   // Nuevo método para obtener posts por slug de categoría
   getPostsByCategorySlug(categorySlug: string): Observable<Post[]> {
-    /*return this.http.get<Post[]>(
-      `${this.apiUrl}/posts/get-from-portal/category/${categorySlug}`
-    );*/
-    return this.http.get<Post[]>(
-      `${this.apiUrl}${this.sandboxPostsEndpoint}/${categorySlug}`
+    const sandboxUrl = this.joinUrl(
+      this.apiUrl,
+      `${this.sandboxPostsEndpoint}/${categorySlug}`
     );
+    const publishedUrl = this.joinUrl(
+      this.apiUrl,
+      `/blog/posts/get-from-portal/category/${categorySlug}`
+    );
+
+    return this.http.get<Post[]>(this.isSandboxMode ? sandboxUrl : publishedUrl);
   }
 }

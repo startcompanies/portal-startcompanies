@@ -1,3 +1,119 @@
+/* ============================================================================
+   ESTILOS PARA ENLACES EN EL CONTENIDO DEL BLOG
+   Sin azul ni subrayado - heredan el color del texto
+   ============================================================================ */
+
+/* Estilos generales para TODOS los enlaces dentro de .app-post-content */
+.app-post-content a,
+.app-post-content a:link,
+.app-post-content a:visited,
+.app-post-content a:hover,
+.app-post-content a:active,
+.app-post-content a:focus {
+  color: inherit !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  text-decoration-style: none !important;
+  text-decoration-color: transparent !important;
+  border-bottom: none !important;
+  text-underline-offset: 0 !important;
+}
+
+/* Excepciones: botones y elementos especiales mantienen sus estilos */
+.app-post-content a.btn,
+.app-post-content a.btn-cta,
+.app-post-content a.abre-corp-btn,
+.app-post-content a.costos-florida-btn,
+.app-post-content a.ayuda-profesional-btn,
+.app-post-content a.veredicto-btn,
+.app-post-content a.states-card-link,
+.app-post-content a.btn-linkedin-profile,
+.app-post-content a.btn-linkedin-autor,
+.app-post-content a[class*="btn-"],
+.app-post-content a[class*="social"],
+.app-post-content a[class*="share"] {
+  /* Estos mantienen sus estilos específicos */
+}
+
+/* Asegurar que los enlaces dentro de elementos específicos también se estilicen */
+.app-post-content p a,
+.app-post-content div a,
+.app-post-content li a,
+.app-post-content td a,
+.app-post-content th a,
+.app-post-content span a,
+.app-post-content h1 a,
+.app-post-content h2 a,
+.app-post-content h3 a,
+.app-post-content h4 a,
+.app-post-content h5 a,
+.app-post-content h6 a,
+.app-post-content strong a,
+.app-post-content b a,
+.app-post-content em a,
+.app-post-content i a,
+.app-post-content ul a,
+.app-post-content ol a {
+  color: inherit !important;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+  border-bottom: none !important;
+}
+
+/* Selector más específico para sobrescribir Bootstrap */
+div.app-post-content a,
+div.app-post-content a:link,
+div.app-post-content a:visited,
+div.app-post-content a:hover,
+div.app-post-content a:active {
+  text-decoration: none !important;
+  border-bottom: none !important;
+}
+
+/* ============================================================================
+   ESTILOS GENERALES DEL CONTENIDO DEL POST
+   Texto justificado y tamaño de fuente aumentado
+   ============================================================================ */
+.app-post-content {
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Párrafos balanceados con tamaño aumentado */
+.app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+  text-align: left !important;
+  text-wrap: pretty !important;
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+  margin-bottom: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+    font-size: 1rem !important;
+  }
+}
+
+/* Listas justificadas con tamaño aumentado */
+.app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
+.app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
+  text-align: left !important;
+  text-wrap: pretty !important;
+  font-size: 1.1rem !important;
+  line-height: 1.7 !important;
+}
+
+/* Dark text color en post content */
+.app-post-content section {
+  color: #293B49;
+}
+
+/* Texto en divs generales (excluyendo componentes especiales) */
+.app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
+  text-align: left !important;
+  text-wrap: pretty !important;
+}
+
 .post-image-rounded {
   border-radius: 4rem !important;
   display: block !important;
@@ -245,6 +361,7 @@ section[style*="background-image"] [class*="col-"] img {
 
 .app-post-content section[style*="background-image"] p,
 section[style*="background-image"] p {
+  text-align: left !important;
   max-width: 100%;
   margin-bottom: 1rem;
   line-height: 1.6;
@@ -266,16 +383,6 @@ section[style*="background-image"] h6 {
   margin-top: 0;
   margin-bottom: 1rem;
 }
-
-.app-post-content section .text-center {
-  text-align: center !important;
-  align-self: center;
-}
-
-.app-post-content section :is(h2, h3) {
-  font-weight: 700;
-}
-
 
 .app-post-content section[style*="background-image"] img,
 section[style*="background-image"] img {
@@ -301,20 +408,14 @@ section[style*="background-image"] a {
   margin-top: 0.5rem;
 }
 
-.app-post-content section .abre-corp-card,
+.app-post-content .abre-corp-card,
 .abre-corp-card {
   background-color: #2d3748 !important;
-  font-family: Arial, sans-serif !important;
   max-width: 100% !important;
   min-height: 450px !important;
   padding: 1.5rem 2rem !important;
   border-radius: 2rem !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-}
-
-.app-post-content .abre-corp-title,
-.abre-corp-title.text-center {
-  text-align: left !important;
 }
 
 .app-post-content .abre-corp-title,
@@ -370,9 +471,17 @@ section[style*="background-image"] a {
   font-size: 1rem !important;
   padding: 0.75rem 1.5rem !important;
   border-radius: 50px !important;
-  font-weight: 300 !important;
+  font-weight: 700 !important;
   cursor: pointer !important;
   transition: background-color 0.3s ease !important;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content .abre-corp-btn,
+  .abre-corp-btn {
+    font-size: .9rem !important;
+  }
 }
 
 .app-post-content .abre-corp-btn:hover,
@@ -585,6 +694,7 @@ section[style*="background-image"] a {
   font-family: Arial, sans-serif;
   max-width: 100%;
   border-radius: 2rem !important;
+  margin-top: 2rem !important;
 }
 
 .app-post-content .ayuda-profesional-content,
@@ -815,59 +925,141 @@ section[style*="background-image"] a {
   }
 }
 
+/* FAQ Card - Mismo diseño para Landing y Artículos normales */
+/* Siempre fondo claro (#FAFAFA) sin importar el contexto - FORZAR con !important */
 .app-post-content .preguntas-frecuentes-card,
-.preguntas-frecuentes-card {
-  background-color: #2d3748;
+.preguntas-frecuentes-card,
+.faq-card-container .preguntas-frecuentes-card,
+section .preguntas-frecuentes-card,
+.style-section-bg-light .preguntas-frecuentes-card,
+[style*="background-color: #fafafa"] .preguntas-frecuentes-card,
+[style*="background-color:#fafafa"] .preguntas-frecuentes-card,
+[style*="background-color: #2d3748"] .preguntas-frecuentes-card,
+[style*="background-color:#2d3748"] .preguntas-frecuentes-card {
+  background-color: #FAFAFA !important;
   font-family: Arial, sans-serif;
   max-width: 100%;
+  margin-bottom: 2rem !important;
+  width: 100% !important;
 }
 
+/* Asegurar que el contenedor del FAQ no interfiera con el fondo */
+.faq-card-container {
+  background-color: transparent !important;
+}
+
+/* Si el FAQ está dentro de una sección, forzar el fondo claro en todos los elementos */
+.faq-card-container .preguntas-frecuentes-card,
+.faq-card-container>.preguntas-frecuentes-card,
+.faq-card-container .custom-accordion {
+  background-color: #FAFAFA !important;
+}
+
+/* Forzar fondo claro incluso si hay estilos inline */
+.faq-card-container [style*="background"],
+.faq-card-container [style*="background-color"] {
+  background-color: #FAFAFA !important;
+}
+
+/* Asegurar que el contenedor del FAQ tenga el mismo diseño en ambos tipos de posts */
+.faq-card-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* En posts normales (col-lg-9), el FAQ debe expandirse al ancho completo del contenedor */
+.col-lg-9 .faq-card-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* En landing (col-12), también ancho completo */
+.col-12 .faq-card-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Título del FAQ - Mismo estilo en ambos tipos */
 .app-post-content .preguntas-frecuentes-title,
-.preguntas-frecuentes-title {
+.preguntas-frecuentes-title,
+.faq-card-container .preguntas-frecuentes-title,
+section .preguntas-frecuentes-title,
+.style-section-bg-light .preguntas-frecuentes-title {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: 800;
   line-height: 1.3;
+  color: inherit !important;
 }
 
+/* Lista del FAQ - Mismo estilo en ambos tipos */
 .app-post-content .preguntas-frecuentes-list,
-.preguntas-frecuentes-list {
+.preguntas-frecuentes-list,
+.faq-card-container .preguntas-frecuentes-list {
   gap: 0;
 }
 
+/* Items del FAQ - Mismo estilo en ambos tipos */
 .app-post-content .preguntas-frecuentes-item,
-.preguntas-frecuentes-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+.preguntas-frecuentes-item,
+.faq-card-container .preguntas-frecuentes-item {
+  border-bottom: 1px solid #dee2e6;
   cursor: pointer;
 }
 
 .app-post-content .preguntas-frecuentes-item:last-child,
-.preguntas-frecuentes-item:last-child {
+.preguntas-frecuentes-item:last-child,
+.faq-card-container .preguntas-frecuentes-item:last-child {
   border-bottom: none;
 }
 
+/* Preguntas del FAQ - Mismo estilo en ambos tipos */
 .app-post-content .preguntas-frecuentes-question,
-.preguntas-frecuentes-question {
-  color: #ffffff;
+.preguntas-frecuentes-question,
+.faq-card-container .preguntas-frecuentes-question {
+  color: inherit;
   font-size: clamp(0.95rem, 2.5vw, 1.1rem);
   line-height: 1.5;
 }
 
+/* Iconos del FAQ - Mismo estilo en ambos tipos */
 .app-post-content .preguntas-frecuentes-icon,
-.preguntas-frecuentes-icon {
+.preguntas-frecuentes-icon,
+.faq-card-container .preguntas-frecuentes-icon {
   color: #00bcd4;
   font-size: 1.5rem;
   flex-shrink: 0;
   margin-left: 1rem;
 }
 
+/* Accordion del FAQ - Mismo estilo en ambos tipos */
+/* Asegurar que el accordion también tenga fondo claro */
+.faq-card-container .custom-accordion,
+.faq-card-container .custom-accordion-item,
+section .custom-accordion,
+[style*="background-color: #fafafa"] .custom-accordion,
+[style*="background-color:#fafafa"] .custom-accordion,
+[style*="background-color: #2d3748"] .custom-accordion,
+[style*="background-color:#2d3748"] .custom-accordion {
+  background-color: #FAFAFA !important;
+}
+
 .app-post-content .custom-accordion-header,
-.custom-accordion-header {
+.custom-accordion-header,
+.faq-card-container .custom-accordion-header,
+section .custom-accordion-header {
   margin: 0;
   padding: 0;
+  background-color: transparent !important;
 }
 
 .app-post-content .custom-accordion-button,
-.custom-accordion-button {
+.custom-accordion-button,
+.faq-card-container .custom-accordion-button,
+section .custom-accordion-button {
   text-align: left !important;
   background: none !important;
   border: none !important;
@@ -876,22 +1068,37 @@ section[style*="background-image"] a {
   justify-content: space-between !important;
   align-items: center !important;
   cursor: pointer !important;
-  /*width: 100% !important;*/
+  color: inherit !important;
 }
 
 .app-post-content .custom-accordion-button h2,
-.custom-accordion-button h2 {
+.custom-accordion-button h2,
+.faq-card-container .custom-accordion-button h2,
+section .custom-accordion-button h2,
+.faq-card-container .custom-accordion-button span,
+section .custom-accordion-button span {
   font-size: 1.1rem !important;
   margin: 0 !important;
   font-weight: inherit;
+  color: inherit !important;
 }
 
 .app-post-content .faq-arrow-icon,
-.faq-arrow-icon {
+.faq-arrow-icon,
+.faq-card-container .faq-arrow-icon,
+section .faq-arrow-icon {
   margin: 0 0.5rem !important;
   flex-shrink: 0;
   transition: all 0.3s ease;
   font-size: 1rem !important;
+  color: inherit !important;
+}
+
+/* Contenido del accordion también con fondo claro */
+.faq-card-container .custom-accordion-content,
+section .custom-accordion-content {
+  background-color: #FAFAFA !important;
+  color: inherit !important;
 }
 
 .app-post-content .renovar-llc-card,
@@ -1045,36 +1252,9 @@ section[style*="background-image"] a {
 
 .app-post-content .landing-index-card,
 .landing-index-card {
+  color: #FFFFFF;
   border-radius: 1rem;
   border: none;
-  overflow: hidden;
-  margin-top: 30px;
-  margin-bottom: 0 !important;
-}
-
-.app-post-content .landing-index-card .card-header,
-.landing-index-card .card-header {
-  background: #02CAE3;
-  color: #FFFFFF;
-  display: flex;
-  gap: 1rem;
-  padding: 0.8rem 1rem;
-  border-radius: 100px;
-}
-
-.app-post-content .landing-index-card .card-header h5,
-.landing-index-card .card-header h5 {
-  font-weight: 300;
-}
-
-.app-post-content .landing-index-card .bi {
-  display: flex;
-}
-
-.app-post-content .landing-index-card .card-body {
-  background: #283A48;
-  border-radius: 10px;
-  margin-top: 10px;
 }
 
 .app-post-content .landing-index-card a,
@@ -1185,6 +1365,94 @@ section[style*="background-image"] a {
   color: #02CAE3 !important;
 }
 
+/* ============================================================================
+   TÍTULO "SOBRE LOS AUTORES" - Estilo similar a Preguntas Frecuentes
+   ============================================================================ */
+/* Estilos para títulos de sección de autores - aplicar a h2/h3 con clase específica */
+/* Mayor especificidad para sobrescribir reglas generales */
+.app-post-content h2.sobre-autores-title,
+.app-post-content h3.sobre-autores-title,
+.app-post-content h2[class*="sobre-autor"],
+.app-post-content h3[class*="sobre-autor"],
+div.app-post-content h2.sobre-autores-title,
+div.app-post-content h3.sobre-autores-title,
+.sobre-autores-title {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content h2.sobre-autores-title span,
+.app-post-content h3.sobre-autores-title span,
+div.app-post-content h2.sobre-autores-title span,
+div.app-post-content h3.sobre-autores-title span,
+.sobre-autores-title span {
+  color: #02CAE3 !important;
+}
+
+/* Estilos para h2/h3 que están antes de secciones de autores (usando :has cuando esté disponible) */
+.app-post-content h2:has(+ .card-autor),
+.app-post-content h2:has(+ .author-info-card),
+.app-post-content h2:has(+ * .card-autor),
+.app-post-content h2:has(+ * .author-info-card),
+.app-post-content h3:has(+ .card-autor),
+.app-post-content h3:has(+ .author-info-card),
+.app-post-content h3:has(+ * .card-autor),
+.app-post-content h3:has(+ * .author-info-card) {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content h2:has(+ .card-autor) span,
+.app-post-content h2:has(+ .author-info-card) span,
+.app-post-content h3:has(+ .card-autor) span,
+.app-post-content h3:has(+ .author-info-card) span {
+  color: #02CAE3 !important;
+}
+
+/* Estilos para títulos que preceden a secciones de autores (selector alternativo más compatible) */
+.app-post-content .card-autor~h2,
+.app-post-content .author-info-card~h2,
+.app-post-content .card-autor~h3,
+.app-post-content .author-info-card~h3,
+.app-post-content h2+.card-autor,
+.app-post-content h2+.author-info-card,
+.app-post-content h3+.card-autor,
+.app-post-content h3+.author-info-card {
+  /* Estos estilos se aplicarán a los elementos hermanos */
+}
+
+/* Estilo específico para títulos que están en la misma sección que .card-autor o .author-info-card */
+.app-post-content section:has(.card-autor) h2,
+.app-post-content section:has(.author-info-card) h2,
+.app-post-content section:has(.card-autor) h3,
+.app-post-content section:has(.author-info-card) h3,
+.app-post-content div:has(.card-autor) h2,
+.app-post-content div:has(.author-info-card) h2,
+.app-post-content div:has(.card-autor) h3,
+.app-post-content div:has(.author-info-card) h3 {
+  text-align: center !important;
+  margin-bottom: 3rem !important;
+  font-size: 1.75rem !important;
+  font-weight: 800 !important;
+  line-height: 1.3 !important;
+  color: inherit !important;
+}
+
+.app-post-content section:has(.card-autor) h2 span,
+.app-post-content section:has(.author-info-card) h2 span,
+.app-post-content section:has(.card-autor) h3 span,
+.app-post-content section:has(.author-info-card) h3 span {
+  color: #02CAE3 !important;
+}
+
 .app-post-content a.btn-descarga-template,
 a.btn-descarga-template {
   background-color: #00bcd4 !important;
@@ -1209,18 +1477,17 @@ a.btn-descarga-template {
 /* Estilos para la imagen del autor */
 .app-post-content .card-autor img.rounded-circle,
 .card-autor img.rounded-circle {
-  width: 240px !important;
-  height: 240px !important;
+  width: 200px !important;
+  height: 200px !important;
   object-fit: cover !important;
-  border: none !important;
-  border-radius: 50% !important;
+  border: 3px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .app-post-content .card-autor .autor-label,
 .card-autor .autor-label {
-  font-size: 1rem !important;
-  color: #01c9e2 !important;
-  margin-bottom: 0 !important;
+  font-size: 0.9rem !important;
+  color: #ffffff !important;
+  margin-bottom: 0.2rem !important;
   font-weight: 700 !important;
   line-height: 1;
 }
@@ -1231,6 +1498,32 @@ a.btn-descarga-template {
   color: #ffffff !important;
   margin-bottom: 0.8rem !important;
   font-weight: 800 !important;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content .card-autor .autor-nombre,
+  .card-autor .autor-nombre,
+  .app-post-content .card-autor .autor-label,
+  .card-autor .autor-label {
+    text-align: center !important;
+  }
+
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*=btn]):not([class*=title]):not([class*=subtitle]) {
+    font-size: .9rem !important;
+  }
+
+  .app-post-content .card-autor .col-12 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-post-content .card-autor,
+  .card-autor {
+    padding: 2.5rem 1.5rem !important;
+  }
+
 }
 
 .app-post-content .card-autor .autor-descripcion,
@@ -1244,27 +1537,6 @@ a.btn-descarga-template {
 .app-post-content .card-autor .autor-descripcion p,
 .card-autor .autor-descripcion p {
   margin: 0 !important;
-}
-
-.app-post-content .card-autor a {
-  background: #01c9e2;
-  color: #fff !important;
-  padding: 0.7rem 1rem;
-  font-size: 1rem;
-  font-weight: 100;
-}
-
-@media (max-width: 576px) {
-
-  .app-post-content .card-autor img.rounded-circle,
-  .card-autor img.rounded-circle {
-    width: 180px !important;
-    height: 180px !important;
-  }
-
-  .app-post-content .card-autor a {
-    padding: 0.5rem 1.1rem;
-  }
 }
 
 .app-post-content .card-autor .btn-linkedin-autor,
@@ -1296,7 +1568,7 @@ a.btn-descarga-template {
 
 .app-post-content .cta-card,
 .cta-card {
-  background-color: #2d3748 !important;
+  background-color: #E6EFFF !important;
   border: 2px solid #38B2AC !important;
   border-radius: 2rem !important;
   padding: 60px 40px !important;
@@ -1466,34 +1738,75 @@ a.btn-descarga-template {
   font-weight: bold
 }
 
+/* ============================================================================
+   SIDEBAR STYLES - Tabla de Contenidos (TOC) Card
+   ============================================================================ */
+
 .app-post-content .sc-this-post,
 .sc-this-post {
-  border-radius: 1rem !important
+  border-radius: 1rem !important;
 }
 
+/* Header de la card del índice (sidebar) - Estilo original */
 .app-post-content .sc-header,
 .sc-header {
-  border-radius: 1rem 1rem 0 0;
+  border-radius: 1rem 1rem 0 0 !important;
   background-color: var(--color-texto-oscuro) !important;
   color: var(--color-fondo-claro) !important;
-  font-weight: bold;
-  font-size: 1rem
+  font-weight: bold !important;
+  font-size: 1rem !important;
+  padding: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  border: none !important;
+}
+
+.app-post-content .sc-header:hover,
+.sc-header:hover {
+  background-color: var(--color-texto-oscuro) !important;
+  opacity: 0.9 !important;
+}
+
+.app-post-content .sc-header h5,
+.sc-header h5 {
+  margin: 0 !important;
+  color: var(--color-fondo-claro) !important;
+  font-weight: bold !important;
+  font-size: 1rem !important;
+}
+
+.app-post-content .sc-header #toc-toggle-icon,
+.sc-header #toc-toggle-icon {
+  color: var(--color-fondo-claro) !important;
+  font-size: 1rem !important;
+  margin-left: 0.5rem !important;
+  transition: transform 0.3s ease !important;
+}
+
+.app-post-content .sc-header[aria-expanded="true"] #toc-toggle-icon,
+.sc-header[aria-expanded="true"] #toc-toggle-icon {
+  transform: rotate(180deg) !important;
 }
 
 .app-post-content .sc-body,
 .sc-body {
   background-color: var(--color-fondo-gris) !important;
-  border-radius: 1rem
+  border-radius: 1rem !important;
 }
 
+/* === LISTA DE CONTENIDOS (Table of Contents) === */
 .app-post-content .sc-post-toc,
 .sc-post-toc {
-  border: none;
-  background: transparent;
-  font-size: 0.95rem;
-  color: #a0aec0;
-  list-style: none;
-  padding-left: 0
+  border: none !important;
+  background: transparent !important;
+  font-size: 0.95rem !important;
+  color: #a0aec0 !important;
+  /* gris suave */
+  list-style: none !important;
+  padding-left: 0 !important;
 }
 
 .app-post-content .sc-post-toc .list-group-item,
@@ -1508,8 +1821,9 @@ a.btn-descarga-template {
 
 .app-post-content .sc-post-toc .list-group-item:hover,
 .sc-post-toc .list-group-item:hover {
-  color: #0d6efd;
-  cursor: pointer
+  color: #0d6efd !important;
+  /* color primario Bootstrap */
+  cursor: pointer !important;
 }
 
 .app-post-content .sc-post-toc .list-group-item::before,
@@ -1520,37 +1834,96 @@ a.btn-descarga-template {
   font-size: 1rem;
 }
 
+/* ============================================================================
+   SIDEBAR STYLES - Open LLC Card
+   ============================================================================ */
+
 .app-post-content .open-llc-card,
-.open-llc-card {
+.open-llc-card,
+aside .open-llc-card,
+.card.open-llc-card {
   background: #293b49 !important;
   border-radius: 1rem !important;
-  color: var(--color-fondo-claro) !important
+  color: var(--color-fondo-claro) !important;
+}
+
+.app-post-content .open-llc-card .title,
+.open-llc-card .title,
+aside .open-llc-card .title,
+.card.open-llc-card .title {
+  color: var(--color-fondo-claro) !important;
+}
+
+.app-post-content .open-llc-card .title-hightlight,
+.open-llc-card .title-hightlight,
+aside .open-llc-card .title-hightlight,
+.card.open-llc-card .title-hightlight {
+  color: var(--color-secundario-tecnico) !important;
+}
+
+.app-post-content .open-llc-card ul,
+.open-llc-card ul,
+aside .open-llc-card ul,
+.card.open-llc-card ul {
+  color: var(--color-fondo-claro) !important;
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.app-post-content .open-llc-card ul li,
+.open-llc-card ul li,
+aside .open-llc-card ul li,
+.card.open-llc-card ul li {
+  color: var(--color-fondo-claro) !important;
+  margin-bottom: 0.5rem !important;
 }
 
 .app-post-content .title,
 .title {
-  margin: 0 !important
+  margin: 0 !important;
 }
 
 .app-post-content .title-hightlight,
 .title-hightlight {
-  color: var(--color-secundario-tecnico) !important
+  color: var(--color-secundario-tecnico) !important;
 }
 
+/* Estilo del botón "Agendar llamada" */
 .app-post-content .sc-btn-accent,
-.sc-btn-accent {
-  background-color: var(--color-secundario-tecnico);
-  color: var(--color-fondo-claro);
-  border: none;
-  border-radius: 2.5rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.3s ease
+.sc-btn-accent,
+aside .sc-btn-accent,
+button.sc-btn-accent,
+.btn.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico) !important;
+  /* Color verde */
+  color: var(--color-fondo-claro) !important;
+  border: none !important;
+  border-radius: 2.5rem !important;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem !important;
+  /* Relleno */
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  display: inline-flex !important;
+  /* Para alinear texto e icono */
+  align-items: center !important;
+  justify-content: center !important;
+  transition: background-color 0.3s ease !important;
+  cursor: pointer !important;
 }
+
+.app-post-content .sc-btn-accent:hover,
+.sc-btn-accent:hover,
+aside .sc-btn-accent:hover,
+button.sc-btn-accent:hover,
+.btn.sc-btn-accent:hover {
+  background-color: var(--color-secundario-tecnico) !important;
+  opacity: 0.9 !important;
+}
+
+/* ============================================================================
+   SIDEBAR STYLES - LinkedIn Button (standalone, fuera de author-info-card)
+   ============================================================================ */
 
 .app-post-content .btn-linkedin-profile,
 .btn-linkedin-profile {
@@ -1719,94 +2092,104 @@ a.btn-descarga-template {
   margin: 0 !important
 }
 
+/* ============================================================================
+   POST CTA CARD - Componente reutilizable de llamada a la acción
+   ============================================================================ */
+
 .app-post-content .post-cta-card,
 .post-cta-card {
-  background: #243544;
-  color: #fff;
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-  max-width: 920px;
-  margin-left: auto;
-  margin-right: auto
+  background: #243544 !important;
+  /* oscuro similar a captura */
+  color: #fff !important;
+  border-radius: 20px !important;
+  padding: 32px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12) !important;
+  max-width: 920px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
+/* Títulos */
 .app-post-content .post-cta-title,
 .post-cta-title {
-  font-size: 1.6rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.25rem
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .app-post-content .post-cta-subtitle,
 .post-cta-subtitle {
-  color: #6fe0ff;
-  font-size: 1.125rem;
-  margin-bottom: 1rem
+  color: #6fe0ff !important;
+  /* cyan claro */
+  font-size: 1.125rem !important;
+  margin-bottom: 1rem !important;
 }
 
+/* Botones */
 .app-post-content .btn-cta-primary,
 .btn-cta-primary {
-  background: #2dd1ea;
-  color: #07222b;
-  border: none;
-  font-weight: 600;
-  box-shadow: 0 3px 8px rgba(45, 209, 234, 0.25)
+  background: #2dd1ea !important;
+  color: #07222b !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 3px 8px rgba(45, 209, 234, 0.25) !important;
 }
 
 .app-post-content .btn-cta-primary:hover,
 .btn-cta-primary:hover {
-  opacity: 0.95;
-  text-decoration: none;
-  color: #07222b
+  opacity: 0.95 !important;
+  text-decoration: none !important;
+  color: #07222b !important;
 }
 
 .app-post-content .btn-cta-ws,
 .btn-cta-ws {
-  background: #2ed573;
-  color: #07222b;
-  border: none;
-  font-weight: 600;
-  box-shadow: 0 3px 8px rgba(46, 213, 115, 0.18)
+  background: #2ed573 !important;
+  /* verde */
+  color: #07222b !important;
+  border: none !important;
+  font-weight: 600 !important;
+  box-shadow: 0 3px 8px rgba(46, 213, 115, 0.18) !important;
 }
 
 .app-post-content .btn-cta-ws:hover,
 .btn-cta-ws:hover {
-  opacity: 0.95;
-  text-decoration: none;
-  color: #07222b
+  opacity: 0.95 !important;
+  text-decoration: none !important;
+  color: #07222b !important;
 }
 
-@media (max-width:768px) {
+/* Responsive */
+@media (max-width: 768px) {
 
   .app-post-content .post-cta-card,
   .post-cta-card {
-    padding: 20px;
-    border-radius: 12px
+    padding: 20px !important;
+    border-radius: 12px !important;
   }
 
   .app-post-content .post-cta-title,
   .post-cta-title {
-    font-size: 1.25rem
+    font-size: 1.25rem !important;
   }
 
   .app-post-content .post-cta-subtitle,
   .post-cta-subtitle {
-    font-size: 1rem
+    font-size: 1rem !important;
   }
 
   .app-post-content .d-flex.gap-3,
   .d-flex.gap-3 {
-    gap: 0.5rem;
-    flex-direction: column
+    gap: 0.5rem !important;
+    flex-direction: column !important;
   }
 
   .app-post-content .btn-cta-primary,
   .app-post-content .btn-cta-ws,
   .btn-cta-primary,
   .btn-cta-ws {
-    display: block;
-    width: 100%
+    display: block !important;
+    width: 100% !important;
   }
 }

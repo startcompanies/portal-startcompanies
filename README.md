@@ -2,68 +2,112 @@
 
 Portal web para Start Companies LLC - Servicios de apertura de LLC y cuentas bancarias en Estados Unidos.
 
-Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) version 18.2.20.
+Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) version 18.2.14.
 
 ## Estructura del Proyecto
 
-El proyecto esta organizado siguiendo una arquitectura modular basada en features:
+El proyecto está organizado siguiendo una arquitectura modular basada en features:
 
+```
 src/app/
-  core/                    # Nucleo de la aplicacion
-    app.component.ts       # Componente raiz
-    app.config.ts          # Configuracion de la aplicacion
-    app.routes.ts          # Definicion de rutas
+  core/                    # Núcleo de la aplicación
+    app.component.ts       # Componente raíz
+    app.config.ts          # Configuración de la aplicación
+    app.config.server.ts   # Configuración del servidor SSR
+    app.routes.ts          # Definición de rutas
     config/                # Configuraciones globales
-      image-config.ts
-      seo.config.ts
+      blog-seo.config.ts   # Configuración SEO del blog
+      breakpoints.config.ts # Breakpoints responsive
+      image-config.ts      # Configuración de imágenes
+      seo.config.ts        # Configuración SEO general
+      whatsapp.config.ts   # Configuración WhatsApp
 
-  features/                # Modulos funcionales
-    public/                # Portal publico
-      home/                # Pagina principal
+  features/                # Módulos funcionales
+    public/                # Portal público
+      home/                # Página principal
         home.component.ts
         sections/          # Secciones de la homepage
       blog/                # Blog unificado
-      pages/               # Paginas estaticas
+      pages/               # Páginas estáticas
         about-us/          # Nosotros
         contact/           # Contacto
         plans/             # Planes y precios
-        legal/             # Paginas legales
+        legal/             # Páginas legales
       landings/            # Landing Pages
-      forms/               # Formularios publicos
+      forms/               # Formularios públicos
 
     wizard/                # Flujos de wizard
       components/          # Componentes compartidos del wizard
       flow-llc/            # Flujo de apertura LLC
-      flow-renovacion/     # Flujo de renovacion LLC
+      flow-renovacion/     # Flujo de renovación LLC
       flow-cuenta-bancaria/ # Flujo de cuenta bancaria
-      services/           # Servicios del wizard
+      services/            # Servicios del wizard
 
-    panel/            # Panel administrativo (en desarrollo)
-      layout/
-      pages/
-      guards/
-      services/
+    panel/                 # Panel administrativo
+      layout/              # Layout del panel
+      pages/               # Páginas del panel
+      guards/              # Guards del panel
+      services/            # Servicios del panel
 
   shared/                  # Recursos compartidos
-    components/           # Componentes reutilizables
-      header/             # Header global
-      footer/             # Footer global
-    directives/           # Directivas personalizadas
-    guards/               # Guards de rutas
-    models/               # Modelos/interfaces
-    services/             # Servicios compartidos
-    styles/               # Estilos compartidos
+    components/            # Componentes reutilizables
+      header/              # Header global (sc-header)
+      footer/              # Footer global (sc-footer)
+      post-content/        # Componente de contenido de posts
+      responsive-image/    # Componente de imágenes responsive
+      intl-tel-input/      # Componente de teléfono internacional
+      whatsapp-float/      # Botón flotante de WhatsApp
+      multilingual-seo/    # Componente SEO multilingüe
+      image-preloader/     # Precargador de imágenes
+      seo-base/            # Componente base SEO
+    directives/            # Directivas personalizadas
+      lang-router-link.directive.ts
+      lazy-image.directive.ts
+      lazy-wistia.directive.ts
+    guards/                # Guards de rutas
+      language.guard.ts
+      campaign-redirect.guard.ts
+    models/                # Modelos/interfaces
+      category.model.ts
+      post.model.ts
+      tag.model.ts
+      user.model.ts
+    services/              # Servicios compartidos
+      analytics.service.ts
+      blog.service.ts
+      blog-seo.service.ts
+      browser.service.ts
+      facebook-pixel.service.ts
+      geolocation.service.ts
+      html-sanitizer.service.ts
+      language.service.ts
+      lazy-loading.service.ts
+      multilingual-seo.service.ts
+      responsive-image.service.ts
+      safe-storage.service.ts
+      scroll.service.ts
+      seo.service.ts
+      sitemap.service.ts
+      sitemap-xml.service.ts
+      wizard-state.service.ts
+    styles/                # Estilos compartidos
+      optimized-images.css
+      responsive-images.css
+    error-404/             # Componente de error 404
+
+  sitemap/                 # Componente de sitemap
+```
 
 ## Desarrollo
 
 ### Servidor de desarrollo
 
-Ejecuta `ng serve` o `npm start` para iniciar el servidor de desarrollo. Navega a `http://localhost:4200/`. La aplicacion se recargara automaticamente si cambias algun archivo fuente.
+Ejecuta `ng serve` o `npm start` para iniciar el servidor de desarrollo. Navega a `http://localhost:4200/`. La aplicación se recargará automáticamente si cambias algún archivo fuente.
 
 ### Build
 
 - Desarrollo: `npm run build`
-- Produccion: `npm run build:production`
+- Producción: `npm run build:production`
 - Staging: `npm run build:staging`
 - SSR: `npm run build:ssr`
 
@@ -95,91 +139,162 @@ Ejecuta `ng e2e` para ejecutar los tests end-to-end. Necesitas agregar un paquet
 
 - `npm start` - Inicia el servidor de desarrollo
 - `npm run build` - Build de desarrollo
-- `npm run build:production` - Build de produccion
-- `npm run build:staging` - Build de staging
+- `npm run build:production` - Build de producción con SSR
+- `npm run build:production:pwa` - Build de producción con PWA, validación y optimización de imágenes
+- `npm run build:staging` - Build de staging con SSR
+- `npm run build:staging:pwa` - Build de staging con PWA, validación y optimización de imágenes
 - `npm run build:ssr` - Build con SSR
-- `npm run serve:ssr` - Servir aplicacion con SSR
-- `npm run optimize:images` - Optimizar imagenes para produccion
-- `npm run validate:images` - Validar imagenes responsive
+- `npm run serve:ssr` - Servir aplicación con SSR
+- `npm run dev:ssr` - Build y servir SSR en un solo comando
+- `npm run optimize:images` - Optimizar imágenes para producción
+- `npm run validate:images` - Validar imágenes responsive
+- `npm run clean` - Limpiar directorio dist y caché de npm
+- `npm run docker:build` - Build de producción con Docker
+- `npm run docker:build:staging` - Build de staging con Docker
 
-## Internacionalizacion
+## Internacionalización
 
-El proyecto utiliza [Transloco](https://ngneat.github.io/transloco/) para la internacionalizacion. Los idiomas soportados son:
+El proyecto utiliza [Transloco](https://ngneat.github.io/transloco/) para la internacionalización. Los idiomas soportados son:
 
-- Espanol (es) - Idioma por defecto
-- Ingles (en)
+- Español (es) - Idioma por defecto
+- Inglés (en)
 
-Los archivos de traduccion se encuentran en `src/assets/i18n/`.
-
-## Estilos
+Los archivos de traducción se encuentran en `src/assets/i18n/`.
 
 El proyecto utiliza:
-- **Bootstrap 5.3.7** - Framework CSS
-- **Bootstrap Icons** - Iconografia
-- **Angular Material** - Componentes UI (opcional)
+- `@jsverse/transloco` - Librería principal de traducción
+- `@jsverse/transloco-persist-lang` - Persistencia del idioma seleccionado
+- `@ngneat/transloco` - Utilidades adicionales
 
-## Convenciones de Codigo
+## Estilos y Dependencias
+
+### Frameworks CSS
+- **Bootstrap 5.3.7** - Framework CSS principal
+- **Bootstrap Icons 1.13.1** - Iconografía
+- **Angular Material 18.2.14** - Componentes UI
+- **Angular CDK 18.2.14** - Componentes base
+
+### Librerías Principales
+- **@stripe/stripe-js 8.6.0** - Integración con Stripe para pagos
+- **intl-tel-input 25.14.1** - Input de teléfono internacional
+- **ngx-youtube-player 18.0.0** - Reproductor de YouTube
+- **rxjs 7.8.0** - Programación reactiva
+- **express 4.18.2** - Servidor para SSR
+
+### Herramientas de Desarrollo
+- **sharp 0.34.3** - Optimización de imágenes
+- **terser 5.43.1** - Minificación de código
+
+## Convenciones de Código
 
 ### Imports
 
-Al trabajar con la nueva estructura, ten en cuenta los paths relativos:
+Al trabajar con la estructura del proyecto, ten en cuenta los paths relativos:
 
 - Desde `features/public/*` hacia `shared/`: `../../../../shared/`
 - Desde `features/wizard/*` hacia `shared/`: `../../../shared/`
 - Desde `features/public/home/sections/*` hacia `shared/`: `../../../../../shared/`
 - Desde `shared/components/*` hacia `shared/services/`: `../../services/`
+- Desde `core/config/*` hacia `shared/`: `../../../shared/`
 
 ### Nomenclatura
 
-- Componentes: PascalCase (ej: `HomeComponent`)
-- Servicios: PascalCase con sufijo `Service` (ej: `BlogService`)
-- Guards: camelCase con sufijo `Guard` (ej: `languageGuard`)
-- Models: PascalCase con sufijo `Model` (ej: `PostModel`)
+- **Componentes**: PascalCase con sufijo `Component` (ej: `HomeComponent`, `ScHeaderComponent`)
+- **Servicios**: PascalCase con sufijo `Service` (ej: `BlogService`, `LanguageService`)
+- **Guards**: camelCase con sufijo `Guard` (ej: `languageGuard`, `campaignRedirectGuard`)
+- **Models**: PascalCase con sufijo `Model` (ej: `PostModel`, `CategoryModel`)
+- **Directivas**: camelCase con sufijo `Directive` (ej: `LazyImageDirective`)
+- **Interfaces**: PascalCase, sin sufijo (ej: `Post`, `User`)
+- **Constantes**: UPPER_SNAKE_CASE (ej: `API_BASE_URL`)
 
-## Configuracion
+### Estructura de Componentes
+
+Cada componente debe incluir:
+- Archivo TypeScript (`.ts`)
+- Template HTML (`.html`)
+- Estilos CSS (`.css`) - opcional si usa estilos globales
+- Archivo de pruebas (`.spec.ts`) - recomendado
+
+### Estructura de Servicios
+
+Los servicios deben:
+- Usar `providedIn: 'root'` para ser singleton
+- Incluir manejo de errores apropiado
+- Documentar métodos públicos con JSDoc
+
+## Configuración
 
 ### Environments
 
 - `src/environments/environment.ts` - Desarrollo
 - `src/environments/environment.staging.ts` - Staging
-- `src/environments/environment.prod.ts` - Produccion
+- `src/environments/environment.prod.ts` - Producción
 
 ### Angular Configuration
 
-La configuracion de Angular se encuentra en `angular.json`. Incluye configuraciones para:
-- Build de desarrollo y produccion
+La configuración de Angular se encuentra en `angular.json`. Incluye configuraciones para:
+- Build de desarrollo y producción
 - SSR
 - Service Worker (PWA)
 - Optimizaciones
 
-## Documentacion Adicional
+## Características Principales
 
-- `ANALISIS_REORGANIZACION.md` - Analisis completo de la reorganizacion
-- `GUIA_MIGRACION.md` - Guia de migracion paso a paso
-- `RESUMEN_REORGANIZACION.md` - Resumen ejecutivo
-- `ESTADO_MIGRACION.md` - Estado actual de la migracion
-- `ANALISIS_ESTRUCTURA_FINAL.md` - Validacion de la estructura final
+### SEO y Rendimiento
+- **Server-Side Rendering (SSR)** - Renderizado del lado del servidor para mejor SEO
+- **Service Worker (PWA)** - Soporte para Progressive Web App
+- **Optimización de imágenes** - Validación y optimización automática de imágenes responsive
+- **Multilingual SEO** - SEO optimizado para múltiples idiomas
+- **Sitemap dinámico** - Generación automática de sitemap XML
+
+### Funcionalidades
+- **Blog unificado** - Sistema de blog con categorías y tags
+- **Wizard multi-paso** - Flujos guiados para apertura de LLC, renovación y cuentas bancarias
+- **Integración Stripe** - Procesamiento de pagos
+- **WhatsApp Integration** - Botón flotante de contacto
+- **Analytics** - Integración con Facebook Pixel y Google Analytics
+- **Geolocalización** - Detección de ubicación del usuario
+
+### Responsive Design
+- Diseño completamente responsive
+- Imágenes optimizadas para diferentes dispositivos
+- Breakpoints configurables
+- Lazy loading de imágenes y contenido
 
 ## Docker
 
-El proyecto incluye configuracion Docker:
+El proyecto incluye configuración Docker para despliegue:
 
 ```bash
-# Build de produccion con Docker
+# Build de producción con Docker
 npm run docker:build
 
 # Build de staging con Docker
 npm run docker:build:staging
 ```
 
-Ver `DOCKER_BUILD.md` para mas detalles.
+El Dockerfile está configurado para:
+- Build optimizado con PWA
+- Validación y optimización de imágenes
+- Configuración de Nginx para producción
+- Soporte para SSR
 
-## Contribucion
+Ver `DOCKER_BUILD.md` para más detalles (si existe).
+
+## Contribución
 
 1. Crea una rama desde `main` o `develop`
 2. Realiza tus cambios siguiendo las convenciones del proyecto
-3. Asegurate de que el build pase correctamente
-4. Crea un Pull Request
+3. Asegúrate de que el build pase correctamente
+4. Ejecuta las validaciones: `npm run validate:images`
+5. Crea un Pull Request
+
+### Checklist antes de commitear
+- [ ] El código sigue las convenciones de nomenclatura
+- [ ] Los builds de desarrollo y producción funcionan
+- [ ] Las imágenes están validadas y optimizadas
+- [ ] Las traducciones están actualizadas (si aplica)
+- [ ] El SEO está configurado correctamente (si es una nueva página)
 
 ## Licencia
 
@@ -187,9 +302,29 @@ Este proyecto es privado y propiedad de Start Companies LLC.
 
 ## Ayuda Adicional
 
-Para mas ayuda sobre Angular CLI, usa `ng help` o visita la [documentacion oficial de Angular CLI](https://angular.dev/tools/cli).
+Para más ayuda sobre Angular CLI, usa `ng help` o visita la [documentación oficial de Angular CLI](https://angular.dev/tools/cli).
+
+## Requisitos del Sistema
+
+- **Node.js**: Versión 18.x o superior
+- **npm**: Versión 9.x o superior
+- **Angular CLI**: 18.2.14
+
+## Notas de Desarrollo
+
+### SSR (Server-Side Rendering)
+El proyecto utiliza Angular SSR para mejorar el SEO y el rendimiento inicial. El servidor Express está configurado en `server.ts`.
+
+### Service Worker
+El proyecto incluye configuración de Service Worker para PWA. La configuración se encuentra en `ngsw-config.json`.
+
+### Optimización de Imágenes
+Antes de hacer build de producción, se ejecutan scripts de validación y optimización de imágenes:
+- `validate-responsive-images.js` - Valida que las imágenes tengan los tamaños correctos
+- `optimize-production.js` - Optimiza las imágenes para producción
 
 ---
 
-**Ultima actualizacion:** Diciembre 2024  
-**Version Angular:** 18.2.14
+**Última actualización:** Enero 2025  
+**Versión Angular:** 18.2.14  
+**Versión del Proyecto:** 1.0.0

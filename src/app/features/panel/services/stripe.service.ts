@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { loadStripe, Stripe, StripeElements, StripeCardElement } from '@stripe/stripe-js';
 import { environment } from '../../../../environments/environment';
+import { BrowserService } from '../../../shared/services/browser.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class StripeService {
   private elements: StripeElements | null = null;
   private cardElement: StripeCardElement | null = null;
 
-  constructor() {
+  constructor(private browser: BrowserService) {
     // Inicializar Stripe con la clave pública
     // TODO: Agregar la clave pública de Stripe al environment
     const stripePublishableKey = environment.stripe?.publishableKey || '';
@@ -87,7 +88,10 @@ export class StripeService {
         return false;
       }
 
-      const container = document.getElementById(containerId);
+      const doc = this.browser.document;
+      if (!doc) return false;
+      
+      const container = doc.getElementById(containerId);
       if (!container) {
         console.error(`Contenedor con ID ${containerId} no encontrado`);
         return false;
@@ -108,7 +112,7 @@ export class StripeService {
       // Manejar errores de validación de tarjeta
       if (errorContainerId) {
         cardElement.on('change', (event) => {
-          const errorElement = document.getElementById(errorContainerId);
+          const errorElement = doc.getElementById(errorContainerId);
           if (errorElement) {
             if (event.error) {
               errorElement.textContent = event.error.message;
@@ -123,7 +127,7 @@ export class StripeService {
 
         // Manejar eventos de focus y blur
         cardElement.on('focus', () => {
-          const errorElement = document.getElementById(errorContainerId);
+          const errorElement = doc.getElementById(errorContainerId);
           if (errorElement) {
             errorElement.style.display = 'none';
           }

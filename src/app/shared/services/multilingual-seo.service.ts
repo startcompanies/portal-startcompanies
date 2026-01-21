@@ -1,8 +1,8 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
 import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
+import { BrowserService } from './browser.service';
 
 export interface MultilingualSeoData {
   title: string;
@@ -40,7 +40,7 @@ export class MultilingualSeoService {
     private title: Title,
     private transloco: TranslocoService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   /**
@@ -105,8 +105,9 @@ export class MultilingualSeoService {
     this.meta.updateTag({ property: 'og:locale', content: this.getOgLocale(lang) });
     
     // og:url dinámico
-    if (isPlatformBrowser(this.platformId)) {
-      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || window.location.href });
+    const win = this.browser.window;
+    if (win) {
+      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || win.location.href });
     }
 
     // Twitter Card tags

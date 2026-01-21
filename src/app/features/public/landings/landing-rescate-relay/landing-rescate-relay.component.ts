@@ -2,8 +2,6 @@ import {
   Component,
   OnInit,
   HostListener,
-  Inject,
-  PLATFORM_ID,
 } from '@angular/core';
 import { FaqComponent } from '../../../../features/public/home/sections/faq/faq.component';
 import { VideoGridSectionComponent } from '../video-grid-section/video-grid-section.component';
@@ -14,9 +12,9 @@ import { WistiaPlayerComponent } from '../wistia-player/wistia-player.component'
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
-import { isPlatformBrowser } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Router } from '@angular/router';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-landing-rescate-relay',
@@ -60,7 +58,7 @@ export class LandingRescateRelayComponent implements OnInit {
   constructor(
     private facebookPixelService: FacebookPixelService,
     private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -74,22 +72,26 @@ export class LandingRescateRelayComponent implements OnInit {
     );
 
     // Trackear scroll inicial solo en el navegador
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.checkScrollDepth();
     }
   }
 
   @HostListener('window:scroll')
   onWindowScroll(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    if (this.browser.isBrowser) {
       this.checkScrollDepth();
     }
   }
 
   private checkScrollDepth(): void {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    
+    const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
+    const windowHeight = win.innerHeight;
+    const documentHeight = doc.documentElement.scrollHeight;
     const scrollPercentage = Math.round(
       (scrollTop / (documentHeight - windowHeight)) * 100
     );

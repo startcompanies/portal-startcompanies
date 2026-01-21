@@ -3,6 +3,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { ImagePreloaderComponent } from '../shared/components/image-preloader/image-preloader.component';
 import { WhatsappFloatComponent } from '../shared/components/whatsapp-float/whatsapp-float.component';
 import { AuthService } from '../features/panel/services/auth.service';
+import { BrowserService } from '../shared/services/browser.service';
 
 @Component({
   selector: 'app-root',
@@ -16,18 +17,24 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
-    // Verificar si hay parámetros SSO en la URL
-    this.checkSsoParams();
+    // Verificar si hay parámetros SSO en la URL (solo en navegador)
+    if (this.browser.isBrowser) {
+      this.checkSsoParams();
+    }
   }
 
   /**
    * Verifica si hay parámetros SSO en la URL y realiza el login automático
    */
   private checkSsoParams(): void {
+    const win = this.browser.window;
+    if (!win) return; // SSR-safe guard
+
     // Verificar si ya hay un token guardado
     const existingToken = this.authService.getToken();
     if (existingToken) {
@@ -35,7 +42,7 @@ export class AppComponent implements OnInit {
     }
 
     // Obtener parámetros de la URL
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(win.location.search);
     const email = urlParams.get('email');
     const token = urlParams.get('token');
     const customerId = urlParams.get('customerId');
@@ -95,14 +102,17 @@ export class AppComponent implements OnInit {
    * Redirige después de un login SSO exitoso
    */
   private redirectAfterSsoLogin(): void {
+    const win = this.browser.window;
+    if (!win) return; // SSR-safe guard
+
     // Limpiar parámetros SSO de la URL
-    const url = new URL(window.location.href);
+    const url = new URL(win.location.href);
     url.searchParams.delete('email');
     url.searchParams.delete('token');
     url.searchParams.delete('customerId');
     url.searchParams.delete('phone');
 
-    window.history.replaceState({}, '', url.pathname + (url.search || ''));
+    win.history.replaceState({}, '', url.pathname + (url.search || ''));
 
     // Redirigir a la página principal del panel
     this.router.navigate(['/panel']);
@@ -114,13 +124,20 @@ export class AppComponent implements OnInit {
   private handleSsoError(message: string): void {
     console.error('Error de autenticación SSO:', message);
     
+    const win = this.browser.window;
+    if (!win) {
+      // En SSR, solo redirigir sin manipular URL
+      this.router.navigate(['/panel/login']);
+      return;
+    }
+
     // Limpiar parámetros de la URL
-    const url = new URL(window.location.href);
+    const url = new URL(win.location.href);
     url.searchParams.delete('email');
     url.searchParams.delete('token');
     url.searchParams.delete('customerId');
     url.searchParams.delete('phone');
-    window.history.replaceState({}, '', url.pathname);
+    win.history.replaceState({}, '', url.pathname);
 
     // Redirigir al login normal
     this.router.navigate(['/panel/login']);

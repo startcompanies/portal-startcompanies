@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Inject, PLATFORM_ID, ViewChild, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
@@ -7,8 +7,8 @@ import { TestimonialsComponent } from '../../../../features/public/home/sections
 import { FaqComponent } from '../../../../features/public/home/sections/faq/faq.component';
 import { ScrollService } from '../../../../shared/services/scroll.service';
 import { Subscription } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-landing-agendar',
@@ -61,7 +61,7 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
     private facebookPixelService: FacebookPixelService,
     private scrollService: ScrollService,
     private route: ActivatedRoute,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
@@ -81,8 +81,10 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
         fullName: this.fullName
       });
       
-      // Actualizar la URL para que Cal.com pueda leer los parámetros correctamente
-      this.updateUrlForCalCom();
+      // Actualizar la URL para que Cal.com pueda leer los parámetros correctamente (solo en navegador)
+      if (this.browser.isBrowser) {
+        this.updateUrlForCalCom();
+      }
     });
   }
 
@@ -94,7 +96,7 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
       );
       
       // Inicializar Cal.com después de que la vista esté lista
-      if (isPlatformBrowser(this.platformId)) {
+      if (this.browser.isBrowser) {
         this.initializeCalCom();
       }
   }
@@ -122,8 +124,11 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
   }
 
   private updateUrlForCalCom(): void {
+    const win = this.browser.window;
+    if (!win) return;
+    
     if (this.fullName || this.email || this.crmId) {
-      const url = new URL(window.location.href);
+      const url = new URL(win.location.href);
       
       // Mapear parámetros a los nombres que espera Cal.com
       if (this.fullName) {
@@ -137,15 +142,19 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
       }
       
       // Actualizar la URL sin recargar la página
-      window.history.replaceState({}, '', url.toString());
+      win.history.replaceState({}, '', url.toString());
       
       console.log('URL updated for Cal.com:', url.toString());
     }
   }
 
   private initializeCalCom(): void {
+    const doc = this.browser.document;
+    const win = this.browser.window;
+    if (!doc || !win) return;
+    
     // Cargar el script de Cal.com con auto-forwarding de query parameters
-    const script = document.createElement('script');
+    const script = doc.createElement('script');
     script.type = 'text/javascript';
     script.innerHTML = `
       (function (C, A, L) { 
@@ -198,6 +207,6 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit{
       });
     `;
     
-    document.head.appendChild(script);
+    doc.head.appendChild(script);
   }
 }

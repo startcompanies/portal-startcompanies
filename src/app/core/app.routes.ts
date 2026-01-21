@@ -475,24 +475,31 @@ export const routes: Routes = [
       },
       {
         path: 'new-request',
-        canActivate: [authGuard, roleGuard(['partner'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+            canActivate: [authGuard, roleGuard(['partner'])],
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent),
+            data: {
+              seo: {
+                title: 'Nueva Solicitud - Panel Start Companies',
+                description: 'Crea una nueva solicitud para un cliente'
+              }
+            }
           },
           {
             path: ':uuid',
-            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent)
+            canActivate: [authGuard, roleGuard(['partner', 'client'])],
+            loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent),
+            data: {
+              seo: {
+                title: 'Continuar Solicitud - Panel Start Companies',
+                description: 'Continúa completando tu solicitud'
+              }
+            }
           }
-        ],
-        data: {
-          seo: {
-            title: 'Nueva Solicitud - Panel Start Companies',
-            description: 'Crea una nueva solicitud para un cliente'
-          }
-        }
+        ]
       },
       {
         path: 'my-clients',
@@ -753,7 +760,7 @@ export const routes: Routes = [
       // Wizard routes - English
       {
         path: 'wizard/verify-email',
-        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.EmailVerificationComponent),
+        loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.WizardEmailVerificationComponent),
       },
       {
         path: 'wizard/llc-opening',

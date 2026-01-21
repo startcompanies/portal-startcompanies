@@ -1,11 +1,11 @@
-import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { BlogService } from '../../../../shared/services/blog.service';
 import { Post } from '../../../../shared/models/post.model';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
-import { isPlatformBrowser } from '@angular/common';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-blog-section-v2',
@@ -22,7 +22,7 @@ export class BlogSectionV2Component implements OnInit {
 
   constructor(
     private sanitizer: DomSanitizer,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) { }
 
   ngOnInit(): void {
@@ -106,11 +106,12 @@ export class BlogSectionV2Component implements OnInit {
    * @returns Número máximo de indicadores a mostrar
    */
   getMaxIndicators(): number {
-    if (!isPlatformBrowser(this.platformId)) {
+    const win = this.browser.window;
+    if (!win) {
       return 5; // Default para SSR
     }
     
-    const width = window.innerWidth;
+    const width = win.innerWidth;
     
     // Pantallas muy pequeñas (móviles pequeños)
     if (width < 480) {
@@ -147,13 +148,14 @@ export class BlogSectionV2Component implements OnInit {
   stripHtmlTags(htmlString: string): string {
     if (!htmlString) return '';
 
+    const doc = this.browser.document;
     // Durante SSR, usar regex simple para extraer texto
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!doc) {
       return htmlString.replace(/<[^>]*>/g, '').substring(0, 120).trim() + '...';
     }
 
     // Crear un elemento temporal para parsear el HTML
-    const tempDiv = document.createElement('div');
+    const tempDiv = doc.createElement('div');
     tempDiv.innerHTML = htmlString;
 
     // Extraer solo el texto

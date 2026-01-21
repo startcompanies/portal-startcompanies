@@ -2,56 +2,148 @@
   padding: 1rem 0;
 }
 
-.final-review-step h4 {
-  margin-bottom: 1rem;
+.review-header h4 {
+  margin-bottom: 0.5rem;
   color: #1f2937;
   font-weight: 600;
 }
 
-.final-review-step .text-muted {
+.review-header .text-muted {
   color: #6b7280;
-  margin-bottom: 2rem;
+  margin-bottom: 0;
 }
 
-.final-review-step .border-bottom {
-  border-bottom: 1px solid #e5e7eb !important;
+/* Secciones de revisión */
+.review-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.final-review-step h6 {
-  color: var(--color-primario, #0068BD);
+.section-header {
+  background: #f8fafc;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.section-header h5 {
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  color: #1f2937;
 }
 
-.final-review-step pre {
-  background-color: #f9fafb;
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  overflow-x: auto;
+.section-content {
+  padding: 1.25rem;
+}
+
+/* Items de revisión */
+.review-item {
+  margin-bottom: 1rem;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.25rem;
+}
+
+.review-value {
+  display: block;
+  font-size: 0.95rem;
+  color: #1f2937;
+  word-break: break-word;
+}
+
+/* Tarjetas de miembros */
+.member-card {
+  background: #f8fafc;
   border: 1px solid #e5e7eb;
-}
-
-.final-review-step .form-check {
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: #f9fafb;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  margin-bottom: 1rem;
 }
 
-.final-review-step .form-check-input {
-  margin-top: 0.25rem;
-  margin-right: 0.5rem;
+.member-card:last-child {
+  margin-bottom: 0;
 }
 
-.final-review-step .form-check-label {
+.member-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--color-primario, #0068BD);
+}
+
+/* Sección de confirmación */
+.confirmation-section {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.confirmation-section .form-check {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.confirmation-section .form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  margin-right: 0.75rem;
   cursor: pointer;
-  color: #374151;
 }
 
-.final-review-step .text-danger {
-  font-size: 0.875rem;
-  color: #dc2626;
-  margin-top: 0.5rem;
+.confirmation-section .form-check-input:checked {
+  background-color: var(--color-primario, #0068BD);
+  border-color: var(--color-primario, #0068BD);
+}
+
+.confirmation-section .form-check-label {
+  cursor: pointer;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Alertas */
+.review-section .alert {
+  margin-bottom: 0;
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.alert-info {
+  background-color: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-content {
+    padding: 1rem;
+  }
+  
+  .review-item {
+    margin-bottom: 0.75rem;
+  }
+  
+  .col-md-6,
+  .col-md-4 {
+    margin-bottom: 0.5rem;
+  }
 }

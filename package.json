@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production --output-hashing=all",
+    "build:dev": "ng build --configuration development",
     "build:ssr": "ng build --output-hashing=all && ng run portal-startcompanies:server",
     "serve:ssr": "node dist/portal-startcompanies/server/main.js",
     "dev:ssr": "npm run build:ssr && npm run serve:ssr",

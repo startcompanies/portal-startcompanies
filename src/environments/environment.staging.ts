@@ -1,13 +1,13 @@
 export const environment = {
   production: true,
-  //apiUrl: 'http://localhost:5000',
+  staging: true,
   apiUrl: 'https://api-web.startcompanies.io',
-  postsEndpoint: '/posts/get-sandbox-posts',
-  categoriesEndpoint: '/categories/whith-sandbox-posts-count',
-  sandboxPostsEndpoint: '/posts/get-sandbox-posts/category',
+  postsEndpoint: '/blog/posts/get-sandbox-posts',
+  categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',
+  sandboxPostsEndpoint: '/blog/posts/get-sandbox-posts/category',
   facebookPixel: {
     llcPixelId: '',
-    relayPixelId: '1055049486479771',
+    relayPixelId: '',
     debug: true // Modo debug activado en staging
   },
   baseUrl: 'https://staging.startcompanies.io',

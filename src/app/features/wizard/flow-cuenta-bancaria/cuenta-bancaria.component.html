@@ -62,18 +62,31 @@
     <div *ngIf="withPayment && currentStepIndex === 1" class="form-step">
       <h3>Pago</h3>
       <app-wizard-payment-step 
+        #paymentStep
         [stepNumber]="2" 
         [previousStepNumber]="1"
         [fixedAmount]="99"
         [currency]="'USD'"
+        (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
+        (paymentError)="onPaymentError($event)"
       ></app-wizard-payment-step>
       
-      <div class="step-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(0)">
+      <div class="step-actions mt-4">
+        <button 
+          type="button" 
+          class="btn btn-outline-secondary" 
+          (click)="onStepChanged(0)" 
+          [disabled]="paymentProcessed"
+        >
           Anterior
         </button>
-        <button type="button" class="btn btn-primary" (click)="onStepChanged(2)">
-          Siguiente
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="onStepChanged(2)"
+          [disabled]="!paymentProcessed"
+        >
+          Continuar
         </button>
       </div>
     </div>
@@ -84,7 +97,7 @@
       <app-wizard-cuenta-bancaria-information-step
         [stepNumber]="withPayment ? 3 : 2"
         [previousStepNumber]="withPayment ? 2 : 1"
-        (sectionChanged)="cuentaBancariaInfoCurrentSection = $event"
+        (sectionChanged)="onCuentaBancariaInfoSectionChanged($event)"
       ></app-wizard-cuenta-bancaria-information-step>
       
       <!-- Solo mostrar botones del wizard cuando estamos en la última sección (6) -->
@@ -100,19 +113,22 @@
 
     <!-- Paso: Revisión Final -->
     <div *ngIf="currentStepIndex === (withPayment ? 3 : 2)" class="form-step">
-      <h3>Revisión Final</h3>
       <app-wizard-final-review-step 
         [stepNumber]="withPayment ? 4 : 3" 
         [previousSteps]="withPayment ? [1, 2, 3] : [1, 2]"
+        [serviceType]="'cuenta-bancaria'"
+        [isSubmitted]="isSubmitted"
+        [isSubmitting]="isLoading"
+        [submitError]="errorMessage"
+        (submitRequest)="onFinish()"
+        (goToPanel)="onGoToPanel()"
+        (goToHome)="onGoToHome()"
       ></app-wizard-final-review-step>
       
-      <div class="step-actions">
+      <!-- Botón Anterior (solo si no se ha enviado) -->
+      <div class="step-actions" *ngIf="!isSubmitted">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 2 : 1)">
           Anterior
-        </button>
-        <button type="button" class="btn btn-success" (click)="onFinish()">
-          <i class="bi bi-check-circle me-2"></i>
-          Enviar Solicitud
         </button>
       </div>
     </div>

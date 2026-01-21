@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { RequestsService, Request } from '../../services/requests.service';
 
@@ -22,7 +22,8 @@ export class MyRequestsComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private requestsService: RequestsService
+    private requestsService: RequestsService,
+    private router: Router
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -105,6 +106,34 @@ export class MyRequestsComponent implements OnInit {
     }
     // Fallback a ID si no hay UUID (no debería pasar)
     return `/panel/new-request/${request.id}`;
+  }
+
+  /**
+   * Maneja el clic en el botón "Continuar Solicitud"
+   */
+  continueRequest(request: Request): void {
+    console.log('Continuar solicitud - Request:', request);
+    console.log('UUID:', request.uuid);
+    console.log('ID:', request.id);
+    
+    const url = this.getContinueRequestUrl(request);
+    console.log('Navegando a:', url);
+    
+    if (!request.uuid && !request.id) {
+      console.error('La solicitud no tiene UUID ni ID');
+      alert('Error: La solicitud no tiene identificador válido');
+      return;
+    }
+    
+    this.router.navigateByUrl(url).then(
+      (success) => {
+        console.log('Navegación exitosa:', success);
+      },
+      (error) => {
+        console.error('Error en la navegación:', error);
+        alert('Error al navegar. Por favor, intente nuevamente.');
+      }
+    );
   }
 
   /**

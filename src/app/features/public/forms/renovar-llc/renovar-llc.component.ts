@@ -5,6 +5,7 @@ import { HeaderManejoComponent } from "../header-manejo/header-manejo.component"
 import { SeoBaseComponent } from '../../../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
   selector: 'app-renovar-llc',
@@ -25,7 +26,12 @@ export class RenovarLlcComponent {
     priority: false
   };
 
+  constructor(private browser: BrowserService) {}
+
   openUrl(url: string){
-    window.open(url, '_blank');
+    const win = this.browser.window;
+    if (win) {
+      win.open(url, '_blank');
+    }
   }
 }

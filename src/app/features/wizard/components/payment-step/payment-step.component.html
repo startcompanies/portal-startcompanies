@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <!-- Botón para procesar pago -->
+    <!-- Botón para procesar pago y crear request -->
     <div class="d-grid gap-2" *ngIf="!stripePaymentProcessed">
       <button 
         type="button"
@@ -91,14 +91,20 @@
       </small>
     </div>
 
-    <!-- Mensaje de éxito cuando el pago está procesado -->
-    <div *ngIf="stripePaymentProcessed" class="alert alert-success">
+    <!-- Mensajes de error (solo si no hay pago exitoso) -->
+    <div *ngIf="errorMessage && !stripePaymentProcessed" class="alert alert-danger mt-3">
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+
+    <!-- Mensaje de éxito cuando el pago está procesado (solo si no hay error) -->
+    <div *ngIf="stripePaymentProcessed && !errorMessage" class="alert alert-success">
       <div class="d-flex align-items-start">
         <i class="bi bi-check-circle-fill fs-4 me-3"></i>
         <div>
-          <h6 class="alert-heading mb-2">Pago procesado exitosamente</h6>
+          <h6 class="alert-heading mb-2">¡Pago procesado exitosamente!</h6>
           <p class="mb-0">
-            Los datos de tu tarjeta están bloqueados y no se pueden modificar. Puedes continuar al siguiente paso.
+            Tu solicitud ha sido creada. Puedes continuar al siguiente paso para completar la información.
           </p>
         </div>
       </div>

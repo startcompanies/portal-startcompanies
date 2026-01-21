@@ -1,19 +1,23 @@
-import { Injectable, Inject, PLATFORM_ID, AfterViewInit } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, AfterViewInit } from '@angular/core';
 import { initializeBootstrapComponents } from '../bootstrap-imports';
+import { BrowserService } from './browser.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BootstrapInitService implements AfterViewInit {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private browser: BrowserService) {}
 
   ngAfterViewInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
+    const doc = this.browser.document;
+    if (doc) {
       // Inicializar Bootstrap después de que el DOM esté listo
-      setTimeout(() => {
-        initializeBootstrapComponents();
-      }, 100);
+      const win = this.browser.window;
+      if (win) {
+        win.setTimeout(() => {
+          initializeBootstrapComponents(doc);
+        }, 100);
+      }
     }
   }
 }

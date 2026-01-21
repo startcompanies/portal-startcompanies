@@ -68,10 +68,10 @@
         </div>
 
         <div class="request-footer">
-          <a [routerLink]="[getContinueRequestUrl(request)]" class="btn btn-sm btn-warning">
+          <button type="button" (click)="continueRequest(request)" class="btn btn-sm btn-warning">
             <i class="bi bi-arrow-right-circle me-2"></i>
             Continuar Solicitud
-          </a>
+          </button>
         </div>
       </div>
     </div>

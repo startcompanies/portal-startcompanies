@@ -1,24 +1,41 @@
 <app-sc-header></app-sc-header>
 
-<!-- Card de primera sección para landing page -->
-<section *ngIf="hasSections && postArticle" class="mb-5 py-5 sc-hero landing-hero-section">
-  <app-responsive-image
-    [images]="heroImages"
-    context="hero"
-    loading="eager"
-    cssClass="sc-hero-bg"
-  >
+<!-- Hero para artículo no disponible - Solo mostrar si realmente no existe (después de cargar) -->
+<section *ngIf="postNotFound && !isLoading" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
   </app-responsive-image>
 
   <div class="container position-relative">
     <div class="mission-card row align-items-center my-5 g-5 py-5">
       <div class="col-lg-6 mt-0">
         <div class="mission-image-container">
-          <img
-            [src]="firstSectionImage || postArticle.image_url"
-            [alt]="postArticle.title"
-            class="mission-image img-fluid"
-          />
+          <img src="/assets/blog/article-not-found.webp" alt="Artículo no disponible" class="mission-image img-fluid" />
+        </div>
+      </div>
+      <div class="col-lg-6 mt-0">
+        <div class="mission-content">
+          <h2 class="mission-title">Artículo no disponible</h2>
+          <div class="mission-description">
+            <p class="mb-0">Lo sentimos, este artículo no está disponible o aún se está cargando. Por favor, intenta más
+              tarde o explora otros artículos de nuestro blog.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Card de primera sección para landing page -->
+<section *ngIf="hasSections && postArticle" class="mb-5 sc-hero landing-hero-section">
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
+  </app-responsive-image>
+
+  <div class="container position-relative">
+    <div class="mission-card row align-items-center my-5 g-5">
+      <div class="col-lg-6 mt-0">
+        <div class="mission-image-container">
+          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title"
+            class="mission-image img-fluid" />
         </div>
       </div>
       <div class="col-lg-6 mt-0">
@@ -30,41 +47,21 @@
     </div>
 
     <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons d-none d-lg-block">
-      <button
-        type="button"
-        class="social-share-btn whatsapp-btn"
-        (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'"
-        title="Compartir en WhatsApp"
-      >
+    <div class="social-share-buttons">
+      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
+        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
         <i class="bi bi-whatsapp"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn linkedin-btn"
-        (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'"
-        title="Compartir en LinkedIn"
-      >
+      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
+        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
         <i class="bi bi-linkedin"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn facebook-btn"
-        (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'"
-        title="Compartir en Facebook"
-      >
+      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
+        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
         <i class="bi bi-facebook"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn share-btn"
-        (click)="shareNative()"
-        [attr.aria-label]="'Compartir'"
-        title="Compartir"
-      >
+      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
+        title="Compartir">
         <i class="bi bi-share"></i>
       </button>
     </div>
@@ -73,73 +70,54 @@
 
 <!-- Card hero para posts no-landing -->
 <section *ngIf="!hasSections && postArticle" class="mb-5 py-5 sc-hero landing-hero-section">
-  <app-responsive-image
-    [images]="heroImages"
-    context="hero"
-    loading="eager"
-    cssClass="sc-hero-bg"
-  >
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
   </app-responsive-image>
 
   <div class="container position-relative">
     <div class="mission-card row align-items-center my-5 g-5 py-5">
-      <div class="col-lg-6 mt-0">
+      <div class="d-col-lg-6 mt-0">
         <div class="mission-image-container">
-          <img
-            [src]="firstSectionImage || postArticle.image_url"
-            [alt]="postArticle.title"
-            class="mission-image img-fluid"
-          />
+          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title"
+            class="mission-image img-fluid" />
         </div>
       </div>
-      <div class="col-lg-6 mt-0">
+      <div class="d-col-lg-6 mt-0">
         <div class="mission-content">
           <h2 class="mission-title">{{ postArticle.title }}</h2>
-          
+
           <!-- Fecha de creación -->
           <div class="post-meta-info mb-3">
             <div class="d-flex align-items-center mb-2">
               <i class="bi bi-calendar3 me-2"></i>
               <span>{{ postArticle.published_at | date : "longDate" }}</span>
             </div>
-            
+
             <!-- Información del autor -->
             <div class="d-flex align-items-center">
               <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
-                <img
-                  [src]="postArticle.user?.profile_image"
-                  class="rounded-circle me-2"
-                  alt="Autor"
-                  width="16"
-                  height="16"
-                  style="object-fit: cover; width: 1rem; height: 1rem;"
-                />
+                <img [src]="postArticle.user?.profile_image" class="rounded-circle me-2" alt="Autor" width="16"
+                  height="16" style="object-fit: cover; width: 1rem; height: 1rem;" />
               </ng-container>
               <ng-template #noProfileImage>
                 <i class="bi bi-person-circle me-2"></i>
               </ng-template>
-              <span>{{ (postArticle.user?.first_name || "Ignacio") + " " + (postArticle.user?.last_name || "Navarro") }}</span>
+              <span>{{ (postArticle.user?.first_name || "Ignacio") + " " + (postArticle.user?.last_name || "Navarro")
+                }}</span>
             </div>
           </div>
 
           <!-- Botones de acción -->
           <div class="row g-3 mt-4">
             <div class="col-12 col-sm-6">
-              <a
-                href="#contact"
-                class="btn btn-primary abrir-llc-btn w-100"
-                style="background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;"
-              >
+              <a href="#contact" class="btn btn-primary abrir-llc-btn w-100"
+                style="background-color: var(--color-secundario-tecnico) !important; color: var(--color-fondo-claro) !important; border: none !important; border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: background-color .3s ease !important; white-space: nowrap !important;">
                 Abrir tu LLC
                 <i class="bi bi-arrow-right ms-2"></i>
               </a>
             </div>
             <div class="col-12 col-sm-6">
-              <a
-                [langRouterLink]="'planes'"
-                class="btn btn-outline-light ver-planes-btn w-100"
-                style="border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; white-space: nowrap !important; border: 2px solid rgba(255, 255, 255, 0.3) !important; color: #ffffff !important;"
-              >
+              <a [langRouterLink]="'planes'" class="btn btn-outline-light ver-planes-btn w-100"
+                style="border-radius: 2.5rem !important; padding: .6rem 1.2rem !important; font-weight: 600 !important; font-size: .9rem !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: all .3s ease !important; white-space: nowrap !important; border: 2px solid rgba(255, 255, 255, 0.3) !important; color: #ffffff !important;">
                 Ver planes
                 <i class="bi bi-arrow-right ms-2"></i>
               </a>
@@ -151,40 +129,20 @@
 
     <!-- Botones de compartir sociales -->
     <div class="social-share-buttons d-none d-lg-block">
-      <button
-        type="button"
-        class="social-share-btn whatsapp-btn"
-        (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'"
-        title="Compartir en WhatsApp"
-      >
+      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
+        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
         <i class="bi bi-whatsapp"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn linkedin-btn"
-        (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'"
-        title="Compartir en LinkedIn"
-      >
+      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
+        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
         <i class="bi bi-linkedin"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn facebook-btn"
-        (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'"
-        title="Compartir en Facebook"
-      >
+      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
+        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
         <i class="bi bi-facebook"></i>
       </button>
-      <button
-        type="button"
-        class="social-share-btn share-btn"
-        (click)="shareNative()"
-        [attr.aria-label]="'Compartir'"
-        title="Compartir"
-      >
+      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
+        title="Compartir">
         <i class="bi bi-share"></i>
       </button>
     </div>
@@ -232,19 +190,12 @@
         </ol>
       </nav>
     </div>
-    
-    <main
-      [class]="hasSections ? 'col-12' : 'col-lg-9'"
-      *ngIf="postArticle && postArticle.content; else noArticle"
-    >
-      <app-post-content [html]="hasSections ? remainingContent : postArticle.content" [isLandingPage]="hasSections"></app-post-content>
+
+    <main [class]="hasSections ? 'col-12' : 'col-lg-9'" *ngIf="postArticle && postArticle.content">
+      <app-post-content class="post-content" [html]="hasSections ? remainingContent : postArticle.content"
+        [isLandingPage]="hasSections"></app-post-content>
     </main>
 
-    <ng-template #noArticle>
-      <main [class]="hasSections ? 'col-12' : 'col-lg-9'">
-        <div class="alert alert-info">Artículo no disponible o cargando...</div>
-      </main>
-    </ng-template>
 
     <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
       <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
@@ -253,12 +204,8 @@
         </div>
         <div class="card-body sc-body">
           <ul class="list-group sc-post-toc">
-            <li 
-              class="list-group-item" 
-              *ngFor="let link of tocLinks"
-              [style.cursor]="'pointer'"
-              (click)="scrollToSection(link.href, $event)"
-            >
+            <li class="list-group-item" *ngFor="let link of tocLinks" [style.cursor]="'pointer'"
+              (click)="scrollToSection(link.href, $event)">
               {{ link.text }}
             </li>
           </ul>
@@ -273,13 +220,9 @@
           <li>A partir de $459 USD</li>
           <li>Pagas post entrega</li>
         </ul>
-        <button
-          data-cal-link="startcompanies-businessenusa/agenda-organica"
-          data-cal-namespace="agenda-organica"
-          data-cal-config='{"layout":"month_view","theme":"light"}'
-          type="button"
-          class="btn sc-btn-accent px-4 py-3 shadow-lg"
-        >
+        <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+          data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
+          class="btn sc-btn-accent px-4 py-3 shadow-lg">
           Agendar consulta gratis
         </button>
       </div>
@@ -289,30 +232,12 @@
           Compartir artículo
         </h6>
         <div class="share-buttons-container">
-          <i
-            class="bi bi-whatsapp share-social-icon share-whatsapp-icon"
-            (click)="shareOnWhatsApp()"
-            [attr.aria-label]="'Compartir en WhatsApp'"
-            title="Compartir en WhatsApp"
-            role="button"
-            tabindex="0"
-          ></i>
-          <i
-            class="bi bi-linkedin share-social-icon share-linkedin-icon"
-            (click)="shareOnLinkedIn()"
-            [attr.aria-label]="'Compartir en LinkedIn'"
-            title="Compartir en LinkedIn"
-            role="button"
-            tabindex="0"
-          ></i>
-          <i
-            class="bi bi-facebook share-social-icon share-facebook-icon"
-            (click)="shareOnFacebook()"
-            [attr.aria-label]="'Compartir en Facebook'"
-            title="Compartir en Facebook"
-            role="button"
-            tabindex="0"
-          ></i>
+          <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
+            [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp" role="button" tabindex="0"></i>
+          <i class="bi bi-linkedin share-social-icon share-linkedin-icon" (click)="shareOnLinkedIn()"
+            [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
+          <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
+            [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
         </div>
       </div>
 
@@ -321,23 +246,13 @@
           <p class="text-center">Autor</p>
           <h5 class="card-title text-center">Ignacio Navarro</h5>
           <p class="card-text small text-center">
-            <ng-container
-              *ngIf="postArticle.user?.profile_image; else noProfileImage"
-            >
-              <img
-                [src]="postArticle.user?.profile_image"
-                class="rounded-circle mb-3"
-                alt="Autor"
-                width="80"
-                height="80"
-              />
+            <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
+              <img [src]="postArticle.user?.profile_image" class="rounded-circle mb-3" alt="Autor" width="80"
+                height="80" />
             </ng-container>
             <ng-template #noProfileImage>
-              <i
-                class="bi bi-person-circle rounded-circle mb-3"
-                style="font-size: 80px; line-height: 1; color: #6c757d"
-                aria-hidden="true"
-              ></i>
+              <i class="bi bi-person-circle rounded-circle mb-3" style="font-size: 80px; line-height: 1; color: #6c757d"
+                aria-hidden="true"></i>
             </ng-template>
           </p>
           <p class="text-justify mb-3">

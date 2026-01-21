@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { BrowserService } from '../../../shared/services/browser.service';
 
 export interface User {
   id: number;
@@ -45,9 +46,13 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private browser: BrowserService
   ) {
-    this.loadUserFromStorage();
+    // Solo cargar usuario desde storage si estamos en el navegador
+    if (this.browser.isBrowser) {
+      this.loadUserFromStorage();
+    }
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
@@ -97,7 +102,10 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
+    const win = this.browser.window;
+    if (win && win.localStorage) {
+      win.localStorage.removeItem(this.tokenKey);
+    }
     this.currentUserSubject.next(null);
     this.router.navigate(['/panel/login']);
   }
@@ -111,11 +119,18 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    const win = this.browser.window;
+    if (!win || !win.localStorage) {
+      return null;
+    }
+    return win.localStorage.getItem(this.tokenKey);
   }
 
   private setToken(token: string): void {
-    localStorage.setItem(this.tokenKey, token);
+    const win = this.browser.window;
+    if (win && win.localStorage) {
+      win.localStorage.setItem(this.tokenKey, token);
+    }
   }
 
   private loadUserFromStorage(): void {
@@ -199,13 +214,16 @@ export class AuthService {
           this.setToken(response.accessToken);
           this.loadUserFromToken(response.accessToken);
           
-          // Guardar refreshToken en localStorage como fallback para iframes
-          if (response.refreshToken) {
-            localStorage.setItem('refreshToken', response.refreshToken);
+          const win = this.browser.window;
+          if (win && win.localStorage) {
+            // Guardar refreshToken en localStorage como fallback para iframes
+            if (response.refreshToken) {
+              win.localStorage.setItem('refreshToken', response.refreshToken);
+            }
+            
+            // Marcar que el login fue vía SSO
+            win.localStorage.setItem('isSsoLogin', 'true');
           }
-          
-          // Marcar que el login fue vía SSO
-          localStorage.setItem('isSsoLogin', 'true');
         }
       })
     );

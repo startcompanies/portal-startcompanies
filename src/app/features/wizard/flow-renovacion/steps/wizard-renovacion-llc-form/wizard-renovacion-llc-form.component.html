@@ -1,17 +1,44 @@
 <div [formGroup]="serviceDataForm">
   <!-- Sección 1: Información General de la LLC -->
   <div *ngIf="currentSection === 1" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
     <div class="row g-3">
       <div class="col-md-12">
         <label for="renovacionLlcName" class="form-label">Nombre de la LLC <span class="text-danger">*</span></label>
-        <input type="text" id="renovacionLlcName" class="form-control" formControlName="llcName" placeholder="Debe coincidir exactamente como aparece en el Articles of Organization">
+        <input type="text" id="renovacionLlcName" class="form-control" formControlName="llcName" placeholder="Debe coincidir exactamente como aparece en el Articles of Organization"
+          [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
         <small class="form-text text-muted">Debe coincidir exactamente como aparece en el Articles of Organization.</small>
+        <div *ngIf="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
       
       <div class="col-md-6">
         <label for="renovacionState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
-        <select id="renovacionState" class="form-select" formControlName="state">
+        <!-- Si el estado ya viene del paso anterior, mostrarlo como readonly -->
+        <div *ngIf="serviceDataForm.get('state')?.value" class="input-group">
+          <input 
+            type="text" 
+            id="renovacionState" 
+            class="form-control bg-light" 
+            [value]="getStateLabelWithAbbreviation(serviceDataForm.get('state')?.value)"
+            readonly
+          />
+          <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill text-muted"></i>
+          </span>
+        </div>
+        <small *ngIf="serviceDataForm.get('state')?.value" class="form-text text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          El estado fue seleccionado en el paso anterior y no puede modificarse.
+        </small>
+        <!-- Solo mostrar select si no hay estado seleccionado -->
+        <select 
+          *ngIf="!serviceDataForm.get('state')?.value"
+          id="renovacionState" 
+          class="form-select" 
+          formControlName="state"
+        >
           <option value="">Selecciona un estado...</option>
           <option *ngFor="let state of usStates" [value]="state.value">
             {{ state.label }} ({{ state.abbreviation }})
@@ -21,10 +48,14 @@
       
       <div class="col-md-6">
         <label for="llcTypeRenovacion" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
-        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType">
+        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType"
+          [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
           <option value="">Selecciona...</option>
           <option *ngFor="let type of llcTypes" [value]="type.value">{{ type.label }}</option>
         </select>
+        <div *ngIf="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
+          Debe seleccionar una estructura societaria.
+        </div>
       </div>
       
       <div class="col-md-12">
@@ -138,7 +169,7 @@
 
   <!-- Sección 2: Información de Propietarios (single o multimember) -->
   <div *ngIf="currentSection === 2" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN DEL PROPIETARIO</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DEL PROPIETARIO</strong></h4>
     
     <div formArrayName="owners">
       <div *ngIf="ownersFormArray && ownersFormArray.length === 0" class="alert alert-info">
@@ -158,19 +189,36 @@
         <div class="row g-3">
           <div class="col-md-6">
             <label [for]="'ownerName' + i" class="form-label">Nombre <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerName' + i" class="form-control" formControlName="name" placeholder="Enter a value for this field.">
+            <input type="text" [id]="'ownerName' + i" class="form-control" formControlName="name" placeholder="Ingrese nombre"
+              [class.is-invalid]="owner.get('name')?.invalid && owner.get('name')?.touched">
+            <div *ngIf="owner.get('name')?.invalid && owner.get('name')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerLastName' + i" class="form-label">Apellido <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName" placeholder="Enter a value for this field.">
+            <input type="text" [id]="'ownerLastName' + i" class="form-control" formControlName="lastName" placeholder="Ingrese apellido"
+              [class.is-invalid]="owner.get('lastName')?.invalid && owner.get('lastName')?.touched">
+            <div *ngIf="owner.get('lastName')?.invalid && owner.get('lastName')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
-            <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
+            <label [for]="'ownerDateOfBirth' + i" class="form-label">Fecha de nacimiento <span class="text-danger">*</span></label>
+            <input type="date" [id]="'ownerDateOfBirth' + i" class="form-control" formControlName="dateOfBirth"
+              [class.is-invalid]="owner.get('dateOfBirth')?.invalid && owner.get('dateOfBirth')?.touched">
+            <div *ngIf="owner.get('dateOfBirth')?.invalid && owner.get('dateOfBirth')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerEmail' + i" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-            <input type="email" [id]="'ownerEmail' + i" class="form-control" formControlName="email" placeholder="Enter a value for this field.">
+            <input type="email" [id]="'ownerEmail' + i" class="form-control" formControlName="email" placeholder="Ingrese email"
+              [class.is-invalid]="owner.get('email')?.invalid && owner.get('email')?.touched">
+            <div *ngIf="owner.get('email')?.invalid && owner.get('email')?.touched" class="invalid-feedback d-block">
+              <span *ngIf="owner.get('email')?.errors?.['required']">Este campo es obligatorio.</span>
+              <span *ngIf="owner.get('email')?.errors?.['email']">Ingrese un email válido.</span>
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerPhone' + i" class="form-label">Teléfono de contacto <span class="text-danger">*</span></label>
@@ -178,46 +226,78 @@
               [id]="'ownerPhone' + i"
               formControlName="phone"
               placeholder="Teléfono de contacto"
+              [class.is-invalid]="owner.get('phone')?.invalid && owner.get('phone')?.touched"
             ></app-intl-tel-input>
+            <div *ngIf="owner.get('phone')?.invalid && owner.get('phone')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-12">
             <label [for]="'ownerFullAddress' + i" class="form-label">Dirección Completa <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerFullAddress' + i" class="form-control mb-2" formControlName="fullAddress" placeholder="Ejemplo: Av. Libertador 1234">
+            <input type="text" [id]="'ownerFullAddress' + i" class="form-control mb-2" formControlName="fullAddress" placeholder="Ejemplo: Av. Libertador 1234"
+              [class.is-invalid]="owner.get('fullAddress')?.invalid && owner.get('fullAddress')?.touched">
             <small class="form-text text-muted">Calle y número exterior/altura</small>
+            <div *ngIf="owner.get('fullAddress')?.invalid && owner.get('fullAddress')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-12">
-            <label [for]="'ownerUnit' + i" class="form-label">Número interior/departamento <span class="text-danger">*</span></label>
+            <label [for]="'ownerUnit' + i" class="form-label">Número interior/departamento</label>
             <input type="text" [id]="'ownerUnit' + i" class="form-control" formControlName="unit" placeholder="Ejemplo: Piso 2, Oficina 105">
           </div>
           <div class="col-md-4">
             <label [for]="'ownerCity' + i" class="form-label">Ciudad <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerCity' + i" class="form-control" formControlName="city" placeholder="Ejemplo: Madrid">
+            <input type="text" [id]="'ownerCity' + i" class="form-control" formControlName="city" placeholder="Ejemplo: Madrid"
+              [class.is-invalid]="owner.get('city')?.invalid && owner.get('city')?.touched">
+            <div *ngIf="owner.get('city')?.invalid && owner.get('city')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-4">
             <label [for]="'ownerStateRegion' + i" class="form-label">Estado/Región/Provincia <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerStateRegion' + i" class="form-control" formControlName="stateRegion" placeholder="Ejemplo: Florida, CDMX, Buenos Aires">
+            <input type="text" [id]="'ownerStateRegion' + i" class="form-control" formControlName="stateRegion" placeholder="Ejemplo: Florida, CDMX, Buenos Aires"
+              [class.is-invalid]="owner.get('stateRegion')?.invalid && owner.get('stateRegion')?.touched">
+            <div *ngIf="owner.get('stateRegion')?.invalid && owner.get('stateRegion')?.touched" class="invalid-feedback d-block">
+              Obligatorio.
+            </div>
           </div>
           <div class="col-md-4">
             <label [for]="'ownerPostalCode' + i" class="form-label">Código postal <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerPostalCode' + i" class="form-control" formControlName="postalCode" placeholder="Ejemplo: 10001">
+            <input type="text" [id]="'ownerPostalCode' + i" class="form-control" formControlName="postalCode" placeholder="Ejemplo: 10001"
+              [class.is-invalid]="owner.get('postalCode')?.invalid && owner.get('postalCode')?.touched">
+            <div *ngIf="owner.get('postalCode')?.invalid && owner.get('postalCode')?.touched" class="invalid-feedback d-block">
+              Obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
-            <label [for]="'ownerCountry' + i" class="form-label">País de Residencia</label>
-            <select [id]="'ownerCountry' + i" class="form-select" formControlName="country">
+            <label [for]="'ownerCountry' + i" class="form-label">País de Residencia <span class="text-danger">*</span></label>
+            <select [id]="'ownerCountry' + i" class="form-select" formControlName="country"
+              [class.is-invalid]="owner.get('country')?.invalid && owner.get('country')?.touched">
               <option value="">Selecciona un país...</option>
               <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
             </select>
+            <div *ngIf="owner.get('country')?.invalid && owner.get('country')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
-            <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality">
+            <select [id]="'ownerNationality' + i" class="form-select" formControlName="nationality"
+              [class.is-invalid]="owner.get('nationality')?.invalid && owner.get('nationality')?.touched">
               <option value="">Selecciona...</option>
               <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
             </select>
+            <div *ngIf="owner.get('nationality')?.invalid && owner.get('nationality')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerPassport' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
-            <input type="text" [id]="'ownerPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país).">
+            <input type="text" [id]="'ownerPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país)."
+              [class.is-invalid]="owner.get('passportNumber')?.invalid && owner.get('passportNumber')?.touched">
+            <div *ngIf="owner.get('passportNumber')?.invalid && owner.get('passportNumber')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio.
+            </div>
           </div>
           <div class="col-md-6">
             <label [for]="'ownerSSN' + i" class="form-label">Número de SSN/ITIN (si tiene, de lo contrario, dejar en blanco)</label>
@@ -298,8 +378,13 @@
           <div class="col-md-6">
             <label [for]="'ownerParticipationPercentage' + i" class="form-label">Porcentaje de participación <span class="text-danger">*</span> %</label>
             <div class="input-group">
-              <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100" step="0.01">
+              <input type="number" [id]="'ownerParticipationPercentage' + i" class="form-control" formControlName="participationPercentage" min="0" max="100" step="0.01"
+                [readonly]="serviceDataForm.get('llcType')?.value === 'single' && (ownersFormArray?.length || 0) === 1"
+                [class.is-invalid]="owner.get('participationPercentage')?.invalid && owner.get('participationPercentage')?.touched">
               <span class="input-group-text">%</span>
+            </div>
+            <div *ngIf="owner.get('participationPercentage')?.invalid && owner.get('participationPercentage')?.touched" class="invalid-feedback d-block">
+              Este campo es obligatorio (0-100).
             </div>
           </div>
         </div>
@@ -313,7 +398,7 @@
 
   <!-- Sección 3: Información Contable de la LLC -->
   <div *ngIf="currentSection === 3" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN CONTABLE DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN CONTABLE DE LA LLC</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
@@ -366,25 +451,25 @@
     </div>
   </div>
 
-  <!-- Sección 4: Movimientos Financieros de la LLC en 2025 -->
+  <!-- Sección 4: Movimientos Financieros de la LLC -->
   <div *ngIf="currentSection === 4" class="form-section">
-    <h4 class="section-title"><strong>MOVIMIENTOS FINANCIEROS DE LA LLC EN 2025</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: MOVIMIENTOS FINANCIEROS DE LA LLC EN {{ currentYear }}</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">
-        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en 2025</label>
+        <label for="totalRevenue2025" class="form-label">Facturación total de la LLC en {{ currentYear }}</label>
         <div class="input-group">
           <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0">
           <span class="input-group-text">USD</span>
         </div>
-        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de 2025, considerando todas las cuentas bancarias asociadas.</small>
+        <small class="form-text text-muted">Monto total de ingresos brutos generados por la LLC entre el 1 de enero y el 31 de diciembre de {{ currentYear }}, considerando todas las cuentas bancarias asociadas.</small>
       </div>
     </div>
   </div>
 
   <!-- Sección 5: Información Adicional de la LLC -->
   <div *ngIf="currentSection === 5" class="form-section">
-    <h4 class="section-title"><strong>INFORMACIÓN ADICIONAL DE LA LLC</strong></h4>
+    <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN ADICIONAL DE LA LLC</strong></h4>
     
     <div class="row g-3">
       <div class="col-md-12">

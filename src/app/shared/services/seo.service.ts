@@ -1,6 +1,6 @@
-import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
-import { isPlatformBrowser } from '@angular/common';
+import { BrowserService } from './browser.service';
 
 export interface SeoData {
   title: string;
@@ -27,7 +27,7 @@ export class SeoService {
   constructor(
     private meta: Meta,
     private title: Title,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) { }
 
   /**
@@ -48,8 +48,9 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:image', content: data.ogImage || '/assets/logo.png' });
     
     // Solo en navegador para og:url dinámico
-    if (isPlatformBrowser(this.platformId)) {
-      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || window.location.href });
+    const win = this.browser.window;
+    if (win) {
+      this.meta.updateTag({ property: 'og:url', content: data.ogUrl || win.location.href });
     }
     
     this.meta.updateTag({ property: 'og:type', content: 'website' });
