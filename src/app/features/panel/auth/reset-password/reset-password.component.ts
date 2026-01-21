@@ -20,6 +20,15 @@ export class ResetPasswordComponent implements OnInit {
   successMessage: string | null = null;
   resetToken: string | null = null;
   isResetMode = false;
+  
+  // Control de visibilidad de contraseñas
+  showPassword = false;
+  showConfirmPassword = false;
+  
+  // Indicador de seguridad de contraseña (igual que basic register del wizard)
+  passwordStrength: 'weak' | 'medium' | 'strong' | null = null;
+  passwordStrengthText = '';
+  passwordStrengthClass = '';
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +58,63 @@ export class ResetPasswordComponent implements OnInit {
         this.isResetMode = true;
       }
     });
+  }
+  
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+  
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+  
+  /**
+   * Calcula la fortaleza de la contraseña (igual que en el wizard)
+   */
+  calculatePasswordStrength(password: string): void {
+    if (!password || password.length === 0) {
+      this.passwordStrength = null;
+      this.passwordStrengthText = '';
+      this.passwordStrengthClass = '';
+      return;
+    }
+    
+    let score = 0;
+    
+    // Longitud mínima
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    
+    // Contiene minúsculas
+    if (/[a-z]/.test(password)) score++;
+    
+    // Contiene mayúsculas
+    if (/[A-Z]/.test(password)) score++;
+    
+    // Contiene números
+    if (/[0-9]/.test(password)) score++;
+    
+    // Contiene caracteres especiales
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    
+    // Determinar nivel
+    if (password.length < 8) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 3) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 5) {
+      this.passwordStrength = 'medium';
+      this.passwordStrengthText = 'Media';
+      this.passwordStrengthClass = 'text-warning';
+    } else {
+      this.passwordStrength = 'strong';
+      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthClass = 'text-success';
+    }
   }
 
   passwordMatchValidator(control: AbstractControl): ValidationErrors | null {

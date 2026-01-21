@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { SafeStorageService } from '../../../../shared/services/safe-storage.service';
-import { WizardStateService } from '../../../../shared/services/wizard-state.service';
+import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 
 /**

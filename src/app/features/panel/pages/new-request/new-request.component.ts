@@ -1516,16 +1516,16 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
    * Inicializa formulario para Apertura LLC
    */
   initializeAperturaLlcForm(group: FormGroup): void {
-    group.addControl('llcType', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('llcName', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('llcType', this.fb.control('', Validators.required));
+    group.addControl('llcName', this.fb.control('', Validators.required));
     group.addControl('llcNameOption2', this.fb.control(''));
     group.addControl('llcNameOption3', this.fb.control(''));
-    group.addControl('businessDescription', this.fb.control(''));
+    group.addControl('businessDescription', this.fb.control('', Validators.required));
     group.addControl('llcPhoneNumber', this.fb.control(''));
     group.addControl('website', this.fb.control(''));
     group.addControl('llcEmail', this.fb.control('', Validators.email));
     group.addControl('linkedin', this.fb.control(''));
-    group.addControl('incorporationState', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('incorporationState', this.fb.control(''));
     group.addControl('incorporationDate', this.fb.control(''));
     group.addControl('hasEin', this.fb.control(false));
     group.addControl('einNumber', this.fb.control(''));
@@ -1603,9 +1603,9 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   initializeRenovacionLlcForm(group: FormGroup): void {
     // Información básica de la LLC
-    group.addControl('llcName', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('state', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('llcType', this.fb.control('')); // Estructura Societaria - Validators.required - COMENTADO PARA TESTING
+    group.addControl('llcName', this.fb.control('', Validators.required));
+    group.addControl('state', this.fb.control(''));
+    group.addControl('llcType', this.fb.control('', Validators.required));
     group.addControl('mainActivity', this.fb.control('')); // Actividad Principal de la LLC
     
     // Preguntas sobre la empresa
@@ -1682,9 +1682,6 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     group.addControl('stateRegistrationUrl', this.fb.control(''));
     group.addControl('certificateOfGoodStandingUrl', this.fb.control(''));
     
-    // Tipo de LLC
-    group.addControl('llcType', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    
     // Paso 2: Información de Propietarios (single o multimember)
     const ownersArray = this.fb.array([]);
     group.addControl('owners', ownersArray); // Array de propietarios
@@ -1729,22 +1726,22 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   initializeCuentaBancariaForm(group: FormGroup): void {
     // Paso 1: Información de la LLC
-    group.addControl('businessType', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('legalBusinessName', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('industry', this.fb.control('')); // Industria / Rubro
-    group.addControl('numberOfEmployees', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('briefDescription', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('businessType', this.fb.control(''));
+    group.addControl('legalBusinessName', this.fb.control('', Validators.required));
+    group.addControl('industry', this.fb.control('', Validators.required));
+    group.addControl('numberOfEmployees', this.fb.control('', Validators.required));
+    group.addControl('briefDescription', this.fb.control('', Validators.required));
     group.addControl('websiteOrSocialMedia', this.fb.control(''));
-    group.addControl('einLetterUrl', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('einNumber', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('articlesOrCertificateUrl', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('einLetterUrl', this.fb.control(''));
+    group.addControl('einNumber', this.fb.control(''));
+    group.addControl('articlesOrCertificateUrl', this.fb.control(''));
     
     // Paso 2: Dirección del Registered Agent
-    group.addControl('registeredAgentStreet', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('registeredAgentStreet', this.fb.control('', Validators.required));
     group.addControl('registeredAgentUnit', this.fb.control(''));
-    group.addControl('registeredAgentCity', this.fb.control(''));
-    group.addControl('registeredAgentState', this.fb.control(''));
-    group.addControl('registeredAgentZipCode', this.fb.control(''));
+    group.addControl('registeredAgentCity', this.fb.control('', Validators.required));
+    group.addControl('registeredAgentState', this.fb.control('', Validators.required));
+    group.addControl('registeredAgentZipCode', this.fb.control('', Validators.required));
     group.addControl('registeredAgentCountry', this.fb.control('United States'));
     group.addControl('incorporationState', this.fb.control(''));
     group.addControl('incorporationMonthYear', this.fb.control(''));
@@ -1752,18 +1749,18 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     
     // Paso 3: Información de la persona que verificará la cuenta bancaria
     group.addControl('validatorMemberId', this.fb.control('')); // ID del miembro seleccionado
-    group.addControl('validatorTitle', this.fb.control(''));
+    group.addControl('validatorTitle', this.fb.control('', Validators.required));
     group.addControl('validatorIncomeSource', this.fb.control(''));
     group.addControl('validatorAnnualIncome', this.fb.control(''));
-    group.addControl('validatorFirstName', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorLastName', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorDateOfBirth', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorNationality', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorCitizenship', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorPassportNumber', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorPassportUrl', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('validatorWorkEmail', this.fb.control(''));
-    group.addControl('validatorPhone', this.fb.control(''));
+    group.addControl('validatorFirstName', this.fb.control('', Validators.required));
+    group.addControl('validatorLastName', this.fb.control('', Validators.required));
+    group.addControl('validatorDateOfBirth', this.fb.control('', Validators.required));
+    group.addControl('validatorNationality', this.fb.control('', Validators.required));
+    group.addControl('validatorCitizenship', this.fb.control(''));
+    group.addControl('validatorPassportNumber', this.fb.control('', Validators.required));
+    group.addControl('validatorPassportUrl', this.fb.control(''));
+    group.addControl('validatorWorkEmail', this.fb.control('', [Validators.required, Validators.email]));
+    group.addControl('validatorPhone', this.fb.control('', Validators.required));
     group.addControl('canReceiveSMS', this.fb.control(false));
     group.addControl('isUSResident', this.fb.control(''));
     
@@ -1772,17 +1769,17 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
     group.addControl('validatorEmail', this.fb.control(''));
     
     // Paso 4: Dirección personal del propietario
-    group.addControl('ownerPersonalStreet', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('ownerPersonalStreet', this.fb.control('', Validators.required));
     group.addControl('ownerPersonalUnit', this.fb.control(''));
-    group.addControl('ownerPersonalCity', this.fb.control(''));
-    group.addControl('ownerPersonalState', this.fb.control(''));
-    group.addControl('ownerPersonalCountry', this.fb.control(''));
-    group.addControl('ownerPersonalPostalCode', this.fb.control(''));
-    group.addControl('serviceBillUrl', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('ownerPersonalCity', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalState', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalCountry', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalPostalCode', this.fb.control('', Validators.required));
+    group.addControl('serviceBillUrl', this.fb.control(''));
     
     // Paso 5: Tipo de LLC
-    group.addControl('isMultiMember', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
-    group.addControl('llcType', this.fb.control('')); // Validators.required - COMENTADO PARA TESTING
+    group.addControl('isMultiMember', this.fb.control('', Validators.required));
+    group.addControl('llcType', this.fb.control(''));
     
     // Paso 6: Propietarios (FormArray)
     group.addControl('owners', this.fb.array([]));

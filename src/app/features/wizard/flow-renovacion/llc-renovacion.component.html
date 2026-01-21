@@ -78,6 +78,7 @@
         #paymentStep
         [stepNumber]="3" 
         [previousStepNumber]="2"
+        [fixedAmount]="600"
         (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
         (paymentError)="onPaymentError($event)"
       ></app-wizard-payment-step>

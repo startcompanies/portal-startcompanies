@@ -14,6 +14,7 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
   @Input() serviceDataForm!: FormGroup;
   @Input() usStates: any[] = [];
   @Input() fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+  @Input() forceSingleMember: boolean = false;
   
   // Lista de países/nacionalidades
   countries: string[] = [

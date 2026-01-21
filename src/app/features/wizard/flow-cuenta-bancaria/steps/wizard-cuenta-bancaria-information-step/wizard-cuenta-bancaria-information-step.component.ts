@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
@@ -137,57 +137,58 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   private initializeCuentaBancariaForm(group: FormGroup): void {
     // Paso 1: Información de la LLC
     group.addControl('businessType', this.fb.control(''));
-    group.addControl('legalBusinessName', this.fb.control(''));
-    group.addControl('industry', this.fb.control(''));
-    group.addControl('numberOfEmployees', this.fb.control(''));
-    group.addControl('briefDescription', this.fb.control(''));
+    // Sección 1: Información del negocio (campos requeridos)
+    group.addControl('legalBusinessName', this.fb.control('', Validators.required));
+    group.addControl('industry', this.fb.control('', Validators.required));
+    group.addControl('numberOfEmployees', this.fb.control('', Validators.required));
+    group.addControl('briefDescription', this.fb.control('', Validators.required));
     group.addControl('websiteOrSocialMedia', this.fb.control(''));
     group.addControl('einLetterUrl', this.fb.control(''));
     group.addControl('einNumber', this.fb.control(''));
     group.addControl('articlesOrCertificateUrl', this.fb.control(''));
     
-    // Paso 2: Dirección del Registered Agent
-    group.addControl('registeredAgentStreet', this.fb.control(''));
+    // Sección 2: Dirección del Registered Agent
+    group.addControl('registeredAgentStreet', this.fb.control('', Validators.required));
     group.addControl('registeredAgentUnit', this.fb.control(''));
-    group.addControl('registeredAgentCity', this.fb.control(''));
-    group.addControl('registeredAgentState', this.fb.control(''));
-    group.addControl('registeredAgentZipCode', this.fb.control(''));
+    group.addControl('registeredAgentCity', this.fb.control('', Validators.required));
+    group.addControl('registeredAgentState', this.fb.control('', Validators.required));
+    group.addControl('registeredAgentZipCode', this.fb.control('', Validators.required));
     group.addControl('registeredAgentCountry', this.fb.control('United States'));
     group.addControl('incorporationState', this.fb.control(''));
     group.addControl('incorporationMonthYear', this.fb.control(''));
     group.addControl('countriesWhereBusiness', this.fb.control([]));
     
-    // Paso 3: Información de la persona que verificará la cuenta bancaria
+    // Sección 3: Información de la persona que verificará la cuenta bancaria
     group.addControl('validatorMemberId', this.fb.control(''));
-    group.addControl('validatorTitle', this.fb.control(''));
+    group.addControl('validatorTitle', this.fb.control('', Validators.required));
     group.addControl('validatorIncomeSource', this.fb.control(''));
     group.addControl('validatorAnnualIncome', this.fb.control(''));
-    group.addControl('validatorFirstName', this.fb.control(''));
-    group.addControl('validatorLastName', this.fb.control(''));
-    group.addControl('validatorDateOfBirth', this.fb.control(''));
-    group.addControl('validatorNationality', this.fb.control(''));
+    group.addControl('validatorFirstName', this.fb.control('', Validators.required));
+    group.addControl('validatorLastName', this.fb.control('', Validators.required));
+    group.addControl('validatorDateOfBirth', this.fb.control('', Validators.required));
+    group.addControl('validatorNationality', this.fb.control('', Validators.required));
     group.addControl('validatorCitizenship', this.fb.control(''));
-    group.addControl('validatorPassportNumber', this.fb.control(''));
+    group.addControl('validatorPassportNumber', this.fb.control('', Validators.required));
     group.addControl('validatorPassportUrl', this.fb.control(''));
-    group.addControl('validatorWorkEmail', this.fb.control(''));
-    group.addControl('validatorPhone', this.fb.control(''));
+    group.addControl('validatorWorkEmail', this.fb.control('', [Validators.required, Validators.email]));
+    group.addControl('validatorPhone', this.fb.control('', Validators.required));
     group.addControl('canReceiveSMS', this.fb.control(false));
     group.addControl('isUSResident', this.fb.control(''));
     
-    // Paso 4: Dirección personal del propietario
-    group.addControl('ownerPersonalStreet', this.fb.control(''));
+    // Sección 4: Dirección personal del propietario
+    group.addControl('ownerPersonalStreet', this.fb.control('', Validators.required));
     group.addControl('ownerPersonalUnit', this.fb.control(''));
-    group.addControl('ownerPersonalCity', this.fb.control(''));
-    group.addControl('ownerPersonalState', this.fb.control(''));
-    group.addControl('ownerPersonalCountry', this.fb.control(''));
-    group.addControl('ownerPersonalPostalCode', this.fb.control(''));
+    group.addControl('ownerPersonalCity', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalState', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalCountry', this.fb.control('', Validators.required));
+    group.addControl('ownerPersonalPostalCode', this.fb.control('', Validators.required));
     group.addControl('serviceBillUrl', this.fb.control(''));
     
-    // Paso 5: Tipo de LLC
-    group.addControl('isMultiMember', this.fb.control(''));
+    // Sección 5: Tipo de LLC
+    group.addControl('isMultiMember', this.fb.control('', Validators.required));
     group.addControl('llcType', this.fb.control(''));
     
-    // Paso 6: Propietarios (FormArray)
+    // Sección 6: Propietarios (FormArray)
     group.addControl('owners', this.fb.array([]));
   }
 
@@ -331,14 +332,14 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     }
     
     const ownerGroup = this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      dateOfBirth: [''],
-      nationality: [''],
-      passportNumber: [''],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      nationality: ['', Validators.required],
+      passportNumber: ['', Validators.required],
       ssnItin: [''],
       cuit: [''],
-      participationPercentage: [''],
+      participationPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
       passportFileUrl: ['']
     });
     
@@ -356,6 +357,133 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   }
 
   /**
+   * Valida si la sección actual está completa
+   */
+  isSectionValid(): boolean {
+    if (this.currentSection === 1) {
+      // Sección 1: Información del negocio
+      const legalBusinessName = this.serviceDataForm.get('legalBusinessName');
+      const industry = this.serviceDataForm.get('industry');
+      const numberOfEmployees = this.serviceDataForm.get('numberOfEmployees');
+      const briefDescription = this.serviceDataForm.get('briefDescription');
+      
+      return !!(legalBusinessName?.valid && industry?.valid && numberOfEmployees?.valid && briefDescription?.valid);
+    }
+    
+    if (this.currentSection === 2) {
+      // Sección 2: Dirección del Registered Agent
+      const registeredAgentStreet = this.serviceDataForm.get('registeredAgentStreet');
+      const registeredAgentCity = this.serviceDataForm.get('registeredAgentCity');
+      const registeredAgentState = this.serviceDataForm.get('registeredAgentState');
+      const registeredAgentZipCode = this.serviceDataForm.get('registeredAgentZipCode');
+      
+      return !!(registeredAgentStreet?.valid && registeredAgentCity?.valid && registeredAgentState?.valid && registeredAgentZipCode?.valid);
+    }
+    
+    if (this.currentSection === 3) {
+      // Sección 3: Información del validador
+      const validatorTitle = this.serviceDataForm.get('validatorTitle');
+      const validatorFirstName = this.serviceDataForm.get('validatorFirstName');
+      const validatorLastName = this.serviceDataForm.get('validatorLastName');
+      const validatorDateOfBirth = this.serviceDataForm.get('validatorDateOfBirth');
+      const validatorNationality = this.serviceDataForm.get('validatorNationality');
+      const validatorPassportNumber = this.serviceDataForm.get('validatorPassportNumber');
+      const validatorWorkEmail = this.serviceDataForm.get('validatorWorkEmail');
+      const validatorPhone = this.serviceDataForm.get('validatorPhone');
+      
+      return !!(validatorTitle?.valid && validatorFirstName?.valid && validatorLastName?.valid && 
+                validatorDateOfBirth?.valid && validatorNationality?.valid && validatorPassportNumber?.valid && 
+                validatorWorkEmail?.valid && validatorPhone?.valid);
+    }
+    
+    if (this.currentSection === 4) {
+      // Sección 4: Dirección personal del propietario
+      const ownerPersonalStreet = this.serviceDataForm.get('ownerPersonalStreet');
+      const ownerPersonalCity = this.serviceDataForm.get('ownerPersonalCity');
+      const ownerPersonalState = this.serviceDataForm.get('ownerPersonalState');
+      const ownerPersonalCountry = this.serviceDataForm.get('ownerPersonalCountry');
+      const ownerPersonalPostalCode = this.serviceDataForm.get('ownerPersonalPostalCode');
+      
+      return !!(ownerPersonalStreet?.valid && ownerPersonalCity?.valid && ownerPersonalState?.valid && 
+                ownerPersonalCountry?.valid && ownerPersonalPostalCode?.valid);
+    }
+    
+    if (this.currentSection === 5) {
+      // Sección 5: Tipo de LLC
+      const isMultiMember = this.serviceDataForm.get('isMultiMember');
+      return !!isMultiMember?.valid;
+    }
+    
+    if (this.currentSection === 6) {
+      // Sección 6: Propietarios
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      const isMultiMember = this.serviceDataForm.get('isMultiMember')?.value;
+      
+      // Para multi member, debe haber al menos 2 owners
+      // Para single member, debe haber al menos 1 owner
+      const minOwners = isMultiMember === 'yes' || isMultiMember === true ? 2 : 1;
+      
+      if (!ownersArray || ownersArray.length < minOwners) {
+        return false;
+      }
+      
+      // Validar que todos los owners tengan los campos requeridos
+      return ownersArray.controls.every(owner => owner.valid);
+    }
+    
+    return true;
+  }
+
+  /**
+   * Marca los campos de la sección actual como touched para mostrar errores
+   */
+  markSectionAsTouched(): void {
+    if (this.currentSection === 1) {
+      this.serviceDataForm.get('legalBusinessName')?.markAsTouched();
+      this.serviceDataForm.get('industry')?.markAsTouched();
+      this.serviceDataForm.get('numberOfEmployees')?.markAsTouched();
+      this.serviceDataForm.get('briefDescription')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 2) {
+      this.serviceDataForm.get('registeredAgentStreet')?.markAsTouched();
+      this.serviceDataForm.get('registeredAgentCity')?.markAsTouched();
+      this.serviceDataForm.get('registeredAgentState')?.markAsTouched();
+      this.serviceDataForm.get('registeredAgentZipCode')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 3) {
+      this.serviceDataForm.get('validatorTitle')?.markAsTouched();
+      this.serviceDataForm.get('validatorFirstName')?.markAsTouched();
+      this.serviceDataForm.get('validatorLastName')?.markAsTouched();
+      this.serviceDataForm.get('validatorDateOfBirth')?.markAsTouched();
+      this.serviceDataForm.get('validatorNationality')?.markAsTouched();
+      this.serviceDataForm.get('validatorPassportNumber')?.markAsTouched();
+      this.serviceDataForm.get('validatorWorkEmail')?.markAsTouched();
+      this.serviceDataForm.get('validatorPhone')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 4) {
+      this.serviceDataForm.get('ownerPersonalStreet')?.markAsTouched();
+      this.serviceDataForm.get('ownerPersonalCity')?.markAsTouched();
+      this.serviceDataForm.get('ownerPersonalState')?.markAsTouched();
+      this.serviceDataForm.get('ownerPersonalCountry')?.markAsTouched();
+      this.serviceDataForm.get('ownerPersonalPostalCode')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 5) {
+      this.serviceDataForm.get('isMultiMember')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 6) {
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      ownersArray?.controls.forEach(owner => {
+        (owner as FormGroup).markAllAsTouched();
+      });
+    }
+  }
+
+  /**
    * Navega a la sección anterior
    */
   goToPreviousSection(): void {
@@ -369,6 +497,12 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    * Navega a la siguiente sección y guarda los datos en la API
    */
   async goToNextSection(): Promise<void> {
+    // Validar sección actual antes de avanzar
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    
     if (this.currentSection < this.totalSections) {
       // Guardar datos en la API antes de avanzar
       await this.saveToApi();

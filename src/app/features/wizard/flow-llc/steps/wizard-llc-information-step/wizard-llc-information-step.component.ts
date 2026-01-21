@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
@@ -89,6 +89,9 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   isSaving = false;
   saveError: string | null = null;
 
+  // Restricción por plan: Pack Premium solo permite Single Member
+  forceSingleMember = false;
+
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
@@ -96,15 +99,17 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     // Inicializar formulario con estructura de apertura-llc-form
+    // Campos con Validators.required son obligatorios
     this.serviceDataForm = this.fb.group({
-      llcType: [''],
-      llcName: [''],
+      // Sección 1: Información de la LLC
+      llcType: ['', Validators.required],
+      llcName: ['', Validators.required],
       llcNameOption2: [''],
       llcNameOption3: [''],
-      businessDescription: [''],
+      businessDescription: ['', Validators.required],
       llcPhoneNumber: [''],
       website: [''],
-      llcEmail: [''],
+      llcEmail: ['', [Validators.email]],
       linkedin: [''],
       incorporationState: [''], // Se establecerá desde el paso anterior
       incorporationDate: [''],
@@ -137,7 +142,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       bankStatementUrl: [''],
       serviceBillUrl: [''],
       periodicIncome10k: [''],
-      bankAccountLinkedEmail: [''],
+      bankAccountLinkedEmail: ['', [Validators.email]],
       bankAccountLinkedPhone: [''],
       projectOrCompanyUrl: [''],
       veracityConfirmation: [''],
@@ -152,7 +157,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         country: ['']
       }),
       ownerPhoneNumber: [''],
-      ownerEmail: [''],
+      ownerEmail: ['', [Validators.email]],
       almacenaProductosDepositoUSA: [false],
       declaroImpuestosAntes: [false],
       llcConStartCompanies: [false],
@@ -182,6 +187,20 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       const stateValue = statePlanData.state;
       this.serviceDataForm.get('incorporationState')?.setValue(stateValue);
       console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
+    }
+
+    // Regla de negocio:
+    // - Pack Premium: solo Single Member (New Mexico o Wyoming)
+    // - Pack Emprendedor: solo Single Member (New Mexico)
+    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    if (this.forceSingleMember) {
+      // Forzar llcType = 'single'
+      const llcTypeControl = this.serviceDataForm.get('llcType');
+      if (llcTypeControl?.value !== 'single') {
+        llcTypeControl?.setValue('single', { emitEvent: true });
+      }
+      // Ajustar miembros para que sea válido como single member
+      this.onLlcTypeChanged('single');
     }
     
     // También verificar si hay un estado guardado en los datos del paso actual
@@ -351,27 +370,29 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Agrega un miembro
+   * Agrega un miembro con validaciones
    */
   addMember(): void {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
+    const llcType = this.serviceDataForm.get('llcType')?.value;
+    const defaultParticipation = llcType === 'single' ? 100 : 0;
     const memberGroup = this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      passportNumber: [''],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      passportNumber: ['', Validators.required],
       scannedPassportUrl: [''],
-      nationality: [''],
-      dateOfBirth: [''],
-      email: [''],
-      phoneNumber: [''],
-      percentageOfParticipation: [0],
+      nationality: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', Validators.required],
+      percentageOfParticipation: [defaultParticipation, [Validators.required, Validators.min(0), Validators.max(100)]],
       memberAddress: this.fb.group({
-        street: [''],
+        street: ['', Validators.required],
         unit: [''],
-        city: [''],
-        stateRegion: [''],
-        postalCode: [''],
-        country: ['']
+        city: ['', Validators.required],
+        stateRegion: ['', Validators.required],
+        postalCode: ['', Validators.required],
+        country: ['', Validators.required]
       }),
       ssnItin: [''],
       cuit: ['']
@@ -390,8 +411,57 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja el cambio de tipo de LLC
+   * Valida si la sección actual está completa
    */
+  isSectionValid(): boolean {
+    if (this.currentSection === 1) {
+      // Sección 1: Información de la LLC
+      const llcType = this.serviceDataForm.get('llcType');
+      const llcName = this.serviceDataForm.get('llcName');
+      const businessDescription = this.serviceDataForm.get('businessDescription');
+      
+      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid);
+    }
+    
+    if (this.currentSection === 2) {
+      // Sección 2: Miembros
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      
+      // Para single member, debe haber al menos 1 miembro
+      // Para multi member, debe haber al menos 2 miembros
+      const minMembers = llcType === 'multi' ? 2 : 1;
+      
+      if (!membersArray || membersArray.length < minMembers) {
+        return false;
+      }
+      
+      // Validar que todos los miembros tengan los campos requeridos
+      return membersArray.controls.every(member => member.valid);
+    }
+    
+    // Sección 3: No tiene campos obligatorios estrictos
+    return true;
+  }
+
+  /**
+   * Marca los campos de la sección actual como touched para mostrar errores
+   */
+  markSectionAsTouched(): void {
+    if (this.currentSection === 1) {
+      this.serviceDataForm.get('llcType')?.markAsTouched();
+      this.serviceDataForm.get('llcName')?.markAsTouched();
+      this.serviceDataForm.get('businessDescription')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 2) {
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      membersArray?.controls.forEach(member => {
+        (member as FormGroup).markAllAsTouched();
+      });
+    }
+  }
+
   /**
    * Navega a la sección anterior
    */
@@ -406,6 +476,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    * Navega a la siguiente sección y guarda los datos en la API
    */
   async goToNextSection(): Promise<void> {
+    // Validar sección actual antes de avanzar
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    
     if (this.currentSection < 3) {
       // Guardar datos en la API antes de avanzar
       await this.saveToApi();
@@ -462,6 +538,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       }
       if (membersArray.length === 0) {
         this.addMember();
+      }
+      // Regla: si es Single Member, el porcentaje siempre es 100%
+      const member0 = membersArray.at(0) as FormGroup | undefined;
+      const pctControl = member0?.get('percentageOfParticipation');
+      if (pctControl) {
+        pctControl.setValue(100, { emitEvent: true });
       }
     } else if (llcType === 'multi') {
       // Si cambia a multi, asegurar que hay al menos un miembro

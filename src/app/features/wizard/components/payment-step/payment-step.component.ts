@@ -94,16 +94,14 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         if (this.previousStepData.amount) {
           this.totalAmount = this.previousStepData.amount;
         } else {
-          // Calcular según el estado si no hay monto guardado
-          const stateValue = this.previousStepData.state || this.state;
-          if (stateValue) {
-            if (stateValue === 'New Mexico') {
-              this.totalAmount = 649;
-            } else if (stateValue === 'Texas') {
-              this.totalAmount = 850;
-            } else {
-              this.totalAmount = 750;
-            }
+          // Fallback: calcular según el plan (debe coincidir con /planes)
+          const planValue = this.previousStepData.plan || this.packId;
+          if (planValue === 'Entrepreneur') {
+            this.totalAmount = 499;
+          } else if (planValue === 'Elite') {
+            this.totalAmount = 600;
+          } else if (planValue === 'Premium') {
+            this.totalAmount = 999;
           }
         }
       }

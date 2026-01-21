@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
@@ -149,12 +149,13 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   }
 
   /**
-   * Inicializa el formulario de renovación LLC
+   * Inicializa el formulario de renovación LLC con validaciones
    */
   private initializeRenovacionLlcForm(group: FormGroup): void {
-    group.addControl('llcName', this.fb.control(''));
+    // Sección 1: Información de la LLC (campos requeridos)
+    group.addControl('llcName', this.fb.control('', Validators.required));
     group.addControl('state', this.fb.control(''));
-    group.addControl('llcType', this.fb.control(''));
+    group.addControl('llcType', this.fb.control('', Validators.required));
     group.addControl('mainActivity', this.fb.control(''));
     group.addControl('hasPropertyInUSA', this.fb.control(''));
     group.addControl('almacenaProductosDepositoUSA', this.fb.control(''));
@@ -298,20 +299,22 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       this.serviceDataForm.addControl('owners', this.fb.array([]));
     }
     
+    const llcType = this.serviceDataForm.get('llcType')?.value;
+    const defaultParticipation = llcType === 'single' ? 100 : 0;
     const ownerGroup = this.fb.group({
-      name: [''],
-      lastName: [''],
-      dateOfBirth: [''],
-      email: [''],
-      phone: [''],
-      fullAddress: [''],
+      name: ['', Validators.required],
+      lastName: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', Validators.required],
+      fullAddress: ['', Validators.required],
       unit: [''],
-      city: [''],
-      stateRegion: [''],
-      postalCode: [''],
-      country: [''],
-      nationality: [''],
-      passportNumber: [''],
+      city: ['', Validators.required],
+      stateRegion: ['', Validators.required],
+      postalCode: ['', Validators.required],
+      country: ['', Validators.required],
+      nationality: ['', Validators.required],
+      passportNumber: ['', Validators.required],
       ssnItin: [''],
       cuit: [''],
       capitalContributions2025: [0],
@@ -322,7 +325,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       isUSCitizen: [''],
       taxCountry: [''],
       wasInUSA31Days2025: [''],
-      participationPercentage: [0]
+      participationPercentage: [defaultParticipation, [Validators.required, Validators.min(0), Validators.max(100)]]
     });
     
     ownersArray.push(ownerGroup);
@@ -335,6 +338,56 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
     if (ownersArray && ownersArray.length > index) {
       ownersArray.removeAt(index);
+    }
+  }
+
+  /**
+   * Valida si la sección actual está completa
+   */
+  isSectionValid(): boolean {
+    if (this.currentSection === 1) {
+      // Sección 1: Información de la LLC
+      const llcName = this.serviceDataForm.get('llcName');
+      const llcType = this.serviceDataForm.get('llcType');
+      
+      return !!(llcName?.valid && llcType?.valid);
+    }
+    
+    if (this.currentSection === 2) {
+      // Sección 2: Miembros/Owners
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      
+      // Para single member, debe haber al menos 1 owner
+      // Para multi member, debe haber al menos 2 owners
+      const minOwners = llcType === 'multi' ? 2 : 1;
+      
+      if (!ownersArray || ownersArray.length < minOwners) {
+        return false;
+      }
+      
+      // Validar que todos los owners tengan los campos requeridos
+      return ownersArray.controls.every(owner => owner.valid);
+    }
+    
+    // Sección 3 y siguientes no tienen campos obligatorios estrictos
+    return true;
+  }
+
+  /**
+   * Marca los campos de la sección actual como touched para mostrar errores
+   */
+  markSectionAsTouched(): void {
+    if (this.currentSection === 1) {
+      this.serviceDataForm.get('llcName')?.markAsTouched();
+      this.serviceDataForm.get('llcType')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 2) {
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      ownersArray?.controls.forEach(owner => {
+        (owner as FormGroup).markAllAsTouched();
+      });
     }
   }
 
@@ -352,6 +405,12 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
    * Navega a la siguiente sección y guarda los datos en la API
    */
   async goToNextSection(): Promise<void> {
+    // Validar sección actual antes de avanzar
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    
     if (this.currentSection < this.totalSections) {
       // Guardar datos en la API antes de avanzar
       await this.saveToApi();

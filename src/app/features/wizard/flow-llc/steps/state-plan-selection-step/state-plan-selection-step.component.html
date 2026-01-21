@@ -54,6 +54,16 @@
             Texas
           </button>
         </div>
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('Wyoming')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'Wyoming'"
+            (click)="selectState('Wyoming')"
+          >
+            Wyoming
+          </button>
+        </div>
       </div>
       
       <!-- Selector de otros estados (filtrado según plan seleccionado) -->

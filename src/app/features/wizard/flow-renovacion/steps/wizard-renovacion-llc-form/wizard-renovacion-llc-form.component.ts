@@ -152,6 +152,12 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
           this.removeOwnerRequested.emit(ownersArray.length - 1);
         }
       }
+      // Regla: si es Single Member, el porcentaje siempre es 100% (si ya existe el owner 0)
+      const owner0 = ownersArray.at(0);
+      const pctControl = owner0?.get('participationPercentage');
+      if (pctControl) {
+        pctControl.setValue(100);
+      }
     }
     // Si es 'multi', no hacer nada especial, el usuario puede agregar propietarios manualmente
   }
