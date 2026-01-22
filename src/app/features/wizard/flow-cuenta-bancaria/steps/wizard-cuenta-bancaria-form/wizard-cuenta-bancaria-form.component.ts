@@ -97,8 +97,33 @@ export class WizardCuentaBancariaFormComponent implements OnInit, OnChanges {
   }
 
   private ensureOwnerExists(): void {
-    if (this.currentSection === 6 && (!this.ownersFormArray || this.ownersFormArray.length === 0)) {
-      this.addOwnerRequested.emit();
+    if (this.currentSection === 6) {
+      const ownersArray = this.ownersFormArray;
+      const isMultiMember = this.isMultiMember;
+      
+      if (!ownersArray || ownersArray.length === 0) {
+        // Si no hay propietarios, crear según el tipo
+        if (isMultiMember) {
+          // Multi-member: crear 2 propietarios
+          this.addOwnerRequested.emit();
+          setTimeout(() => {
+            this.addOwnerRequested.emit();
+          }, 50);
+        } else {
+          // Single-member: crear 1 propietario
+          this.addOwnerRequested.emit();
+        }
+      } else if (!isMultiMember && ownersArray.length > 1) {
+        // Si es single-member y hay más de 1, eliminar extras
+        while (ownersArray.length > 1) {
+          this.removeOwnerRequested.emit(ownersArray.length - 1);
+        }
+      } else if (isMultiMember && ownersArray.length < 2) {
+        // Si es multi-member y hay menos de 2, agregar hasta tener 2
+        while (ownersArray.length < 2) {
+          this.addOwnerRequested.emit();
+        }
+      }
     }
   }
 

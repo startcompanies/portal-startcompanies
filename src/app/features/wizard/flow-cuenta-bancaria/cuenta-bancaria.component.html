@@ -118,6 +118,7 @@
     <div *ngIf="currentStepIndex === (withPayment ? 2 : 1)" class="form-step">
       <h3>Datos de Cuenta Bancaria</h3>
       <app-wizard-cuenta-bancaria-information-step
+        #cuentaBancariaInfoStep
         [stepNumber]="withPayment ? 3 : 2"
         [previousStepNumber]="withPayment ? 2 : 1"
         (sectionChanged)="onCuentaBancariaInfoSectionChanged($event)"

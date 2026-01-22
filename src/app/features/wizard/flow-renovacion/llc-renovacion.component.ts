@@ -218,14 +218,14 @@ export class LLCRenovacionComponent implements OnInit {
       this.transloco.selectTranslate('WIZARD.steps.register'),
       this.transloco.selectTranslate('WIZARD.steps.state'),
       this.transloco.selectTranslate('WIZARD.steps.payment'),
-      this.transloco.selectTranslate('WIZARD.steps.client'),
+      this.transloco.selectTranslate('WIZARD.steps.llc_info'),
       this.transloco.selectTranslate('WIZARD.steps.review'),
-    ]).subscribe(([register, state, payment, client, review]) => {
+    ]).subscribe(([register, state, payment, llcInfo, review]) => {
       this.stepTitles = {
         1: register,
         2: state,
         3: payment,
-        4: client,
+        4: llcInfo,
         5: review,
       };
     });
@@ -436,6 +436,54 @@ export class LLCRenovacionComponent implements OnInit {
   }
   
   /**
+   * Mapea los propietarios del formulario al formato esperado por el backend
+   */
+  private mapOwnersToMembers(owners: any[]): any[] {
+    if (!owners || !Array.isArray(owners)) return [];
+    
+    return owners.map((ownerValue: any) => ({
+      // Campos básicos
+      firstName: ownerValue.name || '',
+      name: ownerValue.name || '', // Mantener ambos para compatibilidad
+      lastName: ownerValue.lastName || '',
+      dateOfBirth: ownerValue.dateOfBirth || '',
+      email: ownerValue.email || '',
+      phone: ownerValue.phone || '',
+      phoneNumber: ownerValue.phone || '', // Alias para compatibilidad
+      
+      // Dirección
+      fullAddress: ownerValue.fullAddress || '',
+      unit: ownerValue.unit || '',
+      city: ownerValue.city || '',
+      stateRegion: ownerValue.stateRegion || '',
+      postalCode: ownerValue.postalCode || '',
+      country: ownerValue.country || '',
+      
+      // Documentos e identificación
+      passportNumber: ownerValue.passportNumber || '',
+      nationality: ownerValue.nationality || '',
+      ssnItin: ownerValue.ssnItin || '',
+      cuit: ownerValue.cuit || '',
+      
+      // Información financiera
+      capitalContributions2025: ownerValue.capitalContributions2025 || 0,
+      loansToLLC2025: ownerValue.loansToLLC2025 || 0,
+      loansRepaid2025: ownerValue.loansRepaid2025 || 0,
+      capitalWithdrawals2025: ownerValue.capitalWithdrawals2025 || 0,
+      
+      // Información fiscal
+      hasInvestmentsInUSA: ownerValue.hasInvestmentsInUSA || '',
+      isUSCitizen: ownerValue.isUSCitizen || '',
+      taxCountry: ownerValue.taxCountry || '',
+      wasInUSA31Days2025: ownerValue.wasInUSA31Days2025 || '',
+      
+      // Participación
+      participationPercentage: ownerValue.participationPercentage || 0,
+      percentageOfParticipation: ownerValue.participationPercentage || 0, // Alias para compatibilidad
+    }));
+  }
+
+  /**
    * Actualiza los datos del request en el backend
    */
   private async updateRequestData(): Promise<void> {
@@ -447,16 +495,23 @@ export class LLCRenovacionComponent implements OnInit {
       const step2Data = allData.step2 || {};
       const serviceData = this.serviceDataForm.value;
       
+      // Separar owners del resto de los datos
+      const { owners, ...restOfServiceData } = serviceData;
+      
+      // Mapear owners a members
+      const members = this.mapOwnersToMembers(owners || []);
+      
       const updateData = {
         type: 'renovacion-llc',
         renovacionLlcData: {
-          ...serviceData,
+          ...restOfServiceData,
           state: step2Data.state || serviceData.state,
-          members: serviceData.owners || []
+          members: members
         }
       };
       
       console.log('[LLCRenovacionComponent] Actualizando request:', requestId, updateData);
+      console.log('[LLCRenovacionComponent] Members a enviar:', members);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       console.log('[LLCRenovacionComponent] Request actualizado exitosamente');
     } catch (error: any) {
@@ -465,7 +520,8 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   /**
-   * Finaliza el wizard actualizando el request con los datos finales
+   * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
+   * Los datos ya fueron guardados previamente en cada paso
    */
   async onFinish(): Promise<void> {
     if (this.isLoading) return;
@@ -483,29 +539,18 @@ export class LLCRenovacionComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      const allData = this.wizardStateService.getAllData();
-      const step2Data = allData.step2 || {};
-      const serviceData = this.serviceDataForm.value;
-      
-      console.log('[LLCRenovacionComponent] Datos finales del wizard:', serviceData);
-
-      // Preparar datos para actualizar el request
+      // Solo actualizar el estado, los datos ya fueron guardados previamente
       const updateData = {
         type: 'renovacion-llc',
-        status: 'solicitud-recibida',
-        renovacionLlcData: {
-          ...serviceData,
-          state: step2Data.state || serviceData.state,
-          members: serviceData.owners || []
-        }
+        status: 'solicitud-recibida'
       };
 
-      console.log('[LLCRenovacionComponent] Actualizando solicitud:', requestId, updateData);
+      console.log('[LLCRenovacionComponent] Actualizando estado de solicitud:', requestId, updateData);
 
-      // Actualizar la solicitud existente
+      // Actualizar solo el estado de la solicitud
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
 
-      console.log('[LLCRenovacionComponent] Solicitud actualizada exitosamente');
+      console.log('[LLCRenovacionComponent] Solicitud finalizada exitosamente');
       
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
@@ -516,7 +561,7 @@ export class LLCRenovacionComponent implements OnInit {
       this.wizardApiService.clearToken();
 
     } catch (error: any) {
-      console.error('[LLCRenovacionComponent] Error al actualizar solicitud:', error);
+      console.error('[LLCRenovacionComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
     }

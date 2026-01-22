@@ -906,6 +906,7 @@
     "steps": {
       "state": "Estado de contratación",
       "register": "Registro básico",
+      "verify_email": "Verificación de email",
       "payment": "Pago",
       "client": "Datos del cliente",
       "review": "Revisión final",

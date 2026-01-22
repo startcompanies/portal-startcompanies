@@ -18,7 +18,7 @@ import { firstValueFrom } from 'rxjs';
     <div class="email-verification-container">
       <div class="verification-card">
         <div class="text-center mb-4">
-          <i class="bi bi-envelope-check" style="font-size: 3rem; color: var(--primary-color, #0d6efd);"></i>
+          <i class="bi bi-envelope-check" style="font-size: 3rem; color: #02CAE3;"></i>
           <h4 class="mt-3">Verifica tu correo electrónico</h4>
           <p class="text-muted">
             Hemos enviado un código de 6 dígitos a <strong>{{ email }}</strong>
@@ -74,7 +74,7 @@ import { firstValueFrom } from 'rxjs';
         <div class="text-center mt-3">
           <p class="text-muted small mb-2">¿No recibiste el código?</p>
           <button 
-            class="btn btn-link btn-sm" 
+            class="btn btn-outline-secondary btn-sm" 
             (click)="resendCode()"
             [disabled]="isResending"
           >
@@ -110,8 +110,55 @@ import { firstValueFrom } from 'rxjs';
       border-radius: 8px;
     }
     .code-digit:focus {
-      border-color: var(--primary-color, #0d6efd);
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+      border-color: #02CAE3;
+      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+    }
+    /* Botón Verificar - btn-primary */
+    .verification-card .btn-primary {
+      background-color: #02CAE3;
+      border-color: #02CAE3;
+      color: #ffffff;
+      min-width: 120px;
+    }
+    .verification-card .btn-primary:hover {
+      background-color: #02b8d0;
+      border-color: #02b8d0;
+      color: #ffffff;
+    }
+    .verification-card .btn-primary:focus {
+      background-color: #02CAE3;
+      border-color: #02CAE3;
+      color: #ffffff;
+      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+    }
+    .verification-card .btn-primary:disabled {
+      background-color: #02CAE3;
+      border-color: #02CAE3;
+      opacity: 0.6;
+      color: #ffffff;
+    }
+    /* Botón Reenviar - btn-outline-secondary */
+    .verification-card .btn-outline-secondary {
+      background-color: #ffffff;
+      border-color: #02CAE3;
+      color: #02CAE3;
+    }
+    .verification-card .btn-outline-secondary:hover {
+      background-color: #f8f9fa;
+      border-color: #02b8d0;
+      color: #02b8d0;
+    }
+    .verification-card .btn-outline-secondary:focus {
+      background-color: #ffffff;
+      border-color: #02CAE3;
+      color: #02CAE3;
+      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+    }
+    .verification-card .btn-outline-secondary:disabled {
+      background-color: #ffffff;
+      border-color: #02CAE3;
+      color: #02CAE3;
+      opacity: 0.6;
     }
   `]
 })

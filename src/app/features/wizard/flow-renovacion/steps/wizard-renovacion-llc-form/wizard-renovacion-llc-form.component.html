@@ -48,8 +48,31 @@
       
       <div class="col-md-6">
         <label for="llcTypeRenovacion" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
-        <select id="llcTypeRenovacion" class="form-select" formControlName="llcType"
-          [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
+        <!-- Si la estructura societaria ya viene del paso anterior, mostrarla como readonly -->
+        <div *ngIf="serviceDataForm.get('llcType')?.value" class="input-group">
+          <input 
+            type="text" 
+            id="llcTypeRenovacion" 
+            class="form-control bg-light" 
+            [value]="getLlcTypeLabel(serviceDataForm.get('llcType')?.value)"
+            readonly
+          />
+          <span class="input-group-text bg-light">
+            <i class="bi bi-lock-fill text-muted"></i>
+          </span>
+        </div>
+        <small *ngIf="serviceDataForm.get('llcType')?.value" class="form-text text-muted">
+          <i class="bi bi-info-circle me-1"></i>
+          La estructura societaria fue seleccionada en el paso anterior y no puede modificarse.
+        </small>
+        <!-- Solo mostrar select si no hay estructura societaria seleccionada -->
+        <select 
+          *ngIf="!serviceDataForm.get('llcType')?.value"
+          id="llcTypeRenovacion" 
+          class="form-select" 
+          formControlName="llcType"
+          [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched"
+        >
           <option value="">Selecciona...</option>
           <option *ngFor="let type of llcTypes" [value]="type.value">{{ type.label }}</option>
         </select>
@@ -178,7 +201,7 @@
           <i class="bi bi-plus-circle me-2"></i>Agregar Propietario
         </button>
       </div>
-      <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index" [formGroupName]="i" class="owner-card mb-4 p-3 border rounded">
+      <div *ngFor="let owner of ownersFormArray?.controls || []; let i = index; trackBy: trackByOwnerIndex" [formGroupName]="i" class="owner-card mb-4 p-3 border rounded">
         <div class="d-flex justify-content-between align-items-center mb-3" *ngIf="serviceDataForm.get('llcType')?.value === 'multi'">
           <h5 class="mb-0">Propietario {{ i + 1 }}</h5>
           <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeOwner(i)" *ngIf="ownersFormArray && ownersFormArray.length > 1">
@@ -338,22 +361,22 @@
           <div class="col-md-12">
             <label class="form-label">¿Posee inversiones o activos en EE.UU.? <small class="text-muted">– Incluye cualquier inversión o activo financiero relacionado con la LLC o el propietario.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSAYes' + i" [value]="'si'" formControlName="hasInvestmentsInUSA">
+              <input class="form-check-input" type="radio" [id]="'hasInvestmentsUSAYes' + i" [value]="'si'" formControlName="hasInvestmentsInUSA">
               <label class="form-check-label" [for]="'hasInvestmentsUSAYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'hasInvestmentsUSA' + i" [id]="'hasInvestmentsUSANo' + i" [value]="'no'" formControlName="hasInvestmentsInUSA">
+              <input class="form-check-input" type="radio" [id]="'hasInvestmentsUSANo' + i" [value]="'no'" formControlName="hasInvestmentsInUSA">
               <label class="form-check-label" [for]="'hasInvestmentsUSANo' + i">No</label>
             </div>
           </div>
           <div class="col-md-12">
             <label class="form-label">El propietario es ciudadano de EE.UU.? <small class="text-muted">– Esto impacta el tratamiento fiscal de la LLC.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenYes' + i" [value]="'si'" formControlName="isUSCitizen">
+              <input class="form-check-input" type="radio" [id]="'isUSCitizenYes' + i" [value]="'si'" formControlName="isUSCitizen">
               <label class="form-check-label" [for]="'isUSCitizenYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'isUSCitizen' + i" [id]="'isUSCitizenNo' + i" [value]="'no'" formControlName="isUSCitizen">
+              <input class="form-check-input" type="radio" [id]="'isUSCitizenNo' + i" [value]="'no'" formControlName="isUSCitizen">
               <label class="form-check-label" [for]="'isUSCitizenNo' + i">No</label>
             </div>
           </div>
@@ -367,11 +390,11 @@
           <div class="col-md-12">
             <label class="form-label">¿El propietario estuvo en EE.UU. más de 31 días en 2025? <small class="text-muted">– Esto afecta sus obligaciones fiscales.</small></label>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysYes' + i" [value]="'si'" formControlName="wasInUSA31Days2025">
+              <input class="form-check-input" type="radio" [id]="'wasInUSA31DaysYes' + i" [value]="'si'" formControlName="wasInUSA31Days2025">
               <label class="form-check-label" [for]="'wasInUSA31DaysYes' + i">Sí</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="radio" [name]="'wasInUSA31Days' + i" [id]="'wasInUSA31DaysNo' + i" [value]="'no'" formControlName="wasInUSA31Days2025">
+              <input class="form-check-input" type="radio" [id]="'wasInUSA31DaysNo' + i" [value]="'no'" formControlName="wasInUSA31Days2025">
               <label class="form-check-label" [for]="'wasInUSA31DaysNo' + i">No</label>
             </div>
           </div>

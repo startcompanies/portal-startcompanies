@@ -14,82 +14,11 @@
   margin-bottom: 2rem;
 }
 
-.request-header h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--color-texto-oscuro);
-  margin-bottom: 0.5rem;
-}
+/* Los estilos de request-header h2 están en wizard-base-styles.css */
+/* No sobrescribir aquí para mantener el color blanco con sombra */
 
-/* Steps Indicator (igual que new-request) */
-.steps-indicator {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 3rem;
-  position: relative;
-}
-
-.steps-indicator::before {
-  content: '';
-  position: absolute;
-  top: 20px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: #e9ecef;
-  z-index: 0;
-}
-
-.step-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 1;
-  flex: 1;
-}
-
-.step-number {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #e9ecef;
-  color: #6c757d;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  transition: all 0.3s;
-}
-
-.step-item.active .step-number {
-  background: var(--color-degradado);
-  color: white;
-  box-shadow: 0 0 0 4px rgba(1, 201, 226, 0.2);
-}
-
-.step-item.completed .step-number {
-  background: #28a745;
-  color: white;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
-}
-
-.step-item.completed .step-number::after {
-  content: '✓';
-  font-size: 1.2rem;
-}
-
-.step-label {
-  font-size: 0.875rem;
-  color: #6c757d;
-  text-align: center;
-}
-
-.step-item.active .step-label {
-  color: var(--color-texto-oscuro);
-  font-weight: 500;
-}
+/* Los estilos de steps-indicator, step-item, step-number y step-label */
+/* están en wizard-base-styles.css - no sobrescribir aquí */
 
 /* Form Steps */
 .form-step {

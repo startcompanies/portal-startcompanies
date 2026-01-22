@@ -363,8 +363,8 @@ export class LLCAperturaComponent implements OnInit {
   }
 
   /**
-   * Finaliza el wizard actualizando el request con los datos finales
-   * El request ya fue creado en el paso de pago
+   * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
+   * Los datos ya fueron guardados previamente en cada paso
    */
   async onFinish(): Promise<void> {
     if (this.isLoading) return;
@@ -382,30 +382,18 @@ export class LLCAperturaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      const allData = this.wizardStateService.getAllData();
-      console.log('[LLCAperturaComponent] Datos finales del wizard:', allData);
-
-      const step2Data = allData.step2 || {}; // Estado y plan
-      const step4Data = allData.step4 || {}; // Información LLC
-
-      // Preparar datos para actualizar el request
-      // IMPORTANTE: no setear `currentStepNumber` con el paso final del wizard.
+      // Solo actualizar el estado, los datos ya fueron guardados previamente
       const updateData = {
         type: 'apertura-llc',
-        status: 'solicitud-recibida',
-        aperturaLlcData: {
-          ...step4Data,
-          incorporationState: step2Data.state || step4Data.incorporationState,
-          members: step4Data.members || [],
-        },
+        status: 'solicitud-recibida'
       };
 
-      console.log('[LLCAperturaComponent] Actualizando solicitud:', requestId, updateData);
+      console.log('[LLCAperturaComponent] Actualizando estado de solicitud:', requestId, updateData);
 
-      // Actualizar la solicitud existente
+      // Actualizar solo el estado de la solicitud
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
 
-      console.log('[LLCAperturaComponent] Solicitud actualizada exitosamente');
+      console.log('[LLCAperturaComponent] Solicitud finalizada exitosamente');
       
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
@@ -416,7 +404,7 @@ export class LLCAperturaComponent implements OnInit {
       this.wizardApiService.clearToken();
 
     } catch (error: any) {
-      console.error('[LLCAperturaComponent] Error al actualizar solicitud:', error);
+      console.error('[LLCAperturaComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
     }

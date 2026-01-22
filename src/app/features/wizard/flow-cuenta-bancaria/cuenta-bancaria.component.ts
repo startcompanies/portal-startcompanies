@@ -53,6 +53,7 @@ export class CuentaBancariaComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
   @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
+  @ViewChild(WizardCuentaBancariaInformationStepComponent) cuentaBancariaInfoStep?: WizardCuentaBancariaInformationStepComponent;
   
   withPayment: boolean = false;
 
@@ -245,6 +246,21 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   onStepChanged(index: number): void {
+    // Antes de cambiar de paso, asegurar que los datos estén guardados
+    // Si estamos saliendo del paso de información de cuenta bancaria, guardar los datos
+    const isLeavingInfoStep = this.currentStepIndex === (this.withPayment ? 2 : 1);
+    const isGoingToReview = index === (this.withPayment ? 3 : 2);
+    
+    if (isLeavingInfoStep && isGoingToReview && this.cuentaBancariaInfoStep) {
+      // Guardar los datos del formulario antes de navegar
+      const formData = this.cuentaBancariaInfoStep.serviceDataForm?.value;
+      if (formData) {
+        const stepNumber = this.withPayment ? 3 : 2;
+        this.wizardStateService.setStepData(stepNumber, formData);
+        console.log('[CuentaBancariaComponent] Datos guardados antes de navegar a revisión:', stepNumber, formData);
+      }
+    }
+    
     this.currentStepIndex = index;
     // Guardar el paso actual en localStorage (convertir a base 1)
     this.wizardStateService.setCurrentStep(index + 1);
@@ -514,7 +530,8 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   /**
-   * Finaliza el wizard actualizando el request con los datos finales
+   * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
+   * Los datos ya fueron guardados previamente en cada sección
    */
   async onFinish(): Promise<void> {
     if (this.isLoading) return;
@@ -539,25 +556,18 @@ export class CuentaBancariaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      const serviceData = this.serviceDataForm.value;
-      console.log('[CuentaBancariaComponent] Datos finales del wizard:', serviceData);
-
-      // Preparar datos para actualizar el request
+      // Solo actualizar el estado, los datos ya fueron guardados previamente
       const updateData = {
         type: 'cuenta-bancaria',
-        status: 'solicitud-recibida',
-        cuentaBancariaData: {
-          ...serviceData,
-          owners: serviceData.owners || []
-        }
+        status: 'solicitud-recibida'
       };
 
-      console.log('[CuentaBancariaComponent] Actualizando solicitud:', finalRequestId, updateData);
+      console.log('[CuentaBancariaComponent] Actualizando estado de solicitud:', finalRequestId, updateData);
 
-      // Actualizar la solicitud existente
+      // Actualizar solo el estado de la solicitud
       await firstValueFrom(this.wizardApiService.updateRequest(finalRequestId, updateData));
 
-      console.log('[CuentaBancariaComponent] Solicitud actualizada exitosamente');
+      console.log('[CuentaBancariaComponent] Solicitud finalizada exitosamente');
       
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
@@ -568,7 +578,7 @@ export class CuentaBancariaComponent implements OnInit {
       this.wizardApiService.clearToken();
 
     } catch (error: any) {
-      console.error('[CuentaBancariaComponent] Error al actualizar solicitud:', error);
+      console.error('[CuentaBancariaComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
     }

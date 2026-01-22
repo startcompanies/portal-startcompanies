@@ -106,7 +106,34 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.serviceDataForm.patchValue(savedData);
+      // Separar los propietarios para restaurarlos manualmente
+      const { owners, ...restOfData } = savedData;
+      this.serviceDataForm.patchValue(restOfData);
+      
+      // Restaurar propietarios manualmente
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      ownersArray.clear();
+      if (owners && Array.isArray(owners)) {
+        owners.forEach((ownerData: any) => {
+          const participation = ownerData.participationPercentage || 0;
+          const ownerGroup = this.createOwnerFormGroup(participation);
+          ownerGroup.patchValue(ownerData);
+          ownersArray.push(ownerGroup);
+        });
+      }
+    }
+
+    // Suscribirse a cambios de isMultiMember para ajustar propietarios
+    this.serviceDataForm.get('isMultiMember')?.valueChanges.subscribe((isMultiMemberValue: string) => {
+      this.handleMultiMemberChange(isMultiMemberValue);
+    });
+
+    // Inicializar propietarios si ya hay un valor en isMultiMember
+    const currentIsMultiMember = this.serviceDataForm.get('isMultiMember')?.value;
+    if (currentIsMultiMember) {
+      setTimeout(() => {
+        this.handleMultiMemberChange(currentIsMultiMember);
+      }, 100);
     }
 
     // Guardar datos cuando el formulario cambia
@@ -116,6 +143,49 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
 
     // Emitir la sección inicial
     this.sectionChanged.emit(this.currentSection);
+  }
+
+  /**
+   * Maneja el cambio de isMultiMember para ajustar los propietarios
+   */
+  private handleMultiMemberChange(isMultiMemberValue: string): void {
+    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    const isMultiMember = isMultiMemberValue === 'yes';
+    
+    if (!ownersArray) {
+      this.serviceDataForm.addControl('owners', this.fb.array([]));
+      return;
+    }
+
+    if (!isMultiMember) {
+      // Single Member: debe haber exactamente 1 propietario con 100%
+      if (ownersArray.length === 0) {
+        // Crear un propietario
+        const ownerGroup = this.createOwnerFormGroup(100);
+        ownersArray.push(ownerGroup);
+      } else if (ownersArray.length > 1) {
+        // Eliminar extras, dejar solo el primero
+        while (ownersArray.length > 1) {
+          ownersArray.removeAt(ownersArray.length - 1);
+        }
+      }
+      // Asegurar que el porcentaje sea 100%
+      const firstOwner = ownersArray.at(0) as FormGroup;
+      firstOwner.get('participationPercentage')?.setValue(100, { emitEvent: false });
+    } else {
+      // Multi Member: debe haber al menos 2 propietarios
+      if (ownersArray.length === 0) {
+        // Crear 2 propietarios
+        const owner1 = this.createOwnerFormGroup(0);
+        const owner2 = this.createOwnerFormGroup(0);
+        ownersArray.push(owner1);
+        ownersArray.push(owner2);
+      } else if (ownersArray.length === 1) {
+        // Agregar un segundo propietario
+        const owner2 = this.createOwnerFormGroup(0);
+        ownersArray.push(owner2);
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -325,13 +395,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   /**
    * Agrega un propietario
    */
-  onAddOwnerRequested(): void {
-    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-    if (!ownersArray) {
-      this.serviceDataForm.addControl('owners', this.fb.array([]));
-    }
-    
-    const ownerGroup = this.fb.group({
+  /**
+   * Crea un FormGroup para un propietario
+   */
+  private createOwnerFormGroup(participationPercentage: number = 0): FormGroup {
+    return this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
@@ -339,10 +407,22 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       passportNumber: ['', Validators.required],
       ssnItin: [''],
       cuit: [''],
-      participationPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      participationPercentage: [participationPercentage, [Validators.required, Validators.min(0), Validators.max(100)]],
       passportFileUrl: ['']
     });
+  }
+
+  onAddOwnerRequested(): void {
+    let ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    if (!ownersArray) {
+      ownersArray = this.fb.array([]);
+      this.serviceDataForm.addControl('owners', ownersArray);
+    }
     
+    const isMultiMember = this.serviceDataForm.get('isMultiMember')?.value === 'yes';
+    const defaultParticipation = isMultiMember ? 0 : 100;
+    
+    const ownerGroup = this.createOwnerFormGroup(defaultParticipation);
     ownersArray.push(ownerGroup);
   }
 
@@ -351,9 +431,23 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    */
   onRemoveOwnerRequested(index: number): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-    if (ownersArray && ownersArray.length > index) {
-      ownersArray.removeAt(index);
+    const isMultiMember = this.serviceDataForm.get('isMultiMember')?.value === 'yes';
+    
+    if (!ownersArray || ownersArray.length <= index) {
+      return;
     }
+    
+    // Prevenir eliminar si es single member y solo hay 1 propietario
+    if (!isMultiMember && ownersArray.length === 1) {
+      return;
+    }
+    
+    // Prevenir eliminar si es multi member y solo hay 2 propietarios (mínimo requerido)
+    if (isMultiMember && ownersArray.length <= 2) {
+      return;
+    }
+    
+    ownersArray.removeAt(index);
   }
 
   /**
@@ -508,6 +602,17 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       await this.saveToApi();
       
       this.currentSection++;
+      
+      // Si se navega a la sección 6 (propietarios), inicializar propietarios según el tipo
+      if (this.currentSection === 6) {
+        const isMultiMemberValue = this.serviceDataForm.get('isMultiMember')?.value;
+        if (isMultiMemberValue) {
+          setTimeout(() => {
+            this.handleMultiMemberChange(isMultiMemberValue);
+          }, 100);
+        }
+      }
+      
       this.sectionChanged.emit(this.currentSection);
     }
   }

@@ -909,6 +909,7 @@
     "steps": {
       "state": "Contracting State",
       "register": "Basic Registration",
+      "verify_email": "Email Verification",
       "payment": "Payment",
       "client": "Client Data",
       "review": "Final Review",
