@@ -84,27 +84,6 @@
           <div class="timeline-content">
             <div class="step-header">
               <h4 class="step-title">{{ step.name }}</h4>
-              <!-- Botones de acción solo para "Solicitud Recibida" cuando está en estado "solicitud-recibida" -->
-              <div *ngIf="isAdmin && step.name === 'Solicitud Recibida' && isSolicitudRecibida()" class="step-admin-actions">
-                <button 
-                  type="button" 
-                  class="btn btn-success btn-sm me-2"
-                  (click)="approveRequest()"
-                  title="Aprobar solicitud"
-                >
-                  <i class="bi bi-check-circle me-1"></i>
-                  Aprobar
-                </button>
-                <button 
-                  type="button" 
-                  class="btn btn-danger btn-sm"
-                  (click)="rejectRequest()"
-                  title="Rechazar solicitud"
-                >
-                  <i class="bi bi-x-circle me-1"></i>
-                  Rechazar
-                </button>
-              </div>
             </div>
             <p class="step-description">{{ step.description }}</p>
             <div class="step-meta" *ngIf="step.date">
