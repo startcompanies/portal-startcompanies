@@ -321,21 +321,60 @@ export class CuentaBancariaComponent implements OnInit {
 
   /**
    * Maneja el reenvío del código de verificación
+   * Usa los datos guardados en el estado del wizard en lugar del ViewChild
    */
   async onResendCode(): Promise<void> {
-    if (!this.registerStep) {
-      this.emailVerificationStep?.notifyResendResult(false, 'Error: No se encontró el paso de registro.');
+    // Obtener datos del registro desde el estado guardado
+    const stepData = this.wizardStateService.getStepData(1);
+    const email = this.registeredEmail || stepData.email;
+    const password = this.registeredPassword || stepData.password;
+    const fullName = stepData.fullName || `${stepData.firstName || ''} ${stepData.lastName || ''}`.trim();
+    const phone = stepData.phone;
+
+    if (!email || !password) {
+      this.emailVerificationStep?.notifyResendResult(
+        false, 
+        'No se encontró el email o contraseña. Por favor, vuelve al paso de registro.'
+      );
       return;
     }
 
     try {
-      await this.registerStep.resendVerificationEmail();
+      // Separar nombre completo en firstName y lastName
+      const nameParts = fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      // Llamar directamente al servicio de API para reenviar el código
+      await firstValueFrom(this.wizardApiService.register({
+        firstName,
+        lastName,
+        email,
+        phone: phone || undefined,
+        password
+      }));
+
       // Notificar éxito al componente de verificación
-      this.emailVerificationStep?.notifyResendResult(true, 'Código reenviado. Por favor, revisa tu bandeja de entrada.');
+      this.emailVerificationStep?.notifyResendResult(
+        true, 
+        'Código de verificación reenviado. Por favor, revisa tu bandeja de entrada.'
+      );
     } catch (error: any) {
-      // Notificar error al componente de verificación
-      const errorMessage = error?.error?.message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
-      this.emailVerificationStep?.notifyResendResult(false, errorMessage);
+      console.error('[CuentaBancariaComponent] Error al reenviar código:', error);
+      // Si el error indica que el email ya está verificado, es bueno
+      if (error?.error?.message?.includes('confirmado')) {
+        this.emailVerificationStep?.notifyResendResult(
+          true, 
+          'Tu email ya está confirmado. Puedes continuar.'
+        );
+        // Si ya está verificado, permitir avanzar
+        this.showEmailVerification = false;
+        this.onEmailVerified();
+      } else {
+        // Notificar error al componente de verificación
+        const errorMessage = error?.error?.message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+        this.emailVerificationStep?.notifyResendResult(false, errorMessage);
+      }
     }
   }
   

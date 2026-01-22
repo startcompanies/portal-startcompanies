@@ -78,6 +78,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   /**
    * Validador asíncrono para verificar disponibilidad de email
    * Usa debounce de 500ms para evitar demasiadas peticiones
+   * NO bloquea si el email existe pero no está verificado (permitirá reenviar código)
    */
   private emailAvailabilityValidator(): AsyncValidatorFn {
     return (control: AbstractControl) => {
@@ -100,7 +101,11 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
               if (response.available) {
                 return null; // Email disponible, no hay error
               } else {
-                // Email no disponible, retornar error
+                // Si el email no está verificado, permitir continuar (se reenviará el código)
+                if (response.emailVerified === false) {
+                  return null; // No bloquear, permitir continuar para reenviar código
+                }
+                // Email ya registrado y confirmado, bloquear
                 return { emailTaken: { message: response.message } };
               }
             }),
@@ -278,7 +283,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       
       this.registeredUserId = response.id;
       this.registeredEmail = email;
-      console.log('[WizardBasicRegisterStep] Usuario registrado:', response);
+      console.log('[WizardBasicRegisterStep] Usuario registrado o código reenviado:', response);
 
       // Guardar datos en el estado del wizard
       this.wizardStateService.setStepData(this.stepNumber, {
@@ -292,7 +297,9 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
 
       // Marcar que está esperando verificación
       this.waitingEmailVerification = true;
-      this.successMessage = response.message || 'Usuario registrado. Por favor, revisa tu correo para confirmar tu cuenta.';
+      // El mensaje puede indicar que se reenvió el código o que se registró nuevo usuario
+      this.successMessage = response.message || 'Código de verificación enviado. Por favor, revisa tu correo para confirmar tu cuenta.';
+      this.errorMessage = null; // Limpiar cualquier error previo
       this.isLoading = false;
       
       // Emitir evento de usuario creado
