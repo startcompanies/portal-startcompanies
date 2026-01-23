@@ -1,0 +1,138 @@
+/* ============================================================================
+   BLOG UTILITIES - Clases utilitarias usadas en el blog
+   Consolidado de blog-components.css
+   ============================================================================ */
+
+/* ============================================================================
+   ACCORDION UTILITIES (optimizadas para toggleAccordion)
+   ============================================================================ */
+.accordion-open {
+  display: block !important;
+}
+
+.accordion-icon-rotated {
+  transform: rotate(90deg);
+}
+
+/* ============================================================================
+   FONT SIZE UTILITIES
+   ============================================================================ */
+.style-font-size-2rem {
+  font-size: 2rem;
+}
+
+.style-font-size-1-75rem {
+  font-size: 1.75rem;
+}
+
+.style-font-size-1-5rem {
+  font-size: 1.5rem;
+}
+
+.style-font-size-1-25rem {
+  font-size: 1.25rem;
+}
+
+.style-font-size-1-125rem {
+  font-size: 1.125rem;
+}
+
+.style-font-size-1-1rem {
+  font-size: 1.1rem;
+}
+
+.style-font-size-1rem {
+  font-size: 1rem;
+}
+
+.style-font-size-0-95rem {
+  font-size: 0.95rem;
+}
+
+/* ============================================================================
+   DISPLAY UTILITIES
+   ============================================================================ */
+.style-display-none {
+  display: none;
+}
+
+.style-display-inline {
+  display: inline;
+}
+
+.style-display-inline-flex {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ============================================================================
+   OTHER UTILITIES
+   ============================================================================ */
+.style-cursor-pointer {
+  cursor: pointer;
+}
+
+.style-anchor-offset {
+  display: block;
+  position: relative;
+  top: -80px;
+  visibility: hidden;
+}
+
+.style-border-bottom-accordion {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.style-table-header-dark {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+.style-table-header-dark a {
+  color: #ffffff;
+}
+
+.style-accordion-button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.style-accordion-content {
+  display: none;
+  padding: 0 0 1rem 0;
+}
+
+.style-section-bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.style-section-bg-light {
+  background-color: #fafafa;
+}
+
+.style-calendar-container {
+  width: 100%;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.style-text-disclaimer {
+  font-size: 0.95rem;
+  color: #6c757d;
+}
+
+.style-font-weight-bold {
+  font-weight: bold;
+}
