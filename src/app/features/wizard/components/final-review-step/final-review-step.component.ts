@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
+import { SignaturePadComponent } from '../../../../shared/components/signature-pad/signature-pad.component';
 
 /**
  * Componente reutilizable para el paso de revisión final
@@ -14,7 +15,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-wizard-final-review-step',
   standalone: true,
-  imports: [CommonModule, TranslocoPipe, ReactiveFormsModule],
+  imports: [CommonModule, TranslocoPipe, ReactiveFormsModule, SignaturePadComponent],
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
@@ -29,7 +30,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   @Input() submitError: string | null = null;
   
   // Eventos para comunicar con el componente padre
-  @Output() submitRequest = new EventEmitter<void>();
+  @Output() submitRequest = new EventEmitter<{ signature: string | null }>();
   @Output() goToPanel = new EventEmitter<void>();
   @Output() goToHome = new EventEmitter<void>();
   
@@ -48,7 +49,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
     this.form = new FormGroup({
-      confirm: new FormControl(false),
+      confirm: new FormControl(false, [Validators.requiredTrue]),
+      signature: new FormControl(null, [Validators.required]),
     });
   }
 
@@ -56,9 +58,31 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
    * Emite el evento para enviar la solicitud
    */
   onSubmit(): void {
-    if (this.form.get('confirm')?.value) {
-      this.submitRequest.emit();
+    // Marcar todos los campos como touched para mostrar errores de validación
+    this.form.markAllAsTouched();
+    
+    if (this.form.valid) {
+      // Emitir evento con los datos del formulario (incluyendo la firma)
+      const signature = this.form.get('signature')?.value || null;
+      this.submitRequest.emit({ signature });
     }
+  }
+
+  /**
+   * Obtiene el FormControl de la firma de manera segura
+   */
+  get signatureControl(): FormControl {
+    return this.form.get('signature') as FormControl;
+  }
+
+  /**
+   * Obtiene los datos del formulario incluyendo la firma
+   */
+  getFormData(): { confirm: boolean; signature: string | null } {
+    return {
+      confirm: this.form.get('confirm')?.value || false,
+      signature: this.form.get('signature')?.value || null
+    };
   }
 
   /**
@@ -199,7 +223,41 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
         hasData: this.serviceData && Object.keys(this.serviceData).length > 0
       });
       
-      this.members = this.serviceData.owners || [];
+      // Para cuenta bancaria, construir los propietarios
+      // El propietario 1 siempre es el verificador (datos de sección 3 y 4)
+      // Solo si es multi-member se agregan propietarios adicionales (sección 6)
+      const isMultiMember = this.serviceData.isMultiMember === 'yes';
+      
+      // Verificar si hay datos del verificador para construir el propietario 1
+      const hasValidatorData = this.serviceData.validatorFirstName || this.serviceData.validatorLastName || 
+                               this.serviceData.validatorWorkEmail || this.serviceData.validatorPhone;
+      
+      if (hasValidatorData) {
+        // Construir el propietario 1 desde los datos del verificador
+        const validatorAsFirstMember = this.buildValidatorAsFirstMember();
+        
+        if (isMultiMember && this.serviceData.owners && this.serviceData.owners.length > 0) {
+          // Multi-member: verificador + owners adicionales
+          // Filtrar owners vacíos (sin nombre) para no mostrar duplicados
+          const additionalOwners = this.serviceData.owners.filter((owner: any) => 
+            owner && (owner.firstName || owner.lastName || owner.name) && !owner.validatesBankAccount
+          );
+          this.members = [validatorAsFirstMember, ...additionalOwners];
+        } else {
+          // Single member: solo el verificador
+          this.members = [validatorAsFirstMember];
+        }
+        
+        console.log('[FinalReviewStep] Propietario 1 construido desde datos del verificador:', validatorAsFirstMember);
+      } else if (this.serviceData.owners && this.serviceData.owners.length > 0) {
+        // No hay datos del verificador pero hay owners, usarlos directamente
+        // Filtrar owners vacíos
+        this.members = this.serviceData.owners.filter((owner: any) => 
+          owner && (owner.firstName || owner.lastName || owner.name)
+        );
+      } else {
+        this.members = [];
+      }
     }
   }
 
@@ -493,5 +551,36 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
       default:
         return [];
     }
+  }
+
+  /**
+   * Construye el propietario 1 desde los datos del verificador
+   * Solo incluye los campos que se muestran en el formulario de propietarios (sección 6):
+   * - firstName, lastName, dateOfBirth, nationality, passportNumber, ssnItin, cuit, participationPercentage, passportFileUrl
+   */
+  private buildValidatorAsFirstMember(): any {
+    // Buscar si hay un owner que ya tenga validatesBankAccount = true
+    if (this.serviceData.owners && this.serviceData.owners.length > 0) {
+      const validatorOwner = this.serviceData.owners.find((owner: any) => owner.validatesBankAccount);
+      if (validatorOwner) {
+        return validatorOwner;
+      }
+    }
+
+    // Construir desde los datos del verificador (solo campos del formulario de propietarios)
+    return {
+      firstName: this.serviceData.validatorFirstName || '',
+      lastName: this.serviceData.validatorLastName || '',
+      dateOfBirth: this.serviceData.validatorDateOfBirth || '',
+      nationality: this.serviceData.validatorNationality || '',
+      passportNumber: this.serviceData.validatorPassportNumber || '',
+      email: this.serviceData.validatorWorkEmail || '',
+      phoneNumber: this.serviceData.validatorPhone || '',
+      percentageOfParticipation: 100,
+      // Campos adicionales del formulario de propietarios (sección 6)
+      ssnItin: '', // No se captura para el verificador, solo para propietarios adicionales
+      cuit: '', // No se captura para el verificador, solo para propietarios adicionales
+      passportFileUrl: this.serviceData.validatorPassportUrl || ''
+    };
   }
 }

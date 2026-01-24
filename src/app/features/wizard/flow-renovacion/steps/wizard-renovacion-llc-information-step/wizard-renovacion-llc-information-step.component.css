@@ -1,2 +1,56 @@
 /* Estilos para el componente wrapper de información de renovación LLC */
 
+/* Botones de navegación entre secciones */
+.wizard-renovacion-llc-information-step .btn-primary {
+  background-color: #02CAE3;
+  border-color: #02CAE3;
+  color: #ffffff;
+  min-width: 120px;
+}
+
+.wizard-renovacion-llc-information-step .btn-primary:hover {
+  background-color: #02b8d0;
+  border-color: #02b8d0;
+  color: #ffffff;
+}
+
+.wizard-renovacion-llc-information-step .btn-primary:focus {
+  background-color: #02CAE3;
+  border-color: #02CAE3;
+  color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+}
+
+.wizard-renovacion-llc-information-step .btn-primary:disabled {
+  background-color: #02CAE3;
+  border-color: #02CAE3;
+  opacity: 0.6;
+  color: #ffffff;
+}
+
+.wizard-renovacion-llc-information-step .btn-outline-secondary {
+  background-color: #ffffff;
+  border-color: #02CAE3;
+  color: #02CAE3;
+  min-width: 120px;
+}
+
+.wizard-renovacion-llc-information-step .btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #02b8d0;
+  color: #02b8d0;
+}
+
+.wizard-renovacion-llc-information-step .btn-outline-secondary:focus {
+  background-color: #ffffff;
+  border-color: #02CAE3;
+  color: #02CAE3;
+  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+}
+
+.wizard-renovacion-llc-information-step .btn-outline-secondary:disabled {
+  background-color: #ffffff;
+  border-color: #02CAE3;
+  color: #02CAE3;
+  opacity: 0.6;
+}

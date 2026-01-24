@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 // Componentes de paso
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -53,6 +55,7 @@ export class LLCAperturaComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
   @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
+  @ViewChild(WizardLlcInformationStepComponent) llcInformationStep?: WizardLlcInformationStepComponent;
   
   currentStep = 1;
   totalSteps = 5; // Registro, Estado/Plan, Pago, Info LLC, Revisión
@@ -83,7 +86,8 @@ export class LLCAperturaComponent implements OnInit {
     private wizardApiService: WizardApiService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -196,8 +200,19 @@ export class LLCAperturaComponent implements OnInit {
       return;
     }
     
-    // Si estamos en paso 4+ y ya hay un request, actualizar los datos
-    if (this.currentStep >= 4 && this.wizardStateService.hasRequest()) {
+    // Si estamos en paso 4 (Información LLC) y ya hay un request, guardar los datos antes de avanzar
+    if (this.currentStep === 4 && this.wizardStateService.hasRequest()) {
+      // Si estamos en la sección 3 (última sección), guardar antes de avanzar al siguiente paso del wizard
+      if (this.llcInfoCurrentSection === 3 && this.llcInformationStep) {
+        await this.llcInformationStep.saveToApi();
+      } else {
+        // Si no estamos en la última sección, actualizar normalmente
+        await this.updateRequestData();
+      }
+    }
+    
+    // Si estamos en paso 5+ y ya hay un request, actualizar los datos
+    if (this.currentStep > 4 && this.wizardStateService.hasRequest()) {
       await this.updateRequestData();
     }
     
@@ -224,13 +239,21 @@ export class LLCAperturaComponent implements OnInit {
       // En el panel, `currentStepNumber` significa "sección dentro de Datos del Servicio".
       // En wizard, `currentStep` es el paso del flujo (1..5). NO debemos sobreescribir `currentStepNumber`
       // con el orden del wizard porque rompe la precarga al continuar en el panel.
-      const updateData = {
+      // Si estamos en el paso 4 (Información LLC), usar la sección actual como currentStepNumber
+      const currentStepNumber = this.currentStep === 4 ? this.llcInfoCurrentSection : undefined;
+      
+      const updateData: any = {
         type: 'apertura-llc',
         aperturaLlcData: {
           ...step4Data,
           members: step4Data.members || [],
         },
       };
+      
+      // Incluir currentStepNumber si estamos en el paso 4
+      if (currentStepNumber !== undefined) {
+        updateData.currentStepNumber = currentStepNumber;
+      }
       
       console.log('[LLCAperturaComponent] Actualizando request:', requestId, updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
@@ -366,7 +389,7 @@ export class LLCAperturaComponent implements OnInit {
    * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
    * Los datos ya fueron guardados previamente en cada paso
    */
-  async onFinish(): Promise<void> {
+  async onFinish(event?: { signature: string | null }): Promise<void> {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
@@ -382,11 +405,22 @@ export class LLCAperturaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      // Solo actualizar el estado, los datos ya fueron guardados previamente
-      const updateData = {
+      let signatureUrl: string | null = null;
+      
+      // Si hay firma, subirla como archivo
+      if (event?.signature) {
+        signatureUrl = await this.uploadSignature(event.signature, requestId);
+      }
+
+      // Actualizar el estado y la firma
+      const updateData: any = {
         type: 'apertura-llc',
         status: 'solicitud-recibida'
       };
+      
+      if (signatureUrl) {
+        updateData.signatureUrl = signatureUrl;
+      }
 
       console.log('[LLCAperturaComponent] Actualizando estado de solicitud:', requestId, updateData);
 
@@ -407,6 +441,43 @@ export class LLCAperturaComponent implements OnInit {
       console.error('[LLCAperturaComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
+    }
+  }
+
+  /**
+   * Convierte una firma base64 a File y la sube al servidor
+   */
+  private async uploadSignature(signatureDataUrl: string, requestId: number): Promise<string | null> {
+    try {
+      // Convertir base64 a Blob
+      const response = await fetch(signatureDataUrl);
+      const blob = await response.blob();
+      
+      // Crear File desde Blob
+      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      
+      // Subir archivo
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', 'apertura-llc');
+      formData.append('requestUuid', requestId.toString());
+      
+      const uploadResponse = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+      
+      if (uploadResponse && uploadResponse.url) {
+        console.log('[LLCAperturaComponent] Firma subida exitosamente:', uploadResponse.url);
+        return uploadResponse.url;
+      }
+      
+      return null;
+    } catch (error: any) {
+      console.error('[LLCAperturaComponent] Error al subir firma:', error);
+      return null;
     }
   }
 

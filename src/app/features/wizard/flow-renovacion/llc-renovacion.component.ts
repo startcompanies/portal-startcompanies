@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -49,6 +51,7 @@ export class LLCRenovacionComponent implements OnInit {
   @ViewChild(WizardBasicRegisterStepComponent) registerStep?: WizardBasicRegisterStepComponent;
   @ViewChild(WizardEmailVerificationComponent) emailVerificationStep?: WizardEmailVerificationComponent;
   @ViewChild(WizardPaymentStepComponent) paymentStep?: WizardPaymentStepComponent;
+  @ViewChild(WizardRenovacionLlcInformationStepComponent) renovacionInformationStep?: WizardRenovacionLlcInformationStepComponent;
   
   flowConfig!: any;
   currentStepIndex = 0;
@@ -155,7 +158,8 @@ export class LLCRenovacionComponent implements OnInit {
     private languageService: LanguageService,
     public translocoService: TranslocoService,
     private router: Router,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private http: HttpClient
   ) {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
@@ -231,7 +235,14 @@ export class LLCRenovacionComponent implements OnInit {
     });
   }
 
-  onStepChanged(index: number): void {
+  async onStepChanged(index: number): Promise<void> {
+    // Si estamos saliendo del paso 4 (Información Renovación) y estamos en la última sección, guardar antes de avanzar
+    if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
+      if (this.renovacionInformationStep) {
+        await this.renovacionInformationStep.saveToApi();
+      }
+    }
+    
     this.currentStepIndex = index;
     // Guardar el paso actual en localStorage (convertir a base 1)
     this.wizardStateService.setCurrentStep(index + 1);
@@ -282,8 +293,19 @@ export class LLCRenovacionComponent implements OnInit {
       return;
     }
 
-    // Si ya hay request (después de pago), podemos ir guardando datos
-    if (this.currentStepIndex >= 3 && this.wizardStateService.hasRequest()) {
+    // Si estamos en paso 4 (Información Renovación) y ya hay un request, guardar los datos antes de avanzar
+    if (this.currentStepIndex === 3 && this.wizardStateService.hasRequest()) {
+      // Si estamos en la sección 5 (última sección), guardar antes de avanzar al siguiente paso del wizard
+      if (this.renovacionInfoCurrentSection === 5 && this.renovacionInformationStep) {
+        await this.renovacionInformationStep.saveToApi();
+      } else {
+        // Si no estamos en la última sección, actualizar normalmente
+        await this.updateRequestData();
+      }
+    }
+    
+    // Si estamos en paso 5+ y ya hay un request, actualizar los datos
+    if (this.currentStepIndex > 3 && this.wizardStateService.hasRequest()) {
       await this.updateRequestData();
     }
 
@@ -501,7 +523,10 @@ export class LLCRenovacionComponent implements OnInit {
       // Mapear owners a members
       const members = this.mapOwnersToMembers(owners || []);
       
-      const updateData = {
+      // Si estamos en el paso 4 (Información Renovación), usar la sección actual como currentStepNumber
+      const currentStepNumber = this.currentStepIndex === 3 ? this.renovacionInfoCurrentSection : undefined;
+      
+      const updateData: any = {
         type: 'renovacion-llc',
         renovacionLlcData: {
           ...restOfServiceData,
@@ -509,6 +534,11 @@ export class LLCRenovacionComponent implements OnInit {
           members: members
         }
       };
+      
+      // Incluir currentStepNumber si estamos en el paso 4
+      if (currentStepNumber !== undefined) {
+        updateData.currentStepNumber = currentStepNumber;
+      }
       
       console.log('[LLCRenovacionComponent] Actualizando request:', requestId, updateData);
       console.log('[LLCRenovacionComponent] Members a enviar:', members);
@@ -523,7 +553,7 @@ export class LLCRenovacionComponent implements OnInit {
    * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
    * Los datos ya fueron guardados previamente en cada paso
    */
-  async onFinish(): Promise<void> {
+  async onFinish(event?: { signature: string | null }): Promise<void> {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
@@ -539,11 +569,22 @@ export class LLCRenovacionComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      // Solo actualizar el estado, los datos ya fueron guardados previamente
-      const updateData = {
+      let signatureUrl: string | null = null;
+      
+      // Si hay firma, subirla como archivo
+      if (event?.signature) {
+        signatureUrl = await this.uploadSignature(event.signature, requestId);
+      }
+
+      // Actualizar el estado y la firma
+      const updateData: any = {
         type: 'renovacion-llc',
         status: 'solicitud-recibida'
       };
+      
+      if (signatureUrl) {
+        updateData.signatureUrl = signatureUrl;
+      }
 
       console.log('[LLCRenovacionComponent] Actualizando estado de solicitud:', requestId, updateData);
 
@@ -564,6 +605,43 @@ export class LLCRenovacionComponent implements OnInit {
       console.error('[LLCRenovacionComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
+    }
+  }
+
+  /**
+   * Convierte una firma base64 a File y la sube al servidor
+   */
+  private async uploadSignature(signatureDataUrl: string, requestId: number): Promise<string | null> {
+    try {
+      // Convertir base64 a Blob
+      const response = await fetch(signatureDataUrl);
+      const blob = await response.blob();
+      
+      // Crear File desde Blob
+      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      
+      // Subir archivo
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', 'renovacion-llc');
+      formData.append('requestUuid', requestId.toString());
+      
+      const uploadResponse = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+      
+      if (uploadResponse && uploadResponse.url) {
+        console.log('[LLCRenovacionComponent] Firma subida exitosamente:', uploadResponse.url);
+        return uploadResponse.url;
+      }
+      
+      return null;
+    } catch (error: any) {
+      console.error('[LLCRenovacionComponent] Error al subir firma:', error);
+      return null;
     }
   }
 

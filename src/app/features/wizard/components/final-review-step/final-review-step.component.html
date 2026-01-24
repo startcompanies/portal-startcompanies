@@ -281,22 +281,29 @@
           </div>
           
           <!-- Campos específicos de Cuenta Bancaria -->
-          <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && member.passportFileUrl">
-            <div class="review-item">
-              <span class="review-label">Pasaporte vigente</span>
-              <span class="review-value">Archivo subido ✓</span>
-            </div>
-          </div>
-          <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && member.ssnItin">
+          <!-- Solo mostrar los campos que están en el formulario de propietarios (sección 6) -->
+          
+          <!-- SSN/ITIN -->
+          <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && (member.ssnOrItin || member.ssnItin)">
             <div class="review-item">
               <span class="review-label">SSN / ITIN</span>
-              <span class="review-value">{{ member.ssnItin }}</span>
+              <span class="review-value">{{ member.ssnOrItin || member.ssnItin }}</span>
             </div>
           </div>
+          
+          <!-- CUIT -->
           <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && member.cuit">
             <div class="review-item">
               <span class="review-label">CUIT</span>
               <span class="review-value">{{ member.cuit }}</span>
+            </div>
+          </div>
+          
+          <!-- Pasaporte escaneado -->
+          <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && (member.scannedPassportUrl || member.passportFileUrl)">
+            <div class="review-item">
+              <span class="review-label">Pasaporte escaneado</span>
+              <span class="review-value">Archivo subido ✓</span>
             </div>
           </div>
         </div>
@@ -313,10 +320,24 @@
             class="form-check-input"
             id="confirmCheck"
             formControlName="confirm"
+            [class.is-invalid]="form.get('confirm')?.invalid && form.get('confirm')?.touched"
           />
           <label class="form-check-label" for="confirmCheck">
             He revisado toda la información y confirmo que los datos son correctos.
           </label>
+          <div *ngIf="form.get('confirm')?.invalid && form.get('confirm')?.touched" class="invalid-feedback d-block">
+            Debes confirmar que has revisado la información
+          </div>
+        </div>
+        
+        <!-- Campo de Firma -->
+        <div class="mt-4">
+          <app-signature-pad
+            [formControl]="signatureControl"
+            [required]="true"
+            [width]="600"
+            [height]="200"
+          ></app-signature-pad>
         </div>
         
         <div class="alert alert-info mt-3">
@@ -335,7 +356,7 @@
           <button 
             type="button" 
             class="btn btn-success btn-lg"
-            [disabled]="!form.get('confirm')?.value || isSubmitting"
+            [disabled]="!form.valid || isSubmitting"
             (click)="onSubmit()"
           >
             <span *ngIf="!isSubmitting">

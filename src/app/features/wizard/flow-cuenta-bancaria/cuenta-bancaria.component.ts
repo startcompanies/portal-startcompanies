@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../services/wizard-plans.service';
+import { environment } from '../../../../environments/environment';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -77,6 +79,9 @@ export class CuentaBancariaComponent implements OnInit {
 
   // Para controlar la visibilidad de botones en el paso de información de cuenta bancaria
   cuentaBancariaInfoCurrentSection = 1;
+  
+  // Control del tipo de LLC (Multi-Member)
+  isMultiMember: boolean = false;
   
   // Control del pago
   paymentProcessed = false;
@@ -153,7 +158,8 @@ export class CuentaBancariaComponent implements OnInit {
     public translocoService: TranslocoService,
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private http: HttpClient
   ) {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
@@ -245,20 +251,24 @@ export class CuentaBancariaComponent implements OnInit {
     });
   }
 
-  onStepChanged(index: number): void {
+  async onStepChanged(index: number): Promise<void> {
     // Antes de cambiar de paso, asegurar que los datos estén guardados
     // Si estamos saliendo del paso de información de cuenta bancaria, guardar los datos
     const isLeavingInfoStep = this.currentStepIndex === (this.withPayment ? 2 : 1);
     const isGoingToReview = index === (this.withPayment ? 3 : 2);
     
     if (isLeavingInfoStep && isGoingToReview && this.cuentaBancariaInfoStep) {
-      // Guardar los datos del formulario antes de navegar
-      const formData = this.cuentaBancariaInfoStep.serviceDataForm?.value;
-      if (formData) {
-        const stepNumber = this.withPayment ? 3 : 2;
-        this.wizardStateService.setStepData(stepNumber, formData);
-        console.log('[CuentaBancariaComponent] Datos guardados antes de navegar a revisión:', stepNumber, formData);
+      // Asegurar que currentSection esté actualizado antes de guardar
+      // Si isMultiMember = "no" y estamos en la sección 5, asegurar que currentSection sea 5
+      if (this.cuentaBancariaInfoCurrentSection === 5 && !this.isMultiMember) {
+        // Asegurar que el currentSection del componente hijo sea 5 antes de guardar
+        if (this.cuentaBancariaInfoStep.currentSection !== 5) {
+          this.cuentaBancariaInfoStep.currentSection = 5;
+        }
       }
+      // Guardar los datos en la API antes de navegar
+      await this.cuentaBancariaInfoStep.saveToApi();
+      console.log('[CuentaBancariaComponent] Datos guardados en API antes de navegar a revisión, currentSection:', this.cuentaBancariaInfoStep.currentSection);
     }
     
     this.currentStepIndex = index;
@@ -287,6 +297,19 @@ export class CuentaBancariaComponent implements OnInit {
             this.registeredPassword = stepData.password || '';
             this.showEmailVerification = true;
           }
+          return;
+        }
+      }
+    }
+
+    // Si estamos avanzando al paso de información de cuenta bancaria (sin pago)
+    // y no hay request, crearlo
+    if (this.currentStepIndex === 0 && !this.withPayment && this.wizardApiService.isAuthenticated()) {
+      if (!this.wizardStateService.hasRequest()) {
+        console.log('[CuentaBancariaComponent] Creando request sin pago al avanzar al paso de información');
+        const created = await this.createRequestWithoutPayment();
+        if (!created) {
+          this.errorMessage = 'Error al crear la solicitud. Por favor, intenta nuevamente.';
           return;
         }
       }
@@ -328,10 +351,21 @@ export class CuentaBancariaComponent implements OnInit {
   /**
    * Maneja la verificación exitosa del email
    */
-  onEmailVerified(): void {
+  async onEmailVerified(): Promise<void> {
     console.log('[CuentaBancariaComponent] Email verificado exitosamente');
     this.showEmailVerification = false;
-    this.currentStepIndex = 1; // Avanzar al siguiente paso
+    
+    // Si es flujo sin pago, crear el request antes de avanzar al paso de información
+    if (!this.withPayment && !this.wizardStateService.hasRequest()) {
+      console.log('[CuentaBancariaComponent] Creando request sin pago al verificar email');
+      const created = await this.createRequestWithoutPayment();
+      if (!created) {
+        this.errorMessage = 'Error al crear la solicitud. Por favor, intenta nuevamente.';
+        return;
+      }
+    }
+    
+    this.currentStepIndex = 1; // Avanzar al siguiente paso (información de cuenta bancaria)
     this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
   }
 
@@ -414,9 +448,39 @@ export class CuentaBancariaComponent implements OnInit {
    * Maneja el cambio de sección en el paso de información de cuenta bancaria
    */
   onCuentaBancariaInfoSectionChanged(section: number): void {
+    // Si section es 0, significa que se debe avanzar al siguiente paso del wizard (no es multimember)
+    if (section === 0) {
+      // Avanzar al siguiente paso del wizard (revisión final)
+      this.onStepChanged(this.withPayment ? 3 : 2);
+      return;
+    }
+    
     this.cuentaBancariaInfoCurrentSection = section;
     // Guardar la sección actual en localStorage
     this.wizardStateService.setCurrentStepNumber(section);
+    
+    // Actualizar el valor de isMultiMember cuando cambia la sección
+    this.updateIsMultiMember();
+  }
+
+  /**
+   * Maneja el cambio de isMultiMember desde el componente hijo
+   */
+  onIsMultiMemberChanged(isMultiMember: boolean): void {
+    this.isMultiMember = isMultiMember;
+  }
+
+  /**
+   * Actualiza el valor de isMultiMember desde el formulario del componente hijo
+   */
+  private updateIsMultiMember(): void {
+    const form = this.cuentaBancariaInfoStep?.serviceDataForm;
+    if (!form) {
+      this.isMultiMember = false;
+      return;
+    }
+    const isMultiMemberValue = form.get('isMultiMember')?.value;
+    this.isMultiMember = isMultiMemberValue === 'yes';
   }
   
   /**
@@ -533,7 +597,7 @@ export class CuentaBancariaComponent implements OnInit {
    * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
    * Los datos ya fueron guardados previamente en cada sección
    */
-  async onFinish(): Promise<void> {
+  async onFinish(event?: { signature: string | null }): Promise<void> {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
@@ -556,11 +620,22 @@ export class CuentaBancariaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      // Solo actualizar el estado, los datos ya fueron guardados previamente
-      const updateData = {
+      let signatureUrl: string | null = null;
+      
+      // Si hay firma, subirla como archivo
+      if (event?.signature) {
+        signatureUrl = await this.uploadSignature(event.signature, finalRequestId);
+      }
+
+      // Actualizar el estado y la firma
+      const updateData: any = {
         type: 'cuenta-bancaria',
         status: 'solicitud-recibida'
       };
+      
+      if (signatureUrl) {
+        updateData.signatureUrl = signatureUrl;
+      }
 
       console.log('[CuentaBancariaComponent] Actualizando estado de solicitud:', finalRequestId, updateData);
 
@@ -581,6 +656,43 @@ export class CuentaBancariaComponent implements OnInit {
       console.error('[CuentaBancariaComponent] Error al finalizar solicitud:', error);
       this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       this.isLoading = false;
+    }
+  }
+
+  /**
+   * Convierte una firma base64 a File y la sube al servidor
+   */
+  private async uploadSignature(signatureDataUrl: string, requestId: number): Promise<string | null> {
+    try {
+      // Convertir base64 a Blob
+      const response = await fetch(signatureDataUrl);
+      const blob = await response.blob();
+      
+      // Crear File desde Blob
+      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      
+      // Subir archivo
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', 'cuenta-bancaria');
+      formData.append('requestUuid', requestId.toString());
+      
+      const uploadResponse = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+      
+      if (uploadResponse && uploadResponse.url) {
+        console.log('[CuentaBancariaComponent] Firma subida exitosamente:', uploadResponse.url);
+        return uploadResponse.url;
+      }
+      
+      return null;
+    } catch (error: any) {
+      console.error('[CuentaBancariaComponent] Error al subir firma:', error);
+      return null;
     }
   }
 

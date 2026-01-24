@@ -1,0 +1,87 @@
+Servicio,Label,Nombre_BD,Zoho API,
+apertura-llc,Nombre de la LLC - Opción 1,llcName,Account_Name,
+apertura-llc,Nombre de la LLC - Opción 2,llcNameOption2,Nombre_de_la_LLC_Opci_n_2,
+apertura-llc,Nombre de la LLC - Opción 3,llcNameOption3,Nombre_de_la_LLC_Opci_n_3,
+apertura-llc,Estado de Registro de la LLC,incorporationState,Estado_de_Registro,
+apertura-llc,Actividad Principal de la LLC,businessDescription,Actividad_Principal_de_la_LLC,
+apertura-llc,Estructura Societaria,llcType,Estructura_Societaria,
+apertura-llc,LinkedIn (Opcional),linkedin,LinkedIn,
+apertura-llc,¿Tendrá ingresos periódicos que suman USD 10,periodicIncome10k,Tendr_ingresos_peri_dicos_que_sumen_USD_10_000,
+apertura-llc,Correo Electrónico Vinculado a la Cuenta Bancaria,bankAccountLinkedEmail,Correo_Electr_nico_Vinculado_a_la_Cuenta_Bancaria,
+apertura-llc,Número de Teléfono Vinculado a la Cuenta Bancaria,bankAccountLinkedPhone,N_mero_de_Tel_fono_Vinculado_a_la_Cuenta_Bancaria,
+apertura-llc,Actividad financiera esperada,actividadFinancieraEsperada,Actividad_financiera_esperada,
+apertura-llc,URL del Proyecto o Empresa (Opcional),projectOrCompanyUrl,P_gina_web_de_la_LLC,
+renovacion-llc,Nombre de la LLC,llcName,Account_Name,
+renovacion-llc,Estado de Registro de la LLC,state,Estado_de_Registro,
+renovacion-llc,Estructura Societaria,llcType,Estructura_Societaria,
+renovacion-llc,Actividad Principal de la LLC,mainActivity,Actividad_Principal_de_la_LLC,
+renovacion-llc,¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?,hasPropertyInUSA,Tu_empresa_posee_o_renta_una_propiedad_en_EE_UU,
+renovacion-llc,¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?,almacenaProductosDepositoUSA,Almacena_productos_en_un_dep_sito_en_EE_UU,
+renovacion-llc,¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente (excluyendo freelancers)?,contrataServiciosUSA,Tu_empresa_contrata_servicios_en_EE_UU,
+renovacion-llc,¿Tu LLC tiene cuentas bancarias a su nombre?,tieneCuentasBancarias,Tu_LLC_tiene_cuentas_bancarias_a_su_nombre,
+renovacion-llc,Número de EIN,einNumber,N_mero_de_EIN,
+renovacion-llc,Fecha de creación de la LLC,llcCreationDate,Fecha_de_Constituci_n,
+renovacion-llc,Países donde la LLC realiza negocios,countriesWhereLLCDoesBusiness,Pa_ses_donde_la_LLC_realiza_negocios,
+renovacion-llc,¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?,hasFinancialInvestmentsInUSA,Posee_la_LLC_inversiones_o_activos_en_EE_UU,
+renovacion-llc,¿La LLC declaró impuestos anteriormente?,hasFiledTaxesBefore,La_LLC_declar_impuestos_anteriormente,
+renovacion-llc,¿La LLC se constituyó con Start Companies?,wasConstitutedWithStartCompanies,La_LLC_se_constituy_con_Start_Companies,
+renovacion-llc,Declaración del año corriente (2025),declaracionAnoCorriente,A_o_de_la_Declaraci_n_Fiscal,
+renovacion-llc,Cambio de nombre,cambioNombre,Nuevo_nombre_de_la_LLC,
+renovacion-llc,Declaración de años anteriores,declaracionAnosAnteriores,Declaraciones_Juradas_Anteriores,
+renovacion-llc,¿Cuánto costó abrir la LLC en Estados Unidos?,llcOpeningCost,Cu_nto_cost_abrir_la_LLC_en_Estados_Unidos,
+renovacion-llc,¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?,paidToFamilyMembers,Pagos_a_familiares_servicios,
+renovacion-llc,¿Cuánto pagó la LLC a empresas locales (En otro Pais) del dueño por bienes o servicios?,paidToLocalCompanies,Cu_nto_pag_la_LLC_a_empresas_locales_En_otro_Pa,
+renovacion-llc,¿Cuánto se pagó por la formación de la LLC (Incorporation/State fees)?,paidForLLCFormation,Pagos_formaci_n_LLC_tasas_estatales,
+renovacion-llc,¿Cuánto se pagó por la disolución de la LLC (si aplica)?,paidForLLCDissolution,Pagos_disoluci_n_LLC,
+renovacion-llc,Saldo Al fin de año de las cuentas bancarias de la LLC,bankAccountBalanceEndOfYear,Saldo_bancario_fin_de_a_o_LLC,
+renovacion-llc,Facturación total de la LLC en {año},totalRevenue,Facturaci_n_total_de_la_LLC,
+cuenta-bancaria,Tipo de negocio,businessType,Tipo_de_negocio,
+cuenta-bancaria,Nombre legal del negocio,legalBusinessName,Account_Name,
+cuenta-bancaria,Industria / Rubro,industry,Industria_Rubro,
+cuenta-bancaria,Cantidad de empleados,numberOfEmployees,Cantidad_de_empleados,
+cuenta-bancaria,Descripción breve,briefDescription,Descripci_n_breve,
+cuenta-bancaria,Sitio web o red social,websiteOrSocialMedia,Sitio_web_o_Red_Social,
+cuenta-bancaria,Numero de EIN,einNumber,N_mero_de_EIN,
+cuenta-bancaria,Calle y número (Dirección Registered Agent),registeredAgentStreet,Direcci_n_comercial_Calle_y_numero,
+cuenta-bancaria,Apto / Suite / PO Box (Dirección Registered Agent),registeredAgentUnit,Direcci_n_comercial_Suite,
+cuenta-bancaria,Ciudad (Dirección Registered Agent),registeredAgentCity,Direcci_n_comercial_Ciudad,
+cuenta-bancaria,Estado (Dirección Registered Agent),registeredAgentState,Direcci_n_comercial_Estado,
+cuenta-bancaria,Postal / Zip Code (Dirección Registered Agent),registeredAgentZipCode,Direcci_n_comercial_Postal,
+cuenta-bancaria,Country (Dirección Registered Agent),registeredAgentCountry,Direcci_n_postal_Pais,
+cuenta-bancaria,Estado de constitución,incorporationState,Estado_de_constituci_n,
+cuenta-bancaria,Mes y Año de Incorporación,incorporationMonthYear,Mes_y_A_o,
+cuenta-bancaria,Países donde haces negocios con tu LLC,countriesWhereBusiness,Pa_ses_donde_la_LLC_realiza_negocios,
+cuenta-bancaria,Calle y número (Dirección Personal),ownerPersonalStreet,Calle_y_n_mero,
+cuenta-bancaria,Calle y número interior (Dirección Personal),ownerPersonalUnit,Suite_Apto,
+cuenta-bancaria,Ciudad (Dirección Personal),ownerPersonalCity,Ciudad,
+cuenta-bancaria,Estados / Provincias (Dirección Personal),ownerPersonalState,Estado_Provincia,
+cuenta-bancaria,País y/o Estado (Dirección Personal),ownerPersonalCountry,Pais,
+cuenta-bancaria,Código Postal (Dirección Personal),ownerPersonalPostalCode,Postal_Zip_Code,
+cuenta-bancaria,¿Tu LLC es Multi-Member?,isMultiMember,Estructura_Societaria,
+,,,,
+,,,,
+Servicio,Label,Nombre_BD,Zoho API - contacto principal,Zoho API Socios LLC
+members,Nombres,firstName,Nombres_del_propietario,Nombres_del_Socio
+members,Apellidos,lastName,Apellidos_del_propietario,Apellidos_del_Socio
+members,Número Pasaporte Completo,passportNumber,Nro_de_pasaporte_Propietario,N_mero_de_pasaporte_Socio
+members,Nacionalidad,nationality,Nacionalidad_Propietario,Nacionalidad_Socio
+members,Fecha de nacimiento,dateOfBirth,Fecha_Nacimiento_Propietario,Fecha_de_Nacimiento_Socio
+members,Email,email, Correo_electr_nico_Propietario,Correo_electr_nico_Socio
+members,Teléfono,phoneNumber,Tel_fono_Contacto_Propietario,Tel_fono_Socio
+members,% de Participación,percentageOfParticipation,Porcentaje_Participaci_n_Princ,Porcentaje_Participaci_n_Socio
+members,Calle (Dirección Miembro),memberAddress.street,Calle_y_n_mero_exterior_altura,Calle_y_n_mero_exterior_altura
+members,Unidad (Dirección Miembro),memberAddress.unit,N_mero_interior_departamento_P,N_mero_interior_departamento_S
+members,Ciudad (Dirección Miembro),memberAddress.city,Ciudad_Propietario,Ciudad_Propietario
+members,Estado/Región (Dirección Miembro),memberAddress.stateRegion,Estado_Regi_n_Provincia_Prop,Estado_Regi_n_Provincia_Socio
+members,Código Postal (Dirección Miembro),memberAddress.postalCode,C_digo_postal_Propietario,C_digo_postal_Socio
+members,País (Dirección Miembro),memberAddress.country,Pa_s_de_Residencia_Propietario,Pa_s_de_Residencia_Socio
+members,Número de SSN/ITIN,ssnOrItin, N_mero_de_SSN_ITIN,N_mero_de_SSN_ITIN
+members,ID Fiscal Nacional (CUIT),nationalTaxId,ID_Fiscal_Nacional_CUIT,ID_Fiscal_Nacional_CUIT
+members,País donde paga impuestos,taxFilingCountry,Pa_s_donde_paga_impuestos,Pa_s_donde_paga_impuestos
+members,Contribuciones de capital realizadas en 2024 (USD),ownerContributions,Contribuciones_de_capital_realizadas_en_2024_USD,Contribuciones_de_capital_realizadas_en_2024
+members,Préstamos realizados a la LLC en 2024,ownerLoansToLLC,Pr_stamos_realizados_a_la_LLC_en_2024,Pr_stamos_realizados_a_la_LLC_en_2024
+members,Préstamos repagados por la LLC a Propietario 2024,loansReimbursedByLLC,Pr_stamos_repagados_por_la_LLC_a_Propietario_2024,Pr_stamos_repagados_por_la_LLC_a_Propietario_2024
+members,Retiros de capital realizados en 2024 (USD),profitDistributions,Retiros_de_capital_realizados_en_2024_USD,Retiros_de_Capital_2024
+members,¿Estuvo en EE.UU. más de 31 días en 2024?,spentMoreThan31DaysInUS,Estuvo_en_EE_UU_m_s_de_31_d_as_en_2024,Estuvo_en_EE_UU_m_s_de_31_d_as_en_2024
+members,¿Posee inversiones o activos en EE.UU.?,hasUSFinancialInvestments,Posee_inversiones_o_activos_en_EE_UU,Posee_inversiones_o_activos_en_EE_UU
+members,¿Es ciudadano de EE.UU.?,isUSCitizen,Es_ciudadano_de_EE_UU,Es_ciudadano_de_EE_UU
