@@ -47,6 +47,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   remainingContent = '';
   heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
+  tocOpen = true;
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
 
@@ -1033,6 +1034,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   toggleTOC(): void {
+    this.tocOpen = !this.tocOpen;
     const doc = this.browser.document;
     if (!doc) return;
 
@@ -1040,13 +1042,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     const toggleIcon = doc.getElementById('toc-toggle-icon');
 
     if (tocBody && toggleIcon) {
-      if (tocBody.style.display === 'none' || tocBody.style.display === '') {
-        tocBody.style.display = 'block';
-        toggleIcon.style.transform = 'rotate(180deg)';
-      } else {
-        tocBody.style.display = 'none';
-        toggleIcon.style.transform = 'rotate(0deg)';
-      }
+      tocBody.style.display = this.tocOpen ? 'block' : 'none';
+      toggleIcon.style.transform = this.tocOpen ? 'rotate(180deg)' : 'rotate(0deg)';
     }
   }
 

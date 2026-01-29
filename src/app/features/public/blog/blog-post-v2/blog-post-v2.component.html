@@ -130,26 +130,58 @@
       </nav>
     </div>
 
+    <div *ngIf="!hasSections && postArticle" class="col-12 d-lg-none mb-4">
+      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
+    </div>
+
     <main [class]="hasSections ? 'col-12' : 'col-lg-9'" *ngIf="postArticle && postArticle.content">
       <app-post-content class="post-content" [html]="hasSections ? remainingContent : postArticle.content"
         [isLandingPage]="hasSections"></app-post-content>
+
+      <div class="post-author-section mt-5" *ngIf="!hasSections && postArticle">
+        <h3 class="post-author-title">Sobre el <span>autor</span></h3>
+        <div class="card author-info-card">
+          <div class="card-body author-card-body">
+            <div class="author-image">
+              <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
+                <img [src]="postArticle.user?.profile_image" class="rounded-circle" alt="Autor" width="120"
+                  height="120" />
+              </ng-container>
+              <ng-template #noProfileImage>
+                <i class="bi bi-person-circle rounded-circle" aria-hidden="true"></i>
+              </ng-template>
+            </div>
+            <div class="author-details">
+              <p class="author-label">Autor</p>
+              <h5 class="author-name">Ignacio Navarro</h5>
+              <p class="author-description">
+                Ignacio Navarro es Contador Público, graduado en 2020 de la
+                Universidad Nacional de Tucumán. Fundador de Start Companies desde
+                2023, asesora a clientes de todo el mundo en la apertura de LLC en
+                Estados Unidos y en la correcta declaración de impuestos. Su
+                experiencia combina conocimiento legal, fiscal y práctico,
+                ofreciendo un servicio integral que abarca desde la constitución de
+                la sociedad hasta la apertura bancaria e integración de plataformas
+                de ventas.
+              </p>
+              <p class="author-follow">Sigueme en:</p>
+              <div class="author-socials">
+                <a href="#" class="author-social is-linkedin" aria-label="LinkedIn">
+                  <i class="bi bi-linkedin"></i>
+                </a>
+                <a href="#" class="author-social is-youtube" aria-label="YouTube">
+                  <i class="bi bi-youtube"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
 
-    <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
-      <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
-        <div class="card-header sc-header">
-          <p class="text-center">En este articulo</p>
-        </div>
-        <div class="card-body sc-body">
-          <ul class="list-group sc-post-toc">
-            <li class="list-group-item" *ngFor="let link of tocLinks" [style.cursor]="'pointer'"
-              (click)="scrollToSection(link.href, $event)">
-              {{ link.text }}
-            </li>
-          </ul>
-        </div>
-      </div>
+    <aside class="index-card col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
+      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
 
       <div class="card open-llc-card p-4 mb-4">
         <h3 class="title text-center">Abre tu LLC</h3>
@@ -179,40 +211,26 @@
             [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
         </div>
       </div>
-
-      <div class="card author-info-card">
-        <div class="card-body">
-          <p class="text-center">Autor</p>
-          <h5 class="card-title text-center">Ignacio Navarro</h5>
-          <p class="card-text small text-center">
-            <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
-              <img [src]="postArticle.user?.profile_image" class="rounded-circle mb-3" alt="Autor" width="80"
-                height="80" />
-            </ng-container>
-            <ng-template #noProfileImage>
-              <i class="bi bi-person-circle rounded-circle mb-3" style="font-size: 80px; line-height: 1; color: #6c757d"
-                aria-hidden="true"></i>
-            </ng-template>
-          </p>
-          <p class="text-justify mb-3">
-            Ignacio Navarro es Contador Público, graduado en 2020 de la
-            Universidad Nacional de Tucumán. Fundador de Start Companies desde
-            2023, asesora a clientes de todo el mundo en la apertura de LLC en
-            Estados Unidos y en la correcta declaración de impuestos. Su
-            experiencia combina conocimiento legal, fiscal y práctico,
-            ofreciendo un servicio integral que abarca desde la constitución de
-            la sociedad hasta la apertura bancaria e integración de plataformas
-            de ventas.
-          </p>
-
-          <a href="#" class="btn-linkedin-profile btn">
-            <i class="bi bi-linkedin me-2"></i>Sigueme en Linkedin
-          </a>
-        </div>
-      </div>
     </aside>
   </div>
 </div>
+
+<ng-template #indexCardTemplate>
+  <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
+    <div class="card-header sc-header toc-header" [class.is-open]="tocOpen" (click)="toggleTOC()">
+      <p class="text-center mb-0">En este artículo</p>
+      <i id="toc-toggle-icon" class="bi bi-chevron-down toc-chevron" aria-hidden="true"></i>
+    </div>
+    <div class="card-body sc-body" id="toc-body" [style.display]="tocOpen ? 'block' : 'none'">
+      <ul class="list-group sc-post-toc">
+        <li class="list-group-item" *ngFor="let link of tocLinks" [style.cursor]="'pointer'"
+          (click)="scrollToSection(link.href, $event)">
+          {{ link.text }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
 
 <section>
   <app-blog-section-v2></app-blog-section-v2>
