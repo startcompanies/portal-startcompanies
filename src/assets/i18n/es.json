@@ -349,7 +349,13 @@
     "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero",
     "your_questions": "¿Tienes preguntas?",
     "categories": "Categorías",
-    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores"
+    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores",
+    "search_placeholder": "Buscar artículos",
+    "search_clear": "Limpiar",
+    "search_no_results": "No encontramos artículos que coincidan con tu búsqueda.",
+    "all_posts": "Todos los artículos",
+    "category": "Categoría",
+    "category_title_prefix": "Artículos de"
   },
   "LLC": {
     "heroSection": {

@@ -3,8 +3,9 @@ export const environment = {
   //apiUrl: 'http://localhost:5000',
   apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/posts/get-sandbox-posts',
-  categoriesEndpoint: '/categories/whith-sandbox-posts-count',
+  categoriesEndpoint: '/categories/with-sandbox-posts-count',
   sandboxPostsEndpoint: '/posts/get-sandbox-posts/category',
+  postsByCategoryEndpoint: '/posts/get-sandbox-posts/category',
   facebookPixel: {
     llcPixelId: '',
     relayPixelId: '1055049486479771',

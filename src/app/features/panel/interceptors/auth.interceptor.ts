@@ -43,6 +43,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
         const refreshToken = localStorage.getItem('refreshToken');
         const isSsoLogin = localStorage.getItem('isSsoLogin') === 'true';
+        const hasSession = !!token || !!refreshToken || isSsoLogin;
+
+        // Si no hay sesión, no redirigir (evita bloquear rutas públicas como /blog)
+        if (!hasSession) {
+          return throwError(() => error);
+        }
 
         if (refreshToken && isSsoLogin) {
           // Usar refresh SSO
@@ -74,7 +80,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-
 
 
 
