@@ -467,6 +467,11 @@
   padding: 0.5rem 0 1rem 0;
   margin-bottom: 0;
   border-bottom: none;
+  font-size: 0.8rem;
+  background: #283a4917;
+  width: fit-content;
+  padding: 5px 20px;
+  border-radius: 10px;
 }
 
 .breadcrumb {
@@ -475,7 +480,6 @@
   padding: 0;
   margin: 0;
   list-style: none;
-  font-size: 0.9rem;
 }
 
 .breadcrumb-item {
@@ -483,27 +487,27 @@
   align-items: center;
 }
 
-.breadcrumb-item+.breadcrumb-item::before {
+.breadcrumb .breadcrumb-item+.breadcrumb-item::before {
   content: ">";
   display: inline-block;
-  padding: 0 0.5rem;
-  color: #6c757d;
+  padding: 0 0.4rem 0 0.2rem;
+  color: #293B49;
   font-weight: 500;
 }
 
-.breadcrumb-item.active {
-  color: #6c757d;
-  font-weight: 500;
+.breadcrumb .breadcrumb-item.active {
+  color: #293B49;
+  font-weight: 700;
 }
 
-.breadcrumb-link {
-  color: #0d6efd;
+.breadcrumb .breadcrumb-link {
+  color: #293B49;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .breadcrumb-link:hover {
-  color: #0a58ca;
+  color: #1f3749;
   text-decoration: underline;
 }
 

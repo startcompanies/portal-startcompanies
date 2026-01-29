@@ -10,23 +10,29 @@ aside .sc-this-post {
   border-radius: 1rem;
 }
 
+aside .card.sc-this-post {
+  border-radius: 30px;
+  overflow: hidden;
+  border: none;
+}
+
 aside .sc-header {
   border-radius: 1rem 1rem 0 0;
-  background-color: var(--color-texto-oscuro);
+  background-color: var(--color-secundario-tecnico);
   color: var(--color-fondo-claro);
   font-weight: bold;
   font-size: 1rem;
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
 }
 
 aside .sc-header:hover {
-  background-color: var(--color-texto-oscuro);
+  background-color: var(--color-secundario-tecnico);
   opacity: 0.9;
 }
 
@@ -35,6 +41,10 @@ aside .sc-header h5 {
   color: var(--color-fondo-claro);
   font-weight: bold;
   font-size: 1rem;
+}
+
+aside .sc-header p {
+  margin-bottom: 0;
 }
 
 aside .sc-header #toc-toggle-icon {
@@ -50,24 +60,40 @@ aside .sc-header[aria-expanded="true"] #toc-toggle-icon {
 
 aside .sc-body {
   background-color: var(--color-fondo-gris);
-  border-radius: 1rem;
+  border-radius: 0 1rem 1rem 0;
+  padding: 1.5rem 1.3rem;
+}
+
+aside .sc-post-toc::-webkit-scrollbar {
+  width: 5px;
+  background-color: #eaeaea;
+  border-radius: 100px;
+}
+
+aside .sc-post-toc::-webkit-scrollbar-thumb {
+  background-color: var(--color-secundario-tecnico);
+  border-radius: 100px;
 }
 
 aside .sc-post-toc {
   border: none;
   background: transparent;
-  font-size: 0.95rem;
+  font-size: .8rem;
+  font-weight: 400;
   color: #a0aec0;
   list-style: none;
   padding-left: 0;
+  max-height: 210px;
+  overflow: visible scroll;
 }
 
 aside .sc-post-toc .list-group-item {
   border: none;
   background: transparent;
-  color: #a0aec0;
-  padding: 6px 0;
-  font-weight: 500;
+  color: #293B49;
+  padding: 0;
+  font-size: .8rem;
+  font-weight: 400;
   transition: color 0.2s ease;
 }
 
@@ -78,7 +104,7 @@ aside .sc-post-toc .list-group-item:hover {
 
 aside .sc-post-toc .list-group-item::before {
   content: "•";
-  color: #a0aec0;
+  color: #293B49;
   margin-right: 8px;
   font-size: 1rem;
 }

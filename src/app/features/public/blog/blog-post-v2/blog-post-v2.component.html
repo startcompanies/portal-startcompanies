@@ -115,8 +115,8 @@
   <div class="row">
     <!-- Breadcrumb para posts no-landing (al mismo nivel que el contenido) -->
     <div *ngIf="!hasSections && postArticle" class="col-lg-9">
-      <nav aria-label="breadcrumb" class="breadcrumb-container mb-3">
-        <ol class="breadcrumb mb-0 mx-4">
+      <nav aria-label="breadcrumb" class="breadcrumb-container mb-4">
+        <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
             <a [langRouterLink]="''" class="breadcrumb-link">Inicio</a>
           </li>
@@ -138,7 +138,7 @@
 
     <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
       <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
-        <div class="card-header pt-4 sc-header">
+        <div class="card-header sc-header">
           <p class="text-center">En este articulo</p>
         </div>
         <div class="card-body sc-body">
