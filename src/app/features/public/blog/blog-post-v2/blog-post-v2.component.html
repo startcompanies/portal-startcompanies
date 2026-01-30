@@ -112,7 +112,7 @@
 
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
-  <div class="row">
+  <div class="row relative">
     <!-- Breadcrumb para posts no-landing (al mismo nivel que el contenido) -->
     <div *ngIf="!hasSections && postArticle" class="col-lg-9">
       <nav aria-label="breadcrumb" class="breadcrumb-container mb-4">
@@ -134,7 +134,7 @@
       <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
     </div>
 
-    <main [class]="hasSections ? 'col-12' : 'col-lg-9'" *ngIf="postArticle && postArticle.content">
+    <main [class]="hasSections ? 'col-12' : 'main-post'" *ngIf="postArticle && postArticle.content">
       <app-post-content class="post-content" [html]="hasSections ? remainingContent : postArticle.content"
         [isLandingPage]="hasSections"></app-post-content>
 
@@ -180,12 +180,12 @@
     </main>
 
 
-    <aside class="index-card col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
+    <aside class="index-card sidebar d-none d-lg-block" *ngIf="!hasSections && postArticle">
       <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
 
       <div class="card open-llc-card p-4 mb-4">
         <h3 class="title text-center">Abre tu LLC</h3>
-        <h3 class="title title-hightlight text-center">al mejor precio</h3>
+        <h3 class="title title-hightlight text-center">Al mejor precio</h3>
         <ul class="mt-4">
           <li>Lista bajo 10 días</li>
           <li>A partir de $459 USD</li>
@@ -194,13 +194,32 @@
         <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
           data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
           class="btn sc-btn-accent px-4 py-3 shadow-lg">
-          Agendar consulta gratis
+          Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
         </button>
+        <div class="open-llc-proof">
+          <div class="open-llc-avatars">
+            <span class="open-llc-avatar">A</span>
+            <span class="open-llc-avatar">B</span>
+            <span class="open-llc-avatar">C</span>
+            <span class="open-llc-avatar">D</span>
+          </div>
+          <div class="open-llc-rating">
+            <span class="open-llc-count">+300 LLC abiertas</span>
+            <div class="open-llc-stars">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <span class="open-llc-score">4.8/5</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="text-center mb-4">
-        <h6 class="text-muted fw-bold share-article-title">
-          Compartir artículo
+        <h6 class="fw-bold share-article-title">
+          Compartir por
         </h6>
         <div class="share-buttons-container">
           <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
@@ -209,6 +228,8 @@
             [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
           <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
             [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
+          <i class="bi bi-share share-social-icon share-generic-icon" (click)="shareNative()"
+            [attr.aria-label]="'Compartir'" title="Compartir" role="button" tabindex="0"></i>
         </div>
       </div>
     </aside>

@@ -6,6 +6,10 @@
 /* ============================================================================
    ESTILOS DE ENLACES - Sin azul ni subrayado
    ============================================================================ */
+.main-post {
+  flex: 1 1 70%;
+}
+
 .app-post-content a:not(.btn):not(.btn-cta):not(.abre-corp-btn):not(.costos-florida-btn):not(.ayuda-profesional-btn):not(.veredicto-btn):not(.states-card-link):not(.btn-linkedin-profile):not(.btn-linkedin-autor):not([class*="btn-"]):not([class*="social"]):not([class*="share"]):not([data-cal-link]) {
   color: inherit;
   text-decoration: none;
@@ -377,4 +381,12 @@ a.btn-descarga-template {
   padding: 20px;
   font-family: Arial, sans-serif;
   line-height: 1.6;
+}
+
+/* ============================================================================
+   BLOG RELATED POSTS
+   ============================================================================ */
+
+.blog-section.blog-related {
+  background-color: #E6EFFF !important;
 }

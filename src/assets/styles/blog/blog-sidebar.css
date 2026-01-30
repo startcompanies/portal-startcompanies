@@ -6,6 +6,11 @@
 /* ============================================================================
    TOC (Table of Contents) Card
    ============================================================================ */
+aside.sidebar {
+  flex: 1 0 30%;
+  height: fit-content;
+}
+
 aside .sc-this-post {
   border-radius: 1rem;
 }
@@ -113,13 +118,16 @@ aside .sc-post-toc .list-group-item::before {
    OPEN LLC CARD - Tarjeta de sidebar para abrir LLC
    ============================================================================ */
 aside .open-llc-card {
-  background: #293b49;
-  border-radius: 1rem;
+  background: #2c3e4d;
+  border-radius: 2rem;
   color: var(--color-fondo-claro);
+  text-align: center;
+  padding: 2rem;
 }
 
 aside .open-llc-card .title {
   color: var(--color-fondo-claro);
+  font-weight: 700;
 }
 
 aside .open-llc-card .title-hightlight {
@@ -130,11 +138,86 @@ aside .open-llc-card ul {
   color: var(--color-fondo-claro);
   list-style: none;
   padding-left: 0;
+  margin-bottom: 1.5rem;
 }
 
 aside .open-llc-card ul li {
   color: var(--color-fondo-claro);
   margin-bottom: 0.5rem;
+}
+
+aside .open-llc-card ul li::before {
+  content: "•";
+  color: var(--color-fondo-claro);
+  margin-right: 0.6rem;
+}
+
+aside .open-llc-card .open-llc-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+aside .open-llc-card .open-llc-avatars {
+  display: flex;
+  align-items: center;
+}
+
+aside .open-llc-card .open-llc-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #cfd8df;
+  color: #2c3e4d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #2c3e4d;
+  margin-left: -13px;
+}
+
+aside .open-llc-card .open-llc-avatar:first-child {
+  margin-left: 0;
+}
+
+aside .open-llc-card .open-llc-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+aside .open-llc-card .open-llc-count {
+  font-weight: 600;
+  color: var(--color-fondo-claro);
+  font-size: 0.85rem;
+}
+
+aside .open-llc-card .open-llc-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #f5c518;
+  font-size: 0.85rem;
+}
+
+aside .open-llc-card .open-llc-score {
+  color: var(--color-fondo-claro);
+  font-weight: 300;
+  margin-left: 0.35rem;
+}
+
+aside .open-llc-card .sc-btn-accent {
+  background: #fff;
+  color: #2c3e4d;
+  padding: 0.7rem !important;
+  display: flex;
+  gap: 8px;
 }
 
 /* ============================================================================
@@ -162,6 +245,7 @@ aside .sc-btn-accent {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   transition: background-color 0.3s ease;
   cursor: pointer;
 }
@@ -386,4 +470,21 @@ aside.btn-cta-ws:hover {
     display: block;
     width: 100%;
   }
+}
+
+
+/* ============================================================================
+   Share button
+   ============================================================================ */
+
+aside .share-article-title {
+  color: #000000;
+}
+
+aside .share-generic-icon {
+  background: #2c3e4c;
+}
+
+aside .share-buttons-container {
+  gap: 1.5rem;
 }
