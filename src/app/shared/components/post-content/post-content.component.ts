@@ -1171,7 +1171,7 @@ export class PostContentComponent
               data-cal-config='{"layout":"month_view","theme":"light"}' class="mid-post-cta-btn is-primary">
               Agendar una asesoría gratis
             </a>
-            <a href="/planes" class="mid-post-cta-btn is-secondary">Consulta por WhatsApp</a>
+            <a href="https://api.whatsapp.com/send/?text=%C2%BFC%C3%B3mo+abrir+una+LLC+siendo+NO+residente+en+EE.+UU.%3F+-+Start+Companies+http%3A%2F%2Flocalhost%3A4200%2Fblog%2Fcomo-abrir-una-llc-siendo-no-residente-en-ee-uu&type=custom_url&app_absent=0" target="_blank" class="mid-post-cta-btn is-secondary">Consulta por WhatsApp</a>
           </div>
           <div class="mid-post-cta-proof">
             <div class="mid-post-cta-avatars">

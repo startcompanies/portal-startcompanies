@@ -15,6 +15,10 @@ aside .sc-this-post {
   border-radius: 1rem;
 }
 
+aside.index-card {
+  align-self: flex-start;
+}
+
 aside .card.sc-this-post {
   border-radius: 30px;
   overflow: hidden;

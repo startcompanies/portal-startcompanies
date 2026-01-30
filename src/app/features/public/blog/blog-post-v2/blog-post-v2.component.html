@@ -40,7 +40,49 @@
       <div class="col-lg-6 mt-0">
         <div class="mission-content">
           <h2 class="mission-title">{{ postArticle.title }}</h2>
-          <div class="mission-description" [innerHTML]="getSanitizedHeroCardContent()"></div>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <i class="bi bi-calendar-event"></i>
+              <span>{{ formatPublishedDate(postArticle.published_at) }}</span>
+            </div>
+            <div class="hero-meta-item hero-meta-author">
+              <ng-container *ngIf="postArticle.user?.profile_image; else heroNoProfileImage">
+                <img [src]="postArticle.user?.profile_image" alt="Autor" />
+              </ng-container>
+              <ng-template #heroNoProfileImage>
+                <i class="bi bi-person-circle"></i>
+              </ng-template>
+              <span>Por {{ getAuthorDisplayName() }}</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+              data-cal-config='{"layout":"month_view","theme":"light"}' class="hero-cta-btn is-primary">
+              Abrir tu LLC <i class="bi bi-arrow-right"></i>
+            </a>
+            <a [langRouterLink]="['/planes']" class="hero-cta-btn is-secondary">
+              Ver planes <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="hero-rating">
+            <div class="hero-avatars">
+              <span class="hero-avatar">A</span>
+              <span class="hero-avatar">B</span>
+              <span class="hero-avatar">C</span>
+              <span class="hero-avatar">D</span>
+            </div>
+            <div class="hero-rating-text">
+              <span class="hero-rating-count">+300 LLC abiertas</span>
+              <div class="hero-rating-stars">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <span class="hero-rating-score">4.8/5</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -181,7 +223,8 @@
 
 
     <aside class="index-card sidebar d-none d-lg-block" *ngIf="!hasSections && postArticle">
-      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
+      <div class="index-card-inner">
+        <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
 
       <div class="card open-llc-card p-4 mb-4">
         <h3 class="title text-center">Abre tu LLC</h3>
@@ -231,6 +274,7 @@
           <i class="bi bi-share share-social-icon share-generic-icon" (click)="shareNative()"
             [attr.aria-label]="'Compartir'" title="Compartir" role="button" tabindex="0"></i>
         </div>
+      </div>
       </div>
     </aside>
   </div>

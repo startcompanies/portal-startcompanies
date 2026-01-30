@@ -892,6 +892,28 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     return 'Start Companies';
   }
 
+  formatPublishedDate(dateStr?: string): string {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return '';
+      return new Intl.DateTimeFormat('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).format(date);
+    } catch {
+      return '';
+    }
+  }
+
+  getAuthorDisplayName(): string {
+    const user = this.postArticle?.user;
+    if (!user) return 'Start Companies';
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+    return fullName || user.username || 'Start Companies';
+  }
+
   shareOnWhatsApp(): void {
     const win = this.browser.window;
     if (!win) return;
@@ -1002,6 +1024,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
       }
     });
   }
+
 
   /**
    * Inicializa la navegación por scroll para los enlaces del índice en posts tipo landing

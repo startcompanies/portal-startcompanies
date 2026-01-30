@@ -18,6 +18,7 @@
   padding-bottom: 3rem;
 }
 
+
 .toc-header {
   display: flex;
   align-items: center;
@@ -214,4 +215,10 @@
 
 :host ::ng-deep .post-content table tbody tr:first-child td {
   border-top: none;
+}
+
+@media (max-width: 768px) {
+  :host::ng-deep .post-content table {
+    overflow: scroll;
+  }
 }
