@@ -226,55 +226,55 @@
       <div class="index-card-inner">
         <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
 
-      <div class="card open-llc-card p-4 mb-4">
-        <h3 class="title text-center">Abre tu LLC</h3>
-        <h3 class="title title-hightlight text-center">Al mejor precio</h3>
-        <ul class="mt-4">
-          <li>Lista bajo 10 días</li>
-          <li>A partir de $459 USD</li>
-          <li>Pagas post entrega</li>
-        </ul>
-        <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
-          data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
-          class="btn sc-btn-accent px-4 py-3 shadow-lg">
-          Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
-        </button>
-        <div class="open-llc-proof">
-          <div class="open-llc-avatars">
-            <span class="open-llc-avatar">A</span>
-            <span class="open-llc-avatar">B</span>
-            <span class="open-llc-avatar">C</span>
-            <span class="open-llc-avatar">D</span>
-          </div>
-          <div class="open-llc-rating">
-            <span class="open-llc-count">+300 LLC abiertas</span>
-            <div class="open-llc-stars">
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <i class="bi bi-star-fill"></i>
-              <span class="open-llc-score">4.8/5</span>
+        <div class="card open-llc-card p-4 mb-4">
+          <h3 class="title text-center">Abre tu LLC</h3>
+          <h3 class="title title-hightlight text-center">Al mejor precio</h3>
+          <ul class="mt-4">
+            <li>Lista bajo 10 días</li>
+            <li>A partir de $459 USD</li>
+            <li>Pagas post entrega</li>
+          </ul>
+          <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+            data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
+            class="btn sc-btn-accent px-4 py-3 shadow-lg">
+            Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
+          </button>
+          <div class="open-llc-proof">
+            <div class="open-llc-avatars">
+              <span class="open-llc-avatar">A</span>
+              <span class="open-llc-avatar">B</span>
+              <span class="open-llc-avatar">C</span>
+              <span class="open-llc-avatar">D</span>
+            </div>
+            <div class="open-llc-rating">
+              <span class="open-llc-count">+300 LLC abiertas</span>
+              <div class="open-llc-stars">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <span class="open-llc-score">4.8/5</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="text-center mb-4">
-        <h6 class="fw-bold share-article-title">
-          Compartir por
-        </h6>
-        <div class="share-buttons-container">
-          <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
-            [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp" role="button" tabindex="0"></i>
-          <i class="bi bi-linkedin share-social-icon share-linkedin-icon" (click)="shareOnLinkedIn()"
-            [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
-          <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
-            [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
-          <i class="bi bi-share share-social-icon share-generic-icon" (click)="shareNative()"
-            [attr.aria-label]="'Compartir'" title="Compartir" role="button" tabindex="0"></i>
+        <div class="text-center mb-4">
+          <h6 class="fw-bold share-article-title">
+            Compartir por
+          </h6>
+          <div class="share-buttons-container">
+            <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
+              [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp" role="button" tabindex="0"></i>
+            <i class="bi bi-linkedin share-social-icon share-linkedin-icon" (click)="shareOnLinkedIn()"
+              [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
+            <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
+              [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
+            <i class="bi bi-share share-social-icon share-generic-icon" (click)="shareNative()"
+              [attr.aria-label]="'Compartir'" title="Compartir" role="button" tabindex="0"></i>
+          </div>
         </div>
-      </div>
       </div>
     </aside>
   </div>
@@ -300,4 +300,10 @@
 <section>
   <app-blog-section-v2></app-blog-section-v2>
 </section>
+<div class="mobile-fixed-cta">
+  <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+    data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="mobile-fixed-cta-btn">
+    <p>Agendá una <br /><span>asesoría gratis</span></p><i class="bi bi-arrow-right"></i>
+  </button>
+</div>
 <app-sc-footer></app-sc-footer>

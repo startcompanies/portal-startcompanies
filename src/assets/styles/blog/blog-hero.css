@@ -281,7 +281,12 @@
 
 @media (max-width: 768px) {
   .hero-actions {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .hero-cta-btn {
+    font-size: .8rem;
   }
 }
 
