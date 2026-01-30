@@ -220,5 +220,7 @@
 @media (max-width: 768px) {
   :host::ng-deep .post-content table {
     overflow: scroll;
+    width: 100%;
+    display: block;
   }
 }

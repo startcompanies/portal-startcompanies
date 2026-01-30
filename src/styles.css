@@ -5,8 +5,8 @@
 @import '@angular/material/prebuilt-themes/indigo-pink.css';
 
 /* Prevenir overflow horizontal global */
-html, body {
-  overflow-x: hidden;
+html,
+body {
   max-width: 100vw;
   position: relative;
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
@@ -57,11 +57,48 @@ body {
 }
 
 /* Sobrescribir Bootstrap typography y componentes */
-p, span, div, a, li, td, th, label, input, textarea, select, button, 
-.btn, .form-control, .form-label, .card, .card-body, .card-title, .card-text, 
-h1, h2, h3, h4, h5, h6, .navbar, .nav, .nav-link, .dropdown, .dropdown-item,
-.table, .table th, .table td, .alert, .badge, .list-group, .list-group-item,
-.modal, .modal-body, .modal-title, .modal-header, .modal-footer {
+p,
+span,
+div,
+a,
+li,
+td,
+th,
+label,
+input,
+textarea,
+select,
+button,
+.btn,
+.form-control,
+.form-label,
+.card,
+.card-body,
+.card-title,
+.card-text,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar,
+.nav,
+.nav-link,
+.dropdown,
+.dropdown-item,
+.table,
+.table th,
+.table td,
+.alert,
+.badge,
+.list-group,
+.list-group-item,
+.modal,
+.modal-body,
+.modal-title,
+.modal-header,
+.modal-footer {
   font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
 }
 
