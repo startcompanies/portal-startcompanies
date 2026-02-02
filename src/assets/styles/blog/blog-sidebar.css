@@ -6,27 +6,146 @@
 /* ============================================================================
    TOC (Table of Contents) Card
    ============================================================================ */
+aside.sidebar {
+  flex: 1 0 30%;
+  height: fit-content;
+}
+
 aside .sc-this-post {
   border-radius: 1rem;
 }
 
-aside .sc-header {
+/* Sidebar styles reused in mobile TOC card */
+.toc-inline .sc-this-post,
+.toc-inline .card.sc-this-post {
+  border-radius: 30px;
+  overflow: hidden;
+  border: none;
+}
+
+.toc-inline .sc-header {
   border-radius: 1rem 1rem 0 0;
-  background-color: var(--color-texto-oscuro);
+  background-color: var(--color-secundario-tecnico);
   color: var(--color-fondo-claro);
   font-weight: bold;
   font-size: 1rem;
   padding: 1rem;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.toc-inline .sc-header:hover {
+  background-color: var(--color-secundario-tecnico);
+  opacity: 0.9;
+}
+
+.toc-inline .sc-header h5 {
+  margin: 0;
+  color: var(--color-fondo-claro);
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.toc-inline .sc-header p {
+  margin-bottom: 0;
+}
+
+.toc-inline .sc-header #toc-toggle-icon {
+  color: var(--color-fondo-claro);
+  font-size: 1rem;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.toc-inline .sc-header[aria-expanded="true"] #toc-toggle-icon {
+  transform: rotate(180deg);
+}
+
+.toc-inline .sc-body {
+  background-color: var(--color-fondo-gris);
+  border-radius: 0 1rem 1rem 0;
+  padding: 1.5rem 1.3rem;
+}
+
+.toc-inline .sc-post-toc::-webkit-scrollbar {
+  width: 5px;
+  background-color: #eaeaea;
+  border-radius: 100px;
+}
+
+.toc-inline .sc-post-toc::-webkit-scrollbar-thumb {
+  background-color: var(--color-secundario-tecnico);
+  border-radius: 100px;
+}
+
+.toc-inline .sc-post-toc {
+  border: none;
+  background: transparent;
+  font-size: .8rem;
+  font-weight: 400;
+  color: #a0aec0;
+  list-style: none;
+  padding-left: 0;
+  max-height: 210px;
+  overflow: visible scroll;
+}
+
+.toc-inline .sc-post-toc .list-group-item {
+  border: none;
+  background: transparent;
+  color: #293B49;
+  padding: 0;
+  font-size: .8rem;
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.toc-inline .sc-post-toc .list-group-item:hover {
+  color: #0d6efd;
+  cursor: pointer;
+}
+
+.toc-inline .sc-post-toc .list-group-item::before {
+  content: "•";
+  color: #293B49;
+  margin-right: 8px;
+  font-size: 1rem;
+}
+
+aside.index-card {
+  align-self: flex-start;
+  position: sticky;
+  top: 140px;
+  margin-bottom: 50px;
+}
+
+aside .card.sc-this-post {
+  border-radius: 30px;
+  overflow: hidden;
+  border: none;
+}
+
+aside .sc-header {
+  border-radius: 1rem 1rem 0 0;
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
   border: none;
 }
 
 aside .sc-header:hover {
-  background-color: var(--color-texto-oscuro);
+  background-color: var(--color-secundario-tecnico);
   opacity: 0.9;
 }
 
@@ -35,6 +154,10 @@ aside .sc-header h5 {
   color: var(--color-fondo-claro);
   font-weight: bold;
   font-size: 1rem;
+}
+
+aside .sc-header p {
+  margin-bottom: 0;
 }
 
 aside .sc-header #toc-toggle-icon {
@@ -50,24 +173,40 @@ aside .sc-header[aria-expanded="true"] #toc-toggle-icon {
 
 aside .sc-body {
   background-color: var(--color-fondo-gris);
-  border-radius: 1rem;
+  border-radius: 0 1rem 1rem 0;
+  padding: 1.5rem 1.3rem;
+}
+
+aside .sc-post-toc::-webkit-scrollbar {
+  width: 5px;
+  background-color: #eaeaea;
+  border-radius: 100px;
+}
+
+aside .sc-post-toc::-webkit-scrollbar-thumb {
+  background-color: var(--color-secundario-tecnico);
+  border-radius: 100px;
 }
 
 aside .sc-post-toc {
   border: none;
   background: transparent;
-  font-size: 0.95rem;
+  font-size: .8rem;
+  font-weight: 400;
   color: #a0aec0;
   list-style: none;
   padding-left: 0;
+  max-height: 210px;
+  overflow: visible scroll;
 }
 
 aside .sc-post-toc .list-group-item {
   border: none;
   background: transparent;
-  color: #a0aec0;
-  padding: 6px 0;
-  font-weight: 500;
+  color: #293B49;
+  padding: 0;
+  font-size: .8rem;
+  font-weight: 400;
   transition: color 0.2s ease;
 }
 
@@ -78,7 +217,7 @@ aside .sc-post-toc .list-group-item:hover {
 
 aside .sc-post-toc .list-group-item::before {
   content: "•";
-  color: #a0aec0;
+  color: #293B49;
   margin-right: 8px;
   font-size: 1rem;
 }
@@ -87,13 +226,16 @@ aside .sc-post-toc .list-group-item::before {
    OPEN LLC CARD - Tarjeta de sidebar para abrir LLC
    ============================================================================ */
 aside .open-llc-card {
-  background: #293b49;
-  border-radius: 1rem;
+  background: #2c3e4d;
+  border-radius: 2rem;
   color: var(--color-fondo-claro);
+  text-align: center;
+  padding: 2rem;
 }
 
 aside .open-llc-card .title {
   color: var(--color-fondo-claro);
+  font-weight: 700;
 }
 
 aside .open-llc-card .title-hightlight {
@@ -104,11 +246,86 @@ aside .open-llc-card ul {
   color: var(--color-fondo-claro);
   list-style: none;
   padding-left: 0;
+  margin-bottom: 1.5rem;
 }
 
 aside .open-llc-card ul li {
   color: var(--color-fondo-claro);
   margin-bottom: 0.5rem;
+}
+
+aside .open-llc-card ul li::before {
+  content: "•";
+  color: var(--color-fondo-claro);
+  margin-right: 0.6rem;
+}
+
+aside .open-llc-card .open-llc-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+aside .open-llc-card .open-llc-avatars {
+  display: flex;
+  align-items: center;
+}
+
+aside .open-llc-card .open-llc-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #cfd8df;
+  color: #2c3e4d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #2c3e4d;
+  margin-left: -13px;
+}
+
+aside .open-llc-card .open-llc-avatar:first-child {
+  margin-left: 0;
+}
+
+aside .open-llc-card .open-llc-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+aside .open-llc-card .open-llc-count {
+  font-weight: 600;
+  color: var(--color-fondo-claro);
+  font-size: 0.85rem;
+}
+
+aside .open-llc-card .open-llc-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #f5c518;
+  font-size: 0.85rem;
+}
+
+aside .open-llc-card .open-llc-score {
+  color: var(--color-fondo-claro);
+  font-weight: 300;
+  margin-left: 0.35rem;
+}
+
+aside .open-llc-card .sc-btn-accent {
+  background: #fff;
+  color: #2c3e4d;
+  padding: 0.7rem !important;
+  display: flex;
+  gap: 8px;
 }
 
 /* ============================================================================
@@ -136,6 +353,7 @@ aside .sc-btn-accent {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   transition: background-color 0.3s ease;
   cursor: pointer;
 }
@@ -360,4 +578,21 @@ aside.btn-cta-ws:hover {
     display: block;
     width: 100%;
   }
+}
+
+
+/* ============================================================================
+   Share button
+   ============================================================================ */
+
+aside .share-article-title {
+  color: #000000;
+}
+
+aside .share-generic-icon {
+  background: #2c3e4c;
+}
+
+aside .share-buttons-container {
+  gap: 1.5rem;
 }

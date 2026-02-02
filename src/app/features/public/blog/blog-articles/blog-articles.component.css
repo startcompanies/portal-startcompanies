@@ -109,6 +109,48 @@
 .categories-column {
   display: flex;
 }
+.article-search .search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--color-fondo-gris);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+.article-search .search-field i {
+  color: var(--color-texto-oscuro);
+  opacity: 0.6;
+  margin-right: 0.5rem;
+}
+.article-search .form-control {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0.35rem 0.25rem;
+}
+.article-search .form-control:focus {
+  outline: none;
+  box-shadow: none;
+}
+.empty-results {
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background-color: var(--color-fondo-gris);
+  color: var(--color-texto-oscuro);
+}
+.blog-pagination .page-link {
+  color: var(--color-texto-oscuro);
+}
+.blog-pagination .page-item.active .page-link {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+}
+.blog-pagination .page-item.disabled .page-link {
+  opacity: 0.5;
+}
 @media (max-width: 780px) {
   .categories-column {
     display: none !important; /* Oculta la columna de categorías en pantallas pequeñas */

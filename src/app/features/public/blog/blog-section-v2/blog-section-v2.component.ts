@@ -31,7 +31,7 @@ export class BlogSectionV2Component implements OnInit {
 
   setAllPosts() {
     this.blogService.getAllPosts().then((posts) => {
-      this.allPosts = posts;
+      this.allPosts = (posts ?? []).slice(0, 6);
       this.chunkPostsForCarousels();
     }).catch((error) => {
       console.log('Error al obtener los posts:', error);

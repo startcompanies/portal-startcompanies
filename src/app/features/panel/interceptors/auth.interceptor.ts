@@ -41,15 +41,45 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           return throwError(() => error);
         }
 
-        // Cerrar sesión normalmente
-        authService.logout();
-        router.navigate(['/panel/login']);
+        const refreshToken = localStorage.getItem('refreshToken');
+        const isSsoLogin = localStorage.getItem('isSsoLogin') === 'true';
+        const hasSession = !!token || !!refreshToken || isSsoLogin;
+
+        // Si no hay sesión, no redirigir (evita bloquear rutas públicas como /blog)
+        if (!hasSession) {
+          return throwError(() => error);
+        }
+
+        if (refreshToken && isSsoLogin) {
+          // Usar refresh SSO
+          return authService.refreshSso(refreshToken).pipe(
+            switchMap((response: any) => {
+              // Reintentar la petición original con el nuevo token
+              const clonedRequest = req.clone({
+                setHeaders: {
+                  Authorization: `Bearer ${response.accessToken}`
+                }
+              });
+              return next(clonedRequest);
+            }),
+            catchError((refreshError) => {
+              // Si el refresh falla, redirigir al login
+              localStorage.clear();
+              authService.logout();
+              router.navigate(['/panel/login']);
+              return throwError(() => refreshError);
+            })
+          );
+        } else {
+          // No hay refresh token o no es SSO, cerrar sesión normalmente
+          authService.logout();
+          router.navigate(['/panel/login']);
+        }
       }
       return throwError(() => error);
     })
   );
 };
-
 
 
 
