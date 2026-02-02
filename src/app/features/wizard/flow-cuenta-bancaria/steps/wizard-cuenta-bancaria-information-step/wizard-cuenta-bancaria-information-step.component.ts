@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
-import { WizardCuentaBancariaFormComponent } from '../wizard-cuenta-bancaria-form/wizard-cuenta-bancaria-form.component';
+import { CuentaBancariaFormComponent } from '../../../../../shared/components/service-forms/cuenta-bancaria-form/cuenta-bancaria-form.component';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
@@ -15,7 +15,7 @@ import { environment } from '../../../../../../environments/environment';
 @Component({
   selector: 'app-wizard-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, WizardCuentaBancariaFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent],
   templateUrl: './wizard-cuenta-bancaria-information-step.component.html',
   styleUrls: ['./wizard-cuenta-bancaria-information-step.component.css']
 })

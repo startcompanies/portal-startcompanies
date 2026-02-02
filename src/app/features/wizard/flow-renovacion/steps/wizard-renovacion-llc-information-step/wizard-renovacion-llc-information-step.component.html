@@ -7,7 +7,7 @@
   
   <!-- Usar el componente wizard-renovacion-llc-form -->
   <div class="llc-form-container">
-    <app-wizard-renovacion-llc-form
+    <app-renovacion-llc-form
       [serviceDataForm]="serviceDataForm"
       [usStates]="usStates"
       [llcTypes]="llcTypes"
@@ -17,7 +17,7 @@
       (fileCleared)="onFileCleared($event)"
       (addOwnerRequested)="onAddOwnerRequested()"
       (removeOwnerRequested)="onRemoveOwnerRequested($event)"
-    ></app-wizard-renovacion-llc-form>
+    ></app-renovacion-llc-form>
   </div>
   
   <!-- Navegación entre secciones del formulario (solo para secciones que no sean la última) -->
