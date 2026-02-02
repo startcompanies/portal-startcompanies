@@ -11,9 +11,10 @@ import { SharedModule } from '../../shared/shared.module';
 import { ScrollService } from '../../../shared/services/scroll.service';
 import { BrowserService } from '../../../shared/services/browser.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { ResponsiveImageComponent } from '../responsive-image/responsive-image.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { LanguageService } from '../../../shared/services/language.service';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
 
@@ -30,6 +31,8 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   isOpen = false;
   isNavbarShrunk = false;
   currentRoute = '';
+
+  private routerSubscription?: Subscription;
 
   private logoImagesSubject = new BehaviorSubject({
     mobile: '/assets/logo-mobile.webp',
@@ -157,10 +160,13 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   private getCurrentRoute(): void {
     this.currentRoute = this.router.url;
 
-    this.router.events.subscribe(() => {
-      this.currentRoute = this.router.url;
-      console.log('Ruta actual:', this.currentRoute);
-    });
+    // Suscribirse solo a NavigationEnd para evitar múltiples logs
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.currentRoute = this.router.url;
+        // Log removido para evitar spam en consola
+      });
   }
 
   public getCurrentRoutePath(): string {
@@ -231,6 +237,10 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     const win = this.browser.window;
     if (win) {
       win.removeEventListener('scroll', this.onWindowScroll.bind(this));
+    }
+    // Desuscribirse de los eventos del router
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
     }
   }
 

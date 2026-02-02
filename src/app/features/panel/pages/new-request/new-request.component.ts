@@ -2518,10 +2518,46 @@ export class NewRequestComponent implements OnInit, OnDestroy, AfterViewInit {
             members: this.membersFormArray?.value || []
           };
         } else if (serviceType === 'cuenta-bancaria') {
+          // Convertir el verificador (sección 3) y dirección personal (sección 4) en el primer member
+          const validatorAsFirstMember = {
+            firstName: serviceData.validatorFirstName || '',
+            lastName: serviceData.validatorLastName || '',
+            dateOfBirth: serviceData.validatorDateOfBirth || '',
+            nationality: serviceData.validatorNationality || '',
+            passportNumber: serviceData.validatorPassportNumber || '',
+            email: serviceData.validatorWorkEmail || '',
+            phoneNumber: serviceData.validatorPhone || '',
+            scannedPassportUrl: serviceData.validatorPassportUrl || '',
+            memberAddress: {
+              street: serviceData.ownerPersonalStreet || '',
+              unit: serviceData.ownerPersonalUnit || '',
+              city: serviceData.ownerPersonalCity || '',
+              stateRegion: serviceData.ownerPersonalState || '',
+              postalCode: serviceData.ownerPersonalPostalCode || '',
+              country: serviceData.ownerPersonalCountry || ''
+            },
+            percentageOfParticipation: 100, // El verificador es el único propietario si no es multimember
+            validatesBankAccount: true, // Marcar que este member valida la cuenta bancaria
+            ssnOrItin: '', // No se captura en el verificador
+            nationalTaxId: '', // No se captura en el verificador
+            taxFilingCountry: '', // No se captura en el verificador
+            ownerContributions: 0,
+            ownerLoansToLLC: 0,
+            loansReimbursedByLLC: 0,
+            profitDistributions: 0,
+            spentMoreThan31DaysInUS: '', // No se captura en el verificador
+            hasUSFinancialInvestments: '', // No se captura en el verificador
+            isUSCitizen: serviceData.isUSResident === 'yes' ? 'si' : 'no'
+          };
+
+          // Si es multimember, agregar los owners adicionales después del verificador
+          const additionalOwners = this.ownersFormArray.value || [];
+          const allMembers = [validatorAsFirstMember, ...additionalOwners];
+
           requestData.cuentaBancariaData = {
             ...serviceData,
-            owners: this.ownersFormArray.value || [],
-            validators: serviceData.validators || []
+            owners: allMembers,
+            validators: [] // Ya no se envía por separado, está en owners
           };
         }
 

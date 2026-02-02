@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -73,7 +73,10 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
   private destroy$ = new Subject<void>();
   private llcTypeSubscriptionSet = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     // Inicializar un propietario si el array está vacío y estamos en el paso 2
@@ -123,12 +126,19 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
       if (ownersArray && ownersArray.length === 0 && this.currentSection === 2) {
         // Emitir evento para que el componente padre agregue el propietario
         this.addOwnerRequested.emit();
+        // Forzar detección de cambios después de agregar propietario
+        setTimeout(() => {
+          this.cdr.detectChanges();
+        }, 100);
       }
     } catch (error) {
       console.error('Error al verificar ownersFormArray:', error);
       // Si hay error, intentar emitir el evento de todas formas
       if (this.currentSection === 2) {
         this.addOwnerRequested.emit();
+        setTimeout(() => {
+          this.cdr.detectChanges();
+        }, 100);
       }
     }
   }
@@ -224,6 +234,26 @@ export class WizardRenovacionLlcFormComponent implements OnInit, OnChanges, OnDe
       return `${state.label} (${state.abbreviation})`;
     }
     return stateValue;
+  }
+
+  /**
+   * Obtiene el label del tipo de LLC para mostrar en modo readonly
+   */
+  getLlcTypeLabel(llcTypeValue: string): string {
+    if (!llcTypeValue || !this.llcTypes) return llcTypeValue;
+    const llcType = this.llcTypes.find(t => t.value === llcTypeValue);
+    if (llcType) {
+      return llcType.label;
+    }
+    return llcTypeValue;
+  }
+
+  /**
+   * TrackBy function para el *ngFor de propietarios
+   * Ayuda a Angular a rastrear correctamente los componentes cuando se agregan/eliminan propietarios
+   */
+  trackByOwnerIndex(index: number, item: any): number {
+    return index;
   }
 }
 

@@ -53,7 +53,6 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
         this.processInternalLinks();
-        this.styleLinks();
         this.styleAuthorTitles();
       }, 200);
     }
@@ -73,7 +72,6 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
         this.loadCalendlyIfNeeded();
         this.initializeAccordions();
         this.processInternalLinks();
-        this.styleLinks();
         this.styleAuthorTitles();
       }, 200);
   }
@@ -167,6 +165,7 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     if (!button) return;
 
     const icon = button.querySelector('.accordion-icon') as HTMLElement;
+    const faqArrowIcon = button.querySelector('.faq-arrow-icon') as HTMLElement;
 
     // Cerrar todos los demás acordeones
     const allContents = doc.querySelectorAll('.custom-accordion-content');
@@ -176,24 +175,21 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     allContents.forEach((item) => {
       const itemElement = item as HTMLElement;
       if (itemElement.id !== id) {
-        itemElement.style.display = 'none';
+        itemElement.classList.remove('accordion-open');
       }
     });
 
     allIcons.forEach((iconItem) => {
       const iconElement = iconItem as HTMLElement;
-      // Solo rotar si no es el icono del acordeón actual
       if (icon && iconElement !== icon) {
-        iconElement.style.transform = 'rotate(0deg)';
+        iconElement.classList.remove('accordion-icon-rotated');
       }
     });
 
     allButtons.forEach((buttonItem) => {
       const buttonElement = buttonItem as HTMLElement;
-      // Solo actualizar si no es el botón del acordeón actual
       if (buttonElement !== button) {
         buttonElement.setAttribute('aria-expanded', 'false');
-        // Cambiar el icono de preguntas frecuentes a chevron-down cuando se cierra
         const otherFaqArrowIcon = buttonElement.querySelector('.faq-arrow-icon') as HTMLElement;
         if (otherFaqArrowIcon) {
           otherFaqArrowIcon.classList.remove('bi-chevron-up');
@@ -202,27 +198,24 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
       }
     });
 
-    // Buscar el icono de preguntas frecuentes (faq-arrow-icon) dentro del botón
-    const faqArrowIcon = button.querySelector('.faq-arrow-icon') as HTMLElement;
+    // Toggle del acordeón actual usando clases CSS
+    const isOpen = content.classList.contains('accordion-open');
     
-    // Toggle del acordeón actual
-    if (content.style.display === 'none' || content.style.display === '') {
-      content.style.display = 'block';
+    if (!isOpen) {
+      content.classList.add('accordion-open');
       if (icon) {
-        icon.style.transform = 'rotate(90deg)';
+        icon.classList.add('accordion-icon-rotated');
       }
-      // Cambiar el icono de chevron-down a chevron-up cuando está abierto
       if (faqArrowIcon) {
         faqArrowIcon.classList.remove('bi-chevron-down');
         faqArrowIcon.classList.add('bi-chevron-up');
       }
       button.setAttribute('aria-expanded', 'true');
     } else {
-      content.style.display = 'none';
+      content.classList.remove('accordion-open');
       if (icon) {
-        icon.style.transform = 'rotate(0deg)';
+        icon.classList.remove('accordion-icon-rotated');
       }
-      // Cambiar el icono de chevron-up a chevron-down cuando está cerrado
       if (faqArrowIcon) {
         faqArrowIcon.classList.remove('bi-chevron-up');
         faqArrowIcon.classList.add('bi-chevron-down');
@@ -231,6 +224,25 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Procesa y sanitiza el HTML del contenido del post.
+   * 
+   * Este método realiza múltiples transformaciones:
+   * - Limpieza de HTML (eliminar párrafos vacíos, etc.)
+   * - Procesamiento de enlaces (internos, externos, WhatsApp, LinkedIn)
+   * - Inyección de iconos (WhatsApp, LinkedIn, etc.)
+   * - Aplicación de clases CSS dinámicas
+   * - Procesamiento de imágenes
+   * 
+   * NOTA: Este es un método largo (~600 líneas) que podría beneficiarse de:
+   * - Separación en métodos más pequeños y específicos
+   * - Reducción de manipulación DOM directa
+   * - Uso de clases CSS predefinidas en lugar de estilos inline
+   * - Migración de algunas transformaciones a nivel de CMS
+   * 
+   * Sin embargo, funciona correctamente y cualquier cambio debe hacerse
+   * con cuidado para no romper la funcionalidad existente.
+   */
   private sanitizeHtml() {
     // Preservar todo el HTML con estilos y clases de TinyMCE
     let content = this.html || '';
@@ -1109,42 +1121,6 @@ export class PostContentComponent implements OnChanges, AfterViewInit, OnDestroy
    * Aplica estilos directamente a los enlaces para quitar azul y subrayado
    * Se ejecuta después de renderizar para asegurar que se apliquen sobre Bootstrap
    */
-  private styleLinks(): void {
-    if (!this.browser.isBrowser || !this.contentContainer?.nativeElement) {
-      return;
-    }
-
-    const container = this.contentContainer.nativeElement;
-    const links = container.querySelectorAll('a') as NodeListOf<HTMLAnchorElement>;
-
-    links.forEach((link) => {
-      // Excluir botones y elementos especiales
-      if (
-        link.classList.contains('btn') ||
-        link.classList.contains('btn-cta') ||
-        link.classList.contains('abre-corp-btn') ||
-        link.classList.contains('costos-florida-btn') ||
-        link.classList.contains('ayuda-profesional-btn') ||
-        link.classList.contains('veredicto-btn') ||
-        link.classList.contains('states-card-link') ||
-        link.classList.contains('btn-linkedin-profile') ||
-        link.classList.contains('btn-linkedin-autor') ||
-        link.closest('.btn') ||
-        link.hasAttribute('data-cal-link')
-      ) {
-        return; // No aplicar estilos a botones
-      }
-
-      // Aplicar estilos directamente
-      link.style.color = 'inherit';
-      link.style.textDecoration = 'none';
-      link.style.textDecorationLine = 'none';
-      link.style.textDecorationStyle = 'none';
-      link.style.textDecorationColor = 'transparent';
-      link.style.borderBottom = 'none';
-    });
-  }
-
   /**
    * Detecta y estiliza el título "Sobre los autores" para que tenga el mismo estilo
    * que "Preguntas Frecuentes" y "¿Deseas conocer más?"

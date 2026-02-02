@@ -44,16 +44,39 @@
     </div>
 
     <!-- Paso 1: Registro Básico -->
-    <div *ngIf="currentStepIndex === 0" class="form-step">
+    <div *ngIf="currentStepIndex === 0 && !showEmailVerification" class="form-step">
       <h3>Registro Básico</h3>
-      <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
+      <app-wizard-basic-register-step
+        #registerStep
+        [stepNumber]="1"
+        (userCreated)="onUserCreated($event)"
+        (registrationCompleted)="onEmailVerified()"
+      ></app-wizard-basic-register-step>
       
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
           Cancelar
         </button>
-        <button type="button" class="btn btn-primary" (click)="onStepChanged(1)">
+        <button type="button" class="btn btn-primary" (click)="nextStep()">
           Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 1.5: Verificación de Email -->
+    <div *ngIf="currentStepIndex === 0 && showEmailVerification" class="form-step">
+      <h3>Verifica tu correo electrónico</h3>
+      <app-wizard-email-verification
+        [email]="registeredEmail"
+        [password]="registeredPassword"
+        (verificationSuccess)="onEmailVerified()"
+        (resendRequested)="onResendCode()"
+      ></app-wizard-email-verification>
+      
+      <div class="step-actions mt-4">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+          <i class="bi bi-arrow-left me-2"></i>
+          Volver al registro
         </button>
       </div>
     </div>
@@ -65,7 +88,7 @@
         #paymentStep
         [stepNumber]="2" 
         [previousStepNumber]="1"
-        [fixedAmount]="99"
+        [fixedAmount]="bankAccountFixedAmountUsd"
         [currency]="'USD'"
         (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
         (paymentError)="onPaymentError($event)"
@@ -95,13 +118,15 @@
     <div *ngIf="currentStepIndex === (withPayment ? 2 : 1)" class="form-step">
       <h3>Datos de Cuenta Bancaria</h3>
       <app-wizard-cuenta-bancaria-information-step
+        #cuentaBancariaInfoStep
         [stepNumber]="withPayment ? 3 : 2"
         [previousStepNumber]="withPayment ? 2 : 1"
         (sectionChanged)="onCuentaBancariaInfoSectionChanged($event)"
+        (isMultiMemberChanged)="onIsMultiMemberChanged($event)"
       ></app-wizard-cuenta-bancaria-information-step>
       
-      <!-- Solo mostrar botones del wizard cuando estamos en la última sección (6) -->
-      <div class="step-actions" *ngIf="cuentaBancariaInfoCurrentSection === 6">
+      <!-- Solo mostrar botones del wizard cuando estamos en la última sección (6) o cuando no es multimember (sección 5) -->
+      <div class="step-actions" *ngIf="cuentaBancariaInfoCurrentSection === 6 || (cuentaBancariaInfoCurrentSection === 5 && !isMultiMember)">
         <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(withPayment ? 1 : 0)">
           Anterior
         </button>
@@ -120,7 +145,7 @@
         [isSubmitted]="isSubmitted"
         [isSubmitting]="isLoading"
         [submitError]="errorMessage"
-        (submitRequest)="onFinish()"
+        (submitRequest)="onFinish($event)"
         (goToPanel)="onGoToPanel()"
         (goToHome)="onGoToHome()"
       ></app-wizard-final-review-step>

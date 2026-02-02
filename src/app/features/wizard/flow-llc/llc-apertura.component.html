@@ -130,6 +130,7 @@
   <!-- Paso 4: Información de la LLC -->
   <div *ngIf="currentStep === 4" class="form-step">
     <app-wizard-llc-information-step 
+      #llcInformationStep
       [stepNumber]="4" 
       [previousStepNumber]="3"
       (sectionChanged)="onLlcInfoSectionChanged($event)"
@@ -155,7 +156,7 @@
       [isSubmitted]="isSubmitted"
       [isSubmitting]="isLoading"
       [submitError]="errorMessage"
-      (submitRequest)="onFinish()"
+      (submitRequest)="onFinish($event)"
       (goToPanel)="onGoToPanel()"
       (goToHome)="onGoToHome()"
     ></app-wizard-final-review-step>

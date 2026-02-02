@@ -175,5 +175,30 @@ export class AperturaLlcFormComponent implements OnInit, OnChanges {
     this.removeMemberRequested.emit(index);
   }
 
+  /**
+   * Obtiene el label del estado con su abreviación para mostrar en modo readonly
+   */
+  getStateLabelWithAbbreviation(stateValue: string): string {
+    if (!stateValue || !this.usStates) return stateValue;
+    const state = this.usStates.find(s => s.value === stateValue);
+    if (state) {
+      return `${state.label} (${state.abbreviation})`;
+    }
+    return stateValue;
+  }
+
+  /**
+   * Obtiene el label del tipo de LLC para mostrar en modo readonly
+   */
+  getLlcTypeLabel(llcTypeValue: string): string {
+    if (!llcTypeValue) return llcTypeValue;
+    if (llcTypeValue === 'single') {
+      return 'LLC de un solo miembro (Single Member LLC)';
+    } else if (llcTypeValue === 'multi') {
+      return 'LLC con múltiples miembros (Multi Member LLC)';
+    }
+    return llcTypeValue;
+  }
+
 }
 

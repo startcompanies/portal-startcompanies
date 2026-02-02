@@ -174,14 +174,64 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
+    // Obtener el estado seleccionado del paso anterior (estado y plan) PRIMERO
+    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
+    
+    // Regla de negocio:
+    // - Pack Premium: solo Single Member (New Mexico o Wyoming)
+    // - Pack Emprendedor: solo Single Member (New Mexico)
+    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.serviceDataForm.patchValue(savedData);
+      // Separar los miembros del resto de los datos porque patchValue no restaura FormArrays
+      const { members, ...otherData } = savedData;
+      
+      // Aplicar patchValue sin los miembros
+      this.serviceDataForm.patchValue(otherData);
+      
+      // Restaurar miembros manualmente si existen
+      if (members && Array.isArray(members) && members.length > 0) {
+        const membersArray = this.serviceDataForm.get('members') as FormArray;
+        // Limpiar el array primero
+        while (membersArray.length > 0) {
+          membersArray.removeAt(0);
+        }
+        // Restaurar cada miembro
+        members.forEach((memberData: any) => {
+          const memberGroup = this.fb.group({
+            firstName: [memberData.firstName || '', Validators.required],
+            lastName: [memberData.lastName || '', Validators.required],
+            passportNumber: [memberData.passportNumber || '', Validators.required],
+            scannedPassportUrl: [memberData.scannedPassportUrl || ''],
+            nationality: [memberData.nationality || '', Validators.required],
+            dateOfBirth: [memberData.dateOfBirth || '', Validators.required],
+            email: [memberData.email || '', [Validators.required, Validators.email]],
+            phoneNumber: [memberData.phoneNumber || '', Validators.required],
+            percentageOfParticipation: [memberData.percentageOfParticipation || 0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            memberAddress: this.fb.group({
+              street: [memberData.memberAddress?.street || '', Validators.required],
+              unit: [memberData.memberAddress?.unit || ''],
+              city: [memberData.memberAddress?.city || '', Validators.required],
+              stateRegion: [memberData.memberAddress?.stateRegion || '', Validators.required],
+              postalCode: [memberData.memberAddress?.postalCode || '', Validators.required],
+              country: [memberData.memberAddress?.country || '', Validators.required]
+            }),
+            ssnItin: [memberData.ssnItin || ''],
+            cuit: [memberData.cuit || '']
+          });
+          membersArray.push(memberGroup);
+        });
+        console.log('[WizardLlcInformationStep] Miembros restaurados:', membersArray.length);
+      }
+      
+      // Si forceSingleMember está activo, sobrescribir el llcType guardado
+      if (this.forceSingleMember && savedData.llcType !== 'single') {
+        this.serviceDataForm.get('llcType')?.setValue('single', { emitEvent: false });
+      }
     }
 
-    // Obtener el estado seleccionado del paso anterior (estado y plan)
-    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
     if (statePlanData && statePlanData.state) {
       // Establecer el estado en incorporationState (el estado viene del paso 2)
       const stateValue = statePlanData.state;
@@ -189,18 +239,35 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
     }
 
-    // Regla de negocio:
-    // - Pack Premium: solo Single Member (New Mexico o Wyoming)
-    // - Pack Emprendedor: solo Single Member (New Mexico)
-    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    // Si forceSingleMember está activo, forzar y ajustar
     if (this.forceSingleMember) {
-      // Forzar llcType = 'single'
+      // Forzar llcType = 'single' siempre
       const llcTypeControl = this.serviceDataForm.get('llcType');
-      if (llcTypeControl?.value !== 'single') {
-        llcTypeControl?.setValue('single', { emitEvent: true });
+      const currentValue = llcTypeControl?.value;
+      
+      // Si el valor actual no es 'single', forzarlo
+      if (currentValue !== 'single') {
+        llcTypeControl?.setValue('single', { emitEvent: false });
       }
+      
       // Ajustar miembros para que sea válido como single member
-      this.onLlcTypeChanged('single');
+      // Solo si no hay miembros ya restaurados
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      if (membersArray.length === 0) {
+        this.onLlcTypeChanged('single');
+      }
+      
+      console.log('[WizardLlcInformationStep] Pack Emprendedor/Premium detectado - forzando Single Member');
+    } else {
+      // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      
+      if (llcType && membersArray.length === 0) {
+        // Si hay un llcType guardado pero no hay miembros (ni restaurados), inicializarlos
+        console.log('[WizardLlcInformationStep] Inicializando miembros para llcType:', llcType);
+        this.onLlcTypeChanged(llcType);
+      }
     }
     
     // También verificar si hay un estado guardado en los datos del paso actual
@@ -529,6 +596,15 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   onLlcTypeChanged(llcType: string): void {
+    // Si forceSingleMember está activo y el usuario intenta cambiar a multi, revertir a single
+    if (this.forceSingleMember && llcType === 'multi') {
+      const llcTypeControl = this.serviceDataForm.get('llcType');
+      if (llcTypeControl) {
+        llcTypeControl.setValue('single', { emitEvent: false });
+      }
+      return; // Salir sin procesar el cambio a multi
+    }
+
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     
     if (llcType === 'single') {

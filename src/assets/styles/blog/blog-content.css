@@ -1,0 +1,380 @@
+/* ============================================================================
+   BLOG CONTENT - Estilos para el contenido del CMS del blog
+   Consolidado de blog-components.css
+   ============================================================================ */
+
+/* ============================================================================
+   ESTILOS DE ENLACES - Sin azul ni subrayado
+   ============================================================================ */
+.app-post-content a:not(.btn):not(.btn-cta):not(.abre-corp-btn):not(.costos-florida-btn):not(.ayuda-profesional-btn):not(.veredicto-btn):not(.states-card-link):not(.btn-linkedin-profile):not(.btn-linkedin-autor):not([class*="btn-"]):not([class*="social"]):not([class*="share"]):not([data-cal-link]) {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+/* ============================================================================
+   TIPOGRAFÍA BASE DEL CONTENIDO
+   ============================================================================ */
+.app-post-content {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+  text-align: left;
+  text-wrap: pretty;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+    font-size: .9rem;
+  }
+}
+
+/* ============================================================================
+   LISTAS
+   ============================================================================ */
+.app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
+.app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
+  text-align: left;
+  text-wrap: pretty;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
+  .app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
+    font-size: .9rem;
+  }
+}
+
+/* ============================================================================
+   SECCIONES Y CONTENEDORES
+   ============================================================================ */
+.app-post-content section {
+  color: #293B49;
+}
+
+.app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
+  text-align: left;
+  text-wrap: pretty;
+}
+
+/* ============================================================================
+   IMÁGENES
+   ============================================================================ */
+.post-image-rounded {
+  border-radius: 4rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  border: 2px solid #F4F7FC;
+}
+
+@media (max-width: 768px) {
+  .post-image-rounded {
+    border-radius: 2rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .post-image-rounded {
+    border-radius: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+/* ============================================================================
+   HEADING CUSTOM
+   ============================================================================ */
+
+.app-post-content :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 700;
+}
+
+/* ============================================================================
+   SECCIONES CON BACKGROUND IMAGE
+   ============================================================================ */
+.app-post-content section[style*="background-image"],
+section[style*="background-image"] {
+  width: 100%;
+  padding: 3rem 0;
+}
+
+.app-post-content section[style*="background-image"] .container,
+section[style*="background-image"] .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.app-post-content section[style*="background-image"] .row,
+section[style*="background-image"] .row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"],
+section[style*="background-image"] [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"]:has(img),
+section[style*="background-image"] [class*="col-"]:has(img) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem 1.5rem;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"] img,
+section[style*="background-image"] [class*="col-"] img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  min-height: 300px;
+}
+
+.app-post-content section[style*="background-image"] p,
+section[style*="background-image"] p {
+  text-align: left;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.app-post-content section[style*="background-image"] h1,
+.app-post-content section[style*="background-image"] h2,
+.app-post-content section[style*="background-image"] h3,
+.app-post-content section[style*="background-image"] h4,
+.app-post-content section[style*="background-image"] h5,
+.app-post-content section[style*="background-image"] h6,
+section[style*="background-image"] h1,
+section[style*="background-image"] h2,
+section[style*="background-image"] h3,
+section[style*="background-image"] h4,
+section[style*="background-image"] h5,
+section[style*="background-image"] h6 {
+  max-width: 100%;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.app-post-content section[style*="background-image"] img,
+section[style*="background-image"] img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 350px;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  aspect-ratio: 4 / 3;
+}
+
+.app-post-content section[style*="background-image"] a,
+section[style*="background-image"] a {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  color: #FFFFFF;
+  text-align: left;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* ============================================================================
+   TABLAS CUSTOM
+   ============================================================================ */
+.app-post-content .table-custom-container,
+.app-post-content .table-responsive.table-custom-container {
+  border-radius: 15px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #dee2e6;
+  margin-bottom: 2rem;
+  display: block;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-post-content .table-custom-container .table-custom,
+.app-post-content .table-responsive.table-custom-container .table-custom {
+  margin-bottom: 0;
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.app-post-content .table-custom-container .table-custom thead tr,
+.app-post-content .table-responsive.table-custom-container .table-custom thead tr {
+  background-color: #293B49;
+  color: #FFFFFF;
+}
+
+.app-post-content .table-custom-container .table-custom thead th,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th {
+  padding: 1.5rem 1rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  vertical-align: middle;
+  font-size: 1rem;
+  background-color: #293B49;
+  color: #FFFFFF;
+}
+
+.app-post-content .table-custom-container .table-custom thead th:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:first-child {
+  border-left: none;
+  text-align: left;
+  padding-left: 1.5rem;
+  background-color: #293B49;
+}
+
+.app-post-content .table-custom-container .table-custom thead th:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:last-child {
+  border-right: none;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td {
+  padding: 1.2rem 1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #333333;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:first-child {
+  border-left: none;
+  text-align: left;
+  font-weight: 500;
+  padding-left: 1.5rem;
+  background-color: #ffffff;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:last-child {
+  border-right: none;
+}
+
+.app-post-content .table-custom-container .table-custom tbody tr:last-child td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.app-post-content .table-custom-container .table-bordered,
+.app-post-content .table-responsive.table-custom-container .table-bordered {
+  border: none;
+}
+
+/* ============================================================================
+   TÍTULO "SOBRE LOS AUTORES"
+   ============================================================================ */
+.sobre-autores-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: inherit;
+}
+
+.sobre-autores-title span {
+  color: #02CAE3;
+}
+
+/* ============================================================================
+   CALENDLY / CAL.COM
+   ============================================================================ */
+#my-cal-inline {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#my-cal-inline iframe {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================================================
+   BOTONES ESPECIALES
+   ============================================================================ */
+a.btn-descarga-template {
+  background-color: #00bcd4;
+  border: none;
+  font-size: 1rem;
+  padding: 0.45rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #fff;
+}
+
+/* ============================================================================
+   LANDING PAGE ESPECÍFICO
+   ============================================================================ */
+.landing-page-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.landing-page-row .app-post-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 992px) {
+  .landing-page-row .app-post-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.landing-page-row .app-post-content img {
+  border-radius: 4rem;
+}
+
+/* ============================================================================
+   CONTENT COLUMN CONTAINER (legacy)
+   ============================================================================ */
+.content-column-container {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}

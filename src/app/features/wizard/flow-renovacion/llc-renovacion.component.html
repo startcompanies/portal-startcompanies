@@ -42,16 +42,39 @@
     </div>
 
     <!-- Paso 1: Registro Básico -->
-    <div *ngIf="currentStepIndex === 0" class="form-step">
+    <div *ngIf="currentStepIndex === 0 && !showEmailVerification" class="form-step">
       <h3>{{ stepTitles[1] || 'Registro Básico' }}</h3>
-      <app-wizard-basic-register-step [stepNumber]="1"></app-wizard-basic-register-step>
+      <app-wizard-basic-register-step
+        #registerStep
+        [stepNumber]="1"
+        (userCreated)="onUserCreated($event)"
+        (registrationCompleted)="onEmailVerified()"
+      ></app-wizard-basic-register-step>
       
       <div class="step-actions">
         <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
           Cancelar
         </button>
-        <button type="button" class="btn btn-primary" (click)="onStepChanged(1)">
+        <button type="button" class="btn btn-primary" (click)="nextStep()">
           Siguiente
+        </button>
+      </div>
+    </div>
+
+    <!-- Paso 1.5: Verificación de Email -->
+    <div *ngIf="currentStepIndex === 0 && showEmailVerification" class="form-step">
+      <h3>Verifica tu correo electrónico</h3>
+      <app-wizard-email-verification
+        [email]="registeredEmail"
+        [password]="registeredPassword"
+        (verificationSuccess)="onEmailVerified()"
+        (resendRequested)="onResendCode()"
+      ></app-wizard-email-verification>
+      
+      <div class="step-actions mt-4">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
+          <i class="bi bi-arrow-left me-2"></i>
+          Volver al registro
         </button>
       </div>
     </div>
@@ -62,10 +85,10 @@
       <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
       
       <div class="step-actions">
-        <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(0)">
+        <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
           Anterior
         </button>
-        <button type="button" class="btn btn-primary" (click)="onStepChanged(2)">
+        <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStateStep()">
           Siguiente
         </button>
       </div>
@@ -78,7 +101,6 @@
         #paymentStep
         [stepNumber]="3" 
         [previousStepNumber]="2"
-        [fixedAmount]="600"
         (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
         (paymentError)="onPaymentError($event)"
       ></app-wizard-payment-step>
@@ -87,7 +109,7 @@
         <button 
           type="button" 
           class="btn btn-outline-secondary" 
-          (click)="onStepChanged(1)" 
+          (click)="previousStep()" 
           [disabled]="paymentProcessed"
         >
           Anterior
@@ -107,6 +129,7 @@
     <div *ngIf="currentStepIndex === 3" class="form-step">
       <h3>{{ stepTitles[4] || 'Información de la LLC' }}</h3>
       <app-wizard-renovacion-llc-information-step
+        #renovacionInformationStep
         [stepNumber]="4"
         [previousStepNumber]="3"
         (sectionChanged)="onRenovacionInfoSectionChanged($event)"
@@ -132,7 +155,7 @@
         [isSubmitted]="isSubmitted"
         [isSubmitting]="isLoading"
         [submitError]="errorMessage"
-        (submitRequest)="onFinish()"
+        (submitRequest)="onFinish($event)"
         (goToPanel)="onGoToPanel()"
         (goToHome)="onGoToHome()"
       ></app-wizard-final-review-step>

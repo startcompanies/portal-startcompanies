@@ -109,22 +109,82 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
-    // Cargar datos guardados
-    const savedData = this.wizardStateService.getStepData(this.stepNumber);
-    if (savedData && Object.keys(savedData).length > 0) {
-      this.serviceDataForm.patchValue(savedData);
-    }
-
-    // Obtener el estado seleccionado del paso anterior (estado y plan)
-    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
-    if (statePlanData && statePlanData.state) {
-      const stateValue = statePlanData.state;
-      this.serviceDataForm.get('state')?.setValue(stateValue);
+    // Obtener el estado y estructura societaria del paso 2 (Estado de contratación) PRIMERO
+    const statePlanData = this.wizardStateService.getStepData(2); // Paso 2 es donde se selecciona estado y llcType
+    if (statePlanData) {
+      // Pre-llenar estado si existe
+      if (statePlanData.state) {
+        this.serviceDataForm.get('state')?.setValue(statePlanData.state, { emitEvent: false });
+      }
+      // Pre-llenar estructura societaria (llcType) si existe
+      if (statePlanData.llcType) {
+        this.serviceDataForm.get('llcType')?.setValue(statePlanData.llcType, { emitEvent: false });
+      }
     }
     
-    if (savedData && savedData.state) {
-      this.serviceDataForm.get('state')?.setValue(savedData.state);
+    // Cargar datos guardados (después de pre-llenar desde paso 2)
+    const savedData = this.wizardStateService.getStepData(this.stepNumber);
+    if (savedData && Object.keys(savedData).length > 0) {
+      // Separar los propietarios para restaurarlos manualmente
+      const { owners, ...restOfData } = savedData;
+      this.serviceDataForm.patchValue(restOfData);
+      
+      // Restaurar propietarios manualmente
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      ownersArray.clear(); // Limpiar antes de añadir
+      if (owners && Array.isArray(owners)) {
+        owners.forEach((ownerData: any) => {
+          const ownerGroup = this.createOwnerFormGroup();
+          ownerGroup.patchValue(ownerData);
+          ownersArray.push(ownerGroup);
+        });
+      }
+      
+      // Si hay datos del paso 2, tienen prioridad sobre savedData
+      if (statePlanData) {
+        if (statePlanData.state) {
+          this.serviceDataForm.get('state')?.setValue(statePlanData.state, { emitEvent: false });
+        }
+        if (statePlanData.llcType) {
+          this.serviceDataForm.get('llcType')?.setValue(statePlanData.llcType, { emitEvent: false });
+        }
+      }
     }
+
+    // Inicializar propietarios si llcType viene del paso 2 y no hay propietarios
+    // Usar setTimeout para asegurar que el formulario esté completamente inicializado
+    setTimeout(() => {
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      if (llcType && ownersArray && ownersArray.length === 0) {
+        // Si hay llcType pero no hay propietarios, crear uno automáticamente
+        this.onAddOwnerRequested();
+        console.log('[WizardRenovacionLlcInformationStep] Inicializado propietario automáticamente para llcType:', llcType);
+      }
+    }, 100);
+
+    // Suscribirse a cambios de llcType para inicializar propietarios si es necesario
+    this.serviceDataForm.get('llcType')?.valueChanges.subscribe((newLlcType: string) => {
+      if (newLlcType) {
+        const currentOwnersArray = this.serviceDataForm.get('owners') as FormArray;
+        if (currentOwnersArray && currentOwnersArray.length === 0) {
+          // Si cambia a un tipo y no hay propietarios, crear uno
+          this.onAddOwnerRequested();
+        } else if (newLlcType === 'single' && currentOwnersArray && currentOwnersArray.length > 1) {
+          // Si cambia a single y hay más de uno, dejar solo el primero
+          while (currentOwnersArray.length > 1) {
+            currentOwnersArray.removeAt(currentOwnersArray.length - 1);
+          }
+          // Asegurar que el porcentaje sea 100%
+          const firstOwner = currentOwnersArray.at(0) as FormGroup;
+          firstOwner.get('participationPercentage')?.setValue(100, { emitEvent: false });
+        } else if (newLlcType === 'single' && currentOwnersArray && currentOwnersArray.length === 1) {
+          // Si es single y hay un propietario, asegurar que el porcentaje sea 100%
+          const firstOwner = currentOwnersArray.at(0) as FormGroup;
+          firstOwner.get('participationPercentage')?.setValue(100, { emitEvent: false });
+        }
+      }
+    });
 
     // Guardar datos cuando el formulario cambia
     this.formSubscription = this.serviceDataForm.valueChanges.subscribe(() => {
@@ -291,17 +351,12 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   }
 
   /**
-   * Agrega un propietario
+   * Crea un FormGroup para un propietario
    */
-  onAddOwnerRequested(): void {
-    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-    if (!ownersArray) {
-      this.serviceDataForm.addControl('owners', this.fb.array([]));
-    }
-    
+  private createOwnerFormGroup(): FormGroup {
     const llcType = this.serviceDataForm.get('llcType')?.value;
     const defaultParticipation = llcType === 'single' ? 100 : 0;
-    const ownerGroup = this.fb.group({
+    return this.fb.group({
       name: ['', Validators.required],
       lastName: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
@@ -327,7 +382,19 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       wasInUSA31Days2025: [''],
       participationPercentage: [defaultParticipation, [Validators.required, Validators.min(0), Validators.max(100)]]
     });
+  }
+
+  /**
+   * Agrega un propietario
+   */
+  onAddOwnerRequested(): void {
+    let ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    if (!ownersArray) {
+      ownersArray = this.fb.array([]);
+      this.serviceDataForm.addControl('owners', ownersArray);
+    }
     
+    const ownerGroup = this.createOwnerFormGroup();
     ownersArray.push(ownerGroup);
   }
 
@@ -416,6 +483,17 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       await this.saveToApi();
       
       this.currentSection++;
+      
+      // Si se navega a la sección 2 (propietarios) y no hay propietarios, crear uno automáticamente
+      if (this.currentSection === 2) {
+        const llcType = this.serviceDataForm.get('llcType')?.value;
+        const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+        if (llcType && ownersArray && ownersArray.length === 0) {
+          this.onAddOwnerRequested();
+          console.log('[WizardRenovacionLlcInformationStep] Inicializado propietario al navegar a sección 2');
+        }
+      }
+      
       this.sectionChanged.emit(this.currentSection);
     }
   }
@@ -436,16 +514,66 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     try {
       const formData = this.serviceDataForm.value;
       
+      // Mapear owners a members con todos los campos necesarios
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      const members = ownersArray ? ownersArray.controls.map((ownerControl: any) => {
+        const ownerValue = ownerControl.value;
+        return {
+          // Campos básicos
+          firstName: ownerValue.name || '',
+          name: ownerValue.name || '', // Mantener ambos para compatibilidad
+          lastName: ownerValue.lastName || '',
+          dateOfBirth: ownerValue.dateOfBirth || '',
+          email: ownerValue.email || '',
+          phone: ownerValue.phone || '',
+          phoneNumber: ownerValue.phone || '', // Alias para compatibilidad
+          
+          // Dirección
+          fullAddress: ownerValue.fullAddress || '',
+          unit: ownerValue.unit || '',
+          city: ownerValue.city || '',
+          stateRegion: ownerValue.stateRegion || '',
+          postalCode: ownerValue.postalCode || '',
+          country: ownerValue.country || '',
+          
+          // Documentos e identificación
+          passportNumber: ownerValue.passportNumber || '',
+          nationality: ownerValue.nationality || '',
+          ssnItin: ownerValue.ssnItin || '',
+          cuit: ownerValue.cuit || '',
+          
+          // Información financiera
+          capitalContributions2025: ownerValue.capitalContributions2025 || 0,
+          loansToLLC2025: ownerValue.loansToLLC2025 || 0,
+          loansRepaid2025: ownerValue.loansRepaid2025 || 0,
+          capitalWithdrawals2025: ownerValue.capitalWithdrawals2025 || 0,
+          
+          // Información fiscal
+          hasInvestmentsInUSA: ownerValue.hasInvestmentsInUSA || '',
+          isUSCitizen: ownerValue.isUSCitizen || '',
+          taxCountry: ownerValue.taxCountry || '',
+          wasInUSA31Days2025: ownerValue.wasInUSA31Days2025 || '',
+          
+          // Participación
+          participationPercentage: ownerValue.participationPercentage || 0,
+          percentageOfParticipation: ownerValue.participationPercentage || 0, // Alias para compatibilidad
+        };
+      }) : [];
+      
+      // Separar owners del resto de los datos para evitar duplicación
+      const { owners, ...restOfFormData } = formData;
+      
       const updateData = {
         type: 'renovacion-llc',
         currentStepNumber: this.currentSection,
         renovacionLlcData: {
-          ...formData,
-          members: formData.owners || []
+          ...restOfFormData,
+          members: members
         }
       };
       
       console.log('[WizardRenovacionLlcInformationStep] Guardando datos en API:', updateData);
+      console.log('[WizardRenovacionLlcInformationStep] Members a enviar:', members);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       console.log('[WizardRenovacionLlcInformationStep] Datos guardados exitosamente');
       

@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
 import { LanguageService } from '../../../../shared/services/language.service';
 import { ScrollService } from '../../../../shared/services/scroll.service';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header-manejo',
@@ -19,9 +21,10 @@ import { ScrollService } from '../../../../shared/services/scroll.service';
   templateUrl: './header-manejo.component.html',
   styleUrl: './header-manejo.component.css',
 })
-export class HeaderManejoComponent {
+export class HeaderManejoComponent implements OnDestroy {
   isOpen: boolean = false;
   currentRoute: string = '';
+  private routerSubscription?: Subscription;
 
   // Configuración de imágenes del logo para NgOptimizedImage
   // Usar logo gris como en el header principal cuando está en modo scroll
@@ -52,11 +55,20 @@ export class HeaderManejoComponent {
     // Obtener la ruta inicial
     this.currentRoute = this.router.url;
 
-    // Suscribirse a los cambios de ruta
-    this.router.events.subscribe(() => {
-      this.currentRoute = this.router.url;
-      console.log('Ruta actual:', this.currentRoute);
-    });
+    // Suscribirse solo a NavigationEnd para evitar múltiples logs
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.currentRoute = this.router.url;
+        // Log removido para evitar spam en consola
+      });
+  }
+
+  ngOnDestroy(): void {
+    // Desuscribirse de los eventos del router
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   /**

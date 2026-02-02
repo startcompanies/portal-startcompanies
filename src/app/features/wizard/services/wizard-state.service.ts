@@ -7,7 +7,13 @@ const WIZARD_STATE_KEY = 'wizard_state';
 /**
  * Servicio para manejar el estado del wizard
  * Reutilizable para todos los flujos
- * Persiste el estado en localStorage para recuperar al actualizar la página
+ * 
+ * ESTRATEGIA DE ALMACENAMIENTO:
+ * - Datos del formulario y estado: localStorage (mejor UX, permite continuar si se cierra el navegador)
+ * - Tokens de autenticación: sessionStorage (más seguro, se borra al cerrar - ver wizard-api.service.ts)
+ * 
+ * Esto permite que el usuario pueda continuar el wizard si cierra el navegador,
+ * pero los tokens sensibles se borran automáticamente al cerrar por seguridad.
  */
 @Injectable({
   providedIn: 'root'

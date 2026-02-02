@@ -23,10 +23,31 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   @Input() stepNumber: number = 2;
   @Input() previousStepNumber: number = 1;
   @Output() sectionChanged = new EventEmitter<number>();
+  @Output() isMultiMemberChanged = new EventEmitter<boolean>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+  
+  /**
+   * Verifica si la LLC es multimember
+   */
+  get isMultiMember(): boolean {
+    const isMultiMemberValue = this.serviceDataForm.get('isMultiMember')?.value;
+    return isMultiMemberValue === 'yes';
+  }
+  
+  /**
+   * Verifica si se deben mostrar los botones de navegación entre secciones
+   */
+  get shouldShowSectionNavigation(): boolean {
+    // Si estamos en la sección 5 y no es multimember, no mostrar los botones de sección
+    if (this.currentSection === 5 && !this.isMultiMember) {
+      return false;
+    }
+    // Mostrar los botones si no es la última sección
+    return this.currentSection < this.totalSections;
+  }
   
   // Lista de estados de USA
   usStates = [
@@ -106,7 +127,41 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.serviceDataForm.patchValue(savedData);
+      // Separar los propietarios para restaurarlos manualmente
+      const { owners, ...restOfData } = savedData;
+      this.serviceDataForm.patchValue(restOfData);
+      
+      // Restaurar propietarios manualmente
+      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+      ownersArray.clear();
+      if (owners && Array.isArray(owners)) {
+        owners.forEach((ownerData: any) => {
+          const participation = ownerData.participationPercentage || 0;
+          const ownerGroup = this.createOwnerFormGroup(participation);
+          ownerGroup.patchValue(ownerData);
+          ownersArray.push(ownerGroup);
+        });
+      }
+    }
+
+    // Suscribirse a cambios de isMultiMember para ajustar propietarios
+    this.serviceDataForm.get('isMultiMember')?.valueChanges.subscribe((isMultiMemberValue: string) => {
+      this.handleMultiMemberChange(isMultiMemberValue);
+      // Notificar al componente padre del cambio
+      this.isMultiMemberChanged.emit(isMultiMemberValue === 'yes');
+    });
+
+    // Inicializar propietarios si ya hay un valor en isMultiMember
+    const currentIsMultiMember = this.serviceDataForm.get('isMultiMember')?.value;
+    if (currentIsMultiMember) {
+      setTimeout(() => {
+        this.handleMultiMemberChange(currentIsMultiMember);
+        // Notificar al componente padre del valor inicial
+        this.isMultiMemberChanged.emit(currentIsMultiMember === 'yes');
+      }, 100);
+    } else {
+      // Si no hay valor, notificar que no es multimember
+      this.isMultiMemberChanged.emit(false);
     }
 
     // Guardar datos cuando el formulario cambia
@@ -116,6 +171,49 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
 
     // Emitir la sección inicial
     this.sectionChanged.emit(this.currentSection);
+  }
+
+  /**
+   * Maneja el cambio de isMultiMember para ajustar los propietarios
+   */
+  private handleMultiMemberChange(isMultiMemberValue: string): void {
+    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    const isMultiMember = isMultiMemberValue === 'yes';
+    
+    if (!ownersArray) {
+      this.serviceDataForm.addControl('owners', this.fb.array([]));
+      return;
+    }
+
+    if (!isMultiMember) {
+      // Single Member: debe haber exactamente 1 propietario con 100%
+      if (ownersArray.length === 0) {
+        // Crear un propietario
+        const ownerGroup = this.createOwnerFormGroup(100);
+        ownersArray.push(ownerGroup);
+      } else if (ownersArray.length > 1) {
+        // Eliminar extras, dejar solo el primero
+        while (ownersArray.length > 1) {
+          ownersArray.removeAt(ownersArray.length - 1);
+        }
+      }
+      // Asegurar que el porcentaje sea 100%
+      const firstOwner = ownersArray.at(0) as FormGroup;
+      firstOwner.get('participationPercentage')?.setValue(100, { emitEvent: false });
+    } else {
+      // Multi Member: debe haber al menos 2 propietarios
+      if (ownersArray.length === 0) {
+        // Crear 2 propietarios
+        const owner1 = this.createOwnerFormGroup(0);
+        const owner2 = this.createOwnerFormGroup(0);
+        ownersArray.push(owner1);
+        ownersArray.push(owner2);
+      } else if (ownersArray.length === 1) {
+        // Agregar un segundo propietario
+        const owner2 = this.createOwnerFormGroup(0);
+        ownersArray.push(owner2);
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -325,13 +423,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   /**
    * Agrega un propietario
    */
-  onAddOwnerRequested(): void {
-    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-    if (!ownersArray) {
-      this.serviceDataForm.addControl('owners', this.fb.array([]));
-    }
-    
-    const ownerGroup = this.fb.group({
+  /**
+   * Crea un FormGroup para un propietario
+   */
+  private createOwnerFormGroup(participationPercentage: number = 0): FormGroup {
+    return this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
@@ -339,10 +435,22 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       passportNumber: ['', Validators.required],
       ssnItin: [''],
       cuit: [''],
-      participationPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      participationPercentage: [participationPercentage, [Validators.required, Validators.min(0), Validators.max(100)]],
       passportFileUrl: ['']
     });
+  }
+
+  onAddOwnerRequested(): void {
+    let ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    if (!ownersArray) {
+      ownersArray = this.fb.array([]);
+      this.serviceDataForm.addControl('owners', ownersArray);
+    }
     
+    const isMultiMember = this.serviceDataForm.get('isMultiMember')?.value === 'yes';
+    const defaultParticipation = isMultiMember ? 0 : 100;
+    
+    const ownerGroup = this.createOwnerFormGroup(defaultParticipation);
     ownersArray.push(ownerGroup);
   }
 
@@ -351,9 +459,23 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    */
   onRemoveOwnerRequested(index: number): void {
     const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-    if (ownersArray && ownersArray.length > index) {
-      ownersArray.removeAt(index);
+    const isMultiMember = this.serviceDataForm.get('isMultiMember')?.value === 'yes';
+    
+    if (!ownersArray || ownersArray.length <= index) {
+      return;
     }
+    
+    // Prevenir eliminar si es single member y solo hay 1 propietario
+    if (!isMultiMember && ownersArray.length === 1) {
+      return;
+    }
+    
+    // Prevenir eliminar si es multi member y solo hay 2 propietarios (mínimo requerido)
+    if (isMultiMember && ownersArray.length <= 2) {
+      return;
+    }
+    
+    ownersArray.removeAt(index);
   }
 
   /**
@@ -503,11 +625,34 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       return;
     }
     
+    // Si estamos en la sección 5 (Tipo de LLC) y no es multimember, terminar el flujo
+    if (this.currentSection === 5) {
+      const isMultiMemberValue = this.serviceDataForm.get('isMultiMember')?.value;
+      if (isMultiMemberValue === 'no') {
+        // Guardar datos en la API antes de terminar
+        await this.saveToApi();
+        // Emitir evento especial para indicar que se debe avanzar al siguiente paso del wizard
+        this.sectionChanged.emit(0); // 0 indica que se debe avanzar al siguiente paso del wizard
+        return;
+      }
+    }
+    
     if (this.currentSection < this.totalSections) {
       // Guardar datos en la API antes de avanzar
       await this.saveToApi();
       
       this.currentSection++;
+      
+      // Si se navega a la sección 6 (propietarios), inicializar propietarios según el tipo
+      if (this.currentSection === 6) {
+        const isMultiMemberValue = this.serviceDataForm.get('isMultiMember')?.value;
+        if (isMultiMemberValue) {
+          setTimeout(() => {
+            this.handleMultiMemberChange(isMultiMemberValue);
+          }, 100);
+        }
+      }
+      
       this.sectionChanged.emit(this.currentSection);
     }
   }
@@ -516,9 +661,69 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    * Guarda los datos en la API
    */
   async saveToApi(): Promise<void> {
-    const requestId = this.wizardStateService.getRequestId();
+    let requestId = this.wizardStateService.getRequestId();
+    
+    // Si no hay requestId, intentar crear el request (para flujo sin pago)
     if (!requestId) {
-      console.log('[WizardCuentaBancariaInformationStep] No hay requestId, saltando guardado en API');
+      console.log('[WizardCuentaBancariaInformationStep] No hay requestId, intentando crear request');
+      
+      // Verificar si el usuario está autenticado
+      if (!this.wizardApiService.isAuthenticated()) {
+        console.log('[WizardCuentaBancariaInformationStep] Usuario no autenticado, no se puede crear request');
+        this.saveError = 'Por favor, verifica tu email primero.';
+        return;
+      }
+      
+      // Crear el request sin pago
+      try {
+        const allData = this.wizardStateService.getAllData();
+        const step1Data = allData.step1 || {};
+        const user = this.wizardApiService.getUser();
+        
+        if (!user) {
+          this.saveError = 'Error de autenticación.';
+          return;
+        }
+        
+        const requestData = {
+          type: 'cuenta-bancaria' as const,
+          currentStepNumber: this.currentSection,
+          currentStep: this.stepNumber,
+          status: 'pendiente' as const,
+          notes: '',
+          stripeToken: 'no-payment',
+          paymentAmount: 0,
+          paymentMethod: 'transferencia' as const,
+          clientData: {
+            firstName: step1Data.firstName || user.firstName || '',
+            lastName: step1Data.lastName || user.lastName || '',
+            email: step1Data.email || user.email,
+            phone: step1Data.phone || user.phone || '',
+            password: step1Data.password || ''
+          },
+          cuentaBancariaData: {}
+        };
+        
+        console.log('[WizardCuentaBancariaInformationStep] Creando request sin pago:', requestData);
+        const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
+        
+        if (response && response.id) {
+          this.wizardStateService.setRequestId(response.id);
+          requestId = response.id;
+          console.log('[WizardCuentaBancariaInformationStep] Request creado:', response.id);
+        } else {
+          this.saveError = 'Error al crear la solicitud.';
+          return;
+        }
+      } catch (error: any) {
+        console.error('[WizardCuentaBancariaInformationStep] Error al crear request:', error);
+        this.saveError = error?.error?.message || 'Error al crear la solicitud.';
+        return;
+      }
+    }
+    
+    if (!requestId) {
+      console.log('[WizardCuentaBancariaInformationStep] No se pudo obtener requestId');
       return;
     }
     
@@ -528,12 +733,48 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     try {
       const formData = this.serviceDataForm.value;
       
+      // Convertir el verificador (sección 3) y dirección personal (sección 4) en el primer member
+      const validatorAsFirstMember = {
+        firstName: formData.validatorFirstName || '',
+        lastName: formData.validatorLastName || '',
+        dateOfBirth: formData.validatorDateOfBirth || '',
+        nationality: formData.validatorNationality || '',
+        passportNumber: formData.validatorPassportNumber || '',
+        email: formData.validatorWorkEmail || '',
+        phoneNumber: formData.validatorPhone || '',
+        scannedPassportUrl: formData.validatorPassportUrl || '',
+        memberAddress: {
+          street: formData.ownerPersonalStreet || '',
+          unit: formData.ownerPersonalUnit || '',
+          city: formData.ownerPersonalCity || '',
+          stateRegion: formData.ownerPersonalState || '',
+          postalCode: formData.ownerPersonalPostalCode || '',
+          country: formData.ownerPersonalCountry || ''
+        },
+        percentageOfParticipation: 100, // El verificador es el único propietario si no es multimember
+        validatesBankAccount: true, // Marcar que este member valida la cuenta bancaria
+        ssnOrItin: '', // No se captura en el verificador
+        nationalTaxId: '', // No se captura en el verificador
+        taxFilingCountry: '', // No se captura en el verificador
+        ownerContributions: 0,
+        ownerLoansToLLC: 0,
+        loansReimbursedByLLC: 0,
+        profitDistributions: 0,
+        spentMoreThan31DaysInUS: '', // No se captura en el verificador
+        hasUSFinancialInvestments: '', // No se captura en el verificador
+        isUSCitizen: formData.isUSResident === 'yes' ? 'si' : 'no'
+      };
+
+      // Si es multimember, agregar los owners adicionales después del verificador
+      const additionalOwners = formData.owners || [];
+      const allMembers = [validatorAsFirstMember, ...additionalOwners];
+      
       const updateData = {
         type: 'cuenta-bancaria',
         currentStepNumber: this.currentSection,
         cuentaBancariaData: {
           ...formData,
-          owners: formData.owners || []
+          owners: allMembers
         }
       };
       
