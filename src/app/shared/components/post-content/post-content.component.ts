@@ -189,7 +189,6 @@ export class PostContentComponent
     if (!button) return;
 
     const icon = button.querySelector('.accordion-icon') as HTMLElement;
-    const faqArrowIcon = button.querySelector('.faq-arrow-icon') as HTMLElement;
 
     // Cerrar todos los demás acordeones
     const allContents = doc.querySelectorAll('.custom-accordion-content');
@@ -214,13 +213,7 @@ export class PostContentComponent
       const buttonElement = buttonItem as HTMLElement;
       if (buttonElement !== button) {
         buttonElement.setAttribute('aria-expanded', 'false');
-        const otherFaqArrowIcon = buttonElement.querySelector(
-          '.faq-arrow-icon',
-        ) as HTMLElement;
-        if (otherFaqArrowIcon) {
-          otherFaqArrowIcon.classList.remove('bi-chevron-up');
-          otherFaqArrowIcon.classList.add('bi-chevron-down');
-        }
+        buttonElement.classList.remove('accordion-open');
       }
     });
 
@@ -232,20 +225,14 @@ export class PostContentComponent
       if (icon) {
         icon.classList.add('accordion-icon-rotated');
       }
-      if (faqArrowIcon) {
-        faqArrowIcon.classList.remove('bi-chevron-down');
-        faqArrowIcon.classList.add('bi-chevron-up');
-      }
+      button.classList.add('accordion-open');
       button.setAttribute('aria-expanded', 'true');
     } else {
       content.classList.remove('accordion-open');
       if (icon) {
         icon.classList.remove('accordion-icon-rotated');
       }
-      if (faqArrowIcon) {
-        faqArrowIcon.classList.remove('bi-chevron-up');
-        faqArrowIcon.classList.add('bi-chevron-down');
-      }
+      button.classList.remove('accordion-open');
       button.setAttribute('aria-expanded', 'false');
     }
   }
@@ -586,8 +573,7 @@ export class PostContentComponent
       );
     }
 
-    // Reemplazar el contenido del botón de acordeón con solo el icono
-    // Extraer el texto del span dentro del botón y mantenerlo, pero reemplazar el SVG con el icono
+    // Reemplazar el contenido del botón de acordeón con el nuevo layout (texto + icono)
     content = content.replace(
       /<button\s+([^>]*?)class\s*=\s*["']([^"']*custom-accordion-button[^"']*)["']([^>]*?)>([\s\S]*?)<\/button>/gi,
       (match, beforeClass, classAttr, afterClass, buttonContent) => {
@@ -602,10 +588,10 @@ export class PostContentComponent
           return match;
         }
 
-        // Crear el nuevo contenido del botón: h2 con el texto + icono
+        // Crear el nuevo contenido del botón: texto + icono
         const faqArrowIcon =
-          '<i class="bi bi-chevron-down faq-arrow-icon" style="margin: 0 0.5rem;"></i>';
-        const newButtonContent = `<h2 style="font-size: 1.1rem; margin: 0;">${questionText}</h2>${faqArrowIcon}`;
+          '<span class="faq-arrow-icon"><i class="bi bi-arrow-right"></i></span>';
+        const newButtonContent = `<span class="faq-question">${questionText}</span>${faqArrowIcon}`;
 
         // Asegurar que el botón tenga los estilos necesarios para el layout flex
         let styleAttr = afterClass.match(/style\s*=\s*["']([^"']*)["']/i);

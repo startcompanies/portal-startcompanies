@@ -476,7 +476,8 @@ button.abre-corp-btn.btn:hover {
 }
 
 .custom-accordion {
-  background-color: #FAFAFA;
+  max-width: 700px;
+  justify-self: center;
 }
 
 .custom-accordion-item {
@@ -499,6 +500,7 @@ button.abre-corp-btn.btn:hover {
   align-items: center;
   cursor: pointer;
   color: inherit;
+  background: var(--color-secundario-tecnico);
 }
 
 .custom-accordion-button h2,
@@ -798,8 +800,7 @@ button.abre-corp-btn.btn:hover {
    CTA CARD - Tarjeta de llamada a la acción
    ============================================================================ */
 .cta-card {
-  background-color: #E6EFFF;
-  border: 2px solid #38B2AC;
+  background-color: #2c3e4d;
   border-radius: 2rem;
   padding: 60px 40px;
   font-family: Arial, sans-serif;
