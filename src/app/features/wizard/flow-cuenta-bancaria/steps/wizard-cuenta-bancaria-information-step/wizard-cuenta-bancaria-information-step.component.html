@@ -13,8 +13,8 @@
     ></app-wizard-cuenta-bancaria-form>
   </div>
   
-  <!-- Navegación entre secciones del formulario (solo para secciones que no sean la última) -->
-  <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top" *ngIf="currentSection < totalSections">
+  <!-- Navegación entre secciones del formulario -->
+  <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top" *ngIf="shouldShowSectionNavigation">
     <button 
       type="button" 
       class="btn btn-outline-secondary"

@@ -14,6 +14,7 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
   @Input() serviceDataForm!: FormGroup;
   @Input() usStates: any[] = [];
   @Input() fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+  @Input() forceSingleMember: boolean = false;
   
   // Lista de países/nacionalidades
   countries: string[] = [
@@ -141,6 +142,17 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
 
   removeMember(index: number): void {
     this.removeMemberRequested.emit(index);
+  }
+
+  /**
+   * Obtiene el label del estado con su abreviación
+   */
+  getStateLabelWithAbbreviation(stateValue: string): string {
+    const state = this.usStates.find(s => s.value === stateValue);
+    if (state) {
+      return `${state.label} (${state.abbreviation})`;
+    }
+    return stateValue;
   }
 
 }

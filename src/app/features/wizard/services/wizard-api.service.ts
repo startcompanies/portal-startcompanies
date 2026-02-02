@@ -76,9 +76,16 @@ export interface WizardRequestResponse {
   };
 }
 
+export interface EmailAvailabilityResponse {
+  available: boolean;
+  message: string;
+  emailVerified?: boolean;
+}
+
 /**
  * Servicio para comunicarse con los endpoints del wizard en el backend
  * Endpoints:
+ * - GET /wizard/requests/check-email - Verificar disponibilidad de email
  * - POST /wizard/requests/register - Registrar usuario
  * - POST /wizard/requests/confirm-email - Confirmar email y obtener tokens
  * - POST /wizard/requests - Crear solicitud (requiere autenticación)
@@ -103,28 +110,45 @@ export class WizardApiService {
   }
 
   /**
-   * Carga el token guardado en localStorage si existe
+   * Carga el token guardado en sessionStorage si existe
+   * Usamos sessionStorage para tokens por seguridad (se borra al cerrar el navegador)
    */
   private loadStoredToken(): void {
-    const storedData = localStorage.getItem('wizard_auth');
+    const storedData = sessionStorage.getItem('wizard_auth');
     if (storedData) {
       try {
         const data = JSON.parse(storedData);
         if (data.accessToken && data.user) {
+          // Verificar que el token no haya expirado (si tiene exp)
+          const token = data.accessToken;
+          try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            if (payload.exp && payload.exp * 1000 < Date.now()) {
+              // Token expirado, limpiar
+              this.clearToken();
+              return;
+            }
+          } catch (e) {
+            // Si no se puede decodificar, asumir que es válido
+          }
+          
           this.accessTokenSubject.next(data.accessToken);
           this.userDataSubject.next(data.user);
         }
       } catch (e) {
         console.error('[WizardApiService] Error loading stored token:', e);
+        this.clearToken();
       }
     }
   }
 
   /**
-   * Guarda el token en localStorage
+   * Guarda el token en sessionStorage
+   * sessionStorage es más seguro para tokens porque se borra al cerrar el navegador
+   * Esto previene que tokens queden expuestos en dispositivos compartidos
    */
   private storeToken(accessToken: string, refreshToken: string, user: WizardConfirmEmailResponse['user']): void {
-    localStorage.setItem('wizard_auth', JSON.stringify({
+    sessionStorage.setItem('wizard_auth', JSON.stringify({
       accessToken,
       refreshToken,
       user,
@@ -133,9 +157,11 @@ export class WizardApiService {
   }
 
   /**
-   * Limpia el token guardado
+   * Limpia el token guardado (tanto sessionStorage como localStorage por si acaso)
    */
   clearToken(): void {
+    sessionStorage.removeItem('wizard_auth');
+    // Limpiar también localStorage por si había datos antiguos
     localStorage.removeItem('wizard_auth');
     this.accessTokenSubject.next(null);
     this.userDataSubject.next(null);
@@ -166,6 +192,16 @@ export class WizardApiService {
    */
   getUser(): WizardConfirmEmailResponse['user'] | null {
     return this.userDataSubject.value;
+  }
+
+  /**
+   * Verifica si un email está disponible para registro
+   * GET /wizard/requests/check-email?email=...
+   */
+  checkEmailAvailability(email: string): Observable<EmailAvailabilityResponse> {
+    return this.http.get<EmailAvailabilityResponse>(`${this.apiUrl}/check-email`, {
+      params: { email }
+    });
   }
 
   /**

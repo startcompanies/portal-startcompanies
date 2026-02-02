@@ -112,4 +112,31 @@
   font-weight: 500;
 }
 
+/* Contenedor del logo de Stripe */
+.stripe-logo-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  padding-right: 0.25rem;
+}
+
+/* Logo de Stripe - pequeño y alineado a la derecha */
+.stripe-logo {
+  height: 20px;
+  width: auto;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.stripe-logo:hover {
+  opacity: 1;
+}
+
+/* Responsive para el logo */
+@media (max-width: 576px) {
+  .stripe-logo {
+    height: 18px;
+  }
+}
+
 

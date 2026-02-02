@@ -8,8 +8,12 @@
             </div>
             <div class="col-md-12">
               <label for="llcName" class="form-label">Nombre de la LLC - Opción 1 <span class="text-danger">*</span></label>
-              <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC">
+              <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC"
+                [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+              <div *ngIf="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched" class="invalid-feedback d-block">
+                Este campo es obligatorio.
+              </div>
             </div>
             <div class="col-md-12">
               <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2 <span class="text-danger">*</span></label>
@@ -23,7 +27,30 @@
             </div>
             <div class="col-md-12">
               <label for="incorporationState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
-              <select id="incorporationState" class="form-select" formControlName="incorporationState">
+              <!-- Si el estado ya viene del paso anterior o paquete, mostrarlo como readonly -->
+              <div *ngIf="serviceDataForm.get('incorporationState')?.value" class="input-group">
+                <input 
+                  type="text" 
+                  id="incorporationState" 
+                  class="form-control bg-light" 
+                  [value]="getStateLabelWithAbbreviation(serviceDataForm.get('incorporationState')?.value)"
+                  readonly
+                />
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock-fill text-muted"></i>
+                </span>
+              </div>
+              <small *ngIf="serviceDataForm.get('incorporationState')?.value" class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                El estado fue seleccionado previamente y no puede modificarse.
+              </small>
+              <!-- Solo mostrar select si no hay estado seleccionado -->
+              <select 
+                *ngIf="!serviceDataForm.get('incorporationState')?.value"
+                id="incorporationState" 
+                class="form-select" 
+                formControlName="incorporationState"
+              >
                 <option value="">Selecciona un estado...</option>
                 <option *ngFor="let state of usStates" [value]="state.value">
                   {{ state.label }} ({{ state.abbreviation }})
@@ -32,15 +59,46 @@
             </div>
             <div class="col-md-12">
               <label for="businessDescription" class="form-label">Actividad Principal de la LLC <span class="text-danger">*</span></label>
-              <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" placeholder="Describa brevemente la actividad principal que realizará su empresa."></textarea>
+              <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" placeholder="Describa brevemente la actividad principal que realizará su empresa."
+                [class.is-invalid]="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched"></textarea>
+              <div *ngIf="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched" class="invalid-feedback d-block">
+                Este campo es obligatorio.
+              </div>
             </div>
             <div class="col-md-12">
               <label for="llcType" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
-              <select id="llcType" class="form-select" formControlName="llcType" [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
+              <!-- Si la estructura societaria ya viene del paso anterior o paquete, mostrarla como readonly -->
+              <div *ngIf="serviceDataForm.get('llcType')?.value" class="input-group">
+                <input 
+                  type="text" 
+                  id="llcType" 
+                  class="form-control bg-light" 
+                  [value]="getLlcTypeLabel(serviceDataForm.get('llcType')?.value)"
+                  readonly
+                />
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock-fill text-muted"></i>
+                </span>
+              </div>
+              <small *ngIf="serviceDataForm.get('llcType')?.value" class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                La estructura societaria fue seleccionada previamente y no puede modificarse.
+              </small>
+              <!-- Solo mostrar select si no hay estructura societaria seleccionada -->
+              <select 
+                *ngIf="!serviceDataForm.get('llcType')?.value"
+                id="llcType" 
+                class="form-select" 
+                formControlName="llcType"
+                [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched"
+              >
                 <option value="">Selecciona...</option>
                 <option value="single">LLC de un solo miembro (Single Member LLC)</option>
                 <option value="multi">LLC con múltiples miembros (Multi Member LLC)</option>
               </select>
+              <div *ngIf="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
+                Debe seleccionar una estructura societaria.
+              </div>
             </div>
             <div class="col-md-12">
               <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
@@ -68,15 +126,27 @@
               <div class="row g-3">
                 <div class="col-md-6">
                   <label [for]="'memberFirstName' + i" class="form-label">Nombres <span class="text-danger">*</span></label>
-                  <input type="text" [id]="'memberFirstName' + i" class="form-control" formControlName="firstName">
+                  <input type="text" [id]="'memberFirstName' + i" class="form-control" formControlName="firstName"
+                    [class.is-invalid]="member.get('firstName')?.invalid && member.get('firstName')?.touched">
+                  <div *ngIf="member.get('firstName')?.invalid && member.get('firstName')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label [for]="'memberLastName' + i" class="form-label">Apellidos <span class="text-danger">*</span></label>
-                  <input type="text" [id]="'memberLastName' + i" class="form-control" formControlName="lastName">
+                  <input type="text" [id]="'memberLastName' + i" class="form-control" formControlName="lastName"
+                    [class.is-invalid]="member.get('lastName')?.invalid && member.get('lastName')?.touched">
+                  <div *ngIf="member.get('lastName')?.invalid && member.get('lastName')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label [for]="'memberPassport' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
-                  <input type="text" [id]="'memberPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país)">
+                  <input type="text" [id]="'memberPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país)"
+                    [class.is-invalid]="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched">
+                  <div *ngIf="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label [for]="'memberPassportScanned' + i" class="form-label">Pasaporte escaneado <span class="text-danger">*</span></label>

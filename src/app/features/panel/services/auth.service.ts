@@ -103,8 +103,14 @@ export class AuthService {
 
   logout(): void {
     const win = this.browser.window;
-    if (win && win.localStorage) {
-      win.localStorage.removeItem(this.tokenKey);
+    if (win) {
+      // Limpiar token de sessionStorage y localStorage (por si acaso)
+      if (win.sessionStorage) {
+        win.sessionStorage.removeItem(this.tokenKey);
+      }
+      if (win.localStorage) {
+        win.localStorage.removeItem(this.tokenKey);
+      }
     }
     this.currentUserSubject.next(null);
     this.router.navigate(['/panel/login']);
@@ -120,22 +126,63 @@ export class AuthService {
 
   getToken(): string | null {
     const win = this.browser.window;
-    if (!win || !win.localStorage) {
+    if (!win) {
       return null;
     }
-    return win.localStorage.getItem(this.tokenKey);
+    // Usar sessionStorage para tokens (más seguro)
+    if (win.sessionStorage) {
+      const token = win.sessionStorage.getItem(this.tokenKey);
+      if (token) {
+        return token;
+      }
+    }
+    // Fallback: verificar localStorage por compatibilidad y migrar
+    if (win.localStorage) {
+      const oldToken = win.localStorage.getItem(this.tokenKey);
+      if (oldToken) {
+        // Migrar token antiguo a sessionStorage
+        if (win.sessionStorage) {
+          win.sessionStorage.setItem(this.tokenKey, oldToken);
+        }
+        win.localStorage.removeItem(this.tokenKey);
+        return oldToken;
+      }
+    }
+    return null;
   }
 
   private setToken(token: string): void {
     const win = this.browser.window;
-    if (win && win.localStorage) {
-      win.localStorage.setItem(this.tokenKey, token);
+    if (!win) {
+      return;
+    }
+    // Guardar token en sessionStorage (más seguro, se borra al cerrar el navegador)
+    if (win.sessionStorage) {
+      win.sessionStorage.setItem(this.tokenKey, token);
+    }
+    // Limpiar token antiguo de localStorage si existe
+    if (win.localStorage) {
+      win.localStorage.removeItem(this.tokenKey);
     }
   }
 
   private loadUserFromStorage(): void {
     const token = this.getToken();
     if (token) {
+      // Verificar que el token no haya expirado
+      try {
+        const parts = token.split('.');
+        if (parts.length >= 2) {
+          const payload = JSON.parse(atob(parts[1]));
+          if (payload.exp && payload.exp * 1000 < Date.now()) {
+            // Token expirado, limpiar
+            this.logout();
+            return;
+          }
+        }
+      } catch (e) {
+        // Si no se puede decodificar, intentar cargar de todas formas
+      }
       this.loadUserFromToken(token);
     }
   }
@@ -180,73 +227,6 @@ export class AuthService {
 
   isClient(): boolean {
     return this.hasRole('client');
-  }
-
-  /**
-   * SSO Authentication - Autenticación mediante parámetros de URL para embedding
-   */
-  public ssoAuth(
-    email: string,
-    token: string,
-    customerId?: string,
-    phone?: string
-  ): Observable<any> {
-    let url = `${this.apiUrl}/sso?email=${encodeURIComponent(
-      email
-    )}&token=${encodeURIComponent(token)}`;
-
-    if (customerId) {
-      url += `&customerId=${encodeURIComponent(customerId)}`;
-    }
-
-    if (phone) {
-      url += `&phone=${encodeURIComponent(phone)}`;
-    }
-
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    });
-
-    return this.http.get<any>(url, { headers, withCredentials: true }).pipe(
-      tap((response) => {
-        if (response.accessToken) {
-          this.setToken(response.accessToken);
-          this.loadUserFromToken(response.accessToken);
-          
-          const win = this.browser.window;
-          if (win && win.localStorage) {
-            // Guardar refreshToken en localStorage como fallback para iframes
-            if (response.refreshToken) {
-              win.localStorage.setItem('refreshToken', response.refreshToken);
-            }
-            
-            // Marcar que el login fue vía SSO
-            win.localStorage.setItem('isSsoLogin', 'true');
-          }
-        }
-      })
-    );
-  }
-
-  /**
-   * Refresh token para SSO (usa refreshToken del localStorage)
-   */
-  public refreshSso(refreshToken: string): Observable<any> {
-    return this.http.post<any>(
-      `${this.apiUrl}/refresh-sso`,
-      { refreshToken },
-      {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-      }
-    ).pipe(
-      tap((response) => {
-        if (response.accessToken) {
-          this.setToken(response.accessToken);
-          this.loadUserFromToken(response.accessToken);
-        }
-      })
-    );
   }
 }
 

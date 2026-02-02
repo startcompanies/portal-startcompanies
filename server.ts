@@ -172,14 +172,18 @@ export function app(): express.Express {
   server.get('/posts.xml', async (req, res) => {
     try {
       const baseUrl = getBaseUrl(req);
-      // Obtener URL de API desde variables de entorno o usar valor por defecto
-      const apiUrl = process.env['API_URL'] || process.env['NX_API_URL'] || 'https://api-web.startcompanies.us';
-      const apiEndpoint = apiUrl.endsWith('/api') ? apiUrl : `${apiUrl}/api`;
+      // Obtener URL de API desde variables de entorno o usar valor por defecto.
+      // IMPORTANTE: no forzar /api aquí. Si tu reverse-proxy usa /api, configura API_URL con ese sufijo.
+      const apiUrlRaw =
+        process.env['API_URL'] ||
+        process.env['NX_API_URL'] ||
+        'https://api-web.startcompanies.us';
+      const apiEndpoint = apiUrlRaw.replace(/\/+$/, '');
       
       // Obtener posts desde la API
       let posts: any[] = [];
       try {
-        const response = await fetch(`${apiEndpoint}/posts/get-from-portal`);
+        const response = await fetch(`${apiEndpoint}/blog/posts/get-from-portal`);
         if (response.ok) {
           posts = await response.json();
         } else {

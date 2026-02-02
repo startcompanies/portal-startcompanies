@@ -15,8 +15,11 @@ export class TranslocoHttpLoader implements TranslocoLoader {
         // En SSR, leer desde el sistema de archivos
         if (!isPlatformBrowser(this.platformId)) {
             try {
-                const fs = require('fs');
-                const path = require('path');
+                // Importante: evitar `require('fs')` / `require('path')` estático, porque rompe el build de navegador.
+                // Esto solo se ejecuta en SSR, pero el bundler intenta resolver esos módulos si el require es estático.
+                const req = (0, eval)('require') as NodeRequire;
+                const fs = req('fs');
+                const path = req('path');
                 // Ruta al archivo de traducciones en el servidor
                 const translationPath = path.join(process.cwd(), 'dist/portal-startcompanies/browser/assets/i18n', `${lang}.json`);
                 

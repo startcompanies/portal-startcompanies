@@ -291,7 +291,50 @@
     <div *ngIf="(currentStep === 3 && selectedClientId) || (currentStep === 4 && !selectedClientId)" class="form-step">
       <h3>Información de Pago</h3>
       
-      <div class="row g-3">
+      <!-- Mensaje cuando el pago ya fue procesado -->
+      <div *ngIf="paymentAlreadyProcessed" class="alert alert-success mb-4">
+        <h5><i class="bi bi-check-circle-fill me-2"></i>Pago Procesado Exitosamente</h5>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <p class="mb-2"><strong>Método de Pago:</strong></p>
+            <p class="mb-0">
+              <i [class]="processedPaymentMethod === 'stripe' ? 'bi bi-credit-card me-2' : 'bi bi-bank me-2'"></i>
+              {{ processedPaymentMethod === 'stripe' ? 'Tarjeta de Crédito/Débito (Stripe)' : processedPaymentMethod === 'transferencia' ? 'Transferencia Bancaria' : processedPaymentMethod }}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-2"><strong>Monto Pagado:</strong></p>
+            <p class="mb-0">${{ processedPaymentAmount | number:'1.2-2' }} USD</p>
+          </div>
+          <div class="col-md-6" *ngIf="processedStripeChargeId">
+            <p class="mb-2"><strong>ID de Transacción:</strong></p>
+            <p class="mb-0"><code>{{ processedStripeChargeId }}</code></p>
+          </div>
+          <div class="col-md-6" *ngIf="processedPaymentMethod === 'transferencia' && requestForm.get('paymentProofUrl')?.value">
+            <p class="mb-2"><strong>Comprobante de Pago:</strong></p>
+            <p class="mb-0">
+              <a [href]="requestForm.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
+                <i class="bi bi-box-arrow-up-right me-1"></i>
+                Ver comprobante
+              </a>
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-2"><strong>Estado:</strong></p>
+            <p class="mb-0">
+              <span class="badge bg-success">{{ processedPaymentStatus === 'succeeded' ? 'Completado' : processedPaymentStatus }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="mt-3">
+          <p class="mb-0 text-muted">
+            <i class="bi bi-info-circle me-2"></i>
+            El pago ya fue procesado y no se puede modificar. Si necesitas realizar cambios, contacta al soporte.
+          </p>
+        </div>
+      </div>
+      
+      <div class="row g-3" *ngIf="!paymentAlreadyProcessed">
         <div class="col-md-12">
           <label for="paymentMethod" class="form-label">Método de Pago <span class="text-danger">*</span></label>
           <div class="payment-methods">
@@ -316,7 +359,7 @@
           </div>
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-12" *ngIf="!paymentAlreadyProcessed">
           <label for="paymentAmount" class="form-label">
             Monto a Pagar (USD) 
             <span class="text-danger" *ngIf="requestForm.get('paymentAmount')?.value > 0">*</span>
@@ -348,7 +391,7 @@
         </div>
 
         <!-- Mensaje si el monto es 0 (cuenta bancaria gratuita) -->
-        <div *ngIf="requestForm.get('paymentAmount')?.value === 0 && getSelectedServiceType() === 'cuenta-bancaria'" class="col-md-12">
+        <div *ngIf="requestForm.get('paymentAmount')?.value === 0 && getSelectedServiceType() === 'cuenta-bancaria' && !paymentAlreadyProcessed" class="col-md-12">
           <div class="alert alert-success">
             <h5><i class="bi bi-check-circle me-2"></i>Cuenta Bancaria Gratuita</h5>
             <p class="mb-0">Has seleccionado la opción gratuita. No se requiere pago para esta solicitud.</p>
@@ -356,7 +399,7 @@
         </div>
 
         <!-- Transferencia Bancaria -->
-        <div *ngIf="requestForm.get('paymentMethod')?.value === 'transferencia' && requestForm.get('paymentAmount')?.value > 0" class="col-md-12">
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'transferencia' && requestForm.get('paymentAmount')?.value > 0 && !paymentAlreadyProcessed" class="col-md-12">
           <div class="alert alert-info">
             <h5><i class="bi bi-info-circle me-2"></i>Instrucciones para Transferencia Bancaria</h5>
             <p class="mb-3">Por favor, realiza la transferencia a la siguiente cuenta:</p>
@@ -470,7 +513,7 @@
         </div>
 
         <!-- Stripe -->
-        <div *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0" class="col-md-12">
+        <div *ngIf="requestForm.get('paymentMethod')?.value === 'stripe' && requestForm.get('paymentAmount')?.value > 0 && !paymentAlreadyProcessed" class="col-md-12">
           <app-stripe-payment-form
             [amount]="requestForm.get('paymentAmount')?.value"
             [currency]="'usd'"

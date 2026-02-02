@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription } from 'rxjs';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, of, timer } from 'rxjs';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
 
@@ -36,6 +37,14 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   waitingEmailVerification = false;
   successMessage: string | null = null;
   detectedCountryCode: string = 'us';
+  
+  // Control de visibilidad de contraseña
+  showPassword = false;
+  
+  // Indicador de seguridad de contraseña
+  passwordStrength: 'weak' | 'medium' | 'strong' | null = null;
+  passwordStrengthText = '';
+  passwordStrengthClass = '';
 
   constructor(
     private wizardStateService: WizardStateService,
@@ -50,16 +59,121 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
      * - fullName: Nombre completo (opcional)
      * - phone: Teléfono (opcional)
      * - email: Correo electrónico (opcional, pero debe tener formato válido si se completa)
-     * - password: Contraseña (opcional)
+     * - password: Contraseña (mínimo 8 caracteres)
      * 
      * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
      */
     this.form = new FormGroup({
       fullName: new FormControl(savedData.fullName || ''),
       phone: new FormControl(savedData.phone || ''),
-      email: new FormControl(savedData.email || '', [Validators.email]), // Solo valida formato si se completa
-      password: new FormControl(savedData.password || ''),
+      email: new FormControl(
+        savedData.email || '', 
+        [Validators.email],
+        [this.emailAvailabilityValidator()]
+      ),
+      password: new FormControl(savedData.password || '', [Validators.minLength(8)]),
     });
+  }
+
+  /**
+   * Validador asíncrono para verificar disponibilidad de email
+   * Usa debounce de 500ms para evitar demasiadas peticiones
+   * NO bloquea si el email existe pero no está verificado (permitirá reenviar código)
+   */
+  private emailAvailabilityValidator(): AsyncValidatorFn {
+    return (control: AbstractControl) => {
+      // Si el campo está vacío o no tiene formato válido, no validar
+      if (!control.value || control.value.trim() === '') {
+        return of(null);
+      }
+
+      // Validar formato de email primero
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(control.value)) {
+        return of(null); // Dejar que Validators.email maneje esto
+      }
+
+      // Debounce de 500ms antes de hacer la petición
+      return timer(500).pipe(
+        switchMap(() => {
+          return this.wizardApiService.checkEmailAvailability(control.value).pipe(
+            map((response) => {
+              if (response.available) {
+                return null; // Email disponible, no hay error
+              } else {
+                // Si el email no está verificado, permitir continuar (se reenviará el código)
+                if (response.emailVerified === false) {
+                  return null; // No bloquear, permitir continuar para reenviar código
+                }
+                // Email ya registrado y confirmado, bloquear
+                return { emailTaken: { message: response.message } };
+              }
+            }),
+            catchError((error) => {
+              // En caso de error, no bloquear el formulario
+              console.error('[EmailValidator] Error al verificar email:', error);
+              return of(null);
+            })
+          );
+        })
+      );
+    };
+  }
+  
+  /**
+   * Alterna la visibilidad de la contraseña
+   */
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+  
+  /**
+   * Calcula la fortaleza de la contraseña
+   */
+  calculatePasswordStrength(password: string): void {
+    if (!password || password.length === 0) {
+      this.passwordStrength = null;
+      this.passwordStrengthText = '';
+      this.passwordStrengthClass = '';
+      return;
+    }
+    
+    let score = 0;
+    
+    // Longitud mínima
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    
+    // Contiene minúsculas
+    if (/[a-z]/.test(password)) score++;
+    
+    // Contiene mayúsculas
+    if (/[A-Z]/.test(password)) score++;
+    
+    // Contiene números
+    if (/[0-9]/.test(password)) score++;
+    
+    // Contiene caracteres especiales
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+    
+    // Determinar nivel
+    if (password.length < 8) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 3) {
+      this.passwordStrength = 'weak';
+      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthClass = 'text-danger';
+    } else if (score <= 5) {
+      this.passwordStrength = 'medium';
+      this.passwordStrengthText = 'Media';
+      this.passwordStrengthClass = 'text-warning';
+    } else {
+      this.passwordStrength = 'strong';
+      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthClass = 'text-success';
+    }
   }
 
   ngOnInit(): void {
@@ -169,7 +283,7 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       
       this.registeredUserId = response.id;
       this.registeredEmail = email;
-      console.log('[WizardBasicRegisterStep] Usuario registrado:', response);
+      console.log('[WizardBasicRegisterStep] Usuario registrado o código reenviado:', response);
 
       // Guardar datos en el estado del wizard
       this.wizardStateService.setStepData(this.stepNumber, {
@@ -183,7 +297,9 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
 
       // Marcar que está esperando verificación
       this.waitingEmailVerification = true;
-      this.successMessage = response.message || 'Usuario registrado. Por favor, revisa tu correo para confirmar tu cuenta.';
+      // El mensaje puede indicar que se reenvió el código o que se registró nuevo usuario
+      this.successMessage = response.message || 'Código de verificación enviado. Por favor, revisa tu correo para confirmar tu cuenta.';
+      this.errorMessage = null; // Limpiar cualquier error previo
       this.isLoading = false;
       
       // Emitir evento de usuario creado

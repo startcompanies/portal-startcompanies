@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
+import { WizardApiService } from '../../../services/wizard-api.service';
 import { WizardAperturaLlcFormComponent } from '../wizard-apertura-llc-form/wizard-apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
+import { environment } from '../../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -82,21 +85,31 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   ];
 
   private formSubscription?: Subscription;
+  
+  isSaving = false;
+  saveError: string | null = null;
+
+  // Restricción por plan: Pack Premium solo permite Single Member
+  forceSingleMember = false;
 
   constructor(
     private wizardStateService: WizardStateService,
-    private fb: FormBuilder
+    private wizardApiService: WizardApiService,
+    private fb: FormBuilder,
+    private http: HttpClient
   ) {
     // Inicializar formulario con estructura de apertura-llc-form
+    // Campos con Validators.required son obligatorios
     this.serviceDataForm = this.fb.group({
-      llcType: [''],
-      llcName: [''],
+      // Sección 1: Información de la LLC
+      llcType: ['', Validators.required],
+      llcName: ['', Validators.required],
       llcNameOption2: [''],
       llcNameOption3: [''],
-      businessDescription: [''],
+      businessDescription: ['', Validators.required],
       llcPhoneNumber: [''],
       website: [''],
-      llcEmail: [''],
+      llcEmail: ['', [Validators.email]],
       linkedin: [''],
       incorporationState: [''], // Se establecerá desde el paso anterior
       incorporationDate: [''],
@@ -129,7 +142,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       bankStatementUrl: [''],
       serviceBillUrl: [''],
       periodicIncome10k: [''],
-      bankAccountLinkedEmail: [''],
+      bankAccountLinkedEmail: ['', [Validators.email]],
       bankAccountLinkedPhone: [''],
       projectOrCompanyUrl: [''],
       veracityConfirmation: [''],
@@ -144,7 +157,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         country: ['']
       }),
       ownerPhoneNumber: [''],
-      ownerEmail: [''],
+      ownerEmail: ['', [Validators.email]],
       almacenaProductosDepositoUSA: [false],
       declaroImpuestosAntes: [false],
       llcConStartCompanies: [false],
@@ -161,19 +174,100 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
+    // Obtener el estado seleccionado del paso anterior (estado y plan) PRIMERO
+    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
+    
+    // Regla de negocio:
+    // - Pack Premium: solo Single Member (New Mexico o Wyoming)
+    // - Pack Emprendedor: solo Single Member (New Mexico)
+    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.serviceDataForm.patchValue(savedData);
+      // Separar los miembros del resto de los datos porque patchValue no restaura FormArrays
+      const { members, ...otherData } = savedData;
+      
+      // Aplicar patchValue sin los miembros
+      this.serviceDataForm.patchValue(otherData);
+      
+      // Restaurar miembros manualmente si existen
+      if (members && Array.isArray(members) && members.length > 0) {
+        const membersArray = this.serviceDataForm.get('members') as FormArray;
+        // Limpiar el array primero
+        while (membersArray.length > 0) {
+          membersArray.removeAt(0);
+        }
+        // Restaurar cada miembro
+        members.forEach((memberData: any) => {
+          const memberGroup = this.fb.group({
+            firstName: [memberData.firstName || '', Validators.required],
+            lastName: [memberData.lastName || '', Validators.required],
+            passportNumber: [memberData.passportNumber || '', Validators.required],
+            scannedPassportUrl: [memberData.scannedPassportUrl || ''],
+            nationality: [memberData.nationality || '', Validators.required],
+            dateOfBirth: [memberData.dateOfBirth || '', Validators.required],
+            email: [memberData.email || '', [Validators.required, Validators.email]],
+            phoneNumber: [memberData.phoneNumber || '', Validators.required],
+            percentageOfParticipation: [memberData.percentageOfParticipation || 0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            memberAddress: this.fb.group({
+              street: [memberData.memberAddress?.street || '', Validators.required],
+              unit: [memberData.memberAddress?.unit || ''],
+              city: [memberData.memberAddress?.city || '', Validators.required],
+              stateRegion: [memberData.memberAddress?.stateRegion || '', Validators.required],
+              postalCode: [memberData.memberAddress?.postalCode || '', Validators.required],
+              country: [memberData.memberAddress?.country || '', Validators.required]
+            }),
+            ssnItin: [memberData.ssnItin || ''],
+            cuit: [memberData.cuit || '']
+          });
+          membersArray.push(memberGroup);
+        });
+        console.log('[WizardLlcInformationStep] Miembros restaurados:', membersArray.length);
+      }
+      
+      // Si forceSingleMember está activo, sobrescribir el llcType guardado
+      if (this.forceSingleMember && savedData.llcType !== 'single') {
+        this.serviceDataForm.get('llcType')?.setValue('single', { emitEvent: false });
+      }
     }
 
-    // Obtener el estado seleccionado del paso anterior (estado y plan)
-    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
     if (statePlanData && statePlanData.state) {
       // Establecer el estado en incorporationState (el estado viene del paso 2)
       const stateValue = statePlanData.state;
       this.serviceDataForm.get('incorporationState')?.setValue(stateValue);
       console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
+    }
+
+    // Si forceSingleMember está activo, forzar y ajustar
+    if (this.forceSingleMember) {
+      // Forzar llcType = 'single' siempre
+      const llcTypeControl = this.serviceDataForm.get('llcType');
+      const currentValue = llcTypeControl?.value;
+      
+      // Si el valor actual no es 'single', forzarlo
+      if (currentValue !== 'single') {
+        llcTypeControl?.setValue('single', { emitEvent: false });
+      }
+      
+      // Ajustar miembros para que sea válido como single member
+      // Solo si no hay miembros ya restaurados
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      if (membersArray.length === 0) {
+        this.onLlcTypeChanged('single');
+      }
+      
+      console.log('[WizardLlcInformationStep] Pack Emprendedor/Premium detectado - forzando Single Member');
+    } else {
+      // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      
+      if (llcType && membersArray.length === 0) {
+        // Si hay un llcType guardado pero no hay miembros (ni restaurados), inicializarlos
+        console.log('[WizardLlcInformationStep] Inicializando miembros para llcType:', llcType);
+        this.onLlcTypeChanged(llcType);
+      }
     }
     
     // También verificar si hay un estado guardado en los datos del paso actual
@@ -204,50 +298,115 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja la selección de archivos
+   * Maneja la selección de archivos y los sube al S3
    */
-  onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): void {
+  async onFileSelected(event: { event: Event; formControlPath: string; fileKey: string }): Promise<void> {
     const input = event.event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
-    this.fileUploadStates[event.fileKey] = {
-      file: file,
-      uploading: false,
-      progress: 0
-    };
-
-    // Aquí se podría implementar la subida del archivo
-    // Por ahora solo guardamos el estado
-    const control = this.serviceDataForm.get(event.formControlPath);
-    if (control) {
-      control.setValue(file.name); // O la URL después de subir
-    }
+    await this.uploadFile(file, event.formControlPath, event.fileKey);
   }
 
   /**
-   * Maneja la selección de archivos de miembros
+   * Maneja la selección de archivos de miembros y los sube al S3
    */
-  onMemberFileSelected(event: { event: Event; memberIndex: number; formControlPath: string; fileKey: string }): void {
+  async onMemberFileSelected(event: { event: Event; memberIndex: number; formControlPath: string; fileKey: string }): Promise<void> {
     const input = event.event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
     const fileKey = `member${event.memberIndex}_${event.fileKey}`;
+    const fullPath = `members.${event.memberIndex}.${event.formControlPath}`;
+    
+    await this.uploadFile(file, fullPath, fileKey);
+  }
+
+  /**
+   * Sube un archivo al S3 y actualiza el control del formulario con la URL
+   */
+  async uploadFile(file: File, formControlPath: string, fileKey: string): Promise<void> {
+    if (!file) return;
+
+    // Inicializar estado de subida
     this.fileUploadStates[fileKey] = {
       file: file,
-      uploading: false,
+      uploading: true,
       progress: 0
     };
 
-    const membersArray = this.serviceDataForm.get('members') as FormArray;
-    const memberGroup = membersArray.at(event.memberIndex) as FormGroup;
-    if (memberGroup) {
-      const control = memberGroup.get(event.formControlPath);
-      if (control) {
-        control.setValue(file.name); // O la URL después de subir
+    try {
+      const serviceType = 'apertura-llc';
+      const requestId = this.wizardStateService.getRequestId();
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', serviceType);
+
+      // Si ya hay un request creado, incluir el UUID
+      if (requestId) {
+        formData.append('requestUuid', requestId.toString());
+        console.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+      } else {
+        console.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
+
+      const response = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+
+      if (response && response.url) {
+        // Buscar el control y establecer la URL
+        const control = this.findFormControl(formControlPath);
+        if (control) {
+          control.setValue(response.url, { emitEvent: true });
+          control.markAsTouched();
+          control.markAsDirty();
+          console.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
+        }
+        
+        // Limpiar el archivo del estado (ya fue subido)
+        this.fileUploadStates[fileKey].file = null;
+      }
+    } catch (error: any) {
+      console.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
+      this.fileUploadStates[fileKey].file = null;
+    } finally {
+      this.fileUploadStates[fileKey].uploading = false;
+      this.fileUploadStates[fileKey].progress = 0;
     }
+  }
+
+  /**
+   * Busca un control en el formulario por su ruta
+   */
+  findFormControl(path: string): any {
+    // Si el path contiene puntos, navegar por la estructura
+    if (path.includes('.')) {
+      const parts = path.split('.');
+      let current: any = this.serviceDataForm;
+      
+      for (const part of parts) {
+        if (current instanceof FormArray) {
+          const index = parseInt(part, 10);
+          current = current.at(index);
+        } else if (current instanceof FormGroup) {
+          current = current.get(part);
+        } else {
+          return null;
+        }
+        
+        if (!current) return null;
+      }
+      
+      return current;
+    }
+    
+    // Path simple
+    return this.serviceDataForm.get(path);
   }
 
   /**
@@ -278,27 +437,29 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Agrega un miembro
+   * Agrega un miembro con validaciones
    */
   addMember(): void {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
+    const llcType = this.serviceDataForm.get('llcType')?.value;
+    const defaultParticipation = llcType === 'single' ? 100 : 0;
     const memberGroup = this.fb.group({
-      firstName: [''],
-      lastName: [''],
-      passportNumber: [''],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      passportNumber: ['', Validators.required],
       scannedPassportUrl: [''],
-      nationality: [''],
-      dateOfBirth: [''],
-      email: [''],
-      phoneNumber: [''],
-      percentageOfParticipation: [0],
+      nationality: ['', Validators.required],
+      dateOfBirth: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phoneNumber: ['', Validators.required],
+      percentageOfParticipation: [defaultParticipation, [Validators.required, Validators.min(0), Validators.max(100)]],
       memberAddress: this.fb.group({
-        street: [''],
+        street: ['', Validators.required],
         unit: [''],
-        city: [''],
-        stateRegion: [''],
-        postalCode: [''],
-        country: ['']
+        city: ['', Validators.required],
+        stateRegion: ['', Validators.required],
+        postalCode: ['', Validators.required],
+        country: ['', Validators.required]
       }),
       ssnItin: [''],
       cuit: ['']
@@ -317,8 +478,57 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Maneja el cambio de tipo de LLC
+   * Valida si la sección actual está completa
    */
+  isSectionValid(): boolean {
+    if (this.currentSection === 1) {
+      // Sección 1: Información de la LLC
+      const llcType = this.serviceDataForm.get('llcType');
+      const llcName = this.serviceDataForm.get('llcName');
+      const businessDescription = this.serviceDataForm.get('businessDescription');
+      
+      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid);
+    }
+    
+    if (this.currentSection === 2) {
+      // Sección 2: Miembros
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      const llcType = this.serviceDataForm.get('llcType')?.value;
+      
+      // Para single member, debe haber al menos 1 miembro
+      // Para multi member, debe haber al menos 2 miembros
+      const minMembers = llcType === 'multi' ? 2 : 1;
+      
+      if (!membersArray || membersArray.length < minMembers) {
+        return false;
+      }
+      
+      // Validar que todos los miembros tengan los campos requeridos
+      return membersArray.controls.every(member => member.valid);
+    }
+    
+    // Sección 3: No tiene campos obligatorios estrictos
+    return true;
+  }
+
+  /**
+   * Marca los campos de la sección actual como touched para mostrar errores
+   */
+  markSectionAsTouched(): void {
+    if (this.currentSection === 1) {
+      this.serviceDataForm.get('llcType')?.markAsTouched();
+      this.serviceDataForm.get('llcName')?.markAsTouched();
+      this.serviceDataForm.get('businessDescription')?.markAsTouched();
+    }
+    
+    if (this.currentSection === 2) {
+      const membersArray = this.serviceDataForm.get('members') as FormArray;
+      membersArray?.controls.forEach(member => {
+        (member as FormGroup).markAllAsTouched();
+      });
+    }
+  }
+
   /**
    * Navega a la sección anterior
    */
@@ -330,16 +540,71 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navega a la siguiente sección
+   * Navega a la siguiente sección y guarda los datos en la API
    */
-  goToNextSection(): void {
+  async goToNextSection(): Promise<void> {
+    // Validar sección actual antes de avanzar
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    
     if (this.currentSection < 3) {
+      // Guardar datos en la API antes de avanzar
+      await this.saveToApi();
+      
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
     }
   }
+  
+  /**
+   * Guarda los datos en la API
+   */
+  async saveToApi(): Promise<void> {
+    const requestId = this.wizardStateService.getRequestId();
+    if (!requestId) {
+      console.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
+      return;
+    }
+    
+    this.isSaving = true;
+    this.saveError = null;
+    
+    try {
+      const formData = this.serviceDataForm.value;
+      
+      const updateData = {
+        type: 'apertura-llc',
+        currentStepNumber: this.currentSection,
+        aperturaLlcData: {
+          ...formData,
+          members: formData.members || []
+        }
+      };
+      
+      console.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
+      await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
+      console.log('[WizardLlcInformationStep] Datos guardados exitosamente');
+      
+    } catch (error: any) {
+      console.error('[WizardLlcInformationStep] Error al guardar:', error);
+      this.saveError = error?.error?.message || 'Error al guardar los datos';
+    } finally {
+      this.isSaving = false;
+    }
+  }
 
   onLlcTypeChanged(llcType: string): void {
+    // Si forceSingleMember está activo y el usuario intenta cambiar a multi, revertir a single
+    if (this.forceSingleMember && llcType === 'multi') {
+      const llcTypeControl = this.serviceDataForm.get('llcType');
+      if (llcTypeControl) {
+        llcTypeControl.setValue('single', { emitEvent: false });
+      }
+      return; // Salir sin procesar el cambio a multi
+    }
+
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     
     if (llcType === 'single') {
@@ -349,6 +614,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       }
       if (membersArray.length === 0) {
         this.addMember();
+      }
+      // Regla: si es Single Member, el porcentaje siempre es 100%
+      const member0 = membersArray.at(0) as FormGroup | undefined;
+      const pctControl = member0?.get('percentageOfParticipation');
+      if (pctControl) {
+        pctControl.setValue(100, { emitEvent: true });
       }
     } else if (llcType === 'multi') {
       // Si cambia a multi, asegurar que hay al menos un miembro
