@@ -1,19 +1,22 @@
 export const environment = {
-  production: true,
-  //apiUrl: 'http://localhost:5000',
-  apiUrl: 'https://api-web.startcompanies.io',
+  production: false,
+  staging: false,
+  apiUrl: 'http://localhost:3000',
+  //apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/blog/posts/get-sandbox-posts',
   categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',
   sandboxPostsEndpoint: '/blog/posts/get-sandbox-posts/category',
   facebookPixel: {
-    llcPixelId: '703523572287021',
-    relayPixelId: '1055049486479771',
-    debug: false, // Modo debug desactivado en producción
+    llcPixelId: '',
+    relayPixelId: '',
+    debug: true, // Modo debug activado en desarrollo
   },
   baseUrl: 'https://startcompanies.us',
   domain: 'startcompanies.us',
   stripe: {
-    // TODO: Reemplazar con tu clave pública de Stripe para producción
-    publishableKey: 'pk_live_51...', // Clave de producción
+    // TODO: Reemplazar con tu clave pública de Stripe
+    // Puedes obtenerla de: https://dashboard.stripe.com/apikeys
+    publishableKey:
+      'pk_test_51RxouuE99FVBtLePDq9TO4CeTnbeDLwYbVtCI9WoygjwdSvtxQ4Gzgif8nty1tQPB0MhmesI77JdoCEFaIc2qD9V00vbVxj5P4', // Clave de prueba o producción
   },
 };
