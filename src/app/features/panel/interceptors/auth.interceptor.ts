@@ -1,7 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -41,40 +41,16 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           return throwError(() => error);
         }
 
-        const refreshToken = localStorage.getItem('refreshToken');
-        const isSsoLogin = localStorage.getItem('isSsoLogin') === 'true';
-        const hasSession = !!token || !!refreshToken || isSsoLogin;
+        const hasSession = !!token;
 
         // Si no hay sesión, no redirigir (evita bloquear rutas públicas como /blog)
         if (!hasSession) {
           return throwError(() => error);
         }
 
-        if (refreshToken && isSsoLogin) {
-          // Usar refresh SSO
-          return authService.refreshSso(refreshToken).pipe(
-            switchMap((response: any) => {
-              // Reintentar la petición original con el nuevo token
-              const clonedRequest = req.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${response.accessToken}`
-                }
-              });
-              return next(clonedRequest);
-            }),
-            catchError((refreshError) => {
-              // Si el refresh falla, redirigir al login
-              localStorage.clear();
-              authService.logout();
-              router.navigate(['/panel/login']);
-              return throwError(() => refreshError);
-            })
-          );
-        } else {
-          // No hay refresh token o no es SSO, cerrar sesión normalmente
-          authService.logout();
-          router.navigate(['/panel/login']);
-        }
+        // Error 401 con sesión activa: cerrar sesión y redirigir al login
+        authService.logout();
+        router.navigate(['/panel/login']);
       }
       return throwError(() => error);
     })
