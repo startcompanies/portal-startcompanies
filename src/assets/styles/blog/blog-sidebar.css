@@ -118,9 +118,14 @@ aside .sc-this-post {
 
 aside.index-card {
   align-self: flex-start;
+  position: relative;
+  margin-bottom: 50px;
+  height: -webkit-fill-available;
+}
+
+aside .sticky-cta {
   position: sticky;
   top: 140px;
-  margin-bottom: 50px;
 }
 
 aside .card.sc-this-post {
@@ -287,6 +292,7 @@ aside .open-llc-card .open-llc-avatar {
   font-size: 0.8rem;
   border: 2px solid #2c3e4d;
   margin-left: -13px;
+  object-fit: cover;
 }
 
 aside .open-llc-card .open-llc-avatar:first-child {

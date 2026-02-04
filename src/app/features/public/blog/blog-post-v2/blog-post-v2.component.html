@@ -25,132 +25,20 @@
   </div>
 </section>
 
-<!-- Hero para posts sin sidebar (landing page) -->
-<section *ngIf="!hasSections && postArticle" class="mb-5 sc-hero landing-hero-section">
-  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
-  </app-responsive-image>
-
-  <div class="container position-relative">
-    <div class="mission-card row align-items-center my-5 g-5">
-      <div class="col-lg-6 mt-0">
-        <div class="mission-image-container">
-          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title" class="mission-image" />
-        </div>
-      </div>
-      <div class="col-lg-6 mt-0">
-        <div class="mission-content">
-          <h2 class="mission-title">{{ postArticle.title }}</h2>
-          <div class="hero-meta">
-            <div class="hero-meta-item">
-              <i class="bi bi-calendar-event"></i>
-              <span>{{ formatPublishedDate(postArticle.published_at) }}</span>
-            </div>
-            <div class="hero-meta-item hero-meta-author">
-              <ng-container *ngIf="postArticle.user?.profile_image; else heroNoProfileImage">
-                <img [src]="postArticle.user?.profile_image" alt="Autor" />
-              </ng-container>
-              <ng-template #heroNoProfileImage>
-                <i class="bi bi-person-circle"></i>
-              </ng-template>
-              <span>Por {{ getAuthorDisplayName() }}</span>
-            </div>
-          </div>
-          <div class="hero-actions">
-            <a data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
-              data-cal-config='{"layout":"month_view","theme":"light"}' class="hero-cta-btn is-primary">
-              Abrir tu LLC <i class="bi bi-arrow-right"></i>
-            </a>
-            <a [langRouterLink]="['/planes']" class="hero-cta-btn is-secondary">
-              Ver planes <i class="bi bi-arrow-right"></i>
-            </a>
-          </div>
-          <div class="hero-rating">
-            <div class="hero-avatars">
-              <span class="hero-avatar">A</span>
-              <span class="hero-avatar">B</span>
-              <span class="hero-avatar">C</span>
-              <span class="hero-avatar">D</span>
-            </div>
-            <div class="hero-rating-text">
-              <span class="hero-rating-count">+300 LLC abiertas</span>
-              <div class="hero-rating-stars">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <span class="hero-rating-score">4.8/5</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons">
-      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-      </button>
-      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
-        <i class="bi bi-linkedin"></i>
-      </button>
-      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
-        <i class="bi bi-facebook"></i>
-      </button>
-      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
-        title="Compartir">
-        <i class="bi bi-share"></i>
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- Hero para posts con sidebar (mismo estilo, diferente contenido) -->
-<section *ngIf="hasSections && postArticle" class="mb-5 sc-hero landing-hero-section">
-  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
-  </app-responsive-image>
-
-  <div class="container position-relative">
-    <div class="mission-card row align-items-center my-5 g-5">
-      <div class="col-lg-6 mt-0">
-        <div class="mission-image-container">
-          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title"
-            class="mission-image img-fluid" />
-        </div>
-      </div>
-      <div class="col-lg-6 mt-0">
-        <div class="mission-content">
-          <h2 class="mission-title">{{ postArticle.title }}</h2>
-          <div class="mission-description" [innerHTML]="getSanitizedFirstSection()"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons">
-      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-      </button>
-      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
-        <i class="bi bi-linkedin"></i>
-      </button>
-      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
-        <i class="bi bi-facebook"></i>
-      </button>
-      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
-        title="Compartir">
-        <i class="bi bi-share"></i>
-      </button>
-    </div>
-  </div>
-</section>
+<app-blog-post-hero
+  *ngIf="postArticle"
+  [postArticle]="postArticle"
+  [hasSections]="hasSections"
+  [heroImages]="heroImages"
+  [firstSectionImage]="firstSectionImage"
+  [firstSectionContent]="getSanitizedFirstSection()"
+  [formattedDate]="formatPublishedDate(postArticle.published_at)"
+  [authorName]="getAuthorDisplayName()"
+  (shareWhatsApp)="shareOnWhatsApp()"
+  (shareLinkedIn)="shareOnLinkedIn()"
+  (shareFacebook)="shareOnFacebook()"
+  (shareNative)="shareNative()"
+></app-blog-post-hero>
 
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
@@ -180,52 +68,14 @@
       <app-post-content class="post-content" [html]="hasSections ? remainingContent : postArticle.content"
         [isLandingPage]="hasSections"></app-post-content>
 
-      <div class="post-author-section mt-5" *ngIf="!hasSections && postArticle">
-        <h3 class="post-author-title">Sobre el <span>autor</span></h3>
-        <div class="card author-info-card">
-          <div class="card-body author-card-body">
-            <div class="author-image">
-              <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
-                <img [src]="postArticle.user?.profile_image" class="rounded-circle" alt="Autor" width="120"
-                  height="120" />
-              </ng-container>
-              <ng-template #noProfileImage>
-                <i class="bi bi-person-circle rounded-circle" aria-hidden="true"></i>
-              </ng-template>
-            </div>
-            <div class="author-details">
-              <p class="author-label">Autor</p>
-              <h5 class="author-name">Ignacio Navarro</h5>
-              <p class="author-description">
-                Ignacio Navarro es Contador Público, graduado en 2020 de la
-                Universidad Nacional de Tucumán. Fundador de Start Companies desde
-                2023, asesora a clientes de todo el mundo en la apertura de LLC en
-                Estados Unidos y en la correcta declaración de impuestos. Su
-                experiencia combina conocimiento legal, fiscal y práctico,
-                ofreciendo un servicio integral que abarca desde la constitución de
-                la sociedad hasta la apertura bancaria e integración de plataformas
-                de ventas.
-              </p>
-              <p class="author-follow">Sigueme en:</p>
-              <div class="author-socials">
-                <a href="#" class="author-social is-linkedin" aria-label="LinkedIn">
-                  <i class="bi bi-linkedin"></i>
-                </a>
-                <a href="#" class="author-social is-youtube" aria-label="YouTube">
-                  <i class="bi bi-youtube"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <app-blog-author-card *ngIf="postArticle" class="mt-5"></app-blog-author-card>
     </main>
 
 
     <aside class="index-card sidebar d-none d-lg-block" *ngIf="!hasSections && postArticle">
-      <div class="index-card-inner">
-        <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
 
+      <div class="sticky-cta">
         <div class="card open-llc-card p-4 mb-4">
           <h3 class="title text-center">Abre tu LLC</h3>
           <h3 class="title title-hightlight text-center">Al mejor precio</h3>
@@ -239,13 +89,15 @@
             class="btn sc-btn-accent px-4 py-3 shadow-lg">
             Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
           </button>
-          <div class="open-llc-proof">
-            <div class="open-llc-avatars">
-              <span class="open-llc-avatar">A</span>
-              <span class="open-llc-avatar">B</span>
-              <span class="open-llc-avatar">C</span>
-              <span class="open-llc-avatar">D</span>
-            </div>
+        <div class="open-llc-proof">
+          <div class="open-llc-avatars">
+            <img
+              *ngFor="let url of testimonialAvatarUrls; let i = index"
+              class="open-llc-avatar"
+              [src]="url"
+              [alt]="'Testimonial ' + (i + 1)"
+            />
+          </div>
             <div class="open-llc-rating">
               <span class="open-llc-count">+300 LLC abiertas</span>
               <div class="open-llc-stars">

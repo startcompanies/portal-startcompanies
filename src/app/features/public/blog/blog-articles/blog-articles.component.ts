@@ -2,11 +2,11 @@ import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { BlogService } from '../../../../shared/services/blog.service';
 import { BlogSeoService } from '../../../../shared/services/blog-seo.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { FormsModule } from '@angular/forms';
 
@@ -31,21 +31,43 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
   pageSize = 6;
   totalPages = 1;
   currentCategoryName?: string;
+  currentSlug: string | null = null;
+  private lastSlug: string | null = null;
+  private hasLoaded = false;
+  isLoading = false;
   private routeSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.setCategories();
 
-    // Suscribirse a los cambios de parámetros de la ruta
-    this.routeSubscription = this.route.paramMap.subscribe((params) => {
+    // Suscribirse a cambios de ruta y query params (page)
+    this.routeSubscription = combineLatest([
+      this.route.paramMap,
+      this.route.queryParamMap,
+    ]).subscribe(([params, queryParams]) => {
       const slug = params.get('slug');
-      this.loadPosts(slug);
+      const pageParam = Number(queryParams.get('page')) || 1;
+      this.currentPage = pageParam > 0 ? pageParam : 1;
+      this.currentSlug = slug;
+
+      if (!this.hasLoaded || this.lastSlug !== slug) {
+        this.lastSlug = slug;
+        this.hasLoaded = true;
+        this.loadPosts(slug);
+      } else {
+        this.applyFiltersAndPagination();
+      }
+
+      if (this.browser.isBrowser) {
+        setTimeout(() => this.scrollToArticles(), 0);
+      }
     });
   }
 
@@ -57,12 +79,14 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
   }
 
   private loadPosts(slug: string | null): void {
+    this.isLoading = true;
     if (slug) {
       this.blogService.getPostsByCategorySlug(slug).subscribe(
         (posts) => {
           console.log('[BlogArticles] posts by category slug:', posts);
           this.setPosts(posts);
           this.currentCategoryName = this.getCategoryNameFromPosts(posts, slug);
+          this.isLoading = false;
 
           // Configurar SEO para la categoría
           if (
@@ -80,6 +104,7 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
         },
         (error) => {
           console.error('Error fetching posts by slug:', error);
+          this.isLoading = false;
         },
       );
     } else {
@@ -89,9 +114,11 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
           console.log('[BlogArticles] all posts:', posts);
           this.setPosts(posts);
           this.currentCategoryName = undefined;
+          this.isLoading = false;
         })
         .catch((error) => {
           console.error('Error fetching all posts:', error);
+          this.isLoading = false;
         });
     }
   }
@@ -99,6 +126,7 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
   onSearchChange(value: string): void {
     this.searchQuery = value;
     this.currentPage = 1;
+    this.syncPageToUrl(1);
     this.applyFiltersAndPagination();
   }
 
@@ -106,17 +134,29 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
     if (!this.searchQuery) return;
     this.searchQuery = '';
     this.currentPage = 1;
+    this.syncPageToUrl(1);
     this.applyFiltersAndPagination();
   }
 
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
+    this.syncPageToUrl(page);
     this.applyFiltersAndPagination();
   }
 
   getPageNumbers(): number[] {
     return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  getPaginationCommands(): any[] {
+    return this.currentSlug
+      ? ['/blog', 'category', this.currentSlug]
+      : ['/blog'];
+  }
+
+  getPageQueryParams(page: number): { [k: string]: any } {
+    return page > 1 ? { page } : {};
   }
 
   private setPosts(posts: any[]): void {
@@ -126,6 +166,29 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
       this.categories = this.derivedCategories;
     }
     this.applyFiltersAndPagination();
+  }
+
+  private syncPageToUrl(page: number): void {
+    const queryParams = this.getPageQueryParams(page);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      replaceUrl: true,
+    });
+  }
+
+  private scrollToArticles(): void {
+    const doc = this.browser.document;
+    if (!doc) return;
+    const target = doc.getElementById('blogArticles');
+    if (target) {
+      const offset = 110;
+      const rect = target.getBoundingClientRect();
+      const win = this.browser.window;
+      if (!win) return;
+      const top = rect.top + win.scrollY - offset;
+      win.scrollTo({ top, behavior: 'smooth' });
+    }
   }
 
   private applyFiltersAndPagination(): void {

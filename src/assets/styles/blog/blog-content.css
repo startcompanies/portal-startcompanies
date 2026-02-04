@@ -214,6 +214,7 @@
   font-size: 0.8rem;
   border: 2px solid #2c3e4d;
   margin-left: -10px;
+  object-fit: cover;
 }
 
 .app-post-content .mid-post-cta-avatar:first-child {

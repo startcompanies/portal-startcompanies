@@ -248,6 +248,7 @@
   font-size: 0.8rem;
   border: 2px solid #2c3e4d;
   margin-left: -10px;
+  object-fit: cover;
 }
 
 .hero-avatar:first-child {
