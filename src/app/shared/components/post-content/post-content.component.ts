@@ -1098,8 +1098,14 @@ export class PostContentComponent
       },
     );
 
+    // Reemplazar cta-card por el CTA estándar
+    const hadCtaCard = /class\s*=\s*["'][^"']*\bcta-card\b[^"']*["']/i.test(content);
+    content = this.replaceCtaCards(content);
+
     // Insertar CTA intermedio en el contenido (después del 50% y antes de un título)
-    content = this.injectMidPostCta(content);
+    if (!hadCtaCard) {
+      content = this.injectMidPostCta(content);
+    }
 
     // Usar bypassSecurityTrustHtml para preservar TODOS los atributos (style, class, etc.)
     // Esto permite que los estilos inline y clases de TinyMCE se apliquen correctamente
@@ -1145,41 +1151,7 @@ export class PostContentComponent
 
       const ctaWrapper = doc.createElement('div');
       ctaWrapper.className = 'mid-post-cta';
-      ctaWrapper.innerHTML = `
-        <div class="mid-post-cta-inner">
-          <h3 class="mid-post-cta-title">Abre tu Corp en cualquier</h3>
-          <h3 class="mid-post-cta-subtitle">estado de USA</h3>
-          <p class="mid-post-cta-text text-center">
-            Tu LLC operativa en menos de 25 días, desde $499 USD, en menos de 10 días.<br/>Agenda una consulta gratuita para resolver todas tus dudas.
-          </p>
-          <div class="mid-post-cta-actions">
-            <a data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
-              data-cal-config='{"layout":"month_view","theme":"light"}' class="mid-post-cta-btn is-primary">
-              Agendar una asesoría gratis
-            </a>
-            <a href="https://api.whatsapp.com/send/?text=%C2%BFC%C3%B3mo+abrir+una+LLC+siendo+NO+residente+en+EE.+UU.%3F+-+Start+Companies+http%3A%2F%2Flocalhost%3A4200%2Fblog%2Fcomo-abrir-una-llc-siendo-no-residente-en-ee-uu&type=custom_url&app_absent=0" target="_blank" class="mid-post-cta-btn is-secondary">Consulta por WhatsApp</a>
-          </div>
-          <div class="mid-post-cta-proof">
-            <div class="mid-post-cta-avatars">
-              <span class="mid-post-cta-avatar">A</span>
-              <span class="mid-post-cta-avatar">B</span>
-              <span class="mid-post-cta-avatar">C</span>
-              <span class="mid-post-cta-avatar">D</span>
-            </div>
-            <div class="mid-post-cta-rating">
-              <span class="mid-post-cta-count">+300 LLC abiertas</span>
-              <div class="mid-post-cta-stars">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <span class="mid-post-cta-score">4.8/5</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
+      ctaWrapper.innerHTML = this.getMidPostCtaMarkup();
 
       targetHeading.parentNode?.insertBefore(ctaWrapper, targetHeading);
       return tempDiv.innerHTML;
@@ -1187,6 +1159,71 @@ export class PostContentComponent
       console.warn('Error insertando CTA intermedio:', error);
       return content;
     }
+  }
+
+  private replaceCtaCards(content: string): string {
+    const doc = this.browser.document;
+    if (!doc || !content) return content;
+
+    try {
+      const tempDiv = doc.createElement('div');
+      tempDiv.innerHTML = content;
+
+      const ctaCards = tempDiv.querySelectorAll('.cta-card');
+      if (ctaCards.length === 0) {
+        return content;
+      }
+
+      ctaCards.forEach((card) => {
+        const wrapper = doc.createElement('div');
+        wrapper.className = 'mid-post-cta';
+        wrapper.innerHTML = this.getMidPostCtaMarkup();
+        card.replaceWith(wrapper);
+      });
+
+      return tempDiv.innerHTML;
+    } catch (error) {
+      console.warn('Error reemplazando cta-card:', error);
+      return content;
+    }
+  }
+
+  private getMidPostCtaMarkup(): string {
+    return `
+      <div class="mid-post-cta-inner">
+        <h3 class="mid-post-cta-title">Abre tu Corp en cualquier</h3>
+        <h3 class="mid-post-cta-subtitle">estado de USA</h3>
+        <p class="mid-post-cta-text text-center">
+          Tu LLC operativa en menos de 25 días, desde $499 USD, en menos de 10 días.<br/>Agenda una consulta gratuita para resolver todas tus dudas.
+        </p>
+        <div class="mid-post-cta-actions">
+          <a data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+            data-cal-config='{"layout":"month_view","theme":"light"}' class="mid-post-cta-btn is-primary">
+            Agendar una asesoría gratis
+          </a>
+          <a href="https://api.whatsapp.com/send/?text=%C2%BFC%C3%B3mo+abrir+una+LLC+siendo+NO+residente+en+EE.+UU.%3F+-+Start+Companies+http%3A%2F%2Flocalhost%3A4200%2Fblog%2Fcomo-abrir-una-llc-siendo-no-residente-en-ee-uu&type=custom_url&app_absent=0" target="_blank" class="mid-post-cta-btn is-secondary">Consulta por WhatsApp</a>
+        </div>
+        <div class="mid-post-cta-proof">
+          <div class="mid-post-cta-avatars">
+            <span class="mid-post-cta-avatar">A</span>
+            <span class="mid-post-cta-avatar">B</span>
+            <span class="mid-post-cta-avatar">C</span>
+            <span class="mid-post-cta-avatar">D</span>
+          </div>
+          <div class="mid-post-cta-rating">
+            <span class="mid-post-cta-count">+300 LLC abiertas</span>
+            <div class="mid-post-cta-stars">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <span class="mid-post-cta-score">4.8/5</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   private getTextLength(root: HTMLElement): number {

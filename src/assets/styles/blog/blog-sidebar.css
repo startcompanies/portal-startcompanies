@@ -118,9 +118,14 @@ aside .sc-this-post {
 
 aside.index-card {
   align-self: flex-start;
+  position: relative;
+  margin-bottom: 50px;
+  height: -webkit-fill-available;
+}
+
+aside .sticky-cta {
   position: sticky;
   top: 140px;
-  margin-bottom: 50px;
 }
 
 aside .card.sc-this-post {

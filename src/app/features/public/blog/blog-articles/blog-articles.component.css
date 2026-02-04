@@ -1,11 +1,13 @@
 /* Estilos para el título de "Artículos destacados" */
 .article-title {
-  font-size: 2.5rem; /* Ajusta el tamaño de la fuente */
+  font-size: 2.5rem;
+  /* Ajusta el tamaño de la fuente */
   font-weight: 700;
 }
 
 .highlighted-text {
-  color: var(--color-secundario-tecnico); /* El color turquesa de la imagen */
+  color: var(--color-secundario-tecnico);
+  /* El color turquesa de la imagen */
 }
 
 /* Estilos de la tarjeta del artículo */
@@ -13,16 +15,23 @@
   border: none;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Asegura que la imagen no sobresalga */
-  background-color: var(--color-fondo-gris); /* Fondo gris claro */
+  overflow: hidden;
+  /* Asegura que la imagen no sobresalga */
+  background-color: var(--color-fondo-gris);
+  /* Fondo gris claro */
 }
 
 /* Estilos de la imagen dentro de la tarjeta */
 .article-card img {
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
-  height: 100%; /* Asegura que la imagen llene la altura del contenedor */
-  object-fit: cover; /* Mantiene la proporción de la imagen sin distorsionarla */
+  height: 100%;
+  /* Asegura que la imagen llene la altura del contenedor */
+  object-fit: cover;
+  /* Mantiene la proporción de la imagen sin distorsionarla */
+  width: 100%;
+  /* Asegura que la imagen llene el ancho del contenedor */
+  max-height: 250px;
 }
 
 /* Estilos de la sección de categorías */
@@ -38,13 +47,17 @@
 
 .category-list li {
   display: flex;
-  justify-content: space-between; /* Alinea el texto y el número */
-  margin-bottom: 0.5rem; /* Espaciado entre elementos de la lista */
+  justify-content: space-between;
+  /* Alinea el texto y el número */
+  margin-bottom: 0.5rem;
+  /* Espaciado entre elementos de la lista */
 }
 
 .category-list li a {
-  text-decoration: none; /* Quita el subrayado de los enlaces */
-  color: var(--color-texto-oscuro); /* Color de texto oscuro */
+  text-decoration: none;
+  /* Quita el subrayado de los enlaces */
+  color: var(--color-texto-oscuro);
+  /* Color de texto oscuro */
 }
 
 /* Estilos del botón */
@@ -55,11 +68,13 @@
   padding: 0.5rem 2rem;
   border: none;
 }
+
 .horizontal-card {
   border: 1px solid var(--color-fondo-claro);
   border-radius: 0.75rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  overflow: hidden; /* Asegura que la imagen redondeada no se salga */
+  overflow: hidden;
+  /* Asegura que la imagen redondeada no se salga */
   background-color: var(--color-fondo-gris);
 }
 
@@ -91,24 +106,31 @@
 }
 
 .horizontal-card .card-text {
-  flex-grow: 1; /* Permite que el excerpt ocupe el espacio vertical restante */
+  flex-grow: 1;
+  /* Permite que el excerpt ocupe el espacio vertical restante */
 
   /* Limita el texto a un máximo de 2 líneas */
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* El número de líneas que quieres mostrar */
-  line-clamp: 2; /* Propiedad estándar para compatibilidad */
+  -webkit-line-clamp: 2;
+  /* El número de líneas que quieres mostrar */
+  line-clamp: 2;
+  /* Propiedad estándar para compatibilidad */
   -webkit-box-orient: vertical;
-  overflow: hidden; /* Oculta el texto que sobrepasa las 2 líneas */
-  text-overflow: ellipsis; /* Añade ... al final del texto truncado */
+  overflow: hidden;
+  /* Oculta el texto que sobrepasa las 2 líneas */
+  text-overflow: ellipsis;
+  /* Añade ... al final del texto truncado */
 }
 
 .horizontal-card .btn-sm {
   font-size: 0.75rem;
   padding: 0.25rem 0.75rem;
 }
+
 .categories-column {
   display: flex;
 }
+
 .article-search .search-field {
   position: relative;
   display: flex;
@@ -119,40 +141,49 @@
   padding: 0.4rem 0.9rem;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
+
 .article-search .search-field i {
   color: var(--color-texto-oscuro);
   opacity: 0.6;
   margin-right: 0.5rem;
 }
+
 .article-search .form-control {
   border: none;
   background: transparent;
   box-shadow: none;
   padding: 0.35rem 0.25rem;
 }
+
 .article-search .form-control:focus {
   outline: none;
   box-shadow: none;
 }
+
 .empty-results {
   padding: 1rem;
   border-radius: 0.75rem;
   background-color: var(--color-fondo-gris);
   color: var(--color-texto-oscuro);
 }
+
 .blog-pagination .page-link {
   color: var(--color-texto-oscuro);
 }
+
 .blog-pagination .page-item.active .page-link {
   background-color: var(--color-secundario-tecnico);
   border-color: var(--color-secundario-tecnico);
   color: var(--color-fondo-claro);
 }
+
 .blog-pagination .page-item.disabled .page-link {
   opacity: 0.5;
 }
+
 @media (max-width: 780px) {
   .categories-column {
-    display: none !important; /* Oculta la columna de categorías en pantallas pequeñas */
+    display: none !important;
+    /* Oculta la columna de categorías en pantallas pequeñas */
   }
 }
