@@ -21,6 +21,7 @@ import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { BlogAuthorCardComponent } from '../../../../shared/components/blog-author-card/blog-author-card.component';
 import { BlogPostHeroComponent } from '../../../../shared/components/blog-post-hero/blog-post-hero.component';
+import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonial-avatars';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -54,6 +55,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   tocOpen = true;
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
+  testimonialAvatarUrls = TESTIMONIAL_AVATAR_URLS;
 
   // Getter para acceso desde el template
   get isBrowser(): boolean {

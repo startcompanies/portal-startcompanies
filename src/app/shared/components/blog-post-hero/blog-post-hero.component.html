@@ -42,10 +42,12 @@
           </div>
           <div class="hero-rating">
             <div class="hero-avatars">
-              <span class="hero-avatar">A</span>
-              <span class="hero-avatar">B</span>
-              <span class="hero-avatar">C</span>
-              <span class="hero-avatar">D</span>
+              <img
+                *ngFor="let url of avatarUrls; let i = index"
+                class="hero-avatar"
+                [src]="url"
+                [alt]="'Testimonial ' + (i + 1)"
+              />
             </div>
             <div class="hero-rating-text">
               <span class="hero-rating-count">+300 LLC abiertas</span>

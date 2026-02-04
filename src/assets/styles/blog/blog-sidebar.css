@@ -292,6 +292,7 @@ aside .open-llc-card .open-llc-avatar {
   font-size: 0.8rem;
   border: 2px solid #2c3e4d;
   margin-left: -13px;
+  object-fit: cover;
 }
 
 aside .open-llc-card .open-llc-avatar:first-child {

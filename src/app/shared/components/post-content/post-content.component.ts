@@ -13,6 +13,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { BrowserService } from '../../services/browser.service';
+import { TESTIMONIAL_AVATAR_URLS } from '../../constants/testimonial-avatars';
 
 declare global {
   interface Window {
@@ -37,6 +38,7 @@ export class PostContentComponent
   @ViewChild('contentContainer', { static: false })
   contentContainer?: ElementRef;
   private calendlyInitialized = new Set<string>();
+  private testimonialAvatarUrls = TESTIMONIAL_AVATAR_URLS;
 
   baseUrl = environment.baseUrl;
 
@@ -1189,6 +1191,13 @@ export class PostContentComponent
   }
 
   private getMidPostCtaMarkup(): string {
+    const avatarsMarkup = this.testimonialAvatarUrls
+      .map(
+        (url, index) =>
+          `<img class="mid-post-cta-avatar" src="${url}" alt="Testimonial ${index + 1}">`,
+      )
+      .join('');
+
     return `
       <div class="mid-post-cta-inner">
         <h3 class="mid-post-cta-title">Abre tu Corp en cualquier</h3>
@@ -1205,10 +1214,7 @@ export class PostContentComponent
         </div>
         <div class="mid-post-cta-proof">
           <div class="mid-post-cta-avatars">
-            <span class="mid-post-cta-avatar">A</span>
-            <span class="mid-post-cta-avatar">B</span>
-            <span class="mid-post-cta-avatar">C</span>
-            <span class="mid-post-cta-avatar">D</span>
+            ${avatarsMarkup}
           </div>
           <div class="mid-post-cta-rating">
             <span class="mid-post-cta-count">+300 LLC abiertas</span>
