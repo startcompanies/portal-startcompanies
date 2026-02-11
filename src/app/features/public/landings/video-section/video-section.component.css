@@ -30,7 +30,7 @@
 }
 
 .title-highlight {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   margin-left: 0.5rem;
 }
 

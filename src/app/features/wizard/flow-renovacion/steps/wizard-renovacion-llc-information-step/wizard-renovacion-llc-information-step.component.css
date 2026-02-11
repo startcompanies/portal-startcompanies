@@ -2,8 +2,8 @@
 
 /* Botones de navegación entre secciones */
 .wizard-renovacion-llc-information-step .btn-primary {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   color: #ffffff;
   min-width: 120px;
 }
@@ -15,21 +15,23 @@
 }
 
 .wizard-renovacion-llc-information-step .btn-primary:focus {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   color: #ffffff;
   box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
 }
 
 .wizard-renovacion-llc-information-step .btn-primary:disabled {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   opacity: 0.6;
   color: #ffffff;
-}.wizard-renovacion-llc-information-step .btn-outline-secondary {
+}
+
+.wizard-renovacion-llc-information-step .btn-outline-secondary {
   background-color: #ffffff;
-  border-color: #02CAE3;
-  color: #02CAE3;
+  border-color: #006afe;
+  color: #006afe;
   min-width: 120px;
 }
 
@@ -41,14 +43,14 @@
 
 .wizard-renovacion-llc-information-step .btn-outline-secondary:focus {
   background-color: #ffffff;
-  border-color: #02CAE3;
-  color: #02CAE3;
+  border-color: #006afe;
+  color: #006afe;
   box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
 }
 
 .wizard-renovacion-llc-information-step .btn-outline-secondary:disabled {
   background-color: #ffffff;
-  border-color: #02CAE3;
-  color: #02CAE3;
+  border-color: #006afe;
+  color: #006afe;
   opacity: 0.6;
 }

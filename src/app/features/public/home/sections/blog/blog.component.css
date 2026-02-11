@@ -20,7 +20,7 @@
 }
 
 .blog-title .text-primary-blue {
-    color: #02cae3;
+    color: #006afe;
 }
 
 /* =========================
@@ -93,7 +93,7 @@
 .blog-card-title {
     font-size: 18px;
     font-weight: 700;
-    color: #293b49;
+    color: var(--color-oscuro-tecnico);
     line-height: 1.3;
     margin-bottom: 8px;
 }
@@ -137,8 +137,8 @@
 }
 
 .blog-carousel-indicators button.active {
-    background-color: #02cae3;
-    border-color: #02cae3;
+    background-color: #006afe;
+    border-color: #006afe;
     transform: scale(1.2);
 }
 
@@ -160,7 +160,7 @@
 .blog-carousel-control {
     width: 60px;
     height: 60px;
-    background-color: #02cae3;
+    background-color: #006afe;
     border: none;
     border-radius: 50%;
     opacity: 0.9;
@@ -171,7 +171,7 @@
 }
 
 .blog-carousel-control:hover {
-    background-color: #00b8d9;
+    background-color: var(--color-secundario-tecnico);
     opacity: 1;
     transform: scale(1.1);
 }
@@ -187,11 +187,11 @@
     .blog-carousel-container {
         max-width: 800px;
     }
-    
+
     .blog-carousel-indicators {
         bottom: -40px;
     }
-    
+
     .blog-carousel-indicators button {
         width: 10px;
         height: 10px;

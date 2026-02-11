@@ -62,7 +62,7 @@
    SECCIONES Y CONTENEDORES
    ============================================================================ */
 .app-post-content section {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
 }
 
 .app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
@@ -308,8 +308,8 @@ section[style*="background-image"] [class*="col-"]:has(img) {
   padding: 2rem 1.5rem;
 }
 
-.app-post-content section[style*="background-image"] [class*="col-"] img,
-section[style*="background-image"] [class*="col-"] img {
+.app-post-content section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar) {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -345,8 +345,8 @@ section[style*="background-image"] h6 {
   margin-bottom: 1rem;
 }
 
-.app-post-content section[style*="background-image"] img,
-section[style*="background-image"] img {
+.app-post-content section[style*="background-image"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] img:not(.mid-post-cta-avatar) {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -394,7 +394,7 @@ section[style*="background-image"] a {
 
 .app-post-content .table-custom-container .table-custom thead tr,
 .app-post-content .table-responsive.table-custom-container .table-custom thead tr {
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   color: #FFFFFF;
 }
 
@@ -407,7 +407,7 @@ section[style*="background-image"] a {
   border-top: none;
   vertical-align: middle;
   font-size: 1rem;
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   color: #FFFFFF;
 }
 
@@ -416,7 +416,7 @@ section[style*="background-image"] a {
   border-left: none;
   text-align: left;
   padding-left: 1.5rem;
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
 }
 
 .app-post-content .table-custom-container .table-custom thead th:last-child,
@@ -472,7 +472,7 @@ section[style*="background-image"] a {
 }
 
 .sobre-autores-title span {
-  color: #02CAE3;
+  color: #006afe;
 }
 
 /* ============================================================================
@@ -494,7 +494,7 @@ section[style*="background-image"] a {
    BOTONES ESPECIALES
    ============================================================================ */
 a.btn-descarga-template {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   border: none;
   font-size: 1rem;
   padding: 0.45rem 1.5rem;

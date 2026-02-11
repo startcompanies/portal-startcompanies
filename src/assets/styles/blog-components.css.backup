@@ -194,7 +194,7 @@ div.app-post-content a:active {
   position: absolute;
   left: 0;
   top: 0.15rem;
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -204,7 +204,7 @@ div.app-post-content a:active {
   display: block;
   width: fit-content;
   margin: 0.5rem auto 0;
-  background-color: #00bcd4 !important;
+  background-color: var(--color-secundario-tecnico) !important;
   color: #ffffff !important;
   text-decoration: none !important;
   font-weight: 600;
@@ -442,7 +442,7 @@ section[style*="background-image"] a {
 
 .app-post-content .abre-corp-highlight,
 .abre-corp-highlight {
-  color: #00bcd4 !important;
+  color: var(--color-secundario-tecnico) !important;
 }
 
 .app-post-content .abre-corp-list,
@@ -465,7 +465,7 @@ section[style*="background-image"] a {
 
 .app-post-content .abre-corp-btn,
 .abre-corp-btn {
-  background-color: #00bcd4 !important;
+  background-color: var(--color-secundario-tecnico) !important;
   color: #ffffff !important;
   border: none !important;
   font-size: 1rem !important;
@@ -597,7 +597,7 @@ section[style*="background-image"] a {
 .app-post-content .promo-summary::before,
 .promo-summary::before {
   content: "▸";
-  color: #02CAE3;
+  color: #006afe;
   font-size: 1.05rem;
   line-height: 1;
   margin-right: .5rem;
@@ -713,7 +713,7 @@ section[style*="background-image"] a {
 
 .app-post-content .ayuda-profesional-highlight,
 .ayuda-profesional-highlight {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
 }
 
 .app-post-content .ayuda-profesional-list,
@@ -726,7 +726,7 @@ section[style*="background-image"] a {
 
 .app-post-content .ayuda-profesional-bullet,
 .ayuda-profesional-bullet {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.2em;
   line-height: 1;
   margin-top: 0.2em;
@@ -734,7 +734,7 @@ section[style*="background-image"] a {
 
 .app-post-content .ayuda-profesional-btn,
 .ayuda-profesional-btn {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
   font-size: 1rem;
@@ -824,7 +824,7 @@ section[style*="background-image"] a {
 
 .app-post-content .costos-florida-card,
 .costos-florida-card {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   font-family: Arial, sans-serif;
   max-width: 100%;
   border-radius: 2rem !important;
@@ -1029,7 +1029,7 @@ section .preguntas-frecuentes-title,
 .app-post-content .preguntas-frecuentes-icon,
 .preguntas-frecuentes-icon,
 .faq-card-container .preguntas-frecuentes-icon {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.5rem;
   flex-shrink: 0;
   margin-left: 1rem;
@@ -1151,7 +1151,7 @@ section .custom-accordion-content {
 
 .app-post-content .veredicto-main-title,
 .veredicto-main-title {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.5rem;
   font-weight: 800;
 }
@@ -1165,7 +1165,7 @@ section .custom-accordion-content {
 
 .app-post-content .veredicto-section-title,
 .veredicto-section-title {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   font-weight: 800;
 }
@@ -1180,7 +1180,7 @@ section .custom-accordion-content {
 
 .app-post-content .veredicto-bullet,
 .veredicto-bullet {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.2em;
   line-height: 1;
   margin-top: 0.2em;
@@ -1198,7 +1198,7 @@ section .custom-accordion-content {
 .veredicto-logo-circle {
   width: 60px;
   height: 60px;
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   border-radius: 50%;
   color: #ffffff;
   font-size: 2rem;
@@ -1225,7 +1225,7 @@ section .custom-accordion-content {
 
 .app-post-content .veredicto-star-filled,
 .veredicto-star-filled {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: clamp(1.25rem, 3vw, 1.5rem);
 }
 
@@ -1244,7 +1244,7 @@ section .custom-accordion-content {
 
 .app-post-content .veredicto-btn,
 .veredicto-btn {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
   font-size: clamp(0.95rem, 2vw, 1rem);
@@ -1362,7 +1362,7 @@ section .custom-accordion-content {
 
 .app-post-content .preguntas-frecuentes-title span,
 .preguntas-frecuentes-title span {
-  color: #02CAE3 !important;
+  color: #006afe !important;
 }
 
 /* ============================================================================
@@ -1390,7 +1390,7 @@ div.app-post-content h3.sobre-autores-title,
 div.app-post-content h2.sobre-autores-title span,
 div.app-post-content h3.sobre-autores-title span,
 .sobre-autores-title span {
-  color: #02CAE3 !important;
+  color: #006afe !important;
 }
 
 /* Estilos para h2/h3 que están antes de secciones de autores (usando :has cuando esté disponible) */
@@ -1414,7 +1414,7 @@ div.app-post-content h3.sobre-autores-title span,
 .app-post-content h2:has(+ .author-info-card) span,
 .app-post-content h3:has(+ .card-autor) span,
 .app-post-content h3:has(+ .author-info-card) span {
-  color: #02CAE3 !important;
+  color: #006afe !important;
 }
 
 /* Estilos para títulos que preceden a secciones de autores (selector alternativo más compatible) */
@@ -1450,12 +1450,12 @@ div.app-post-content h3.sobre-autores-title span,
 .app-post-content section:has(.author-info-card) h2 span,
 .app-post-content section:has(.card-autor) h3 span,
 .app-post-content section:has(.author-info-card) h3 span {
-  color: #02CAE3 !important;
+  color: #006afe !important;
 }
 
 .app-post-content a.btn-descarga-template,
 a.btn-descarga-template {
-  background-color: #00bcd4 !important;
+  background-color: var(--color-secundario-tecnico) !important;
   border: none !important;
   font-size: 1rem !important;
   padding: 0.45rem 1.5rem !important;
@@ -1544,7 +1544,7 @@ a.btn-descarga-template {
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.5rem !important;
-  background-color: #02CAE3 !important;
+  background-color: #006afe !important;
   color: #ffffff !important;
   border: none !important;
   padding: 0.7rem 1.5rem !important;
@@ -1962,7 +1962,7 @@ button.sc-btn-accent:hover,
 .author-info-card .card-body p.text-center:first-child,
 .author-info-card .autor-label {
   font-size: 0.9rem !important;
-  color: #02CAE3 !important;
+  color: #006afe !important;
   margin-bottom: 0.5rem !important;
   margin-top: 0 !important;
   font-weight: 600 !important;
@@ -2053,7 +2053,7 @@ button.sc-btn-accent:hover,
 .author-info-card .btn-linkedin-autor,
 .author-info-card a[class*="btn-linkedin"],
 .author-info-card button[class*="btn-linkedin"] {
-  background-color: #02CAE3 !important;
+  background-color: #006afe !important;
   color: #ffffff !important;
   border: none !important;
   padding: 0.55rem 1.05rem !important;

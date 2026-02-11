@@ -97,7 +97,7 @@ aside .sc-this-post {
 .toc-inline .sc-post-toc .list-group-item {
   border: none;
   background: transparent;
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   padding: 0;
   font-size: .8rem;
   font-weight: 400;
@@ -111,7 +111,7 @@ aside .sc-this-post {
 
 .toc-inline .sc-post-toc .list-group-item::before {
   content: "•";
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   margin-right: 8px;
   font-size: 1rem;
 }
@@ -208,7 +208,7 @@ aside .sc-post-toc {
 aside .sc-post-toc .list-group-item {
   border: none;
   background: transparent;
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   padding: 0;
   font-size: .8rem;
   font-weight: 400;
@@ -222,7 +222,7 @@ aside .sc-post-toc .list-group-item:hover {
 
 aside .sc-post-toc .list-group-item::before {
   content: "•";
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   margin-right: 8px;
   font-size: 1rem;
 }
@@ -370,7 +370,7 @@ aside .sc-btn-accent:hover {
 }
 
 aside .btn-linkedin-profile {
-  background: #293b49;
+  background: var(--color-oscuro-tecnico);
   color: var(--color-fondo-claro);
   border: none;
   border-radius: 2.5rem;
@@ -403,7 +403,7 @@ aside .author-info-card .card-body>p:first-child,
 aside .author-info-card .card-body p.text-center:first-child,
 aside .author-info-card .autor-label {
   font-size: 0.9rem;
-  color: #02CAE3;
+  color: #006afe;
   margin-bottom: 0.5rem;
   margin-top: 0;
   font-weight: 600;
@@ -473,7 +473,7 @@ aside .author-info-card .btn-linkedin-profile,
 aside .author-info-card .btn-linkedin-autor,
 aside .author-info-card a[class*="btn-linkedin"],
 aside .author-info-card button[class*="btn-linkedin"] {
-  background-color: #02CAE3;
+  background-color: #006afe;
   color: #ffffff;
   border: none;
   padding: 0.55rem 1.05rem;

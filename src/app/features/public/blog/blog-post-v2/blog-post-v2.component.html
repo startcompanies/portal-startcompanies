@@ -14,7 +14,7 @@
       </div>
       <div class="col-lg-6 mt-0">
         <div class="mission-content">
-          <h2 class="mission-title">Artículo no disponible</h2>
+          <h1 class="mission-title">Artículo no disponible</h1>
           <div class="mission-description">
             <p class="mb-0">Lo sentimos, este artículo no está disponible o aún se está cargando. Por favor, intenta más
               tarde o explora otros artículos de nuestro blog.</p>
@@ -25,20 +25,11 @@
   </div>
 </section>
 
-<app-blog-post-hero
-  *ngIf="postArticle"
-  [postArticle]="postArticle"
-  [hasSections]="hasSections"
-  [heroImages]="heroImages"
-  [firstSectionImage]="firstSectionImage"
-  [firstSectionContent]="getSanitizedFirstSection()"
-  [formattedDate]="formatPublishedDate(postArticle.published_at)"
-  [authorName]="getAuthorDisplayName()"
-  (shareWhatsApp)="shareOnWhatsApp()"
-  (shareLinkedIn)="shareOnLinkedIn()"
-  (shareFacebook)="shareOnFacebook()"
-  (shareNative)="shareNative()"
-></app-blog-post-hero>
+<app-blog-post-hero *ngIf="postArticle" [postArticle]="postArticle" [hasSections]="hasSections"
+  [heroImages]="heroImages" [firstSectionImage]="firstSectionImage" [firstSectionContent]="getSanitizedFirstSection()"
+  [formattedDate]="formatPublishedDate(postArticle.published_at)" [authorName]="getAuthorDisplayName()"
+  (shareWhatsApp)="shareOnWhatsApp()" (shareLinkedIn)="shareOnLinkedIn()" (shareFacebook)="shareOnFacebook()"
+  (shareNative)="shareNative()"></app-blog-post-hero>
 
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
@@ -89,15 +80,11 @@
             class="btn sc-btn-accent px-4 py-3 shadow-lg">
             Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
           </button>
-        <div class="open-llc-proof">
-          <div class="open-llc-avatars">
-            <img
-              *ngFor="let url of testimonialAvatarUrls; let i = index"
-              class="open-llc-avatar"
-              [src]="url"
-              [alt]="'Testimonial ' + (i + 1)"
-            />
-          </div>
+          <div class="open-llc-proof">
+            <div class="open-llc-avatars">
+              <img *ngFor="let url of testimonialAvatarUrls; let i = index" class="open-llc-avatar" [src]="url"
+                [alt]="'Testimonial ' + (i + 1)" />
+            </div>
             <div class="open-llc-rating">
               <span class="open-llc-count">+300 LLC abiertas</span>
               <div class="open-llc-stars">
