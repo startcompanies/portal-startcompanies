@@ -41,7 +41,7 @@
 
 /* Tabs active - Desktop */
 .sc-tabs-section .nav-pills .nav-link.active {
-    color: #00B8D9;
+    color: var(--color-secundario-tecnico);
     background-color: transparent;
     position: relative;
 }
@@ -55,13 +55,13 @@
     transform: translateX(-50%);
     width: 80%;
     height: 4px;
-    background-color: #00B8D9;
+    background-color: var(--color-secundario-tecnico);
     border-radius: 2px;
 }
 
 /* Hover styles on tabs - Desktop */
 .sc-tabs-section .nav-pills .nav-link:hover:not(.active) {
-    color: #00B8D9;
+    color: var(--color-secundario-tecnico);
     text-decoration: none;
 }
 
@@ -136,7 +136,7 @@
 
     .sc-tab-item.active {
         background-color: #ffffff;
-        color: #00B8D9;
+        color: var(--color-secundario-tecnico);
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
     }
 
@@ -239,7 +239,7 @@
 
 /* Button Primary */
 .sc-btn-primary {
-    background-color: #00B8D9;
+    background-color: var(--color-secundario-tecnico);
     color: #F3F6FA;
     border: none;
     border-radius: 2.5rem;
@@ -263,23 +263,30 @@
     width: 100%;
     height: auto;
     display: block;
-    border-radius: 70px !important; /* Corner radius exacto de Figma */
-    overflow: hidden !important; /* Asegurar que el redondeo se vea */
+    border-radius: 70px !important;
+    /* Corner radius exacto de Figma */
+    overflow: hidden !important;
+    /* Asegurar que el redondeo se vea */
 }
 
 .sc-tab-pane-content app-responsive-image img {
     width: 100%;
     height: auto;
     object-fit: cover;
-    border-radius: 70px !important; /* Corner radius exacto de Figma */
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important; /* Sombra más visible */
-    transition: all 0.3s ease !important; /* Transición suave */
+    border-radius: 70px !important;
+    /* Corner radius exacto de Figma */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    /* Sombra más visible */
+    transition: all 0.3s ease !important;
+    /* Transición suave */
 }
 
 /* Hover effect para las imágenes */
 .sc-tab-pane-content app-responsive-image:hover img {
-    transform: scale(1.02) !important; /* Ligero zoom en hover */
-    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2) !important; /* Sombra más intensa en hover */
+    transform: scale(1.02) !important;
+    /* Ligero zoom en hover */
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2) !important;
+    /* Sombra más intensa en hover */
 }
 
 /* Dimensiones específicas para diferentes breakpoints */
@@ -287,7 +294,8 @@
     .sc-tab-pane-content app-responsive-image img {
         max-width: 570px;
         max-height: 550px;
-        border-radius: 70px !important; /* Corner radius exacto de Figma */
+        border-radius: 70px !important;
+        /* Corner radius exacto de Figma */
     }
 }
 
@@ -295,15 +303,19 @@
     .sc-tab-pane-content app-responsive-image img {
         max-width: 680px;
         max-height: 660px;
-        border-radius: 70px !important; /* Corner radius exacto de Figma */
+        border-radius: 70px !important;
+        /* Corner radius exacto de Figma */
     }
 }
 
 /* Asegurar redondeo en mobile también */
 @media (max-width: 991px) {
+
     .sc-tab-pane-content app-responsive-image,
     .sc-tab-pane-content app-responsive-image img {
-        border-radius: 50px !important; /* Redondeo proporcional para mobile */
-        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important; /* Sombra más sutil en mobile */
+        border-radius: 50px !important;
+        /* Redondeo proporcional para mobile */
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+        /* Sombra más sutil en mobile */
     }
 }

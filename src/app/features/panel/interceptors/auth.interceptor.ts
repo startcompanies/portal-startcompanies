@@ -1,7 +1,7 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, switchMap, throwError } from 'rxjs';
+import { catchError, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
@@ -41,7 +41,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           return throwError(() => error);
         }
 
-        // Cerrar sesión normalmente
+        const hasSession = !!token;
+
+        // Si no hay sesión, no redirigir (evita bloquear rutas públicas como /blog)
+        if (!hasSession) {
+          return throwError(() => error);
+        }
+
+        // Error 401 con sesión activa: cerrar sesión y redirigir al login
         authService.logout();
         router.navigate(['/panel/login']);
       }
@@ -49,7 +56,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     })
   );
 };
-
 
 
 

@@ -11,6 +11,18 @@
     <button type="button" class="btn-close" (click)="loadError = null" aria-label="Close"></button>
   </div>
 
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-2"></i>
+    {{ successMessage }}
+    <button type="button" class="btn-close" (click)="successMessage = null" aria-label="Close"></button>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-circle me-2"></i>
+    {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = null" aria-label="Close"></button>
+  </div>
+
   <div *ngIf="!isLoading && !loadError && request">
     <!-- Header -->
     <div class="request-header">
@@ -22,8 +34,8 @@
         <div class="text-end d-flex gap-2 align-items-center">
           <!-- Botones de aprobar/rechazar solo para admin cuando está en solicitud-recibida -->
           <div *ngIf="isAdmin && isSolicitudRecibida()" class="d-flex gap-2 me-2">
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="btn btn-success btn-sm"
               (click)="approveRequest()"
               title="Aprobar solicitud"
@@ -31,8 +43,8 @@
               <i class="bi bi-check-circle me-1"></i>
               Aprobar
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               class="btn btn-danger btn-sm"
               (click)="rejectRequest()"
               title="Rechazar solicitud"
@@ -41,8 +53,8 @@
               Rechazar
             </button>
           </div>
-          <button 
-            class="btn btn-outline-secondary btn-sm" 
+          <button
+            class="btn btn-outline-secondary btn-sm"
             (click)="openAllDataModal()"
             title="Ver todos los datos de la solicitud"
           >
@@ -54,7 +66,7 @@
           </span>
         </div>
       </div>
-      
+
       <div class="request-meta">
         <div class="meta-item">
           <i class="bi bi-calendar3 me-2"></i>
@@ -99,8 +111,8 @@
             <!-- Ocultar asignación para etapas del blueprint (solo mostrar para etapas genéricas) -->
             <div *ngIf="isAdmin && step.status !== 'pending' && step.name !== 'Solicitud Recibida' && !isBlueprintStage(step.name)" class="step-assign">
               <label class="form-label-sm">Asignar a:</label>
-              <select 
-                class="form-select form-select-sm" 
+              <select
+                class="form-select form-select-sm"
                 [value]="step.completedBy || ''"
                 (change)="assignStepResponsible(step, $any($event.target).value)"
               >
@@ -120,12 +132,12 @@
       <div class="section-header">
         <h3 class="section-title">Documentos Entregados</h3>
       </div>
-      
-      <!-- Mostrar iframe con WorkDrive embed si está disponible -->
-      <div *ngIf="request.workDriveUrlExternal && getSafeWorkDriveUrl()" class="workdrive-container">
+
+      <!-- Mostrar iframe con WorkDrive embed solo si está disponible y el proceso está avanzado (no en solicitud-recibida) -->
+      <div *ngIf="canShowWorkDriveIframe() && getSafeWorkDriveUrl()" class="workdrive-container">
         <div class="workdrive-iframe-wrapper">
-          <iframe 
-            [src]="getSafeWorkDriveUrl()" 
+          <iframe
+            [src]="getSafeWorkDriveUrl()"
             class="workdrive-iframe"
             frameborder="0"
             allowfullscreen
@@ -136,16 +148,16 @@
           ></iframe>
         </div>
       </div>
-      
-      <!-- Fallback: enlace si no se puede generar la URL de embed -->
-      <div *ngIf="request.workDriveUrlExternal && !getSafeWorkDriveUrl()" class="workdrive-container">
+
+      <!-- Fallback: enlace si no se puede generar la URL de embed y el proceso está avanzado -->
+      <div *ngIf="canShowWorkDriveIframe() && !getSafeWorkDriveUrl()" class="workdrive-container">
         <div class="workdrive-link-container">
           <div class="workdrive-info">
             <i class="bi bi-folder-fill me-2"></i>
             <span>Los documentos están disponibles en Zoho WorkDrive</span>
           </div>
-          <a 
-            [href]="request.workDriveUrlExternal" 
+          <a
+            [href]="request.workDriveUrlExternal"
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn-primary btn-lg"
@@ -156,8 +168,8 @@
         </div>
       </div>
 
-      <!-- Mensaje cuando no hay WorkDrive URL -->
-      <div *ngIf="!request.workDriveUrlExternal" class="alert alert-info">
+      <!-- Mensaje cuando no hay WorkDrive URL o cuando está en solicitud-recibida -->
+      <div *ngIf="!canShowWorkDriveIframe()" class="alert alert-info">
         <i class="bi bi-info-circle me-2"></i>
         Los documentos estarán disponibles cuando el proceso esté completado.
       </div>
@@ -215,8 +227,8 @@
 
           <div *ngIf="isUploading" class="mb-3">
             <div class="progress">
-              <div 
-                class="progress-bar progress-bar-striped progress-bar-animated" 
+              <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
                 role="progressbar"
                 [style.width.%]="uploadProgress"
               >
@@ -229,9 +241,9 @@
           <button type="button" class="btn btn-secondary" (click)="closeUploadModal()" [disabled]="isUploading">
             Cancelar
           </button>
-          <button 
-            type="button" 
-            class="btn btn-primary" 
+          <button
+            type="button"
+            class="btn btn-primary"
             (click)="uploadDocument()"
             [disabled]="!selectedFile || isUploading"
           >
@@ -377,9 +389,9 @@
                     <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.website">
                       <div class="detail-item">
                         <label class="detail-label">Website:</label>
-                        <a 
-                          [href]="fullRequestData.aperturaLlcRequest.website" 
-                          target="_blank" 
+                        <a
+                          [href]="fullRequestData.aperturaLlcRequest.website"
+                          target="_blank"
                           class="detail-value text-primary text-decoration-underline"
                           *ngIf="fullRequestData.aperturaLlcRequest.website && fullRequestData.aperturaLlcRequest.website.startsWith('http')"
                         >
@@ -394,9 +406,9 @@
                     <div class="col-md-6" *ngIf="fullRequestData.aperturaLlcRequest.linkedin">
                       <div class="detail-item">
                         <label class="detail-label">LinkedIn:</label>
-                        <a 
-                          [href]="fullRequestData.aperturaLlcRequest.linkedin" 
-                          target="_blank" 
+                        <a
+                          [href]="fullRequestData.aperturaLlcRequest.linkedin"
+                          target="_blank"
                           class="detail-value text-primary text-decoration-underline"
                           *ngIf="fullRequestData.aperturaLlcRequest.linkedin && fullRequestData.aperturaLlcRequest.linkedin.startsWith('http')"
                         >
@@ -773,13 +785,13 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Mensaje si no hay miembros -->
             <div class="alert alert-info mb-4" *ngIf="(fullRequestData.type === 'apertura-llc' || fullRequestData.type === 'renovacion-llc' || fullRequestData.type === 'cuenta-bancaria') && (!fullRequestData.members || fullRequestData.members.length === 0)">
               <i class="bi bi-info-circle me-2"></i>
               No se encontraron miembros asociados a esta solicitud.
             </div>
-            
+
             <!-- Datos de Renovación LLC -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'renovacion-llc' && fullRequestData.renovacionLlcRequest">
               <div class="card-header card-header-soft-warning">
@@ -1212,7 +1224,7 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Datos de Cuenta Bancaria -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.type === 'cuenta-bancaria' && fullRequestData.cuentaBancariaRequest">
               <div class="card-header card-header-soft-success">
@@ -1665,9 +1677,9 @@
                   <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId">
                     <div class="detail-item">
                       <label class="detail-label">Ver Registro en Zoho:</label>
-                      <a 
-                        [href]="'https://crm.zoho.com/crm/org881745849/tab/Accounts/' + fullRequestData.zohoAccountId" 
-                        target="_blank" 
+                      <a
+                        [href]="'https://crm.zoho.com/crm/org881745849/tab/Accounts/' + fullRequestData.zohoAccountId"
+                        target="_blank"
                         class="detail-value text-primary text-decoration-underline d-inline-flex align-items-center"
                         title="Ver registro en Zoho CRM"
                       >

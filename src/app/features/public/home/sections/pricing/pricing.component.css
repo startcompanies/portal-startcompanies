@@ -67,15 +67,22 @@
 /* Pricing Cards */
 .pricing-cards {
   display: flex !important;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 24px;
   align-items: stretch;
   justify-content: center;
 }
 
 .pricing-cards .col-12.col-lg-4 {
-  flex: 0 0 calc(33.333% - 16px);
-  max-width: calc(33.333% - 16px);
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 992px) {
+  .pricing-cards .col-12.col-lg-4 {
+    flex: 0 0 calc(33.333% - 16px);
+    max-width: calc(33.333% - 16px);
+  }
 }
 
 .pricing-card {
@@ -121,7 +128,7 @@
 }
 
 .pricing-card:first-child .card-price {
-  color: #02cae3;
+  color: #006afe;
 }
 
 .recommended-badge {
@@ -145,7 +152,7 @@
 .card-price {
   font-size: 32px;
   font-weight: 700;
-  color: #02cae3;
+  color: #006afe;
   margin-bottom: 16px;
 }
 
@@ -196,7 +203,7 @@
 
 /* Unificar tono CTA con paleta del sitio */
 .btn-primary {
-  background-color: #01C9E2 !important;
+  background-color: var(--color-secundario-tecnico) !important;
   color: #ffffff;
   border: none;
 }
@@ -273,8 +280,8 @@
 }
 
 .pricing-carousel-indicators button.active {
-  background-color: #02cae3;
-  border-color: #02cae3;
+  background-color: #006afe;
+  border-color: #006afe;
   transform: scale(1.2);
 }
 
@@ -315,6 +322,7 @@
   .card-features {
     font-size: 13px;
   }
+
   .btn-primary,
   .btn-secondary {
     font-size: 0.6rem;
@@ -336,22 +344,21 @@
     min-height: 790px;
   }
 
-  .pricing-cards {
-    display: none !important;
-  }
-
   .pricing-carousel-indicators button {
     width: 8px;
     height: 8px;
     margin: 0 4px;
   }
 }
+
 @media (max-width: 350px) {
+
   .btn-primary,
   .btn-secondary {
     font-size: 0.6rem;
     padding: 0.3rem 1.5rem;
   }
+
   #pricingCarouselMobile .pricing-card {
     min-height: 890px;
   }

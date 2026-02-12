@@ -9,7 +9,83 @@
    - /assets/styles/blog/blog-content.css
    - /assets/styles/blog/blog-cards.css
    - /assets/styles/blog/blog-utilities.css
-   
+
    Si necesitas agregar estilos específicos SOLO para este componente
    (no reutilizables), agrégalos aquí.
 */
+
+.custom-accordion-item {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e6eef5;
+  box-shadow: 0 8px 20px rgba(41, 59, 73, 0.08);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.custom-accordion-button {
+  width: 100%;
+  text-align: left;
+  border: none;
+  padding: 1.1rem 1.25rem !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  background: var(--color-secundario-tecnico) !important;
+  min-width: 500px;
+}
+
+.custom-accordion-button .faq-question {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.custom-accordion-button .faq-arrow-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background 0.25s ease;
+}
+
+.custom-accordion-button.accordion-open .faq-arrow-icon {
+  transform: rotate(90deg);
+  background: #e8f6fb;
+  color: var(--color-secundario-tecnico);
+}
+
+.custom-accordion-content {
+  padding: 1.25rem !important;
+  color: var(--color-oscuro-tecnico);
+  font-size: 1rem;
+  line-height: 1.6;
+  display: none;
+}
+
+.custom-accordion-content p {
+  font-size: .9rem !important;
+}
+
+.custom-accordion-content.accordion-open {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .custom-accordion-button {
+    min-width: 100%;
+  }
+
+  .custom-accordion-button .faq-question {
+    font-size: 0.95rem !important;
+  }
+
+  .custom-accordion-content p {
+    font-size: .85rem !important;
+  }
+}

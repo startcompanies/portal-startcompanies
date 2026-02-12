@@ -350,7 +350,13 @@
     "help_subtitle": "We simplify the management of your company abroad",
     "your_questions": "Do you have questions?",
     "categories": "Categories",
-    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors"
+    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors",
+    "search_placeholder": "Search articles",
+    "search_clear": "Clear",
+    "search_no_results": "We couldn't find articles matching your search.",
+    "all_posts": "All posts",
+    "category": "Category",
+    "category_title_prefix": "Posts in"
   },
   "LLC": {
     "heroSection": {

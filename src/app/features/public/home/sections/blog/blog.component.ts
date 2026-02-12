@@ -31,7 +31,8 @@ export class BlogComponent implements OnInit {
 
   setAllPosts() {
     this.blogService.getAllPosts().then((posts) => {
-      this.allPosts = posts;
+      const shuffled = this.shuffleArray(posts ?? []);
+      this.allPosts = shuffled.slice(0, 6);
       this.chunkPostsForCarousels();
     }).catch((error) => {
       console.log('Error al obtener los posts:',error);
@@ -55,6 +56,15 @@ export class BlogComponent implements OnInit {
       chunks.push(array.slice(i, i + chunkSize));
     }
     return chunks;
+  }
+
+  private shuffleArray<T>(array: T[]): T[] {
+    const copy = array.slice();
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
   }
 
   /**

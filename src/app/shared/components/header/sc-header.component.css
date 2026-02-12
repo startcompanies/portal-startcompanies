@@ -125,7 +125,7 @@
 }
 
 .nav-link-dark {
-  color: #293B49 !important;
+  color: var(--color-oscuro-tecnico) !important;
 }
 
 .sc-navbar .navbar-nav .nav-link:hover,
@@ -147,13 +147,13 @@
 
 /* Estilo para el underline de elementos activos cuando el navbar es claro */
 .sc-navbar.sc-navbar-light .navbar-nav .nav-item.active .nav-link::after {
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
 }
 
 /* Estilos para hover cuando el navbar está en modo claro (después de scroll) */
 .sc-navbar.sc-navbar-light .navbar-nav .nav-link:hover,
 .sc-navbar.sc-navbar-light .navbar-nav .nav-link.active {
-  color: #293B49 !important;
+  color: var(--color-oscuro-tecnico) !important;
 }
 
 /* Contenedor de botones */
@@ -194,12 +194,12 @@
 
 /* Estilo del botón "Iniciar sesión" cuando el navbar está en modo claro */
 .sc-navbar-light .sc-btn-login {
-  color: #293B49;
-  border-color: #293B49;
+  color: var(--color-oscuro-tecnico);
+  border-color: var(--color-oscuro-tecnico);
 }
 
 .sc-navbar-light .sc-btn-login:hover {
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   color: var(--color-fondo-claro);
 }
 

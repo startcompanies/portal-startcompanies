@@ -18,12 +18,12 @@
 .section-title {
   font-size: 32px;
   font-weight: 700;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
   margin-bottom: 60px;
 }
 
 .section-title .text-primary-blue {
-  color: #00b8d9;
+  color: var(--color-secundario-tecnico);
 }
 
 .benefits-grid {
@@ -58,14 +58,14 @@
 .benefit-title {
   font-size: 20px;
   font-weight: 700;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
   margin-bottom: 8px;
 }
 
 .benefit-description {
   font-size: 16px;
   font-weight: 400;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
   line-height: 1.5;
 }
 
@@ -75,6 +75,7 @@
   border: none !important;
   background: transparent;
 }
+
 .partner-logo {
   /* Asegura una transición suave para cualquier cambio de propiedad */
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -82,106 +83,110 @@
 
 /* Efecto de escala (zoom) */
 .partner-logo:hover {
-  transform: scale(1.1); /* Escala la imagen al 110% de su tamaño original */
+  transform: scale(1.1);
+  /* Escala la imagen al 110% de su tamaño original */
 }
 
 /* Efecto de opacidad */
 .partner-logo:hover {
-  opacity: 0.8; /* Hace la imagen un poco más transparente */
+  opacity: 0.8;
+  /* Hace la imagen un poco más transparente */
 }
+
 @media (max-width: 767.98px) {
-    .benefits-grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
+  .benefits-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 /* =========================
    PARTNERS CAROUSEL
    ========================= */
 .partners-carousel-container {
-    /*width: 100vw;*/
-    width: 100%;
-    /*margin-left: calc(-50vw + 50%);*/
-    overflow: hidden;
-    background-color: #f8f9fa;
-    padding: 40px 0;
+  /*width: 100vw;*/
+  width: 100%;
+  /*margin-left: calc(-50vw + 50%);*/
+  overflow: hidden;
+  background-color: #f8f9fa;
+  padding: 40px 0;
 }
 
 .partners-carousel {
-    position: relative;
-    width: 100%;
+  position: relative;
+  width: 100%;
 }
 
 .partners-track {
-    display: flex;
-    animation: scroll 30s linear infinite;
-    width: max-content;
+  display: flex;
+  animation: scroll 30s linear infinite;
+  width: max-content;
 }
 
 .partners-track:hover {
-    animation-play-state: paused;
+  animation-play-state: paused;
 }
 
 .partner-logo {
-    flex-shrink: 0;
-    margin: 0 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex-shrink: 0;
+  margin: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .partner-img {
-    height: 60px;
-    width: auto;
-    max-width: 120px;
-    object-fit: contain;
-    filter: grayscale(100%);
-    opacity: 0.7;
-    transition: all 0.3s ease;
+  height: 60px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  filter: grayscale(100%);
+  opacity: 0.7;
+  transition: all 0.3s ease;
 }
 
 .partner-img:hover {
-    filter: grayscale(0%);
-    opacity: 1;
-    transform: scale(1.1);
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 @keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .partners-carousel-container {
-        padding: 30px 0;
-    }
-    
-    .partner-logo {
-        margin: 0 25px;
-    }
-    
-    .partner-img {
-        height: 50px;
-        max-width: 100px;
-    }
+  .partners-carousel-container {
+    padding: 30px 0;
+  }
+
+  .partner-logo {
+    margin: 0 25px;
+  }
+
+  .partner-img {
+    height: 50px;
+    max-width: 100px;
+  }
 }
 
 @media (max-width: 480px) {
-    .partners-carousel-container {
-        padding: 20px 0;
-    }
-    
-    .partner-logo {
-        margin: 0 20px;
-    }
-    
-    .partner-img {
-        height: 40px;
-        max-width: 80px;
-    }
+  .partners-carousel-container {
+    padding: 20px 0;
+  }
+
+  .partner-logo {
+    margin: 0 20px;
+  }
+
+  .partner-img {
+    height: 40px;
+    max-width: 80px;
+  }
 }

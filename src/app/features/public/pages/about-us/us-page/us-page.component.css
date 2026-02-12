@@ -5,6 +5,7 @@
   position: relative;
   overflow: hidden;
   min-height: 600px;
+  align-content: center;
 }
 
 .sc-hero-bg {
@@ -135,13 +136,13 @@
 }
 
 .hero-btn-primary {
-  background-color: #00b8d9;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
 }
 
 .hero-btn-primary:hover {
-  background-color: #00b8d9;
-  border-color: #00b8d9;
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
 }
 
 .hero-btn-secondary {
@@ -217,7 +218,7 @@
 }
 
 .mission-btn-primary {
-  background-color: #02cae3;
+  background-color: #006afe;
   color: #ffffff;
   border: none;
   border-radius: 2.5rem;
@@ -232,7 +233,7 @@
 }
 
 .mission-btn-primary:hover {
-  background-color: #00b8d9;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(2, 202, 227, 0.3);
@@ -241,6 +242,7 @@
 .mission-btn-primary i.bi {
   font-size: 1.1rem;
 }
+
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
   background-color: var(--color-secundario-tecnico);
@@ -265,6 +267,7 @@
     display: none !important;
   }
 }
+
 /* Responsive styles for mission card */
 @media (max-width: 991.98px) {
   .mission-title {
