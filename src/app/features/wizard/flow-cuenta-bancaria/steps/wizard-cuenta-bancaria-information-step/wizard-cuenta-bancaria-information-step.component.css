@@ -12,9 +12,7 @@
   background-color: #02b8d0;
   border-color: #02b8d0;
   color: #ffffff;
-}
-
-.wizard-cuenta-bancaria-information-step .btn-primary:focus {
+}.wizard-cuenta-bancaria-information-step .btn-primary:focus {
   background-color: #006afe;
   border-color: #006afe;
   color: #ffffff;
