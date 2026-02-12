@@ -245,3 +245,8 @@ h2.note-heading {
   color: #9ca3af;
   opacity: 1;
 }
+
+/* Swipe horizontal para todos los carruseles Bootstrap en mobile y desktop */
+.carousel {
+  touch-action: pan-y;
+}

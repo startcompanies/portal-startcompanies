@@ -9,7 +9,7 @@
       </div>
 
       <div class="blog-carousel-container">
-        <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-interval="5000"
+        <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-ride="carousel" data-bs-interval="5000"
           data-bs-touch="true">
           <div class="carousel-inner py-2">
             <ng-container *ngIf="desktopCarouselSlides.length > 0; else noPostsDesktop">
@@ -61,7 +61,7 @@
           </ng-container>
         </div>
 
-        <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-interval="5000" data-bs-touch="true">
+        <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true">
           <div class="carousel-inner py-2">
             <ng-container *ngIf="mobileCarouselSlides.length > 0; else noPostsMobile">
               <div class="carousel-item" *ngFor="let postSlide of mobileCarouselSlides; let i = index"
