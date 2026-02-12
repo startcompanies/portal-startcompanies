@@ -17,30 +17,33 @@
       <p class="text-muted">Completa el proceso para abrir tu LLC en Estados Unidos</p>
     </div>
 
-  <!-- Progress Steps Indicator (igual que new-request) -->
-  <div class="steps-indicator">
-    <div class="step-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
-      <div class="step-number">1</div>
-      <div class="step-label">{{ stepTitles[1] || 'Registro Básico' }}</div>
-    </div>
-    <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
-      <div class="step-number">2</div>
-      <div class="step-label">{{ stepTitles[2] || 'Estado y Plan' }}</div>
-    </div>
-    <div class="step-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
-      <div class="step-number">3</div>
-      <div class="step-label">{{ stepTitles[3] || 'Pago' }}</div>
-    </div>
-    <div class="step-item" [class.active]="currentStep >= 4" [class.completed]="currentStep > 4">
-      <div class="step-number">4</div>
-      <div class="step-label">{{ stepTitles[4] || 'Información de la LLC' }}</div>
-    </div>
-    <div class="step-item" [class.active]="currentStep >= 5" [class.completed]="currentStep > 5">
-      <div class="step-number">5</div>
-      <div class="step-label">{{ stepTitles[5] || 'Revisión Final' }}</div>
-    </div>
-  </div>
+    <div class="wizard-layout">
+      <!-- Indicador de pasos vertical (izquierda) -->
+      <aside class="steps-indicator steps-indicator-vertical">
+        <div class="step-item" [class.active]="currentStep >= 1" [class.completed]="currentStep > 1">
+          <div class="step-number">1</div>
+          <div class="step-label">{{ stepTitles[1] || 'Registro Básico' }}</div>
+        </div>
+        <div class="step-item" [class.active]="currentStep >= 2" [class.completed]="currentStep > 2">
+          <div class="step-number">2</div>
+          <div class="step-label">{{ stepTitles[2] || 'Estado y Plan' }}</div>
+        </div>
+        <div class="step-item" [class.active]="currentStep >= 3" [class.completed]="currentStep > 3">
+          <div class="step-number">3</div>
+          <div class="step-label">{{ stepTitles[3] || 'Pago' }}</div>
+        </div>
+        <div class="step-item" [class.active]="currentStep >= 4" [class.completed]="currentStep > 4">
+          <div class="step-number">4</div>
+          <div class="step-label">{{ stepTitles[4] || 'Información de la LLC' }}</div>
+        </div>
+        <div class="step-item" [class.active]="currentStep >= 5" [class.completed]="currentStep > 5">
+          <div class="step-number">5</div>
+          <div class="step-label">{{ stepTitles[5] || 'Revisión Final' }}</div>
+        </div>
+      </aside>
 
+      <!-- Contenido del paso actual -->
+      <div class="wizard-step-content">
   <!-- Paso 1: Registro Básico -->
   <div *ngIf="currentStep === 1 && !showEmailVerification" class="form-step">
     <h3>{{ stepTitles[1] || 'Registro Básico' }}</h3>
@@ -176,5 +179,7 @@
       {{ errorMessage }}
     </div>
   </div>
-</div>
+      </div>
+    </div>
+  </div>
 </div>

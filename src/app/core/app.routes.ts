@@ -215,6 +215,14 @@ export const routes: Routes = [
         loadComponent: () => import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
         data: { withPayment: true }
       },
+      // Wizard unificado (nuevo) - para pruebas/migración incremental
+      {
+        path: 'wizard/flow/:serviceType',
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
+      },
       // ===== RUTAS DE CAMPAÑAS (SIN GUARD) =====
       {
         path: 'abre-tu-llc',
@@ -501,6 +509,38 @@ export const routes: Routes = [
           }
         ]
       },
+      // Request Flow unificado (nuevo) - para pruebas/migración incremental
+      {
+        path: 'request-flow',
+        canActivate: [authGuard],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: 'select-service',
+            canActivate: [authGuard, roleGuard(['client', 'partner'])],
+            loadComponent: () =>
+              import('../features/panel/pages/request-flow/select-service-type-page.component').then(
+                (m) => m.SelectServiceTypePageComponent
+              ),
+          },
+          {
+            path: 'client/:serviceType',
+            canActivate: [authGuard, roleGuard(['client'])],
+            loadComponent: () =>
+              import('../features/panel/pages/request-flow/panel-client-request-flow-page.component').then(
+                (m) => m.PanelClientRequestFlowPageComponent
+              ),
+          },
+          {
+            path: 'partner/:serviceType',
+            canActivate: [authGuard, roleGuard(['partner'])],
+            loadComponent: () =>
+              import('../features/panel/pages/request-flow/panel-partner-request-flow-page.component').then(
+                (m) => m.PanelPartnerRequestFlowPageComponent
+              ),
+          },
+        ],
+      },
       {
         path: 'my-clients',
         canActivate: [authGuard, roleGuard(['partner'])],
@@ -778,6 +818,14 @@ export const routes: Routes = [
         path: 'wizard/bank-account-with-payment',
         loadComponent: () => import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
         data: { withPayment: true }
+      },
+      // Wizard unificado (nuevo) - EN
+      {
+        path: 'wizard/flow/:serviceType',
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
       },
       /**Landings en inglés */
       {

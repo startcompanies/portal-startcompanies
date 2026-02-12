@@ -1,7 +1,7 @@
 <div class="wizard-cuenta-bancaria-information-step">
   <!-- Usar el componente wizard-cuenta-bancaria-form -->
   <div class="form-container">
-    <app-wizard-cuenta-bancaria-form
+    <app-cuenta-bancaria-form
       [serviceDataForm]="serviceDataForm"
       [usStates]="usStates"
       [fileUploadStates]="fileUploadStates"
@@ -10,7 +10,7 @@
       (fileCleared)="onFileCleared($event)"
       (addOwnerRequested)="onAddOwnerRequested()"
       (removeOwnerRequested)="onRemoveOwnerRequested($event)"
-    ></app-wizard-cuenta-bancaria-form>
+    ></app-cuenta-bancaria-form>
   </div>
   
   <!-- Navegación entre secciones del formulario -->

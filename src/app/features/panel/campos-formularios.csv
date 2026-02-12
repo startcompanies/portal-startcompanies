@@ -1,0 +1,134 @@
+Servicio,Label,Nombre_BD
+apertura-llc,Nombre de la LLC - Opción 1,llcName
+apertura-llc,Nombre de la LLC - Opción 2,llcNameOption2
+apertura-llc,Nombre de la LLC - Opción 3,llcNameOption3
+apertura-llc,Estado de Registro de la LLC,incorporationState
+apertura-llc,Actividad Principal de la LLC,businessDescription
+apertura-llc,Estructura Societaria,llcType
+apertura-llc,LinkedIn (Opcional),linkedin
+apertura-llc,Factura de Servicio (Prueba de Dirección),serviceBillUrl
+apertura-llc,Resumen Bancario,bankStatementUrl
+apertura-llc,¿Tendrá ingresos periódicos que suman USD 10,000 o más en los próximos tres meses?,periodicIncome10k
+apertura-llc,Correo Electrónico Vinculado a la Cuenta Bancaria,bankAccountLinkedEmail
+apertura-llc,Número de Teléfono Vinculado a la Cuenta Bancaria,bankAccountLinkedPhone
+apertura-llc,Actividad financiera esperada,actividadFinancieraEsperada
+apertura-llc,URL del Proyecto o Empresa (Opcional),projectOrCompanyUrl
+renovacion-llc,Nombre de la LLC,llcName
+renovacion-llc,Estado de Registro de la LLC,state
+renovacion-llc,Estructura Societaria,llcType
+renovacion-llc,Actividad Principal de la LLC,mainActivity
+renovacion-llc,¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?,hasPropertyInUSA
+renovacion-llc,¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?,almacenaProductosDepositoUSA
+renovacion-llc,¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente (excluyendo freelancers)?,contrataServiciosUSA
+renovacion-llc,¿Tu LLC tiene cuentas bancarias a su nombre?,tieneCuentasBancarias
+renovacion-llc,Número de EIN,einNumber
+renovacion-llc,Fecha de creación de la LLC,llcCreationDate
+renovacion-llc,Países donde la LLC realiza negocios,countriesWhereLLCDoesBusiness
+renovacion-llc,¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?,hasFinancialInvestmentsInUSA
+renovacion-llc,¿La LLC declaró impuestos anteriormente?,hasFiledTaxesBefore
+renovacion-llc,¿La LLC se constituyó con Start Companies?,wasConstitutedWithStartCompanies
+renovacion-llc,Declaración Inicial,declaracionInicial
+renovacion-llc,Declaración del año corriente (2025),declaracionAnoCorriente
+renovacion-llc,Cambio de dirección y de Registered Agent (RA),cambioDireccionRA
+renovacion-llc,Cambio de nombre,cambioNombre
+renovacion-llc,Declaración de años anteriores,declaracionAnosAnteriores
+renovacion-llc,Agregar o cambiar socio,agregarCambiarSocio
+renovacion-llc,Declaracion de Cierre de tu LLC,declaracionCierre
+renovacion-llc,¿Cuánto costó abrir la LLC en Estados Unidos?,llcOpeningCost
+renovacion-llc,¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?,paidToFamilyMembers
+renovacion-llc,¿Cuánto pagó la LLC a empresas locales (En otro Pais) del dueño por bienes o servicios?,paidToLocalCompanies
+renovacion-llc,¿Cuánto se pagó por la formación de la LLC (Incorporation/State fees)?,paidForLLCFormation
+renovacion-llc,¿Cuánto se pagó por la disolución de la LLC (si aplica)?,paidForLLCDissolution
+renovacion-llc,Saldo Al fin de año de las cuentas bancarias de la LLC,bankAccountBalanceEndOfYear
+renovacion-llc,Facturación total de la LLC en 2024,totalRevenue
+renovacion-llc,Pasaportes de los socios,partnersPassportsFileUrl
+renovacion-llc,Operating Agreement,operatingAgreementAdditionalFileUrl
+renovacion-llc,Formulario 147 o 575,form147Or575FileUrl
+renovacion-llc,Artículos de Organización,articlesOfOrganizationAdditionalFileUrl
+renovacion-llc,Reporte BOI,boiReportFileUrl
+renovacion-llc,Resúmenes Bancarios,bankStatementsFileUrl
+cuenta-bancaria,Tipo de negocio,businessType
+cuenta-bancaria,Nombre legal del negocio,legalBusinessName
+cuenta-bancaria,Industria / Rubro,industry
+cuenta-bancaria,Cantidad de empleados,numberOfEmployees
+cuenta-bancaria,Descripción breve,briefDescription
+cuenta-bancaria,Sitio web o red social,websiteOrSocialMedia
+cuenta-bancaria,Adjuntar EIN Letter,einLetterUrl
+cuenta-bancaria,Numero de EIN,einNumber
+cuenta-bancaria,Adjuntar Articles de Organización o Certificate of Formation,articlesOrCertificateUrl
+cuenta-bancaria,Calle y número (Dirección Registered Agent),registeredAgentStreet
+cuenta-bancaria,Apto / Suite / PO Box (Dirección Registered Agent),registeredAgentUnit
+cuenta-bancaria,Ciudad (Dirección Registered Agent),registeredAgentCity
+cuenta-bancaria,Estado (Dirección Registered Agent),registeredAgentState
+cuenta-bancaria,Postal / Zip Code (Dirección Registered Agent),registeredAgentZipCode
+cuenta-bancaria,Country (Dirección Registered Agent),registeredAgentCountry
+cuenta-bancaria,Estado de constitución,incorporationState
+cuenta-bancaria,Mes y Año de Incorporación,incorporationMonthYear
+cuenta-bancaria,Países donde haces negocios con tu LLC,countriesWhereBusiness
+cuenta-bancaria,Nombre(s) (Validador),validatorFirstName
+cuenta-bancaria,Apellidos (Validador),validatorLastName
+cuenta-bancaria,Fecha de Nacimiento (Validador),validatorDateOfBirth
+cuenta-bancaria,Nacionalidad (Validador),validatorNationality
+cuenta-bancaria,Ciudadanía (Validador),validatorCitizenship
+cuenta-bancaria,Número de pasaporte (Validador),validatorPassportNumber
+cuenta-bancaria,Adjunta una copia escaneada o foto legible del pasaporte (Validador),validatorPassportUrl
+cuenta-bancaria,Email laboral (Validador),validatorWorkEmail
+cuenta-bancaria,Teléfono (Validador),validatorPhone
+cuenta-bancaria,Debe tener capacidad para recibir SMS (Validador),canReceiveSMS
+cuenta-bancaria,¿Es residente en EE.UU.? (Validador),isUSResident
+cuenta-bancaria,Cargo / Título / Ocupación (Validador),validatorTitle
+cuenta-bancaria,Fuente de ingreso personal (Validador),validatorIncomeSource
+cuenta-bancaria,¿Cuánto ganas en el año? (Validador),validatorAnnualIncome
+cuenta-bancaria,Calle y número (Dirección Personal),ownerPersonalStreet
+cuenta-bancaria,Calle y número interior (Dirección Personal),ownerPersonalUnit
+cuenta-bancaria,Ciudad (Dirección Personal),ownerPersonalCity
+cuenta-bancaria,Estados / Provincias (Dirección Personal),ownerPersonalState
+cuenta-bancaria,País y/o Estado (Dirección Personal),ownerPersonalCountry
+cuenta-bancaria,Código Postal (Dirección Personal),ownerPersonalPostalCode
+cuenta-bancaria,Adjuntar factura de servicio (Prueba de Dirección),serviceBillUrl
+cuenta-bancaria,¿Tu LLC es Multi-Member?,isMultiMember
+members,Nombres,firstName
+members,Apellidos,lastName
+members,Número Pasaporte Completo,passportNumber
+members,Pasaporte escaneado,scannedPassportUrl
+members,Nacionalidad,nationality
+members,Fecha de nacimiento,dateOfBirth
+members,Email,email
+members,Teléfono,phoneNumber
+members,% de Participación,percentageOfParticipation
+members,Calle (Dirección Miembro),street
+members,Unidad (Dirección Miembro),unit
+members,Ciudad (Dirección Miembro),city
+members,Estado/Región (Dirección Miembro),stateRegion
+members,Código Postal (Dirección Miembro),postalCode
+members,País (Dirección Miembro),country
+members,Nombre (Propietario Renovación),name
+members,Apellido (Propietario Renovación),lastName
+members,Correo electrónico (Propietario Renovación),email
+members,Teléfono de contacto (Propietario Renovación),phone
+members,Dirección Completa (Propietario Renovación),fullAddress
+members,Número interior/departamento (Propietario Renovación),unit
+members,Ciudad (Propietario Renovación),city
+members,Estado/Región/Provincia (Propietario Renovación),stateRegion
+members,Código postal (Propietario Renovación),postalCode
+members,País de Residencia (Propietario Renovación),country
+members,Número de SSN/ITIN (Propietario Renovación),ssnItin
+members,ID Fiscal Nacional (CUIT) (Propietario Renovación),cuit
+members,Aportes de Capital a la LLC (Propietario Renovación),capitalContributions
+members,Préstamos a la LLC (Propietario Renovación),loansToLLC
+members,Préstamos Reembolsados (Propietario Renovación),loansRepaid
+members,Retiros de Capital (Propietario Renovación),capitalWithdrawals
+members,¿Posee inversiones o activos en EE.UU.? (Propietario Renovación),hasInvestmentsInUSA
+members,El propietario es ciudadano de EE.UU.? (Propietario Renovación),isUSCitizen
+members,País bajo cuyas leyes el propietario presenta impuestos (Propietario Renovación),taxCountry
+members,¿El propietario estuvo en EE.UU. más de 31 días? (Propietario Renovación),wasInUSA31Days
+members,Porcentaje de participación (Propietario Renovación),participationPercentage
+members,Nombre (Propietario Cuenta Bancaria),firstName
+members,Apellido (Propietario Cuenta Bancaria),lastName
+members,Fecha de nacimiento (Propietario Cuenta Bancaria),dateOfBirth
+members,Nacionalidad (Propietario Cuenta Bancaria),nationality
+members,Número Pasaporte Completo (Propietario Cuenta Bancaria),passportNumber
+members,Número de SSN/ITIN (Propietario Cuenta Bancaria),ssnItin
+members,ID Fiscal Nacional (CUIT) (Propietario Cuenta Bancaria),cuit
+members,Porcentaje de participación (Propietario Cuenta Bancaria),participationPercentage
+members,Pasaporte escaneado (Propietario Cuenta Bancaria),passportFileUrl

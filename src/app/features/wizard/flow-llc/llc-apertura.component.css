@@ -63,6 +63,36 @@
     padding: 2rem 1rem;
   }
 
+  .wizard-layout {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .steps-indicator-vertical {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .steps-indicator-vertical::before {
+    display: none;
+  }
+
+  .steps-indicator-vertical .step-item {
+    flex: 1;
+    min-width: 80px;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .steps-indicator-vertical .step-label {
+    text-align: center;
+    font-size: 0.7rem;
+  }
+
   .request-header h2 {
     font-size: 2rem;
   }
@@ -86,12 +116,12 @@
     font-size: 0.9rem;
   }
 
-  .steps-indicator {
+  .steps-indicator:not(.steps-indicator-vertical) {
     flex-direction: column;
     gap: 1rem;
   }
 
-  .steps-indicator::before {
+  .steps-indicator:not(.steps-indicator-vertical)::before {
     display: none;
   }
 
