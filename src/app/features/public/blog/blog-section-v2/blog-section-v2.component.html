@@ -1,16 +1,16 @@
 <section class="blog-section blog-related py-5">
   <div class="container">
     <div class="blog-content">
-      <h2 class="blog-title text-center mb-5">
+      <div class="blog-title text-center mb-5">
         {{ "CONTENT.blog.title1" | transloco }}
         <span class="text-primary-blue">{{
           "CONTENT.blog.title2" | transloco
           }}</span>
-      </h2>
+      </div>
 
       <div class="blog-carousel-container">
-        <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-interval="5000"
-          data-bs-touch="false">
+        <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-ride="carousel" data-bs-interval="5000"
+          data-bs-touch="true">
           <div class="carousel-inner py-2">
             <ng-container *ngIf="desktopCarouselSlides.length > 0; else noPostsDesktop">
               <div class="carousel-item" *ngFor="let slidePosts of desktopCarouselSlides; let i = index"
@@ -61,7 +61,7 @@
           </ng-container>
         </div>
 
-        <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-interval="5000" data-bs-touch="false">
+        <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true">
           <div class="carousel-inner py-2">
             <ng-container *ngIf="mobileCarouselSlides.length > 0; else noPostsMobile">
               <div class="carousel-item" *ngFor="let postSlide of mobileCarouselSlides; let i = index"

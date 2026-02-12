@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
@@ -40,7 +41,8 @@ export class MultilingualSeoService {
     private title: Title,
     private transloco: TranslocoService,
     private router: Router,
-    private browser: BrowserService
+    private browser: BrowserService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   /**
@@ -122,7 +124,7 @@ export class MultilingualSeoService {
 
     // Canonical URL
     if (data.canonical) {
-      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
+      this.updateCanonicalLink(data.canonical);
     }
 
     // Hreflang tags para SEO multilingüe
@@ -470,10 +472,30 @@ export class MultilingualSeoService {
     this.meta.removeTag('name="twitter:site"');
 
     // Limpiar canonical URL
-    this.meta.removeTag('rel="canonical"');
+    this.removeCanonicalLink();
 
     // Limpiar hreflang tags
     const existingHreflang = this.meta.getTags('name="hreflang"');
     existingHreflang.forEach(tag => this.meta.removeTagElement(tag));
+  }
+
+  private updateCanonicalLink(url: string): void {
+    const canonicalSelector = 'link[rel="canonical"]';
+    let canonicalLink = this.document.querySelector(
+      canonicalSelector
+    ) as HTMLLinkElement | null;
+
+    if (!canonicalLink) {
+      canonicalLink = this.document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(canonicalLink);
+    }
+
+    canonicalLink.setAttribute('href', url);
+  }
+
+  private removeCanonicalLink(): void {
+    const canonicalLink = this.document.querySelector('link[rel="canonical"]');
+    canonicalLink?.parentNode?.removeChild(canonicalLink);
   }
 }

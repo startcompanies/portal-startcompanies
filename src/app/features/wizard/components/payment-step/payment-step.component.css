@@ -101,8 +101,8 @@
 
 /* Botón de pago - btn-primary */
 .payment-step .btn-primary {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   color: #ffffff;
 }
 
@@ -113,15 +113,15 @@
 }
 
 .payment-step .btn-primary:focus {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   color: #ffffff;
   box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
 }
 
 .payment-step .btn-primary:disabled {
-  background-color: #02CAE3;
-  border-color: #02CAE3;
+  background-color: #006afe;
+  border-color: #006afe;
   opacity: 0.6;
   color: #ffffff;
 }

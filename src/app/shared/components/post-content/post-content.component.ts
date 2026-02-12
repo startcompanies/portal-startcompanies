@@ -1060,14 +1060,15 @@ export class PostContentComponent
     }
 
     // Aplicar clase cta-card a elementos con estilos específicos de CTA
-    // Detectar elementos div con background-color: #2d3748 y border: 2px solid #38B2AC
+    // Detectar elementos div con color de fondo legacy o actual y borde #38B2AC
     content = content.replace(
       /(<div\s+[^>]*style\s*=\s*["']([^"']*)["'][^>]*>)/gi,
       (match, divStart, styleContent) => {
         // Verificar si tiene los estilos característicos de cta-card
-        const hasBackgroundColor = /background-color:\s*#2d3748/i.test(
-          styleContent,
-        );
+        const hasBackgroundColor =
+          /background-color:\s*(#2d3748|#293b49|#001627|var\(--color-oscuro-tecnico\))/i.test(
+            styleContent,
+          );
         const hasBorder = /border:\s*2px\s+solid\s+#38B2AC/i.test(styleContent);
 
         if (hasBackgroundColor && hasBorder) {
@@ -1101,7 +1102,9 @@ export class PostContentComponent
     );
 
     // Reemplazar cta-card por el CTA estándar
-    const hadCtaCard = /class\s*=\s*["'][^"']*\bcta-card\b[^"']*["']/i.test(content);
+    const hadCtaCard = /class\s*=\s*["'][^"']*\bcta-card\b[^"']*["']/i.test(
+      content,
+    );
     content = this.replaceCtaCards(content);
 
     // Insertar CTA intermedio en el contenido (después del 50% y antes de un título)
@@ -1539,7 +1542,7 @@ export class PostContentComponent
         // Si tiene un span dentro, aplicar color turquesa
         const span = heading.querySelector('span') as HTMLElement;
         if (span) {
-          span.style.setProperty('color', '#02CAE3', 'important');
+          span.style.setProperty('color', '#006afe', 'important');
         }
       }
     });

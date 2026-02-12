@@ -18,7 +18,10 @@ import { firstValueFrom } from 'rxjs';
     <div class="email-verification-container">
       <div class="verification-card">
         <div class="text-center mb-4">
-          <i class="bi bi-envelope-check" style="font-size: 3rem; color: #02CAE3;"></i>
+          <i
+            class="bi bi-envelope-check"
+            style="font-size: 3rem; color: #006afe;"
+          ></i>
           <h4 class="mt-3">Verifica tu correo electrónico</h4>
           <p class="text-muted">
             Hemos enviado un código de 6 dígitos a <strong>{{ email }}</strong>
@@ -28,9 +31,13 @@ import { firstValueFrom } from 'rxjs';
         <div class="verification-code-input mb-4">
           <label class="form-label">Código de verificación</label>
           <div class="d-flex justify-content-center gap-2">
-            <input 
-              *ngFor="let digit of codeDigits; let i = index; trackBy: trackByIndex"
-              type="text" 
+            <input
+              *ngFor="
+                let digit of codeDigits;
+                let i = index;
+                trackBy: trackByIndex
+              "
+              type="text"
               class="form-control text-center code-digit"
               maxlength="1"
               [(ngModel)]="codeDigits[i]"
@@ -55,8 +62,8 @@ import { firstValueFrom } from 'rxjs';
         </div>
 
         <div class="d-grid gap-2">
-          <button 
-            class="btn btn-primary" 
+          <button
+            class="btn btn-primary"
             (click)="verifyCode()"
             [disabled]="isVerifying || !isCodeComplete()"
           >
@@ -73,8 +80,8 @@ import { firstValueFrom } from 'rxjs';
 
         <div class="text-center mt-3">
           <p class="text-muted small mb-2">¿No recibiste el código?</p>
-          <button 
-            class="btn btn-outline-secondary btn-sm" 
+          <button
+            class="btn btn-outline-secondary btn-sm"
             (click)="resendCode()"
             [disabled]="isResending"
           >
@@ -91,76 +98,78 @@ import { firstValueFrom } from 'rxjs';
       </div>
     </div>
   `,
-  styles: [`
-    .email-verification-container {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .verification-card {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-    .code-digit {
-      width: 50px;
-      height: 50px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      border-radius: 8px;
-    }
-    .code-digit:focus {
-      border-color: #02CAE3;
-      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
-    }
-    /* Botón Verificar - btn-primary */
-    .verification-card .btn-primary {
-      background-color: #02CAE3;
-      border-color: #02CAE3;
-      color: #ffffff;
-      min-width: 120px;
-    }
-    .verification-card .btn-primary:hover {
-      background-color: #02b8d0;
-      border-color: #02b8d0;
-      color: #ffffff;
-    }
-    .verification-card .btn-primary:focus {
-      background-color: #02CAE3;
-      border-color: #02CAE3;
-      color: #ffffff;
-      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
-    }
-    .verification-card .btn-primary:disabled {
-      background-color: #02CAE3;
-      border-color: #02CAE3;
-      opacity: 0.6;
-      color: #ffffff;
-    }
-    /* Botón Reenviar - btn-outline-secondary */
-    .verification-card .btn-outline-secondary {
-      background-color: #ffffff;
-      border-color: #02CAE3;
-      color: #02CAE3;
-    }
-    .verification-card .btn-outline-secondary:hover {
-      background-color: #f8f9fa;
-      border-color: #02b8d0;
-      color: #02b8d0;
-    }
-    .verification-card .btn-outline-secondary:focus {
-      background-color: #ffffff;
-      border-color: #02CAE3;
-      color: #02CAE3;
-      box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
-    }
-    .verification-card .btn-outline-secondary:disabled {
-      background-color: #ffffff;
-      border-color: #02CAE3;
-      color: #02CAE3;
-      opacity: 0.6;
-    }
-  `]
+  styles: [
+    `
+      .email-verification-container {
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      .verification-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .code-digit {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-radius: 8px;
+      }
+      .code-digit:focus {
+        border-color: #006afe;
+        box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+      }
+      /* Botón Verificar - btn-primary */
+      .verification-card .btn-primary {
+        background-color: #006afe;
+        border-color: #006afe;
+        color: #ffffff;
+        min-width: 120px;
+      }
+      .verification-card .btn-primary:hover {
+        background-color: #02b8d0;
+        border-color: #02b8d0;
+        color: #ffffff;
+      }
+      .verification-card .btn-primary:focus {
+        background-color: #006afe;
+        border-color: #006afe;
+        color: #ffffff;
+        box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+      }
+      .verification-card .btn-primary:disabled {
+        background-color: #006afe;
+        border-color: #006afe;
+        opacity: 0.6;
+        color: #ffffff;
+      }
+      /* Botón Reenviar - btn-outline-secondary */
+      .verification-card .btn-outline-secondary {
+        background-color: #ffffff;
+        border-color: #006afe;
+        color: #006afe;
+      }
+      .verification-card .btn-outline-secondary:hover {
+        background-color: #f8f9fa;
+        border-color: #02b8d0;
+        color: #02b8d0;
+      }
+      .verification-card .btn-outline-secondary:focus {
+        background-color: #ffffff;
+        border-color: #006afe;
+        color: #006afe;
+        box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+      }
+      .verification-card .btn-outline-secondary:disabled {
+        background-color: #ffffff;
+        border-color: #006afe;
+        color: #006afe;
+        opacity: 0.6;
+      }
+    `,
+  ],
 })
 export class WizardEmailVerificationComponent implements OnInit {
   @Input() email: string = '';
@@ -178,7 +187,7 @@ export class WizardEmailVerificationComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private wizardStateService: WizardStateService,
-    private wizardApiService: WizardApiService
+    private wizardApiService: WizardApiService,
   ) {}
 
   ngOnInit(): void {
@@ -230,7 +239,9 @@ export class WizardEmailVerificationComponent implements OnInit {
     // Mover al siguiente input si se ingresó un dígito
     if (value && index < 5) {
       setTimeout(() => {
-        const nextInput = document.getElementById(`digit-${index + 1}`) as HTMLInputElement;
+        const nextInput = document.getElementById(
+          `digit-${index + 1}`,
+        ) as HTMLInputElement;
         if (nextInput) {
           nextInput.focus();
           nextInput.select();
@@ -249,7 +260,7 @@ export class WizardEmailVerificationComponent implements OnInit {
    */
   onKeyDown(event: KeyboardEvent, index: number): void {
     const input = event.target as HTMLInputElement;
-    
+
     // Manejar Backspace
     if (event.key === 'Backspace') {
       // Si hay contenido, limpiarlo
@@ -262,7 +273,9 @@ export class WizardEmailVerificationComponent implements OnInit {
       // Si está vacío, mover al anterior y limpiarlo
       if (index > 0) {
         event.preventDefault();
-        const prevInput = document.getElementById(`digit-${index - 1}`) as HTMLInputElement;
+        const prevInput = document.getElementById(
+          `digit-${index - 1}`,
+        ) as HTMLInputElement;
         if (prevInput) {
           this.codeDigits[index - 1] = '';
           prevInput.value = '';
@@ -272,7 +285,7 @@ export class WizardEmailVerificationComponent implements OnInit {
       }
       return;
     }
-    
+
     // Manejar Delete
     if (event.key === 'Delete') {
       this.codeDigits[index] = '';
@@ -280,32 +293,41 @@ export class WizardEmailVerificationComponent implements OnInit {
       event.preventDefault();
       return;
     }
-    
+
     // Manejar flecha izquierda
     if (event.key === 'ArrowLeft' && index > 0) {
       event.preventDefault();
-      const prevInput = document.getElementById(`digit-${index - 1}`) as HTMLInputElement;
+      const prevInput = document.getElementById(
+        `digit-${index - 1}`,
+      ) as HTMLInputElement;
       if (prevInput) {
         prevInput.focus();
         prevInput.select();
       }
       return;
     }
-    
+
     // Manejar flecha derecha
     if (event.key === 'ArrowRight' && index < 5) {
       event.preventDefault();
-      const nextInput = document.getElementById(`digit-${index + 1}`) as HTMLInputElement;
+      const nextInput = document.getElementById(
+        `digit-${index + 1}`,
+      ) as HTMLInputElement;
       if (nextInput) {
         nextInput.focus();
         nextInput.select();
       }
       return;
     }
-    
+
     // Prevenir que se ingresen caracteres no numéricos (excepto teclas de control)
-    if (event.key.length === 1 && !/^\d$/.test(event.key) && 
-        !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (
+      event.key.length === 1 &&
+      !/^\d$/.test(event.key) &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey
+    ) {
       event.preventDefault();
     }
   }
@@ -316,23 +338,25 @@ export class WizardEmailVerificationComponent implements OnInit {
   onPaste(event: ClipboardEvent, currentIndex: number): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     const pastedData = event.clipboardData?.getData('text') || '';
     const digits = pastedData.replace(/\D/g, '').slice(0, 6).split('');
-    
+
     if (digits.length === 0) {
       return;
     }
-    
+
     // Limpiar todos los inputs primero
     this.codeDigits = ['', '', '', '', '', ''];
-    
+
     // Llenar los inputs con los dígitos pegados
     digits.forEach((digit, index) => {
       if (index < 6 && /^\d$/.test(digit)) {
         this.codeDigits[index] = digit;
         // Actualizar el valor del input visualmente
-        const input = document.getElementById(`digit-${index}`) as HTMLInputElement;
+        const input = document.getElementById(
+          `digit-${index}`,
+        ) as HTMLInputElement;
         if (input) {
           input.value = digit;
         }
@@ -340,11 +364,14 @@ export class WizardEmailVerificationComponent implements OnInit {
     });
 
     // Enfocar el último input completado o el siguiente vacío
-    const nextEmptyIndex = this.codeDigits.findIndex(d => !d);
-    const focusIndex = nextEmptyIndex === -1 ? Math.min(5, digits.length - 1) : nextEmptyIndex;
-    
+    const nextEmptyIndex = this.codeDigits.findIndex((d) => !d);
+    const focusIndex =
+      nextEmptyIndex === -1 ? Math.min(5, digits.length - 1) : nextEmptyIndex;
+
     setTimeout(() => {
-      const input = document.getElementById(`digit-${focusIndex}`) as HTMLInputElement;
+      const input = document.getElementById(
+        `digit-${focusIndex}`,
+      ) as HTMLInputElement;
       if (input) {
         input.focus();
         input.select();
@@ -361,7 +388,7 @@ export class WizardEmailVerificationComponent implements OnInit {
    * Verifica si el código está completo
    */
   isCodeComplete(): boolean {
-    return this.codeDigits.every(d => d !== '');
+    return this.codeDigits.every((d) => d !== '');
   }
 
   /**
@@ -387,23 +414,26 @@ export class WizardEmailVerificationComponent implements OnInit {
     try {
       const code = this.getCode();
       console.log('[EmailVerification] Verificando código para:', this.email);
-      
-      const response = await firstValueFrom(this.wizardApiService.confirmEmail({
-        email: this.email,
-        confirmationToken: code
-      }));
+
+      const response = await firstValueFrom(
+        this.wizardApiService.confirmEmail({
+          email: this.email,
+          confirmationToken: code,
+        }),
+      );
 
       console.log('[EmailVerification] Verificación exitosa:', response);
       this.successMessage = '¡Email verificado exitosamente!';
-      
+
       // Emitir evento de éxito
       setTimeout(() => {
         this.verificationSuccess.emit();
       }, 1000);
-
     } catch (error: any) {
       console.error('[EmailVerification] Error al verificar:', error);
-      this.errorMessage = error?.error?.message || 'Código incorrecto. Por favor, intenta nuevamente.';
+      this.errorMessage =
+        error?.error?.message ||
+        'Código incorrecto. Por favor, intenta nuevamente.';
       // Limpiar el código para reintentar
       this.codeDigits = ['', '', '', '', '', ''];
       setTimeout(() => {
@@ -422,14 +452,15 @@ export class WizardEmailVerificationComponent implements OnInit {
    */
   async resendCode(): Promise<void> {
     if (!this.email) {
-      this.errorMessage = 'No se encontró el email. Por favor, vuelve al paso anterior.';
+      this.errorMessage =
+        'No se encontró el email. Por favor, vuelve al paso anterior.';
       return;
     }
 
     this.isResending = true;
     this.errorMessage = '';
     this.successMessage = '';
-    
+
     // Emitir evento para que el componente padre maneje el reenvío
     // El componente padre debe llamar a registerStep.resendVerificationEmail()
     // y luego notificar el resultado usando notifyResendResult()
@@ -443,17 +474,19 @@ export class WizardEmailVerificationComponent implements OnInit {
    */
   notifyResendResult(success: boolean, message?: string): void {
     this.isResending = false;
-    
+
     if (success) {
-      this.successMessage = message || 'Código reenviado. Por favor, revisa tu bandeja de entrada.';
+      this.successMessage =
+        message || 'Código reenviado. Por favor, revisa tu bandeja de entrada.';
       this.errorMessage = '';
       setTimeout(() => {
         this.successMessage = '';
       }, 5000);
     } else {
-      this.errorMessage = message || 'Error al reenviar el código. Por favor, intenta nuevamente.';
+      this.errorMessage =
+        message ||
+        'Error al reenviar el código. Por favor, intenta nuevamente.';
       this.successMessage = '';
     }
   }
 }
-

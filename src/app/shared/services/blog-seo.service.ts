@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Post } from '../models/post.model';
 import { SeoData } from './seo.service';
@@ -16,7 +17,8 @@ export class BlogSeoService {
   constructor(
     private meta: Meta,
     private title: Title,
-    private browser: BrowserService
+    private browser: BrowserService,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
   /**
@@ -32,6 +34,8 @@ export class BlogSeoService {
    * Configura SEO para la página principal del blog
    */
   setBlogHomeSeo(): void {
+    const blogCanonicalUrl = this.getSelfCanonicalUrl('/blog');
+
     const seoData: SeoData = {
       title: 'Blog de Start Companies - Guías para Emprender en EE.UU.',
       description: 'Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos. Ideal para freelancers, startups y negocios digitales.',
@@ -39,8 +43,8 @@ export class BlogSeoService {
       ogTitle: 'Blog de Start Companies - Tu Ruta para Emprender en EE.UU.',
       ogDescription: 'Guías completas para abrir tu LLC, obtener cuenta bancaria y emprender en Estados Unidos. Consejos de expertos para freelancers y startups.',
       ogImage: `${this.baseUrl}/assets/blog/blog-hero.webp`,
-      ogUrl: `${this.baseUrl}/blog`,
-      canonical: `${this.baseUrl}/blog`,
+      ogUrl: blogCanonicalUrl,
+      canonical: blogCanonicalUrl,
       twitterCard: 'summary_large_image',
       twitterTitle: 'Blog de Start Companies - Guías para Emprender en EE.UU.',
       twitterDescription: 'Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos.',
@@ -56,6 +60,8 @@ export class BlogSeoService {
    * Configura SEO para una categoría del blog
    */
   setCategorySeo(categoryName: string, categorySlug: string, postsCount: number): void {
+    const categoryCanonicalUrl = this.getSelfCanonicalUrl(`/blog/category/${categorySlug}`);
+
     const seoData: SeoData = {
       title: `${categoryName} - Blog de Start Companies`,
       description: `Artículos sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos. ${postsCount} guías especializadas para tu LLC.`,
@@ -63,8 +69,8 @@ export class BlogSeoService {
       ogTitle: `${categoryName} - Blog de Start Companies`,
       ogDescription: `Descubre ${postsCount} artículos especializados sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos.`,
       ogImage: `${this.baseUrl}/assets/blog/categories/${categorySlug}.webp`,
-      ogUrl: `${this.baseUrl}/blog/${categorySlug}`,
-      canonical: `${this.baseUrl}/blog/${categorySlug}`,
+      ogUrl: categoryCanonicalUrl,
+      canonical: categoryCanonicalUrl,
       twitterCard: 'summary_large_image',
       twitterTitle: `${categoryName} - Blog de Start Companies`,
       twitterDescription: `Artículos sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos.`,
@@ -79,7 +85,7 @@ export class BlogSeoService {
    * Genera los datos SEO para un post específico
    */
   private generatePostSeoData(post: Post): SeoData {
-    const postUrl = `${this.baseUrl}/blog/${post.slug}`;
+    const postUrl = this.getSelfCanonicalUrl(`/blog/${post.slug}`);
     const postImage = post.image_url || `${this.baseUrl}/assets/blog/default-post.webp`;
     
     // Generar keywords basadas en categorías y tags
@@ -177,7 +183,7 @@ export class BlogSeoService {
 
     // Canonical URL
     if (data.canonical) {
-      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
+      this.updateCanonicalLink(data.canonical);
     }
 
     // Meta tags adicionales para artículos
@@ -292,5 +298,28 @@ export class BlogSeoService {
       return imageUrl;
     }
     return `${this.baseUrl}${imageUrl}`;
+  }
+
+  private updateCanonicalLink(url: string): void {
+    const canonicalSelector = 'link[rel="canonical"]';
+    let canonicalLink = this.document.querySelector(
+      canonicalSelector
+    ) as HTMLLinkElement | null;
+
+    if (!canonicalLink) {
+      canonicalLink = this.document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(canonicalLink);
+    }
+
+    canonicalLink.setAttribute('href', url);
+  }
+
+  private getSelfCanonicalUrl(fallbackPath: string): string {
+    const currentPath = this.document.location?.pathname;
+    if (currentPath && currentPath !== '/') {
+      return `${this.baseUrl}${currentPath}`;
+    }
+    return `${this.baseUrl}${fallbackPath}`;
   }
 }

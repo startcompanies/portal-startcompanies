@@ -19,10 +19,11 @@ body {
 
 :root {
   --color-fondo-claro: #FDFFFE;
-  --color-secundario-tecnico: #01C9E2;
+  --color-secundario-tecnico: #006AFE;
   --color-primario: #0068BD;
+  --color-oscuro-tecnico: #001627;
   --color-texto-oscuro: #283A48;
-  --color-degradado: linear-gradient(135deg, #01C9E2 0%, #0068BD 100%);
+  --color-degradado: linear-gradient(135deg, var(--color-secundario-tecnico) 0%, #0068BD 100%);
   --color-fondo-gris: #f8f9fa;
   /* Sobrescribir fuente de Bootstrap para usar Poppins */
   --bs-body-font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
@@ -212,8 +213,8 @@ h2.note-heading {
 .new-request-container .iti .iti__tel-input:focus,
 .new-request-container .iti input.iti__tel-input:focus {
   outline: none !important;
-  border-color: var(--color-secundario-tecnico, #01C9E2) !important;
-  box-shadow: 0 0 0 0.2rem rgba(1, 201, 226, 0.25) !important;
+  border-color: var(--color-secundario-tecnico, #006AFE) !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 106, 254, 0.25) !important;
 }
 
 /* Focus por defecto (para otros contextos) */
@@ -243,4 +244,9 @@ h2.note-heading {
 .iti input::placeholder {
   color: #9ca3af;
   opacity: 1;
+}
+
+/* Swipe horizontal para todos los carruseles Bootstrap en mobile y desktop */
+.carousel {
+  touch-action: pan-y;
 }

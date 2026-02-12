@@ -7,7 +7,7 @@
    STATES CARD - Tarjeta de listado de estados
    ============================================================================ */
 .states-card {
-  background-color: #293b49;
+  background-color: var(--color-oscuro-tecnico);
   padding: 1.5rem;
   border-radius: 1rem;
   display: flex;
@@ -60,7 +60,7 @@
   position: absolute;
   left: 0;
   top: 0.15rem;
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -69,7 +69,7 @@
   display: block;
   width: fit-content;
   margin: 0.5rem auto 0;
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
@@ -131,7 +131,7 @@
    ABRE CORP CARD - Tarjeta de promoción de servicios
    ============================================================================ */
 .abre-corp-card {
-  background-color: #2d3748;
+  background-color: var(--color-oscuro-tecnico);
   max-width: 100%;
   min-height: 450px;
   padding: 1.5rem 2rem;
@@ -149,7 +149,7 @@
 }
 
 .abre-corp-highlight {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
 }
 
 .abre-corp-list {
@@ -169,7 +169,7 @@
 }
 
 button.abre-corp-btn.btn {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
   font-size: 1rem;
@@ -213,7 +213,7 @@ button.abre-corp-btn.btn:hover {
    AYUDA PROFESIONAL CARD - Tarjeta de asistencia profesional
    ============================================================================ */
 .ayuda-profesional-card {
-  background-color: #2d3748;
+  background-color: var(--color-oscuro-tecnico);
   font-family: Arial, sans-serif;
   max-width: 100%;
   border-radius: 2rem;
@@ -233,7 +233,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .ayuda-profesional-highlight {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
 }
 
 .ayuda-profesional-list {
@@ -244,14 +244,14 @@ button.abre-corp-btn.btn:hover {
 }
 
 .ayuda-profesional-bullet {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.2em;
   line-height: 1;
   margin-top: 0.2em;
 }
 
 .ayuda-profesional-btn {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
   font-size: 1rem;
@@ -327,7 +327,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .costos-florida-card {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   font-family: Arial, sans-serif;
   max-width: 100%;
   border-radius: 2rem;
@@ -337,7 +337,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .costos-florida-section-title {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   font-size: 1.25rem;
   font-weight: 800;
   margin-bottom: 1rem;
@@ -352,7 +352,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .costos-florida-subtitle {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   font-size: 0.95rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
@@ -366,7 +366,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .costos-florida-option-label {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
@@ -381,13 +381,13 @@ button.abre-corp-btn.btn:hover {
 }
 
 .costos-florida-option-time {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
   font-size: 0.95rem;
   font-weight: 600;
 }
 
 .costos-florida-btn {
-  background-color: #2d3748;
+  background-color: var(--color-oscuro-tecnico);
   color: #ffffff;
   border: none;
   font-size: clamp(0.85rem, 2.5vw, 1rem);
@@ -446,7 +446,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .preguntas-frecuentes-title span {
-  color: #02CAE3;
+  color: #006afe;
 }
 
 .preguntas-frecuentes-list {
@@ -469,7 +469,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .preguntas-frecuentes-icon {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.5rem;
   flex-shrink: 0;
   margin-left: 1rem;
@@ -549,13 +549,13 @@ button.abre-corp-btn.btn:hover {
 }
 
 .renovar-llc-card-text {
-  color: #2d3748;
+  color: var(--color-oscuro-tecnico);
   font-size: clamp(0.875rem, 2.5vw, 1rem);
   line-height: 1.6;
 }
 
 .renovar-llc-card-list {
-  color: #2d3748;
+  color: var(--color-oscuro-tecnico);
   font-size: clamp(0.8rem, 2vw, 0.95rem);
   line-height: 1.8;
   padding-left: 1.5rem;
@@ -573,39 +573,39 @@ button.abre-corp-btn.btn:hover {
 }
 
 .veredicto-main-title {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.5rem;
   font-weight: 800;
 }
 
 .veredicto-text {
-  color: #2d3748;
+  color: var(--color-oscuro-tecnico);
   font-size: 0.95rem;
   line-height: 1.7;
 }
 
 .veredicto-section-title {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   font-weight: 800;
 }
 
 .veredicto-list {
-  color: #2d3748;
+  color: var(--color-oscuro-tecnico);
   font-size: clamp(0.9rem, 2vw, 1rem);
   line-height: 1.8;
   padding-left: 0;
 }
 
 .veredicto-bullet {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: 1.2em;
   line-height: 1;
   margin-top: 0.2em;
 }
 
 .veredicto-defentux-card {
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   display: flex;
   flex-direction: column;
   border-radius: 2rem;
@@ -614,7 +614,7 @@ button.abre-corp-btn.btn:hover {
 .veredicto-logo-circle {
   width: 60px;
   height: 60px;
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   border-radius: 50%;
   color: #ffffff;
   font-size: 2rem;
@@ -637,7 +637,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .veredicto-star-filled {
-  color: #00bcd4;
+  color: var(--color-secundario-tecnico);
   font-size: clamp(1.25rem, 3vw, 1.5rem);
 }
 
@@ -653,7 +653,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .veredicto-btn {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
   font-size: clamp(0.95rem, 2vw, 1rem);
@@ -671,7 +671,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .landing-index-card.card .card-header {
-  background: #02CAE3;
+  background: #006afe;
   color: #FFFFFF;
   display: flex;
   gap: 1rem;
@@ -717,7 +717,7 @@ button.abre-corp-btn.btn:hover {
 
 .card-autor .autor-label {
   font-size: 1rem;
-  color: #01c9e2;
+  color: var(--color-secundario-tecnico);
   margin-bottom: 0;
   font-weight: 700;
   line-height: 1;
@@ -742,7 +742,7 @@ button.abre-corp-btn.btn:hover {
 }
 
 .card-autor a.btn.btn-dark.btn-sm.rounded-pill {
-  background: #01c9e2;
+  background: var(--color-secundario-tecnico);
   padding: 0.5rem 1.7rem;
 }
 
@@ -750,7 +750,7 @@ button.abre-corp-btn.btn:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #02CAE3;
+  background-color: #006afe;
   color: #ffffff;
   border: none;
   padding: 0.7rem 1.5rem;
@@ -901,7 +901,7 @@ button.abre-corp-btn.btn:hover {
 
 .promo-summary::before {
   content: "▸";
-  color: #02CAE3;
+  color: #006afe;
   font-size: 1.05rem;
   line-height: 1;
   margin-right: 0.5rem;
