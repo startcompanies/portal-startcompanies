@@ -109,6 +109,7 @@
   margin-bottom: 2rem;
   position: relative;
   z-index: 2;
+  text-align: center;
 }
 
 .request-header h2 {
@@ -125,7 +126,25 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Steps Indicator */
+/* Layout del wizard con indicador a la izquierda */
+.wizard-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 860px;
+}
+
+.wizard-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Steps Indicator (horizontal por defecto) */
 .steps-indicator {
   display: flex;
   justify-content: space-between;
@@ -142,6 +161,44 @@
   height: 2px;
   background: rgba(255, 255, 255, 0.3);
   z-index: 0;
+}
+
+/* Steps Indicator - variante vertical (lado izquierdo) */
+.steps-indicator-vertical {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  flex-direction: column;
+  gap: 0;
+  width: 220px;
+  justify-content: center;
+}
+
+.steps-indicator-vertical::before {
+  top: 20px;
+  bottom: 20px;
+  left: 19px;
+  right: auto;
+  width: 2px;
+  height: auto;
+}
+
+.steps-indicator-vertical .step-item {
+  flex: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  margin-bottom: 0;
+  padding: 1.25rem 0;
+}
+
+.steps-indicator-vertical .step-number {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.steps-indicator-vertical .step-label {
+  text-align: left;
 }
 
 .step-item {
