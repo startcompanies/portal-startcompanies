@@ -76,6 +76,11 @@
   display: block;
 }
 
+.app-post-content a strong,
+.app-post-content a {
+  font-weight: 400;
+}
+
 @media (max-width: 768px) {
   .custom-accordion-button {
     min-width: 100%;
