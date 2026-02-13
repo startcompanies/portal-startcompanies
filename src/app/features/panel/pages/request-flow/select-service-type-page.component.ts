@@ -326,16 +326,9 @@ export class SelectServiceTypePageComponent implements OnInit {
     if (!this.selectedService) {
       return;
     }
-
-    const isPartner = this.authService.isPartner();
-    const isClient = !isPartner;
-    
-    if (isPartner) {
-      // Partners van al flujo de partner
-      this.router.navigate(['/panel/request-flow/partner', this.selectedService]);
-    } else if (isClient) {
-      // Clientes van al flujo de cliente
-      this.router.navigate(['/panel/request-flow/client', this.selectedService]);
-    }
+    // Entrada canónica del flujo: new-request (orquestador + BaseRequestFlowComponent compartido)
+    this.router.navigate(['/panel/new-request'], {
+      queryParams: { serviceType: this.selectedService },
+    });
   }
 }

@@ -26,7 +26,12 @@ export interface RenewalPricingResult {
   providedIn: 'root'
 })
 export class WizardPlansService {
-  // Centralización de planes + reglas para que cambios impacten toda la app.
+  /**
+   * Reglas por plan (Apertura LLC):
+   * - Emprendedor: estado siempre New Mexico; estructura siempre Single Member.
+   * - Elite: estado según selección del usuario; estructura societaria seleccionable (single/multi).
+   * - Premium: estado solo NM o Wyoming; estructura siempre Single Member.
+   */
   private readonly plans: WizardPlan[] = [
     {
       value: 'Entrepreneur',
@@ -34,8 +39,8 @@ export class WizardPlansService {
       price: 499,
       states: ['New Mexico'],
       recommended: true,
-      description: 'Ideal para freelancers, agencias y startups en etapa temprana que no tienen presencia física en EE.UU.',
-      subtitle: 'Constitución de LLC en Nuevo México (Single Member)',
+      description: 'Ideal para freelancers y startups sin presencia en EE.UU.',
+      subtitle: 'LLC en Nuevo México (Single Member)',
       features: [
         'Documentación completa: Artículos de organización, Operating Agreement, EIN.',
         'Consulta gratuita de planificación fiscal.',
@@ -53,8 +58,8 @@ export class WizardPlansService {
       price: 600,
       states: ['all'],
       recommended: false,
-      description: 'Ideal para empresas / emprendedores que tienen presencia física en EE.UU. Eficiencia de impuestos',
-      subtitle: 'Constitución de LLC en cualquier estado (Single Member o Partnership)',
+      description: 'Ideal para quienes tienen presencia física en EE.UU.',
+      subtitle: 'LLC en cualquier estado (Single Member o Partnership)',
       features: [
         'Documentación completa: Artículos de organización, Operating Agreement, EIN.',
         'Consulta gratuita de planificación fiscal.',
@@ -72,8 +77,8 @@ export class WizardPlansService {
       price: 999,
       states: ['New Mexico', 'Wyoming'],
       recommended: false,
-      description: 'Ideal para emprendedores. Solución integral con soporte fiscal y renovación automática.',
-      subtitle: 'Solo para LLCs Single Member en New Mexico o Wyoming',
+      description: 'Solución integral con soporte fiscal y renovación automática.',
+      subtitle: 'Solo NM o Wyoming (Single Member)',
       features: [
         'Documentación completa: Artículos de organización, Operating Agreement, EIN.',
         'Consulta gratuita de planificación fiscal.',

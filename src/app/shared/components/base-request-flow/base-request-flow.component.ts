@@ -44,7 +44,7 @@ import { DraftRequestService } from '../../services/draft-request.service';
           Cancelar
         </a>
         <button 
-          *ngIf="canGoBack()" 
+          *ngIf="canGoBack() && !isServiceFormStep()" 
           type="button"
           class="btn btn-outline-secondary"
           (click)="previousStep()"
@@ -52,9 +52,10 @@ import { DraftRequestService } from '../../services/draft-request.service';
           <i class="bi bi-arrow-left me-2"></i>
           Anterior
         </button>
-        <div *ngIf="!canGoBack() && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
+        <div *ngIf="(!canGoBack() || isServiceFormStep()) && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
+        <!-- En última sección de Información de la LLC el Siguiente va dentro del paso (mismo diseño que Siguiente Sección) -->
         <button 
-          *ngIf="canGoNext()" 
+          *ngIf="canGoNext() && (!isServiceFormStep() || !isInLastSectionOfServiceForm())" 
           type="button"
           class="btn btn-primary"
           (click)="nextStep()"
@@ -78,7 +79,7 @@ import { DraftRequestService } from '../../services/draft-request.service';
         <i class="bi bi-exclamation-triangle me-2"></i>
         {{ errorMessage }}
       </div>
-      <div *ngIf="successMessage" class="alert alert-success mt-3">
+      <div *ngIf="successMessage && !isServiceFormStep()" class="alert alert-success mt-3">
         <i class="bi bi-check-circle me-2"></i>
         {{ successMessage }}
       </div>
@@ -190,7 +191,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Carga un borrador por UUID
+   * Carga un borrador por UUID y restaura el paso actual desde request.currentStep
+   * (y currentStepNumber del sub-request si aplica), para que panel y wizard no vuelvan al paso 1.
    */
   private async loadDraftRequest(uuid: string): Promise<void> {
     if (!this.draftRequestService) return;
@@ -210,39 +212,39 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         this.syncToWizardStateService();
       }
       
-      // Restaurar paso basado en el estado del borrador
-      const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION);
-      const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
-      const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
-      
-      // Determinar paso inicial basado en qué datos están completos
-      if (paymentData?.paymentProcessed) {
-        // Si el pago ya está procesado, ir al paso de servicio o confirmación
-        const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
-        const confirmationStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.CONFIRMATION);
-        if (serviceStepIndex >= 0 && serviceData && Object.keys(serviceData).length > 0) {
-          // Si hay datos del servicio, ir a confirmación
-          if (confirmationStepIndex >= 0) {
+      // Restaurar paso desde la API: request.currentStep es 1-based (paso principal del flujo)
+      const apiStep = (request as any).currentStep;
+      if (typeof apiStep === 'number' && apiStep >= 1) {
+        const desiredIndex = Math.min(apiStep - 1, this.flowSteps.length - 1);
+        this.currentStepIndex = Math.max(0, desiredIndex);
+      } else {
+        // Fallback: inferir paso por datos hidratados (comportamiento anterior)
+        const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION);
+        const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
+        const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
+        
+        if (paymentData?.paymentProcessed) {
+          const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
+          const confirmationStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.CONFIRMATION);
+          if (serviceStepIndex >= 0 && serviceData && Object.keys(serviceData).length > 0 && confirmationStepIndex >= 0) {
             this.currentStepIndex = confirmationStepIndex;
+          } else if (serviceStepIndex >= 0) {
+            this.currentStepIndex = serviceStepIndex;
           }
-        } else if (serviceStepIndex >= 0) {
-          this.currentStepIndex = serviceStepIndex;
-        }
-      } else if (serviceData && Object.keys(serviceData).length > 0) {
-        // Si hay datos del servicio, ir al paso de pago
-        const paymentStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.PAYMENT);
-        if (paymentStepIndex >= 0) {
-          this.currentStepIndex = paymentStepIndex;
-        }
-      } else if (clientSelection?.clientId) {
-        // Si hay cliente, ir al paso de servicio
-        const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
-        if (serviceStepIndex >= 0) {
-          this.currentStepIndex = serviceStepIndex;
+        } else if (serviceData && Object.keys(serviceData).length > 0) {
+          const paymentStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.PAYMENT);
+          if (paymentStepIndex >= 0) {
+            this.currentStepIndex = paymentStepIndex;
+          }
+        } else if (clientSelection?.clientId) {
+          const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
+          if (serviceStepIndex >= 0) {
+            this.currentStepIndex = serviceStepIndex;
+          }
         }
       }
       
-      this.successMessage = 'Borrador cargado exitosamente';
+      // No mostrar mensaje "Borrador cargado exitosamente" en paso Información de la LLC
     } catch (error: any) {
       console.error('[BaseRequestFlowComponent] Error al cargar borrador:', error);
       this.errorMessage = error?.message || 'Error al cargar el borrador';
@@ -287,9 +289,16 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Sincronizar datos del formulario de servicio
-    const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
+    // Sincronizar datos del formulario de servicio (incl. members/owners para el resumen de confirmación)
+    let serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     if (serviceData && Object.keys(serviceData).length > 0) {
+      serviceData = { ...serviceData };
+      if (this.serviceType === 'renovacion-llc' && serviceData.members && !serviceData.owners) {
+        serviceData.owners = serviceData.members;
+      }
+      if (!serviceData.members && serviceData.owners) {
+        serviceData.members = serviceData.owners;
+      }
       this.wizardStateService.setStepData(4, serviceData); // Paso 4 en wizard
     }
     
@@ -307,10 +316,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if (!this.draftRequestService || this.autosaveEnabled) return;
     
     this.autosaveEnabled = true;
-    // Autosave cada 30 segundos
+    // Autosave cada 1 minuto (no tan seguido)
     this.autosaveInterval = setInterval(() => {
       this.performAutosave();
-    }, 30000);
+    }, 60000);
   }
   
   /**
@@ -335,6 +344,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION);
       const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
       const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
+      const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+      const stateData = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION);
       
       // Construir datos para guardar
       const draftData: any = {
@@ -353,12 +364,20 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         draftData.stripeChargeId = paymentData.paymentInfo?.chargeId;
       }
       
-      // Agregar datos específicos del servicio
+      // Agregar datos específicos del servicio (wizard y panel: incluir plan/state o state/llcType para validaciones al recargar)
       if (serviceData) {
         if (this.serviceType === 'apertura-llc') {
-          draftData.aperturaLlcData = serviceData;
+          draftData.aperturaLlcData = {
+            ...serviceData,
+            ...(statePlanData?.plan != null && { plan: statePlanData.plan }),
+            ...(statePlanData?.state != null && { incorporationState: statePlanData.state })
+          };
         } else if (this.serviceType === 'renovacion-llc') {
-          draftData.renovacionLlcData = serviceData;
+          draftData.renovacionLlcData = {
+            ...serviceData,
+            ...(stateData?.state != null && { state: stateData.state }),
+            ...(stateData?.llcType != null && { llcType: stateData.llcType })
+          };
         } else if (this.serviceType === 'cuenta-bancaria') {
           draftData.cuentaBancariaData = serviceData;
         }
@@ -611,6 +630,21 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     const currentStep = this.flowSteps[this.currentStepIndex];
     return currentStep?.step === RequestFlowStep.SERVICE_TYPE_SELECTION;
   }
+
+  /** True cuando el paso actual es Información de la LLC/servicio (no se muestran Anterior/Siguiente salvo Siguiente en última sección) */
+  isServiceFormStep(): boolean {
+    const currentStep = this.flowSteps[this.currentStepIndex];
+    return currentStep?.step === RequestFlowStep.SERVICE_FORM;
+  }
+
+  /** True cuando estamos en la última sección del paso Información de la LLC (mostrar solo botón Siguiente) */
+  isInLastSectionOfServiceForm(): boolean {
+    if (!this.isServiceFormStep()) return false;
+    const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
+    const section = serviceData?.currentSection;
+    // Apertura LLC y Renovación LLC tienen 3 secciones; la última es la 3
+    return section === 3;
+  }
   
   /**
    * Verifica si se puede finalizar el flujo
@@ -665,14 +699,33 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private renderCurrentStep(): void {
     if (!this.stepHost) return;
 
+    const stepConfig = this.flowSteps[this.currentStepIndex];
+    if (!stepConfig) return;
+
+    // Antes de destruir: si el siguiente paso es Confirmación, guardar datos actuales del paso SERVICE_FORM (incl. members)
+    if (stepConfig.step === RequestFlowStep.CONFIRMATION && this.stepComponentRef?.instance) {
+      const instance = this.stepComponentRef.instance;
+      if (typeof instance.getFormData === 'function') {
+        try {
+          const formData = instance.getFormData();
+          const currentService = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
+          this.flowStateService.setStepData(RequestFlowStep.SERVICE_FORM, { ...currentService, ...formData });
+        } catch (e) {
+          console.warn('[BaseRequestFlowComponent] Error al capturar datos del formulario antes de Confirmación:', e);
+        }
+      }
+    }
+
     // limpiar subs anteriores
     this.stepSubscriptions.forEach(s => s.unsubscribe());
     this.stepSubscriptions = [];
     this.stepComponentRef?.destroy();
     this.stepComponentRef = null;
 
-    const stepConfig = this.flowSteps[this.currentStepIndex];
-    if (!stepConfig) return;
+    // Sincronizar flujo → wizard state para que el paso Confirmación muestre el resumen (panel y wizard)
+    if (stepConfig.step === RequestFlowStep.CONFIRMATION) {
+      this.syncToWizardStateService();
+    }
 
     // Por defecto, bloquear next en pasos que dependen de acción interna
     this.currentStepValid = ![
@@ -846,16 +899,27 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         ...currentData,
         currentSection: section
       });
+      // Actualizar el borrador al cambiar de sección (panel) para asegurar que se envían bien los datos
+      if (this.draftRequestId && this.draftRequestService && this.context !== RequestFlowContext.WIZARD) {
+        setTimeout(() => this.performAutosave(), 300);
+      }
+    });
+
+    // Última sección de Información de la LLC: el paso emite nextStepRequested y avanzamos (botón va dentro del panel)
+    subscribeIfEmitter('nextStepRequested', () => {
+      this.nextStep();
     });
 
     // Confirmación: enviar
     subscribeIfEmitter('submitRequest', (evt: any) => {
-      // Propagamos hacia arriba: el wrapper de contexto puede finalizar/llamar APIs.
+      const state = this.flowStateService.getState();
+      // Incluir draftRequestId para que el panel pueda usarlo si payment.requestId no viene
       this.flowCompleted.emit({
-        ...this.flowStateService.getState(),
+        ...state,
         submit: evt,
         serviceType: this.serviceType,
         context: this.context,
+        draftRequestId: this.draftRequestId ?? state?.payment?.requestId ?? undefined,
       });
     });
   }

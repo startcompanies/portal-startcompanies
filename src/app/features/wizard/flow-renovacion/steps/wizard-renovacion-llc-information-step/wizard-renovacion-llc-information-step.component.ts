@@ -23,6 +23,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   @Input() stepNumber: number = 4;
   @Input() previousStepNumber: number = 3;
   @Output() sectionChanged = new EventEmitter<number>();
+  @Output() nextStepRequested = new EventEmitter<void>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;

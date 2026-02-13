@@ -351,7 +351,8 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
     } else if (this.serviceType === 'renovacion-llc') {
       requestData.renovacionLlcData = {
         ...serviceData,
-        state: statePlanData?.state || ''
+        state: statePlanData?.state || '',
+        llcType: statePlanData?.llcType || ''
       };
     } else if (this.serviceType === 'cuenta-bancaria') {
       requestData.cuentaBancariaData = serviceData;

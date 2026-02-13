@@ -67,15 +67,34 @@ export class DraftRequestService {
     let serviceFormData: any = {};
     
     if (request.type === 'apertura-llc' && request.aperturaLlcRequest) {
+      const plan = request.plan ?? (request.aperturaLlcRequest as any)?.plan;
       serviceFormData = {
         ...request.aperturaLlcRequest,
+        ...(plan ? { plan } : {}),
         currentSection: this.inferServiceSection(request, 'apertura-llc')
       };
+      // Hidratar estado/plan para que pasos que lean PLAN_STATE_SELECTION (p. ej. panel-llc-information-step) apliquen forceSingleMember
+      const incorporationState = request.aperturaLlcRequest?.incorporationState;
+      if (plan || incorporationState) {
+        this.flowStateService.setStepData(RequestFlowStep.PLAN_STATE_SELECTION, {
+          state: incorporationState,
+          plan: plan ?? undefined
+        });
+      }
     } else if (request.type === 'renovacion-llc' && request.renovacionLlcRequest) {
       serviceFormData = {
         ...request.renovacionLlcRequest,
         currentSection: this.inferServiceSection(request, 'renovacion-llc')
       };
+      // Hidratar estado + tipo LLC para que al recargar se restauren reglas de renovación (estados permitidos, monto)
+      const r: any = request.renovacionLlcRequest;
+      if (r?.state || r?.llcType) {
+        this.flowStateService.setStepData(RequestFlowStep.STATE_SELECTION, {
+          state: r.state ?? '',
+          llcType: r.llcType ?? '',
+          service: 'Renovación de LLC'
+        });
+      }
     } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest) {
       serviceFormData = {
         ...request.cuentaBancariaRequest,

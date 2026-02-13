@@ -4,10 +4,10 @@
   background: var(--color-fondo-gris);
 }
 
-/* Sidebar */
+/* Sidebar: mismo degradado que el lateral del wizard */
 .sidebar {
   width: 260px;
-  background: var(--color-primario);
+  background: linear-gradient(180deg, var(--color-primario) 0%, var(--color-secundario-tecnico) 100%);
   color: white;
   display: flex;
   flex-direction: column;

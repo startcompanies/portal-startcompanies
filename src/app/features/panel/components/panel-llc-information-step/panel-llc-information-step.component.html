@@ -7,11 +7,6 @@
     <p class="text-muted">
       Completa la información de tu LLC. El estado de incorporación será el seleccionado en el paso anterior.
     </p>
-    <!-- Mostrar el estado seleccionado -->
-    <div class="alert alert-info mt-3" *ngIf="serviceDataForm.get('incorporationState')?.value">
-      <i class="bi bi-geo-alt me-2"></i>
-      <strong>Estado de incorporación:</strong> {{ serviceDataForm.get('incorporationState')?.value }}
-    </div>
   </div>
   
   <!-- Usar el componente compartido apertura-llc-form -->
@@ -32,8 +27,8 @@
     ></app-apertura-llc-form>
   </div>
   
-  <!-- Navegación entre secciones del formulario (solo para secciones 1 y 2) -->
-  <div class="section-actions" *ngIf="currentSection < 3">
+  <!-- Navegación entre secciones del formulario -->
+  <div class="section-actions">
     <button 
       type="button" 
       class="btn btn-outline-secondary"
@@ -46,6 +41,7 @@
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
     
+    <!-- Secciones 1 y 2: Siguiente Sección. Sección 3: Siguiente (ir a Confirmación), mismo estilo que Siguiente Sección -->
     <button 
       type="button" 
       class="btn btn-primary"
@@ -54,6 +50,16 @@
       *ngIf="currentSection < 3"
     >
       Siguiente Sección
+      <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-primary"
+      (click)="nextStepRequested.emit()"
+      [disabled]="!isSectionValid()"
+      *ngIf="currentSection === 3"
+    >
+      Siguiente
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
   </div>

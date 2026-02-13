@@ -30,6 +30,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
+  @Output() nextStepRequested = new EventEmitter<void>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -228,14 +229,16 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Obtener el estado seleccionado del paso anterior (estado y plan)
+    // Obtener el estado seleccionado del paso anterior (estado y plan), o del request hidratado (request.plan)
     const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const planFromService = (dataToLoad as any)?.plan; // Al recargar, el plan viene en request.plan y se hidrata en SERVICE_FORM
+    const effectivePlan = statePlanData?.plan ?? planFromService;
     if (statePlanData && statePlanData.state) {
       this.serviceDataForm.get('incorporationState')?.setValue(statePlanData.state);
     }
 
-    // Verificar restricción de plan
-    if (statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur') {
+    // Verificar restricción de plan (usar effectivePlan para que funcione al recargar con request.plan)
+    if (effectivePlan === 'Premium' || effectivePlan === 'Entrepreneur') {
       this.forceSingleMember = true;
       const llcTypeControl = this.serviceDataForm.get('llcType');
       if (llcTypeControl && llcTypeControl.value !== 'single') {
@@ -493,6 +496,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     if (this.currentSection > 1) {
       this.currentSection--;
       this.sectionChanged.emit(this.currentSection);
+      this.saveStepData(); // Actualizar estado del flujo para visibilidad de botones del base
       this.updateStepValidity();
     }
   }
@@ -509,6 +513,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     if (this.currentSection < 3) {
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
+      this.saveStepData(); // Actualizar estado del flujo para que el base muestre Siguiente en última sección
       this.updateStepValidity();
     }
   }

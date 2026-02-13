@@ -43,6 +43,7 @@ import { firstValueFrom } from 'rxjs';
       <app-panel-client-request-flow
         *ngIf="!isPartner && clientFlowConfig"
         [serviceType]="clientFlowConfig.serviceType"
+        [draftRequestUuid]="clientFlowConfig.draftRequestUuid"
         (flowCompleted)="onFlowCompleted()"
         (flowCancelled)="onFlowCancelled()">
       </app-panel-client-request-flow>
@@ -98,6 +99,7 @@ export class NewRequestComponent implements OnInit {
 
   clientFlowConfig: {
     serviceType: ServiceType | null;
+    draftRequestUuid: string | null;
   } | null = null;
 
   constructor(
@@ -139,7 +141,7 @@ export class NewRequestComponent implements OnInit {
         return;
       }
 
-      // Caso 4: Nueva solicitud con serviceType
+      // Caso 4: Nueva solicitud con serviceType (sin borrador)
       this.initializeFlow(serviceTypeParam, null, null);
 
     } catch (error: any) {
@@ -254,7 +256,8 @@ export class NewRequestComponent implements OnInit {
       };
     } else {
       this.clientFlowConfig = {
-        serviceType
+        serviceType,
+        draftRequestUuid
       };
     }
     this.isLoading = false;
@@ -262,16 +265,18 @@ export class NewRequestComponent implements OnInit {
 
   /**
    * Valida que el usuario tenga acceso a la solicitud
+   * - Partner: acceso a solicitudes de sus clientes (por ahora permitido; TODO: validar relación).
+   * - Cliente: solo si la solicitud está asignada a su usuario (request.client.userId === currentUser.id).
+   *   request.clientId es el id del registro Client; el usuario se identifica por client.userId.
    */
   private hasAccessToRequest(request: any): boolean {
     if (this.isPartner) {
-      // Partners pueden acceder a solicitudes de sus clientes
       return true; // TODO: Validar relación partner-cliente
-    } else {
-      // Clientes solo pueden acceder a sus propias solicitudes
-      const currentUser = this.authService.getCurrentUser();
-      return request.clientId === currentUser?.id;
     }
+    const currentUser = this.authService.getCurrentUser();
+    if (!currentUser?.id) return false;
+    // La solicitud pertenece al cliente cuyo userId es el usuario actual
+    return request.client?.userId === currentUser.id;
   }
 
   /**

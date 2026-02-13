@@ -509,7 +509,8 @@ export const routes: Routes = [
           }
         ]
       },
-      // Request Flow unificado (nuevo) - para pruebas/migración incremental
+      // request-flow: solo select-service (elección de tipo). El flujo real vive en new-request.
+      // client/:serviceType y partner/:serviceType redirigen a new-request para una sola entrada canónica.
       {
         path: 'request-flow',
         canActivate: [authGuard],
@@ -527,16 +528,16 @@ export const routes: Routes = [
             path: 'client/:serviceType',
             canActivate: [authGuard, roleGuard(['client'])],
             loadComponent: () =>
-              import('../features/panel/pages/request-flow/panel-client-request-flow-page.component').then(
-                (m) => m.PanelClientRequestFlowPageComponent
+              import('../features/panel/pages/request-flow/request-flow-redirect.component').then(
+                (m) => m.RequestFlowRedirectComponent
               ),
           },
           {
             path: 'partner/:serviceType',
             canActivate: [authGuard, roleGuard(['partner'])],
             loadComponent: () =>
-              import('../features/panel/pages/request-flow/panel-partner-request-flow-page.component').then(
-                (m) => m.PanelPartnerRequestFlowPageComponent
+              import('../features/panel/pages/request-flow/request-flow-redirect.component').then(
+                (m) => m.RequestFlowRedirectComponent
               ),
           },
         ],

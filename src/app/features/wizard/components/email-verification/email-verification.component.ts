@@ -105,10 +105,10 @@ import { firstValueFrom } from 'rxjs';
         margin: 0 auto;
       }
       .verification-card {
-        background: white;
-        border-radius: 12px;
-        padding: 2rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
       }
       .code-digit {
         width: 50px;

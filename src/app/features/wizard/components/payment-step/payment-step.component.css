@@ -1,16 +1,131 @@
 .payment-step {
-  padding: 1rem 0;
+  padding: 0.5rem 0;
+}
+
+/* Resumen compacto */
+.payment-summary {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.payment-summary__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro, #1f2937);
+  margin: 0 0 0.5rem 0;
+}
+
+.payment-summary__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: center;
+}
+
+.payment-summary__item {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.payment-summary__item strong {
+  color: #374151;
+  margin-right: 0.25rem;
+}
+
+/* Método de pago */
+.payment-methods {
+  margin-bottom: 1rem;
+}
+
+.payment-methods__label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro, #374151);
+  margin-bottom: 0.5rem;
+}
+
+.payment-methods__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.payment-method-option {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.payment-method-option:hover {
+  border-color: var(--color-secundario-tecnico, #01c9e2);
+}
+
+.payment-method-option.selected {
+  border-color: var(--color-secundario-tecnico, #01c9e2);
+  background: rgba(1, 201, 226, 0.06);
+}
+
+.payment-method-option__label {
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro, #374151);
+}
+
+/* Sección tarjeta / transferencia */
+.payment-card-section,
+.payment-transfer-section {
+  margin-top: 0.5rem;
+}
+
+.payment-card-section__security {
+  display: flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.payment-transfer-section__info {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.payment-transfer-section__bank {
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.payment-transfer-section__bank code {
+  font-size: 0.75rem;
+  background: #e9ecef;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.payment-transfer-section__upload {
+  margin-top: 0.5rem;
 }
 
 .payment-step h4 {
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: #1f2937;
   font-weight: 600;
+  font-size: 1rem;
 }
 
 .payment-step p {
   color: #6b7280;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
 }
 
 .payment-step .list-group {

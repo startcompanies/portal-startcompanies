@@ -148,7 +148,7 @@ export class RequestFlowConfigService {
                 required: true,
                 component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_CLIENT),
             order: clientBaseOrder + (serviceType === 'cuenta-bancaria' ? 2 : 3),
-            label: 'Información del Servicio',
+            label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Información del Servicio',
             icon: 'bi-file-text'
           },
           { 
@@ -198,7 +198,7 @@ export class RequestFlowConfigService {
                 required: true,
                 component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_PARTNER),
             order: partnerBaseOrder + (serviceType === 'cuenta-bancaria' ? 1 : 2),
-            label: 'Datos del Servicio',
+            label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Datos del Servicio',
             icon: 'bi-file-text'
           },
           { 

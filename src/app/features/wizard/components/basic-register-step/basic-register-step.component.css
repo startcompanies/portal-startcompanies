@@ -161,3 +161,24 @@
 .input-group .form-control:focus + .btn-outline-secondary {
   border-color: var(--color-primario, #0068BD);
 }
+
+/* Móvil/tablet: un solo input por fila */
+@media (max-width: 900px) {
+  .basic-register-step .row {
+    flex-direction: column;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .basic-register-step .row > .col {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .basic-register-step .form-group {
+    margin-bottom: 1.25rem;
+  }
+}
