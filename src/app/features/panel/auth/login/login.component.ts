@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { filter, take, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -11,11 +12,12 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
   showPassword = false;
+  private userSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +29,26 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
+  }
+
+  ngOnInit(): void {
+    // Si loadUser() terminó y ya hay sesión, redirigir
+    this.userSub = this.authService.currentUser$
+      .pipe(filter((user) => !!user), take(1))
+      .subscribe((user) => {
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (returnUrl) {
+          this.router.navigateByUrl(returnUrl);
+        } else if (user?.type === 'admin') {
+          this.router.navigate(['/panel/dashboard']);
+        } else {
+          this.router.navigate(['/panel/client-dashboard']);
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.userSub?.unsubscribe();
   }
 
   /**
@@ -70,7 +92,7 @@ export class LoginComponent {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || error.message || 'Error al iniciar sesión. Verifica tus credenciales.';
+          this.errorMessage = error?.error?.message ?? error?.message ?? 'Error al iniciar sesión. Verifica tus credenciales.';
           console.error('Login error:', error);
         }
       });

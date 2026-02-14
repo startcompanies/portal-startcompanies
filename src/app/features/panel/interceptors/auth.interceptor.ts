@@ -1,68 +1,42 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const token = authService.getToken();
-  
-  // Log para debugging (solo en desarrollo)
+  const isAuthEndpoint =
+    req.url.includes('/auth/signin') || req.url.includes('/auth/refresh');
+
+  const cloned = req.clone({ withCredentials: true });
+
   if (req.url.includes('/panel/requests')) {
     console.log('[AuthInterceptor] Request URL:', req.url);
-    console.log('[AuthInterceptor] Token presente:', !!token);
     console.log('[AuthInterceptor] Method:', req.method);
   }
-  
-  // Agregar token a las peticiones si existe
-  if (token) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-  } else if (req.url.includes('/panel/requests')) {
-    console.warn('[AuthInterceptor] ⚠️ No hay token disponible para la petición a /panel/requests');
-  }
 
-  return next(req).pipe(
+  return next(cloned).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Si es error 401 y no es una petición de refresh
-      if (error.status === 401 && !req.url.includes('/auth/refresh')) {
-        // NO cerrar sesión si el error viene de endpoints de Zoho
-        // Estos errores son de configuración de Zoho, no de autenticación del usuario
-        const isZohoEndpoint = req.url.includes('/zoho-sync/') || req.url.includes('/orgTk/');
-        
-        if (isZohoEndpoint) {
-          // Para endpoints de Zoho, solo propagar el error sin cerrar sesión
-          return throwError(() => error);
-        }
-
-        const hasSession = !!token;
-
-        // Si no hay sesión, no redirigir (evita bloquear rutas públicas como /blog)
-        if (!hasSession) {
-          return throwError(() => error);
-        }
-
-        // Error 401 con sesión activa: cerrar sesión y redirigir al login
-        authService.logout();
-        router.navigate(['/panel/login']);
+      if (error.status !== 401 || isAuthEndpoint) {
+        return throwError(() => error);
       }
-      return throwError(() => error);
+
+      const isZohoEndpoint = req.url.includes('/zoho-sync/') || req.url.includes('/orgTk/');
+      if (isZohoEndpoint) {
+        return throwError(() => error);
+      }
+
+      return authService.refresh().pipe(
+        switchMap(() => next(cloned)),
+        catchError(() => {
+          authService.logout();
+          router.navigate(['/panel/login']);
+          return throwError(() => error);
+        })
+      );
     })
   );
 };
-
-
-
-
-
-
-
-
-
-

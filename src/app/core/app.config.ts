@@ -2,7 +2,6 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   isDevMode,
-  PLATFORM_ID,
   APP_INITIALIZER,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -21,7 +20,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeBootstrapComponents } from '../shared/bootstrap-imports';
 import { LanguageService } from '../shared/services/language.service';
-/*import { isPlatformBrowser } from '@angular/common';*/
+import { AuthService } from '../features/panel/services/auth.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -45,13 +44,20 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader,
     }),
-    // Añadir APP_INITIALIZER al final (o donde quieras en el array)
     {
       provide: APP_INITIALIZER,
-      useFactory: (ls: LanguageService) => {
-        return () => ls.init();
-      },
+      useFactory: (ls: LanguageService) => () => ls.init(),
       deps: [LanguageService],
+      multi: true,
+    },
+    // Cargar usuario en segundo plano (no bloquea el arranque)
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (auth: AuthService) => () => {
+        auth.loadUser();
+        return Promise.resolve();
+      },
+      deps: [AuthService],
       multi: true,
     },
     // NOTA: provideAnimations() y provideServiceWorker() se mueven a main.ts (browser)
