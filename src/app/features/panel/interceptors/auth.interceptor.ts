@@ -9,7 +9,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   const isAuthEndpoint =
-    req.url.includes('/auth/signin') || req.url.includes('/auth/refresh');
+    req.url.includes('/auth/signin') ||
+    req.url.includes('/auth/refresh') ||
+    req.url.includes('/auth/me');
 
   const cloned = req.clone({ withCredentials: true });
 
