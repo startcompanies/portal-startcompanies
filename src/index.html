@@ -51,13 +51,13 @@
   <meta name="twitter:description" content="Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.">
   <meta name="twitter:image" content="https://startcompanies.us/assets/logo-dark.webp">
 
-  <!-- Canonical URL -->
+  <!-- Canonical URL (actualizado por environment.baseUrl al iniciar la app) -->
   <link rel="canonical" href="https://startcompanies.us">
 
-  <!-- Schema.org JSON-LD para detectar perfiles sociales -->
-  <script type="application/ld+json">
+  <!-- Schema.org JSON-LD Organization (URLs actualizadas por environment.baseUrl al iniciar) -->
+  <script id="organization-schema" type="application/ld+json">
   {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Start Companies",
     "url": "https://startcompanies.us",
@@ -90,6 +90,18 @@
     "foundingDate": "2020",
     "areaServed": "Worldwide",
     "serviceType": "LLC Formation and Banking Services"
+  }
+  </script>
+
+  <!-- Schema.org JSON-LD WebSite (URL actualizada por environment.baseUrl al iniciar) -->
+  <script id="website-schema" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Start Companies",
+    "alternateName": "Start Companies",
+    "description": "Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía.",
+    "url": "https://startcompanies.us"
   }
   </script>
 

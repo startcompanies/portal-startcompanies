@@ -1083,7 +1083,7 @@ export class PostContentComponent
 
     return `
       <div class="mid-post-cta-inner">
-        <h3 class="mid-post-cta-title">Abre tu Corp en cualquier</h3>
+        <h3 class="mid-post-cta-title">Abre tu LLC en cualquier</h3>
         <h3 class="mid-post-cta-subtitle">estado de USA</h3>
         <p class="mid-post-cta-text text-center">
           Tu LLC operativa en menos de 25 días, desde $499 USD, en menos de 10 días.<br/>Agenda una consulta gratuita para resolver todas tus dudas.

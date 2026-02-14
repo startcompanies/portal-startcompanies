@@ -2,6 +2,7 @@ import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { BrowserService } from './browser.service';
+import { environment } from '../../../environments/environment';
 
 export interface SeoData {
   title: string;
@@ -62,7 +63,10 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: data.twitterTitle || data.title });
     this.meta.updateTag({ name: 'twitter:description', content: data.twitterDescription || data.description });
-    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || 'https://startcompanies.us/assets/logo.png' });
+    this.meta.updateTag({
+      name: 'twitter:image',
+      content: data.twitterImage || `${environment.baseUrl.replace(/\/$/, '')}/assets/logo-dark.webp`,
+    });
     
     // Twitter Site (nuevo)
     if (data.twitterSite) {

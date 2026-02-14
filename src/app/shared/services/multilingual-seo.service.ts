@@ -4,6 +4,7 @@ import { Meta, Title } from '@angular/platform-browser';
 import { TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { BrowserService } from './browser.service';
+import { environment } from '../../../environments/environment';
 
 export interface MultilingualSeoData {
   title: string;
@@ -33,7 +34,7 @@ export interface SeoRouteConfig {
   providedIn: 'root'
 })
 export class MultilingualSeoService {
-  private readonly baseUrl = 'https://startcompanies.us';
+  private readonly baseUrl = environment.baseUrl.replace(/\/$/, '');
   private readonly defaultImage = '/assets/logo-dark.webp';
 
   constructor(
