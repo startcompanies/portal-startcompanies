@@ -1,6 +1,6 @@
 # Portal StartCompanies
 
-Portal web para Start Companies LLC - Servicios de apertura de LLC y cuentas bancarias en Estados Unidos.
+Portal web para Start Companies - Servicios de apertura de LLC y cuentas bancarias en Estados Unidos.
 
 Este proyecto fue generado con [Angular CLI](https://github.com/angular/angular-cli) version 18.2.14.
 
@@ -298,7 +298,7 @@ Ver `DOCKER_BUILD.md` para más detalles (si existe).
 
 ## Licencia
 
-Este proyecto es privado y propiedad de Start Companies LLC.
+Este proyecto es privado y propiedad de Start Companies.
 
 ## Ayuda Adicional
 

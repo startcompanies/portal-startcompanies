@@ -207,151 +207,151 @@ export class MultilingualSeoService {
     return {
       'home': {
         'es': {
-          title: 'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
+          title: 'Start Companies - Apertura de Cuentas Bancarias en EE.UU.',
           description: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
           keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
-          ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
+          ogTitle: 'Start Companies - Cuentas Bancarias para LLC en EE.UU.',
           ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
           canonical: `${this.baseUrl}/`
         },
         'en': {
-          title: 'Start Companies LLC - US Bank Account Opening Services',
+          title: 'Start Companies - US Bank Account Opening Services',
           description: 'We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.',
           keywords: 'LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services',
-          ogTitle: 'Start Companies LLC - US Bank Account Services',
+          ogTitle: 'Start Companies - US Bank Account Services',
           ogDescription: 'We open bank accounts for LLCs in the United States. 100% online service with no fees.',
           canonical: `${this.baseUrl}/en/home`
         }
       },
       'inicio': {
         'es': {
-          title: 'Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.',
+          title: 'Start Companies - Apertura de Cuentas Bancarias en EE.UU.',
           description: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.',
           keywords: 'LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros',
-          ogTitle: 'Start Companies LLC - Cuentas Bancarias para LLC en EE.UU.',
+          ogTitle: 'Start Companies - Cuentas Bancarias para LLC en EE.UU.',
           ogDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.',
           canonical: `${this.baseUrl}/`
         },
         'en': {
-          title: 'Start Companies LLC - US Bank Account Opening Services',
+          title: 'Start Companies - US Bank Account Opening Services',
           description: 'We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.',
           keywords: 'LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services',
-          ogTitle: 'Start Companies LLC - US Bank Account Services',
+          ogTitle: 'Start Companies - US Bank Account Services',
           ogDescription: 'We open bank accounts for LLCs in the United States. 100% online service with no fees.',
           canonical: `${this.baseUrl}/en/home`
         }
       },
       'nosotros': {
         'es': {
-          title: 'Nosotros - Start Companies LLC | Experiencia en Servicios Financieros',
+          title: 'Nosotros - Start Companies | Experiencia en Servicios Financieros',
           description: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.',
           keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
-          ogTitle: 'Nosotros - Start Companies LLC',
+          ogTitle: 'Nosotros - Start Companies',
           ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
           canonical: `${this.baseUrl}/nosotros`
         },
         'en': {
-          title: 'About Us - Start Companies LLC | Financial Services Experience',
+          title: 'About Us - Start Companies | Financial Services Experience',
           description: 'Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.',
           keywords: 'Start Companies team, financial services experience, about us, entrepreneur trust',
-          ogTitle: 'About Us - Start Companies LLC',
+          ogTitle: 'About Us - Start Companies',
           ogDescription: 'Meet our team and experience in financial services for LLCs in the United States.',
           canonical: `${this.baseUrl}/en/about-us`
         }
       },
       'contacto': {
         'es': {
-          title: 'Contacto - Start Companies LLC | Habla con Nuestros Expertos',
+          title: 'Contacto - Start Companies | Habla con Nuestros Expertos',
           description: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.',
           keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
-          ogTitle: 'Contacto - Start Companies LLC',
+          ogTitle: 'Contacto - Start Companies',
           ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
           canonical: `${this.baseUrl}/contacto`
         },
         'en': {
-          title: 'Contact - Start Companies LLC | Talk to Our Experts',
+          title: 'Contact - Start Companies | Talk to Our Experts',
           description: 'Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.',
           keywords: 'Start Companies contact, LLC support, financial services experts, bank account help',
-          ogTitle: 'Contact - Start Companies LLC',
+          ogTitle: 'Contact - Start Companies',
           ogDescription: 'Contact our experts in financial services for LLCs in the United States.',
           canonical: `${this.baseUrl}/en/contact`
         }
       },
       'planes': {
         'es': {
-          title: 'Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.',
+          title: 'Planes y Precios - Start Companies | Servicios para LLC en EE.UU.',
           description: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.',
           keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
-          ogTitle: 'Planes y Precios - Start Companies LLC',
+          ogTitle: 'Planes y Precios - Start Companies',
           ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
           canonical: `${this.baseUrl}/planes`
         },
         'en': {
-          title: 'Plans and Pricing - Start Companies LLC | US LLC Services',
+          title: 'Plans and Pricing - Start Companies | US LLC Services',
           description: 'Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.',
           keywords: 'US LLC plans, bank account pricing, Start Companies services, LLC formation USA',
-          ogTitle: 'Plans and Pricing - Start Companies LLC',
+          ogTitle: 'Plans and Pricing - Start Companies',
           ogDescription: 'Discover our plans for LLC formation and bank accounts in the United States.',
           canonical: `${this.baseUrl}/en/plans`
         }
       },
       'blog': {
         'es': {
-          title: 'Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.',
+          title: 'Blog - Start Companies | Noticias y Consejos para LLC en EE.UU.',
           description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
           keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
-          ogTitle: 'Blog - Start Companies LLC',
+          ogTitle: 'Blog - Start Companies',
           ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
           canonical: `${this.baseUrl}/blog`
         },
         'en': {
-          title: 'Blog - Start Companies LLC | News and Tips for US LLCs',
+          title: 'Blog - Start Companies | News and Tips for US LLCs',
           description: 'Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.',
           keywords: 'US LLC blog, bank account tips, financial news, Start Companies blog',
-          ogTitle: 'Blog - Start Companies LLC',
+          ogTitle: 'Blog - Start Companies',
           ogDescription: 'Stay informed about LLCs, bank accounts and financial services in the United States.',
           canonical: `${this.baseUrl}/blog` // Redirigir al blog en español
         }
       },
       'abre-tu-llc': {
         'es': {
-          title: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+          title: 'Abre tu LLC en Estados Unidos - Start Companies',
           description: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
           keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-          ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies LLC',
+          ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies',
           ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
           canonical: `${this.baseUrl}/abre-tu-llc`
         },
         'en': {
-          title: 'Open your LLC in the United States - Start Companies LLC',
+          title: 'Open your LLC in the United States - Start Companies',
           description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
           keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
-          ogTitle: 'Open your LLC in the United States - Start Companies LLC',
+          ogTitle: 'Open your LLC in the United States - Start Companies',
           ogDescription: 'We open your LLC in the United States quickly and safely.',
           canonical: `${this.baseUrl}/en/llc-formation`
         }
       },
       'apertura-banco-relay': {
         'es': {
-          title: 'Apertura de Banco Relay - Start Companies LLC',
+          title: 'Apertura de Banco Relay - Start Companies',
           description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Proceso simple y 100% online.',
           keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-          ogTitle: 'Apertura de Banco Relay - Start Companies LLC',
+          ogTitle: 'Apertura de Banco Relay - Start Companies',
           ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
           canonical: `${this.baseUrl}/apertura-banco-relay`
         },
         'en': {
-          title: 'Relay Bank Opening - Start Companies LLC',
+          title: 'Relay Bank Opening - Start Companies',
           description: 'We open your Relay bank account for LLCs in the United States. Simple process and 100% online.',
           keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
-          ogTitle: 'Relay Bank Opening - Start Companies LLC',
+          ogTitle: 'Relay Bank Opening - Start Companies',
           ogDescription: 'We open your Relay bank account for LLCs in the United States.',
           canonical: `${this.baseUrl}/en/relay-account-opening`
         }
       },
       'agendar': {
         'es': {
-          title: 'Agendar - Start Companies LLC',
+          title: 'Agendar - Start Companies',
           description: 'Agenda una consulta con nuestros expertos.',
           keywords: 'agendar consulta, Start Companies, asesoría experta',
           ogTitle: 'Agendar',
@@ -359,7 +359,7 @@ export class MultilingualSeoService {
           canonical: `${this.baseUrl}/agendar`
         },
         'en': {
-          title: 'Schedule - Start Companies LLC',
+          title: 'Schedule - Start Companies',
           description: 'Schedule a consultation with our experts.',
           keywords: 'schedule consultation, Start Companies, expert advice',
           ogTitle: 'Schedule',
@@ -369,54 +369,54 @@ export class MultilingualSeoService {
       },
       'apertura-llc': {
         'es': {
-          title: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
+          title: 'Apertura de LLC en Estados Unidos - Start Companies',
           description: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
           keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-          ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies LLC',
+          ogTitle: 'Apertura de LLC en Estados Unidos - Start Companies',
           ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
           canonical: `${this.baseUrl}/apertura-llc`
         },
         'en': {
-          title: 'LLC Opening in the United States - Start Companies LLC',
+          title: 'LLC Opening in the United States - Start Companies',
           description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
           keywords: 'LLC opening United States, create LLC USA, business formation USA, Start Companies',
-          ogTitle: 'LLC Opening in the United States - Start Companies LLC',
+          ogTitle: 'LLC Opening in the United States - Start Companies',
           ogDescription: 'We open your LLC in the United States quickly and safely.',
           canonical: `${this.baseUrl}/en/llc-opening`
         }
       },
       'renovar-llc': {
         'es': {
-          title: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
+          title: 'Renovación de LLC en Estados Unidos - Start Companies',
           description: 'Renovamos tu LLC en Estados Unidos antes de que expire. Evita multas y mantén tu empresa activa.',
           keywords: 'renovación LLC Estados Unidos, renovar LLC USA, mantener LLC activa, Start Companies',
-          ogTitle: 'Renovación de LLC en Estados Unidos - Start Companies LLC',
+          ogTitle: 'Renovación de LLC en Estados Unidos - Start Companies',
           ogDescription: 'Renovamos tu LLC en Estados Unidos antes de que expire.',
           canonical: `${this.baseUrl}/renovar-llc`
         },
         'en': {
-          title: 'LLC Renewal in the United States - Start Companies LLC',
+          title: 'LLC Renewal in the United States - Start Companies',
           description: 'We renew your LLC in the United States before it expires. Avoid penalties and keep your business active.',
           keywords: 'LLC renewal United States, renew LLC USA, keep LLC active, Start Companies',
-          ogTitle: 'LLC Renewal in the United States - Start Companies LLC',
+          ogTitle: 'LLC Renewal in the United States - Start Companies',
           ogDescription: 'We renew your LLC in the United States before it expires.',
           canonical: `${this.baseUrl}/en/llc-renewal`
         }
       },
       'form-apertura-relay': {
         'es': {
-          title: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
+          title: 'Apertura de Cuenta Bancaria Relay - Start Companies',
           description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
           keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-          ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies LLC',
+          ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies',
           ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
           canonical: `${this.baseUrl}/form-apertura-relay`
         },
         'en': {
-          title: 'Relay Bank Account Opening - Start Companies LLC',
+          title: 'Relay Bank Account Opening - Start Companies',
           description: 'We open your Relay bank account for LLCs in the United States. Simple form and 100% online process.',
           keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
-          ogTitle: 'Relay Bank Account Opening - Start Companies LLC',
+          ogTitle: 'Relay Bank Account Opening - Start Companies',
           ogDescription: 'We open your Relay bank account for LLCs in the United States.',
           canonical: `${this.baseUrl}/en/relay-opening-form`
         }
@@ -429,7 +429,7 @@ export class MultilingualSeoService {
    */
   private getDefaultSeoData(lang: string): MultilingualSeoData {
     const defaultData = {
-      title: 'Start Companies LLC - Servicios Financieros para LLC en EE.UU.',
+      title: 'Start Companies - Servicios Financieros para LLC en EE.UU.',
       description: 'Servicios completos para apertura de LLC y cuentas bancarias en Estados Unidos.',
       keywords: 'LLC Estados Unidos, servicios financieros, Start Companies',
       canonical: `${this.baseUrl}/${lang}`
@@ -438,7 +438,7 @@ export class MultilingualSeoService {
     if (lang === 'en') {
       return {
         ...defaultData,
-        title: 'Start Companies LLC - Financial Services for US LLCs',
+        title: 'Start Companies - Financial Services for US LLCs',
         description: 'Complete services for LLC formation and bank accounts in the United States.',
         keywords: 'US LLC, financial services, Start Companies'
       };
