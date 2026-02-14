@@ -129,8 +129,9 @@
 
 /* ============================================================================
    ABRE CORP CARD - Tarjeta de promoción de servicios
+   Scoped to .app-post-content para ganar especificidad sobre Bootstrap
    ============================================================================ */
-.abre-corp-card {
+.app-post-content .abre-corp-card {
   background-color: var(--color-oscuro-tecnico);
   max-width: 100%;
   min-height: 450px;
@@ -139,7 +140,7 @@
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.abre-corp-title {
+.app-post-content .abre-corp-title {
   color: #ffffff;
   font-size: 1.7rem;
   font-weight: 800;
@@ -148,11 +149,11 @@
   text-align: left;
 }
 
-.abre-corp-highlight {
+.app-post-content .abre-corp-highlight {
   color: var(--color-secundario-tecnico);
 }
 
-.abre-corp-list {
+.app-post-content .abre-corp-list {
   color: #ffffff;
   font-size: 1rem;
   line-height: 1.8;
@@ -160,7 +161,7 @@
   margin: 0;
 }
 
-.abre-corp-bullet {
+.app-post-content .abre-corp-bullet {
   color: #ffffff;
   font-size: 1rem;
   line-height: 1;
@@ -168,7 +169,8 @@
   margin-right: 0.5rem;
 }
 
-button.abre-corp-btn.btn, a.abre-corp-btn.btn {
+.app-post-content button.abre-corp-btn.btn,
+.app-post-content a.abre-corp-btn.btn {
   background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
@@ -180,12 +182,13 @@ button.abre-corp-btn.btn, a.abre-corp-btn.btn {
   transition: background-color 0.3s ease;
 }
 
-button.abre-corp-btn.btn:hover, a.abre-corp-btn.btn:hover {
+.app-post-content button.abre-corp-btn.btn:hover,
+.app-post-content a.abre-corp-btn.btn:hover {
   background-color: #00acc1;
   color: #ffffff;
 }
 
-.abre-corp-calendar-container {
+.app-post-content .abre-corp-calendar-container {
   background-color: #ffffff;
   max-height: 400px;
   width: 100%;
@@ -196,15 +199,15 @@ button.abre-corp-btn.btn:hover, a.abre-corp-btn.btn:hover {
 }
 
 @media (max-width: 768px) {
-  .abre-corp-card {
+  .app-post-content .abre-corp-card {
     padding: 2.5rem 2rem;
   }
 
-  .abre-corp-title {
+  .app-post-content .abre-corp-title {
     font-size: 1.6rem;
   }
 
-  .abre-corp-btn {
+  .app-post-content .abre-corp-btn {
     font-size: 0.9rem;
   }
 }
