@@ -168,7 +168,7 @@
   margin-right: 0.5rem;
 }
 
-abre-corp-btn.btn {
+button.abre-corp-btn.btn, a.abre-corp-btn.btn {
   background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
@@ -180,7 +180,7 @@ abre-corp-btn.btn {
   transition: background-color 0.3s ease;
 }
 
-abre-corp-btn.btn:hover {
+button.abre-corp-btn.btn:hover, a.abre-corp-btn.btn:hover {
   background-color: #00acc1;
   color: #ffffff;
 }
