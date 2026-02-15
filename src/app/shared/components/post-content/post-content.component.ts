@@ -1009,6 +1009,11 @@ export class PostContentComponent
         return content;
       }
 
+      // No inyectar CTA si ya existe la sección abre-corp (calendario + CTA desde panel)
+      if (tempDiv.querySelector('.abre-corp-card')) {
+        return content;
+      }
+
       const headings = Array.from(
         tempDiv.querySelectorAll('h2, h3, h4, h5, h6'),
       );
