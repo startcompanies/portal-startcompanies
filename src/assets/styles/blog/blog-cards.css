@@ -170,7 +170,8 @@
 }
 
 .app-post-content button.abre-corp-btn.btn,
-.app-post-content a.abre-corp-btn.btn {
+.app-post-content a.abre-corp-btn.btn,
+.abre-corp-btn.btn {
   background-color: var(--color-secundario-tecnico);
   color: #ffffff;
   border: none;
@@ -183,8 +184,10 @@
 }
 
 .app-post-content button.abre-corp-btn.btn:hover,
-.app-post-content a.abre-corp-btn.btn:hover {
-  background-color: #00acc1;
+.app-post-content a.abre-corp-btn.btn:hover,
+.abre-corp-btn.btn:hover {
+  background-color: var(--color-secundario-tecnico);
+  opacity: 0.9;
   color: #ffffff;
 }
 

@@ -1009,26 +1009,32 @@ export class PostContentComponent
         return content;
       }
 
-      // No inyectar CTA si ya existe la sección abre-corp (calendario + CTA desde panel)
-      if (tempDiv.querySelector('.abre-corp-card')) {
-        return content;
-      }
-
+      // Nunca inyectar dentro de .abre-corp-card
+      const excludedSelector = '.abre-corp-card';
       const headings = Array.from(
         tempDiv.querySelectorAll('h2, h3, h4, h5, h6'),
-      );
+      )
+        .filter((heading) => !heading.closest(excludedSelector))
+        .filter(
+          (heading) =>
+            !this.wouldBeFirstContentInTextWhiteSection(heading as Element),
+        );
       if (headings.length === 0) {
         return content;
       }
 
-      const totalTextLength = this.getTextLength(tempDiv);
+      const totalTextLength = this.getTextLength(tempDiv, excludedSelector);
       if (totalTextLength === 0) {
         return content;
       }
 
       let targetHeading: Element | null = null;
       for (const heading of headings) {
-        const beforeLength = this.getTextLengthBefore(tempDiv, heading);
+        const beforeLength = this.getTextLengthBefore(
+          tempDiv,
+          heading,
+          excludedSelector,
+        );
         if (beforeLength / totalTextLength >= 0.5) {
           targetHeading = heading;
           break;
@@ -1120,19 +1126,26 @@ export class PostContentComponent
     `;
   }
 
-  private getTextLength(root: HTMLElement): number {
+  private getTextLength(root: HTMLElement, excludedSelector?: string): number {
     const doc = this.browser.document;
     if (!doc) return 0;
     const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     let length = 0;
     let node: Node | null;
     while ((node = walker.nextNode())) {
+      if (this.isInExcludedContainer(node, excludedSelector)) {
+        continue;
+      }
       length += (node.textContent || '').trim().length;
     }
     return length;
   }
 
-  private getTextLengthBefore(root: HTMLElement, target: Element): number {
+  private getTextLengthBefore(
+    root: HTMLElement,
+    target: Element,
+    excludedSelector?: string,
+  ): number {
     const doc = this.browser.document;
     if (!doc) return 0;
     const walker = doc.createTreeWalker(root, NodeFilter.SHOW_TEXT);
@@ -1142,9 +1155,60 @@ export class PostContentComponent
       if (target.contains(node)) {
         break;
       }
+      if (this.isInExcludedContainer(node, excludedSelector)) {
+        continue;
+      }
       length += (node.textContent || '').trim().length;
     }
     return length;
+  }
+
+  private isInExcludedContainer(
+    node: Node,
+    excludedSelector?: string,
+  ): boolean {
+    if (!excludedSelector) return false;
+    return !!node.parentElement?.closest(excludedSelector);
+  }
+
+  private wouldBeFirstContentInTextWhiteSection(targetHeading: Element): boolean {
+    const section = targetHeading.closest('section.text-white');
+    if (!section) return false;
+
+    const parent = targetHeading.parentElement;
+    if (!parent || !section.contains(parent)) return false;
+
+    let previous = targetHeading.previousElementSibling;
+    while (previous) {
+      if (!this.isIgnorablePreviousElement(previous)) {
+        return false;
+      }
+      previous = previous.previousElementSibling;
+    }
+
+    return true;
+  }
+
+  private isIgnorablePreviousElement(element: Element): boolean {
+    if (element.classList.contains('mid-post-cta')) {
+      return true;
+    }
+
+    if (element.matches('span[id^="elementor-toc__heading-anchor"]')) {
+      return true;
+    }
+
+    const style = (element.getAttribute('style') || '').toLowerCase();
+    if (
+      element.tagName === 'SPAN' &&
+      style.includes('visibility: hidden') &&
+      style.includes('position: relative')
+    ) {
+      return true;
+    }
+
+    const text = (element.textContent || '').replace(/\s+/g, '');
+    return text.length === 0 && element.children.length === 0;
   }
 
   /**
