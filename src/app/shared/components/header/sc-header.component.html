@@ -41,20 +41,24 @@
               [langRouterLink]="'contacto'" (click)="closeMenu()">{{ "NAVBAR.contact" | transloco }}</a>
           </li>
           <!-- Botón de iniciar sesión en móvil -->
-          <li class="nav-item d-lg-none">
-            <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
-              routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
-          </li>
+          @if (!hideLogin) {
+            <li class="nav-item d-lg-none">
+              <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
+                routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
+            </li>
+          }
         </ul>
       </div>
     </div>
 
     <div class="container justify-content-end sc-buttons-container">
-      <div class="d-none d-lg-block sc-button-wrapper">
-        <a routerLink="/panel/login" class="btn sc-btn-login">
-          {{ "NAVBAR.login" | transloco }}
-        </a>
-      </div>
+      @if (!hideLogin) {
+        <div class="d-none d-lg-block sc-button-wrapper">
+          <a routerLink="/panel/login" class="btn sc-btn-login">
+            {{ "NAVBAR.login" | transloco }}
+          </a>
+        </div>
+      }
       <div class="d-none d-lg-block sc-button-wrapper">
         <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
           data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="btn sc-btn-accent">

@@ -127,8 +127,6 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'post': 'post',
             'registro-cliente': 'client-register',
             'cuenta-bancaria': 'bank-account',
-            'wizard/llc-apertura': 'wizard/llc-opening',
-            'wizard/llc-renovacion': 'wizard/llc-renewal',
             'wizard/cuenta-bancaria': 'wizard/bank-account',
           };
           return routeMapping[cmd] || cmd;
@@ -158,8 +156,6 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'category': 'category',
             'post': 'post',
             'bank-account': 'cuenta-bancaria',
-            'wizard/llc-opening': 'wizard/llc-apertura',
-            'wizard/llc-renewal': 'wizard/llc-renovacion',
             'wizard/bank-account': 'wizard/cuenta-bancaria',
           };
           return routeMapping[cmd] || cmd;

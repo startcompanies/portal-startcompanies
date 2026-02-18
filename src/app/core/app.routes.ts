@@ -197,15 +197,18 @@ export const routes: Routes = [
           }
         }
       },
-      // Rutas de wizard - Flujos específicos
+      // Redirigir wizard LLC a forms (apertura-llc / renovar-llc)
       {
         path: 'wizard/llc-apertura',
-        loadComponent: () => import('../features/wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),
+        redirectTo: 'apertura-llc',
+        pathMatch: 'full',
       },
       {
         path: 'wizard/llc-renovacion',
-        loadComponent: () => import('../features/wizard/flow-renovacion/llc-renovacion.component').then(m => m.LLCRenovacionComponent),
+        redirectTo: 'renovar-llc',
+        pathMatch: 'full',
       },
+      // Rutas de wizard - Otros flujos
       {
         path: 'wizard/cuenta-bancaria',
         loadComponent: () => import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(m => m.CuentaBancariaComponent),
@@ -798,18 +801,20 @@ export const routes: Routes = [
         redirectTo: '/en/blog/:slug',
         pathMatch: 'full'
       },
-      // Wizard routes - English
+      // Wizard routes - English (redirect LLC a forms)
       {
         path: 'wizard/verify-email',
         loadComponent: () => import('../features/wizard/components/email-verification/email-verification.component').then(m => m.WizardEmailVerificationComponent),
       },
       {
         path: 'wizard/llc-opening',
-        loadComponent: () => import('../features/wizard/flow-llc/llc-apertura.component').then(m => m.LLCAperturaComponent),
+        redirectTo: '/en/llc-opening',
+        pathMatch: 'full',
       },
       {
         path: 'wizard/llc-renewal',
-        loadComponent: () => import('../features/wizard/flow-renovacion/llc-renovacion.component').then(m => m.LLCRenovacionComponent),
+        redirectTo: '/en/llc-renewal',
+        pathMatch: 'full',
       },
       {
         path: 'wizard/bank-account',

@@ -212,8 +212,6 @@ export class LanguageService {
         'abotax': 'abotax',
         'category': 'category',
         'post': 'post',
-        'wizard/llc-opening': 'wizard/llc-apertura',
-        'wizard/llc-renewal': 'wizard/llc-renovacion',
         'wizard/bank-account': 'wizard/cuenta-bancaria'
       };
       return englishToSpanish[route] || route;
@@ -239,8 +237,6 @@ export class LanguageService {
         'abotax': 'abotax',
         'category': 'category',
         'post': 'post',
-        'wizard/llc-apertura': 'wizard/llc-opening',
-        'wizard/llc-renovacion': 'wizard/llc-renewal',
         'wizard/cuenta-bancaria': 'wizard/bank-account'
       };
       return spanishToEnglish[route] || route;

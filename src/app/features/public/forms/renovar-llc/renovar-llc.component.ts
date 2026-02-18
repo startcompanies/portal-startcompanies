@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
+import { HeaderManejoComponent } from '../header-manejo/header-manejo.component';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
-import { HeaderManejoComponent } from "../header-manejo/header-manejo.component";
 import { SeoBaseComponent } from '../../../../shared/components/seo-base/seo-base.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -10,7 +9,7 @@ import { BrowserService } from '../../../../shared/services/browser.service';
 @Component({
   selector: 'app-renovar-llc',
   standalone: true,
-  imports: [ScFooterComponent, HeaderManejoComponent, SeoBaseComponent, ResponsiveImageComponent, TranslocoPipe],
+  imports: [HeaderManejoComponent, ScFooterComponent, SeoBaseComponent, ResponsiveImageComponent, TranslocoPipe],
   templateUrl: './renovar-llc.component.html',
   styleUrl: './renovar-llc.component.css'
 })
