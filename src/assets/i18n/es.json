@@ -492,7 +492,7 @@
     },
     "fines": {
       "title": "Multas",
-      "price": "$300 USD",
+      "price": "$300",
       "note_label": "Nota:",
       "note": "Aprende todo lo que necesitas saber sobre las LLC.",
       "cta": "Consultar Multas",
@@ -538,7 +538,7 @@
     },
     "fines": {
       "title": "Multas",
-      "price": "$300 USD",
+      "price": "$300",
       "description": "Nota: +3% del valor de la multa.",
       "cta": "Consultar Multas",
       "featuresTitle": "Incluye:",

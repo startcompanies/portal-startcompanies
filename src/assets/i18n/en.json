@@ -496,7 +496,7 @@
     },
     "fines": {
       "title": "Fines",
-      "price": "$300 USD",
+      "price": "$300",
       "note_label": "Note:",
       "note": "Learn all you need to know about LLCs.",
       "cta": "Consult Fines",
@@ -542,7 +542,7 @@
     },
     "fines": {
       "title": "Fines",
-      "price": "$300 USD",
+      "price": "$300",
       "description": "Note: +3% of the fine amount.",
       "cta": "Consult Fines",
       "featuresTitle": "Includes:",

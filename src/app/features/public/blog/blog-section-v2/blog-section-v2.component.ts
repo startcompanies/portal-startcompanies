@@ -19,6 +19,8 @@ export class BlogSectionV2Component implements OnInit {
   allPosts: Post[] = [];
   desktopCarouselSlides: Post[][] = [];
   mobileCarouselSlides: Post[][] = [];
+  /** true mientras la API no ha respondido; evita mostrar "No hay publicaciones" al cargar */
+  loading = true;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -30,11 +32,14 @@ export class BlogSectionV2Component implements OnInit {
   }
 
   setAllPosts() {
+    this.loading = true;
     this.blogService.getAllPosts().then((posts) => {
       this.allPosts = (posts ?? []).slice(0, 6);
       this.chunkPostsForCarousels();
     }).catch((error) => {
       console.log('Error al obtener los posts:', error);
+    }).finally(() => {
+      this.loading = false;
     });
   }
 

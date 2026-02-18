@@ -1,5 +1,7 @@
 @if (initialTranslationsReady$ | async) {
-  <app-image-preloader></app-image-preloader>
-  <router-outlet />
-  <app-whatsapp-float></app-whatsapp-float>
+  <div class="app-layout">
+    <app-image-preloader></app-image-preloader>
+    <router-outlet />
+    <app-whatsapp-float></app-whatsapp-float>
+  </div>
 }

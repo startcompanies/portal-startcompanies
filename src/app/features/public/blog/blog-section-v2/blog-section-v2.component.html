@@ -12,6 +12,8 @@
         <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-ride="carousel" data-bs-interval="5000"
           data-bs-touch="true">
           <div class="carousel-inner py-2">
+            <ng-container *ngIf="loading; else desktopContent"></ng-container>
+            <ng-template #desktopContent>
             <ng-container *ngIf="desktopCarouselSlides.length > 0; else noPostsDesktop">
               <div class="carousel-item" *ngFor="let slidePosts of desktopCarouselSlides; let i = index"
                 [class.active]="i === 0">
@@ -43,6 +45,7 @@
                 </p>
               </div>
             </ng-template>
+            </ng-template>
           </div>
 
           <ng-container *ngIf="desktopCarouselSlides.length > 1">
@@ -63,6 +66,8 @@
 
         <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true">
           <div class="carousel-inner py-2">
+            <ng-container *ngIf="loading; else mobileContent"></ng-container>
+            <ng-template #mobileContent>
             <ng-container *ngIf="mobileCarouselSlides.length > 0; else noPostsMobile">
               <div class="carousel-item" *ngFor="let postSlide of mobileCarouselSlides; let i = index"
                 [class.active]="i === 0">
@@ -95,6 +100,7 @@
                   {{ 'CONTENT.blog.no_posts' | transloco }}
                 </p>
               </div>
+            </ng-template>
             </ng-template>
           </div>
 
