@@ -1,0 +1,20 @@
+/* Layout para que el footer quede siempre al final de la página (sticky footer) */
+.app-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* El contenido de cada ruta ocupa al menos toda la pantalla y usa columna flex */
+.app-layout router-outlet + * {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El último hijo directo (footer) se empuja al final para que siempre quede abajo */
+.app-layout router-outlet + * > *:last-child {
+  margin-top: auto;
+  flex-shrink: 0;
+}

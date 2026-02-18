@@ -250,3 +250,16 @@ h2.note-heading {
 .carousel {
   touch-action: pan-y;
 }
+
+/* ============================================================================
+   Sticky footer: el footer siempre al final de la página (global)
+   ============================================================================ */
+.app-layout router-outlet + * {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+}
+.app-layout router-outlet + * > *:last-child {
+  margin-top: auto !important;
+  flex-shrink: 0 !important;
+}

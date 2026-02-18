@@ -16,7 +16,10 @@
   min-height: 500px;
 }
 
-.sc-hero.landing-hero-section .sc-hero-bg {
+/* Imagen de fondo del blog como hero: mantener siempre visible y cubriendo el área */
+.sc-hero.landing-hero-section .sc-hero-bg,
+.sc-hero.landing-hero-section .sc-hero-bg picture,
+.sc-hero.landing-hero-section .sc-hero-bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -24,6 +27,9 @@
   top: 0;
   left: 0;
   z-index: 0;
+}
+.sc-hero.landing-hero-section .sc-hero-bg {
+  min-height: 100%;
 }
 
 .sc-post-hero::after {
@@ -107,6 +113,7 @@
   }
 }
 
+/* Hero del blog: mantener min-height y fondo para que la imagen se vea como en el diseño */
 .sc-hero {
   position: relative;
   overflow: hidden;
@@ -114,6 +121,9 @@
   padding-top: 90px;
   padding-bottom: 40px;
   align-content: center;
+}
+.sc-hero.landing-hero-section {
+  min-height: 600px;
 }
 
 .sc-hero .container {

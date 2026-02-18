@@ -4,6 +4,17 @@
    Este archivo solo contiene estilos específicos del layout del componente
    ============================================================================ */
 
+/* Layout: footer siempre al final de la página */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+:host > *:last-child {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
 /* Nota: Este archivo ahora está casi vacío porque todos los estilos de componentes
    reutilizables (hero, sidebar, cards, etc.) han sido consolidados en:
    - /assets/styles/blog/blog-hero.css
@@ -13,6 +24,58 @@
    Si necesitas agregar estilos específicos SOLO para este componente
    (no reutilizables), agrégalos aquí.
 */
+
+/* Skeleton de carga: evita pantalla en blanco y transición brusca al abrir un post */
+.blog-post-loading-skeleton .skeleton-line,
+.blog-post-loading-skeleton .skeleton-block {
+  height: 1rem;
+  background: linear-gradient(
+    90deg,
+    var(--color-borde, #e9ecef) 25%,
+    var(--color-fondo-claro, #f8f9fa) 50%,
+    var(--color-borde, #e9ecef) 75%
+  );
+  background-size: 200% 100%;
+  animation: blog-post-skeleton-shimmer 1.2s ease-in-out infinite;
+  border-radius: 0.25rem;
+}
+.blog-post-loading-skeleton .skeleton-block {
+  height: 0.875rem;
+}
+.blog-post-loading-skeleton .w-75 {
+  width: 75%;
+}
+.blog-post-loading-skeleton .w-50 {
+  width: 50%;
+}
+/* Skeleton sobre el hero: tonos claros para verse sobre la imagen de fondo */
+.blog-post-loading-skeleton-section .blog-post-loading-skeleton .skeleton-line,
+.blog-post-loading-skeleton-section .blog-post-loading-skeleton .skeleton-block {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.15) 75%
+  );
+  background-size: 200% 100%;
+}
+.blog-post-loading-skeleton-section .blog-post-loading-skeleton {
+  position: relative;
+  z-index: 2;
+}
+.skeleton-loading-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+@keyframes blog-post-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
 
 .post-content {
   padding-bottom: 3rem;

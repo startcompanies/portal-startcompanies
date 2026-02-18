@@ -1,5 +1,23 @@
 <app-sc-header></app-sc-header>
 
+<!-- Skeleton con la misma imagen de fondo del hero mientras carga el post -->
+<section *ngIf="isLoading && !postNotFound" class="sc-hero landing-hero-section blog-post-loading-skeleton-section">
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
+  </app-responsive-image>
+  <div class="container position-relative blog-post-loading-skeleton py-5">
+    <p class="text-center text-white mb-4 skeleton-loading-text">Cargando...</p>
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <div class="skeleton-line w-75 mb-3"></div>
+        <div class="skeleton-line w-50 mb-4"></div>
+        <div class="skeleton-block mb-2"></div>
+        <div class="skeleton-block mb-2"></div>
+        <div class="skeleton-block w-75"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Hero para artículo no disponible - Solo mostrar si realmente no existe (después de cargar) -->
 <section *ngIf="postNotFound && !isLoading" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
   <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
@@ -136,7 +154,7 @@
   </div>
 </ng-template>
 
-<section>
+<section *ngIf="postArticle">
   <app-blog-section-v2></app-blog-section-v2>
 </section>
 <div class="mobile-fixed-cta">

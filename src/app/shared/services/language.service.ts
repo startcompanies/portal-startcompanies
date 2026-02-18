@@ -214,7 +214,13 @@ export class LanguageService {
         'post': 'post',
         'wizard/bank-account': 'wizard/cuenta-bancaria'
       };
-      return englishToSpanish[route] || route;
+      const mapped = englishToSpanish[route];
+      if (mapped !== undefined) return mapped;
+      // Rutas compuestas (ej. blog/slug, blog/category/xyz): mantener si el primer segmento es válido
+      const first = route.split('/')[0];
+      if (first === 'blog' || first === 'category') return route;
+      // Cualquier otra ruta EN sin mapeo → ir a home en ES para evitar 404
+      return '';
     } else {
       // Mapear de español a inglés
       const spanishToEnglish: { [key: string]: string } = {
