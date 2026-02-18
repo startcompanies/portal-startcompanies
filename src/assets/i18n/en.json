@@ -4,37 +4,38 @@
     "plans": "Plans and Prices",
     "blog": "Blog",
     "contact": "Contact us",
-    "call": "Schedule a call"
+    "call": "Schedule a call",
+    "login": "Sign in"
   },
   "SEO": {
     "home": {
-      "title": "Start Companies LLC - US Bank Account Opening Services",
+      "title": "Start Companies - US Bank Account Opening Services",
       "description": "We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.",
       "keywords": "LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services"
     },
     "nosotros": {
-      "title": "About Us - Start Companies LLC | Financial Services Experience",
+      "title": "About Us - Start Companies | Financial Services Experience",
       "description": "Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.",
       "keywords": "Start Companies team, financial services experience, about us, entrepreneur trust"
     },
     "contacto": {
-      "title": "Contact - Start Companies LLC | Talk to Our Experts",
+      "title": "Contact - Start Companies | Talk to Our Experts",
       "description": "Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.",
       "keywords": "Start Companies contact, LLC support, financial services experts, bank account help"
     },
     "planes": {
-      "title": "Plans and Pricing - Start Companies LLC | US LLC Services",
+      "title": "Plans and Pricing - Start Companies | US LLC Services",
       "description": "Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.",
       "keywords": "US LLC plans, bank account pricing, Start Companies services, LLC formation USA"
     },
     "blog": {
-      "title": "Blog - Start Companies LLC | News and Tips for US LLCs",
+      "title": "Blog - Start Companies | News and Tips for US LLCs",
       "description": "Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.",
       "keywords": "US LLC blog, bank account tips, financial news, Start Companies blog"
     }
   },
   "CONTENT": {
-    "expand_your_freedom": "Expand your freedom, open your LLC in the United States",
+    "expand_your_freedom": "Expand your freedom: open your LLC in the United States",
     "create_your_llc": "Create your LLC",
     "renew_your_llc": "Renew your LLC",
     "start_free_meeting": "Start with a free meeting",
@@ -47,15 +48,15 @@
       "title1": "Our",
       "title2": "services",
       "service1": {
-        "title": "LLC formation in the United States",
+        "title": "LLC formation",
         "description": "Start your business in the United States with complete advice and personalized accompaniment from any country."
       },
       "service2": {
-        "title": "Bank account in the United States",
+        "title": "Bank account",
         "description": "Open your business account online and operate in dollars without leaving your country."
       },
       "service3": {
-        "title": "Tax management and business creation",
+        "title": "Taxes and creation",
         "description": "We organize the legal and tax structure of your company to comply with regulations and optimize your taxes."
       }
     },
@@ -67,11 +68,11 @@
         "description": "Explore your business needs with us. We will design a customized solution that fits your case."
       },
       "step2": {
-        "title": "Send your documentation online.",
+        "title": "Send your documentation",
         "description": "Upload your documents through our platform and our team will manage your LLC and the opening of your bank account in the United States."
       },
       "step3": {
-        "title": "Receive your documents in 10 business days",
+        "title": "Receive your documents",
         "description": "You will receive all the legal certificates and access to your bank account in a maximum of 10 business days."
       }
     },
@@ -211,7 +212,8 @@
     "blog": {
       "title1": "Do you",
       "title2": "want to know more?",
-      "button": "Read more"
+      "button": "Read more",
+      "no_posts": "No posts found"
     },
     "faq": {
       "title1": "Frequently",
@@ -305,6 +307,7 @@
     "description": "We solve all your doubts about LLC creation, bank account opening and other services. Our team is ready to accompany you in each step of the process.",
     "name": "Name",
     "email": "Email",
+    "email_required": "Email is required",
     "message": "Message",
     "send": "Send",
     "advice": {
@@ -347,7 +350,13 @@
     "help_subtitle": "We simplify the management of your company abroad",
     "your_questions": "Do you have questions?",
     "categories": "Categories",
-    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors"
+    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors",
+    "search_placeholder": "Search articles",
+    "search_clear": "Clear",
+    "search_no_results": "We couldn't find articles matching your search.",
+    "all_posts": "All posts",
+    "category": "Category",
+    "category_title_prefix": "Posts in"
   },
   "LLC": {
     "heroSection": {
@@ -411,7 +420,7 @@
   },
   "PLANS": {
     "intro": {
-      "title": "Expand Your Business: Open your LLC in the U.S.",
+      "title": "A small investment for great opportunities.",
       "subtitle": "Create your company in the United States and access your bank account without residency. Start Companies offers you everything you need to operate globally, hassle-free."
     },
     "header": {
@@ -482,12 +491,14 @@
         "3": "Monthly support for any inquiry",
         "4": "Possibility to migrate services from another provider with us"
       },
-      "note": "If Delaware, add $300 USD to the price."
+      "note_label": "Note:",
+      "note": "Learn all you need to know about LLCs."
     },
     "fines": {
       "title": "Fines",
       "price": "$300 USD",
-      "note": "Note: +3% of the fine amount.",
+      "note_label": "Note:",
+      "note": "Learn all you need to know about LLCs.",
       "cta": "Consult Fines",
       "featuresTitle": "Includes:",
       "features": {
@@ -543,7 +554,11 @@
     }
   },
   "COMMON": {
-    "note": "Note:"
+    "note": "Note:",
+    "select_option": "Select Option",
+    "yes": "Yes",
+    "no": "No",
+    "remove": "Remove"
   },
   "LANDINGS": {
     "schedule_consultation": "Schedule a FREE consultation",
@@ -560,7 +575,6 @@
       "comunity_name": "LLC Creation!",
       "what_they_say": "See what our clients have to say about us"
     },
-
     "start_my_llc_process": "Start my LLC process",
     "description": "We take care of the bureaucracy so you can focus on growing.",
     "discover_why": "Discover why more than",
@@ -891,6 +905,275 @@
           "body": "For inquiries related to these Terms, use the contact methods published on the site."
         }
       }
+    }
+  },
+  "WIZARD": {
+    "next": "Next",
+    "previous": "Previous",
+    "cancel": "Cancel",
+    "finish": "Finish",
+    "steps": {
+      "state": "Contracting State",
+      "register": "Basic Registration",
+      "verify_email": "Email Verification",
+      "payment": "Payment",
+      "client": "Client Data",
+      "review": "Final Review",
+      "zoho": "Send to Zoho CRM",
+      "state_plan": "State and Plan",
+      "llc_info": "LLC Information"
+    },
+    "basic_register": {
+      "full_name": "Full Name",
+      "full_name_required": "Full name is required.",
+      "phone": "Phone",
+      "phone_required": "Phone is required.",
+      "email": "Email",
+      "email_required": "Email is required.",
+      "password": "Password",
+      "password_required": "Password is required."
+    },
+    "password": "Password",
+    "state": "State",
+    "select_state": "Select contracting state",
+    "checkout": {
+      "title": "Checkout / Payment",
+      "summary": "summary of the selected service:",
+      "service_label": "Service",
+      "state_label": "State",
+      "not_specified": "Not specified",
+      "not_selected": "Not selected",
+      "payment_method": "Payment  method",
+      "select_method": "Select method",
+      "card": "Credit card / debit",
+      "paypal": "PayPal",
+      "required_method": "Select payment method."
+    },
+    "client": {
+      "title": "Additional Client Information",
+      "full_name": "Full Name",
+      "full_name_placeholder": "E.g., John Perez",
+      "full_name_required": "Full name is required.",
+      "phone": "Phone",
+      "phone_placeholder": "E.g., +1 (305) 123-4567",
+      "phone_required": "Phone is required.",
+      "address": "Address",
+      "address_placeholder": "E.g., 123 Main St, Miami, FL",
+      "address_required": "Address is required."
+    },
+    "review": {
+      "title": "Final Review",
+      "description": "Carefully review the entered data. Check the confirmation box to continue submitting to Zoho CRM.",
+      "confirm_label": "I confirm that the data displayed is correct.",
+      "section_title": "Data Collected"
+    },
+    "state_step": {
+      "title": "Select the hiring state",
+      "label": "State",
+      "placeholder": "Select a state",
+      "required": "State is required",
+      "options": {
+        "florida": "Florida",
+        "delaware": "Delaware",
+        "texas": "Texas",
+        "wyoming": "Wyoming"
+      }
+    },
+    "zoho_step": {
+      "title": "Send to Zoho CRM",
+      "subtitle": "We'll review the data before sending it to the CRM."
+    },
+    "bank_account": {
+      "applicant": {
+        "title": "Applicant Information",
+        "email": "Email",
+        "email_placeholder": "E.g., john.doe@example.com",
+        "email_invalid": "Email is required.",
+        "first_name": "First Name",
+        "first_name_placeholder": "E.g., John",
+        "first_name_required": "First name is required.",
+        "paternal_last_name": "Paternal Last Name",
+        "paternal_last_name_placeholder": "E.g., Perez",
+        "maternal_last_name": "Maternal Last Name",
+        "maternal_last_name_placeholder": "E.g., Doe",
+        "phone": "Phone",
+        "phone_placeholder": "E.g., +1 (305) 123-4567",
+        "account_type": "Account Type",
+        "account_type_required": "Account type is required.",
+        "legal_identifier": "Legal Identifier",
+        "legal_identifier_placeholder": "E.g., 1234567890",
+        "industry": "Industry",
+        "economic_activity": "Economic Activity",
+        "economic_activity_placeholder": "E.g., Technology, Commerce, Services",
+        "certificate": "Certificate of Incorporation or Articles of Organization",
+        "ein": "Tax Identification Number (EIN)",
+        "ein_invalid": "Tax identification number is invalid.",
+        "operating_agreement": "Operating Agreement",
+        "business_type": "Business Type"
+      },
+      "companyAddress": {
+        "title": "Registration Address",
+        "street": "Street and number",
+        "street_placeholder": "E.g., 123 Main St",
+        "street_required": "The street and number are required.",
+        "unit": "Unit",
+        "unit_placeholder": "E.g., Apt. 123",
+        "city": "City",
+        "city_placeholder": "E.g., Miami",
+        "state": "State",
+        "state_placeholder": "Select a state",
+        "state_options": {
+          "florida": "Florida",
+          "delaware": "Delaware",
+          "texas": "Texas",
+          "new_york": "New York"
+        },
+        "state_required": "The state is required.",
+        "postal_code": "Postal Code",
+        "postal_code_placeholder": "E.g., 33130",
+        "country": "Country",
+        "country_required": "The country is required.",
+        "country_options": {
+          "united_states": "United States",
+          "spain": "Spain",
+          "argentina": "Argentina"
+        },
+        "is_registered_agent": "Is the Registered Agent in USA?",
+        "agent_name": "Registered Agent Name",
+        "agent_address": "Registered Agent Address"
+      },
+      "bankAccount": {
+        "title": "Bank Account Information",
+        "bank_name": "Bank Name",
+        "bank_name_required": "The bank name is required.",
+        "swift": "SWIFT / BIC / ABA",
+        "swift_required": "The SWIFT / BIC / ABA is required.",
+        "swift_placeholder": "E.g., 01234567890",
+        "account_number": "Account Number",
+        "account_number_required": "The account number is required.",
+        "account_number_placeholder": "E.g., 1234567890",
+        "account_type": "Account Type",
+        "first_registration_date": "First Registration Date",
+        "has_litigated": "Have you litigated in the current fiscal year?",
+        "litigation_details": "Litigation Details",
+        "litigation_details_required": "The litigation details are required.",
+        "litigation_details_placeholder": "E.g., I have litigated in the current fiscal year."
+      },
+      "llcType": {
+        "title": "LLC Type",
+        "label": "LLC Type",
+        "single": "Single Member LLC",
+        "multi": "Multi-Member LLC",
+        "required": "The LLC type is required."
+      },
+      "ownerAddress": {
+        "title": "Owner Address",
+        "same_as_business": "Same as business",
+        "street": "Street",
+        "unit": "Unit",
+        "city": "City",
+        "state": "State",
+        "postal_code": "Postal Code",
+        "country": "Country",
+        "proof": "Proof of Address",
+        "proof_required": "The proof of address is required."
+      },
+      "owners": {
+        "title": "Owners",
+        "owner": "Owner",
+        "first_name": "First Name",
+        "first_name_placeholder": "E.g., John",
+        "paternal_last_name": "Paternal Last Name",
+        "paternal_last_name_placeholder": "E.g., Perez",
+        "maternal_last_name": "Maternal Last Name",
+        "maternal_last_name_placeholder": "E.g., Doe",
+        "birth_date": "Birth Date",
+        "nationality": "Nationality",
+        "document_number": "Document Number",
+        "document_number_placeholder": "E.g., 1234567890",
+        "identity_document": "Identity Document",
+        "facial_photo": "Facial Photo",
+        "add_owner": "Add Owner"
+      },
+      "confirmation": {
+        "title": "Confirmation",
+        "certification": "Certification",
+        "document_certification_placeholder": "E.g., I certify that the information provided is correct and complete.",
+        "accept_terms": "I accept the terms and conditions",
+        "accept_terms_required": "The terms and conditions are required.",
+        "validator": {
+          "title": "Validator",
+          "first_name": "First Name",
+          "first_name_placeholder": "E.g., John",
+          "last_name": "Last Name",
+          "last_name_placeholder": "E.g., Perez",
+          "birth_date": "Birth Date",
+          "nationality": "Nationality",
+          "citizenship": "Citizenship",
+          "passport_number_placeholder": "E.g., 1234567890",
+          "passport_number": "Passport Number",
+          "passport_file": "Passport File",
+          "email_placeholder": "E.g., john.doe@example.com",
+          "email": "Email",
+          "use_email_login": "Use email for login",
+          "phone": "Phone",
+          "phone_placeholder": "E.g., +1 (305) 123-4567",
+          "can_receive_sms": "Can receive SMS",
+          "us_resident": "US Resident"
+        }
+      },
+      "steps": {
+        "step1": "Applicant",
+        "step2": "Registration",
+        "step3": "Account",
+        "step4": "Owner",
+        "step5": "Type",
+        "step6": "Owners",
+        "step7": "Certification"
+      }
+    },
+    "llc_info_step": {
+      "llc_name_one": "LLC Name - Option 1",
+      "llc_name_one_required": "LLC name (option 1) is required.",
+      "llc_name_two": "LLC Name - Option 2",
+      "llc_name_two_required": "LLC name (option 2) is required.",
+      "llc_name_three": "LLC Name - Option 3",
+      "llc_name_three_required": "LLC name (option 3) is required.",
+      "llc_sufix": "Remember that 'LLC' must go at the end of the name.",
+      "llc_main_activity": "Main Activity of the LLC",
+      "llc_main_activity_required": "Main activity is required.",
+      "llc_corporate_structure": "Corporate Structure",
+      "llc_corporate_structure_placeholder": "Select...",
+      "options_corporate_structure": {
+        "single_member": "Single Member LLC",
+        "multi_member": "Multi Member LLC"
+      },
+      "add_propietaries": "Add Owners",
+      "add_owner": "Add owner",
+      "return_to_info": "Return to information"
+    },
+    "state_plan_step": {
+      "plan": "Plan",
+      "plan_label": "Select a plan",
+      "plan_required": "Plan is required.",
+      "state": "State",
+      "state_label": "Select a state",
+      "state_required": "State is required.",
+      "state_new_mexico": "New Mexico",
+      "state_texas": "Texas",
+      "other_option": "Other option",
+      "planes_options": {
+        "entrepreneur": "Entrepreneur Pack",
+        "elite": "Elite Pack",
+        "premium": "Premium Pack"
+      },
+      "options": {
+        "new_mexico": "New Mexico",
+        "texas": "Texas"
+      }
+    },
+    "checkout": {
+      "pay_button": "Pay ${{amount}}"
     }
   }
 }

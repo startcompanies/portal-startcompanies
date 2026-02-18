@@ -1,0 +1,543 @@
+/* ============================================================================
+   BLOG CONTENT - Estilos para el contenido del CMS del blog
+   Consolidado de blog-components.css
+   ============================================================================ */
+
+/* ============================================================================
+   ESTILOS DE ENLACES - Sin azul ni subrayado
+   ============================================================================ */
+.main-post {
+  flex: 1 1 70%;
+  overflow: hidden;
+}
+
+/* ============================================================================
+   TIPOGRAFÍA BASE DEL CONTENIDO
+   ============================================================================ */
+.app-post-content {
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+.app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+  text-align: left;
+  text-wrap: pretty;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 768px) {
+  .app-post-content p:not(.card-text):not(.autor-descripcion):not(.autor-label):not(.autor-nombre):not([class*="btn"]):not([class*="title"]):not([class*="subtitle"]) {
+    font-size: .9rem;
+  }
+}
+
+/* ============================================================================
+   LISTAS
+   ============================================================================ */
+.app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
+.app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
+  text-align: left;
+  text-wrap: pretty;
+  font-size: 1.1rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+
+  .app-post-content ul:not(.states-card):not(.abre-corp-list):not(.ayuda-profesional-list):not(.costos-florida):not(.preguntas-frecuentes-list):not(.renovar-llc-card-list):not(.veredicto-list):not([class*="nav"]):not([class*="menu"]) li,
+  .app-post-content ol:not([class*="nav"]):not([class*="menu"]) li {
+    font-size: .9rem;
+  }
+}
+
+/* ============================================================================
+   SECCIONES Y CONTENEDORES
+   ============================================================================ */
+.app-post-content section {
+  color: var(--color-oscuro-tecnico);
+}
+
+.app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
+  text-align: left;
+  text-wrap: pretty;
+}
+
+/* ============================================================================
+   IMÁGENES
+   ============================================================================ */
+.post-image-rounded {
+  border-radius: 4rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  border: 2px solid #F4F7FC;
+}
+
+@media (max-width: 768px) {
+  .post-image-rounded {
+    border-radius: 2rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .post-image-rounded {
+    border-radius: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+/* ============================================================================
+   HEADING CUSTOM
+   ============================================================================ */
+
+.app-post-content :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 700;
+}
+
+/* ============================================================================
+   MID POST CTA CARD
+   ============================================================================ */
+.app-post-content .mid-post-cta {
+  margin: 3rem 0;
+}
+
+.app-post-content .mid-post-cta-inner {
+  background: #2c3e4d;
+  border-radius: 2rem;
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-subtitle {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0.25rem 0 1rem;
+  color: var(--color-secundario-tecnico);
+}
+
+.app-post-content .mid-post-cta .mid-post-cta-inner .mid-post-cta-text {
+  color: var(--color-fondo-claro);
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.app-post-content .mid-post-cta-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.app-post-content .mid-post-cta-list li {
+  margin-bottom: 0.5rem;
+}
+
+.app-post-content .mid-post-cta-list li::before {
+  content: "•";
+  margin-right: 0.6rem;
+}
+
+.app-post-content .mid-post-cta-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.app-post-content .mid-post-cta-btn {
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-post-content .mid-post-cta-btn.is-primary {
+  background: #ffffff;
+  color: #2c3e4d;
+}
+
+.app-post-content .mid-post-cta-btn.is-secondary {
+  background: transparent;
+  color: var(--color-fondo-claro);
+  border: 2px solid #fff !important;
+}
+
+.app-post-content .mid-post-cta-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.app-post-content .mid-post-cta-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.app-post-content .mid-post-cta-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #cfd8df;
+  color: #2c3e4d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #2c3e4d;
+  margin-left: -10px;
+  object-fit: cover;
+}
+
+.app-post-content .mid-post-cta-avatar:first-child {
+  margin-left: 0;
+}
+
+.app-post-content .mid-post-cta-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.app-post-content .mid-post-cta-count {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #f5c518;
+  font-size: 0.85rem;
+}
+
+.app-post-content .mid-post-cta-score {
+  color: var(--color-fondo-claro);
+  font-weight: 300;
+  margin-left: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .app-post-content .mid-post-cta-inner {
+    padding: 2rem 1.5rem;
+  }
+
+  .app-post-content .mid-post-cta-actions {
+    flex-direction: column;
+  }
+
+  .app-post-content .mid-post-cta-rating {
+    align-items: center;
+  }
+}
+
+/* ============================================================================
+   SECCIONES CON BACKGROUND IMAGE
+   ============================================================================ */
+.app-post-content section[style*="background-image"],
+section[style*="background-image"] {
+  width: 100%;
+  padding: 3rem 0;
+}
+
+.app-post-content section[style*="background-image"] .container,
+section[style*="background-image"] .container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.app-post-content section[style*="background-image"] .row,
+section[style*="background-image"] .row {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  gap: 0;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"],
+section[style*="background-image"] [class*="col-"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+  min-height: 100%;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"]:has(img),
+section[style*="background-image"] [class*="col-"]:has(img) {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem 1.5rem;
+}
+
+.app-post-content section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  min-height: 300px;
+}
+
+.app-post-content section[style*="background-image"] p,
+section[style*="background-image"] p {
+  text-align: left;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.app-post-content section[style*="background-image"] h1,
+.app-post-content section[style*="background-image"] h2,
+.app-post-content section[style*="background-image"] h3,
+.app-post-content section[style*="background-image"] h4,
+.app-post-content section[style*="background-image"] h5,
+.app-post-content section[style*="background-image"] h6,
+section[style*="background-image"] h1,
+section[style*="background-image"] h2,
+section[style*="background-image"] h3,
+section[style*="background-image"] h4,
+section[style*="background-image"] h5,
+section[style*="background-image"] h6 {
+  max-width: 100%;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.app-post-content section[style*="background-image"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] img:not(.mid-post-cta-avatar) {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 350px;
+  margin: 0;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  aspect-ratio: 4 / 3;
+}
+
+.app-post-content section[style*="background-image"] a,
+section[style*="background-image"] a {
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  color: #FFFFFF;
+  text-align: left;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+/* ============================================================================
+   TABLAS CUSTOM
+   ============================================================================ */
+.app-post-content .table-custom-container,
+.app-post-content .table-responsive.table-custom-container {
+  border-radius: 15px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid #dee2e6;
+  margin-bottom: 2rem;
+  display: block;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.app-post-content .table-custom-container .table-custom,
+.app-post-content .table-responsive.table-custom-container .table-custom {
+  margin-bottom: 0;
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+}
+
+.app-post-content .table-custom-container .table-custom thead tr,
+.app-post-content .table-responsive.table-custom-container .table-custom thead tr {
+  background-color: var(--color-oscuro-tecnico);
+  color: #FFFFFF;
+}
+
+.app-post-content .table-custom-container .table-custom thead th,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th {
+  padding: 1.5rem 1rem;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid #dee2e6;
+  border-top: none;
+  vertical-align: middle;
+  font-size: 1rem;
+  background-color: var(--color-oscuro-tecnico);
+  color: #FFFFFF;
+}
+
+.app-post-content .table-custom-container .table-custom thead th:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:first-child {
+  border-left: none;
+  text-align: left;
+  padding-left: 1.5rem;
+  background-color: var(--color-oscuro-tecnico);
+}
+
+.app-post-content .table-custom-container .table-custom thead th:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom thead th:last-child {
+  border-right: none;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td {
+  padding: 1.2rem 1rem;
+  text-align: center;
+  vertical-align: middle;
+  color: #333333;
+  border: 1px solid #dee2e6;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:first-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:first-child {
+  border-left: none;
+  text-align: left;
+  font-weight: 500;
+  padding-left: 1.5rem;
+  background-color: #ffffff;
+}
+
+.app-post-content .table-custom-container .table-custom tbody td:last-child,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody td:last-child {
+  border-right: none;
+}
+
+.app-post-content .table-custom-container .table-custom tbody tr:last-child td,
+.app-post-content .table-responsive.table-custom-container .table-custom tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.app-post-content .table-custom-container .table-bordered,
+.app-post-content .table-responsive.table-custom-container .table-bordered {
+  border: none;
+}
+
+/* ============================================================================
+   TÍTULO "SOBRE LOS AUTORES"
+   ============================================================================ */
+.sobre-autores-title {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: inherit;
+}
+
+.sobre-autores-title span {
+  color: #006afe;
+}
+
+/* ============================================================================
+   CALENDLY / CAL.COM
+   ============================================================================ */
+#my-cal-inline {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#my-cal-inline iframe {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================================================
+   BOTONES ESPECIALES
+   ============================================================================ */
+a.btn-descarga-template {
+  background-color: var(--color-secundario-tecnico);
+  border: none;
+  font-size: 1rem;
+  padding: 0.45rem 1.5rem;
+  border-radius: 50px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  color: #fff;
+}
+
+/* ============================================================================
+   LANDING PAGE ESPECÍFICO
+   ============================================================================ */
+.landing-page-row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.landing-page-row .app-post-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+@media (min-width: 992px) {
+  .landing-page-row .app-post-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.landing-page-row .app-post-content img {
+  border-radius: 4rem;
+}
+
+/* ============================================================================
+   CONTENT COLUMN CONTAINER (legacy)
+   ============================================================================ */
+.content-column-container {
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+/* ============================================================================
+   BLOG RELATED POSTS
+   ============================================================================ */
+
+.blog-section.blog-related {
+  background-color: #E6EFFF !important;
+}

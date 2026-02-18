@@ -1,0 +1,187 @@
+<!-- SEO Multilingüe Component -->
+<app-multilingual-seo routeKey="inicio"></app-multilingual-seo>
+
+<app-sc-header></app-sc-header>
+<!--Section Hero-->
+<section class="py-5 sc-hero">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+
+  <div class="hero-content">
+    <div class="container">
+      <div class="row align-items-center g-5 py-5 d-none d-lg-flex">
+        <div class="col-lg-6">
+          <h1 class="hero-title text-white">
+            {{ "CONTENT.expand_your_freedom" | transloco }}
+          </h1>
+          <div
+            class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-start"
+          >
+            <a
+              [langRouterLink]="'apertura-llc'"
+              class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
+            >
+              {{ "CONTENT.create_your_llc" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+
+            <a
+              [langRouterLink]="'renovar-llc'"
+              class="btn hero-btn-secondary d-inline-flex align-items-center justify-content-center"
+            >
+              {{ "CONTENT.renew_your_llc" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <p class="hero-description text-white opacity-75">
+            {{ "CONTENT.expand_your_freedom_description" | transloco }}
+          </p>
+        </div>
+      </div>
+      <!-- Solo visible en pantallas móviles -->
+      <div class="row align-items-center g-5 py-5 d-lg-none">
+        <div class="col-lg-6">
+          <h1 class="hero-title text-white">
+            {{ "CONTENT.expand_your_freedom" | transloco }}
+          </h1>
+          <p class="hero-description text-white opacity-75 mt-3">
+            {{ "CONTENT.expand_your_freedom_description" | transloco }}
+          </p>
+          <div
+            class="hero-buttons d-flex flex-column flex-sm-row gap-3 justify-content-start mt-4 mb-4"
+          >
+            <a
+              [langRouterLink]="'apertura-llc'"
+              class="btn hero-btn-primary d-inline-flex align-items-center justify-content-center"
+            >
+              {{ "CONTENT.create_your_llc" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+
+            <a
+              [langRouterLink]="'renovar-llc'"
+              class="btn hero-btn-secondary d-inline-flex align-items-center justify-content-center"
+            >
+              {{ "CONTENT.renew_your_llc" | transloco }}
+              <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--Our Services Section-->
+<section class="sc-services-section position-relative py-5">
+  <div class="container sc-services-container">
+    <div class="card sc-services-card text-center p-4 shadow-lg">
+      <h2 class="card-title mb-2">
+        {{ "CONTENT.our_services.title1" | transloco }}
+        <span class="sc-text-blue-accent">{{
+          "CONTENT.our_services.title2" | transloco
+        }}</span>
+      </h2>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+          <div class="sc-service-item p-3 text-start">
+            <img
+              src="assets/services/img_group_9.svg"
+              alt="Constitución de LLC en Estados Unidos"
+              class="mb-3"
+              style="width: 3rem; height: 3rem"
+            />
+            <h3 class="fw-bold mb-2">
+              {{ "CONTENT.our_services.service1.title" | transloco }}
+            </h3>
+            <p class="text-muted">
+              {{ "CONTENT.our_services.service1.description" | transloco }}
+            </p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="sc-service-item p-3 text-start">
+            <img
+              src="assets/services/img_group.svg"
+              alt="Gestión de impuestos y creación de empresas"
+              class="mb-3"
+              style="width: 3rem; height: 3rem"
+            />
+            <h3 class="fw-bold mb-2">
+              {{ "CONTENT.our_services.service2.title" | transloco }}
+            </h3>
+            <p class="text-muted">
+              {{ "CONTENT.our_services.service2.description" | transloco }}
+            </p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="sc-service-item p-3 text-start">
+            <img
+              src="assets/services/img_group_cyan_500.svg"
+              alt="Cuenta bancaria en EE. UU."
+              class="mb-3"
+              style="width: 3rem; height: 3rem"
+            />
+            <h3 class="fw-bold mb-2">
+              {{ "CONTENT.our_services.service3.title" | transloco }}
+            </h3>
+            <p class="text-muted">
+              {{ "CONTENT.our_services.service3.description" | transloco }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Opening LLC Section -->
+<app-opening-llc></app-opening-llc>
+<!-- Sección de Pestañas de Servicios -->
+<app-tabs></app-tabs>
+<!-- Pricing Section -->
+<section class="pricing-section py-5" #pricingSection>
+  <app-responsive-image
+    [images]="pricingImages"
+    context="hero"
+    loading="lazy"
+    cssClass="sc-pricing-bg"
+  >
+  </app-responsive-image>
+  <app-pricing></app-pricing>
+</section>
+<!-- Benefits Section -->
+<section class="benefits-section">
+  <app-benefits></app-benefits>
+</section>
+<!-- Testimonials Section -->
+<app-testimonials></app-testimonials>
+<!-- Blog Section -->
+<app-blog></app-blog>
+<!-- FAQ Section -->
+<section class="faq-section py-5">
+  <app-faq></app-faq>
+</section>
+<app-sc-footer></app-sc-footer>
+<!-- Botón flotante central inferior -->
+<div
+  class="fixed-bottom d-flex justify-content-center mb-4 boton-flotante-oculto"
+>
+  <button
+    data-cal-link="startcompanies-businessenusa/agenda-organica"
+    data-cal-namespace="agenda-organica"
+    data-cal-config='{"layout":"month_view","theme":"light"}'
+    type="button"
+    class="btn sc-btn-accent px-4 py-3 shadow-lg"
+  >
+    {{'NAVBAR.call' | transloco}} <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+</div>

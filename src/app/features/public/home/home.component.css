@@ -1,0 +1,320 @@
+/* =========================
+   HERO SECTION
+   ========================= */
+.sc-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 600px;
+  /*height: 100vh;  Asegurar altura completa */
+}
+
+/* Configuración para NgOptimizedImage con fill mode */
+.sc-hero-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  min-height: 600px;
+  align-content: center;
+}
+
+/* Asegurar que el contenedor de la imagen tenga dimensiones */
+.sc-hero-bg app-responsive-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 600px;
+  /* Altura mínima */
+}
+
+.sc-hero .hero-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+}
+
+.sc-hero .hero-content .container {
+  position: relative;
+  z-index: 3;
+}
+
+/* Hero Titles & Description */
+.hero-title {
+  font-size: 3.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-fondo-claro);
+  margin-bottom: 1.5rem;
+  max-width: 100%;
+}
+
+.hero-description {
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-fondo-claro);
+  margin-bottom: 0;
+  max-width: 100%;
+}
+
+/* Hero Buttons */
+.hero-buttons {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+.hero-btn-primary,
+.hero-btn-secondary {
+  border-radius: 2.5rem;
+  padding: 0.8rem 2.2rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  flex-grow: 1;
+  white-space: nowrap;
+}
+
+.hero-btn-primary {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+}
+
+.hero-btn-primary:hover {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+}
+
+.hero-btn-secondary {
+  background-color: transparent;
+  color: var(--color-fondo-claro);
+  border: 2px solid var(--color-fondo-claro);
+}
+
+.hero-btn-secondary:hover {
+  background-color: var(--color-fondo-claro);
+  color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.hero-btn-primary i.bi,
+.hero-btn-secondary i.bi {
+  font-size: 1.1rem;
+}
+
+/* =========================
+   SERVICES SECTION
+   ========================= */
+.sc-services-section {
+  position: relative;
+  background-color: transparent;
+  z-index: 1;
+}
+
+.sc-services-container {
+  margin-top: -100px;
+  position: relative;
+  z-index: 2;
+}
+
+.sc-services-card {
+  background-color: var(--color-fondo-gris);
+  border-radius: 1.5rem;
+  border: none;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+}
+
+.sc-services-card .card-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-oscuro-tecnico);
+  margin-bottom: 3rem;
+}
+
+.sc-text-blue-accent {
+  color: var(--color-secundario-tecnico);
+}
+
+.sc-services-item h3 {
+  font-size: 1.5rem;
+  color: var(--color-oscuro-tecnico);
+  font-weight: 600;
+}
+
+.sc-services-item p {
+  font-size: 1rem;
+  color: var(--color-oscuro-tecnico);
+}
+
+.sc-icon-blue {
+  color: var(--color-secundario-tecnico);
+  font-size: 3.5rem !important;
+  line-height: 1;
+}
+
+/* =========================
+   PRICING SECTION
+   ========================= */
+.pricing-section {
+  position: relative;
+  padding: 80px 16px;
+  overflow: hidden;
+  background-color: rgba(0,
+      0,
+      0,
+      0.6);
+  /* Overlay oscuro para mejorar legibilidad */
+  /* background-color: var(--color-primario); Removido para que se vea la imagen de fondo */
+}
+
+.pricing-section .container {
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sc-pricing-bg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  min-height: 500px;
+  /* Altura mínima */
+}
+
+/* Asegurar que el contenedor de la imagen tenga dimensiones */
+.sc-pricing-bg app-responsive-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  min-height: 500px;
+  /* Altura mínima */
+}
+
+/*FAQ Section*/
+.faq-section {
+  background-color: var(--color-fondo-claro);
+  padding: 80px 16px;
+}
+
+/* Estilo del botón "Agendar llamada" */
+.sc-btn-accent {
+  background-color: var(--color-secundario-tecnico);
+  /* Color verde */
+  color: var(--color-fondo-claro);
+  border: none;
+  border-radius: 2.5rem;
+  /* Bordes muy redondeados */
+  padding: 0.75rem 1.5rem;
+  /* Relleno */
+  font-weight: 600;
+  font-size: 1rem;
+  display: inline-flex;
+  /* Para alinear texto e icono */
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+/* Oculta el botón en pantallas de 768px o más */
+@media (min-width: 991.98px) {
+  .boton-flotante-oculto {
+    display: none !important;
+  }
+}
+
+@media (max-width: 991.8px) {
+  .sc-slide h2 {
+    font-size: 2.5rem;
+  }
+
+  .sc-slide p {
+    font-size: 1rem;
+  }
+
+  button {
+    font-size: 0.6rem;
+  }
+
+  .sc-services-container {
+    margin-top: -80px;
+    padding: 0 1rem;
+  }
+
+  .sc-services-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .sc-services-card .card-title {
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .sc-services-item h3 {
+    font-size: 1.2rem;
+  }
+
+  .sc-services-item p {
+    font-size: 0.95rem;
+  }
+
+  .sc-icon-blue {
+    font-size: 3rem !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sc-slide h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .sc-slide p {
+    font-size: 0.9rem;
+  }
+
+  .sc-services-container {
+    margin-top: -60px;
+  }
+
+  .sc-services-card {
+    padding: 2rem 1rem;
+  }
+
+  .sc-services-card .card-title {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .sc-services-item h3 {
+    font-size: 1.5rem;
+  }
+
+  .sc-services-item:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-description {
+    font-size: 1.1rem;
+  }
+
+  .hero-btn-primary,
+  .hero-btn-secondary {
+    /*font-size: 0.7rem;*/
+    font-size: 1rem;
+    padding: 0.3rem 1.5rem;
+  }
+}

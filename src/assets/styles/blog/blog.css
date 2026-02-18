@@ -1,0 +1,19 @@
+/* ============================================================================
+   BLOG STYLES - Archivo principal consolidado
+   Importa todos los módulos del blog en orden correcto
+   ============================================================================ */
+
+/* Utilities primero (para que puedan ser sobrescritas si es necesario) */
+@import './blog-utilities.css';
+
+/* Estilos base del contenido */
+@import './blog-content.css';
+
+/* Cards (componentes reutilizables del CMS) */
+@import './blog-cards.css';
+
+/* Sidebar components */
+@import './blog-sidebar.css';
+
+/* Hero y landing pages */
+@import './blog-hero.css';

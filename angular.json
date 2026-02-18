@@ -24,21 +24,19 @@
               "src/favicon.ico",
               "src/assets",
               "src/manifest.webmanifest",
-              "src/robots.txt",
-              "src/sitemap.xml",
-              "src/sitemap-index.xml",
-              "src/sitemap-images.xml"
+              "src/robots.txt"
             ],
             "styles": [
               "src/styles.css",
+              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/intl-tel-input/build/css/intlTelInput.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "server": "src/main.server.ts",
-            "prerender": true,
             "ssr": {
               "entry": "server.ts"
             }
@@ -53,12 +51,13 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "25kB",
-                  "maximumError": "30kB"
+                  "maximumWarning": "30kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all",
-              "prerender": true,
+              "prerender": false,
+              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
@@ -77,7 +76,44 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "prerender": true
+              "prerender": false,
+              "ssr": false
+            },
+            "staging": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.staging.ts"
+                }
+              ],
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "800kB",
+                  "maximumError": "1.5MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "30kB",
+                  "maximumError": "40kB"
+                }
+              ],
+              "outputHashing": "all",
+              "prerender": false,
+              "ssr": false, 
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true,
+                  "removeSpecialComments": true
+                },
+                "fonts": true
+              },
+              "sourceMap": false,
+              "extractLicenses": false,
+              "namedChunks": false,
+              "serviceWorker": "ngsw-config.json"
             }
           },
           "defaultConfiguration": "development"
@@ -99,6 +135,11 @@
               "outputHashing": "media",
               "sourceMap": true,
               "optimization": false
+            },
+            "staging": {
+              "outputHashing": "media",
+              "sourceMap": false,
+              "optimization": true
             }
           },
           "defaultConfiguration": "development"
@@ -111,6 +152,9 @@
             },
             "development": {
               "buildTarget": "portal-startcompanies:build:development"
+            },
+            "staging": {
+              "buildTarget": "portal-startcompanies:build:staging"
             }
           },
           "defaultConfiguration": "development"
@@ -132,6 +176,7 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],

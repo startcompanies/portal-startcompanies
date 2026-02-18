@@ -1,0 +1,134 @@
+<div class="payment-step">
+  <!-- Resumen compacto -->
+  <div class="payment-summary">
+    <h6 class="payment-summary__title"><i class="bi bi-receipt me-2"></i>Resumen de tu solicitud</h6>
+    <div class="payment-summary__row">
+      <div class="payment-summary__item">
+        <i class="bi bi-box-seam me-2 text-primary"></i>
+        <strong>Plan:</strong>
+        <span *ngIf="packId; else noPlan">{{ packId }}</span>
+        <ng-template #noPlan><span class="text-muted">No especificado</span></ng-template>
+      </div>
+      <div class="payment-summary__item">
+        <i class="bi bi-geo-alt me-2 text-primary"></i>
+        <strong>Estado:</strong>
+        <span *ngIf="state; else noState">{{ state }}</span>
+        <ng-template #noState><span class="text-muted">No seleccionado</span></ng-template>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="form">
+    <!-- Método de pago -->
+    <div class="payment-methods">
+      <label class="payment-methods__label">Método de pago <span class="text-danger">*</span></label>
+      <div class="payment-methods__options">
+        <div
+          class="payment-method-option"
+          [class.selected]="form.get('paymentMethod')?.value === 'stripe'"
+          (click)="form.get('paymentMethod')?.setValue('stripe')"
+        >
+          <input type="radio" id="pay-stripe" value="stripe" formControlName="paymentMethod" class="d-none" />
+          <label for="pay-stripe" class="payment-method-option__label">
+            <i class="bi bi-credit-card me-2"></i>Tarjeta (Stripe)
+          </label>
+        </div>
+        <div
+          class="payment-method-option"
+          [class.selected]="form.get('paymentMethod')?.value === 'transferencia'"
+          (click)="form.get('paymentMethod')?.setValue('transferencia')"
+        >
+          <input type="radio" id="pay-transferencia" value="transferencia" formControlName="paymentMethod" class="d-none" />
+          <label for="pay-transferencia" class="payment-method-option__label">
+            <i class="bi bi-bank me-2"></i>Transferencia bancaria
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta Stripe -->
+    <div *ngIf="form.get('paymentMethod')?.value === 'stripe'" class="payment-card-section">
+      <div class="payment-card-section__security">
+        <i class="bi bi-shield-check text-success me-2"></i>
+        <span><strong>Pago seguro.</strong> <span class="text-muted small">Datos protegidos por Stripe. No almacenamos tu tarjeta.</span></span>
+      </div>
+      <app-stripe-payment-form
+        [amount]="totalAmount"
+        [currency]="currency || 'usd'"
+        [showAmount]="false"
+        [disabled]="stripePaymentProcessed"
+        (paymentSuccess)="onStripePaymentSuccess($event)"
+        (paymentError)="handlePaymentError($event)"
+      ></app-stripe-payment-form>
+      <div class="d-grid gap-2" *ngIf="!stripePaymentProcessed">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="processStripePayment()"
+          [disabled]="stripeProcessing || totalAmount <= 0"
+        >
+          <span *ngIf="!stripeProcessing"><i class="bi bi-credit-card me-2"></i>Pagar ${{ totalAmount }} USD</span>
+          <span *ngIf="stripeProcessing"><span class="spinner-border spinner-border-sm me-2"></span>Procesando...</span>
+        </button>
+      </div>
+      <small class="text-muted d-block mt-2" *ngIf="totalAmount <= 0">
+        <i class="bi bi-exclamation-triangle me-1"></i>Selecciona plan y estado para ver el monto.
+      </small>
+    </div>
+
+    <!-- Transferencia bancaria -->
+    <div *ngIf="form.get('paymentMethod')?.value === 'transferencia'" class="payment-transfer-section">
+      <small class="text-muted d-block mb-2" *ngIf="totalAmount <= 0"><i class="bi bi-info-circle me-1"></i>Selecciona plan y estado para ver el monto.</small>
+    <div *ngIf="totalAmount > 0">
+      <div class="payment-transfer-section__info">
+        <p class="small mb-2"><strong>Instrucciones:</strong> Realiza la transferencia a la cuenta indicada y sube el comprobante.</p>
+        <div class="payment-transfer-section__bank">
+          <div><strong>Beneficiario:</strong> EbizBoost LLC</div>
+          <div><strong>Banco:</strong> THREAD</div>
+          <div><strong>Cuenta:</strong> <code>200000776994</code> · <strong>Routing:</strong> <code>064209588</code></div>
+          <div class="small text-muted">420 Southwest 7th Street, Suite:1019, Miami, FL 33130, US</div>
+        </div>
+      </div>
+      <div class="payment-transfer-section__upload">
+        <label class="form-label small">Comprobante de transferencia</label>
+        <input
+          type="file"
+          class="form-control form-control-sm"
+          (change)="onPaymentProofFileSelected($event)"
+          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+          [disabled]="isUploadingPaymentProof"
+        />
+        <small class="text-muted">PDF, JPG, PNG, DOC (máx. 10MB)</small>
+        <div *ngIf="selectedPaymentProofFile && !isUploadingPaymentProof" class="mt-2 d-flex align-items-center justify-content-between">
+          <span class="small"><i class="bi bi-file-earmark me-1"></i>{{ selectedPaymentProofFile.name }}</span>
+          <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearPaymentProofFile()"><i class="bi bi-x"></i></button>
+        </div>
+        <div *ngIf="isUploadingPaymentProof" class="mt-2">
+          <div class="progress" style="height: 6px;"><div class="progress-bar progress-bar-striped progress-bar-animated" [style.width.%]="paymentProofUploadProgress"></div></div>
+        </div>
+        <div *ngIf="form.get('paymentProofUrl')?.value && !selectedPaymentProofFile && !isUploadingPaymentProof" class="alert alert-success small mt-2 py-2">
+          <i class="bi bi-check-circle me-1"></i>Comprobante subido. <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="alert-link">Ver</a>
+        </div>
+      </div>
+      <div class="d-grid gap-2 mt-2" *ngIf="!transferenciaProcessed">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="processTransferenciaPayment()"
+          [disabled]="isUploadingPaymentProof || !form.get('paymentProofUrl')?.value || totalAmount <= 0"
+        >
+          <span *ngIf="!isUploadingPaymentProof"><i class="bi bi-bank me-2"></i>Crear solicitud con transferencia ${{ totalAmount }} USD</span>
+          <span *ngIf="isUploadingPaymentProof"><span class="spinner-border spinner-border-sm me-2"></span>Subiendo...</span>
+        </button>
+      </div>
+    </div>
+    </div>
+
+    <div *ngIf="errorMessage && !stripePaymentProcessed && !transferenciaProcessed" class="alert alert-danger mt-2 py-2 small">
+      <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+    </div>
+    <div *ngIf="(stripePaymentProcessed || transferenciaProcessed) && !errorMessage" class="alert alert-success mt-2 py-2 small">
+      <i class="bi bi-check-circle-fill me-2"></i><strong>Pago registrado.</strong> Puedes continuar al siguiente paso.
+    </div>
+  </form>
+</div>

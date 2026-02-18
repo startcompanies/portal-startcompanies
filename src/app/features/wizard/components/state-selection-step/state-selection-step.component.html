@@ -1,0 +1,49 @@
+<div class="state-selection-step">
+  <h4 class="mb-3">{{ 'WIZARD.state_step.title' | transloco }}</h4>
+
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="state">{{ 'WIZARD.state_step.label' | transloco }}</label>
+      <select id="state" class="form-control" formControlName="state">
+        <option value="">
+          {{ 'WIZARD.state_step.placeholder' | transloco }}
+        </option>
+        <option *ngFor="let state of states" [value]="state">
+          {{ state }}
+        </option>
+      </select>
+
+      <div
+        *ngIf="form.get('state')?.touched && form.get('state')?.invalid"
+        class="text-danger mt-1"
+      >
+        {{ 'WIZARD.state_step.required' | transloco }}
+      </div>
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="llcType">Tipo de LLC</label>
+      <select id="llcType" class="form-control" formControlName="llcType">
+        <option value="">Selecciona el tipo de LLC</option>
+        <option *ngFor="let t of llcTypes" [value]="t.value">{{ t.label }}</option>
+      </select>
+      <div
+        *ngIf="form.get('llcType')?.touched && form.get('llcType')?.invalid"
+        class="text-danger mt-1"
+      >
+        Este campo es requerido
+      </div>
+    </div>
+
+    <!-- Precio calculado -->
+    <div class="alert alert-info mt-3" *ngIf="amount !== null && !showUnsupportedAlert">
+      <strong>Precio de renovación:</strong> ${{ amount }} USD
+    </div>
+
+    <!-- Estado no soportado -->
+    <div class="alert alert-warning mt-3" *ngIf="showUnsupportedAlert">
+      <strong>Estado no cotizable automáticamente.</strong>
+      Comunícate con soporte para cotizar la renovación del estado elegido.
+    </div>
+  </form>
+</div>

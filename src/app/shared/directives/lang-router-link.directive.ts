@@ -47,10 +47,24 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
 
   private normalizeCommands(cmds: any[] | string): any[] {
     const arr = Array.isArray(cmds) ? cmds.slice() : [cmds];
-    if (arr.length > 0 && typeof arr[0] === 'string') {
-      arr[0] = (arr[0] as string).replace(/^\/+/, ''); // quitar slashes iniciales
+    
+    // Dividir comandos que contienen diagonales en segmentos separados
+    const result: any[] = [];
+    for (const cmd of arr) {
+      if (typeof cmd === 'string') {
+        const cleaned = cmd.replace(/^\/+/, ''); // quitar slashes iniciales
+        if (cleaned.includes('/')) {
+          // Dividir por diagonales y filtrar segmentos vacíos
+          const segments = cleaned.split('/').filter(s => s.length > 0);
+          result.push(...segments);
+        } else {
+          result.push(cleaned);
+        }
+      } else {
+        result.push(cmd);
+      }
     }
-    return arr;
+    return result;
   }
 
   private updateHref() {
@@ -92,7 +106,8 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
           const routeMapping: { [key: string]: string } = {
-            'inicio': 'home',
+            '': 'home', // Raíz en español mapea a 'home' en inglés
+            'inicio': 'home', // Mantener compatibilidad
             'nosotros': 'about-us',
             'contacto': 'contact',
             'planes': 'plans',
@@ -109,7 +124,10 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'fixcal': 'fixcal',
             'abotax': 'abotax',
             'category': 'category',
-            'post': 'post'
+            'post': 'post',
+            'registro-cliente': 'client-register',
+            'cuenta-bancaria': 'bank-account',
+            'wizard/cuenta-bancaria': 'wizard/bank-account',
           };
           return routeMapping[cmd] || cmd;
         }
@@ -119,7 +137,7 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
           const routeMapping: { [key: string]: string } = {
-            'home': 'inicio',
+            'home': '', // 'home' en inglés mapea a raíz '' en español
             'about-us': 'nosotros',
             'contact': 'contacto',
             'plans': 'planes',
@@ -136,7 +154,9 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
             'fixcal': 'fixcal',
             'abotax': 'abotax',
             'category': 'category',
-            'post': 'post'
+            'post': 'post',
+            'bank-account': 'cuenta-bancaria',
+            'wizard/bank-account': 'wizard/cuenta-bancaria',
           };
           return routeMapping[cmd] || cmd;
         }

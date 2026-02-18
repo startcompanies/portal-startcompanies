@@ -1,0 +1,103 @@
+<div class="state-plan-selection-step">
+  <form [formGroup]="form">
+    <!-- Selección de Plan -->
+    <div class="form-group mb-4">
+      <label for="plan">Plan <span class="text-danger">*</span></label>
+      <div class="plan-cards-list">
+        <div class="plan-card" *ngFor="let plan of planes" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
+          <div class="plan-card__main">
+            <div class="plan-name-block">
+              <span class="plan-name">{{ plan.label }}</span>
+              <span class="recommended-badge" *ngIf="plan.recommended">Recomendado</span>
+            </div>
+            <span class="plan-price">${{ plan.price }}</span>
+            <span
+              class="plan-info-icon"
+              [attr.title]="getPlanTooltip(plan)"
+              (click)="$event.stopPropagation()"
+              aria-label="Más información del plan"
+            >
+              <i class="bi bi-info-circle"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Selección de Estado -->
+    <div class="form-group mb-3">
+      <label for="state">Estado <span class="text-danger">*</span></label>
+      
+      <!-- Mostrar estado pre-seleccionado si el plan solo tiene un estado -->
+      <div *ngIf="selectedPlan && getSelectedPlanStates().length === 1" class="mb-3">
+        <div class="form-control bg-light" style="padding: 0.75rem; border: 1px solid #ced4da; border-radius: 8px; cursor: default;">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+            <strong>{{ getSelectedPlanStates()[0] }}</strong>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Botones rápidos para estados comunes (solo si hay múltiples estados disponibles) -->
+      <div class="row mb-2" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('New Mexico')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'New Mexico'"
+            (click)="selectState('New Mexico')"
+          >
+            Nuevo México
+          </button>
+        </div>
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('Texas')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'Texas'"
+            (click)="selectState('Texas')"
+          >
+            Texas
+          </button>
+        </div>
+        <div class="col-md-6 mb-2" *ngIf="isStateAvailable('Wyoming')">
+          <button 
+            type="button" 
+            class="state-btn w-100" 
+            [class.active]="selectedState === 'Wyoming'"
+            (click)="selectState('Wyoming')"
+          >
+            Wyoming
+          </button>
+        </div>
+      </div>
+      
+      <!-- Selector de otros estados (solo cuando el plan permite cualquier estado, p. ej. Elite) -->
+      <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length === 0">
+        Otros estados
+      </label>
+      <select 
+        id="state-select" 
+        class="form-control" 
+        formControlName="state" 
+        (change)="changeState()"
+        *ngIf="selectedPlan && getSelectedPlanStates().length === 0"
+      >
+        <option value="">Selecciona un estado...</option>
+        <option *ngFor="let state of getAvailableStates()" [value]="state.value">
+          {{ state.label }} ({{ state.abbreviation }})
+        </option>
+      </select>
+      
+      <small class="text-muted d-block mt-2" *ngIf="!selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Primero selecciona un plan para ver los estados disponibles
+      </small>
+      <small class="text-muted d-block mt-2" *ngIf="selectedPlan">
+        <i class="bi bi-info-circle me-1"></i>
+        Estados disponibles según el plan seleccionado
+      </small>
+    </div>
+    
+  </form>
+</div>

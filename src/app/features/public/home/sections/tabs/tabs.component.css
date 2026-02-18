@@ -1,0 +1,321 @@
+/* =========================
+    TABS SECTION
+    ========================= */
+.sc-tabs-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+/* =========================
+    TABS STYLES - Desktop (Original Bootstrap nav-pills)
+    ========================= */
+.sc-desktop-tabs {
+    display: flex;
+}
+
+.sc-mobile-tabs {
+    display: none;
+}
+
+.sc-desktop-content {
+    display: block;
+}
+
+.sc-mobile-content {
+    display: none;
+}
+
+.sc-tabs-section .nav-pills .nav-link {
+    color: #1F2A37;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    background-color: transparent;
+    transition: all 0.3s ease;
+    margin: 0 0.5rem;
+    text-decoration: none;
+    cursor: pointer;
+    display: block;
+}
+
+/* Tabs active - Desktop */
+.sc-tabs-section .nav-pills .nav-link.active {
+    color: var(--color-secundario-tecnico);
+    background-color: transparent;
+    position: relative;
+}
+
+/* Underline active tab - Desktop */
+.sc-tabs-section .nav-pills .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 4px;
+    background-color: var(--color-secundario-tecnico);
+    border-radius: 2px;
+}
+
+/* Hover styles on tabs - Desktop */
+.sc-tabs-section .nav-pills .nav-link:hover:not(.active) {
+    color: var(--color-secundario-tecnico);
+    text-decoration: none;
+}
+
+/* =========================
+    TABS STYLES - Mobile and Tablet (Nuevo diseño)
+    ========================= */
+@media (max-width: 1024px) {
+    .sc-desktop-tabs {
+        display: none;
+    }
+
+    .sc-mobile-tabs {
+        display: flex;
+    }
+
+    .sc-desktop-content {
+        display: none;
+    }
+
+    .sc-mobile-content {
+        display: block;
+    }
+
+    .sc-tabs-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .sc-tabs-wrapper {
+        display: flex;
+        background-color: #f8f9fa;
+        border-radius: 1rem;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        padding: 12px;
+        max-width: 800px;
+        width: 100%;
+    }
+
+    .sc-tab-item {
+        flex: 1;
+        background: none;
+        border: none;
+        padding: 16px 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 600;
+        font-size: 1rem;
+        color: #1F2A37;
+        border-radius: 0.75rem;
+        margin: 0 2px;
+        min-height: 60px;
+    }
+
+    .sc-tab-item:first-child {
+        border-top-left-radius: 0.75rem;
+        border-bottom-left-radius: 0.75rem;
+        margin-left: 0;
+    }
+
+    .sc-tab-item:last-child {
+        border-top-right-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
+        margin-right: 0;
+    }
+
+    .sc-tab-item.active {
+        background-color: #ffffff;
+        color: var(--color-secundario-tecnico);
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .sc-tab-text {
+        display: block;
+        line-height: 1.3;
+        white-space: normal;
+    }
+
+    .sc-tabs-wrapper {
+        padding: 8px;
+        max-width: 100%;
+        border-radius: 0.75rem;
+    }
+
+    .sc-tab-item {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+        min-height: 50px;
+        border-radius: 0.5rem;
+    }
+
+    .sc-tab-item:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+    .sc-tab-item:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+
+    .sc-tab-text {
+        font-size: 0.85rem;
+        line-height: 1.2;
+    }
+}
+
+/* Responsive adicional para móviles más pequeños */
+@media (max-width: 767px) {
+    .sc-tabs-wrapper {
+        padding: 6px;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .sc-tabs-wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 4px;
+    }
+
+    .sc-tab-item {
+        padding: 10px 6px;
+        font-size: 0.8rem;
+        min-height: 45px;
+        border-radius: 0.5rem;
+        margin: 0;
+    }
+
+    .sc-tab-item:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .sc-tab-item:nth-child(2) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0;
+    }
+
+    .sc-tab-item:nth-child(3) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0.5rem;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .sc-tab-item:last-child {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0.5rem;
+    }
+
+    .sc-tab-text {
+        font-size: 0.75rem;
+        line-height: 1.1;
+    }
+}
+
+/* Tab Panes Description */
+.sc-tab-pane-content p {
+    font-size: 1.05rem;
+    color: #1F2A37;
+    line-height: 1.6;
+}
+
+/* Button Primary */
+.sc-btn-primary {
+    background-color: var(--color-secundario-tecnico);
+    color: #F3F6FA;
+    border: none;
+    border-radius: 2.5rem;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+/* Button Primary Hover */
+.sc-btn-primary:hover {
+    background-color: #f0f0f0;
+    color: #006afe;
+}
+
+/* Estilos para las imágenes de tabs con app-responsive-image */
+.sc-tab-pane-content app-responsive-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 70px !important;
+    /* Corner radius exacto de Figma */
+    overflow: hidden !important;
+    /* Asegurar que el redondeo se vea */
+}
+
+.sc-tab-pane-content app-responsive-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 70px !important;
+    /* Corner radius exacto de Figma */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    /* Sombra más visible */
+    transition: all 0.3s ease !important;
+    /* Transición suave */
+}
+
+/* Hover effect para las imágenes */
+.sc-tab-pane-content app-responsive-image:hover img {
+    transform: scale(1.02) !important;
+    /* Ligero zoom en hover */
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.2) !important;
+    /* Sombra más intensa en hover */
+}
+
+/* Dimensiones específicas para diferentes breakpoints */
+@media (min-width: 992px) {
+    .sc-tab-pane-content app-responsive-image img {
+        max-width: 570px;
+        max-height: 550px;
+        border-radius: 70px !important;
+        /* Corner radius exacto de Figma */
+    }
+}
+
+@media (min-width: 1200px) {
+    .sc-tab-pane-content app-responsive-image img {
+        max-width: 680px;
+        max-height: 660px;
+        border-radius: 70px !important;
+        /* Corner radius exacto de Figma */
+    }
+}
+
+/* Asegurar redondeo en mobile también */
+@media (max-width: 991px) {
+
+    .sc-tab-pane-content app-responsive-image,
+    .sc-tab-pane-content app-responsive-image img {
+        border-radius: 50px !important;
+        /* Redondeo proporcional para mobile */
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1) !important;
+        /* Sombra más sutil en mobile */
+    }
+}

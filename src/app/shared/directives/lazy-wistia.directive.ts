@@ -1,5 +1,5 @@
-import { Directive, ElementRef, Input, OnInit, OnDestroy, Inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Directive, ElementRef, Input, OnInit, OnDestroy } from '@angular/core';
+import { BrowserService } from '../services/browser.service';
 
 @Directive({
   selector: '[appLazyWistia]',
@@ -16,11 +16,11 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
 
   constructor(
     private el: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private browser: BrowserService
   ) {}
 
   ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) {
+    if (!this.browser.isBrowser) {
       return;
     }
 
@@ -33,7 +33,8 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
   }
 
   private setupIntersectionObserver(): void {
-    if (!('IntersectionObserver' in window)) {
+    const win = this.browser.window;
+    if (!win || !('IntersectionObserver' in win)) {
       // Fallback para navegadores que no soportan IntersectionObserver
       this.loadWistia();
       return;
@@ -71,13 +72,19 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
 
   private loadWistiaScripts(): Promise<void> {
     return new Promise((resolve, reject) => {
+      const doc = this.browser.document;
+      if (!doc) {
+        resolve();
+        return;
+      }
+      
       // Verificar si los scripts ya existen
-      if (document.querySelector('script[src*="fast.wistia.com/player.js"]')) {
+      if (doc.querySelector('script[src*="fast.wistia.com/player.js"]')) {
         resolve();
         return;
       }
 
-      const playerScript = document.createElement('script');
+      const playerScript = doc.createElement('script');
       playerScript.src = 'https://fast.wistia.com/player.js';
       playerScript.async = true;
       playerScript.onload = () => resolve();
@@ -85,15 +92,20 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
         console.warn('Error cargando Wistia player.js (ignorado)');
         resolve(); // Continuar aunque falle
       };
-      document.head.appendChild(playerScript);
+      doc.head.appendChild(playerScript);
     });
   }
 
   private createWistiaPlayer(): void {
+    const doc = this.browser.document;
+    if (!doc) {
+      return;
+    }
+    
     const container = this.el.nativeElement;
     
     // Crear placeholder mientras carga
-    const placeholder = document.createElement('div');
+    const placeholder = doc.createElement('div');
     placeholder.className = 'wistia-placeholder';
     placeholder.innerHTML = `
       <div class="wistia-loading">
@@ -105,7 +117,7 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
     container.appendChild(placeholder);
 
     // Crear el player de Wistia
-    const wistiaPlayer = document.createElement('wistia-player');
+    const wistiaPlayer = doc.createElement('wistia-player');
     wistiaPlayer.setAttribute('media-id', this.appLazyWistia);
     wistiaPlayer.setAttribute('aspect', this.aspectRatio.toString());
     if (this.popover) {
@@ -115,7 +127,7 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
     // No aplicar padding-top manual; Wistia calculará el alto según 'aspect'
 
     // Agregar estilos para el placeholder
-    const style = document.createElement('style');
+    const style = doc.createElement('style');
     style.textContent = `
       .wistia-placeholder {
         position: relative;
@@ -154,7 +166,7 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
       }
     `;
     
-    document.head.appendChild(style);
+    doc.head.appendChild(style);
 
     // Reemplazar placeholder con el player
     setTimeout(() => {
@@ -167,12 +179,17 @@ export class LazyWistiaDirective implements OnInit, OnDestroy {
   }
 
   private loadWistiaEmbed(): void {
-    const embedScript = document.createElement('script');
+    const doc = this.browser.document;
+    if (!doc) {
+      return;
+    }
+    
+    const embedScript = doc.createElement('script');
     embedScript.src = `https://fast.wistia.com/embed/${this.appLazyWistia}.js`;
     embedScript.async = true;
     embedScript.type = 'module';
     embedScript.onerror = () => console.warn('Error cargando Wistia embed (ignorado)');
-    document.head.appendChild(embedScript);
+    doc.head.appendChild(embedScript);
   }
 
   ngOnDestroy(): void {

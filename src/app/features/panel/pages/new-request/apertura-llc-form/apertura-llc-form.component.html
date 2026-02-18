@@ -1,0 +1,394 @@
+<div [formGroup]="serviceDataForm">
+  <!-- Sección 1: Información de la LLC -->
+        <div *ngIf="currentSection === 1" class="form-section">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
+              <p class="text-muted">Proporcione tres opciones posibles para el nombre de su LLC, incluyendo 'LLC' al final.</p>
+            </div>
+            <div class="col-md-12">
+              <label for="llcName" class="form-label">Nombre de la LLC - Opción 1 <span class="text-danger">*</span></label>
+              <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC"
+                [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
+              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+              <div *ngIf="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched" class="invalid-feedback d-block">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2 <span class="text-danger">*</span></label>
+              <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2">
+              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+            </div>
+            <div class="col-md-12">
+              <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3 <span class="text-danger">*</span></label>
+              <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3">
+              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+            </div>
+            <div class="col-md-12">
+              <label for="incorporationState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
+              <!-- Si el estado ya viene del paso anterior o paquete, mostrarlo como readonly -->
+              <div *ngIf="serviceDataForm.get('incorporationState')?.value" class="input-group">
+                <input 
+                  type="text" 
+                  id="incorporationState" 
+                  class="form-control bg-light" 
+                  [value]="getStateLabelWithAbbreviation(serviceDataForm.get('incorporationState')?.value)"
+                  readonly
+                />
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock-fill text-muted"></i>
+                </span>
+              </div>
+              <small *ngIf="serviceDataForm.get('incorporationState')?.value" class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                El estado fue seleccionado previamente y no puede modificarse.
+              </small>
+              <!-- Solo mostrar select si no hay estado seleccionado -->
+              <select 
+                *ngIf="!serviceDataForm.get('incorporationState')?.value"
+                id="incorporationState" 
+                class="form-select" 
+                formControlName="incorporationState"
+              >
+                <option value="">Selecciona un estado...</option>
+                <option *ngFor="let state of usStates" [value]="state.value">
+                  {{ state.label }} ({{ state.abbreviation }})
+                </option>
+              </select>
+            </div>
+            <div class="col-md-12">
+              <label for="businessDescription" class="form-label">Actividad Principal de la LLC <span class="text-danger">*</span></label>
+              <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" placeholder="Describa brevemente la actividad principal que realizará su empresa."
+                [class.is-invalid]="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched"></textarea>
+              <div *ngIf="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched" class="invalid-feedback d-block">
+                Este campo es obligatorio.
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="llcType" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
+              <!-- Si la estructura societaria ya viene del paso anterior o paquete, mostrarla como readonly -->
+              <div *ngIf="serviceDataForm.get('llcType')?.value" class="input-group">
+                <input 
+                  type="text" 
+                  id="llcType" 
+                  class="form-control bg-light" 
+                  [value]="getLlcTypeLabel(serviceDataForm.get('llcType')?.value)"
+                  readonly
+                />
+                <span class="input-group-text bg-light">
+                  <i class="bi bi-lock-fill text-muted"></i>
+                </span>
+              </div>
+              <small *ngIf="serviceDataForm.get('llcType')?.value" class="form-text text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                La estructura societaria fue seleccionada previamente y no puede modificarse.
+              </small>
+              <!-- Solo mostrar select si no hay estructura societaria seleccionada -->
+              <select 
+                *ngIf="!serviceDataForm.get('llcType')?.value"
+                id="llcType" 
+                class="form-select" 
+                formControlName="llcType"
+                [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched"
+              >
+                <option value="">Selecciona...</option>
+                <option value="single">LLC de un solo miembro (Single Member LLC)</option>
+                <option value="multi">LLC con múltiples miembros (Multi Member LLC)</option>
+              </select>
+              <div *ngIf="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
+                Debe seleccionar una estructura societaria.
+              </div>
+            </div>
+            <div class="col-md-12">
+              <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
+              <input type="url" id="linkedin" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/...">
+            </div>
+          </div>
+          
+        </div>
+
+        <!-- Sección 2: Información del Propietario/Socios -->
+        <div *ngIf="currentSection === 2" class="form-section">
+          <p class="text-muted"><strong>SECCIÓN 3: INFORMACIÓN DEL PROPIETARIO O SOCIOS</strong></p>
+          <p class="text-danger"><strong>Importante:</strong> Asegúrate de ingresar la información de todos los propietarios o socios.</p>
+          
+          <div *ngIf="shouldShowMembersSection()">
+            <h4 class="section-title">Socios/Miembros de la LLC</h4>
+            <div formArrayName="members" *ngIf="membersFormArray">
+              <div *ngFor="let member of membersFormArray.controls; let i = index" [formGroupName]="i" class="member-card mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">Miembro {{ i + 1 }}</h5>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeMember(i)" *ngIf="membersFormArray.length > 1">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label [for]="'memberFirstName' + i" class="form-label">Nombres <span class="text-danger">*</span></label>
+                  <input type="text" [id]="'memberFirstName' + i" class="form-control" formControlName="firstName"
+                    [class.is-invalid]="member.get('firstName')?.invalid && member.get('firstName')?.touched">
+                  <div *ngIf="member.get('firstName')?.invalid && member.get('firstName')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberLastName' + i" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                  <input type="text" [id]="'memberLastName' + i" class="form-control" formControlName="lastName"
+                    [class.is-invalid]="member.get('lastName')?.invalid && member.get('lastName')?.touched">
+                  <div *ngIf="member.get('lastName')?.invalid && member.get('lastName')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberPassport' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
+                  <input type="text" [id]="'memberPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país)"
+                    [class.is-invalid]="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched">
+                  <div *ngIf="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched" class="invalid-feedback d-block">
+                    Este campo es obligatorio.
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberPassportScanned' + i" class="form-label">Pasaporte escaneado <span class="text-danger">*</span></label>
+                  <!-- Solo mostrar input de file si NO hay URL guardada -->
+                  <div *ngIf="!member.get('scannedPassportUrl')?.value">
+                    <input
+                      type="file"
+                      [id]="'memberPassportScanned' + i"
+                      class="form-control"
+                      (change)="onMemberFileSelected($event, i, 'scannedPassportUrl', 'memberPassport' + i)"
+                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                      [disabled]="getFileUploadState(getMemberFileKey('memberPassport' + i, i)).uploading"
+                    />
+                    <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                    
+                    <div *ngIf="getFileUploadState(getMemberFileKey('memberPassport' + i, i)).file && !getFileUploadState(getMemberFileKey('memberPassport' + i, i)).uploading" class="selected-file-info mt-2">
+                      <div class="alert alert-info d-flex justify-content-between align-items-center">
+                        <span>
+                          <i class="bi bi-file-earmark me-2"></i>
+                          {{ getFileUploadState(getMemberFileKey('memberPassport' + i, i)).file?.name }} ({{ ((getFileUploadState(getMemberFileKey('memberPassport' + i, i)).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)
+                        </span>
+                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div *ngIf="getFileUploadState(getMemberFileKey('memberPassport' + i, i)).uploading" class="upload-progress mt-2">
+                      <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState(getMemberFileKey('memberPassport' + i, i)).progress" [attr.aria-valuenow]="getFileUploadState(getMemberFileKey('memberPassport' + i, i)).progress" aria-valuemin="0" aria-valuemax="100">
+                          {{ getFileUploadState(getMemberFileKey('memberPassport' + i, i)).progress }}%
+                        </div>
+                      </div>
+                      <small class="text-muted">Subiendo archivo...</small>
+                    </div>
+                  </div>
+                  <!-- Mostrar archivo existente si hay URL guardada -->
+                  <div *ngIf="member.get('scannedPassportUrl')?.value && !getFileUploadState(getMemberFileKey('memberPassport' + i, i)).file && !getFileUploadState(getMemberFileKey('memberPassport' + i, i)).uploading" class="uploaded-file-info mt-2">
+                    <div class="alert alert-success">
+                      <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+                      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                    </div>
+                  </div>
+                  
+                  <input type="hidden" formControlName="scannedPassportUrl">
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+                  <select [id]="'memberNationality' + i" class="form-select" formControlName="nationality">
+                    <option value="">Selecciona...</option>
+                    <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberDateOfBirth' + i" class="form-label">Fecha de nacimiento</label>
+                  <input type="date" [id]="'memberDateOfBirth' + i" class="form-control" formControlName="dateOfBirth">
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberEmail' + i" class="form-label">Email <span class="text-danger">*</span></label>
+                  <input type="email" [id]="'memberEmail' + i" class="form-control" formControlName="email">
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberPhone' + i" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                  <app-intl-tel-input
+                    [id]="'memberPhone' + i"
+                    formControlName="phoneNumber"
+                    placeholder="Teléfono"
+                  ></app-intl-tel-input>
+                </div>
+                <div class="col-md-6">
+                  <label [for]="'memberPercentage' + i" class="form-label">% de Participación <span class="text-danger">*</span></label>
+                  <input type="number" [id]="'memberPercentage' + i" class="form-control" formControlName="percentageOfParticipation" min="0" max="100">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Dirección del Miembro <span class="text-danger">*</span></label>
+                  <div class="row g-2" *ngIf="getMemberAddressForm(member)" [formGroup]="getMemberAddressForm(member)!">
+                    <div class="col-md-8">
+                      <input type="text" class="form-control" formControlName="street" placeholder="Calle">
+                    </div>
+                    <div class="col-md-4">
+                      <input type="text" class="form-control" formControlName="unit" placeholder="Unidad">
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" class="form-control" formControlName="city" placeholder="Ciudad">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" formControlName="stateRegion" placeholder="Estado/Región">
+                    </div>
+                    <div class="col-md-3">
+                      <input type="text" class="form-control" formControlName="postalCode" placeholder="Código Postal">
+                    </div>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control" formControlName="country" placeholder="País">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <button type="button" class="btn btn-outline-primary" (click)="addMember()" *ngIf="!isSingleMember()">
+                <i class="bi bi-plus-circle me-2"></i>Agregar Miembro
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección 3: Información para Apertura Bancaria -->
+        <div *ngIf="currentSection === 3" class="form-section">
+          <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN PARA APERTURA BANCARIA</strong></h4>
+          <p class="text-danger"><strong>Importante:</strong> La dirección en factura y resumen bancario debe coincidir, al igual que el nombre del titular o responsable de la LLC en ambos documentos. Si no coinciden, el banco podría rechazar la apertura.</p>
+          
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label for="serviceBillFile" class="form-label">Factura de Servicio (Prueba de Dirección) <span class="text-danger">*</span></label>
+              <!-- Solo mostrar input de file si NO hay URL guardada -->
+              <div *ngIf="!serviceDataForm.get('serviceBillUrl')?.value">
+                <input
+                  type="file"
+                  id="serviceBillFile"
+                  class="form-control"
+                  (change)="onFileSelected($event, 'serviceBillUrl', 'serviceBill')"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  [disabled]="getFileUploadState('serviceBill').uploading"
+                />
+                <small class="form-text text-muted">Sube una factura de servicio emitida en los últimos 3 meses como prueba de dirección. Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                
+                <div *ngIf="getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="selected-file-info mt-2">
+                  <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span>
+                      <i class="bi bi-file-earmark me-2"></i>
+                      {{ getFileUploadState('serviceBill').file?.name }} ({{ ((getFileUploadState('serviceBill').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div *ngIf="getFileUploadState('serviceBill').uploading" class="upload-progress mt-2">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('serviceBill').progress" [attr.aria-valuenow]="getFileUploadState('serviceBill').progress" aria-valuemin="0" aria-valuemax="100">
+                      {{ getFileUploadState('serviceBill').progress }}%
+                    </div>
+                  </div>
+                  <small class="text-muted">Subiendo archivo...</small>
+                </div>
+              </div>
+              <!-- Mostrar archivo existente si hay URL guardada -->
+              <div *ngIf="serviceDataForm.get('serviceBillUrl')?.value && !getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="uploaded-file-info mt-2">
+                <div class="alert alert-success">
+                  <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+                  <a [href]="serviceDataForm.get('serviceBillUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                </div>
+              </div>
+              
+              <input type="hidden" formControlName="serviceBillUrl">
+            </div>
+            
+            <div class="col-md-12">
+              <label for="bankStatementFile" class="form-label">Resumen Bancario <span class="text-danger">*</span></label>
+              <!-- Solo mostrar input de file si NO hay URL guardada -->
+              <div *ngIf="!serviceDataForm.get('bankStatementUrl')?.value">
+                <input
+                  type="file"
+                  id="bankStatementFile"
+                  class="form-control"
+                  (change)="onFileSelected($event, 'bankStatementUrl', 'bankStatement')"
+                  accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                  [disabled]="getFileUploadState('bankStatement').uploading"
+                />
+                <small class="form-text text-muted">Sube tu resumen bancario con la misma dirección que figura en la factura de servicio. Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                
+                <div *ngIf="getFileUploadState('bankStatement').file && !getFileUploadState('bankStatement').uploading" class="selected-file-info mt-2">
+                  <div class="alert alert-info d-flex justify-content-between align-items-center">
+                    <span>
+                      <i class="bi bi-file-earmark me-2"></i>
+                      {{ getFileUploadState('bankStatement').file?.name }} ({{ ((getFileUploadState('bankStatement').file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)
+                    </span>
+                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearFile('bankStatement', 'bankStatementUrl', 'bankStatementFile')">
+                      <i class="bi bi-x-circle"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div *ngIf="getFileUploadState('bankStatement').uploading" class="upload-progress mt-2">
+                  <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('bankStatement').progress" [attr.aria-valuenow]="getFileUploadState('bankStatement').progress" aria-valuemin="0" aria-valuemax="100">
+                      {{ getFileUploadState('bankStatement').progress }}%
+                    </div>
+                  </div>
+                  <small class="text-muted">Subiendo archivo...</small>
+                </div>
+              </div>
+              <!-- Mostrar archivo existente si hay URL guardada -->
+              <div *ngIf="serviceDataForm.get('bankStatementUrl')?.value && !getFileUploadState('bankStatement').file && !getFileUploadState('bankStatement').uploading" class="uploaded-file-info mt-2">
+                <div class="alert alert-success">
+                  <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
+                  <a [href]="serviceDataForm.get('bankStatementUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
+                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('bankStatement', 'bankStatementUrl', 'bankStatementFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                </div>
+              </div>
+              
+              <input type="hidden" formControlName="bankStatementUrl">
+            </div>
+            
+            <div class="col-md-12">
+              <label class="form-label">¿Tendrá ingresos periódicos que suman USD 10,000 o más en los próximos tres meses? <span class="text-danger">*</span></label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="periodicIncome10k" id="periodicIncome10kYes" [value]="'si'" formControlName="periodicIncome10k">
+                <label class="form-check-label" for="periodicIncome10kYes">Si</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="periodicIncome10k" id="periodicIncome10kNo" [value]="'no'" formControlName="periodicIncome10k">
+                <label class="form-check-label" for="periodicIncome10kNo">No</label>
+              </div>
+            </div>
+            
+            <div class="col-md-12">
+              <label for="bankAccountLinkedEmail" class="form-label">Correo Electrónico Vinculado a la Cuenta Bancaria <span class="text-danger">*</span></label>
+              <input type="email" id="bankAccountLinkedEmail" class="form-control" formControlName="bankAccountLinkedEmail" placeholder="Este correo también será el correo asociado a la cuenta bancaria.">
+            </div>
+            
+            <div class="col-md-12">
+              <label for="bankAccountLinkedPhone" class="form-label">Número de Teléfono Vinculado a la Cuenta Bancaria <span class="text-danger">*</span></label>
+              <app-intl-tel-input
+                id="bankAccountLinkedPhone"
+                formControlName="bankAccountLinkedPhone"
+                placeholder="Este número debe ser apto para recibir SMS. Indique el número con la característica del país."
+              ></app-intl-tel-input>
+            </div>
+            
+            <div class="col-md-12">
+              <label for="actividadFinancieraEsperada" class="form-label">Actividad financiera esperada <span class="text-danger">*</span></label>
+              <textarea id="actividadFinancieraEsperada" class="form-control" formControlName="actividadFinancieraEsperada" rows="3" placeholder="Explique el uso esperado de la cuenta bancaria (Ejemplo: 'Recibir pagos de clientes internacionales')"></textarea>
+            </div>
+            
+            <div class="col-md-12">
+              <label for="projectOrCompanyUrl" class="form-label">URL del Proyecto o Empresa (Opcional)</label>
+              <input type="url" id="projectOrCompanyUrl" class="form-control" formControlName="projectOrCompanyUrl" placeholder="https://...">
+            </div>
+          </div>
+          
+        </div>
+</div>

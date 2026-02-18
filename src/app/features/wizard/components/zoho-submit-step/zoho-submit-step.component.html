@@ -1,0 +1,16 @@
+<div class="zoho-submit-step">
+  <h4 class="mb-3">{{ 'WIZARD.zoho_step.title' | transloco }}</h4>
+  <p>{{ 'WIZARD.zoho_step.subtitle' | transloco }}</p>
+  
+  <div *ngIf="loading" class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  
+  <div *ngIf="success" class="alert alert-success mt-3">
+    {{ 'WIZARD.zoho_step.success' | transloco }}
+  </div>
+  
+  <div *ngIf="error" class="alert alert-danger mt-3">
+    {{ 'WIZARD.zoho_step.error' | transloco }}
+  </div>
+</div>

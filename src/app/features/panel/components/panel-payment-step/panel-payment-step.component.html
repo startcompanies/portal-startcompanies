@@ -1,0 +1,284 @@
+<div class="panel-payment-step">
+  <h3>Información de Pago</h3>
+  
+  <!-- Mensaje cuando el pago ya fue procesado -->
+  <div *ngIf="paymentAlreadyProcessed" class="alert alert-success mb-4">
+    <h5><i class="bi bi-check-circle-fill me-2"></i>Pago Procesado Exitosamente</h5>
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <p class="mb-2"><strong>Método de Pago:</strong></p>
+        <p class="mb-0">
+          <i [class]="processedPaymentMethod === 'stripe' ? 'bi bi-credit-card me-2' : 'bi bi-bank me-2'"></i>
+          {{ processedPaymentMethod === 'stripe' ? 'Tarjeta de Crédito/Débito (Stripe)' : processedPaymentMethod === 'transferencia' ? 'Transferencia Bancaria' : processedPaymentMethod }}
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-2"><strong>Monto Pagado:</strong></p>
+        <p class="mb-0">${{ processedPaymentAmount | number:'1.2-2' }} USD</p>
+      </div>
+      <div class="col-md-6" *ngIf="processedStripeChargeId">
+        <p class="mb-2"><strong>ID de Transacción:</strong></p>
+        <p class="mb-0"><code>{{ processedStripeChargeId }}</code></p>
+      </div>
+      <div class="col-md-6" *ngIf="processedPaymentMethod === 'transferencia' && form.get('paymentProofUrl')?.value">
+        <p class="mb-2"><strong>Comprobante de Pago:</strong></p>
+        <p class="mb-0">
+          <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
+            <i class="bi bi-box-arrow-up-right me-1"></i>
+            Ver comprobante
+          </a>
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-2"><strong>Estado:</strong></p>
+        <p class="mb-0">
+          <span class="badge bg-success">{{ processedPaymentStatus === 'succeeded' ? 'Completado' : processedPaymentStatus }}</span>
+        </p>
+      </div>
+    </div>
+    <div class="mt-3">
+      <p class="mb-0 text-muted">
+        <i class="bi bi-info-circle me-2"></i>
+        El pago ya fue procesado y no se puede modificar. Si necesitas realizar cambios, contacta al soporte.
+      </p>
+    </div>
+  </div>
+  
+  <form [formGroup]="form" *ngIf="!paymentAlreadyProcessed">
+    <div class="row g-3">
+      <div class="col-md-12">
+        <label for="paymentMethod" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+        <div class="payment-methods">
+          <div 
+            *ngFor="let method of paymentMethods" 
+            class="payment-method-card"
+            [class.selected]="form.get('paymentMethod')?.value === method.value"
+            (click)="form.get('paymentMethod')?.setValue(method.value)"
+          >
+            <input
+              type="radio"
+              [id]="'payment-' + method.value"
+              [value]="method.value"
+              formControlName="paymentMethod"
+              class="payment-radio"
+            />
+            <label [for]="'payment-' + method.value" class="payment-label">
+              <i [class]="'bi ' + method.icon + ' me-2'"></i>
+              {{ method.label }}
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <label for="paymentAmount" class="form-label">
+          Monto a Pagar (USD) 
+          <span class="text-danger" *ngIf="paymentAmount > 0">*</span>
+        </label>
+        <div class="input-group">
+          <span class="input-group-text">$</span>
+          <input
+            type="number"
+            id="paymentAmount"
+            class="form-control"
+            formControlName="paymentAmount"
+            [class.is-invalid]="form.get('paymentAmount')?.invalid && form.get('paymentAmount')?.touched"
+            [readonly]="shouldCalculateAmount()"
+            [class.bg-light]="shouldCalculateAmount()"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+          />
+        </div>
+        <small class="form-text text-muted" *ngIf="shouldCalculateAmount()">
+          <i class="bi bi-info-circle me-1"></i>El monto se calcula automáticamente según el tipo de servicio y estado seleccionado.
+        </small>
+        <div class="alert alert-info mt-2" *ngIf="shouldCalculateAmount() && paymentAmount === 0">
+          <i class="bi bi-info-circle me-2"></i>Cuenta bancaria gratuita seleccionada. No se requiere pago.
+        </div>
+        <div class="invalid-feedback" *ngIf="form.get('paymentAmount')?.invalid && form.get('paymentAmount')?.touched && !shouldCalculateAmount()">
+          El monto debe ser mayor a $0.00
+        </div>
+      </div>
+
+      <!-- Mensaje si el monto es 0 (cuenta bancaria gratuita) -->
+      <div *ngIf="paymentAmount === 0 && serviceType === 'cuenta-bancaria'" class="col-md-12">
+        <div class="alert alert-success">
+          <h5><i class="bi bi-check-circle me-2"></i>Cuenta Bancaria Gratuita</h5>
+          <p class="mb-0">Has seleccionado la opción gratuita. No se requiere pago para esta solicitud.</p>
+        </div>
+      </div>
+
+      <!-- Transferencia Bancaria -->
+      <div *ngIf="form.get('paymentMethod')?.value === 'transferencia' && paymentAmount > 0" class="col-md-12">
+        <div class="alert alert-info">
+          <h5><i class="bi bi-info-circle me-2"></i>Instrucciones para Transferencia Bancaria</h5>
+          <p class="mb-3">Por favor, realiza la transferencia a la siguiente cuenta:</p>
+          
+          <div class="bank-transfer-details">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <div class="bank-detail-item">
+                  <strong><i class="bi bi-building me-2"></i>Beneficiario:</strong>
+                  <p class="mb-0">EbizBoost LLC</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="bank-detail-item">
+                  <strong><i class="bi bi-bank me-2"></i>Banco:</strong>
+                  <p class="mb-0">THREAD</p>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="bank-detail-item">
+                  <strong><i class="bi bi-geo-alt me-2"></i>Dirección:</strong>
+                  <p class="mb-0">420 Southwest 7th Street, Suite:1019<br>Miami, FL, 33130, US</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="bank-detail-item">
+                  <strong><i class="bi bi-credit-card me-2"></i>Número de Cuenta:</strong>
+                  <p class="mb-0"><code>200000776994</code></p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="bank-detail-item">
+                  <strong><i class="bi bi-hash me-2"></i>Routing Number:</strong>
+                  <p class="mb-0"><code>064209588</code></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="alert alert-warning mb-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>Importante:</strong> Sube el comprobante de transferencia una vez realizada.
+          </div>
+        </div>
+        
+        <label for="paymentProofFile" class="form-label">Comprobante de Transferencia</label>
+        <div class="file-upload-container">
+          <input
+            type="file"
+            id="paymentProofFile"
+            class="form-control"
+            (change)="onPaymentProofFileSelected($event)"
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            [disabled]="isUploadingPaymentProof"
+          />
+          <small class="form-text text-muted">
+            Formatos aceptados: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)
+          </small>
+          
+          <!-- Mostrar archivo seleccionado -->
+          <div *ngIf="selectedPaymentProofFile && !isUploadingPaymentProof" class="selected-file-info mt-2">
+            <div class="alert alert-info d-flex justify-content-between align-items-center">
+              <span>
+                <i class="bi bi-file-earmark me-2"></i>
+                {{ selectedPaymentProofFile.name }} ({{ (selectedPaymentProofFile.size / 1024 / 1024).toFixed(2) }} MB)
+              </span>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearPaymentProofFile()">
+                <i class="bi bi-x-circle"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Mostrar progreso de carga -->
+          <div *ngIf="isUploadingPaymentProof" class="upload-progress mt-2">
+            <div class="progress">
+              <div 
+                class="progress-bar progress-bar-striped progress-bar-animated" 
+                role="progressbar" 
+                [style.width.%]="paymentProofUploadProgress"
+                [attr.aria-valuenow]="paymentProofUploadProgress"
+                aria-valuemin="0" 
+                aria-valuemax="100"
+              >
+                {{ paymentProofUploadProgress }}%
+              </div>
+            </div>
+            <small class="text-muted">Subiendo archivo...</small>
+          </div>
+
+          <!-- Mostrar URL si ya está subido -->
+          <div *ngIf="form.get('paymentProofUrl')?.value && !selectedPaymentProofFile && !isUploadingPaymentProof" class="uploaded-file-info mt-2">
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i>
+              <strong>Archivo subido exitosamente</strong>
+              <br>
+              <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
+                <i class="bi bi-box-arrow-up-right me-1"></i>
+                Ver comprobante
+              </a>
+              <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearPaymentProofFile()">
+                <i class="bi bi-x-circle me-1"></i>
+                Cambiar archivo
+              </button>
+            </div>
+          </div>
+
+          <!-- Campo oculto para guardar la URL -->
+          <input type="hidden" formControlName="paymentProofUrl">
+        </div>
+      </div>
+
+      <!-- Stripe -->
+      <div *ngIf="form.get('paymentMethod')?.value === 'stripe' && paymentAmount > 0" class="col-md-12">
+        <app-stripe-payment-form
+          [amount]="paymentAmount"
+          [currency]="'usd'"
+          [showAmount]="false"
+          [disabled]="stripeProcessing || stripePaymentProcessed"
+          (paymentSuccess)="onStripePaymentSuccess($event)"
+          (paymentError)="onStripePaymentError($event)"
+        ></app-stripe-payment-form>
+        
+        <!-- Botón para procesar pago con Stripe -->
+        <div class="d-grid gap-2 mt-3" *ngIf="!stripePaymentProcessed">
+          <button 
+            type="button" 
+            class="btn btn-primary btn-lg" 
+            (click)="processStripePayment()"
+            [disabled]="stripeProcessing || paymentAmount <= 0"
+          >
+            <span *ngIf="!stripeProcessing">
+              <i class="bi bi-credit-card me-2"></i>
+              Procesar Pago ${{ paymentAmount | number:'1.2-2' }} USD
+            </span>
+            <span *ngIf="stripeProcessing">
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Procesando pago...
+            </span>
+          </button>
+        </div>
+        
+        <!-- Mensaje cuando el pago ya fue procesado -->
+        <div *ngIf="stripePaymentProcessed" class="alert alert-success mt-3">
+          <i class="bi bi-check-circle me-2"></i>
+          <strong>Pago procesado exitosamente.</strong> Los datos de la tarjeta están bloqueados y no se pueden modificar.
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-3 mt-3">
+      <label for="notes" class="form-label">Notas Adicionales</label>
+      <textarea
+        id="notes"
+        class="form-control"
+        rows="4"
+        formControlName="notes"
+        placeholder="Información adicional sobre la solicitud..."
+      ></textarea>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ errorMessage }}
+    </div>
+
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+  </form>
+</div>

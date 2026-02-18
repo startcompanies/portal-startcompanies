@@ -1,0 +1,111 @@
+.login-container {
+  width: 100%;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.login-header h2 {
+  color: var(--color-texto-oscuro);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.login-form {
+  margin-top: 1.5rem;
+}
+
+.form-label {
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.5rem;
+}
+
+.form-control {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 0.2rem rgba(1, 201, 226, 0.25);
+}
+
+.btn-primary {
+  background: var(--color-degradado);
+  border: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: var(--color-fondo-claro);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(1, 201, 226, 0.4);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.invalid-feedback {
+  display: block;
+  font-size: 0.875rem;
+  color: #dc3545;
+  margin-top: 0.25rem;
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+}
+
+/* Botón de mostrar/ocultar contraseña */
+.input-group .btn-outline-secondary {
+  border-color: #ddd;
+  color: #6b7280;
+  border-left: none;
+}
+
+.input-group .btn-outline-secondary:hover {
+  background-color: #f3f4f6;
+  border-color: #ddd;
+  color: #374151;
+}
+
+.input-group .btn-outline-secondary:focus {
+  box-shadow: none;
+  border-color: var(--color-secundario-tecnico);
+}
+
+.input-group .form-control {
+  border-right: none;
+}
+
+.input-group .form-control:focus {
+  border-right: none;
+}
+
+.input-group .form-control:focus + .btn-outline-secondary {
+  border-color: var(--color-secundario-tecnico);
+}

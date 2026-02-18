@@ -1,27 +1,23 @@
-import { isDevMode, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../transloco-loader';
+import { ReactiveFormsModule } from '@angular/forms';
 
-
+/**
+ * SharedModule - Módulo compartido para componentes comunes
+ * 
+ * NOTA: Transloco está configurado en app.config.ts (standalone)
+ * No duplicar la configuración aquí para evitar conflictos
+ */
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
   exports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule
   ],
-  providers: [
-    provideTransloco({
-      config: {
-        availableLangs: ['en', 'es'],
-        defaultLang: 'es',
-        reRenderOnLangChange: true,
-        prodMode: !isDevMode(),
-      },
-      loader: TranslocoHttpLoader
-    })
-  ]
+  providers: []
 })
 export class SharedModule { }

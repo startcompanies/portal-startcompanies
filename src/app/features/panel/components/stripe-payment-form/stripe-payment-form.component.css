@@ -1,0 +1,142 @@
+.stripe-payment-form {
+  width: 100%;
+}
+
+.payment-amount-info .alert {
+  border-left: 4px solid #0066cc;
+}
+
+.security-message .alert {
+  background-color: #f8f9fa;
+}
+
+.card-element-container {
+  position: relative;
+}
+
+.stripe-card-element {
+  padding: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #ffffff;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  min-height: 50px;
+  width: 100%;
+  position: relative;
+}
+
+/* Asegurar que Stripe Elements tenga espacio */
+.stripe-card-element .StripeElement {
+  width: 100%;
+  display: block;
+}
+
+.stripe-card-element iframe {
+  width: 100% !important;
+}
+
+.stripe-card-element:focus-within {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+  outline: 0;
+}
+
+.stripe-card-element.disabled {
+  background-color: #e9ecef;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.stripe-card-errors {
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.stripe-card-errors:empty {
+  display: none !important;
+}
+
+.processing-indicator {
+  margin-top: 1rem;
+}
+
+.error-message {
+  margin-top: 1rem;
+}
+
+.payment-info {
+  font-size: 0.875rem;
+}
+
+/* Estilos para los elementos de Stripe */
+.stripe-card-element .StripeElement {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .stripe-payment-form {
+    padding: 0;
+  }
+
+  .stripe-card-element {
+    padding: 10px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stripe-card-element {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Mejoras de accesibilidad */
+.stripe-card-element:focus-within {
+  outline: 2px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.stripe-card-errors[role="alert"] {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* Contenedor del logo de Stripe */
+.stripe-logo-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+  padding-right: 0.25rem;
+}
+
+/* Logo de Stripe - pequeño y alineado a la derecha */
+.stripe-logo {
+  height: 20px;
+  width: auto;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.stripe-logo:hover {
+  opacity: 1;
+}
+
+/* Responsive para el logo */
+@media (max-width: 576px) {
+  .stripe-logo {
+    height: 18px;
+  }
+}
+
+

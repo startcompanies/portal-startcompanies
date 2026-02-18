@@ -1,0 +1,81 @@
+<section class="hero-section">
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="eager"
+    cssClass="sc-hero-bg"
+  >
+  </app-responsive-image>
+  <app-hero-section></app-hero-section>
+</section>
+
+<!-- Calendly inline widget -->
+<section #calendly class="calendly-cta-section">
+  <div class="container pb-3">
+    <div class="row">
+      <div class="col-12 text-center">
+        <h2 class="calendly-title">
+          {{ "LANDINGS.calendly.title" | transloco }}
+        </h2>
+        <p class="calendly-subtitle">
+          {{ "LANDINGS.calendly.subtitle" | transloco }}
+        </p>
+      </div>
+    </div>
+  </div>
+  <app-calendly-section
+    (calendlyClick)="onCalendlyClick()"
+  ></app-calendly-section>
+</section>
+
+<!-- Key Benefits Section -->
+<app-key-benefits-section></app-key-benefits-section>
+
+<!-- Steps Section -->
+<app-steps-section></app-steps-section>
+
+<!-- Testimonials -->
+<app-testimonials></app-testimonials>
+
+<!-- Relay, un banco -->
+<app-video-section
+  title="{{ 'LANDINGS.relay_landing.video_section.title' | transloco }}"
+  titleHighlight="{{
+    'LANDINGS.relay_landing.video_section.title_highlight' | transloco
+  }}"
+  description="{{
+    'LANDINGS.relay_landing.video_section.description' | transloco
+  }}"
+  videoId="g5w4pudrrb"
+  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies te ayudamos a realizarlo."
+  (videoPlay)="onVideoPlay('Relay Banking Service')"
+>
+</app-video-section>
+
+<!-- Video Grid Section -->
+<section class="video-grid-section">
+  <app-video-grid-section
+    title="{{ 'LANDINGS.open_your_llc_video.hear_comunity' | transloco }}"
+    titleHighlight="{{
+      'LANDINGS.open_your_llc_video.comunity_name' | transloco
+    }}"
+    description="{{ 'LANDINGS.open_your_llc_video.what_they_say' | transloco }}"
+  >
+  </app-video-grid-section>
+</section>
+
+<!-- FAQ -->
+<section class="py-5 pt-5">
+  <app-faq></app-faq>
+</section>
+
+<!-- Botón flotante para mobile -->
+<button
+  class="floating-cta-button"
+  [class.show]="showFloatingButton"
+  (click)="scrollToCalendly()"
+>
+  {{ "LANDINGS.start_free_meeting" | transloco }}
+</button>
+
+<!--<app-sc-footer></app-sc-footer>-->

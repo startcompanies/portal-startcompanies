@@ -4,37 +4,38 @@
     "plans": "Planes y Precios",
     "blog": "Blog",
     "contact": "Contacto",
-    "call": "Agendar llamada"
+    "call": "Agendar llamada",
+    "login": "Iniciar sesión"
   },
   "SEO": {
     "home": {
-      "title": "Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.",
+      "title": "Start Companies - Apertura de Cuentas Bancarias en EE.UU.",
       "description": "Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.",
       "keywords": "LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros"
     },
     "nosotros": {
-      "title": "Nosotros - Start Companies LLC | Experiencia en Servicios Financieros",
+      "title": "Nosotros - Start Companies | Experiencia en Servicios Financieros",
       "description": "Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.",
       "keywords": "Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores"
     },
     "contacto": {
-      "title": "Contacto - Start Companies LLC | Habla con Nuestros Expertos",
+      "title": "Contacto - Start Companies | Habla con Nuestros Expertos",
       "description": "Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.",
       "keywords": "contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria"
     },
     "planes": {
-      "title": "Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.",
+      "title": "Planes y Precios - Start Companies | Servicios para LLC en EE.UU.",
       "description": "Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.",
       "keywords": "planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA"
     },
     "blog": {
-      "title": "Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.",
+      "title": "Blog - Start Companies | Noticias y Consejos para LLC en EE.UU.",
       "description": "Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.",
       "keywords": "blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog"
     }
   },
   "CONTENT": {
-    "expand_your_freedom": "Expande Tu Libertad, abre tu LLC en estados unidos",
+    "expand_your_freedom": "Expande Tu Libertad: abre tu LLC en Estados Unidos",
     "create_your_llc": "Crea tu LLC",
     "renew_your_llc": "Renueva tu LLC",
     "expand_your_freedom_description": "Resolvemos tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo esta listo para acompañarte en cada paso del proceso.",
@@ -46,15 +47,15 @@
       "title1": "Nuestros",
       "title2": "servicios",
       "service1": {
-        "title": "Constitución de LLC en Estados Unidos",
+        "title": "Constitución de LLC",
         "description": "Inicia tu empresa en EE.UU. con asesoría completa y acompañamiento personalizado desde cualquier país."
       },
       "service2": {
-        "title": "Cuenta bancaria en EE. UU.",
+        "title": "Cuenta bancaria",
         "description": "Abre tu cuenta empresarial en línea y opera en dólares sin salir de tu país."
       },
       "service3": {
-        "title": "Gestión de impuestos y creación de empresas",
+        "title": "Impuestos y creación",
         "description": "Organizamos la estructura legal y fiscal de tu empresa para que cumplas con las normas y optimices tus impuestos."
       }
     },
@@ -66,11 +67,11 @@
         "description": "Explora tus necesidades empresariales con nosotros. Diseñaremos una solución personalizada que se ajuste a tu caso."
       },
       "step2": {
-        "title": "Envía tu documentación en línea.",
+        "title": "Envía tu documentación",
         "description": "Sube tus documentos a través de nuestra plataforma y nuestro equipo se encargará gestionará tu LLC y la apertura de tu cuenta bancaria en EE.UU."
       },
       "step3": {
-        "title": "Recibe tus documentos en 10 días hábiles",
+        "title": "Recibe tus documentos",
         "description": "Obtendrás todos los certificados legales y accesos a tu cuenta bancaria en un plazo maximo de 10 días hábiles."
       }
     },
@@ -210,7 +211,8 @@
     "blog": {
       "title1": "¿Deseas",
       "title2": "conocer más?",
-      "button": "Leer más"
+      "button": "Leer más",
+      "no_posts": "No hay publicaciones disponibles"
     },
     "faq": {
       "title1": "Preguntas",
@@ -304,6 +306,7 @@
     "description": "Resolvemos todas tus dudas sobre la creación de tu LLC, la apertura de cuentas bancarias y otros servicios. Nuestro equipo está listo para acompañarte en cada paso del proceso.",
     "name": "Nombre",
     "email": "Correo electrónico",
+    "email_required": "El correo electrónico es obligatorio",
     "message": "Mensaje",
     "send": "Enviar",
     "advice": {
@@ -346,7 +349,13 @@
     "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero",
     "your_questions": "¿Tienes preguntas?",
     "categories": "Categorías",
-    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores"
+    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores",
+    "search_placeholder": "Buscar artículos",
+    "search_clear": "Limpiar",
+    "search_no_results": "No encontramos artículos que coincidan con tu búsqueda.",
+    "all_posts": "Todos los artículos",
+    "category": "Categoría",
+    "category_title_prefix": "Artículos de"
   },
   "LLC": {
     "heroSection": {
@@ -407,7 +416,7 @@
   },
   "PLANS": {
     "intro": {
-      "title": "Expande Tu Negocio: abre tu LLC en EE.UU.",
+      "title": "Una pequeña inversión para grandes oportunidades.",
       "subtitle": "Crea tu empresa en Estados Unidos y accede a tu cuenta bancaria sin residencia. Start Companies te ofrece todo lo que necesitas para operar globalmente, sin complicaciones."
     },
     "header": {
@@ -478,12 +487,14 @@
         "3": "Asistencia mensual por cualquier consulta",
         "4": "Posibilidad de mudar servicios de otro proveedor con nosotros"
       },
-      "note": "Si es Delaware, se suman $300 USD al precio."
+      "note_label": "Nota:",
+      "note": "Aprende todo lo que necesitas saber sobre las LLC."
     },
     "fines": {
       "title": "Multas",
       "price": "$300 USD",
-      "note": "Nota: +3% del valor de la multa.",
+      "note_label": "Nota:",
+      "note": "Aprende todo lo que necesitas saber sobre las LLC.",
       "cta": "Consultar Multas",
       "featuresTitle": "Incluye:",
       "features": {
@@ -539,7 +550,11 @@
     }
   },
   "COMMON": {
-    "note": "Nota:"
+    "note": "Nota:",
+    "select_option": "Seleccionar Opción",
+    "yes": "Sí",
+    "no": "No",
+    "remove": "Eliminar"
   },
   "LANDINGS": {
     "schedule_consultation": "Agenda una asesoría GRATIS",
@@ -868,7 +883,7 @@
         },
         "privacy": {
           "title": "6. Datos personales y privacidad",
-          "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
+          "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/es/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
         },
         "third_party": {
           "title": "7. Enlaces y herramientas de terceros",
@@ -887,6 +902,295 @@
           "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
         }
       }
+    }
+  },
+  "WIZARD": {
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "cancel": "Cancelar",
+    "finish": "Finalizar",
+    "steps": {
+      "state": "Estado de contratación",
+      "register": "Registro básico",
+      "verify_email": "Verificación de email",
+      "payment": "Pago",
+      "client": "Datos del cliente",
+      "review": "Revisión final",
+      "zoho": "Envío a Zoho CRM",
+      "state_plan": "Estado y Plan",
+      "llc_info": "Información de la LLC"
+    },
+    "basic_register": {
+      "full_name": "Nombre completo",
+      "full_name_required": "El nombre completo es obligatorio.",
+      "phone": "Teléfono",
+      "phone_required": "El teléfono es obligatorio.",
+      "email": "Correo electrónico",
+      "email_required": "El correo electrónico es obligatorio.",
+      "password": "Contraseña",
+      "password_required": "La contraseña es obligatoria."
+    },
+    "password": "Contraseña",
+    "state": "Estado",
+    "select_state": "Selecciona el estado de contratación",
+    "checkout": {
+      "title": "Checkout / Pago",
+      "summary": "Resumen del servicio seleccionado:",
+      "service_label": "Servicio",
+      "state_label": "Estado",
+      "not_specified": "No especificado",
+      "not_selected": "No seleccionado",
+      "payment_method": "Método de pago",
+      "select_method": "Seleccione método",
+      "card": "Tarjeta de crédito / débito",
+      "paypal": "PayPal",
+      "required_method": "Seleccione un método de pago."
+    },
+    "client": {
+      "title": "Datos adicionales del cliente",
+      "full_name": "Nombre completo",
+      "full_name_placeholder": "Ej. Juan Pérez",
+      "full_name_required": "El nombre completo es obligatorio.",
+      "phone": "Teléfono",
+      "phone_placeholder": "Ej. +1 (305) 123-4567",
+      "phone_required": "El teléfono es obligatorio.",
+      "address": "Dirección",
+      "address_placeholder": "Ej. 123 Main St, Miami, FL",
+      "address_required": "La dirección es obligatoria."
+    },
+    "review": {
+      "title": "Revisión final",
+      "description": "Revisa cuidadosamente los datos ingresados. Marca la casilla de confirmación para continuar con el envío a Zoho CRM.",
+      "confirm_label": "Confirmo que los datos mostrados son correctos.",
+      "section_title": "Datos recopilados"
+    },
+    "state_step": {
+      "title": "Selecciona el estado de contratación",
+      "label": "Estado",
+      "placeholder": "Selecciona un estado",
+      "required": "El estado es obligatorio",
+      "options": {
+        "florida": "Florida",
+        "delaware": "Delaware",
+        "texas": "Texas",
+        "wyoming": "Wyoming"
+      }
+    },
+    "zoho_step": {
+      "title": "Enviar a Zoho CRM",
+      "subtitle": "Revisaremos los datos antes de enviarlos al CRM."
+    },
+    "privacy": {
+      "title": "6. Datos personales y privacidad",
+      "body": "El tratamiento de datos personales se rige por nuestro <a href=\"/aviso-de-privacidad\">Aviso de Privacidad</a>. Al utilizar el sitio o nuestros servicios, confirmas que lo has leído y aceptas su contenido."
+    },
+    "third_party": {
+      "title": "7. Enlaces y herramientas de terceros",
+      "body": "El sitio puede incluir enlaces o integraciones de terceros (p. ej., agenda, mensajería y analítica). No controlamos su contenido o políticas; te recomendamos revisar sus términos y avisos de privacidad."
+    },
+    "modifications": {
+      "title": "8. Modificaciones",
+      "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+    },
+    "law": {
+      "title": "9. Ley aplicable",
+      "body": "Estos Términos se interpretarán conforme a las leyes aplicables en la jurisdicción donde operamos. En caso de controversia, procuraremos resolverla de buena fe; si no fuera posible, se someterá a los tribunales competentes."
+    },
+    "contact": {
+      "title": "10. Contacto",
+      "body": "Para consultas relacionadas con estos Términos, utiliza los medios de contacto publicados en el sitio."
+    },
+    "bank_account": {
+      "applicant": {
+        "title": "Información del Solicitante",
+        "email": "Correo electrónico",
+        "email_placeholder": "Ej. john.doe@example.com",
+        "email_invalid": "El correo electrónico es obligatorio.",
+        "first_name": "Primer Nombre",
+        "first_name_required": "El primer nombre es obligatorio.",
+        "first_name_placeholder": "Ej. Juan",
+        "paternal_last_name": "Apellido Paterno",
+        "paternal_last_name_placeholder": "Ej. Perez",
+        "maternal_last_name": "Apellido Materno",
+        "maternal_last_name_placeholder": "Ej. Doe",
+        "phone": "Teléfono",
+        "phone_placeholder": "Ej. +1 (305) 123-4567",
+        "account_type": "Tipo de cuenta",
+        "account_type_required": "El tipo de cuenta es obligatorio.",
+        "legal_identifier": "Identificación legal",
+        "legal_identifier_placeholder": "Ej. 1234567890",
+        "industry": "Industria",
+        "economic_activity": "Actividad Economica",
+        "economic_activity_placeholder": "Ej. Tecnología, Comercio, Servicios",
+        "certificate": "Certificado de Constitución o Artículos de Organización",
+        "ein": "Número de identificación fiscal (EIN)",
+        "ein_invalid": "El número de identificación fiscal es inválido.",
+        "operating_agreement": "Acuerdo operativo",
+        "business_type": "Tipo de negocio"
+      },
+      "companyAddress": {
+        "title": "Dirección del registro",
+        "street": "Calle y número",
+        "street_placeholder": "Ej. 123 Main St",
+        "street_required": "La calle y el número son obligatorios.",
+        "unit": "Unidad",
+        "unit_placeholder": "Ej. Apt. 123",
+        "city": "Ciudad",
+        "city_placeholder": "Ej. Miami",
+        "state": "Estado",
+        "state_placeholder": "Selecciona un estado",
+        "state_options": {
+          "florida": "Florida",
+          "delaware": "Delaware",
+          "texas": "Texas",
+          "new_york": "Nueva York"
+        },
+        "state_required": "El estado es obligatorio.",
+        "postal_code": "Código postal",
+        "postal_code_placeholder": "Ej. 33130",
+        "country": "País",
+        "country_required": "El país es obligatorio.",
+        "country_options": {
+          "united_states": "Estados Unidos",
+          "spain": "España",
+          "argentina": "Argentina"
+        },
+        "is_registered_agent": "¿Es el Registered Agent en USA?",
+        "agent_name": "Nombre del Registered Agent",
+        "agent_address": "Dirección del Registered Agent"
+      },
+      "bankAccount": {
+        "title": "Información de la cuenta bancaria",
+        "bank_name": "Nombre del banco",
+        "bank_name_required": "El nombre del banco es obligatorio.",
+        "swift": "SWIFT / BIC / ABA",
+        "swift_required": "El SWIFT / BIC / ABA es obligatorio.",
+        "swift_placeholder": "Ej. 01234567890",
+        "account_number": "Número de cuenta",
+        "account_number_required": "El número de cuenta es obligatorio.",
+        "account_number_placeholder": "Ej. 1234567890",
+        "account_type": "Tipo de cuenta",
+        "first_registration_date": "Fecha de registro por primera vez",
+        "has_litigated": "¿Has litigado en el año fiscal actual?",
+        "litigation_details": "Detalles de litigio",
+        "litigation_details_required": "Los detalles de litigio son obligatorios.",
+        "litigation_details_placeholder": "Ej. He litigado en el año fiscal actual."
+      },
+      "llcType": {
+        "title": "Tipo de LLC",
+        "label": "Tipo de LLC",
+        "single": "LLC de un solo miembro (Single Member LLC)",
+        "multi": "LLC de múltiples miembros (Multi-Member LLC)",
+        "required": "El tipo de LLC es obligatorio."
+      },
+      "ownerAddress": {
+        "title": "Dirección del propietario",
+        "same_as_business": "Es la misma dirección que el negocio",
+        "street": "Calle y número",
+        "unit": "Unidad",
+        "city": "Ciudad",
+        "state": "Estado",
+        "postal_code": "Código postal",
+        "country": "País",
+        "proof": "Comprobante de domicilio",
+        "proof_required": "El comprobante de domicilio es obligatorio."
+      },
+      "owners": {
+        "title": "Propietarios",
+        "owner": "Propietario",
+        "first_name": "Nombre",
+        "first_name_placeholder": "Ej. Juan",
+        "paternal_last_name": "Apellido Paterno",
+        "paternal_last_name_placeholder": "Ej. Perez",
+        "maternal_last_name": "Apellido Materno",
+        "maternal_last_name_placeholder": "Ej. Doe",
+        "birth_date": "Fecha de nacimiento",
+        "nationality": "Nacionalidad",
+        "document_number": "Número de documento",
+        "document_number_placeholder": "Ej. 1234567890",
+        "identity_document": "Documento de identidad",
+        "facial_photo": "Fotografía de rostro",
+        "add_owner": "Agregar propietario"
+      },
+      "confirmation": {
+        "title": "Confirmación",
+        "certification": "Certificación",
+        "document_certification_placeholder": "Ej. Certifico que la información proporcionada es correcta y completa.",
+        "accept_terms": "Acepto los términos y condiciones",
+        "accept_terms_required": "Los términos y condiciones son obligatorios.",
+        "validator": {
+          "title": "Validador",
+          "first_name": "Nombre",
+          "first_name_placeholder": "Ej. Juan",
+          "last_name": "Apellido",
+          "last_name_placeholder": "Ej. Perez",
+          "birth_date": "Fecha de nacimiento",
+          "nationality": "Nacionalidad",
+          "citizenship": "Ciudadanía",
+          "passport_number": "Número de pasaporte",
+          "passport_number_placeholder": "Ej. 1234567890",
+          "passport_file": "Pasaporte",
+          "email": "Correo electrónico",
+          "email_placeholder": "Ej. john.doe@example.com",
+          "use_email_login": "Usar correo electrónico para login",
+          "phone": "Teléfono",
+          "phone_placeholder": "Ej. +1 (305) 123-4567",
+          "can_receive_sms": "Puede recibir SMS",
+          "us_resident": "Es residente en EE.UU."
+        }
+      },
+      "steps": {
+        "step1": "Solicitante",
+        "step2": "Registro",
+        "step3": "Cuenta",
+        "step4": "Propietario",
+        "step5": "Tipo",
+        "step6": "Propietarios",
+        "step7": "Firma"
+      }
+    },
+    "llc_info_step": {
+      "llc_name_one": "Nombre de la LLC - Opción 1",
+      "llc_name_one_required": "El nombre de la LLC (opción 1) es obligatorio.",
+      "llc_name_two": "Nombre de la LLC - Opción 2",
+      "llc_name_two_required": "El nombre de la LLC (opción 2) es obligatorio.",
+      "llc_name_three": "Nombre de la LLC - Opción 3",
+      "llc_name_three_required": "El nombre de la LLC (opción 3) es obligatorio.",
+      "llc_sufix": "Recuerde que 'LLC' debe ir al final del nombre.",
+      "llc_main_activity": "Actividad Principal de la LLC",
+      "llc_main_activity_required": "La actividad principal es obligatoria.",
+      "llc_corporate_structure": "Estructura Societaria",
+      "llc_corporate_structure_placeholder": "Selecciona...",
+      "options_corporate_structure": {
+        "single_member": "LLC de un solo miembro (Single Member LLC)",
+        "multi_member": "LLC con múltiples miembros (Multi Member LLC)"
+      },
+      "add_propietaries": "Agregar Propietarios",
+      "add_owner": "Agregar propietario",
+      "return_to_info": "Volver a información"
+    },
+    "state_plan_step": {
+      "plan": "Plan",
+      "plan_label": "Selecciona un plan",
+      "plan_required": "El plan es obligatorio.",
+      "state": "Estado",
+      "state_label": "Selecciona un estado",
+      "state_required": "El estado es obligatorio.",
+      "state_new_mexico": "Nuevo México",
+      "state_texas": "Texas",
+      "other_option": "Otra opción",
+      "planes_options": {
+        "entrepreneur": "Pack Emprendedor",
+        "elite": "Pack Elite",
+        "premium": "Pack Premium"
+      },
+      "options": {
+        "new_mexico": "Nuevo México",
+        "texas": "Texas"
+      }
+    },
+    "checkout": {
+      "pay_button": "Pagar ${{amount}}"
     }
   }
 }
