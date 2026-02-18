@@ -1,0 +1,45 @@
+.signature-pad-container {
+  margin-bottom: 1rem;
+}
+
+.signature-pad-wrapper {
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  background-color: #ffffff;
+  padding: 8px;
+  display: inline-block;
+  cursor: crosshair;
+}
+
+.signature-pad-wrapper:hover {
+  border-color: #adb5bd;
+}
+
+.signature-canvas {
+  display: block;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  cursor: crosshair;
+  background-color: #ffffff;
+}
+
+.signature-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .signature-pad-wrapper {
+    width: 100% !important;
+  }
+  
+  .signature-canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+}

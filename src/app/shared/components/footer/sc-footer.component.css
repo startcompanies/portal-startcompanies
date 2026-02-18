@@ -1,0 +1,365 @@
+/* Footer */
+.footer {
+    background-color: var(--color-oscuro-tecnico);
+    /* Fondo gris azulado oscuro */
+    color: #ffffff;
+    /* Color de texto general blanco */
+    padding: 40px 16px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Sección principal del footer (ahora un row de Bootstrap) */
+.footer-main {
+    /* display: grid; */
+    /* Eliminado, Bootstrap row lo maneja */
+    /* grid-template-columns: 1fr; */
+    /* Eliminado */
+    /* gap: 40px; */
+    /* Eliminado, Bootstrap g-4 lo maneja */
+    margin-bottom: 32px;
+    text-align: center;
+    /* Centra el contenido de las columnas en móvil */
+}
+
+/* Alineación específica para la columna del logo en desktop */
+.footer-main>div:first-child {
+    text-align: left;
+    /* Alinea el contenido a la izquierda en desktop */
+}
+
+.footer-logo {
+    max-width: 120px;
+    max-height: 120px;
+}
+
+/* Estilos para app-responsive-image en el footer */
+.footer-logo app-responsive-image {
+    max-width: 120px;
+    max-height: 120px;
+    display: block;
+}
+
+.footer-logo app-responsive-image img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.footer-social {
+    /* display: flex; */
+    /* Eliminado, Bootstrap d-flex lo maneja */
+    /* gap: 16px; */
+    /* Eliminado, Bootstrap gap-3 lo maneja */
+    margin-bottom: 32px;
+    justify-content: center;
+    /* Centra los iconos sociales en móvil */
+}
+
+/* Alinea los iconos sociales a la izquierda en desktop */
+@media (min-width: 768px) {
+    .footer-social {
+        justify-content: flex-start;
+    }
+}
+
+.social-icon {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.2s ease;
+}
+
+.social-icon-link:hover .social-icon {
+    transform: translateY(-3px);
+    /* Efecto de levantar al hover */
+}
+
+.footer-links {
+    /* display: flex; */
+    /* Eliminado, Bootstrap d-flex lo maneja */
+    /* flex-direction: column; */
+    /* Eliminado */
+    /* gap: 16px; */
+    /* Eliminado, Bootstrap gap-2 lo maneja */
+    text-align: start;
+    /* Centra los enlaces en móvil */
+}
+
+/* Alinea los enlaces a la izquierda en desktop */
+@media (min-width: 576px) {
+
+    /* sm y arriba */
+    .footer-links {
+        text-align: start;
+    }
+}
+
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 400;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #006afe;
+    /* Azul/cian al hover */
+}
+
+.footer-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 16px;
+    text-align: start;
+}
+
+.footer-contact {
+    /* display: flex; */
+    /* Eliminado, Bootstrap d-flex lo maneja */
+    /* flex-direction: column; */
+    /* Eliminado */
+    /* gap: 16px; */
+    /* Eliminado, Bootstrap gap-3 lo maneja */
+    text-align: start;
+    /* Centra el contacto en móvil */
+}
+
+/* Alinea los ítems de contacto a la izquierda en desktop */
+@media (min-width: 992px) {
+
+    /* lg y arriba */
+    .footer-contact {
+        text-align: start;
+    }
+}
+
+.contact-item {
+    /* display: flex; */
+    /* Eliminado, Bootstrap d-flex lo maneja */
+    /* align-items: flex-start; */
+    /* Eliminado */
+    /* gap: 12px; */
+    /* Eliminado, Bootstrap gap-2 lo maneja */
+    justify-content: start;
+    /* Centra los ítems de contacto en móvil */
+    cursor: pointer;
+}
+
+.contact-item:hover {
+    color: #006afe;
+}
+
+/* Alinea los ítems de contacto a la izquierda en desktop */
+@media (min-width: 992px) {
+
+    /* lg y arriba */
+    .contact-item {
+        justify-content: start;
+    }
+}
+
+.contact-icon {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    /* Línea divisoria blanca semitransparente */
+    padding-top: 24px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #ffffff;
+    text-align: center;
+    /* Centra el texto en móvil */
+}
+
+/* Estilos para el selector de idioma en el footer */
+.footer-language-selector {
+    margin-top: 0;
+}
+
+.footer-btn-language {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 2.5rem;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.footer-btn-language:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+}
+
+.footer-btn-language:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+
+.footer-language-selector .dropdown-menu {
+    background-color: var(--color-oscuro-tecnico);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    min-width: 80px;
+}
+
+.footer-language-selector .dropdown-item {
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.footer-language-selector .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #006afe;
+}
+
+.footer-language-selector .dropdown-item:active {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #006afe;
+}
+
+/* Alinea el texto del footer-bottom a la izquierda en desktop */
+@media (min-width: 768px) {
+    .footer-bottom {
+        text-align: left;
+    }
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* Media Queries para Responsividad */
+/* ------------------------------------------------------------------------- */
+@media (min-width: 992px) {
+
+    /* Desktop (lg y arriba) */
+    .footer-main>.col-lg-3 {
+        flex: 0 0 auto;
+        /* Desactiva el flex-grow */
+        width: 25%;
+        /* 3 columnas */
+        max-width: 25%;
+        /* Asegura 3 columnas */
+    }
+
+    .footer-main>.col-lg-5 {
+        flex: 0 0 auto;
+        width: 41.666667%;
+        /* 5/12 de ancho */
+        max-width: 41.666667%;
+    }
+
+    .footer-main>.col-lg-4 {
+        flex: 0 0 auto;
+        width: 33.333333%;
+        /* 4/12 de ancho */
+        max-width: 33.333333%;
+    }
+}
+
+@media (max-width: 991.98px) {
+
+    /* Tabletas y móviles */
+    .footer-main {
+        gap: 30px;
+        /* Ajusta el gap en tabletas */
+    }
+
+    .footer-logo {
+        max-width: 100px;
+        max-height: 100px;
+        margin-bottom: 20px;
+    }
+
+    .footer-social {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .social-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .footer-section-title {
+        margin-bottom: 12px;
+    }
+
+    .footer-links a,
+    .footer-contact span {
+        font-size: 15px;
+    }
+
+    .contact-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    .footer-bottom {
+        font-size: 13px;
+        padding-top: 20px;
+    }
+}
+
+@media (max-width: 767.98px) {
+
+    /* Móviles pequeños */
+    .footer {
+        padding: 30px 16px;
+    }
+
+    .footer-main {
+        flex-direction: column;
+        /* Apila las columnas en móvil */
+        align-items: center;
+        /* Centra las columnas apiladas */
+        gap: 24px;
+    }
+
+    .footer-main>div {
+        /* Asegura que cada columna ocupe el ancho completo */
+        width: 100%;
+        max-width: 300px;
+        /* Limita el ancho para que no se estire demasiado */
+    }
+
+    .footer-main>div:first-child,
+    .footer-main .col-sm-6,
+    .footer-main .col-lg-4 {
+        text-align: center;
+        /* Centra todo el texto en móvil */
+    }
+
+    .footer-social {
+        justify-content: center;
+        /* Centra los iconos sociales */
+    }
+
+    .contact-item {
+        justify-content: start;
+        /* Centra los ítems de contacto */
+    }
+
+    .footer-bottom {
+        text-align: center;
+        /* Centra el texto legal */
+        font-size: 12px;
+        padding-top: 16px;
+    }
+}

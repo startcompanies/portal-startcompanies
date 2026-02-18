@@ -1,0 +1,128 @@
+/* ============================================================================
+   BLOG POST V2 COMPONENT - Estilos específicos del componente
+   Los estilos de cards, sidebar, hero están consolidados en /assets/styles/blog/
+   Este archivo solo contiene estilos específicos del layout del componente
+   ============================================================================ */
+
+/* Nota: Este archivo ahora está casi vacío porque todos los estilos de componentes
+   reutilizables (hero, sidebar, cards, etc.) han sido consolidados en:
+   - /assets/styles/blog/blog-hero.css
+   - /assets/styles/blog/blog-sidebar.css
+   - /assets/styles/blog/blog-cards.css
+
+   Si necesitas agregar estilos específicos SOLO para este componente
+   (no reutilizables), agrégalos aquí.
+*/
+
+.post-content {
+  padding-bottom: 3rem;
+}
+
+
+.toc-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.toc-header .toc-chevron {
+  transition: transform 0.25s ease;
+}
+
+.toc-header.is-open .toc-chevron {
+  transform: rotate(180deg);
+}
+
+
+:host ::ng-deep .post-content table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  border: 1px solid var(--color-secundario-tecnico);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+:host ::ng-deep .post-content table thead th {
+  background-color: var(--color-secundario-tecnico);
+  color: var(--color-fondo-claro);
+  font-weight: 600;
+  text-align: left;
+}
+
+:host ::ng-deep .post-content table th,
+:host ::ng-deep .post-content table td {
+  padding: 0.85rem 1rem;
+  border-right: 1px solid var(--color-secundario-tecnico);
+  border-top: 1px solid var(--color-secundario-tecnico);
+}
+
+:host ::ng-deep .post-content table thead th {
+  border-top: none;
+}
+
+:host ::ng-deep .post-content table th:last-child,
+:host ::ng-deep .post-content table td:last-child {
+  border-right: none;
+}
+
+:host ::ng-deep .post-content table tbody tr:first-child td {
+  border-top: none;
+}
+
+.mobile-fixed-cta {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-fixed-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 20px;
+    display: flex;
+    justify-content: end;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .mobile-fixed-cta-btn {
+    pointer-events: auto;
+    background: #2c3e4d;
+    color: #ffffff;
+    border: none;
+    border-radius: 999px 0 0 999px;
+    padding: 0.75rem 0.5rem .75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .mobile-fixed-cta-btn p {
+    margin-bottom: 0;
+    text-align: left;
+    line-height: 100%;
+  }
+
+  .mobile-fixed-cta-btn span {
+    color: var(--color-secundario-tecnico);
+  }
+
+  .mobile-fixed-cta-btn i {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :host::ng-deep .post-content table {
+    overflow: scroll;
+    width: 100%;
+    display: block;
+  }
+}

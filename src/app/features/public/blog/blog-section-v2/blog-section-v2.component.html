@@ -1,0 +1,114 @@
+<section class="blog-section blog-related py-5">
+  <div class="container">
+    <div class="blog-content">
+      <div class="blog-title text-center mb-5">
+        {{ "CONTENT.blog.title1" | transloco }}
+        <span class="text-primary-blue">{{
+          "CONTENT.blog.title2" | transloco
+          }}</span>
+      </div>
+
+      <div class="blog-carousel-container">
+        <div id="blogCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-ride="carousel" data-bs-interval="5000"
+          data-bs-touch="true">
+          <div class="carousel-inner py-2">
+            <ng-container *ngIf="desktopCarouselSlides.length > 0; else noPostsDesktop">
+              <div class="carousel-item" *ngFor="let slidePosts of desktopCarouselSlides; let i = index"
+                [class.active]="i === 0">
+                <div class="row g-4 justify-content-center">
+                  <div class="col-12 col-md-4 col-lg-4 d-flex" *ngFor="let post of slidePosts">
+                    <article class="blog-card w-100">
+                      <img [src]="post.image_url" [alt]="post.title" class="blog-image img-fluid rounded-3" />
+                      <div class="blog-card-content d-flex flex-column flex-grow-1">
+                        <div class="blog-category">
+                          {{ post.categories && post.categories.length > 0 ? post.categories[0].name : "Categoría" }}
+                        </div>
+                        <h3 class="blog-card-title">
+                          {{ post.title }}
+                        </h3>
+                        <p class="blog-excerpt">
+                          {{ stripHtmlTags(post.excerpt) }}
+                        </p>
+                        <a [langRouterLink]="['/blog', post.slug]" class="blog-read-more mt-auto">Leer más</a>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noPostsDesktop>
+              <div class="carousel-item active">
+                <p class="text-center text-muted">
+                  {{ 'CONTENT.blog.no_posts' | transloco }}
+                </p>
+              </div>
+            </ng-template>
+          </div>
+
+          <ng-container *ngIf="desktopCarouselSlides.length > 1">
+            <div class="blog-carousel-controls-bottom d-none d-md-flex mt-5">
+              <button class="blog-carousel-control" type="button" data-bs-target="#blogCarouselDesktop"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="blog-carousel-control ms-3" type="button" data-bs-target="#blogCarouselDesktop"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </ng-container>
+        </div>
+
+        <div id="blogCarouselMobile" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="5000" data-bs-touch="true">
+          <div class="carousel-inner py-2">
+            <ng-container *ngIf="mobileCarouselSlides.length > 0; else noPostsMobile">
+              <div class="carousel-item" *ngFor="let postSlide of mobileCarouselSlides; let i = index"
+                [class.active]="i === 0">
+                <div class="row justify-content-center">
+                  <div class="col-12 d-flex">
+                    <article class="blog-card w-100">
+                      <img [src]="postSlide[0].image_url" [alt]="postSlide[0].title"
+                        class="blog-image img-fluid rounded-3" />
+                      <div class="blog-card-content d-flex flex-column flex-grow-1">
+                        <div class="blog-category">
+                          {{ postSlide[0].categories && postSlide[0].categories.length > 0 ?
+                          postSlide[0].categories[0].name : "Categoría" }}
+                        </div>
+                        <h3 class="blog-card-title">
+                          {{ postSlide[0].title }}
+                        </h3>
+                        <p class="blog-excerpt">
+                          {{ stripHtmlTags(postSlide[0].excerpt) }}
+                        </p>
+                        <a [langRouterLink]="['/blog', postSlide[0].slug]" class="blog-read-more mt-auto">Leer más</a>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #noPostsMobile>
+              <div class="carousel-item active">
+                <p class="text-center text-muted">
+                  {{ 'CONTENT.blog.no_posts' | transloco }}
+                </p>
+              </div>
+            </ng-template>
+          </div>
+
+          <ng-container *ngIf="mobileCarouselSlides.length > 1">
+            <div class="carousel-indicators blog-carousel-indicators">
+              <button type="button" *ngFor="let indicator of getVisibleIndicatorSlides(mobileCarouselSlides)"
+                [attr.data-bs-target]="'#blogCarouselMobile'" [attr.data-bs-slide-to]="indicator.index"
+                [class.active]="indicator.index === 0" [attr.aria-current]="indicator.index === 0 ? 'true' : null"
+                [attr.aria-label]="'Slide ' + (indicator.index + 1)">
+              </button>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

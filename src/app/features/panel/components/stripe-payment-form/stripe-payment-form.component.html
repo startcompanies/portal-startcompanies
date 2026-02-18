@@ -1,0 +1,83 @@
+<div class="stripe-payment-form">
+  <!-- Información del monto -->
+  <div *ngIf="showAmount && amount > 0" class="payment-amount-info mb-3">
+    <div class="alert alert-info">
+      <div class="d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-info-circle me-2"></i><strong>Monto a pagar:</strong></span>
+        <span class="fs-5 fw-bold">{{ amount | currency: (currency | uppercase) }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje de seguridad -->
+  <div class="security-message mb-3">
+    <div class="alert alert-light border">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-shield-check text-success me-2 fs-5"></i>
+        <div>
+          <strong>Pago seguro</strong>
+          <p class="mb-0 small text-muted">Tus datos de pago están protegidos mediante Stripe. No almacenamos información de tu tarjeta.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenedor del elemento de tarjeta -->
+  <div class="card-element-container mb-3">
+    <label class="form-label fw-semibold">
+      Información de la Tarjeta
+      <span class="text-danger">*</span>
+    </label>
+    <div 
+      #cardElementContainer 
+      class="stripe-card-element"
+      [class.disabled]="disabled || isProcessing"
+    >
+      <!-- Stripe Elements se montará aquí -->
+    </div>
+    <div 
+      #errorElementContainer 
+      class="stripe-card-errors text-danger small mt-2"
+      role="alert"
+      style="display: none;"
+    >
+      <!-- Los errores se mostrarán aquí -->
+    </div>
+    <!-- Logo de Stripe -->
+    <div class="stripe-logo-container">
+      <img src="/assets/logo-stripe.png" alt="Powered by Stripe" class="stripe-logo">
+    </div>
+  </div>
+
+  <!-- Información adicional -->
+  <div class="payment-info mb-3">
+    <div class="row g-2">
+      <div class="col-12">
+        <small class="text-muted">
+          <i class="bi bi-credit-card me-1"></i>
+          Aceptamos tarjetas de crédito y débito Visa, Mastercard, American Express y más.
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado de procesamiento -->
+  <div *ngIf="isProcessing" class="processing-indicator">
+    <div class="alert alert-info d-flex align-items-center">
+      <div class="spinner-border spinner-border-sm me-2" role="status">
+        <span class="visually-hidden">Procesando...</span>
+      </div>
+      <span>Procesando tu pago...</span>
+    </div>
+  </div>
+
+  <!-- Mensaje de error general -->
+  <div *ngIf="errorMessage && !isProcessing" class="error-message">
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>
+
+

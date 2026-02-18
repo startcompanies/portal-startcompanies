@@ -1,0 +1,197 @@
+<div class="partner-detail-container">
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && partner">
+    <!-- Header -->
+    <div class="partner-header">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div>
+          <h2>{{ partner.name }}</h2>
+          <p class="text-muted mb-0">{{ partner.email }}</p>
+          <p *ngIf="partner.company" class="text-primary mb-0">{{ partner.company }}</p>
+        </div>
+        <div class="text-end">
+          <span [class]="getStatusClass(partner.status)">
+            {{ getStatusLabel(partner.status) }}
+          </span>
+        </div>
+      </div>
+      
+      <div class="partner-meta">
+        <div class="meta-item">
+          <i class="bi bi-calendar3 me-2"></i>
+          <span>Registrado: {{ partner.createdAt | date:'short' }}</span>
+        </div>
+        <div class="meta-item" *ngIf="partner.lastActivity">
+          <i class="bi bi-clock-history me-2"></i>
+          <span>Última actividad: {{ partner.lastActivity | date:'short' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon bg-primary">
+          <i class="bi-people"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-value">{{ partner.totalClients }}</h3>
+          <p class="stat-label">Total Clientes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-info">
+          <i class="bi-file-earmark-text"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-value">{{ partner.totalRequests }}</h3>
+          <p class="stat-label">Total Solicitudes</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-section">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <button 
+            class="nav-link" 
+            [class.active]="activeTab === 'clients'"
+            (click)="setActiveTab('clients')"
+          >
+            <i class="bi bi-people me-2"></i>
+            Clientes ({{ partner.clients.length }})
+          </button>
+        </li>
+        <li class="nav-item">
+          <button 
+            class="nav-link" 
+            [class.active]="activeTab === 'requests'"
+            (click)="setActiveTab('requests')"
+          >
+            <i class="bi bi-file-earmark-text me-2"></i>
+            Solicitudes Recientes
+          </button>
+        </li>
+        <li class="nav-item">
+          <button 
+            class="nav-link" 
+            [class.active]="activeTab === 'stats'"
+            (click)="setActiveTab('stats')"
+          >
+            <i class="bi bi-graph-up me-2"></i>
+            Estadísticas
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- Tab: Clientes -->
+        <div *ngIf="activeTab === 'clients'" class="tab-pane">
+          <div class="clients-list">
+            <div *ngIf="partner.clients.length === 0" class="empty-state-small">
+              <p class="text-muted">Este partner no tiene clientes registrados</p>
+            </div>
+            <div *ngFor="let client of partner.clients" class="client-card">
+              <div class="client-info">
+                <h4>{{ client.name }}</h4>
+                <p class="client-email">{{ client.email }}</p>
+                <div class="client-stats">
+                  <span class="stat-badge">
+                    <i class="bi bi-file-earmark-text me-1"></i>
+                    {{ client.totalRequests }} solicitudes
+                  </span>
+                  <span class="stat-badge" *ngIf="client.activeRequests > 0">
+                    <i class="bi bi-clock-history me-1"></i>
+                    {{ client.activeRequests }} activas
+                  </span>
+                </div>
+              </div>
+              <div class="client-meta">
+                <small class="text-muted">
+                  Cliente desde: {{ client.createdAt | date:'short' }}
+                </small>
+                <small *ngIf="client.lastRequestDate" class="text-muted">
+                  Última solicitud: {{ client.lastRequestDate | date:'short' }}
+                </small>
+              </div>
+              <div class="client-actions">
+                <a [routerLink]="['/panel/requests']" [queryParams]="{clientId: client.id}" class="btn btn-sm btn-outline-primary">
+                  Ver Solicitudes
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Solicitudes -->
+        <div *ngIf="activeTab === 'requests'" class="tab-pane">
+          <div class="requests-list">
+            <div *ngIf="partner.recentRequests.length === 0" class="empty-state-small">
+              <p class="text-muted">No hay solicitudes recientes</p>
+            </div>
+            <div *ngFor="let request of partner.recentRequests" class="request-item">
+              <div class="request-info">
+                <h4>{{ request.type }}</h4>
+                <p class="text-muted mb-1">{{ request.clientName }}</p>
+                <div class="request-meta">
+                  <span [class]="getRequestStatusClass(request.status)">
+                    {{ getRequestStatusLabel(request.status) }}
+                  </span>
+                  <span class="text-muted ms-2">{{ request.currentStep }}</span>
+                </div>
+              </div>
+              <div class="request-actions">
+                <a [routerLink]="['/panel/requests', request.id]" class="btn btn-sm btn-outline-primary">
+                  Ver Detalles
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Estadísticas -->
+        <div *ngIf="activeTab === 'stats'" class="tab-pane">
+          <div class="stats-content">
+            <div class="alert alert-info">
+              <i class="bi bi-info-circle me-2"></i>
+              Las estadísticas detalladas estarán disponibles próximamente
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions-section">
+      <a routerLink="/panel/partners" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i>
+        Volver a Partners
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !partner" class="empty-state">
+    <i class="bi bi-exclamation-circle" style="font-size: 4rem; color: #ccc;"></i>
+    <h3>Partner no encontrado</h3>
+    <p class="text-muted">El partner que buscas no existe.</p>
+    <a routerLink="/panel/partners" class="btn btn-primary mt-3">
+      Volver a Partners
+    </a>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

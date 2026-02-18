@@ -1,0 +1,77 @@
+import {
+  ApplicationConfig,
+  provideZoneChangeDetection,
+  isDevMode,
+  APP_INITIALIZER,
+} from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+// provideClientHydration se agrega solo en main.ts (browser), no aquí para evitar conflictos SSR
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from '../features/panel/interceptors/auth.interceptor';
+import { TranslocoHttpLoader } from '../transloco-loader';
+import { provideTransloco } from '@jsverse/transloco';
+/*import {
+  cookiesStorage,
+  provideTranslocoPersistLang,
+} from '@jsverse/transloco-persist-lang';*/
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideServiceWorker } from '@angular/service-worker';
+import { initializeBootstrapComponents } from '../shared/bootstrap-imports';
+import { LanguageService } from '../shared/services/language.service';
+import { AuthService } from '../features/panel/services/auth.service';
+import { SchemaSeoInitializerService } from '../shared/services/schema-seo-initializer.service';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    // provideClientHydration() se agrega solo en main.ts (browser) con withEventReplay()
+    // withFetch() habilita el uso de la API Fetch nativa del navegador para mejor rendimiento
+    provideHttpClient(
+      withFetch(),
+      withInterceptors([authInterceptor])
+    ),
+    // provideAnimations() y provideServiceWorker() se agregan solo en main.ts (browser)
+    // para evitar problemas con SSR donde document/window no existen
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'es'],
+        defaultLang: 'es',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader,
+    }),
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (ls: LanguageService) => () => ls.init(),
+      deps: [LanguageService],
+      multi: true,
+    },
+    // Cargar usuario en segundo plano (no bloquea el arranque)
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (auth: AuthService) => () => {
+        auth.loadUser();
+        return Promise.resolve();
+      },
+      deps: [AuthService],
+      multi: true,
+    },
+    // URLs dinámicas en JSON-LD y canonical según environment.baseUrl
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (schema: SchemaSeoInitializerService) => () => {
+        schema.run();
+        return Promise.resolve();
+      },
+      deps: [SchemaSeoInitializerService],
+      multi: true,
+    },
+    // NOTA: provideAnimations() y provideServiceWorker() se mueven a main.ts (browser)
+    // para evitar problemas con SSR
+  ],
+};

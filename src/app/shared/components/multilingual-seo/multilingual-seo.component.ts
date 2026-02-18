@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { filter, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { MultilingualSeoService, MultilingualSeoData } from '../../../services/multilingual-seo.service';
+import { MultilingualSeoService, MultilingualSeoData } from '../../../shared/services/multilingual-seo.service';
 import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
@@ -90,6 +90,7 @@ export class MultilingualSeoComponent implements OnInit, OnDestroy {
 
     // Mapear rutas a routeKeys
     const routeMapping: { [key: string]: string } = {
+      '': 'inicio', // Raíz mapea a 'inicio' como routeKey
       'inicio': 'inicio',
       'home': 'home',
       'nosotros': 'nosotros',

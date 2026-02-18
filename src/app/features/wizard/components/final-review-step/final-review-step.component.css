@@ -1,0 +1,227 @@
+.final-review-step {
+  padding: 1rem 0;
+}
+
+.review-header h4 {
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.review-header .text-muted {
+  color: #6b7280;
+  margin-bottom: 0;
+}
+
+/* Secciones de revisión */
+.review-section {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.section-header {
+  background: #f8fafc;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.section-header h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.section-content {
+  padding: 1.25rem;
+}
+
+/* Items de revisión */
+.review-item {
+  margin-bottom: 1rem;
+}
+
+.review-item:last-child {
+  margin-bottom: 0;
+}
+
+.review-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 0.25rem;
+}
+
+.review-value {
+  display: block;
+  font-size: 0.95rem;
+  color: #1f2937;
+  word-break: break-word;
+}
+
+/* Tarjetas de miembros */
+.member-card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.member-card:last-child {
+  margin-bottom: 0;
+}
+
+.member-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--color-primario, #0068BD);
+}
+
+/* Sección de confirmación */
+.confirmation-section {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.confirmation-section .form-check {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.confirmation-section .form-check-input {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+  margin-right: 0;
+  margin-left: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.confirmation-section .form-check-input:checked {
+  background-color: var(--color-primario, #0068BD);
+  border-color: var(--color-primario, #0068BD);
+}
+
+.confirmation-section .form-check-label {
+  cursor: pointer;
+  color: #1f2937;
+  font-weight: 500;
+  flex: 1;
+  line-height: 1.5;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Alertas */
+.review-section .alert {
+  margin-bottom: 0;
+}
+
+.alert-success {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.alert-info {
+  background-color: #eff6ff;
+  border-color: #93c5fd;
+  color: #1e40af;
+}
+
+/* Vista de éxito */
+.success-view {
+  padding: 2rem 1rem;
+}
+
+.success-view .btn-primary {
+  background-color: #006afe;
+  border-color: #006afe;
+  color: #ffffff;
+  min-width: 150px;
+}
+
+.success-view .btn-primary:hover {
+  background-color: #02b8d0;
+  border-color: #02b8d0;
+  color: #ffffff;
+}
+
+.success-view .btn-primary:focus {
+  background-color: #006afe;
+  border-color: #006afe;
+  color: #ffffff;
+  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+}
+
+.success-view .btn-primary:disabled {
+  background-color: #006afe;
+  border-color: #006afe;
+  opacity: 0.6;
+  color: #ffffff;
+}
+
+.success-view .btn-outline-secondary {
+  background-color: #ffffff;
+  border-color: #006afe;
+  color: #006afe;
+  min-width: 150px;
+}
+
+.success-view .btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  border-color: #02b8d0;
+  color: #02b8d0;
+}
+
+.success-view .btn-outline-secondary:focus {
+  background-color: #ffffff;
+  border-color: #006afe;
+  color: #006afe;
+  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+}
+
+.success-view .btn-outline-secondary:disabled {
+  background-color: #ffffff;
+  border-color: #006afe;
+  color: #006afe;
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .section-content {
+    padding: 1rem;
+  }
+
+  .review-item {
+    margin-bottom: 0.75rem;
+  }
+
+  .col-md-6,
+  .col-md-4 {
+    margin-bottom: 0.5rem;
+  }
+
+  .success-view .btn-primary,
+  .success-view .btn-outline-secondary {
+    min-width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .success-view .d-flex {
+    flex-direction: column;
+  }
+}

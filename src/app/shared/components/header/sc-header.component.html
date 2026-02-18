@@ -1,0 +1,70 @@
+<nav #navbar class="navbar navbar-expand-lg navbar-dark fixed-top sc-navbar"
+  [ngClass]="{ 'sc-navbar-light': isOpen || isNavbarShrunk }">
+  <div class="container">
+    <div class="container d-flex flex-wrap align-items-center justify-content-between sc-header-container">
+      <a class="navbar-brand me-auto" [langRouterLink]="''">
+        <app-responsive-image [images]="(logoImages$ | async)!" context="logo" loading="eager"
+          cssClass="sc-navbar-logo">
+        </app-responsive-image>
+      </a>
+
+      <button class="navbar-toggler" type="button"
+        [attr.aria-controls]="'navbarNav'"
+        [attr.aria-expanded]="isOpen"
+        aria-label="Toggle navigation" 
+        (click)="toggleMenu()">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div class="container sc-menu-container">
+      <div class="collapse navbar-collapse justify-content-center" 
+           [class.show]="isOpen"
+           id="navbarNav">
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          <li class="nav-item" [ngClass]="{ active: isRouteActive('/nosotros') }">
+            <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link" aria-current="page"
+              [langRouterLink]="'nosotros'" (click)="closeMenu()">{{ "NAVBAR.us" | transloco }}</a>
+          </li>
+          <li class="nav-item" [ngClass]="{
+              active: isRouteActive('/planes') || isRouteActive('/pricing')
+            }">
+            <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link" href="javascript:void(0)"
+              (click)="navigateToPlansSection(); closeMenu()">{{ "NAVBAR.plans" | transloco }}</a>
+          </li>
+          <li class="nav-item" [ngClass]="{ active: isRouteActive('/blog') }">
+            <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" aria-current="page" class="nav-link"
+              [langRouterLink]="'blog'" (click)="closeMenu()">{{ "NAVBAR.blog" | transloco }}</a>
+          </li>
+          <li class="nav-item" [ngClass]="{ active: isRouteActive('/contacto') }">
+            <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
+              [langRouterLink]="'contacto'" (click)="closeMenu()">{{ "NAVBAR.contact" | transloco }}</a>
+          </li>
+          <!-- Botón de iniciar sesión en móvil -->
+          @if (!hideLogin) {
+            <li class="nav-item d-lg-none">
+              <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
+                routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="container justify-content-end sc-buttons-container">
+      @if (!hideLogin) {
+        <div class="d-none d-lg-block sc-button-wrapper">
+          <a routerLink="/panel/login" class="btn sc-btn-login">
+            {{ "NAVBAR.login" | transloco }}
+          </a>
+        </div>
+      }
+      <div class="d-none d-lg-block sc-button-wrapper">
+        <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+          data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="btn sc-btn-accent">
+          {{ "NAVBAR.call" | transloco }} <i class="bi bi-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

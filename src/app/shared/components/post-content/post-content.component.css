@@ -1,628 +1,96 @@
-/* Estilos para el contenido del post - aplicados globalmente debido a ViewEncapsulation.None */
+/* ============================================================================
+   POST CONTENT COMPONENT - Estilos específicos del componente
+   Los estilos de contenido, cards y tablas están consolidados en /assets/styles/blog/
+   Este archivo solo contiene estilos específicos del componente si los necesita
+   ============================================================================ */
 
-/* Estilos para landing page (contenido con secciones) */
-.landing-page-row {
-  margin-left: 0;
-  margin-right: 0;
+/* Nota: Este archivo ahora está casi vacío porque todos los estilos de contenido
+   reutilizables han sido consolidados en:
+   - /assets/styles/blog/blog-content.css
+   - /assets/styles/blog/blog-cards.css
+   - /assets/styles/blog/blog-utilities.css
+
+   Si necesitas agregar estilos específicos SOLO para este componente
+   (no reutilizables), agrégalos aquí.
+*/
+
+.custom-accordion-item {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e6eef5;
+  box-shadow: 0 8px 20px rgba(41, 59, 73, 0.08);
+  margin-bottom: 1rem;
+  overflow: hidden;
 }
 
-.landing-page-row .app-post-content {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-@media (min-width: 992px) {
-  .landing-page-row .app-post-content {
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-/* Estilos para abre-corp-card */
-.app-post-content .abre-corp-card,
-.abre-corp-card {
-  background-color: #2d3748 !important;
-  font-family: Arial, sans-serif !important;
-  max-width: 100% !important;
-  padding: 1.5rem 2rem !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-}
-
-.app-post-content .abre-corp-title,
-.abre-corp-title {
-  color: #ffffff !important;
-  font-size: 1rem;
-  font-weight: 800 !important;
-  line-height: 1.3 !important;
-  margin-bottom: 1rem !important;
-}
-
-.app-post-content .abre-corp-highlight,
-.abre-corp-highlight {
-  color: #00bcd4 !important;
-}
-
-.app-post-content .abre-corp-list,
-.abre-corp-list {
-  color: #ffffff !important;
-  font-size: 1rem !important;
-  line-height: 1.8 !important;
-  padding-left: 0 !important;
-  margin: 0 !important;
-}
-
-.app-post-content .abre-corp-bullet,
-.abre-corp-bullet {
-  color: #ffffff !important;
-  font-size: 1rem !important;
-  line-height: 1 !important;
-  margin-top: 0.2em !important;
-  margin-right: 0.5rem !important;
-}
-
-.app-post-content .abre-corp-btn,
-.abre-corp-btn {
-  background-color: #00bcd4 !important;
-  color: #ffffff !important;
-  border: none !important;
-  font-size: 0.7rem !important;
-  white-space: nowrap !important;
-  padding: 0.75rem 0 !important;
-  border-radius: 50px !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: background-color 0.3s ease !important;
-}
-
-.app-post-content .abre-corp-btn:hover,
-.abre-corp-btn:hover {
-  background-color: #00acc1 !important;
-  color: #ffffff !important;
-}
-
-.app-post-content .abre-corp-calendar-container,
-.abre-corp-calendar-container {
-  background-color: #ffffff !important;
-  max-height: 600px !important;
-  width: 100% !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-}
-
-/* Estilos para el contenedor del calendario Calendly dentro del post */
-.app-post-content #my-cal-inline,
-#my-cal-inline {
-  max-height: 600px !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-  width: 100% !important;
-}
-
-.app-post-content #my-cal-inline iframe,
-#my-cal-inline iframe {
-  width: 100% !important;
-  max-width: 100% !important;
-}
-
-/* Estilos para mercury */
-/* .promo-card: contenedor principal */
-.app-post-content .promo-card,
-.promo-card {
-  border-radius: 1rem !important;
-  padding: 1.5rem;
-  max-width: 520px;
-  margin: auto;
-  background: #fff;
-}
-
-/* logo responsive */
-.app-post-content .card-logo,
-.card-logo {
-  display: block;
+.custom-accordion-button {
   width: 100%;
-  height: auto;
-  max-height: 81px;
-  object-fit: contain;
-}
-
-/* metric styling */
-/* Alinear correctamente todos los íconos dentro de .metric */
-.app-post-content .metric,
-.metric {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem; /* separa icono ↔ texto */
-}
-
-.app-post-content .metric img,
-.metric img {
-  width: 18px !important;
-  height: 18px !important;
-  object-fit: contain;
-  flex-shrink: 0;
-  margin-top: 1px; /* fine-tuning vertical */
-}
-
-/* Alinear textos internos */
-.app-post-content .metric .metric-label,
-.app-post-content .metric strong,
-.app-post-content .metric small,
-.metric .metric-label,
-.metric strong,
-.metric small {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  line-height: 1.2;
-}
-
-/* Evitar que strong afecte alineación */
-.app-post-content .metric strong,
-.metric strong {
-  font-weight: 600;
-}
-
-/* CTA */
-.app-post-content .btn-cta,
-.btn-cta {
-  background: #00c2ff !important;
+  text-align: left;
   border: none;
-  color: #fff;
-  padding: .55rem 1.25rem;
-  border-radius: 1rem !important;
-  font-weight: 600;
-}
-
-/* details / summary */
-.app-post-content .promo-details,
-.promo-details {
-  border-top: 1px solid #e9ecef;
-  margin-top: 1rem;
-  padding-top: 1rem;
-}
-
-.app-post-content .promo-summary,
-.promo-summary {
-  display: flex;
+  padding: 1.1rem 1.25rem !important;
+  display: flex !important;
   align-items: center;
-  gap: .5rem;
+  justify-content: space-between;
+  gap: 1rem;
   cursor: pointer;
-  font-weight: 600;
-  margin: 0;
-  padding: .25rem 0;
+  background: var(--color-secundario-tecnico) !important;
+  min-width: 500px;
 }
 
-.app-post-content .promo-summary::before,
-.promo-summary::before {
-  content: "▸";
-  color: #02CAE3;
+.custom-accordion-button .faq-question {
   font-size: 1.05rem;
-  line-height: 1;
-  margin-right: .5rem;
-  transition: transform .18s ease;
+  font-weight: 700;
+  color: #fff;
 }
 
-.app-post-content .promo-details[open] .promo-summary::before,
-.promo-details[open] .promo-summary::before {
-  transform: rotate(90deg);
-}
-
-.app-post-content .promo-summary .arrow,
-.promo-summary .arrow {
-  margin-left: auto;
-  transform: rotate(0deg);
-  transition: transform .18s ease;
-}
-
-.app-post-content .promo-details[open] .promo-summary .arrow,
-.promo-details[open] .promo-summary .arrow {
-  transform: rotate(180deg);
-}
-
-/* feature list with icon */
-/* ---------- Lista de features: marcador coloreado + alineado ---------- */
-
-/* Mantener estructura semántica */
-.app-post-content .feature-list,
-.feature-list {
-  margin: 0;
-  padding-left: 1.2rem; /* espacio para el marcador nativo */
-  list-style: disc;     /* usamos disco (default) para consistencia */
-}
-
-/* Separación y lectura */
-.app-post-content .feature-list li,
-.feature-list li {
-  margin: 0.35rem 0;
-  line-height: 1.4;
-}
-
-/* ===== Modern browsers: colorear el marker nativo ===== */
-.app-post-content .feature-list li::marker,
-.feature-list li::marker {
-  font-size: 0.9em; /* ligero ajuste del tamaño si quieres, usa 1em para tamaño por defecto */
-}
-
-/* ===== Fallback para navegadores sin ::marker (ej: algunos motores antiguos) =====
-   Si el navegador no aplica ::marker, escondemos el marker nativo y usamos ::before
-   (el tamaño aquí se mantiene en unidades relativas para imitar al marcador nativo) */
-.app-post-content .feature-list.no-marker-support,
-.feature-list.no-marker-support { /* añade esta clase si necesitas forzar fallback */
-  list-style: none;
-  padding-left: 0;
-}
-.app-post-content .feature-list.no-marker-support li,
-.feature-list.no-marker-support li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  padding: 0.2rem 0;
-}
-.app-post-content .feature-list.no-marker-support li::before,
-.feature-list.no-marker-support li::before {
-  content: "";
-  width: 0.6em;               /* tamaño relativo: similar al marcador nativo */
-  height: 0.6em;
-  margin-top: 0.22em;         /* alinea verticalmente con la primera línea del texto */
+.custom-accordion-button .faq-arrow-icon {
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  flex: 0 0 auto;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background 0.25s ease;
 }
 
-/* Ajustes responsivos: reducir un poco en móviles */
-@media (max-width: 576px) {
-  .app-post-content .feature-list,
-  .feature-list { padding-left: 1rem; }
-  .app-post-content .feature-list li::marker,
-  .feature-list li::marker { font-size: 0.95em; }
-  .app-post-content .feature-list.no-marker-support li::before,
-  .feature-list.no-marker-support li::before { width: 0.55em; height: 0.55em; }
+.custom-accordion-button.accordion-open .faq-arrow-icon {
+  transform: rotate(90deg);
+  background: #e8f6fb;
+  color: var(--color-secundario-tecnico);
 }
 
-/* Alineación con los títulos (ej. "Ventajas:") en columnas:
-   nos aseguramos que el título (elemento <strong>) no interfiera con el marcador */
-.app-post-content .promo-content > .row > [class*="col-"] > strong,
-.promo-content > .row > [class*="col-"] > strong {
+.custom-accordion-content {
+  padding: 1.25rem !important;
+  color: var(--color-oscuro-tecnico);
+  font-size: 1rem;
+  line-height: 1.6;
+  display: none;
+}
+
+.custom-accordion-content p {
+  font-size: .9rem !important;
+}
+
+.custom-accordion-content.accordion-open {
   display: block;
-  margin-bottom: 0.5rem;
 }
 
-/* Estilos para ayuda-profesional-card */
-.app-post-content .ayuda-profesional-card,
-.ayuda-profesional-card {
-  background-color: #2d3748;
-  font-family: Arial, sans-serif;
-  max-width: 100%;
-  gap: 2rem;
+.app-post-content a strong,
+.app-post-content a {
+  font-weight: 400;
 }
 
-.app-post-content .ayuda-profesional-content,
-.ayuda-profesional-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.app-post-content .ayuda-profesional-title,
-.ayuda-profesional-title {
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.app-post-content .ayuda-profesional-highlight,
-.ayuda-profesional-highlight {
-  color: #00bcd4;
-}
-
-.app-post-content .ayuda-profesional-list,
-.ayuda-profesional-list {
-  color: #ffffff;
-  font-size: 1rem;
-  line-height: 1.8;
-  padding-left: 0;
-}
-
-.app-post-content .ayuda-profesional-bullet,
-.ayuda-profesional-bullet {
-  color: #00bcd4;
-  font-size: 1.2em;
-  line-height: 1;
-  margin-top: 0.2em;
-}
-
-.app-post-content .ayuda-profesional-btn,
-.ayuda-profesional-btn {
-  background-color: #00bcd4;
-  color: #ffffff;
-  border: none;
-  font-size: 0.7rem;
-  white-space: nowrap;
-}
-
-.app-post-content .ayuda-profesional-image-container,
-.ayuda-profesional-image-container {
-  flex-shrink: 0;
-  width: 100%;
-  max-width: 100%;
-}
-
-.app-post-content .ayuda-profesional-image,
-.ayuda-profesional-image {
-  width: clamp(200px, 30vw, 300px);
-  height: clamp(200px, 30vw, 300px);
-  max-width: 100%;
-  aspect-ratio: 1;
-}
-
-.app-post-content .ayuda-profesional-image img,
-.ayuda-profesional-image img {
-  object-fit: cover;
-  object-position: center;
-}
-
-/* Estilos para costos-florida-card */
-.app-post-content .costos-florida-card,
-.costos-florida-card {
-  background-color: #00bcd4;
-  font-family: Arial, sans-serif;
-  max-width: 100%;
-}
-
-.app-post-content .costos-florida-section-title,
-.costos-florida-section-title {
-  color: #293B49;
-  font-size: 1.1rem;
-  font-weight: 800;
-}
-
-.app-post-content .costos-florida-main-price,
-.costos-florida-main-price {
-  color: #ffffff;
-  font-size: 1.8rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.app-post-content .costos-florida-subtitle,
-.costos-florida-subtitle {
-  color: #293B49;
-  font-size: 1.1rem;
-}
-
-.app-post-content .costos-florida-option-card,
-.costos-florida-option-card {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.app-post-content .costos-florida-option-label,
-.costos-florida-option-label {
-  color: #293B49;
-  font-size: 1.1rem;
-}
-
-.app-post-content .costos-florida-option-price,
-.costos-florida-option-price {
-  color: #ffffff;
-  font-size: 1.8rem;
-  font-weight: 800;
-  line-height: 1;
-}
-
-.app-post-content .costos-florida-option-time,
-.costos-florida-option-time {
-  color: #293B49;
-  font-size: 1.1rem;
-}
-
-.app-post-content .costos-florida-btn,
-.costos-florida-btn {
-  background-color: #2d3748;
-  color: #ffffff;
-  border: none;
-  font-size: 1rem;
-  max-width: 100%;
-}
 @media (max-width: 768px) {
-  .app-post-content .costos-florida-btn,
-  .costos-florida-btn {
-    font-size: 0.8rem;
+  .custom-accordion-button {
+    min-width: 100%;
+  }
+
+  .custom-accordion-button .faq-question {
+    font-size: 0.95rem !important;
+  }
+
+  .custom-accordion-content p {
+    font-size: .85rem !important;
   }
 }
-/* Estilos para preguntas-frecuentes-card */
-.app-post-content .preguntas-frecuentes-card,
-.preguntas-frecuentes-card {
-  background-color: #2d3748;
-  font-family: Arial, sans-serif;
-  max-width: 100%;
-}
-
-.app-post-content .preguntas-frecuentes-title,
-.preguntas-frecuentes-title {
-  color: #ffffff;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.app-post-content .preguntas-frecuentes-list,
-.preguntas-frecuentes-list {
-  gap: 0;
-}
-
-.app-post-content .preguntas-frecuentes-item,
-.preguntas-frecuentes-item {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-}
-
-.app-post-content .preguntas-frecuentes-item:last-child,
-.preguntas-frecuentes-item:last-child {
-  border-bottom: none;
-}
-
-.app-post-content .preguntas-frecuentes-question,
-.preguntas-frecuentes-question {
-  color: #ffffff;
-  font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-  line-height: 1.5;
-}
-
-.app-post-content .preguntas-frecuentes-icon,
-.preguntas-frecuentes-icon {
-  color: #00bcd4;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  margin-left: 1rem;
-}
-
-/* Estilos para renovar-llc-card */
-.app-post-content .renovar-llc-card,
-.renovar-llc-card {
-  background-color: #F4F7FC;
-  font-family: Arial, sans-serif;
-  max-width: 100%;
-  border-radius: 1rem;
-}
-
-.app-post-content .renovar-llc-card-title,
-.renovar-llc-card-title {
-  color: #1a202c;
-  font-size: clamp(1.25rem, 5vw, 2rem);
-  font-weight: 800;
-  line-height: 1.3;
-}
-
-.app-post-content .renovar-llc-card-divider,
-.renovar-llc-card-divider {
-  width: 50%;
-  height: 4px;
-  background-color: #4fc3f7;
-  border-radius: 2px;
-}
-
-.app-post-content .renovar-llc-card-text,
-.renovar-llc-card-text {
-  color: #2d3748;
-  font-size: clamp(0.875rem, 2.5vw, 1rem);
-  line-height: 1.6;
-}
-
-.app-post-content .renovar-llc-card-list,
-.renovar-llc-card-list {
-  color: #2d3748;
-  font-size: clamp(0.8rem, 2vw, 0.95rem);
-  line-height: 1.8;
-  padding-left: 1.5rem;
-}
-
-/* Estilos para veredicto-card */
-.app-post-content .veredicto-card,
-.veredicto-card {
-  background-color: #f5f5f5;
-  font-family: Arial, sans-serif;
-  max-width: 100%;
-}
-
-.app-post-content .veredicto-main-title,
-.veredicto-main-title {
-  color: #00bcd4;
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.app-post-content .veredicto-text,
-.veredicto-text {
-  color: #2d3748;
-  font-size: 0.95rem;
-  line-height: 1.7;
-}
-
-.app-post-content .veredicto-section-title,
-.veredicto-section-title {
-  color: #00bcd4;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  font-weight: 800;
-}
-
-.app-post-content .veredicto-list,
-.veredicto-list {
-  color: #2d3748;
-  font-size: clamp(0.9rem, 2vw, 1rem);
-  line-height: 1.8;
-  padding-left: 0;
-}
-
-.app-post-content .veredicto-bullet,
-.veredicto-bullet {
-  color: #00bcd4;
-  font-size: 1.2em;
-  line-height: 1;
-  margin-top: 0.2em;
-}
-
-.app-post-content .veredicto-defentux-card,
-.veredicto-defentux-card {
-  background-color: #1a2e4d;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-post-content .veredicto-logo-circle,
-.veredicto-logo-circle {
-  width: 60px;
-  height: 60px;
-  background-color: #00bcd4;
-  border-radius: 50%;
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 800;
-}
-
-.app-post-content .veredicto-defentux-title,
-.veredicto-defentux-title {
-  color: #ffffff;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-  font-weight: 800;
-}
-
-.app-post-content .veredicto-rating-container,
-.veredicto-rating-container {
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-}
-
-.app-post-content .veredicto-rating-number,
-.veredicto-rating-number {
-  color: #ffffff;
-  font-weight: 800;
-}
-
-.app-post-content .veredicto-star-filled,
-.veredicto-star-filled {
-  color: #00bcd4;
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-}
-
-.app-post-content .veredicto-star-empty,
-.veredicto-star-empty {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: clamp(1.25rem, 3vw, 1.5rem);
-}
-
-.app-post-content .veredicto-details,
-.veredicto-details {
-  color: #ffffff;
-  font-size: clamp(0.85rem, 2vw, 0.95rem);
-  line-height: 1.8;
-}
-
-.app-post-content .veredicto-btn,
-.veredicto-btn {
-  background-color: #00bcd4;
-  color: #ffffff;
-  border: none;
-  font-size: clamp(0.95rem, 2vw, 1rem);
-}
-

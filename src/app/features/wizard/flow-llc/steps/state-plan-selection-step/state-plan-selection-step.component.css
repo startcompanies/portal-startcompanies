@@ -1,0 +1,136 @@
+.state-plan-selection-step {
+  padding: 1rem 0;
+}
+
+/* Plan Cards - Lista vertical, un rectángulo largo por fila */
+.plan-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.plan-card {
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.plan-card:hover {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card.selected {
+  border-color: var(--color-secundario-tecnico);
+  background: rgba(1, 201, 226, 0.05);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
+}
+
+.plan-card__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.plan-name-block {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.recommended-badge {
+  background: #ffc107;
+  color: var(--color-texto-oscuro);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.plan-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin: 0;
+}
+
+.plan-price {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-secundario-tecnico);
+  margin: 0;
+  margin-left: auto;
+}
+
+.plan-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  color: var(--color-secundario-tecnico);
+  cursor: help;
+  flex-shrink: 0;
+}
+
+.plan-info-icon:hover {
+  background: rgba(1, 201, 226, 0.1);
+  color: var(--color-secundario-tecnico);
+}
+
+.plan-info-icon .bi {
+  font-size: 1rem;
+}
+
+/* Botones de estado */
+.state-btn {
+  border: 1px solid #ced4da;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+.state-btn:hover {
+  border-color: var(--color-secundario-tecnico);
+  background-color: rgba(1, 201, 226, 0.05);
+}
+
+.state-btn.active {
+  border-color: var(--color-secundario-tecnico);
+  background-color: rgba(1, 201, 226, 0.1);
+  color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.1);
+}
+
+/* Form controls */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+/* Los estilos de form-control se heredan de wizard-base-styles.css */
+
+/* Responsive */
+@media (max-width: 768px) {
+  .state-plan-selection-step h2 {
+    font-size: 1.5rem;
+  }
+}

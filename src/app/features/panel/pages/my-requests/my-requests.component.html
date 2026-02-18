@@ -1,0 +1,153 @@
+<div class="my-requests-container">
+  <div class="my-requests-header">
+    <div>
+      <h2>Mis Solicitudes</h2>
+      <p class="text-muted">Sigue el estado de tus procesos</p>
+    </div>
+    <a *ngIf="isPartner && (pendingRequests.length > 0 || completedRequests.length > 0)" routerLink="/panel/new-request" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-2"></i>
+      Nueva Solicitud
+    </a>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadRequests()">
+      Reintentar
+    </button>
+  </div>
+
+  <!-- Solicitudes Pendientes (Borradores) -->
+  <div *ngIf="!isLoading && !error && pendingRequests.length > 0" class="pending-requests-section mb-4">
+    <h3 class="mb-3">
+      <i class="bi bi-file-earmark-text me-2"></i>
+      Solicitudes en Progreso
+    </h3>
+    <div class="requests-list">
+      <div class="request-card border-warning" *ngFor="let request of pendingRequests">
+        <div class="request-header">
+          <div class="request-info">
+            <h4>
+              {{ getRequestTypeLabel(request.type) }}
+              <span *ngIf="isPartner && request.client" class="text-muted" style="font-size: 0.85em; font-weight: normal;">
+                - {{ getClientName(request) }}
+              </span>
+            </h4>
+            <span [class]="getStatusClass(request.status)">
+              {{ getStatusLabel(request.status) }}
+            </span>
+          </div>
+          <div class="request-meta">
+            <small class="text-muted">
+              Creada: {{ request.createdAt | date:'short' }}
+            </small>
+          </div>
+        </div>
+
+        <div class="request-body">
+          <p class="text-muted mb-2">
+            <i class="bi bi-info-circle me-2"></i>
+            Esta solicitud está en borrador. Continúa llenando los datos o completa el pago.
+          </p>
+          <p *ngIf="getClientName(request) !== 'Cliente no disponible'" class="text-muted mb-1">
+            <i class="bi bi-person me-2"></i>
+            <strong>Cliente:</strong> {{ getClientName(request) }}
+            <span *ngIf="request.client?.email"> ({{ request.client?.email }})</span>
+          </p>
+          <p *ngIf="getLlcName(request)" class="text-muted mb-0">
+            <i class="bi bi-building me-2"></i>
+            <strong>LLC:</strong> {{ getLlcName(request) }}
+          </p>
+        </div>
+
+        <div class="request-footer">
+          <button type="button" (click)="continueRequest(request)" class="btn btn-sm btn-warning">
+            <i class="bi bi-arrow-right-circle me-2"></i>
+            Continuar Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !error && pendingRequests.length === 0 && completedRequests.length === 0" class="empty-state">
+    <div class="empty-state-content">
+      <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+      <h3>No tienes solicitudes</h3>
+      <p class="text-muted">Aún no has iniciado ningún proceso</p>
+      <a routerLink="/panel/request-flow/select-service" class="btn btn-primary mt-3">
+        <i class="bi bi-plus-circle me-2"></i>
+        Crear Nueva Solicitud
+      </a>
+    </div>
+  </div>
+
+  <!-- Solicitudes Completadas/Enviadas -->
+  <div *ngIf="!isLoading && !error && completedRequests.length > 0" class="completed-requests-section">
+    <h3 class="mb-3">
+      <i class="bi bi-check-circle me-2"></i>
+      Solicitudes Enviadas
+    </h3>
+    <div class="requests-list">
+      <div class="request-card" *ngFor="let request of completedRequests">
+        <div class="request-header">
+          <div class="request-info">
+            <h4>
+              {{ getRequestTypeLabel(request.type) }}
+              <span *ngIf="isPartner && request.client" class="text-muted" style="font-size: 0.85em; font-weight: normal;">
+                - {{ getClientName(request) }}
+              </span>
+            </h4>
+            <span [class]="getStatusClass(request.status)">
+              {{ getStatusLabel(request.status) }}
+            </span>
+          </div>
+          <div class="request-meta">
+            <small class="text-muted">
+              Creada: {{ request.createdAt | date:'short' }}
+            </small>
+          </div>
+        </div>
+
+        <div class="request-body">
+          <div class="request-step" *ngIf="request.stage">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Etapa actual: {{ request.stage }}</span>
+          </div>
+          <p *ngIf="getClientName(request) !== 'Cliente no disponible'" class="text-muted mb-1">
+            <i class="bi bi-person me-2"></i>
+            <strong>Cliente:</strong> {{ getClientName(request) }}
+            <span *ngIf="request.client?.email"> ({{ request.client?.email }})</span>
+          </p>
+          <p *ngIf="getLlcName(request)" class="text-muted mb-0">
+            <i class="bi bi-building me-2"></i>
+            <strong>LLC:</strong> {{ getLlcName(request) }}
+          </p>
+        </div>
+
+        <div class="request-footer">
+          <a [routerLink]="['/panel/my-requests', request.uuid || request.id]" class="btn btn-sm btn-outline-primary">
+            Ver Detalles
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

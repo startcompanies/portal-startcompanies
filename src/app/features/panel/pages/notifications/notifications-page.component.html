@@ -1,0 +1,103 @@
+<div class="notifications-page-container">
+  <div class="notifications-header">
+    <div>
+      <h2>Notificaciones</h2>
+      <p class="text-muted">Mantente al día con las actualizaciones de tus procesos</p>
+    </div>
+    <button 
+      *ngIf="unreadCount > 0"
+      class="btn btn-outline-primary"
+      (click)="markAllAsRead()"
+    >
+      <i class="bi bi-check-all me-2"></i>
+      Marcar Todas como Leídas
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="btn-group" role="group">
+      <button 
+        type="button" 
+        class="btn"
+        [class.btn-primary]="filterType === 'all'"
+        [class.btn-outline-primary]="filterType !== 'all'"
+        (click)="filterType = 'all'; onFilterChange()"
+      >
+        Todas ({{ totalCount }})
+      </button>
+      <button 
+        type="button" 
+        class="btn"
+        [class.btn-primary]="filterType === 'unread'"
+        [class.btn-outline-primary]="filterType !== 'unread'"
+        (click)="filterType = 'unread'; onFilterChange()"
+      >
+        No Leídas ({{ unreadCount }})
+      </button>
+      <button 
+        type="button" 
+        class="btn"
+        [class.btn-primary]="filterType === 'read'"
+        [class.btn-outline-primary]="filterType !== 'read'"
+        (click)="filterType = 'read'; onFilterChange()"
+      >
+        Leídas ({{ readCount }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Lista de Notificaciones -->
+  <div class="notifications-section">
+    <div *ngIf="filteredNotifications.length === 0" class="empty-state">
+      <i class="bi bi-bell-slash" style="font-size: 4rem; color: #ccc;"></i>
+      <h3>No hay notificaciones</h3>
+      <p class="text-muted">No tienes notificaciones {{ filterType === 'unread' ? 'sin leer' : filterType === 'read' ? 'leídas' : '' }}</p>
+    </div>
+
+    <div *ngIf="filteredNotifications.length > 0" class="notifications-list">
+      <div 
+        *ngFor="let notification of filteredNotifications" 
+        class="notification-card"
+        [class.unread]="!notification.read"
+        [class]="getNotificationClass(notification.type)"
+        (click)="markAsRead(notification)"
+      >
+        <div class="notification-icon">
+          <i [class]="getNotificationIcon(notification.type)"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-header">
+            <h4 class="notification-title">{{ notification.title }}</h4>
+            <button 
+              class="btn btn-sm btn-link text-danger notification-delete"
+              (click)="deleteNotification(notification); $event.stopPropagation()"
+              title="Eliminar"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+          <p class="notification-message">{{ notification.message }}</p>
+          <div class="notification-footer">
+            <small class="notification-time">
+              <i class="bi bi-calendar3 me-1"></i>
+              {{ notification.createdAt | date:'short' }}
+            </small>
+            <span *ngIf="!notification.read" class="badge bg-primary">Nueva</span>
+          </div>
+        </div>
+        <div *ngIf="!notification.read" class="unread-indicator"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

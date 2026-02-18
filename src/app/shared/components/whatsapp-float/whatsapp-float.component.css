@@ -14,6 +14,10 @@
   transition: all 0.3s ease !important;
   z-index: 9999 !important;
   animation: pulse 2s infinite !important;
+  /* Prevenir overflow horizontal */
+  max-width: 60px;
+  max-height: 60px;
+  overflow: visible;
   /* Mejorar interacción táctil */
   -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
   -webkit-user-select: none;
@@ -23,7 +27,8 @@
   /* Asegurar que sea clickeable */
   touch-action: manipulation;
   pointer-events: auto;
-  /* Debug: borde rojo para verificar visibilidad - REMOVIDO */
+  /* Asegurar que esté dentro del viewport */
+  contain: layout style paint;
 }
 
 .whatsapp-float:hover,
@@ -54,7 +59,7 @@
 
 .whatsapp-tooltip {
   position: absolute;
-  right: 70px;
+  right: calc(100% + 10px);
   top: 50%;
   transform: translateY(-50%);
   background-color: #333;
@@ -67,6 +72,10 @@
   visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
+  /* Prevenir overflow horizontal */
+  max-width: min(200px, calc(100vw - 100px));
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .whatsapp-tooltip::after {
@@ -104,12 +113,16 @@
     right: 15px;
     width: 55px;
     height: 55px;
+    max-width: 55px;
+    max-height: 55px;
     /* Asegurar interacción táctil en móvil */
     min-width: 44px;
     min-height: 44px;
     /* Mejorar área de toque */
     padding: 0;
     margin: 0;
+    /* Asegurar que no cause overflow */
+    contain: layout style paint;
   }
   
   .whatsapp-float:active {
@@ -118,8 +131,10 @@
   }
   
   .whatsapp-tooltip {
-    /* En móvil, ocultar completamente el tooltip */
-    display: none;
+    /* En móvil, ocultar completamente el tooltip para evitar overflow */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 }
 
@@ -128,11 +143,14 @@
   .whatsapp-float {
     width: 58px;
     height: 58px;
+    max-width: 58px;
+    max-height: 58px;
   }
   
   .whatsapp-tooltip {
-    right: 68px;
+    right: calc(100% + 10px);
     font-size: 13px;
+    max-width: calc(100vw - 120px);
   }
 }
 
@@ -143,11 +161,50 @@
     right: 10px;
     width: 50px;
     height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+    /* Asegurar que no cause overflow */
+    contain: layout style paint;
   }
   
   .whatsapp-tooltip {
-    right: 60px;
-    font-size: 11px;
-    padding: 5px 8px;
+    /* Ocultar completamente en pantallas muy pequeñas */
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
+/* Ajuste específico para pantallas muy pequeñas (320px) */
+/* El botón "Agendar llamada" tiene mb-4 (1.5rem = 24px) y está fixed-bottom */
+/* Necesitamos más espacio para evitar que se peguen */
+@media (max-width: 360px) {
+  .whatsapp-float {
+    /* Aumentar el bottom para dar más espacio al botón de agendar llamada */
+    bottom: 80px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    max-width: 50px;
+    max-height: 50px;
+  }
+}
+
+/* Ajuste aún más específico para pantallas de 320px */
+@media (max-width: 320px) {
+  .whatsapp-float {
+    bottom: 30px !important;
+    right: 10px !important;
+    width: 25px;
+    height: 25px;
+    max-width: 25px;
+    max-height: 25px;
+  }
+}
+
+/* Prevenir overflow horizontal en todo el body cuando el tooltip está visible */
+@media (min-width: 769px) {
+  body {
+    overflow-x: hidden;
   }
 }

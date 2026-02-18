@@ -1,0 +1,596 @@
+/* Estilos base compartidos para todos los wizards */
+
+/* Wrapper principal con fondo moderno */
+.wizard-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background: var(--color-fondo-claro);
+  overflow-x: hidden;
+}
+
+/* Fondo moderno con imagen optimizada WebP */
+.wizard-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  background-image: url('/assets/wizard-bg.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Overlay neutro con degradados suaves de marca (legal-tech / fintech) */
+.bg-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    165deg,
+    rgba(0, 22, 39, 0.03) 0%,
+    rgba(0, 106, 254, 0.04) 25%,
+    rgba(0, 104, 189, 0.03) 50%,
+    rgba(253, 255, 254, 0.92) 100%
+  );
+  opacity: 1;
+  pointer-events: none;
+}
+
+/* Patrón geométrico suave - colores de marca */
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(0, 106, 254, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 88% 75%, rgba(0, 104, 189, 0.05) 0%, transparent 45%);
+  background-size: 100% 100%;
+  opacity: 1;
+}
+
+/* Formas decorativas - ocultas para no interferir con la imagen de fondo */
+.bg-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: none;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  animation: float 25s infinite ease-in-out;
+  display: none;
+}
+
+.shape-1 {
+  display: none;
+}
+
+.shape-2 {
+  display: none;
+}
+
+.shape-3 {
+  display: none;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.7;
+  }
+
+  33% {
+    transform: translate(40px, -40px) scale(1.15);
+    opacity: 0.9;
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+/* Contenedor principal del contenido */
+.llc-apertura-container {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.request-header {
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+}
+
+.request-header h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.request-header .text-muted {
+  color: var(--color-texto-oscuro) !important;
+  opacity: 0.8;
+  font-size: 0.9375rem;
+}
+
+/* Layout del wizard con indicador a la izquierda */
+.wizard-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 960px;
+}
+
+.wizard-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Panel izquierdo: progreso + mensajes de seguridad, tiempo y cumplimiento */
+.wizard-sidebar {
+  flex-shrink: 0;
+  width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem 1.25rem;
+  background: rgba(253, 255, 254, 0.97);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(40, 58, 72, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 106, 254, 0.06);
+}
+
+.wizard-sidebar .steps-indicator-vertical {
+  width: 100%;
+}
+
+/* Pasos del sidebar con texto legible sobre fondo claro */
+.wizard-sidebar .step-label {
+  color: var(--color-texto-oscuro);
+  text-shadow: none;
+  font-weight: 500;
+}
+
+.wizard-sidebar .step-item.active .step-label {
+  color: var(--color-secundario-tecnico);
+  font-weight: 600;
+}
+
+.wizard-sidebar .step-number {
+  background: rgba(40, 58, 72, 0.12);
+  color: var(--color-texto-oscuro);
+  border-color: rgba(40, 58, 72, 0.2);
+}
+
+.wizard-sidebar .step-item.active .step-number {
+  background: var(--color-secundario-tecnico);
+  color: #fff;
+  border-color: var(--color-secundario-tecnico);
+}
+
+.wizard-sidebar .step-item.completed .step-number {
+  background: var(--color-primario);
+  color: #fff;
+  border-color: var(--color-primario);
+}
+
+.wizard-sidebar .steps-indicator-vertical::before {
+  background: rgba(40, 58, 72, 0.15);
+}
+
+.wizard-sidebar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.wizard-sidebar-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 1px 8px rgba(40, 58, 72, 0.05);
+  border: 1px solid rgba(40, 58, 72, 0.08);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-texto-oscuro);
+}
+
+.wizard-sidebar-block i {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  color: var(--color-secundario-tecnico);
+  font-size: 1.1rem;
+}
+
+.wizard-sidebar-security i { color: var(--color-secundario-tecnico); }
+.wizard-sidebar-time i { color: var(--color-primario); }
+.wizard-sidebar-compliance i { color: var(--color-oscuro-tecnico); }
+
+/* Steps Indicator (horizontal por defecto) */
+.steps-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.steps-indicator::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 0;
+}
+
+/* Steps Indicator - variante vertical (lado izquierdo) */
+.steps-indicator-vertical {
+  flex-shrink: 0;
+  margin-bottom: 0;
+  flex-direction: column;
+  gap: 0;
+  width: 220px;
+  justify-content: center;
+}
+
+.steps-indicator-vertical::before {
+  top: 20px;
+  bottom: 20px;
+  left: 19px;
+  right: auto;
+  width: 2px;
+  height: auto;
+}
+
+.steps-indicator-vertical .step-item {
+  flex: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  margin-bottom: 0;
+  padding: 1.25rem 0;
+}
+
+.steps-indicator-vertical .step-number {
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.steps-indicator-vertical .step-label {
+  text-align: left;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.step-item.active .step-number {
+  background: var(--color-secundario-tecnico);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(0, 106, 254, 0.18);
+}
+
+.step-item.completed .step-number {
+  background: #28a745;
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.step-item.completed .step-number::after {
+  content: '✓';
+  font-size: 1.2rem;
+}
+
+.step-label {
+  font-size: 0.875rem;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  font-weight: 500;
+}
+
+.step-item.active .step-label {
+  color: #ffffff;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Panel derecho: formulario conversacional (revelado progresivo) */
+.form-step {
+  background: rgba(253, 255, 254, 0.98);
+  border-radius: 16px;
+  padding: 2.25rem 2.5rem;
+  box-shadow: 0 4px 24px rgba(40, 58, 72, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 106, 254, 0.06);
+}
+
+.form-step h3 {
+  color: var(--color-texto-oscuro);
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+/* Descripción tipo “asesor” bajo el título */
+.form-step > .text-muted,
+.form-step > p.text-muted {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--color-texto-oscuro);
+  opacity: 0.85;
+  margin-bottom: 1.75rem;
+}
+
+/* Campos grandes y claros (conversacional) */
+.form-step .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-step .form-group label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.form-step .form-control {
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 58, 72, 0.18);
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-step .form-control:hover {
+  border-color: rgba(0, 106, 254, 0.25);
+}
+
+.form-step .form-control:focus {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.12);
+  outline: none;
+}
+
+.form-step .form-control::placeholder {
+  color: rgba(40, 58, 72, 0.5);
+}
+
+/* Refuerzo para componentes hijos (ej. basic-register-step) - aspecto conversacional */
+.form-step .basic-register-step .form-group label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-texto-oscuro);
+}
+
+.form-step .basic-register-step .form-control {
+  padding: 0.875rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(40, 58, 72, 0.18);
+}
+
+.form-step .basic-register-step .form-control:focus {
+  border-color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.12);
+}
+
+/* Step Actions - tono profesional, sin marketing */
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(40, 58, 72, 0.1);
+}
+
+.step-actions .btn {
+  min-width: 120px;
+  padding: 0.65rem 1.25rem;
+  font-weight: 500;
+  border-radius: 10px;
+}
+
+/* Primario: color de marca */
+.step-actions .btn-primary,
+.step-actions .btn.btn-primary {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+  color: #ffffff;
+}
+
+.step-actions .btn-primary:hover,
+.step-actions .btn.btn-primary:hover {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+  color: #ffffff;
+}
+
+.step-actions .btn-primary:focus,
+.step-actions .btn.btn-primary:focus {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.2);
+}
+
+.step-actions .btn-primary:disabled,
+.step-actions .btn.btn-primary:disabled {
+  background-color: var(--color-secundario-tecnico);
+  border-color: var(--color-secundario-tecnico);
+  opacity: 0.6;
+  color: #ffffff;
+}
+
+/* Secundario: borde y texto marca */
+.step-actions .btn-outline-secondary,
+.step-actions .btn.btn-outline-secondary {
+  background-color: #ffffff;
+  border-color: rgba(0, 106, 254, 0.4);
+  color: var(--color-secundario-tecnico);
+}
+
+.step-actions .btn-outline-secondary:hover,
+.step-actions .btn.btn-outline-secondary:hover {
+  background-color: var(--color-fondo-gris);
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
+.step-actions .btn-outline-secondary:focus,
+.step-actions .btn.btn-outline-secondary:focus {
+  background-color: #ffffff;
+  border-color: var(--color-secundario-tecnico);
+  color: var(--color-secundario-tecnico);
+  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.15);
+}
+
+.step-actions .btn-outline-secondary:disabled,
+.step-actions .btn.btn-outline-secondary:disabled {
+  background-color: #ffffff;
+  border-color: rgba(0, 106, 254, 0.3);
+  color: var(--color-secundario-tecnico);
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .wizard-wrapper {
+    min-height: auto;
+  }
+
+  .wizard-background {
+    position: absolute;
+  }
+
+  .llc-apertura-container {
+    padding: 2rem 1rem;
+  }
+
+  .wizard-sidebar {
+    width: 100%;
+    gap: 1.25rem;
+  }
+
+  .wizard-sidebar-info {
+    gap: 0.75rem;
+  }
+
+  .wizard-sidebar-block {
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .request-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .request-header .text-muted {
+    font-size: 0.875rem;
+  }
+
+  .form-step {
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+  }
+
+  .step-label {
+    font-size: 0.75rem;
+  }
+
+  .step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 0.9rem;
+  }
+
+  .steps-indicator {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .steps-indicator::before {
+    display: none;
+  }
+
+  .step-item {
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 1rem;
+  }
+
+  .step-label {
+    text-align: left;
+  }
+
+  .step-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .step-actions button {
+    width: 100%;
+  }
+
+  .shape {
+    display: none;
+  }
+}

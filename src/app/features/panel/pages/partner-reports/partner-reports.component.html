@@ -1,0 +1,227 @@
+<div class="partner-reports-container">
+  <!-- Header -->
+  <div class="reports-header">
+    <div>
+      <h2>Reportes de Partners</h2>
+      <p class="text-muted">Análisis y métricas de rendimiento de partners</p>
+    </div>
+    <button class="btn btn-primary" (click)="exportReport()">
+      <i class="bi bi-download me-2"></i>
+      Exportar Reporte
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label class="form-label">Rango de Fecha</label>
+        <select class="form-select" [(ngModel)]="dateRange" (change)="onDateRangeChange()">
+          <option value="all">Todas las fechas</option>
+          <option value="month">Este mes</option>
+          <option value="quarter">Este trimestre</option>
+          <option value="year">Este año</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Partner</label>
+        <select class="form-select" [(ngModel)]="selectedPartnerId" (change)="onPartnerChange()">
+          <option [value]="null">Todos los partners</option>
+          <option *ngFor="let partner of partners" [value]="partner.id">
+            {{ partner.company || partner.name }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Fecha Inicio</label>
+        <input type="date" class="form-control" [(ngModel)]="startDate" (change)="onDateChange()">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Fecha Fin</label>
+        <input type="date" class="form-control" [(ngModel)]="endDate" (change)="onDateChange()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Métricas Generales -->
+  <div class="metrics-section">
+    <div class="row g-3">
+      <div class="col-md-3">
+        <div class="metric-card">
+          <div class="metric-icon bg-primary">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="metric-content">
+            <h3>{{ totalPartners }}</h3>
+            <p>Total Partners</p>
+            <small class="text-muted">{{ activePartners }} activos</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card">
+          <div class="metric-icon bg-success">
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <div class="metric-content">
+            <h3>{{ activePartners }}</h3>
+            <p>Partners Activos</p>
+            <small class="text-muted">{{ getPercentage(activePartners, totalPartners) }}% del total</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card">
+          <div class="metric-icon bg-info">
+            <i class="bi bi-file-earmark-text"></i>
+          </div>
+          <div class="metric-content">
+            <h3>{{ totalRequests }}</h3>
+            <p>Total Solicitudes</p>
+            <small class="text-muted">{{ averageRequestsPerPartner }} promedio por partner</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="metric-card">
+          <div class="metric-icon bg-warning">
+            <i class="bi bi-currency-dollar"></i>
+          </div>
+          <div class="metric-content">
+            <h3>{{ formatCurrency(totalRevenue) }}</h3>
+            <p>Revenue Total</p>
+            <small class="text-muted">Generado por partners</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-section">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="chart-card">
+          <h5>Solicitudes por Partner (Top 5)</h5>
+          <div class="chart-container">
+            <div *ngFor="let item of requestsByPartner" class="chart-bar-item">
+              <div class="chart-bar-label">{{ item.name }}</div>
+              <div class="chart-bar-wrapper">
+                <div 
+                  class="chart-bar" 
+                  [style.width.%]="getPercentage(item.value, maxRequestsValue)"
+                  style="background: var(--color-secundario-tecnico);"
+                >
+                  <span class="chart-bar-value">{{ item.value }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="chart-card">
+          <h5>Revenue por Partner (Top 5)</h5>
+          <div class="chart-container">
+            <div *ngFor="let item of revenueByPartner" class="chart-bar-item">
+              <div class="chart-bar-label">{{ item.name }}</div>
+              <div class="chart-bar-wrapper">
+                <div 
+                  class="chart-bar" 
+                  [style.width.%]="getPercentage(item.value, maxRevenueValue)"
+                  style="background: var(--color-primario);"
+                >
+                  <span class="chart-bar-value">{{ formatCurrency(item.value) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Rendimiento -->
+  <div class="performance-section">
+    <div class="section-header">
+      <h4>Rendimiento de Partners</h4>
+      <p class="text-muted">Métricas detalladas de cada partner</p>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th>Estado</th>
+            <th>Clientes</th>
+            <th>Total Solicitudes</th>
+            <th>Completadas</th>
+            <th>En Proceso</th>
+            <th>Pendientes</th>
+            <th>Revenue</th>
+            <th>Crecimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let perf of partnerPerformance">
+            <td>
+              <strong>{{ perf.partner.company || perf.partner.name }}</strong>
+              <br>
+              <small class="text-muted">{{ perf.partner.email }}</small>
+            </td>
+            <td>
+              <span [class]="getStatusClass(perf.partner.status)">
+                {{ getStatusLabel(perf.partner.status) }}
+              </span>
+            </td>
+            <td>{{ perf.partner.totalClients }}</td>
+            <td>
+              <strong>{{ perf.partner.totalRequests }}</strong>
+            </td>
+            <td>
+              <span class="text-success">{{ perf.partner.completedRequests }}</span>
+            </td>
+            <td>
+              <span class="text-info">{{ perf.partner.inProgressRequests }}</span>
+            </td>
+            <td>
+              <span class="text-warning">{{ perf.partner.pendingRequests }}</span>
+            </td>
+            <td>
+              <strong>{{ formatCurrency(perf.partner.revenue) }}</strong>
+            </td>
+            <td>
+              <span [class]="perf.growthRate >= 0 ? 'text-success' : 'text-danger'">
+                <i [class]="perf.growthRate >= 0 ? 'bi bi-arrow-up' : 'bi bi-arrow-down'"></i>
+                {{ perf.growthRate > 0 ? '+' : '' }}{{ perf.growthRate }}%
+              </span>
+            </td>
+            <td>
+              <a [routerLink]="['/panel/partners', perf.partner.id]" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+

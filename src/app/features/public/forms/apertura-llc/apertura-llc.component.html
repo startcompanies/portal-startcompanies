@@ -1,0 +1,62 @@
+<!-- SEO Base Component -->
+<app-seo-base routeKey="apertura-llc"></app-seo-base>
+
+<app-header-manejo></app-header-manejo>
+<section class="mt-5 pt-3">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="iframe-container">
+          <iframe
+            aria-label="Formulario para Apertura de LLC"
+            frameborder="0"
+            src="https://forms.zohopublic.com/startcompanies/form/FormularioparaAperturadeLLCBancosSM/formperma/Vky3VZXeD8qTy3QNHSIyCbCA0auwnpL2efwRzAz1kWQ?zf_lang=es"
+            style="width: 100%; height: 100%; border: none"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section
+  class="expert-section text-center text-white d-flex align-items-center justify-content-center py-5"
+>
+  <!-- Imagen de fondo optimizada con NgOptimizedImage -->
+  <app-responsive-image
+    [images]="heroImages"
+    context="hero"
+    loading="lazy"
+    cssClass="expert-bg"
+  >
+  </app-responsive-image>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="display-4 fw-bold">
+          {{ "LLC.heroSection.title" | transloco }}
+        </h1>
+        <p class="lead mt-3">
+          {{ "LLC.heroSection.subtitle" | transloco }}
+        </p>
+        <div class="d-grid gap-2 col-6 mx-auto mt-4">
+          <button
+            class="wp-button btn btn-success btn-lg fw-bold"
+            type="button"
+            (click)="
+              openUrl(
+                'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0'
+              )
+            "
+          >
+            <i class="bi bi-whatsapp"></i> {{ "LLC.expertSection.buttonText" | transloco }}
+          </button>
+          <!--<button class="btn btn-secondary btn-lg fw-bold" type="button">
+                        Servicios
+                    </button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<app-sc-footer></app-sc-footer>

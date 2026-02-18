@@ -28,14 +28,15 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/intl-tel-input/build/css/intlTelInput.css"
             ],
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
             "server": "src/main.server.ts",
-            "prerender": true,
             "ssr": {
               "entry": "server.ts"
             }
@@ -50,12 +51,13 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "25kB",
-                  "maximumError": "30kB"
+                  "maximumWarning": "30kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all",
-              "prerender": true,
+              "prerender": false,
+              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
@@ -74,7 +76,8 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
-              "prerender": true
+              "prerender": false,
+              "ssr": false
             },
             "staging": {
               "fileReplacements": [
@@ -91,12 +94,13 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "25kB",
-                  "maximumError": "30kB"
+                  "maximumWarning": "30kB",
+                  "maximumError": "40kB"
                 }
               ],
               "outputHashing": "all",
-              "prerender": true,
+              "prerender": false,
+              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
@@ -148,6 +152,9 @@
             },
             "development": {
               "buildTarget": "portal-startcompanies:build:development"
+            },
+            "staging": {
+              "buildTarget": "portal-startcompanies:build:staging"
             }
           },
           "defaultConfiguration": "development"
@@ -169,6 +176,7 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
