@@ -17,9 +17,7 @@
   border-color: #006afe;
   color: #ffffff;
   box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
-}
-
-.wizard-renovacion-llc-information-step .btn-primary:disabled {
+}.wizard-renovacion-llc-information-step .btn-primary:disabled {
   background-color: #006afe;
   border-color: #006afe;
   opacity: 0.6;
