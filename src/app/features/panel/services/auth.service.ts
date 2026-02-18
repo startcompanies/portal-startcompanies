@@ -1,6 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError, of, switchMap, shareReplay, finalize, firstValueFrom, catchError, timeout } from 'rxjs';
+import {
+  Observable,
+  BehaviorSubject,
+  throwError,
+  of,
+  switchMap,
+  shareReplay,
+  finalize,
+  firstValueFrom,
+  catchError,
+  timeout,
+} from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { BrowserService } from '../../../shared/services/browser.service';
@@ -40,7 +51,7 @@ export interface RegisterData {
 const AUTH_BASE = `${environment.apiUrl || 'http://localhost:3000'}/auth`;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -50,7 +61,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private browser: BrowserService
+    private browser: BrowserService,
   ) {}
 
   getCurrentUser(): User | null {
@@ -67,8 +78,8 @@ export class AuthService {
     return firstValueFrom(
       this.http.get<User>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
         timeout(8000),
-        catchError(() => of(null))
-      )
+        catchError(() => of(null)),
+      ),
     )
       .then((user) => {
         this.currentUserSubject.next(user ?? null);
@@ -80,7 +91,9 @@ export class AuthService {
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${AUTH_BASE}/signin`, credentials, { withCredentials: true })
+      .post<AuthResponse>(`${AUTH_BASE}/signin`, credentials, {
+        withCredentials: true,
+      })
       .pipe(
         switchMap((response) => {
           const user = response?.user ?? null;
@@ -91,9 +104,10 @@ export class AuthService {
           return of(response);
         }),
         catchError((err) => {
-          const message = err?.error?.message ?? err?.message ?? 'Error de autenticación';
+          const message =
+            err?.error?.message ?? err?.message ?? 'Error de autenticación';
           return throwError(() => new Error(message));
-        })
+        }),
       );
   }
 
@@ -108,7 +122,7 @@ export class AuthService {
   resetPassword(token: string, newPassword: string): Observable<any> {
     return this.http.post(`${AUTH_BASE}/reset-password`, {
       token,
-      newPassword
+      newPassword,
     });
   }
 
@@ -118,7 +132,11 @@ export class AuthService {
 
   verifyEmail(token: string): Observable<AuthResponse> {
     return this.http
-      .post<AuthResponse>(`${AUTH_BASE}/verify-email`, { token }, { withCredentials: true })
+      .post<AuthResponse>(
+        `${AUTH_BASE}/verify-email`,
+        { token },
+        { withCredentials: true },
+      )
       .pipe(
         switchMap((response) => {
           if (response?.user) {
@@ -127,7 +145,7 @@ export class AuthService {
             this.loadUserFromToken(response.token);
           }
           return of(response);
-        })
+        }),
       );
   }
 
@@ -143,7 +161,7 @@ export class AuthService {
         status: payload.status,
         type: payload.type || 'client',
         first_name: payload.first_name,
-        last_name: payload.last_name
+        last_name: payload.last_name,
       };
       this.currentUserSubject.next(user);
     } catch {
@@ -154,10 +172,12 @@ export class AuthService {
   logout(): void {
     this.refreshInFlight$ = null;
     if (this.browser.isBrowser) {
-      this.http.post(`${AUTH_BASE}/logout`, {}, { withCredentials: true }).subscribe({
-        complete: () => {},
-        error: () => {}
-      });
+      this.http
+        .post(`${AUTH_BASE}/logout`, {}, { withCredentials: true })
+        .subscribe({
+          complete: () => {},
+          error: () => {},
+        });
     }
     this.currentUserSubject.next(null);
     this.router.navigate(['/panel/login']);
@@ -175,13 +195,15 @@ export class AuthService {
       return this.refreshInFlight$;
     }
     this.refreshInFlight$ = this.http
-      .post<{ token: string }>(`${AUTH_BASE}/refresh`, {}, { withCredentials: true })
+      .post<{
+        token: string;
+      }>(`${AUTH_BASE}/refresh`, {}, { withCredentials: true })
       .pipe(
         switchMap(() => of(undefined)),
         shareReplay(1),
         finalize(() => {
           this.refreshInFlight$ = null;
-        })
+        }),
       );
     return this.refreshInFlight$;
   }
