@@ -1212,7 +1212,32 @@ export class PostContentComponent
   }
 
   /**
-   * Procesa los enlaces internos marcados con data-internal-link y los convierte a enlaces de Angular
+   * Extrae el slug desde el href de un enlace con data-internal-blog="true".
+   * Acepta href relativo (ej. "que-es-llc") o absoluto (ej. "https://dominio.com/blog/que-es-llc").
+   */
+  private getSlugFromInternalBlogHref(href: string | null): string | null {
+    if (!href || typeof href !== 'string') return null;
+    const trimmed = href.trim();
+    if (!trimmed) return null;
+    // Relativo: sin protocolo y sin "//"
+    if (!trimmed.startsWith('http:') && !trimmed.startsWith('https:')) {
+      const path = trimmed.replace(/[#?].*$/, '').replace(/^\/+/, '');
+      const slug = path.replace(/^blog\/?/, '');
+      return slug.length > 0 ? slug : null;
+    }
+    try {
+      const url = new URL(trimmed);
+      const path = url.pathname.replace(/^\/+/, '');
+      const slug = path.replace(/^blog\/?/, '');
+      return slug.length > 0 ? slug : null;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Procesa los enlaces internos marcados con data-internal-link o data-internal-blog="true"
+   * y los convierte a enlaces de Angular (baseUrl/blog/:slug).
    */
   private processInternalLinks(): void {
     if (!this.browser.isBrowser || !this.contentContainer?.nativeElement) {
@@ -1221,11 +1246,13 @@ export class PostContentComponent
 
     const container = this.contentContainer.nativeElement;
     const internalLinks = container.querySelectorAll(
-      'a[data-internal-link]',
+      'a[data-internal-link], a[data-internal-blog="true"]',
     ) as NodeListOf<HTMLAnchorElement>;
 
     internalLinks.forEach((link) => {
-      const route = link.getAttribute('data-internal-link');
+      let route =
+        link.getAttribute('data-internal-link') ||
+        this.getSlugFromInternalBlogHref(link.getAttribute('href'));
       if (!route) return;
 
       // Verificar si ya se procesó este enlace
@@ -1236,8 +1263,9 @@ export class PostContentComponent
       // Marcar como procesado
       link.setAttribute('data-processed-internal-link', 'true');
 
-      // Remover el atributo data-internal-link para limpiar
+      // Remover atributos de enlace interno para limpiar
       link.removeAttribute('data-internal-link');
+      link.removeAttribute('data-internal-blog');
 
       // Agregar event listener para navegación con Angular Router
       link.addEventListener('click', (event: MouseEvent) => {
