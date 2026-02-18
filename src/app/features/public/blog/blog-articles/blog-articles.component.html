@@ -3,26 +3,33 @@
     <div class="col-md-12 col-lg-8">
       <div class="article-section">
         <h2 class="article-title">
-          {{ "BLOG.articles" | transloco }}
-          <span class="highlighted-text">{{
-            "BLOG.featured" | transloco
-          }}</span>
+          <ng-container *ngIf="currentCategoryName; else defaultTitle">
+            {{ "BLOG.category_title_prefix" | transloco }}
+            <span class="highlighted-text">{{ currentCategoryName }}</span>
+          </ng-container>
+          <ng-template #defaultTitle>
+            {{ "BLOG.articles" | transloco }}
+            <span class="highlighted-text">{{
+              "BLOG.featured" | transloco
+              }}</span>
+          </ng-template>
         </h2>
+        <div class="article-search mt-3 mb-4">
+          <div class="search-field">
+            <i class="bi bi-search" aria-hidden="true"></i>
+            <input type="search" class="form-control" [ngModel]="searchQuery" (ngModelChange)="onSearchChange($event)"
+              [placeholder]="'BLOG.search_placeholder' | transloco" aria-label="Buscar artículos" />
+          </div>
+        </div>
         <div class="row">
           <div class="col-12 mb-4">
-            <div
-              *ngFor="let topArticle of topArticles"
-              class="card article-card mb-4"
-            >
+            <div *ngIf="!isLoading && filteredPosts.length === 0" class="empty-results">
+              {{ "BLOG.search_no_results" | transloco }}
+            </div>
+            <div *ngFor="let topArticle of topArticles" class="card article-card mb-4">
               <div class="row g-0">
-                <div
-                  class="col-md-5 d-flex align-items-center justify-content-center"
-                >
-                  <img
-                    src="{{ topArticle.image_url }}"
-                    class="img-fluid"
-                    alt="Imagen del artículo"
-                  />
+                <div class="col-md-5 d-flex align-items-center justify-content-center">
+                  <img src="{{ topArticle.image_url }}" class="img-fluid" alt="Imagen del artículo" />
                 </div>
                 <div class="col-md-7 d-flex flex-column justify-content-center">
                   <div class="card-body">
@@ -32,11 +39,8 @@
                       class="btn btn-light rounded-pill mt-3"
                       >{{ "CONTENT.blog.button" | transloco }}</a
                     >-->
-                    <a
-                      [langRouterLink]="['/blog', topArticle.slug]"
-                      class="btn btn-light rounded-pill mt-3"
-                      >{{ "CONTENT.blog.button" | transloco }}</a
-                    >
+                    <a [langRouterLink]="['/blog', topArticle.slug]" class="btn btn-light rounded-pill mt-3">{{
+                      "CONTENT.blog.button" | transloco }}</a>
                   </div>
                 </div>
               </div>
@@ -50,27 +54,26 @@
       <div class="category-section p-4 rounded">
         <h4 class="category-title">{{ "BLOG.categories" | transloco }}</h4>
         <ul class="list-unstyled mb-0 category-list">
+          <li>
+            <a [langRouterLink]="['/blog']">{{ "BLOG.all_posts" | transloco }}</a>
+          </li>
           <li *ngFor="let category of categories">
             <!--<a href="/blog/category/{{ category.slug }}">{{ category.name }}</a>-->
             <a [langRouterLink]="['/blog', 'category', category.slug]">{{
               category.name
-            }}</a>
+              }}</a>
             <span class="badge text-secondary">({{ category.count }})</span>
           </li>
         </ul>
       </div>
     </div>
   </div>
-  <div class="row mt-4">
+  <div class="row mt-4" id="blogArticles">
     <div *ngFor="let mainArticle of mainArticles" class="col-md-6 mb-4">
       <div class="card horizontal-card">
         <div class="row g-0">
           <div class="col-4">
-            <img
-              src="{{ mainArticle.image_url }}"
-              class="img-fluid rounded-start"
-              alt="Artículo pequeño"
-            />
+            <img src="{{ mainArticle.image_url }}" class="img-fluid rounded-start" alt="Artículo pequeño" />
           </div>
           <div class="col-8">
             <div class="card-body">
@@ -84,11 +87,9 @@
                   class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
                   >{{ "CONTENT.blog.button" | transloco }}</a
                 >-->
-                <a
-                  [langRouterLink]="['/blog', mainArticle.slug]"
-                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill"
-                  >{{ "CONTENT.blog.button" | transloco }}</a
-                >
+                <a [langRouterLink]="['/blog', mainArticle.slug]"
+                  class="btn btn-light btn-sm btn-outline-secondary rounded-pill">{{ "CONTENT.blog.button" | transloco
+                  }}</a>
               </div>
             </div>
           </div>
@@ -96,4 +97,28 @@
       </div>
     </div>
   </div>
+  <nav *ngIf="totalPages > 1" class="blog-pagination d-flex justify-content-center mt-4"
+    aria-label="Paginación de artículos">
+    <ul class="pagination mb-0">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a *ngIf="currentPage > 1; else prevDisabled" class="page-link" [langRouterLink]="getPaginationCommands()"
+          [queryParams]="getPageQueryParams(currentPage - 1)" rel="prev">‹</a>
+        <ng-template #prevDisabled>
+          <span class="page-link">‹</span>
+        </ng-template>
+      </li>
+      <li class="page-item" *ngFor="let page of getPageNumbers()" [class.active]="page === currentPage">
+        <a class="page-link" [langRouterLink]="getPaginationCommands()" [queryParams]="getPageQueryParams(page)">{{ page
+          }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a *ngIf="currentPage < totalPages; else nextDisabled" class="page-link"
+          [langRouterLink]="getPaginationCommands()" [queryParams]="getPageQueryParams(currentPage + 1)"
+          rel="next">›</a>
+        <ng-template #nextDisabled>
+          <span class="page-link">›</span>
+        </ng-template>
+      </li>
+    </ul>
+  </nav>
 </div>

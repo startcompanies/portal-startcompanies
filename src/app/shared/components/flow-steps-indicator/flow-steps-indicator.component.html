@@ -1,0 +1,13 @@
+<div class="steps-container">
+  <div
+    *ngFor="let step of steps; let i = index"
+    class="step-item"
+    [class.active]="isActive(i)"
+    [class.completed]="isCompleted(i)"
+  >
+    <div class="step-number">
+      <span>{{ i + 1 }}</span>
+    </div>
+    <div class="step-label">{{ step.label || step.step }}</div>
+  </div>
+</div>

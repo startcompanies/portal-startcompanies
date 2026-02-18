@@ -64,8 +64,8 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/logo-dark-desktop.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Principal</image:title>
-      <image:caption>Logo oficial de Start Companies LLC, empresa especializada en servicios financieros para LLC en Estados Unidos</image:caption>
+      <image:title>Start Companies - Logo Principal</image:title>
+      <image:caption>Logo oficial de Start Companies, empresa especializada en servicios financieros para LLC en Estados Unidos</image:caption>
       <image:license>${this.baseUrl}/</image:license>
     </image:image>
   </url>
@@ -75,7 +75,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/logo-dark-mobile.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Mobile</image:title>
+      <image:title>Start Companies - Logo Mobile</image:title>
       <image:caption>Logo optimizado para dispositivos móviles</image:caption>
     </image:image>
   </url>
@@ -85,7 +85,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/logo-dark-tablet.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Tablet</image:title>
+      <image:title>Start Companies - Logo Tablet</image:title>
       <image:caption>Logo optimizado para tablets</image:caption>
     </image:image>
   </url>
@@ -95,7 +95,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/hero-bg-desktop.webp</image:loc>
-      <image:title>Hero Background - Start Companies LLC</image:title>
+      <image:title>Hero Background - Start Companies</image:title>
       <image:caption>Imagen de fondo principal del sitio web</image:caption>
     </image:image>
   </url>
@@ -162,7 +162,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/blog</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/blog/article.webp</image:loc>
-      <image:title>Blog - Start Companies LLC</image:title>
+      <image:title>Blog - Start Companies</image:title>
       <image:caption>Imagen representativa de nuestro blog con consejos y noticias</image:caption>
     </image:image>
   </url>
@@ -181,7 +181,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/nosotros</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/us/mission-person.jpg</image:loc>
-      <image:title>Equipo Start Companies LLC</image:title>
+      <image:title>Equipo Start Companies</image:title>
       <image:caption>Miembro de nuestro equipo comprometido con la excelencia</image:caption>
     </image:image>
   </url>
@@ -190,7 +190,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/nosotros</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/us/vision.webp</image:loc>
-      <image:title>Visión de Start Companies LLC</image:title>
+      <image:title>Visión de Start Companies</image:title>
       <image:caption>Representación visual de nuestra visión empresarial</image:caption>
     </image:image>
   </url>
@@ -219,7 +219,7 @@ export class SitemapXmlService {
     <loc>${this.baseUrl}/</loc>
     <image:image>
       <image:loc>${this.baseUrl}/assets/fav-icon/favicon.ico</image:loc>
-      <image:title>Favicon Start Companies LLC</image:title>
+      <image:title>Favicon Start Companies</image:title>
       <image:caption>Icono oficial del sitio web</image:caption>
     </image:image>
   </url>

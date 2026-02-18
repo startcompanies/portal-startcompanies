@@ -19,6 +19,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
 import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { BlogAuthorCardComponent } from '../../../../shared/components/blog-author-card/blog-author-card.component';
+import { BlogPostHeroComponent } from '../../../../shared/components/blog-post-hero/blog-post-hero.component';
+import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonial-avatars';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -31,6 +34,8 @@ import { BrowserService } from '../../../../shared/services/browser.service';
     PostContentComponent,
     ScHeaderComponent,
     LangRouterLinkDirective,
+    BlogAuthorCardComponent,
+    BlogPostHeroComponent,
   ],
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
@@ -47,8 +52,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   remainingContent = '';
   heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
+  tocOpen = true;
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
+  testimonialAvatarUrls = TESTIMONIAL_AVATAR_URLS;
 
   // Getter para acceso desde el template
   get isBrowser(): boolean {
@@ -891,6 +898,28 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     return 'Start Companies';
   }
 
+  formatPublishedDate(dateStr?: string): string {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return '';
+      return new Intl.DateTimeFormat('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).format(date);
+    } catch {
+      return '';
+    }
+  }
+
+  getAuthorDisplayName(): string {
+    const user = this.postArticle?.user;
+    if (!user) return 'Start Companies';
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+    return fullName || user.username || 'Start Companies';
+  }
+
   shareOnWhatsApp(): void {
     const win = this.browser.window;
     if (!win) return;
@@ -1002,6 +1031,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     });
   }
 
+
   /**
    * Inicializa la navegación por scroll para los enlaces del índice en posts tipo landing
    */
@@ -1033,6 +1063,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   toggleTOC(): void {
+    this.tocOpen = !this.tocOpen;
     const doc = this.browser.document;
     if (!doc) return;
 
@@ -1040,13 +1071,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     const toggleIcon = doc.getElementById('toc-toggle-icon');
 
     if (tocBody && toggleIcon) {
-      if (tocBody.style.display === 'none' || tocBody.style.display === '') {
-        tocBody.style.display = 'block';
-        toggleIcon.style.transform = 'rotate(180deg)';
-      } else {
-        tocBody.style.display = 'none';
-        toggleIcon.style.transform = 'rotate(0deg)';
-      }
+      tocBody.style.display = this.tocOpen ? 'block' : 'none';
+      toggleIcon.style.transform = this.tocOpen ? 'rotate(180deg)' : 'rotate(0deg)';
     }
   }
 

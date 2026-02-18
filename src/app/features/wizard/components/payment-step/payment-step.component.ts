@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription, firstValueFrom } from 'rxjs';
@@ -9,6 +8,7 @@ import { StripeService } from '../../services/stripe.service';
 import { HttpClient } from '@angular/common/http';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
 import { WizardPlansService } from '../../services/wizard-plans.service';
+import { environment } from '../../../../../environments/environment';
 
 /**
  * Componente reutilizable para el paso de pago
@@ -23,7 +23,7 @@ import { WizardPlansService } from '../../services/wizard-plans.service';
 @Component({
   selector: 'app-wizard-payment-step',
   standalone: true,
-  imports: [SharedModule, TranslocoPipe, ReactiveFormsModule, StripePaymentFormComponent],
+  imports: [SharedModule, ReactiveFormsModule, StripePaymentFormComponent],
   templateUrl: './payment-step.component.html',
   styleUrls: ['./payment-step.component.css'],
 
@@ -48,7 +48,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   stripeProcessing = false;
   stripePaymentProcessed = false;
   stripePaymentToken: string | null = null;
-  
+
+  // Transferencia bancaria
+  selectedPaymentProofFile: File | null = null;
+  isUploadingPaymentProof = false;
+  paymentProofUploadProgress = 0;
+  transferenciaProcessed = false;
+
   // Mensaje de error/éxito para mostrar en UI
   errorMessage: string | null = null;
   successMessage: string | null = null;
@@ -64,18 +70,10 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     private wizardPlansService: WizardPlansService,
     private http: HttpClient
   ) {
-    // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
-
-    /**
-     * CAMPOS OPCIONALES - Se puede navegar sin completar el pago
-     * - paymentMethod: Método de pago seleccionado (opcional)
-     * 
-     * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
-     * El usuario puede avanzar sin completar el pago de Stripe.
-     */
     this.form = new FormGroup({
-      paymentMethod: new FormControl(savedData.paymentMethod || ''),
+      paymentMethod: new FormControl(savedData.paymentMethod || 'stripe'),
+      paymentProofUrl: new FormControl(savedData.paymentProofUrl || ''),
     });
   }
 
@@ -115,10 +113,16 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.form.patchValue(savedData);
+      this.form.patchValue({
+        paymentMethod: savedData.paymentMethod || 'stripe',
+        paymentProofUrl: savedData.paymentProofUrl || '',
+      });
       if (savedData.stripePaymentProcessed) {
         this.stripePaymentProcessed = savedData.stripePaymentProcessed;
         this.stripePaymentToken = savedData.stripePaymentToken;
+      }
+      if (savedData.transferenciaProcessed) {
+        this.transferenciaProcessed = true;
       }
     }
 
@@ -201,14 +205,15 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         return false;
       }
 
-      // 3. Construir el payload según el tipo de servicio
+      // 3. Construir el payload según el tipo de servicio.
+      // currentStep: paso siguiente al pago (ya se completó el pago), para que al recargar/panel se abra en el formulario de info.
       const requestData: any = {
         type: serviceType,
-        currentStepNumber: 1, // Paso inicial, se actualizará después
-        currentStep: this.stepNumber,
+        currentStepNumber: 1,
+        currentStep: this.stepNumber + 1,
         status: 'pendiente',
         notes: '',
-        stripeToken: this.stripePaymentToken,
+        stripeToken: this.stripePaymentToken || '',
         paymentAmount: this.totalAmount,
         paymentMethod: 'stripe',
         clientData: {
@@ -228,7 +233,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         };
       } else if (serviceType === 'renovacion-llc') {
         requestData.renovacionLlcData = {
-          state: step2Data.state || ''
+          state: step2Data.state || '',
+          llcType: step2Data.llcType || ''
         };
       } else if (serviceType === 'cuenta-bancaria') {
         requestData.cuentaBancariaData = {};
@@ -304,10 +310,121 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       amount: this.totalAmount,
       stripePaymentProcessed: this.stripePaymentProcessed,
       stripePaymentToken: this.stripePaymentToken,
+      transferenciaProcessed: this.transferenciaProcessed,
       packId: this.packId,
       priceId: this.priceId,
       state: this.state
     };
     this.wizardStateService.setStepData(this.stepNumber, dataToSave);
+  }
+
+  onPaymentProofFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.selectedPaymentProofFile = file;
+      this.errorMessage = null;
+      this.uploadPaymentProof();
+    }
+  }
+
+  clearPaymentProofFile(): void {
+    this.selectedPaymentProofFile = null;
+    this.form.patchValue({ paymentProofUrl: '' });
+    this.errorMessage = null;
+  }
+
+  async uploadPaymentProof(): Promise<void> {
+    if (!this.selectedPaymentProofFile) return;
+    this.isUploadingPaymentProof = true;
+    this.paymentProofUploadProgress = 0;
+    this.errorMessage = null;
+    const serviceType = this.wizardStateService.getServiceType() || 'apertura-llc';
+    try {
+      const formData = new FormData();
+      formData.append('file', this.selectedPaymentProofFile);
+      formData.append('servicio', serviceType);
+      const response = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+      if (response?.url) {
+        this.form.patchValue({ paymentProofUrl: response.url });
+        this.selectedPaymentProofFile = null;
+      }
+    } catch (error: any) {
+      this.errorMessage = error?.error?.message || 'Error al subir el comprobante';
+      this.paymentError.emit(this.errorMessage);
+    } finally {
+      this.isUploadingPaymentProof = false;
+      this.paymentProofUploadProgress = 0;
+    }
+  }
+
+  async processTransferenciaPayment(): Promise<void> {
+    const proofUrl = this.form.get('paymentProofUrl')?.value;
+    if (!proofUrl || this.totalAmount <= 0) {
+      this.errorMessage = 'Sube el comprobante de transferencia antes de continuar.';
+      return;
+    }
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = 'Debes verificar tu email antes de continuar.';
+      this.paymentError.emit(this.errorMessage);
+      return;
+    }
+    this.errorMessage = null;
+    const serviceType = this.wizardStateService.getServiceType();
+    if (!serviceType) {
+      this.errorMessage = 'Tipo de servicio no definido';
+      return;
+    }
+    const allData = this.wizardStateService.getAllData();
+    const step1Data = allData.step1 || {};
+    const step2Data = allData.step2 || {};
+    const user = this.wizardApiService.getUser();
+    if (!user) {
+      this.errorMessage = 'Error de autenticación';
+      return;
+    }
+    // currentStep: paso siguiente al pago (ya se completó), para que al recargar/panel se abra en el formulario de info.
+    const requestData: any = {
+      type: serviceType,
+      currentStepNumber: 1,
+      currentStep: this.stepNumber + 1,
+      status: 'pendiente',
+      notes: '',
+      stripeToken: '',
+      paymentAmount: this.totalAmount,
+      paymentMethod: 'transferencia',
+      paymentProofUrl: proofUrl,
+      clientData: {
+        firstName: step1Data.firstName || user.firstName || '',
+        lastName: step1Data.lastName || user.lastName || '',
+        email: step1Data.email || user.email,
+        phone: step1Data.phone || user.phone || '',
+        password: step1Data.password || ''
+      }
+    };
+    if (serviceType === 'apertura-llc') {
+      requestData.aperturaLlcData = { incorporationState: step2Data.state || '', plan: step2Data.plan || '' };
+    } else if (serviceType === 'renovacion-llc') {
+      requestData.renovacionLlcData = { state: step2Data.state || '', llcType: step2Data.llcType || '' };
+    } else if (serviceType === 'cuenta-bancaria') {
+      requestData.cuentaBancariaData = {};
+    }
+    try {
+      const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
+      if (response?.id) {
+        this.wizardStateService.setRequestId(response.id);
+        this.transferenciaProcessed = true;
+        this.saveStepData();
+        this.paymentAndRequestCreated.emit({ requestId: response.id, paymentInfo: { method: 'transferencia', amount: this.totalAmount } });
+      }
+    } catch (error: any) {
+      this.errorMessage = error?.error?.message || 'Error al crear la solicitud';
+      this.paymentError.emit(this.errorMessage);
+    }
   }
 }

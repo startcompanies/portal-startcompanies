@@ -3,16 +3,22 @@
     <!-- Selección de Plan -->
     <div class="form-group mb-4">
       <label for="plan">Plan <span class="text-danger">*</span></label>
-      <div class="row g-3">
-        <div class="col-md-4" *ngFor="let plan of planes">
-          <div class="plan-card" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
-            <div class="plan-header">
+      <div class="plan-cards-list">
+        <div class="plan-card" *ngFor="let plan of planes" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
+          <div class="plan-card__main">
+            <div class="plan-name-block">
+              <span class="plan-name">{{ plan.label }}</span>
               <span class="recommended-badge" *ngIf="plan.recommended">Recomendado</span>
-              <h5 class="plan-name">{{ plan.label }}</h5>
-              <div class="plan-price">${{ plan.price }}</div>
             </div>
-            <p class="plan-description small">{{ plan.description }}</p>
-            <p class="plan-subtitle small text-muted">{{ plan.subtitle }}</p>
+            <span class="plan-price">${{ plan.price }}</span>
+            <span
+              class="plan-info-icon"
+              [attr.title]="getPlanTooltip(plan)"
+              (click)="$event.stopPropagation()"
+              aria-label="Más información del plan"
+            >
+              <i class="bi bi-info-circle"></i>
+            </span>
           </div>
         </div>
       </div>
@@ -66,8 +72,8 @@
         </div>
       </div>
       
-      <!-- Selector de otros estados (filtrado según plan seleccionado) -->
-      <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length !== 1">
+      <!-- Selector de otros estados (solo cuando el plan permite cualquier estado, p. ej. Elite) -->
+      <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length === 0">
         Otros estados
       </label>
       <select 
@@ -75,7 +81,7 @@
         class="form-control" 
         formControlName="state" 
         (change)="changeState()"
-        *ngIf="selectedPlan && getSelectedPlanStates().length !== 1"
+        *ngIf="selectedPlan && getSelectedPlanStates().length === 0"
       >
         <option value="">Selecciona un estado...</option>
         <option *ngFor="let state of getAvailableStates()" [value]="state.value">
@@ -93,9 +99,5 @@
       </small>
     </div>
     
-    <!-- Mostrar monto calculado -->
-    <div *ngIf="calculatedAmount > 0" class="alert alert-info">
-      <strong>Monto estimado:</strong> ${{ calculatedAmount }} USD
-    </div>
   </form>
 </div>

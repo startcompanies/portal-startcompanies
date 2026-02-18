@@ -356,14 +356,14 @@
           <button 
             type="button" 
             class="btn btn-success btn-lg"
-            [disabled]="!form.valid || isSubmitting"
+            [disabled]="!form.valid || isSubmitting || submittingLocal"
             (click)="onSubmit()"
           >
-            <span *ngIf="!isSubmitting">
+            <span *ngIf="!isSubmitting && !submittingLocal">
               <i class="bi bi-check-circle me-2"></i>
               Enviar Solicitud
             </span>
-            <span *ngIf="isSubmitting">
+            <span *ngIf="isSubmitting || submittingLocal">
               <span class="spinner-border spinner-border-sm me-2"></span>
               Enviando...
             </span>

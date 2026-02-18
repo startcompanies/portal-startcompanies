@@ -9,27 +9,27 @@
   },
   "SEO": {
     "home": {
-      "title": "Start Companies LLC - US Bank Account Opening Services",
+      "title": "Start Companies - US Bank Account Opening Services",
       "description": "We open bank accounts for LLCs in the United States. 100% online service, no fees and with guarantee. Step-by-step support.",
       "keywords": "LLC United States, US bank account, bank account opening, Relay, Start Companies, financial services"
     },
     "nosotros": {
-      "title": "About Us - Start Companies LLC | Financial Services Experience",
+      "title": "About Us - Start Companies | Financial Services Experience",
       "description": "Meet our team and experience in financial services for LLCs in the United States. More than 200 entrepreneurs trust us.",
       "keywords": "Start Companies team, financial services experience, about us, entrepreneur trust"
     },
     "contacto": {
-      "title": "Contact - Start Companies LLC | Talk to Our Experts",
+      "title": "Contact - Start Companies | Talk to Our Experts",
       "description": "Contact our experts in financial services for LLCs in the United States. Personalized support and quick response.",
       "keywords": "Start Companies contact, LLC support, financial services experts, bank account help"
     },
     "planes": {
-      "title": "Plans and Pricing - Start Companies LLC | US LLC Services",
+      "title": "Plans and Pricing - Start Companies | US LLC Services",
       "description": "Discover our plans for LLC formation and bank accounts in the United States. Transparent pricing and complete services.",
       "keywords": "US LLC plans, bank account pricing, Start Companies services, LLC formation USA"
     },
     "blog": {
-      "title": "Blog - Start Companies LLC | News and Tips for US LLCs",
+      "title": "Blog - Start Companies | News and Tips for US LLCs",
       "description": "Stay informed about LLCs, bank accounts and financial services in the United States. Tips and industry news.",
       "keywords": "US LLC blog, bank account tips, financial news, Start Companies blog"
     }
@@ -350,7 +350,13 @@
     "help_subtitle": "We simplify the management of your company abroad",
     "your_questions": "Do you have questions?",
     "categories": "Categories",
-    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors"
+    "solve_your_doubts": "Solve your doubts with a free consultation with our team of advisors",
+    "search_placeholder": "Search articles",
+    "search_clear": "Clear",
+    "search_no_results": "We couldn't find articles matching your search.",
+    "all_posts": "All posts",
+    "category": "Category",
+    "category_title_prefix": "Posts in"
   },
   "LLC": {
     "heroSection": {

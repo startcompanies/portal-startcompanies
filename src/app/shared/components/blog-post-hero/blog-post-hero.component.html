@@ -1,0 +1,87 @@
+<section *ngIf="postArticle" class="mb-5 sc-hero landing-hero-section">
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
+  </app-responsive-image>
+
+  <div class="container position-relative">
+    <div class="mission-card row align-items-center my-5 g-5">
+      <div class="col-lg-6 mt-0">
+        <div class="mission-image-container">
+          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title"
+            class="mission-image img-fluid" />
+        </div>
+      </div>
+      <div class="col-lg-6 mt-0">
+        <div class="mission-content">
+          <h1 class="mission-title">{{ postArticle.title }}</h1>
+
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <i class="bi bi-calendar-event"></i>
+              <span>{{ formattedDate }}</span>
+            </div>
+            <div class="hero-meta-item hero-meta-author">
+              <ng-container *ngIf="postArticle?.user?.profile_image; else defaultAuthorIcon">
+                <img [src]="postArticle.user.profile_image" alt="Autor" />
+              </ng-container>
+              <ng-template #defaultAuthorIcon>
+                <i class="bi bi-person-circle"></i>
+              </ng-template>
+              <!-- Evitamos autor dinamico -->
+              <!-- <span>Por {{ authorName }}</span> -->
+              <span>Por Ignacio Navarro</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            <a data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+              data-cal-config='{"layout":"month_view","theme":"light"}' class="hero-cta-btn is-primary">
+              Abrir tu LLC <i class="bi bi-arrow-right"></i>
+            </a>
+            <a [langRouterLink]="['/planes']" class="hero-cta-btn is-secondary">
+              Ver planes <i class="bi bi-arrow-right"></i>
+            </a>
+          </div>
+          <div class="hero-rating">
+            <div class="hero-avatars">
+              <img
+                *ngFor="let url of avatarUrls; let i = index"
+                class="hero-avatar"
+                [src]="url"
+                [alt]="'Testimonial ' + (i + 1)"
+              />
+            </div>
+            <div class="hero-rating-text">
+              <span class="hero-rating-count">+300 LLC abiertas</span>
+              <div class="hero-rating-stars">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <span class="hero-rating-score">4.8/5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="social-share-buttons">
+      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareWhatsApp.emit()"
+        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+      </button>
+      <button type="button" class="social-share-btn linkedin-btn" (click)="shareLinkedIn.emit()"
+        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
+        <i class="bi bi-linkedin"></i>
+      </button>
+      <button type="button" class="social-share-btn facebook-btn" (click)="shareFacebook.emit()"
+        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
+        <i class="bi bi-facebook"></i>
+      </button>
+      <button type="button" class="social-share-btn share-btn" (click)="shareNative.emit()"
+        [attr.aria-label]="'Compartir'" title="Compartir">
+        <i class="bi bi-share"></i>
+      </button>
+    </div>
+  </div>
+</section>

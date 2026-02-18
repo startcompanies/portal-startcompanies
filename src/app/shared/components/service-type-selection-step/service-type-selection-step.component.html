@@ -1,0 +1,33 @@
+<div class="service-type-selection-step">
+  <h3>Selecciona el Tipo de Servicio</h3>
+  
+  <form [formGroup]="form">
+    <div class="service-types-grid">
+      <div 
+        *ngFor="let service of serviceTypes" 
+        class="service-type-card"
+        [class.selected]="selectedServiceType === service.value"
+        (click)="selectServiceType(service.value)"
+      >
+        <input
+          type="radio"
+          [id]="'service-' + service.value"
+          [value]="service.value"
+          formControlName="serviceType"
+          class="service-radio"
+        />
+        <label [for]="'service-' + service.value" class="service-label">
+          <h4>{{ service.label }}</h4>
+          <p>{{ service.description }}</p>
+        </label>
+      </div>
+    </div>
+    
+    <div 
+      *ngIf="serviceType?.touched && serviceType?.invalid" 
+      class="text-danger mt-3"
+    >
+      Por favor selecciona un tipo de servicio
+    </div>
+  </form>
+</div>

@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { BrowserService } from './browser.service';
+import { environment } from '../../../environments/environment';
 
 export interface SeoData {
   title: string;
@@ -27,7 +29,8 @@ export class SeoService {
   constructor(
     private meta: Meta,
     private title: Title,
-    private browser: BrowserService
+    private browser: BrowserService,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
   /**
@@ -60,7 +63,10 @@ export class SeoService {
     this.meta.updateTag({ name: 'twitter:card', content: data.twitterCard || 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: data.twitterTitle || data.title });
     this.meta.updateTag({ name: 'twitter:description', content: data.twitterDescription || data.description });
-    this.meta.updateTag({ name: 'twitter:image', content: data.twitterImage || 'https://startcompanies.us/assets/logo.png' });
+    this.meta.updateTag({
+      name: 'twitter:image',
+      content: data.twitterImage || `${environment.baseUrl.replace(/\/$/, '')}/assets/logo-dark.webp`,
+    });
     
     // Twitter Site (nuevo)
     if (data.twitterSite) {
@@ -69,7 +75,7 @@ export class SeoService {
 
     // Canonical URL
     if (data.canonical) {
-      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
+      this.updateCanonicalLink(data.canonical);
     }
   }
 
@@ -122,7 +128,7 @@ export class SeoService {
     this.meta.removeTag('name="twitter:site"');
 
     // Limpiar canonical URL
-    this.meta.removeTag('rel="canonical"');
+    this.removeCanonicalLink();
   }
 
   /**
@@ -147,5 +153,25 @@ export class SeoService {
     const title = this.getCurrentTitle();
     const description = this.getCurrentDescription();
     return title.length > 0 && description.length > 0;
+  }
+
+  private updateCanonicalLink(url: string): void {
+    const canonicalSelector = 'link[rel="canonical"]';
+    let canonicalLink = this.document.querySelector(
+      canonicalSelector
+    ) as HTMLLinkElement | null;
+
+    if (!canonicalLink) {
+      canonicalLink = this.document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(canonicalLink);
+    }
+
+    canonicalLink.setAttribute('href', url);
+  }
+
+  private removeCanonicalLink(): void {
+    const canonicalLink = this.document.querySelector('link[rel="canonical"]');
+    canonicalLink?.parentNode?.removeChild(canonicalLink);
   }
 }

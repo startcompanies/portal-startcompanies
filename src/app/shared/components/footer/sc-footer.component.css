@@ -1,6 +1,6 @@
 /* Footer */
 .footer {
-    background-color: #293b49;
+    background-color: var(--color-oscuro-tecnico);
     /* Fondo gris azulado oscuro */
     color: #ffffff;
     /* Color de texto general blanco */
@@ -109,7 +109,7 @@
 }
 
 .footer-links a:hover {
-    color: #02cae3;
+    color: #006afe;
     /* Azul/cian al hover */
 }
 
@@ -152,8 +152,9 @@
     /* Centra los ítems de contacto en móvil */
     cursor: pointer;
 }
-.contact-item:hover{
-    color: #02cae3;
+
+.contact-item:hover {
+    color: #006afe;
 }
 
 /* Alinea los ítems de contacto a la izquierda en desktop */
@@ -211,7 +212,7 @@
 }
 
 .footer-language-selector .dropdown-menu {
-    background-color: #293b49;
+    background-color: var(--color-oscuro-tecnico);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.5rem;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -226,12 +227,12 @@
 
 .footer-language-selector .dropdown-item:hover {
     background-color: rgba(255, 255, 255, 0.1);
-    color: #02cae3;
+    color: #006afe;
 }
 
 .footer-language-selector .dropdown-item:active {
     background-color: rgba(255, 255, 255, 0.2);
-    color: #02cae3;
+    color: #006afe;
 }
 
 /* Alinea el texto del footer-bottom a la izquierda en desktop */

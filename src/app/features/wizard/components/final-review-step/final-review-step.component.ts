@@ -36,7 +36,9 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   
   form!: FormGroup;
   private formSubscription?: Subscription;
-  
+  /** Estado local al hacer clic en Enviar para mostrar "Enviando..." de inmediato */
+  submittingLocal = false;
+
   // Datos organizados para mostrar
   registrationData: any = {};
   statePlanData: any = {};
@@ -62,7 +64,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
     this.form.markAllAsTouched();
     
     if (this.form.valid) {
-      // Emitir evento con los datos del formulario (incluyendo la firma)
+      this.submittingLocal = true; // Feedback visual inmediato: "Enviando..."
       const signature = this.form.get('signature')?.value || null;
       this.submitRequest.emit({ signature });
     }

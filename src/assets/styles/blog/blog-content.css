@@ -6,10 +6,9 @@
 /* ============================================================================
    ESTILOS DE ENLACES - Sin azul ni subrayado
    ============================================================================ */
-.app-post-content a:not(.btn):not(.btn-cta):not(.abre-corp-btn):not(.costos-florida-btn):not(.ayuda-profesional-btn):not(.veredicto-btn):not(.states-card-link):not(.btn-linkedin-profile):not(.btn-linkedin-autor):not([class*="btn-"]):not([class*="social"]):not([class*="share"]):not([data-cal-link]) {
-  color: inherit;
-  text-decoration: none;
-  border-bottom: none;
+.main-post {
+  flex: 1 1 70%;
+  overflow: hidden;
 }
 
 /* ============================================================================
@@ -57,7 +56,7 @@
    SECCIONES Y CONTENEDORES
    ============================================================================ */
 .app-post-content section {
-  color: #293B49;
+  color: var(--color-oscuro-tecnico);
 }
 
 .app-post-content>div:not(.states-card):not(.abre-corp-card):not(.ayuda-profesional-card):not(.costos-florida-card):not(.preguntas-frecuentes-card):not(.renovar-llc-card):not(.veredicto-card):not(.author-info-card):not(.card-autor):not(.post-cta-card):not(.open-llc-card):not([class*="btn"]):not([class*="card"]):not([class*="table"]):not([class*="row"]):not([class*="col"]) {
@@ -99,6 +98,162 @@
 
 .app-post-content :is(h1, h2, h3, h4, h5, h6) {
   font-weight: 700;
+}
+
+/* ============================================================================
+   MID POST CTA CARD
+   ============================================================================ */
+.app-post-content .mid-post-cta {
+  margin: 3rem 0;
+}
+
+.app-post-content .mid-post-cta-inner {
+  background: #2c3e4d;
+  border-radius: 2rem;
+  padding: 2.5rem;
+  text-align: center;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-title {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-subtitle {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0.25rem 0 1rem;
+  color: var(--color-secundario-tecnico);
+}
+
+.app-post-content .mid-post-cta .mid-post-cta-inner .mid-post-cta-text {
+  color: var(--color-fondo-claro);
+  font-size: 1rem;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.app-post-content .mid-post-cta-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+}
+
+.app-post-content .mid-post-cta-list li {
+  margin-bottom: 0.5rem;
+}
+
+.app-post-content .mid-post-cta-list li::before {
+  content: "•";
+  margin-right: 0.6rem;
+}
+
+.app-post-content .mid-post-cta-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.app-post-content .mid-post-cta-btn {
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-post-content .mid-post-cta-btn.is-primary {
+  background: #ffffff;
+  color: #2c3e4d;
+}
+
+.app-post-content .mid-post-cta-btn.is-secondary {
+  background: transparent;
+  color: var(--color-fondo-claro);
+  border: 2px solid #fff !important;
+}
+
+.app-post-content .mid-post-cta-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.app-post-content .mid-post-cta-avatars {
+  display: flex;
+  align-items: center;
+}
+
+.app-post-content .mid-post-cta-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #cfd8df;
+  color: #2c3e4d;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 2px solid #2c3e4d;
+  margin-left: -10px;
+  object-fit: cover;
+}
+
+.app-post-content .mid-post-cta-avatar:first-child {
+  margin-left: 0;
+}
+
+.app-post-content .mid-post-cta-rating {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.app-post-content .mid-post-cta-count {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-fondo-claro);
+}
+
+.app-post-content .mid-post-cta-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #f5c518;
+  font-size: 0.85rem;
+}
+
+.app-post-content .mid-post-cta-score {
+  color: var(--color-fondo-claro);
+  font-weight: 300;
+  margin-left: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .app-post-content .mid-post-cta-inner {
+    padding: 2rem 1.5rem;
+  }
+
+  .app-post-content .mid-post-cta-actions {
+    flex-direction: column;
+  }
+
+  .app-post-content .mid-post-cta-rating {
+    align-items: center;
+  }
 }
 
 /* ============================================================================
@@ -148,8 +303,8 @@ section[style*="background-image"] [class*="col-"]:has(img) {
   padding: 2rem 1.5rem;
 }
 
-.app-post-content section[style*="background-image"] [class*="col-"] img,
-section[style*="background-image"] [class*="col-"] img {
+.app-post-content section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] [class*="col-"] img:not(.mid-post-cta-avatar) {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -185,8 +340,8 @@ section[style*="background-image"] h6 {
   margin-bottom: 1rem;
 }
 
-.app-post-content section[style*="background-image"] img,
-section[style*="background-image"] img {
+.app-post-content section[style*="background-image"] img:not(.mid-post-cta-avatar),
+section[style*="background-image"] img:not(.mid-post-cta-avatar) {
   display: block;
   width: 100%;
   max-width: 100%;
@@ -234,7 +389,7 @@ section[style*="background-image"] a {
 
 .app-post-content .table-custom-container .table-custom thead tr,
 .app-post-content .table-responsive.table-custom-container .table-custom thead tr {
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   color: #FFFFFF;
 }
 
@@ -247,7 +402,7 @@ section[style*="background-image"] a {
   border-top: none;
   vertical-align: middle;
   font-size: 1rem;
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
   color: #FFFFFF;
 }
 
@@ -256,7 +411,7 @@ section[style*="background-image"] a {
   border-left: none;
   text-align: left;
   padding-left: 1.5rem;
-  background-color: #293B49;
+  background-color: var(--color-oscuro-tecnico);
 }
 
 .app-post-content .table-custom-container .table-custom thead th:last-child,
@@ -312,7 +467,7 @@ section[style*="background-image"] a {
 }
 
 .sobre-autores-title span {
-  color: #02CAE3;
+  color: #006afe;
 }
 
 /* ============================================================================
@@ -334,7 +489,7 @@ section[style*="background-image"] a {
    BOTONES ESPECIALES
    ============================================================================ */
 a.btn-descarga-template {
-  background-color: #00bcd4;
+  background-color: var(--color-secundario-tecnico);
   border: none;
   font-size: 1rem;
   padding: 0.45rem 1.5rem;
@@ -377,4 +532,12 @@ a.btn-descarga-template {
   padding: 20px;
   font-family: Arial, sans-serif;
   line-height: 1.6;
+}
+
+/* ============================================================================
+   BLOG RELATED POSTS
+   ============================================================================ */
+
+.blog-section.blog-related {
+  background-color: #E6EFFF !important;
 }

@@ -40,7 +40,7 @@
 .sc-timeline-line {
     position: absolute;
     width: 3px;
-    background-color: #00B8D9;
+    background-color: var(--color-secundario-tecnico);
     left: 50%;
     transform: translateX(-50%);
     top: 0;
@@ -54,7 +54,7 @@
     position: relative;
     width: 20px;
     height: 20px;
-    background-color: #00B8D9;
+    background-color: var(--color-secundario-tecnico);
     border-radius: 50%;
     z-index: 1;
 }
@@ -74,7 +74,7 @@
 
 .sc-timeline-card {
     background-color: #ffffff;
-    border: 2px solid #00B8D9;
+    border: 2px solid var(--color-secundario-tecnico);
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
@@ -98,18 +98,18 @@
 
 .sc-timeline-card h3 {
     font-size: 1.25rem;
-    color: #293B49;
+    color: var(--color-oscuro-tecnico);
     margin-bottom: 0.5rem;
 }
 
 .sc-timeline-card p {
     font-size: 0.95rem;
-    color: #293B49;
+    color: var(--color-oscuro-tecnico);
     line-height: 1.6;
 }
 
 .sc-text-blue-accent {
-    color: #00B8D9;
+    color: var(--color-secundario-tecnico);
 }
 
 /* =========================
@@ -164,8 +164,8 @@
 }
 
 .opening-llc-carousel-indicators button.active {
-    background-color: #00B8D9;
-    border-color: #00B8D9;
+    background-color: var(--color-secundario-tecnico);
+    border-color: var(--color-secundario-tecnico);
     transform: scale(1.2);
 }
 

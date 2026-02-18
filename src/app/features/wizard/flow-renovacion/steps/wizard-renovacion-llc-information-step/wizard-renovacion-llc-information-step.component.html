@@ -7,7 +7,7 @@
   
   <!-- Usar el componente wizard-renovacion-llc-form -->
   <div class="llc-form-container">
-    <app-wizard-renovacion-llc-form
+    <app-renovacion-llc-form
       [serviceDataForm]="serviceDataForm"
       [usStates]="usStates"
       [llcTypes]="llcTypes"
@@ -17,11 +17,11 @@
       (fileCleared)="onFileCleared($event)"
       (addOwnerRequested)="onAddOwnerRequested()"
       (removeOwnerRequested)="onRemoveOwnerRequested($event)"
-    ></app-wizard-renovacion-llc-form>
+    ></app-renovacion-llc-form>
   </div>
   
-  <!-- Navegación entre secciones del formulario (solo para secciones que no sean la última) -->
-  <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top" *ngIf="currentSection < totalSections">
+  <!-- Navegación entre secciones (en la última: Siguiente va aquí mismo, mismo diseño que Siguiente Sección) -->
+  <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
     <button 
       type="button" 
       class="btn btn-outline-secondary"
@@ -42,6 +42,16 @@
       *ngIf="currentSection < totalSections"
     >
       Siguiente Sección
+      <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-primary"
+      (click)="nextStepRequested.emit()"
+      [disabled]="!isSectionValid()"
+      *ngIf="currentSection === totalSections"
+    >
+      Siguiente
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
   </div>

@@ -59,7 +59,9 @@ export class RequestDetailComponent implements OnInit {
   isPartner = false;
   isAdmin = false;
   loadError: string | null = null;
-  
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
+
   // Modal para mostrar todos los datos
   showAllDataModal = false;
   
@@ -1131,6 +1133,14 @@ export class RequestDetailComponent implements OnInit {
       return blueprintStages.includes(stageName) || specialStages.includes(stageName);
     }
     return false;
+  }
+
+  /**
+   * Indica si se debe mostrar el iframe/enlace de WorkDrive (cuando hay URL y el proceso ya no está en solicitud-recibida).
+   */
+  canShowWorkDriveIframe(): boolean {
+    if (!this.request?.workDriveUrlExternal?.trim()) return false;
+    return this.request.status !== 'solicitud-recibida';
   }
 
   /**

@@ -38,6 +38,24 @@ export function app(): express.Express {
       : 'https://startcompanies.us';
   };
 
+  // Helper para obtener la URL de la API según el host (staging vs producción)
+  // Así posts.xml usa la API correcta aunque no se defina API_URL en el despliegue
+  const getApiUrl = (req: express.Request): string => {
+    const fromEnv = process.env['API_URL'] || process.env['NX_API_URL'];
+    if (fromEnv && fromEnv.trim()) {
+      return fromEnv.replace(/\/+$/, '');
+    }
+    const host = (req.get('host') || req.headers.host || '').toLowerCase();
+    // Staging: staging.startcompanies.io -> api-web.startcompanies.io
+    if (host.includes('staging.startcompanies.io')) {
+      return 'https://api-web.startcompanies.io';
+    }
+    if (host.includes('startcompanies.io')) {
+      return 'https://api-web.startcompanies.io';
+    }
+    return 'https://api-web.startcompanies.us';
+  };
+
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
 
@@ -172,33 +190,30 @@ export function app(): express.Express {
   server.get('/posts.xml', async (req, res) => {
     try {
       const baseUrl = getBaseUrl(req);
-      // Obtener URL de API desde variables de entorno o usar valor por defecto.
-      // IMPORTANTE: no forzar /api aquí. Si tu reverse-proxy usa /api, configura API_URL con ese sufijo.
-      const apiUrlRaw =
-        process.env['API_URL'] ||
-        process.env['NX_API_URL'] ||
-        'https://api-web.startcompanies.us';
-      const apiEndpoint = apiUrlRaw.replace(/\/+$/, '');
-      
-      // Obtener posts desde la API
+      const apiEndpoint = getApiUrl(req);
+
+      // Obtener posts desde la API (get-from-portal devuelve solo publicados)
       let posts: any[] = [];
       try {
         const response = await fetch(`${apiEndpoint}/blog/posts/get-from-portal`);
         if (response.ok) {
           posts = await response.json();
         } else {
-          console.warn('API no disponible, generando sitemap vacío de posts');
+          console.warn(`[posts.xml] API no disponible (${response.status} ${response.statusText}), generando sitemap vacío. URL: ${apiEndpoint}/blog/posts/get-from-portal`);
         }
-      } catch (fetchError) {
-        console.warn('Error fetching posts from API:', fetchError);
+      } catch (fetchError: any) {
+        console.warn('[posts.xml] Error fetching posts from API:', fetchError?.message || fetchError, 'URL:', `${apiEndpoint}/blog/posts/get-from-portal`);
         // Continuar con array vacío si falla la API
       }
       
-      // Filtrar solo posts publicados
-      const publishedPosts = Array.isArray(posts) 
-        ? posts.filter(post => post && post.is_published) 
-        : [];
-      
+      // La API get-from-portal ya devuelve solo posts publicados (is_published: true)
+      const postsList = Array.isArray(posts) ? posts : [];
+      const publishedPosts = postsList.filter(post => post && post.slug);
+
+      if (publishedPosts.length === 0 && (process.env['NODE_ENV'] !== 'production' || (req.get('host') || '').includes('staging'))) {
+        console.warn('[posts.xml] No se obtuvieron posts. Comprueba que la API esté levantada y que existan posts publicados. API usada:', apiEndpoint);
+      }
+
       // Generar entradas de URL para cada post
       const postEntries = publishedPosts.map(post => {
         const url = `${baseUrl}/blog/post/${post.slug}`;
@@ -245,8 +260,8 @@ export function app(): express.Express {
     <loc>${baseUrl}/</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/logo-dark-desktop.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Principal</image:title>
-      <image:caption>Logo oficial de Start Companies LLC, empresa especializada en servicios financieros para LLC en Estados Unidos</image:caption>
+      <image:title>Start Companies - Logo Principal</image:title>
+      <image:caption>Logo oficial de Start Companies, empresa especializada en servicios financieros para LLC en Estados Unidos</image:caption>
       <image:license>${baseUrl}/</image:license>
     </image:image>
   </url>
@@ -256,7 +271,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/logo-dark-mobile.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Mobile</image:title>
+      <image:title>Start Companies - Logo Mobile</image:title>
       <image:caption>Logo optimizado para dispositivos móviles</image:caption>
     </image:image>
   </url>
@@ -266,7 +281,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/logo-dark-tablet.webp</image:loc>
-      <image:title>Start Companies LLC - Logo Tablet</image:title>
+      <image:title>Start Companies - Logo Tablet</image:title>
       <image:caption>Logo optimizado para tablets</image:caption>
     </image:image>
   </url>
@@ -276,7 +291,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/hero-bg-desktop.webp</image:loc>
-      <image:title>Hero Background - Start Companies LLC</image:title>
+      <image:title>Hero Background - Start Companies</image:title>
       <image:caption>Imagen de fondo principal del sitio web</image:caption>
     </image:image>
   </url>
@@ -343,7 +358,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/blog</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/blog/article.webp</image:loc>
-      <image:title>Blog - Start Companies LLC</image:title>
+      <image:title>Blog - Start Companies</image:title>
       <image:caption>Imagen representativa de nuestro blog con consejos y noticias</image:caption>
     </image:image>
   </url>
@@ -362,7 +377,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/nosotros</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/us/mission-person.jpg</image:loc>
-      <image:title>Equipo Start Companies LLC</image:title>
+      <image:title>Equipo Start Companies</image:title>
       <image:caption>Miembro de nuestro equipo comprometido con la excelencia</image:caption>
     </image:image>
   </url>
@@ -371,7 +386,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/nosotros</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/us/vision.webp</image:loc>
-      <image:title>Visión de Start Companies LLC</image:title>
+      <image:title>Visión de Start Companies</image:title>
       <image:caption>Representación visual de nuestra visión empresarial</image:caption>
     </image:image>
   </url>
@@ -400,7 +415,7 @@ export function app(): express.Express {
     <loc>${baseUrl}/</loc>
     <image:image>
       <image:loc>${baseUrl}/assets/fav-icon/favicon.ico</image:loc>
-      <image:title>Favicon Start Companies LLC</image:title>
+      <image:title>Favicon Start Companies</image:title>
       <image:caption>Icono oficial del sitio web</image:caption>
     </image:image>
   </url>

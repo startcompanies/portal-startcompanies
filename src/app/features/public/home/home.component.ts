@@ -2,9 +2,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Inject,
   OnDestroy,
-  PLATFORM_ID,
   ViewChild,
 } from '@angular/core';
 import { ScHeaderComponent } from '../../../shared/components/header/sc-header.component';
@@ -21,8 +19,6 @@ import { MultilingualSeoComponent } from '../../../shared/components/multilingua
 import { ResponsiveImageComponent } from '../../../shared/components/responsive-image/responsive-image.component';
 import { IMAGE_CONFIG, ImageConfig } from '../../../core/config/image-config';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
-
-declare var bootstrap: any;
 
 @Component({
   selector: 'app-home',
@@ -50,7 +46,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   pricingImages: ImageConfig = IMAGE_CONFIG['pricing']!;
 
   private scrollSubscription!: Subscription;
-  private carousel: any;
 
   constructor(
     private scrollService: ScrollService,
@@ -65,11 +60,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
       }
     );
 
-    // Inicializar el carrusel de Bootstrap
-    if (this.browser.isBrowser) {
-      this.initializeCarousel();
-    }
-
     // Si se entra directamente a /planes, hacer scroll a pricingSection
     if (this.browser.isBrowser && this.router.url === '/planes') {
       const win = this.browser.window;
@@ -82,27 +72,6 @@ export class HomeComponent implements AfterViewInit, OnDestroy {
   ngOnDestroy() {
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
-    }
-    
-    // Limpiar el carrusel
-    if (this.carousel) {
-      this.carousel.dispose();
-    }
-  }
-
-  private initializeCarousel() {
-    const doc = this.browser.document;
-    const win = this.browser.window;
-    if (!doc || !win || typeof (win as any).bootstrap === 'undefined') return;
-    
-    const carouselElement = doc.getElementById('carouselExampleIndicators');
-    if (carouselElement) {
-      this.carousel = new (win as any).bootstrap.Carousel(carouselElement, {
-        interval: 12000, // Cambiar cada 10 segundos
-        wrap: true, // Loop infinito
-        keyboard: true, // Navegación con teclado
-        pause: 'hover' // Pausar al hacer hover
-      });
     }
   }
 
