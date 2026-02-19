@@ -182,6 +182,38 @@
     height: 24px;
 }
 
+/* Flechas del carrusel en móvil (solo dentro de #blogCarouselMobile) */
+.blog-carousel-control-mobile {
+    width: 44px;
+    height: 44px;
+    background-color: rgba(0, 106, 254, 0.5);
+    border: none;
+    border-radius: 50%;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+    top: 65%;
+    transform: translateY(-50%);
+}
+
+.blog-carousel-control-mobile.carousel-control-prev {
+    left: 4px;
+}
+
+.blog-carousel-control-mobile.carousel-control-next {
+    right: 4px;
+}
+
+.blog-carousel-control-mobile:hover {
+    background-color: rgba(0, 106, 254, 0.85);
+    opacity: 1;
+}
+
+.blog-carousel-control-mobile .carousel-control-prev-icon,
+.blog-carousel-control-mobile .carousel-control-next-icon {
+    width: 20px;
+    height: 20px;
+}
+
 /* Responsive design */
 @media (max-width: 991px) {
     .blog-carousel-container {

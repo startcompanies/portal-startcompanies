@@ -3,6 +3,8 @@ export const whatsappConfig = {
   defaultMessage: 'Hola, vengo de Start Companies. Tengo algunas consultas para hacerles.',
   tooltipText: '¡Chatea con nosotros!',
   excludedRoutes: [
+    '/blog',
+    '/en/blog',
     '/abre-tu-llc',
     '/presentacion', 
     '/apertura-banco-relay',

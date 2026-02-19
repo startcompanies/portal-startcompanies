@@ -140,6 +140,14 @@
   display: none;
 }
 
+.hero-end-sentinel {
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  visibility: hidden;
+  overflow: hidden;
+}
+
 @media (max-width: 768px) {
   .mobile-fixed-cta {
     position: fixed;
@@ -150,6 +158,13 @@
     justify-content: end;
     z-index: 999;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .mobile-fixed-cta.cta-visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .mobile-fixed-cta-btn {
