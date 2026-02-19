@@ -48,7 +48,8 @@
   [formattedDate]="formatPublishedDate(postArticle.published_at)" [authorName]="getAuthorDisplayName()"
   (shareWhatsApp)="shareOnWhatsApp()" (shareLinkedIn)="shareOnLinkedIn()" (shareFacebook)="shareOnFacebook()"
   (shareNative)="shareNative()"></app-blog-post-hero>
-
+<!-- Sentinel para mostrar el CTA fijo solo después de pasar el hero (móvil) -->
+<div #heroEndSentinel *ngIf="postArticle" class="hero-end-sentinel"></div>
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
   <div class="row relative">
@@ -157,7 +158,7 @@
 <section *ngIf="postArticle">
   <app-blog-section-v2></app-blog-section-v2>
 </section>
-<div class="mobile-fixed-cta">
+<div class="mobile-fixed-cta" *ngIf="postArticle" [class.cta-visible]="showMobileCtaAfterHero">
   <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
     data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="mobile-fixed-cta-btn">
     <p>Agendá una <br /><span>asesoría gratis</span></p><i class="bi bi-arrow-right"></i>

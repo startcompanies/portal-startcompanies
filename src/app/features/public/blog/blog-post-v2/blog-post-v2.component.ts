@@ -3,7 +3,10 @@ import {
   inject,
   OnInit,
   AfterViewInit,
+  AfterViewChecked,
   SecurityContext,
+  ViewChild,
+  ElementRef,
 } from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
@@ -40,7 +43,9 @@ import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonia
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
 })
-export class BlogPostV2Component implements OnInit, AfterViewInit {
+export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChecked {
+  @ViewChild('heroEndSentinel') heroEndSentinel?: ElementRef<HTMLElement>;
+
   private blogService = inject(BlogService);
   baseUrl = environment.baseUrl;
 
@@ -56,6 +61,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
   testimonialAvatarUrls = TESTIMONIAL_AVATAR_URLS;
+  /** CTA móvil "Agendá asesoría": se muestra solo después de pasar el hero para no chocar con compartir */
+  showMobileCtaAfterHero = false;
+  private heroSentinelObserverSetup = false;
 
   // Getter para acceso desde el template
   get isBrowser(): boolean {
@@ -112,11 +120,35 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // La inicialización del TOC se hace después de cargar el post en loadPost
   }
 
+  ngAfterViewChecked(): void {
+    if (this.heroSentinelObserverSetup || !this.postArticle || !this.heroEndSentinel?.nativeElement) return;
+    this.heroSentinelObserverSetup = true;
+    this.setupCtaVisibilityObserver();
+  }
+
+  private setupCtaVisibilityObserver(): void {
+    const el = this.heroEndSentinel?.nativeElement;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        // Mostrar CTA en cuanto el final del hero se acerque al borde superior (rootMargin acorta el área visible por arriba)
+        this.showMobileCtaAfterHero = !entry.isIntersecting;
+      },
+      { threshold: 0, rootMargin: '-80px 0px 0px 0px' }
+    );
+    observer.observe(el);
+  }
+
   private async loadPost(slug: string): Promise<void> {
     // Resetear estados
     this.isLoading = true;
     this.postNotFound = false;
     this.postArticle = undefined;
+    this.showMobileCtaAfterHero = false;
+    this.heroSentinelObserverSetup = false;
 
     try {
       const response = await this.blogService.getPostsBySlug(slug);
