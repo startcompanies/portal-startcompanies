@@ -7,6 +7,7 @@ import {
   SecurityContext,
   ViewChild,
   ElementRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
@@ -100,6 +101,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
     return this.heroImages;
   }
 
+  private cdr = inject(ChangeDetectorRef);
+
   constructor(
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
@@ -134,10 +137,14 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
       (entries) => {
         const entry = entries[0];
         if (!entry) return;
-        // Mostrar CTA en cuanto el final del hero se acerque al borde superior (rootMargin acorta el área visible por arriba)
-        this.showMobileCtaAfterHero = !entry.isIntersecting;
+        // Oculto mientras el hero sea visible; mostrar solo cuando el sentinel (tras el hero) haya salido por arriba del viewport
+        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        if (this.showMobileCtaAfterHero !== show) {
+          this.showMobileCtaAfterHero = show;
+          this.cdr.markForCheck();
+        }
       },
-      { threshold: 0, rootMargin: '-80px 0px 0px 0px' }
+      { threshold: 0 }
     );
     observer.observe(el);
   }
