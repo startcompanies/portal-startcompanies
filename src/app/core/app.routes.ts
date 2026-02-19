@@ -247,13 +247,22 @@ export const routes: Routes = [
         path: 'agendar',
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
+      // Wizard en URLs de formularios (respetando apertura-llc y renovar-llc)
       {
         path: 'apertura-llc',
-        loadComponent: () => import('../features/public/forms/apertura-llc/apertura-llc.component').then(m => m.AperturaLlcComponent)
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
+        data: { serviceType: 'apertura-llc' },
       },
       {
         path: 'renovar-llc',
-        loadComponent: () => import('../features/public/forms/renovar-llc/renovar-llc.component').then(m => m.RenovarLlcComponent)
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
+        data: { serviceType: 'renovacion-llc' },
       },
       {
         path: 'form-apertura-relay',
@@ -910,14 +919,15 @@ export const routes: Routes = [
           },
         },
       },
-      /** Forms en inglés */
+      /** Wizard en URLs de formularios EN (llc-opening, llc-renewal) */
       {
         path: 'llc-opening',
         loadComponent: () =>
-          import('../features/public/forms/apertura-llc/apertura-llc.component').then(
-            (m) => m.AperturaLlcComponent
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
           ),
         data: {
+          serviceType: 'apertura-llc',
           seo: {
             title: 'LLC Opening in the United States - Start Companies',
             description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
@@ -933,10 +943,11 @@ export const routes: Routes = [
       {
         path: 'llc-renewal',
         loadComponent: () =>
-          import('../features/public/forms/renovar-llc/renovar-llc.component').then(
-            (m) => m.RenovarLlcComponent
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
           ),
         data: {
+          serviceType: 'renovacion-llc',
           seo: {
             title: 'LLC Renewal in the United States - Start Companies',
             description: 'We renew your LLC in the United States before it expires. Avoid penalties and keep your business active.',

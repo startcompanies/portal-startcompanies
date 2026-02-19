@@ -27,7 +27,7 @@ import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-
   styleUrl: './sc-header.component.css',
 })
 export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
-  @Input() hideLogin = true;
+  @Input() hideLogin = false;
 
   @ViewChild('navbar', { static: false }) navbar?: ElementRef<HTMLElement>;
 

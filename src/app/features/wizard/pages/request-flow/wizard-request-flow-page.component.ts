@@ -21,13 +21,21 @@ export class WizardRequestFlowPageComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
-    const raw = this.route.snapshot.paramMap.get('serviceType');
+    // Prioridad: data de ruta (ej. apertura-llc, renovar-llc con sus URLs) y luego param (wizard/flow/:serviceType)
+    const fromData = this.route.snapshot.data['serviceType'] as string | undefined;
+    const fromParam = this.route.snapshot.paramMap.get('serviceType');
+    const raw = fromData ?? fromParam;
+
     if (raw === 'apertura-llc' || raw === 'renovacion-llc' || raw === 'cuenta-bancaria') {
       this.serviceType = raw;
       return;
     }
+    // URL renovar-llc se mapea al serviceType renovacion-llc
+    if (raw === 'renovar-llc') {
+      this.serviceType = 'renovacion-llc';
+      return;
+    }
 
-    // fallback
     this.router.navigate(['/']);
   }
 }
