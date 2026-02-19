@@ -197,7 +197,7 @@ export const routes: Routes = [
           }
         }
       },
-      // Redirigir wizard LLC a forms (apertura-llc / renovar-llc)
+      // Redirigir wizard LLC a formularios unificados (apertura-llc / renovar-llc)
       {
         path: 'wizard/llc-apertura',
         redirectTo: 'apertura-llc',
@@ -247,7 +247,7 @@ export const routes: Routes = [
         path: 'agendar',
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
-      // Wizard en URLs de formularios (respetando apertura-llc y renovar-llc)
+      // Wizard unificado en URLs de formularios (apertura-llc, renovar-llc)
       {
         path: 'apertura-llc',
         loadComponent: () =>
@@ -919,7 +919,7 @@ export const routes: Routes = [
           },
         },
       },
-      /** Wizard en URLs de formularios EN (llc-opening, llc-renewal) */
+      /** Wizard unificado EN (llc-opening, llc-renewal) */
       {
         path: 'llc-opening',
         loadComponent: () =>

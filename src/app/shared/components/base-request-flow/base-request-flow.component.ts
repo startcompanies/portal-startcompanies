@@ -20,13 +20,14 @@ import { DraftRequestService } from '../../services/draft-request.service';
   imports: [CommonModule, FlowStepsIndicatorComponent, RouterLink],
   template: `
     <div class="base-request-flow-container">
-      <!-- Indicador de pasos -->
-      <app-flow-steps-indicator 
-        [steps]="flowSteps" 
+      <!-- Indicador de pasos (oculto cuando se usa layout con sidebar en wizard) -->
+      <app-flow-steps-indicator
+        *ngIf="!hideStepsIndicator"
+        [steps]="flowSteps"
         [currentStep]="currentStepIndex"
         [context]="context">
       </app-flow-steps-indicator>
-      
+
       <!-- Contenedor dinámico de pasos -->
       <div class="flow-content">
         <div class="step-wrapper">
@@ -90,10 +91,14 @@ import { DraftRequestService } from '../../services/draft-request.service';
 export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   @Input() context!: RequestFlowContext;
   @Input() serviceType: ServiceType | null = null; // Ahora opcional
-  
+  /** Cuando true, no se muestra el indicador de pasos (ej. layout wizard con sidebar) */
+  @Input() hideStepsIndicator = false;
+
   @Output() flowCompleted = new EventEmitter<any>();
   @Output() flowCancelled = new EventEmitter<void>();
-  @Output() serviceTypeChanged = new EventEmitter<ServiceType>(); // Nuevo output
+  @Output() serviceTypeChanged = new EventEmitter<ServiceType>();
+  /** Emite el índice del paso actual cuando cambia (para sincronizar sidebar en layout wizard) */
+  @Output() stepIndexChange = new EventEmitter<number>();
   
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
@@ -922,5 +927,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         draftRequestId: this.draftRequestId ?? state?.payment?.requestId ?? undefined,
       });
     });
+
+    this.stepIndexChange.emit(this.currentStepIndex);
   }
 }
