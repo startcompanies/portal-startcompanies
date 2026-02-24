@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
-import { WizardAperturaLlcFormComponent } from '../wizard-apertura-llc-form/wizard-apertura-llc-form.component';
+import { AperturaLlcFormComponent } from '../../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
@@ -16,7 +16,7 @@ import { environment } from '../../../../../../environments/environment';
 @Component({
   selector: 'app-wizard-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, WizardAperturaLlcFormComponent, TranslocoPipe],
+  imports: [CommonModule, ReactiveFormsModule, AperturaLlcFormComponent, TranslocoPipe],
   templateUrl: './wizard-llc-information-step.component.html',
   styleUrls: ['./wizard-llc-information-step.component.css']
 })
@@ -24,6 +24,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 4;
   @Input() previousStepNumber: number = 3;
   @Output() sectionChanged = new EventEmitter<number>();
+  @Output() nextStepRequested = new EventEmitter<void>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -239,25 +240,20 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
     }
 
-    // Si forceSingleMember está activo, forzar y ajustar
+    // Si forceSingleMember está activo (Emprendedor o Premium), forzar y bloquear estructura societaria
     if (this.forceSingleMember) {
-      // Forzar llcType = 'single' siempre
       const llcTypeControl = this.serviceDataForm.get('llcType');
-      const currentValue = llcTypeControl?.value;
-      
-      // Si el valor actual no es 'single', forzarlo
-      if (currentValue !== 'single') {
+      if (llcTypeControl?.value !== 'single') {
         llcTypeControl?.setValue('single', { emitEvent: false });
       }
+      llcTypeControl?.disable(); // Evitar que el usuario borre o cambie (valor se incluye vía getRawValue al enviar)
       
-      // Ajustar miembros para que sea válido como single member
-      // Solo si no hay miembros ya restaurados
       const membersArray = this.serviceDataForm.get('members') as FormArray;
       if (membersArray.length === 0) {
         this.onLlcTypeChanged('single');
       }
       
-      console.log('[WizardLlcInformationStep] Pack Emprendedor/Premium detectado - forzando Single Member');
+      console.log('[WizardLlcInformationStep] Pack Emprendedor/Premium - Single Member forzado');
     } else {
       // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
       const llcType = this.serviceDataForm.get('llcType')?.value;
@@ -291,10 +287,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Guarda los datos del paso
+   * Guarda los datos del paso (getRawValue incluye controles deshabilitados, p. ej. llcType cuando forceSingleMember)
    */
   private saveStepData(): void {
-    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
+    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.getRawValue());
   }
 
   /**
@@ -572,7 +568,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     this.saveError = null;
     
     try {
-      const formData = this.serviceDataForm.value;
+      const formData = this.serviceDataForm.getRawValue();
       
       const updateData = {
         type: 'apertura-llc',

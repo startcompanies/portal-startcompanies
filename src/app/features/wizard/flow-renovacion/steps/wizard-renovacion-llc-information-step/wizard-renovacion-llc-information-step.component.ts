@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
-import { WizardRenovacionLlcFormComponent } from '../wizard-renovacion-llc-form/wizard-renovacion-llc-form.component';
+import { RenovacionLlcFormComponent } from '../../../../../shared/components/service-forms/renovacion-llc-form/renovacion-llc-form.component';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 
@@ -15,7 +15,7 @@ import { environment } from '../../../../../../environments/environment';
 @Component({
   selector: 'app-wizard-renovacion-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, WizardRenovacionLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent],
   templateUrl: './wizard-renovacion-llc-information-step.component.html',
   styleUrls: ['./wizard-renovacion-llc-information-step.component.css']
 })
@@ -23,6 +23,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   @Input() stepNumber: number = 4;
   @Input() previousStepNumber: number = 3;
   @Output() sectionChanged = new EventEmitter<number>();
+  @Output() nextStepRequested = new EventEmitter<void>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;

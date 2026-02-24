@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { Post } from '../models/post.model';
 import { SeoData } from './seo.service';
@@ -16,7 +17,8 @@ export class BlogSeoService {
   constructor(
     private meta: Meta,
     private title: Title,
-    private browser: BrowserService
+    private browser: BrowserService,
+    @Inject(DOCUMENT) private document: Document
   ) { }
 
   /**
@@ -32,6 +34,8 @@ export class BlogSeoService {
    * Configura SEO para la página principal del blog
    */
   setBlogHomeSeo(): void {
+    const blogCanonicalUrl = this.getSelfCanonicalUrl('/blog');
+
     const seoData: SeoData = {
       title: 'Blog de Start Companies - Guías para Emprender en EE.UU.',
       description: 'Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos. Ideal para freelancers, startups y negocios digitales.',
@@ -39,8 +43,8 @@ export class BlogSeoService {
       ogTitle: 'Blog de Start Companies - Tu Ruta para Emprender en EE.UU.',
       ogDescription: 'Guías completas para abrir tu LLC, obtener cuenta bancaria y emprender en Estados Unidos. Consejos de expertos para freelancers y startups.',
       ogImage: `${this.baseUrl}/assets/blog/blog-hero.webp`,
-      ogUrl: `${this.baseUrl}/blog`,
-      canonical: `${this.baseUrl}/blog`,
+      ogUrl: blogCanonicalUrl,
+      canonical: blogCanonicalUrl,
       twitterCard: 'summary_large_image',
       twitterTitle: 'Blog de Start Companies - Guías para Emprender en EE.UU.',
       twitterDescription: 'Descubre consejos, guías y estrategias para abrir y gestionar tu LLC en Estados Unidos.',
@@ -56,6 +60,8 @@ export class BlogSeoService {
    * Configura SEO para una categoría del blog
    */
   setCategorySeo(categoryName: string, categorySlug: string, postsCount: number): void {
+    const categoryCanonicalUrl = this.getSelfCanonicalUrl(`/blog/category/${categorySlug}`);
+
     const seoData: SeoData = {
       title: `${categoryName} - Blog de Start Companies`,
       description: `Artículos sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos. ${postsCount} guías especializadas para tu LLC.`,
@@ -63,8 +69,8 @@ export class BlogSeoService {
       ogTitle: `${categoryName} - Blog de Start Companies`,
       ogDescription: `Descubre ${postsCount} artículos especializados sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos.`,
       ogImage: `${this.baseUrl}/assets/blog/categories/${categorySlug}.webp`,
-      ogUrl: `${this.baseUrl}/blog/${categorySlug}`,
-      canonical: `${this.baseUrl}/blog/${categorySlug}`,
+      ogUrl: categoryCanonicalUrl,
+      canonical: categoryCanonicalUrl,
       twitterCard: 'summary_large_image',
       twitterTitle: `${categoryName} - Blog de Start Companies`,
       twitterDescription: `Artículos sobre ${categoryName.toLowerCase()} para emprendedores en Estados Unidos.`,
@@ -76,33 +82,41 @@ export class BlogSeoService {
   }
 
   /**
-   * Genera los datos SEO para un post específico
+   * Genera los datos SEO para un post específico.
+   * Usa seo_title y description de la API cuando existan (vista previa al compartir en redes/WhatsApp).
    */
   private generatePostSeoData(post: Post): SeoData {
-    const postUrl = `${this.baseUrl}/blog/${post.slug}`;
+    const postPath = `/blog/post/${post.slug}`;
+    const postUrl = this.getSelfCanonicalUrl(postPath);
     const postImage = post.image_url || `${this.baseUrl}/assets/blog/default-post.webp`;
-    
-    // Generar keywords basadas en categorías y tags
+
+    const displayTitle = (post.seo_title && post.seo_title.trim()) ? post.seo_title.trim() : post.title;
+    const description = (post.description && post.description.trim()) ? this.truncateDescription(post.description.trim()) : this.generateDescription(post);
+
     const keywords = this.generateKeywords(post);
-    
-    // Generar descripción optimizada
-    const description = this.generateDescription(post);
 
     return {
-      title: `${post.title} - Blog de Start Companies`,
+      title: `${displayTitle} - Blog de Start Companies`,
       description: description,
       keywords: keywords,
-      ogTitle: post.title,
+      ogTitle: displayTitle,
       ogDescription: description,
       ogImage: postImage,
       ogUrl: postUrl,
       canonical: postUrl,
       twitterCard: 'summary_large_image',
-      twitterTitle: post.title,
+      twitterTitle: displayTitle,
       twitterDescription: description,
       twitterImage: postImage,
       twitterSite: '@startcompanies'
     };
+  }
+
+  /** Recorta la description a ~160 caracteres para meta/OG si viene larga de la API */
+  private truncateDescription(text: string, maxLen = 160): string {
+    const cleaned = text.replace(/<[^>]*>/g, '').trim();
+    if (cleaned.length <= maxLen) return cleaned;
+    return cleaned.substring(0, maxLen - 3).trim() + '...';
   }
 
   /**
@@ -177,7 +191,7 @@ export class BlogSeoService {
 
     // Canonical URL
     if (data.canonical) {
-      this.meta.updateTag({ rel: 'canonical', href: data.canonical });
+      this.updateCanonicalLink(data.canonical);
     }
 
     // Meta tags adicionales para artículos
@@ -193,11 +207,17 @@ export class BlogSeoService {
   private addStructuredData(post: Post): void {
     if (!this.browser.isBrowser) return;
 
+    const displayTitle = (post.seo_title && post.seo_title.trim()) ? post.seo_title.trim() : post.title;
+    const description = (post.description && post.description.trim())
+      ? this.truncateDescription(post.description.trim())
+      : this.generateDescription(post);
+    const postUrl = `${this.baseUrl}/blog/post/${post.slug}`;
+
     const structuredData = {
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": post.title,
-      "description": this.generateDescription(post),
+      "headline": displayTitle,
+      "description": description,
       "image": post.image_url || `${this.baseUrl}/assets/blog/default-post.webp`,
       "author": {
         "@type": "Organization",
@@ -216,11 +236,11 @@ export class BlogSeoService {
       "dateModified": post.published_at,
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `${this.baseUrl}/blog/${post.slug}`
+        "@id": postUrl
       },
       "articleSection": post.categories.map(cat => cat.name).join(', '),
       "keywords": this.generateKeywords(post),
-      "url": `${this.baseUrl}/blog/${post.slug}`
+      "url": postUrl
     };
 
     this.addJsonLdScript(structuredData);
@@ -278,10 +298,10 @@ export class BlogSeoService {
   }
 
   /**
-   * Genera URL canónica para un post
+   * Genera URL canónica para un post (ruta real: /blog/post/:slug)
    */
   generateCanonicalUrl(slug: string): string {
-    return `${this.baseUrl}/blog/${slug}`;
+    return `${this.baseUrl}/blog/post/${slug}`;
   }
 
   /**
@@ -292,5 +312,28 @@ export class BlogSeoService {
       return imageUrl;
     }
     return `${this.baseUrl}${imageUrl}`;
+  }
+
+  private updateCanonicalLink(url: string): void {
+    const canonicalSelector = 'link[rel="canonical"]';
+    let canonicalLink = this.document.querySelector(
+      canonicalSelector
+    ) as HTMLLinkElement | null;
+
+    if (!canonicalLink) {
+      canonicalLink = this.document.createElement('link');
+      canonicalLink.setAttribute('rel', 'canonical');
+      this.document.head.appendChild(canonicalLink);
+    }
+
+    canonicalLink.setAttribute('href', url);
+  }
+
+  private getSelfCanonicalUrl(fallbackPath: string): string {
+    const currentPath = this.document.location?.pathname;
+    if (currentPath && currentPath !== '/') {
+      return `${this.baseUrl}${currentPath}`;
+    }
+    return `${this.baseUrl}${fallbackPath}`;
   }
 }

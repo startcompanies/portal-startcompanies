@@ -25,12 +25,12 @@
 
 .hero-btn-primary {
   background-color: #fdfffe;
-  color: #01c9e2;
+  color: var(--color-secundario-tecnico);
 }
 
 .hero-btn-primary:hover {
-  background-color: #02cae3;
-  border-color: #02cae3;
+  background-color: #006afe;
+  border-color: #006afe;
 }
 
 .hero-btn-secondary {
@@ -90,14 +90,14 @@
   .hero-btn-secondary {
     font-size: 0.7rem;
   }
-  
+
   .calendly-title {
     font-size: 2rem;
     display: block;
     width: 100%;
     margin-bottom: 1rem;
   }
-  
+
   .calendly-subtitle {
     font-size: 1rem;
     display: block;
@@ -169,7 +169,7 @@
     width: 90%;
     max-width: 320px;
   }
-  
+
   .floating-cta-button {
     font-size: 1rem;
     padding: 0.5rem 2rem;
@@ -182,7 +182,7 @@
     max-width: 320px;
     bottom: 15px;
   }
-  
+
   .floating-cta-button {
     font-size: 0.95rem;
     padding: 0.5rem 1.8rem;

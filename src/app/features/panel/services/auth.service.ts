@@ -1,6 +1,17 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import {
+  Observable,
+  BehaviorSubject,
+  throwError,
+  of,
+  switchMap,
+  shareReplay,
+  finalize,
+  firstValueFrom,
+  catchError,
+  timeout,
+} from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { BrowserService } from '../../../shared/services/browser.service';
@@ -19,7 +30,9 @@ export interface User {
 }
 
 export interface AuthResponse {
-  token: string;
+  token?: string;
+  refreshToken?: string;
+  user?: User;
 }
 
 export interface LoginCredentials {
@@ -35,166 +48,111 @@ export interface RegisterData {
   last_name?: string;
 }
 
+const AUTH_BASE = `${environment.apiUrl || 'http://localhost:3000'}/auth`;
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl || 'http://localhost:3000'}/auth`;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-  private tokenKey = 'auth_token';
+  private refreshInFlight$: Observable<void> | null = null;
+  private router = inject(Router);
 
   constructor(
     private http: HttpClient,
-    private router: Router,
-    private browser: BrowserService
-  ) {
-    // Solo cargar usuario desde storage si estamos en el navegador
-    if (this.browser.isBrowser) {
-      this.loadUserFromStorage();
-    }
-  }
-
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/signin`, credentials).pipe(
-      tap(response => {
-        this.setToken(response.token);
-        this.loadUserFromToken(response.token);
-      })
-    );
-  }
-
-  register(data: RegisterData): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/signup`, data);
-  }
-
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/forgot-password`, { email });
-  }
-
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reset-password`, {
-      token,
-      newPassword
-    });
-  }
-
-  /**
-   * Envía email de verificación al usuario recién registrado
-   */
-  sendVerificationEmail(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/send-verification-email`, { email });
-  }
-
-  /**
-   * Verifica el email del usuario usando el token recibido por correo
-   */
-  verifyEmail(token: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/verify-email`, { token }).pipe(
-      tap(response => {
-        // Si la verificación incluye un token, hacer login automático
-        if (response.token) {
-          this.setToken(response.token);
-          this.loadUserFromToken(response.token);
-        }
-      })
-    );
-  }
-
-  logout(): void {
-    const win = this.browser.window;
-    if (win) {
-      // Limpiar token de sessionStorage y localStorage (por si acaso)
-      if (win.sessionStorage) {
-        win.sessionStorage.removeItem(this.tokenKey);
-      }
-      if (win.localStorage) {
-        win.localStorage.removeItem(this.tokenKey);
-      }
-    }
-    this.currentUserSubject.next(null);
-    this.router.navigate(['/panel/login']);
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.getToken() && !!this.currentUserSubject.value;
-  }
+    private browser: BrowserService,
+  ) {}
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
 
-  getToken(): string | null {
-    const win = this.browser.window;
-    if (!win) {
-      return null;
+  /**
+   * Carga el usuario en segundo plano (solo en browser). Timeout 8s para no colgar.
+   */
+  loadUser(): Promise<void> {
+    if (!this.browser.isBrowser) {
+      return Promise.resolve();
     }
-    // Usar sessionStorage para tokens (más seguro)
-    if (win.sessionStorage) {
-      const token = win.sessionStorage.getItem(this.tokenKey);
-      if (token) {
-        return token;
-      }
-    }
-    // Fallback: verificar localStorage por compatibilidad y migrar
-    if (win.localStorage) {
-      const oldToken = win.localStorage.getItem(this.tokenKey);
-      if (oldToken) {
-        // Migrar token antiguo a sessionStorage
-        if (win.sessionStorage) {
-          win.sessionStorage.setItem(this.tokenKey, oldToken);
-        }
-        win.localStorage.removeItem(this.tokenKey);
-        return oldToken;
-      }
-    }
-    return null;
+    return firstValueFrom(
+      this.http.get<User>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
+        timeout(8000),
+        catchError(() => of(null)),
+      ),
+    )
+      .then((user) => {
+        this.currentUserSubject.next(user ?? null);
+      })
+      .catch(() => {
+        this.currentUserSubject.next(null);
+      });
   }
 
-  private setToken(token: string): void {
-    const win = this.browser.window;
-    if (!win) {
-      return;
-    }
-    // Guardar token en sessionStorage (más seguro, se borra al cerrar el navegador)
-    if (win.sessionStorage) {
-      win.sessionStorage.setItem(this.tokenKey, token);
-    }
-    // Limpiar token antiguo de localStorage si existe
-    if (win.localStorage) {
-      win.localStorage.removeItem(this.tokenKey);
-    }
-  }
-
-  private loadUserFromStorage(): void {
-    const token = this.getToken();
-    if (token) {
-      // Verificar que el token no haya expirado
-      try {
-        const parts = token.split('.');
-        if (parts.length >= 2) {
-          const payload = JSON.parse(atob(parts[1]));
-          if (payload.exp && payload.exp * 1000 < Date.now()) {
-            // Token expirado, limpiar
-            this.logout();
-            return;
+  login(credentials: LoginCredentials): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${AUTH_BASE}/signin`, credentials, {
+        withCredentials: true,
+      })
+      .pipe(
+        switchMap((response) => {
+          const user = response?.user ?? null;
+          if (!user) {
+            return throwError(() => new Error('Credenciales inválidas'));
           }
-        }
-      } catch (e) {
-        // Si no se puede decodificar, intentar cargar de todas formas
-      }
-      this.loadUserFromToken(token);
-    }
+          this.currentUserSubject.next(user);
+          return of(response);
+        }),
+        catchError((err) => {
+          const message =
+            err?.error?.message ?? err?.message ?? 'Error de autenticación';
+          return throwError(() => new Error(message));
+        }),
+      );
+  }
+
+  register(data: RegisterData): Observable<User> {
+    return this.http.post<User>(`${AUTH_BASE}/signup`, data);
+  }
+
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${AUTH_BASE}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(`${AUTH_BASE}/reset-password`, {
+      token,
+      newPassword,
+    });
+  }
+
+  sendVerificationEmail(email: string): Observable<any> {
+    return this.http.post(`${AUTH_BASE}/send-verification-email`, { email });
+  }
+
+  verifyEmail(token: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(
+        `${AUTH_BASE}/verify-email`,
+        { token },
+        { withCredentials: true },
+      )
+      .pipe(
+        switchMap((response) => {
+          if (response?.user) {
+            this.currentUserSubject.next(response.user);
+          } else if (response?.token) {
+            this.loadUserFromToken(response.token);
+          }
+          return of(response);
+        }),
+      );
   }
 
   private loadUserFromToken(token: string): void {
     try {
-      // Decodificar el token JWT (parte del payload)
       const parts = token.split('.');
-      if (parts.length < 2) {
-        throw new Error('Token inválido');
-      }
-      
+      if (parts.length < 2) return;
       const payload = JSON.parse(atob(parts[1]));
       const user: User = {
         id: payload.id,
@@ -203,13 +161,51 @@ export class AuthService {
         status: payload.status,
         type: payload.type || 'client',
         first_name: payload.first_name,
-        last_name: payload.last_name
+        last_name: payload.last_name,
       };
       this.currentUserSubject.next(user);
-    } catch (error) {
-      console.error('Error al decodificar token:', error);
-      this.logout();
+    } catch {
+      this.currentUserSubject.next(null);
     }
+  }
+
+  logout(): void {
+    this.refreshInFlight$ = null;
+    if (this.browser.isBrowser) {
+      this.http
+        .post(`${AUTH_BASE}/logout`, {}, { withCredentials: true })
+        .subscribe({
+          complete: () => {},
+          error: () => {},
+        });
+    }
+    this.currentUserSubject.next(null);
+    this.router.navigate(['/panel/login']);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.getCurrentUser();
+  }
+
+  /**
+   * Renueva el access token usando la cookie refresh_token (HttpOnly).
+   */
+  refresh(): Observable<void> {
+    if (this.refreshInFlight$) {
+      return this.refreshInFlight$;
+    }
+    this.refreshInFlight$ = this.http
+      .post<{
+        token: string;
+      }>(`${AUTH_BASE}/refresh`, {}, { withCredentials: true })
+      .pipe(
+        switchMap(() => of(undefined)),
+        shareReplay(1),
+        finalize(() => {
+          this.refreshInFlight$ = null;
+        }),
+      );
+    return this.refreshInFlight$;
   }
 
   hasRole(role: 'client' | 'partner' | 'admin'): boolean {
@@ -229,13 +225,3 @@ export class AuthService {
     return this.hasRole('client');
   }
 }
-
-
-
-
-
-
-
-
-
-

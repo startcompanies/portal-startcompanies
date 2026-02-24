@@ -9,27 +9,27 @@
   },
   "SEO": {
     "home": {
-      "title": "Start Companies LLC - Apertura de Cuentas Bancarias en EE.UU.",
+      "title": "Start Companies - Apertura de Cuentas Bancarias en EE.UU.",
       "description": "Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía. Acompañamiento paso a paso.",
       "keywords": "LLC Estados Unidos, cuenta bancaria USA, apertura cuenta bancaria, Relay, Start Companies, servicios financieros"
     },
     "nosotros": {
-      "title": "Nosotros - Start Companies LLC | Experiencia en Servicios Financieros",
+      "title": "Nosotros - Start Companies | Experiencia en Servicios Financieros",
       "description": "Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.",
       "keywords": "Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores"
     },
     "contacto": {
-      "title": "Contacto - Start Companies LLC | Habla con Nuestros Expertos",
+      "title": "Contacto - Start Companies | Habla con Nuestros Expertos",
       "description": "Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.",
       "keywords": "contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria"
     },
     "planes": {
-      "title": "Planes y Precios - Start Companies LLC | Servicios para LLC en EE.UU.",
+      "title": "Planes y Precios - Start Companies | Servicios para LLC en EE.UU.",
       "description": "Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.",
       "keywords": "planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA"
     },
     "blog": {
-      "title": "Blog - Start Companies LLC | Noticias y Consejos para LLC en EE.UU.",
+      "title": "Blog - Start Companies | Noticias y Consejos para LLC en EE.UU.",
       "description": "Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.",
       "keywords": "blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog"
     }
@@ -349,7 +349,13 @@
     "help_subtitle": "Simplificamos la gestión de tu empresa en el extranjero",
     "your_questions": "¿Tienes preguntas?",
     "categories": "Categorías",
-    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores"
+    "solve_your_doubts": "Resuélvelas en una consulta gratuita con nuestro equipo de asesores",
+    "search_placeholder": "Buscar artículos",
+    "search_clear": "Limpiar",
+    "search_no_results": "No encontramos artículos que coincidan con tu búsqueda.",
+    "all_posts": "Todos los artículos",
+    "category": "Categoría",
+    "category_title_prefix": "Artículos de"
   },
   "LLC": {
     "heroSection": {
@@ -486,7 +492,7 @@
     },
     "fines": {
       "title": "Multas",
-      "price": "$300 USD",
+      "price": "$300",
       "note_label": "Nota:",
       "note": "Aprende todo lo que necesitas saber sobre las LLC.",
       "cta": "Consultar Multas",
@@ -532,7 +538,7 @@
     },
     "fines": {
       "title": "Multas",
-      "price": "$300 USD",
+      "price": "$300",
       "description": "Nota: +3% del valor de la multa.",
       "cta": "Consultar Multas",
       "featuresTitle": "Incluye:",

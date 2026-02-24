@@ -4,6 +4,7 @@ export const whatsappConfig = {
   tooltipText: '¡Chatea con nosotros!',
   excludedRoutes: [
     '/blog',
+    '/en/blog',
     '/abre-tu-llc',
     '/presentacion', 
     '/apertura-banco-relay',

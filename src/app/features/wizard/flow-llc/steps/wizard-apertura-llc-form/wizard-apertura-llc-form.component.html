@@ -1,12 +1,9 @@
 <div [formGroup]="serviceDataForm">
   <!-- Sección 1: Información de la LLC -->
-        <div *ngIf="currentSection === 1" class="form-section">
+        <div *ngIf="currentSection === 1" class="form-section form-section--two-cols">
+          <p class="text-muted mb-3">Proporcione tres opciones posibles para el nombre de su LLC, incluyendo 'LLC' al final.</p>
           <div class="row g-3">
-            <div class="col-md-12">
-              <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
-              <p class="text-muted">Proporcione tres opciones posibles para el nombre de su LLC, incluyendo 'LLC' al final.</p>
-            </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="llcName" class="form-label">Nombre de la LLC - Opción 1 <span class="text-danger">*</span></label>
               <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC"
                 [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
@@ -15,19 +12,18 @@
                 Este campo es obligatorio.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2 <span class="text-danger">*</span></label>
-              <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2">
+              <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2" placeholder="Segunda opción LLC">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3 <span class="text-danger">*</span></label>
-              <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3">
+              <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3" placeholder="Tercera opción LLC">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="incorporationState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
-              <!-- Si el estado ya viene del paso anterior, mostrarlo como readonly -->
               <div *ngIf="serviceDataForm.get('incorporationState')?.value" class="input-group">
                 <input 
                   type="text" 
@@ -42,9 +38,8 @@
               </div>
               <small *ngIf="serviceDataForm.get('incorporationState')?.value" class="form-text text-muted">
                 <i class="bi bi-info-circle me-1"></i>
-                El estado fue seleccionado en el paso anterior y no puede modificarse.
+                El estado fue seleccionado en el paso anterior.
               </small>
-              <!-- Solo mostrar select si no hay estado seleccionado -->
               <select 
                 *ngIf="!serviceDataForm.get('incorporationState')?.value"
                 id="incorporationState" 
@@ -57,7 +52,7 @@
                 </option>
               </select>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="businessDescription" class="form-label">Actividad Principal de la LLC <span class="text-danger">*</span></label>
               <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" placeholder="Describa brevemente la actividad principal que realizará su empresa."
                 [class.is-invalid]="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched"></textarea>
@@ -65,22 +60,25 @@
                 Este campo es obligatorio.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="llcType" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
-              <div *ngIf="forceSingleMember" class="alert alert-warning py-2">
-                <i class="bi bi-info-circle me-2"></i>
-                Este plan solo permite <strong>Single Member</strong>.
+              <!-- Emprendedor y Premium: siempre Single Member, solo lectura -->
+              <div *ngIf="forceSingleMember" class="form-control bg-light d-flex align-items-center" style="min-height: 38px;">
+                <i class="bi bi-lock-fill text-muted me-2"></i>
+                <span>Single Member LLC</span>
               </div>
-              <select id="llcType" class="form-select" formControlName="llcType" [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
+              <!-- Elite: el usuario puede elegir -->
+              <select *ngIf="!forceSingleMember" id="llcType" class="form-select" formControlName="llcType" [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
                 <option value="">Selecciona...</option>
                 <option value="single">LLC de un solo miembro (Single Member LLC)</option>
-                <option value="multi" [disabled]="forceSingleMember">LLC con múltiples miembros (Multi Member LLC)</option>
+                <option value="multi">LLC con múltiples miembros (Multi Member LLC)</option>
               </select>
-              <div *ngIf="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
+              <small *ngIf="forceSingleMember" class="form-text text-muted">Este plan solo permite Single Member.</small>
+              <div *ngIf="!forceSingleMember && serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
                 Debe seleccionar una estructura societaria.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-12 col-lg-6">
               <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
               <input type="url" id="linkedin" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/...">
             </div>

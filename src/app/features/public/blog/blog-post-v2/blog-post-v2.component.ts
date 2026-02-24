@@ -3,7 +3,11 @@ import {
   inject,
   OnInit,
   AfterViewInit,
+  AfterViewChecked,
   SecurityContext,
+  ViewChild,
+  ElementRef,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogSectionV2Component } from '../blog-section-v2/blog-section-v2.component';
@@ -19,6 +23,9 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
 import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { BlogAuthorCardComponent } from '../../../../shared/components/blog-author-card/blog-author-card.component';
+import { BlogPostHeroComponent } from '../../../../shared/components/blog-post-hero/blog-post-hero.component';
+import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonial-avatars';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -31,11 +38,15 @@ import { BrowserService } from '../../../../shared/services/browser.service';
     PostContentComponent,
     ScHeaderComponent,
     LangRouterLinkDirective,
+    BlogAuthorCardComponent,
+    BlogPostHeroComponent,
   ],
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
 })
-export class BlogPostV2Component implements OnInit, AfterViewInit {
+export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChecked {
+  @ViewChild('heroEndSentinel') heroEndSentinel?: ElementRef<HTMLElement>;
+
   private blogService = inject(BlogService);
   baseUrl = environment.baseUrl;
 
@@ -47,8 +58,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   remainingContent = '';
   heroCardContent = ''; // Contenido para la card hero en posts no-landing
   tocLinks: Array<{ href: string; text: string }> = [];
+  tocOpen = true;
   isLoading = true; // Estado de carga
   postNotFound = false; // Estado para indicar que el post no existe
+  testimonialAvatarUrls = TESTIMONIAL_AVATAR_URLS;
+  /** CTA móvil "Agendá asesoría": se muestra solo después de pasar el hero para no chocar con compartir */
+  showMobileCtaAfterHero = false;
+  private heroSentinelObserverSetup = false;
 
   // Getter para acceso desde el template
   get isBrowser(): boolean {
@@ -85,6 +101,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     return this.heroImages;
   }
 
+  private cdr = inject(ChangeDetectorRef);
+
   constructor(
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
@@ -105,11 +123,39 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     // La inicialización del TOC se hace después de cargar el post en loadPost
   }
 
+  ngAfterViewChecked(): void {
+    if (this.heroSentinelObserverSetup || !this.postArticle || !this.heroEndSentinel?.nativeElement) return;
+    this.heroSentinelObserverSetup = true;
+    this.setupCtaVisibilityObserver();
+  }
+
+  private setupCtaVisibilityObserver(): void {
+    const el = this.heroEndSentinel?.nativeElement;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (!entry) return;
+        // Oculto mientras el hero sea visible; mostrar solo cuando el sentinel (tras el hero) haya salido por arriba del viewport
+        const show = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+        if (this.showMobileCtaAfterHero !== show) {
+          this.showMobileCtaAfterHero = show;
+          this.cdr.markForCheck();
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+  }
+
   private async loadPost(slug: string): Promise<void> {
     // Resetear estados
     this.isLoading = true;
     this.postNotFound = false;
     this.postArticle = undefined;
+    this.showMobileCtaAfterHero = false;
+    this.heroSentinelObserverSetup = false;
 
     try {
       const response = await this.blogService.getPostsBySlug(slug);
@@ -891,6 +937,28 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     return 'Start Companies';
   }
 
+  formatPublishedDate(dateStr?: string): string {
+    if (!dateStr) return '';
+    try {
+      const date = new Date(dateStr);
+      if (Number.isNaN(date.getTime())) return '';
+      return new Intl.DateTimeFormat('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).format(date);
+    } catch {
+      return '';
+    }
+  }
+
+  getAuthorDisplayName(): string {
+    const user = this.postArticle?.user;
+    if (!user) return 'Start Companies';
+    const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
+    return fullName || user.username || 'Start Companies';
+  }
+
   shareOnWhatsApp(): void {
     const win = this.browser.window;
     if (!win) return;
@@ -1002,6 +1070,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     });
   }
 
+
   /**
    * Inicializa la navegación por scroll para los enlaces del índice en posts tipo landing
    */
@@ -1033,6 +1102,7 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
   }
 
   toggleTOC(): void {
+    this.tocOpen = !this.tocOpen;
     const doc = this.browser.document;
     if (!doc) return;
 
@@ -1040,13 +1110,8 @@ export class BlogPostV2Component implements OnInit, AfterViewInit {
     const toggleIcon = doc.getElementById('toc-toggle-icon');
 
     if (tocBody && toggleIcon) {
-      if (tocBody.style.display === 'none' || tocBody.style.display === '') {
-        tocBody.style.display = 'block';
-        toggleIcon.style.transform = 'rotate(180deg)';
-      } else {
-        tocBody.style.display = 'none';
-        toggleIcon.style.transform = 'rotate(0deg)';
-      }
+      tocBody.style.display = this.tocOpen ? 'block' : 'none';
+      toggleIcon.style.transform = this.tocOpen ? 'rotate(180deg)' : 'rotate(0deg)';
     }
   }
 

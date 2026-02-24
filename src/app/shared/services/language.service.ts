@@ -3,12 +3,16 @@ import { Injectable } from '@angular/core';
 import { Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { filter } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
+import { catchError, take } from 'rxjs/operators';
 import { BrowserService } from './browser.service';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
   readonly availableLangs = ['es', 'en'];
   readonly defaultLang = 'es';
+  private readonly initialTranslationsReadySubject = new BehaviorSubject<boolean>(false);
+  readonly initialTranslationsReady$ = this.initialTranslationsReadySubject.asObservable();
 
   constructor(
     private transloco: TranslocoService,
@@ -23,6 +27,7 @@ export class LanguageService {
         if (lang && lang !== this.transloco.getActiveLang()) {
           this.transloco.setDefaultLang(lang);
           this.transloco.setActiveLang(lang);
+          void this.loadLanguage(lang);
         }
       });
 
@@ -43,15 +48,15 @@ export class LanguageService {
       : this.router.url || '/';
 
     const initialLang = this.getLangFromUrl(initialUrl) || this.defaultLang;
-
-    // Logs temporales para debug — elimina en producción
-    console.log('[LanguageService] init url:', initialUrl, 'detected lang:', initialLang);
-
-    // Aseguramos default + active antes del render
     this.transloco.setDefaultLang(initialLang);
-    // setActiveLang puede ser asíncrono en algunos loaders; usamos await por seguridad.
-    // Si tu setActiveLang es síncrono no pasa nada con await.
-    await this.transloco.setActiveLang(initialLang);
+    this.transloco.setActiveLang(initialLang);
+
+    await this.loadLanguage(initialLang);
+    this.initialTranslationsReadySubject.next(true);
+  }
+
+  get initialTranslationsReady(): boolean {
+    return this.initialTranslationsReadySubject.value;
   }
 
   // getter central
@@ -62,9 +67,22 @@ export class LanguageService {
 
   async setLanguage(lang: string, replaceUrl = true): Promise<boolean> {
     if (!this.availableLangs.includes(lang)) lang = this.defaultLang;
-    await this.transloco.setActiveLang(lang);
+    this.transloco.setActiveLang(lang);
     this.transloco.setDefaultLang(lang);
+    await this.loadLanguage(lang);
     return replaceUrl ? this.replaceLangInUrl(lang) : true;
+  }
+
+  private async loadLanguage(lang: string): Promise<void> {
+    await firstValueFrom(
+      this.transloco.load(lang).pipe(
+        take(1),
+        catchError((error) => {
+          console.error(`[LanguageService] Error loading language "${lang}"`, error);
+          return of({});
+        })
+      )
+    );
   }
 
   navigate(commands: any[], extras: any = {}): Promise<boolean> {
@@ -194,11 +212,15 @@ export class LanguageService {
         'abotax': 'abotax',
         'category': 'category',
         'post': 'post',
-        'wizard/llc-opening': 'wizard/llc-apertura',
-        'wizard/llc-renewal': 'wizard/llc-renovacion',
         'wizard/bank-account': 'wizard/cuenta-bancaria'
       };
-      return englishToSpanish[route] || route;
+      const mapped = englishToSpanish[route];
+      if (mapped !== undefined) return mapped;
+      // Rutas compuestas (ej. blog/slug, blog/category/xyz): mantener si el primer segmento es válido
+      const first = route.split('/')[0];
+      if (first === 'blog' || first === 'category') return route;
+      // Cualquier otra ruta EN sin mapeo → ir a home en ES para evitar 404
+      return '';
     } else {
       // Mapear de español a inglés
       const spanishToEnglish: { [key: string]: string } = {
@@ -221,8 +243,6 @@ export class LanguageService {
         'abotax': 'abotax',
         'category': 'category',
         'post': 'post',
-        'wizard/llc-apertura': 'wizard/llc-opening',
-        'wizard/llc-renovacion': 'wizard/llc-renewal',
         'wizard/cuenta-bancaria': 'wizard/bank-account'
       };
       return spanishToEnglish[route] || route;

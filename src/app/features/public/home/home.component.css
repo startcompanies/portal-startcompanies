@@ -17,6 +17,7 @@
   left: 0;
   z-index: 1;
   min-height: 600px;
+  align-content: center;
 }
 
 /* Asegurar que el contenedor de la imagen tenga dimensiones */
@@ -24,91 +25,19 @@
   width: 100%;
   height: 100%;
   display: block;
-  min-height: 600px; /* Altura mínima */
+  min-height: 600px;
+  /* Altura mínima */
 }
 
-.sc-hero #carouselExampleIndicators {
+.sc-hero .hero-content {
   position: relative;
   z-index: 2;
   height: 100%;
 }
 
-.sc-hero .carousel-inner {
-  height: 100%;
-}
-
-.sc-hero .carousel-item {
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-/* Bootstrap Carousel Fix - Para efecto fade */
-.sc-hero .carousel-item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  transition: opacity 0.8s ease-in-out;
-  display: flex;
-  align-items: center;
-}
-
-.sc-hero .carousel-item.active {
-  position: relative;
-  opacity: 1;
-  z-index: 1;
-}
-
-.sc-hero .carousel-item:not(.active) {
-  z-index: 0;
-}
-
-/* Asegurar que el carrusel funcione correctamente */
-.sc-hero .carousel-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.sc-hero .carousel-item .container {
+.sc-hero .hero-content .container {
   position: relative;
   z-index: 3;
-}
-
-/* Carousel Indicators */
-.sc-hero .carousel-indicators {
-  position: absolute !important;
-  bottom: 35px !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  top: auto !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  display: flex !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  z-index: 10 !important;
-}
-
-.sc-hero .carousel-indicators button {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.5);
-  border: none;
-  opacity: 1;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  padding: 0;
-  flex: 0 0 auto;
-}
-
-.sc-hero .carousel-indicators button.active {
-  background-color: var(--color-fondo-claro);
-  transform: scale(1.2);
 }
 
 /* Hero Titles & Description */
@@ -203,27 +132,27 @@
 .sc-services-card .card-title {
   font-size: 2.5rem;
   font-weight: 700;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
   margin-bottom: 3rem;
 }
 
 .sc-text-blue-accent {
-  color: #00b8d9;
+  color: var(--color-secundario-tecnico);
 }
 
 .sc-services-item h3 {
   font-size: 1.5rem;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
   font-weight: 600;
 }
 
 .sc-services-item p {
   font-size: 1rem;
-  color: #293b49;
+  color: var(--color-oscuro-tecnico);
 }
 
 .sc-icon-blue {
-  color: #00b8d9;
+  color: var(--color-secundario-tecnico);
   font-size: 3.5rem !important;
   line-height: 1;
 }
@@ -235,12 +164,11 @@
   position: relative;
   padding: 80px 16px;
   overflow: hidden;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.6
-  ); /* Overlay oscuro para mejorar legibilidad */
+  background-color: rgba(0,
+      0,
+      0,
+      0.6);
+  /* Overlay oscuro para mejorar legibilidad */
   /* background-color: var(--color-primario); Removido para que se vea la imagen de fondo */
 }
 
@@ -258,7 +186,8 @@
   top: 0;
   left: 0;
   z-index: 1;
-  min-height: 500px; /* Altura mínima */
+  min-height: 500px;
+  /* Altura mínima */
 }
 
 /* Asegurar que el contenedor de la imagen tenga dimensiones */
@@ -266,7 +195,8 @@
   width: 100%;
   height: 100%;
   display: block;
-  min-height: 500px; /* Altura mínima */
+  min-height: 500px;
+  /* Altura mínima */
 }
 
 /*FAQ Section*/
@@ -274,6 +204,7 @@
   background-color: var(--color-fondo-claro);
   padding: 80px 16px;
 }
+
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
   background-color: var(--color-secundario-tecnico);
@@ -298,6 +229,7 @@
     display: none !important;
   }
 }
+
 @media (max-width: 991.8px) {
   .sc-slide h2 {
     font-size: 2.5rem;
@@ -337,6 +269,7 @@
     font-size: 3rem !important;
   }
 }
+
 @media (max-width: 767.98px) {
   .sc-slide h2 {
     font-size: 1.5rem;
@@ -368,13 +301,16 @@
     margin-bottom: 0;
   }
 }
+
 @media (max-width: 575.98px) {
   .hero-title {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
   }
-  .hero-description{
+
+  .hero-description {
     font-size: 1.1rem;
   }
+
   .hero-btn-primary,
   .hero-btn-secondary {
     /*font-size: 0.7rem;*/

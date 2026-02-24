@@ -10,9 +10,9 @@ export const environment = {
     relayPixelId: '1055049486479771',
     debug: false // Modo debug desactivado en producción
   },
-  baseUrl: 'https://startcompanies.us',
-  domain: 'startcompanies.us',
+  baseUrl: 'https://startcompanies.io',
+  domain: 'startcompanies.io',
   stripe: {
-    publishableKey: 'pk_live_51...' // Clave de producción
+    publishableKey: '' // Clave de producción
   }
 };

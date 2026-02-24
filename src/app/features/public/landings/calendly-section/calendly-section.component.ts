@@ -180,7 +180,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
     let calLink = 'startcompanies-businessenusa/30min';
     const queryParams = new URLSearchParams();
-    
+
     // Parámetros originales (mantener)
     if (userIp) {
       queryParams.set('ip', userIp);
@@ -191,7 +191,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     if (fbclid) {
       queryParams.set('fbclid', fbclid);
     }
-    
+
     // Nuevos parámetros de Facebook Pixel
     if (_fbc) {
       queryParams.set('_fbc', _fbc);
@@ -291,7 +291,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
     const win = this.browser.window;
     const doc = this.browser.document;
     if (!win || !doc) return;
-    
+
     // Cal.com comunica eventos a través de postMessage
     // Escuchar mensajes del iframe de Cal.com
     const messageHandler = (event: MessageEvent) => {
@@ -302,28 +302,28 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
       try {
         const data = event.data;
-        
+
         // Cal.com envía eventos con estructura específica
         if (data && typeof data === 'object') {
           // Evento de booking exitoso
-          if (data.type === 'cal-booking-success' || 
+          if (data.type === 'cal-booking-success' ||
               data.event === 'bookingSuccessful' ||
               (data.data && data.data.type === 'bookingSuccessful')) {
             console.log('Cal.com: Cita confirmada exitosamente', data);
             this.facebookPixelService.trackCalComBookingConfirmed('LLC Services', 30);
             this.calendlyClick.emit();
           }
-          
+
           // Evento cuando se abre el widget
-          if (data.type === 'cal-open' || 
+          if (data.type === 'cal-open' ||
               data.event === 'open' ||
               (data.data && data.data.type === 'open')) {
             console.log('Cal.com: Widget abierto', data);
             this.facebookPixelService.trackCalComBookingStarted();
           }
-          
+
           // Evento cuando se selecciona una fecha
-          if (data.type === 'cal-date-selected' || 
+          if (data.type === 'cal-date-selected' ||
               data.event === 'dateSelected' ||
               (data.data && data.data.type === 'dateSelected')) {
             console.log('Cal.com: Fecha seleccionada', data);
@@ -337,7 +337,7 @@ export class CalendlySectionComponent implements AfterViewInit, OnDestroy {
 
     // Agregar listener de mensajes
     win.addEventListener('message', messageHandler);
-    
+
     // También escuchar eventos del DOM del iframe cuando esté disponible
     const setupDOMListeners = () => {
       const calIframe = doc.querySelector('#my-cal-inline iframe') as HTMLIFrameElement;

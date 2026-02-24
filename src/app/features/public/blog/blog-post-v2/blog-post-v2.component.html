@@ -1,5 +1,23 @@
 <app-sc-header></app-sc-header>
 
+<!-- Skeleton con la misma imagen de fondo del hero mientras carga el post -->
+<section *ngIf="isLoading && !postNotFound" class="sc-hero landing-hero-section blog-post-loading-skeleton-section">
+  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
+  </app-responsive-image>
+  <div class="container position-relative blog-post-loading-skeleton py-5">
+    <p class="text-center text-white mb-4 skeleton-loading-text">Cargando...</p>
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-8">
+        <div class="skeleton-line w-75 mb-3"></div>
+        <div class="skeleton-line w-50 mb-4"></div>
+        <div class="skeleton-block mb-2"></div>
+        <div class="skeleton-block mb-2"></div>
+        <div class="skeleton-block w-75"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Hero para artículo no disponible - Solo mostrar si realmente no existe (después de cargar) -->
 <section *ngIf="postNotFound && !isLoading" class="mb-5 py-5 sc-hero landing-hero-section no-article-hero">
   <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
@@ -14,7 +32,7 @@
       </div>
       <div class="col-lg-6 mt-0">
         <div class="mission-content">
-          <h2 class="mission-title">Artículo no disponible</h2>
+          <h1 class="mission-title">Artículo no disponible</h1>
           <div class="mission-description">
             <p class="mb-0">Lo sentimos, este artículo no está disponible o aún se está cargando. Por favor, intenta más
               tarde o explora otros artículos de nuestro blog.</p>
@@ -25,98 +43,20 @@
   </div>
 </section>
 
-<!-- Hero para posts sin sidebar (landing page) -->
-<section *ngIf="!hasSections && postArticle" class="mb-5 sc-hero landing-hero-section">
-  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
-  </app-responsive-image>
-
-  <div class="container position-relative">
-    <div class="mission-card row align-items-center my-5 g-5">
-      <div class="col-lg-6 mt-0">
-        <div class="mission-image-container">
-          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title" class="mission-image" />
-        </div>
-      </div>
-      <div class="col-lg-6 mt-0">
-        <div class="mission-content">
-          <h2 class="mission-title">{{ postArticle.title }}</h2>
-          <div class="mission-description" [innerHTML]="getSanitizedHeroCardContent()"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons">
-      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-      </button>
-      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
-        <i class="bi bi-linkedin"></i>
-      </button>
-      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
-        <i class="bi bi-facebook"></i>
-      </button>
-      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
-        title="Compartir">
-        <i class="bi bi-share"></i>
-      </button>
-    </div>
-  </div>
-</section>
-
-<!-- Hero para posts con sidebar (mismo estilo, diferente contenido) -->
-<section *ngIf="hasSections && postArticle" class="mb-5 sc-hero landing-hero-section">
-  <app-responsive-image [images]="heroImages" context="hero" loading="eager" cssClass="sc-hero-bg">
-  </app-responsive-image>
-
-  <div class="container position-relative">
-    <div class="mission-card row align-items-center my-5 g-5">
-      <div class="col-lg-6 mt-0">
-        <div class="mission-image-container">
-          <img [src]="firstSectionImage || postArticle.image_url" [alt]="postArticle.title"
-            class="mission-image img-fluid" />
-        </div>
-      </div>
-      <div class="col-lg-6 mt-0">
-        <div class="mission-content">
-          <h2 class="mission-title">{{ postArticle.title }}</h2>
-          <div class="mission-description" [innerHTML]="getSanitizedFirstSection()"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Botones de compartir sociales -->
-    <div class="social-share-buttons">
-      <button type="button" class="social-share-btn whatsapp-btn" (click)="shareOnWhatsApp()"
-        [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp">
-        <i class="bi bi-whatsapp"></i>
-      </button>
-      <button type="button" class="social-share-btn linkedin-btn" (click)="shareOnLinkedIn()"
-        [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn">
-        <i class="bi bi-linkedin"></i>
-      </button>
-      <button type="button" class="social-share-btn facebook-btn" (click)="shareOnFacebook()"
-        [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook">
-        <i class="bi bi-facebook"></i>
-      </button>
-      <button type="button" class="social-share-btn share-btn" (click)="shareNative()" [attr.aria-label]="'Compartir'"
-        title="Compartir">
-        <i class="bi bi-share"></i>
-      </button>
-    </div>
-  </div>
-</section>
-
+<app-blog-post-hero *ngIf="postArticle" [postArticle]="postArticle" [hasSections]="hasSections"
+  [heroImages]="heroImages" [firstSectionImage]="firstSectionImage" [firstSectionContent]="getSanitizedFirstSection()"
+  [formattedDate]="formatPublishedDate(postArticle.published_at)" [authorName]="getAuthorDisplayName()"
+  (shareWhatsApp)="shareOnWhatsApp()" (shareLinkedIn)="shareOnLinkedIn()" (shareFacebook)="shareOnFacebook()"
+  (shareNative)="shareNative()"></app-blog-post-hero>
+<!-- Sentinel para mostrar el CTA fijo solo después de pasar el hero (móvil) -->
+<div #heroEndSentinel *ngIf="postArticle" class="hero-end-sentinel"></div>
 
 <div [ngClass]="hasSections ? 'container-fluid' : 'container'" [class.landing-page-container]="hasSections">
-  <div class="row">
+  <div class="row relative">
     <!-- Breadcrumb para posts no-landing (al mismo nivel que el contenido) -->
     <div *ngIf="!hasSections && postArticle" class="col-lg-9">
-      <nav aria-label="breadcrumb" class="breadcrumb-container mb-3">
-        <ol class="breadcrumb mb-0 mx-4">
+      <nav aria-label="breadcrumb" class="breadcrumb-container mb-4">
+        <ol class="breadcrumb mb-0">
           <li class="breadcrumb-item">
             <a [langRouterLink]="''" class="breadcrumb-link">Inicio</a>
           </li>
@@ -130,91 +70,98 @@
       </nav>
     </div>
 
-    <main [class]="hasSections ? 'col-12' : 'col-lg-9'" *ngIf="postArticle && postArticle.content">
+    <div *ngIf="!hasSections && postArticle" class="col-12 d-lg-none mb-4 toc-inline">
+      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
+    </div>
+
+    <main [class]="hasSections ? 'col-12' : 'main-post'" *ngIf="postArticle && postArticle.content">
       <app-post-content class="post-content" [html]="hasSections ? remainingContent : postArticle.content"
         [isLandingPage]="hasSections"></app-post-content>
+
+      <app-blog-author-card *ngIf="postArticle" class="mt-5"></app-blog-author-card>
     </main>
 
 
-    <aside class="col-lg-3 d-none d-lg-block" *ngIf="!hasSections && postArticle">
-      <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
-        <div class="card-header pt-4 sc-header">
-          <p class="text-center">En este articulo</p>
-        </div>
-        <div class="card-body sc-body">
-          <ul class="list-group sc-post-toc">
-            <li class="list-group-item" *ngFor="let link of tocLinks" [style.cursor]="'pointer'"
-              (click)="scrollToSection(link.href, $event)">
-              {{ link.text }}
-            </li>
+    <aside class="index-card sidebar d-none d-lg-block" *ngIf="!hasSections && postArticle">
+      <ng-container *ngTemplateOutlet="indexCardTemplate"></ng-container>
+
+      <div class="sticky-cta">
+        <div class="card open-llc-card p-4 mb-4">
+          <h3 class="title text-center">Abre tu LLC</h3>
+          <h3 class="title title-hightlight text-center">Al mejor precio</h3>
+          <ul class="mt-4">
+            <li>Lista bajo 10 días</li>
+            <li>A partir de $459 USD</li>
+            <li>Pagas post entrega</li>
           </ul>
+          <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+            data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
+            class="btn sc-btn-accent px-4 py-3 shadow-lg">
+            Agendar una asesoría gratis <i class="bi bi-arrow-right"></i>
+          </button>
+          <div class="open-llc-proof">
+            <div class="open-llc-avatars">
+              <img *ngFor="let url of testimonialAvatarUrls; let i = index" class="open-llc-avatar" [src]="url"
+                [alt]="'Testimonial ' + (i + 1)" />
+            </div>
+            <div class="open-llc-rating">
+              <span class="open-llc-count">+300 LLC abiertas</span>
+              <div class="open-llc-stars">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <span class="open-llc-score">4.8/5</span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="card open-llc-card p-4 mb-4">
-        <h3 class="title text-center">Abre tu LLC</h3>
-        <h3 class="title title-hightlight text-center">al mejor precio</h3>
-        <ul class="mt-4">
-          <li>Lista bajo 10 días</li>
-          <li>A partir de $459 USD</li>
-          <li>Pagas post entrega</li>
-        </ul>
-        <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
-          data-cal-config='{"layout":"month_view","theme":"light"}' type="button"
-          class="btn sc-btn-accent px-4 py-3 shadow-lg">
-          Agendar consulta gratis
-        </button>
-      </div>
-
-      <div class="text-center mb-4">
-        <h6 class="text-muted fw-bold share-article-title">
-          Compartir artículo
-        </h6>
-        <div class="share-buttons-container">
-          <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
-            [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp" role="button" tabindex="0"></i>
-          <i class="bi bi-linkedin share-social-icon share-linkedin-icon" (click)="shareOnLinkedIn()"
-            [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
-          <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
-            [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
-        </div>
-      </div>
-
-      <div class="card author-info-card">
-        <div class="card-body">
-          <p class="text-center">Autor</p>
-          <h5 class="card-title text-center">Ignacio Navarro</h5>
-          <p class="card-text small text-center">
-            <ng-container *ngIf="postArticle.user?.profile_image; else noProfileImage">
-              <img [src]="postArticle.user?.profile_image" class="rounded-circle mb-3" alt="Autor" width="80"
-                height="80" />
-            </ng-container>
-            <ng-template #noProfileImage>
-              <i class="bi bi-person-circle rounded-circle mb-3" style="font-size: 80px; line-height: 1; color: #6c757d"
-                aria-hidden="true"></i>
-            </ng-template>
-          </p>
-          <p class="text-justify mb-3">
-            Ignacio Navarro es Contador Público, graduado en 2020 de la
-            Universidad Nacional de Tucumán. Fundador de Start Companies desde
-            2023, asesora a clientes de todo el mundo en la apertura de LLC en
-            Estados Unidos y en la correcta declaración de impuestos. Su
-            experiencia combina conocimiento legal, fiscal y práctico,
-            ofreciendo un servicio integral que abarca desde la constitución de
-            la sociedad hasta la apertura bancaria e integración de plataformas
-            de ventas.
-          </p>
-
-          <a href="#" class="btn-linkedin-profile btn">
-            <i class="bi bi-linkedin me-2"></i>Sigueme en Linkedin
-          </a>
+        <div class="text-center mb-4">
+          <h6 class="fw-bold share-article-title">
+            Compartir por
+          </h6>
+          <div class="share-buttons-container">
+            <i class="bi bi-whatsapp share-social-icon share-whatsapp-icon" (click)="shareOnWhatsApp()"
+              [attr.aria-label]="'Compartir en WhatsApp'" title="Compartir en WhatsApp" role="button" tabindex="0"></i>
+            <i class="bi bi-linkedin share-social-icon share-linkedin-icon" (click)="shareOnLinkedIn()"
+              [attr.aria-label]="'Compartir en LinkedIn'" title="Compartir en LinkedIn" role="button" tabindex="0"></i>
+            <i class="bi bi-facebook share-social-icon share-facebook-icon" (click)="shareOnFacebook()"
+              [attr.aria-label]="'Compartir en Facebook'" title="Compartir en Facebook" role="button" tabindex="0"></i>
+            <i class="bi bi-share share-social-icon share-generic-icon" (click)="shareNative()"
+              [attr.aria-label]="'Compartir'" title="Compartir" role="button" tabindex="0"></i>
+          </div>
         </div>
       </div>
     </aside>
   </div>
 </div>
 
-<section>
+<ng-template #indexCardTemplate>
+  <div class="card sc-this-post mb-4" *ngIf="tocLinks.length > 0">
+    <div class="card-header sc-header toc-header" [class.is-open]="tocOpen" (click)="toggleTOC()">
+      <p class="text-center mb-0">En este artículo</p>
+      <i id="toc-toggle-icon" class="bi bi-chevron-down toc-chevron" aria-hidden="true"></i>
+    </div>
+    <div class="card-body sc-body" id="toc-body" [style.display]="tocOpen ? 'block' : 'none'">
+      <ul class="list-group sc-post-toc">
+        <li class="list-group-item" *ngFor="let link of tocLinks" [style.cursor]="'pointer'"
+          (click)="scrollToSection(link.href, $event)">
+          {{ link.text }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-template>
+
+<section *ngIf="postArticle">
   <app-blog-section-v2></app-blog-section-v2>
 </section>
+<div class="mobile-fixed-cta" *ngIf="postArticle" [class.cta-visible]="showMobileCtaAfterHero">
+  <button data-cal-link="startcompanies-businessenusa/agenda-organica" data-cal-namespace="agenda-organica"
+    data-cal-config='{"layout":"month_view","theme":"light"}' type="button" class="mobile-fixed-cta-btn">
+    <p>Agendá una <br /><span>asesoría gratis</span></p><i class="bi bi-arrow-right"></i>
+  </button>
+</div>
 <app-sc-footer></app-sc-footer>

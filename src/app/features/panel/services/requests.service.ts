@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { firstValueFrom } from 'rxjs';
+import { ServiceType } from '../../../shared/models/request-flow-context';
 
 // Log para debugging
 console.log('[RequestsService] Environment API URL:', environment.apiUrl);
@@ -17,9 +18,11 @@ export interface Request {
   workDriveUrlExternal?: string; // URL externa de Zoho WorkDrive
   client?: {
     id: number;
+    userId?: number; // id del User vinculado al cliente (para validar acceso)
     email: string;
     first_name?: string;
     last_name?: string;
+    full_name?: string;
     username?: string;
   };
   partner?: {
@@ -85,6 +88,8 @@ export interface Request {
   stripeChargeId?: string; // ID del cargo de Stripe
   paymentProofUrl?: string; // URL del comprobante de pago (para transferencias)
   createdFrom?: 'panel' | 'wizard' | string;
+  /** Plan del servicio (ej. apertura-llc: Entrepreneur, Elite, Premium). Para validaciones al recargar. */
+  plan?: string;
 }
 
 export interface RequestFilters {
@@ -194,6 +199,52 @@ export class RequestsService {
     return firstValueFrom(
       this.http.post<Request>(this.apiUrl, data)
     );
+  }
+
+  /**
+   * Finalizar solicitud: subir firma (si existe) y actualizar estado a solicitud-recibida.
+   * Usado al hacer "Enviar solicitud" en el paso de confirmación (panel y wizard).
+   */
+  async finalizeRequest(
+    requestId: number,
+    serviceType: ServiceType,
+    signatureDataUrl?: string | null
+  ): Promise<Request> {
+    let signatureUrl: string | null = null;
+    if (signatureDataUrl) {
+      signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
+    }
+    const updateData: any = { status: 'solicitud-recibida' as const };
+    if (signatureUrl) {
+      updateData.signatureUrl = signatureUrl;
+    }
+    return this.updateRequest(requestId, updateData);
+  }
+
+  private async uploadSignature(
+    signatureDataUrl: string,
+    requestId: number,
+    serviceType: ServiceType
+  ): Promise<string | null> {
+    try {
+      const resp = await fetch(signatureDataUrl);
+      const blob = await resp.blob();
+      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', serviceType);
+      formData.append('requestUuid', requestId.toString());
+      const uploadResponse = await firstValueFrom(
+        this.http.post<{ url: string; key: string; message: string }>(
+          `${environment.apiUrl}/upload-file`,
+          formData
+        )
+      );
+      return uploadResponse?.url || null;
+    } catch (e) {
+      console.error('[RequestsService] Error al subir firma:', e);
+      return null;
+    }
   }
 
   /**

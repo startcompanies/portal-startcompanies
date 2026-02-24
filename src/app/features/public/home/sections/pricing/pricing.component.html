@@ -54,7 +54,7 @@
         aria-labelledby="llc-plans-tab"
       >
         <!-- Vista de tablets y escritorio: Grid normal sin carrusel -->
-        <div class="row pricing-cards g-4 d-none d-md-block">
+        <div class="row pricing-cards g-4">
           <!-- Tarjeta 1: Pack Emprendedor (Recomendado) -->
           <div class="col-12 col-lg-4 d-flex">
             <div class="pricing-card recommended w-100">
@@ -77,7 +77,7 @@
               </p>
               <!-- Botón principal (usará el color #006afe de tu lista) -->
               <a
-                [langRouterLink]="'registro-cliente'"
+                [langRouterLink]="'apertura-llc'"
                 (click)="selectPlan('Pack Emprendedor')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
@@ -153,7 +153,7 @@
               </p>
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
-                [langRouterLink]="'registro-cliente'"
+                [langRouterLink]="'apertura-llc'"
                 (click)="selectPlan('Pack Elite')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
@@ -226,7 +226,7 @@
               </p>
               <!-- Botón secundario (usará el color #1F2A37 de tu lista) -->
               <a
-                [langRouterLink]="'registro-cliente'"
+                [langRouterLink]="'apertura-llc'"
                 (click)="selectPlan('Pack Premium')"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
@@ -313,7 +313,7 @@
         </div>
 
         <!-- Vista de móviles: Solo carrusel -->
-        <div class="pricing-carousel-container d-md-none">
+        <div class="pricing-carousel-container d-none">
           <div
             id="pricingCarouselMobile"
             class="carousel slide"
@@ -344,7 +344,7 @@
                     }}
                   </p>
                   <a
-                    [langRouterLink]="'registro-cliente'"
+                    [langRouterLink]="'apertura-llc'"
                     (click)="selectPlan('Pack Emprendedor')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
@@ -427,7 +427,7 @@
                     {{ "CONTENT.pricing.elite_pack.description.2" | transloco }}
                   </p>
                   <a
-                    [langRouterLink]="'registro-cliente'"
+                    [langRouterLink]="'apertura-llc'"
                     (click)="selectPlan('Pack Elite')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
@@ -511,7 +511,7 @@
                     }}
                   </p>
                   <a
-                    [langRouterLink]="'registro-cliente'"
+                    [langRouterLink]="'apertura-llc'"
                     (click)="selectPlan('Pack Premium')"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
@@ -642,7 +642,7 @@
         aria-labelledby="other-plans-tab"
       >
         <!-- Vista de tablets y escritorio: Grid normal -->
-        <div class="row pricing-cards g-4 d-none d-md-block">
+        <div class="row pricing-cards g-4">
           <!-- Plan Banco -->
           <div class="col-12 col-lg-4 d-flex">
             <div class="pricing-card common w-100">
@@ -684,7 +684,7 @@
                 {{ "OTHER_PLANS_NEW.renewal.description" | transloco }}
               </p>
               <a
-                [langRouterLink]="'wizard/llc-renovacion'"
+                [langRouterLink]="'renovar-llc'"
                 class="btn-primary mt-auto d-flex align-items-center justify-content-center"
               >
                 {{ "OTHER_PLANS_NEW.renewal.cta" | transloco }}
@@ -754,7 +754,7 @@
         </div>
 
         <!-- Vista de móviles: Carrusel para otros planes -->
-        <div class="pricing-carousel-container d-md-none">
+        <div class="pricing-carousel-container d-none">
           <div
             id="otherPlansCarouselMobile"
             class="carousel slide"
@@ -807,7 +807,7 @@
                     {{ "OTHER_PLANS_NEW.renewal.description" | transloco }}
                   </p>
                   <a
-                    [langRouterLink]="'wizard/llc-renovacion'"
+                    [langRouterLink]="'renovar-llc'"
                     class="btn-primary mt-auto d-flex align-items-center justify-content-center"
                   >
                     {{ "OTHER_PLANS_NEW.renewal.cta" | transloco }}

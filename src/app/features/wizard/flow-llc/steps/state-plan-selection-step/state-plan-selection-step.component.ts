@@ -121,6 +121,13 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             }
             if (savedData.plan) {
                 this.selectedPlan = savedData.plan;
+                // Emprendedor: estado siempre New Mexico (por si se restauró sin estado)
+                const planObj = this.wizardPlansService.getPlan(savedData.plan);
+                if (planObj && !planObj.states.includes('all') && planObj.states.length === 1 && !savedData.state) {
+                    const autoState = planObj.states[0];
+                    this.selectedState = autoState;
+                    this.form.get('state')?.setValue(autoState);
+                }
             }
         }
 
@@ -188,7 +195,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         
         const selectedPlanObj = this.wizardPlansService.getPlan(planValue);
         if (selectedPlanObj) {
-            // Si el plan solo tiene un estado disponible, seleccionarlo automáticamente
+            // Emprendedor: siempre New Mexico. Premium: solo NM o Wyoming. Elite: cualquier estado.
             if (!selectedPlanObj.states.includes('all') && selectedPlanObj.states.length === 1) {
                 const autoState = selectedPlanObj.states[0];
                 this.selectedState = autoState;
@@ -292,5 +299,14 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     getAvailableStates(): any[] {
         const plan = this.form.get('plan')?.value;
         return this.wizardPlansService.filterAvailableStates(plan, this.usStates);
+    }
+
+    /**
+     * Texto para el tooltip del icono de información del plan
+     */
+    getPlanTooltip(plan: WizardPlan): string {
+        const parts = [plan.description];
+        if (plan.subtitle) parts.push(plan.subtitle);
+        return parts.join(' · ');
     }
 }
