@@ -3,11 +3,12 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
+import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
 
 @Component({
   selector: 'app-support-container',
   standalone: true,
-  imports: [ResponsiveImageComponent, TranslocoPipe],
+  imports: [ResponsiveImageComponent, TranslocoPipe, LangRouterLinkDirective],
   templateUrl: './support-container.component.html',
   styleUrl: './support-container.component.css'
 })
@@ -24,9 +25,13 @@ export class SupportContainerComponent {
   constructor(private facebookPixelService: FacebookPixelService) {}
 
   /**
-   * Trackea cuando el usuario hace clic en el botón de soporte ($99 USD)
+   * Trackea cuando el usuario hace clic en el CTA que lleva al formulario Relay
    */
   onSupportClick(): void {
-    this.facebookPixelService.trackWhatsAppPaidApplication('Banking Services');
+    this.facebookPixelService.trackLead(
+      'Formulario Apertura Relay - Sección soporte',
+      'Banking Services',
+      0
+    );
   }
 }

@@ -695,8 +695,19 @@
       }
     },
     "pricing_options": {
+      "card_unified": {
+        "cta": "Ir al formulario",
+        "title": "Abrí tu cuenta Relay con Start Companies",
+        "list": {
+          "item1": "Completás el formulario",
+          "item2": "Procesamos tus datos",
+          "item3": "Recibís el link de verificación facial",
+          "item4": "Activás tu cuenta",
+          "item5": "100% online"
+        }
+      },
       "card_free": {
-        "cta": "Aplicar gratis",
+        "cta": "Ir al formulario",
         "title": "Completo el formulario por mi cuenta",
         "list": {
           "item1": "Completás el formulario",

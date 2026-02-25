@@ -111,14 +111,8 @@ export class LandingAperturaRelayComponent implements OnInit {
     }
   }
 
-  // Método para trackear click en botón de $99 USD
-  onServiceButtonClick(): void {
-    this.facebookPixelService.trackInitiateCheckout(
-      'Relay Service - $99 USD',
-      'Banking Services',
-      99.0
-    );
-  }
+  // Método para click en botón CTA (sin tracking InitiateCheckout)
+  onServiceButtonClick(): void {}
 
   // Método para trackear vista de planes
   onPlansView(): void {
@@ -128,36 +122,10 @@ export class LandingAperturaRelayComponent implements OnInit {
     );
   }
 
-  // Método para trackear reproducción de video Wistia
-  onWistiaVideoPlay(): void {
-    this.facebookPixelService.trackVideoPlay(
-      'Relay Banking Service',
-      'Wistia Video',
-      'Apertura Relay Landing'
-    );
-  }
-
-  // Método para trackear reproducción de video YouTube
-  onYouTubeVideoPlay(): void {
-    this.facebookPixelService.trackVideoPlay(
-      'Relay Banking Service',
-      'YouTube Video',
-      'Apertura Relay Landing'
-    );
-  }
-
   // Método para trackear click en Trustpilot
   onTrustpilotClick(): void {
     this.facebookPixelService.trackViewContent(
       'Trustpilot Reviews',
-      'Social Proof'
-    );
-  }
-
-  // Método para trackear interacción con testimonios
-  onTestimonialsInteraction(): void {
-    this.facebookPixelService.trackViewContent(
-      'Customer Testimonials',
       'Social Proof'
     );
   }
