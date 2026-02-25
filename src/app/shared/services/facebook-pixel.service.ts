@@ -138,10 +138,6 @@ export class FacebookPixelService {
   }
 
   /**
-   * Inicializa el pixel de Facebook según la página
-   * @param pageType - Tipo de página ('llc' o 'relay')
-   */
-  /**
    * Verifica si Facebook está auto-inicializando el pixel ESPECÍFICO que necesitamos
    * Espera hasta que los scripts se carguen (hasta 3 segundos para dar tiempo a GTM)
    * IMPORTANTE: Solo retorna true si Facebook está inicializando el pixel EXACTO que necesitamos
@@ -222,7 +218,12 @@ export class FacebookPixelService {
     });
   }
 
-  initializePixel(pageType: PageType): void {
+  /**
+   * Inicializa el pixel de Facebook según la página
+   * @param pageType - Tipo de página ('llc' o 'relay')
+   * @param options - skipAutoPageView: si true, no envía PageView automático al init (para uso global + PageView explícito)
+   */
+  initializePixel(pageType: PageType, options?: { skipAutoPageView?: boolean }): void {
     // Solo inicializa el píxel si estamos en el navegador
     if (!this.browser.isBrowser) {
       this.debugLog('⚠️ No se puede inicializar pixel en servidor (SSR)');
@@ -351,33 +352,36 @@ export class FacebookPixelService {
             }
 
             win.fbq('init', pixelId);
-            // IMPORTANTE: NO trackear PageView aquí porque:
-            // 1. Si Facebook está inicializando, ya trackea PageView automáticamente
-            // 2. Si nosotros inicializamos, fbq('init') ya puede haber trackeado PageView automáticamente
-            // 3. Trackear PageView dos veces causa el error "pixel activated 2 times"
-            // Solo trackear PageView si realmente es necesario (cuando nosotros inicializamos manualmente)
-            // Pero esperar un momento para verificar si Facebook ya lo hizo
-            setTimeout(() => {
-              // Verificar si Facebook está manejando el pixel
-              const configScript = doc.querySelector(`script[src*="signals/config/${pixelId}"]`);
-              if (!configScript && win.fbq) {
-                // Solo trackear PageView si nosotros inicializamos y Facebook NO está manejando
-                // Pero verificar si ya fue trackeado revisando la cola
-                const queue = (win as any)._fbq?.queue || [];
-                const hasPageView = queue.some((event: any[]) => {
-                  return event && event[0] === 'track' && event[1] === 'PageView';
-                });
-                
-                if (!hasPageView) {
-                  win.fbq('track', 'PageView');
-                  this.debugLog(`✅ PageView trackeado para pixel ${pageType} (inicializado manualmente)`);
+            // skipAutoPageView: usado cuando el PageView se envía desde el flujo global (todas las páginas no-LP)
+            if (!options?.skipAutoPageView) {
+              // IMPORTANTE: NO trackear PageView aquí porque:
+              // 1. Si Facebook está inicializando, ya trackea PageView automáticamente
+              // 2. Si nosotros inicializamos, fbq('init') ya puede haber trackeado PageView automáticamente
+              // 3. Trackear PageView dos veces causa el error "pixel activated 2 times"
+              // Solo trackear PageView si realmente es necesario (cuando nosotros inicializamos manualmente)
+              // Pero esperar un momento para verificar si Facebook ya lo hizo
+              setTimeout(() => {
+                // Verificar si Facebook está manejando el pixel
+                const configScript = doc.querySelector(`script[src*="signals/config/${pixelId}"]`);
+                if (!configScript && win.fbq) {
+                  // Solo trackear PageView si nosotros inicializamos y Facebook NO está manejando
+                  // Pero verificar si ya fue trackeado revisando la cola
+                  const queue = (win as any)._fbq?.queue || [];
+                  const hasPageView = queue.some((event: any[]) => {
+                    return event && event[0] === 'track' && event[1] === 'PageView';
+                  });
+                  
+                  if (!hasPageView) {
+                    win.fbq('track', 'PageView');
+                    this.debugLog(`✅ PageView trackeado para pixel ${pageType} (inicializado manualmente)`);
+                  } else {
+                    this.debugLog(`ℹ️ PageView ya fue trackeado, omitiendo`);
+                  }
                 } else {
-                  this.debugLog(`ℹ️ PageView ya fue trackeado, omitiendo`);
+                  this.debugLog(`ℹ️ PageView no trackeado (Facebook está manejando el pixel)`);
                 }
-              } else {
-                this.debugLog(`ℹ️ PageView no trackeado (Facebook está manejando el pixel)`);
-              }
-            }, 200);
+              }, 200);
+            }
             
             this.debugLog(`✅ Pixel ${pageType} inicializado correctamente por nuestro código`);
           } catch (error) {

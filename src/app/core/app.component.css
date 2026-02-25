@@ -18,3 +18,123 @@
   margin-top: auto;
   flex-shrink: 0;
 }
+
+/* ========== Skeleton mientras cargan las traducciones i18n ========== */
+.skeleton-loader {
+  min-height: 100vh;
+  background: var(--color-fondo-claro, #f8f9fa);
+  padding: 1.5rem;
+}
+
+.skeleton-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-logo {
+  width: 140px;
+  height: 40px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.skeleton-nav-item {
+  width: 60px;
+  height: 20px;
+  display: inline-block;
+}
+
+.skeleton-content {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+
+.skeleton-hero {
+  margin-bottom: 2rem;
+}
+
+.skeleton-title {
+  height: 2rem;
+  width: 85%;
+  max-width: 400px;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+}
+
+.skeleton-subtitle {
+  height: 1.25rem;
+  width: 60%;
+  max-width: 280px;
+  border-radius: 6px;
+}
+
+.skeleton-blocks {
+  margin-bottom: 1.5rem;
+}
+
+.skeleton-line {
+  height: 1rem;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.06) 25%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.06) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeleton-line:last-child {
+  margin-bottom: 0;
+}
+
+.skeleton-line-short {
+  width: 70%;
+}
+
+.skeleton-line-mid {
+  width: 90%;
+}
+
+.skeleton-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.skeleton-footer-line {
+  max-width: 400px;
+  margin: 0 auto 0.5rem;
+}
+
+.skeleton-footer-line:last-child {
+  margin-bottom: 0;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

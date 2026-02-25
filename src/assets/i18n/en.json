@@ -698,8 +698,19 @@
       }
     },
     "pricing_options": {
+      "card_unified": {
+        "cta": "Go to form",
+        "title": "Open your Relay account with Start Companies",
+        "list": {
+          "item1": "You complete the form",
+          "item2": "We process your data",
+          "item3": "You receive the facial verification link",
+          "item4": "You activate your account",
+          "item5": "100% online"
+        }
+      },
       "card_free": {
-        "cta": "Apply for free",
+        "cta": "Go to form",
         "title": "I complete the form on my own",
         "list": {
           "item1": "You complete the form",
