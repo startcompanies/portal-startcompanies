@@ -1,5 +1,53 @@
 /* Estilos para el componente wrapper de información de renovación LLC */
 
+/* Contenedor del paso: flex para que el formulario pueda hacer scroll sin desbordar */
+.wizard-renovacion-llc-information-step {
+  display: flex;
+  flex-direction: column;
+  max-height: min(calc(100vh - 220px), 72rem);
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Área del formulario con scroll interno (evita scroll de toda la página) */
+.wizard-renovacion-llc-information-step .llc-form-container {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.wizard-renovacion-llc-information-step .llc-form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.wizard-renovacion-llc-information-step .llc-form-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.wizard-renovacion-llc-information-step .llc-form-container::-webkit-scrollbar-thumb {
+  background: #006afe;
+  border-radius: 4px;
+}
+
+.wizard-renovacion-llc-information-step .llc-form-container::-webkit-scrollbar-thumb:hover {
+  background: #02b8d0;
+}
+
+/* Botones de navegación entre secciones: fijos abajo, no en scroll */
+.wizard-renovacion-llc-information-step .d-flex.border-top {
+  flex-shrink: 0;
+}
+
+/* Alert de estado arriba: no comprimir */
+.wizard-renovacion-llc-information-step > .alert {
+  flex-shrink: 0;
+}
+
 /* Botones de navegación entre secciones */
 .wizard-renovacion-llc-information-step .btn-primary {
   background-color: #006afe;

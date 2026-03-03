@@ -41,7 +41,6 @@ import { WizardCuentaBancariaInformationStepComponent } from './steps/wizard-cue
   standalone: true,
   imports: [
     CommonModule,
-    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardPaymentStepComponent,
@@ -240,7 +239,7 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   private initializeStepTitles(): void {
-    const translationKeys = this.flowConfig.steps.map((step: any) => 
+    const translationKeys = this.flowConfig.steps.map((step: any) =>
       this.transloco.selectTranslate(step.translationKey)
     );
 
@@ -249,6 +248,16 @@ export class CuentaBancariaComponent implements OnInit {
         this.stepTitles[step.stepNumber] = translations[index];
       });
     });
+  }
+
+  /** Etiqueta del paso para el indicador móvil (solo presentación). */
+  getStepLabelForIndex(index: number): string {
+    if (this.withPayment) {
+      const labels = ['Registro Básico', 'Pago', 'Datos de Cuenta Bancaria', 'Revisión Final'];
+      return labels[index] ?? 'Paso';
+    }
+    const labels = ['Registro Básico', 'Datos de Cuenta Bancaria', 'Revisión Final'];
+    return labels[index] ?? 'Paso';
   }
 
   async onStepChanged(index: number): Promise<void> {

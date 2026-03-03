@@ -3,12 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 // Componentes de paso
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -40,14 +38,13 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardStatePlanSelectionStepComponent,
     WizardPaymentStepComponent,
     WizardLlcInformationStepComponent,
-    WizardFinalReviewStepComponent,
-  ],
+    WizardFinalReviewStepComponent
+],
   templateUrl: './llc-apertura.component.html',
   styleUrls: ['./llc-apertura.component.css']
 })
@@ -86,8 +83,7 @@ export class LLCAperturaComponent implements OnInit {
     private wizardApiService: WizardApiService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
-    private router: Router,
-    private http: HttpClient
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -164,29 +160,29 @@ export class LLCAperturaComponent implements OnInit {
 
   /**
    * Navega al siguiente paso
-   * - Paso 1: Registra al usuario si no está autenticado
+   * - Paso 1: Registra al usuario si no está autenticado (misma lógica que flow-cuenta-bancaria)
    * - Paso 3: Procesa el pago y crea el request
    * - Paso 4+: Actualiza el request existente
    */
-  async nextStep(): Promise<void> {
+  async nextStep(): Promise<void> {    
     this.errorMessage = null;
     
-    // Si estamos en el paso 1 (registro), intentar registrar primero
+    // Paso 1 (registro): misma lógica que flow-cuenta-bancaria
     if (this.currentStep === 1 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
-        // Si ya está mostrando verificación, no hacer nada
         return;
       }
-      
+
       if (this.registerStep) {
         const registered = await this.registerStep.registerUser();
         if (!registered) {
-          // Si retorna false, significa que necesita verificación de email
           const stepData = this.wizardStateService.getStepData(1);
-          if (stepData.email) {
+          if (stepData?.email) {
             this.registeredEmail = stepData.email;
             this.registeredPassword = stepData.password || '';
             this.showEmailVerification = true;
+          } else {
+            this.errorMessage = this.registerStep.errorMessage || 'Por favor, completa todos los campos requeridos (nombre, email, contraseña).';
           }
           return;
         }
@@ -463,10 +459,7 @@ export class LLCAperturaComponent implements OnInit {
       formData.append('requestUuid', requestId.toString());
       
       const uploadResponse = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
       
       if (uploadResponse && uploadResponse.url) {
