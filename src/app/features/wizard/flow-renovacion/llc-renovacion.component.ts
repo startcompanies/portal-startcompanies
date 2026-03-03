@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -36,7 +34,6 @@ import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-reno
   standalone: true,
   imports: [
     CommonModule,
-    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardStateSelectionStepComponent,
@@ -158,8 +155,7 @@ export class LLCRenovacionComponent implements OnInit {
     private languageService: LanguageService,
     public translocoService: TranslocoService,
     private router: Router,
-    private fb: FormBuilder,
-    private http: HttpClient
+    private fb: FormBuilder
   ) {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
@@ -258,25 +254,27 @@ export class LLCRenovacionComponent implements OnInit {
 
   /**
    * Navega al siguiente paso asegurando el flujo de registro → verificación de email.
+   * Paso 1: misma lógica que flow-cuenta-bancaria.
    */
   async nextStep(): Promise<void> {
     this.errorMessage = null;
 
-    // Paso 1 (index 0): registro + verificación
+    // Paso 1 (index 0): registro + verificación (misma lógica que flow-cuenta-bancaria)
     if (this.currentStepIndex === 0 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
-        return; // ya está en verificación
+        return;
       }
 
       if (this.registerStep) {
         const registered = await this.registerStep.registerUser();
         if (!registered) {
-          // Si retorna false, significa que necesita verificación de email
           const stepData = this.wizardStateService.getStepData(1);
-          if (stepData.email) {
+          if (stepData?.email) {
             this.registeredEmail = stepData.email;
             this.registeredPassword = stepData.password || '';
             this.showEmailVerification = true;
+          } else {
+            this.errorMessage = this.registerStep.errorMessage || 'Por favor, completa todos los campos requeridos (nombre, email, contraseña).';
           }
           return;
         }
@@ -627,10 +625,7 @@ export class LLCRenovacionComponent implements OnInit {
       formData.append('requestUuid', requestId.toString());
       
       const uploadResponse = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
       
       if (uploadResponse && uploadResponse.url) {

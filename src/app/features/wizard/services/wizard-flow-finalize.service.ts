@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import { WizardApiService } from './wizard-api.service';
 import { WizardStateService } from './wizard-state.service';
 import { ServiceType } from '../../../shared/models/request-flow-context';
 
 /**
  * Finalización unificada del wizard:
- * - sube firma (opcional)
+ * - sube firma (opcional) vía apiUrl
  * - actualiza estado a "solicitud-recibida"
  * - limpia estado + tokens
  */
 @Injectable({ providedIn: 'root' })
 export class WizardFlowFinalizeService {
   constructor(
-    private http: HttpClient,
     private wizardApiService: WizardApiService,
     private wizardStateService: WizardStateService
   ) {}
@@ -59,7 +56,7 @@ export class WizardFlowFinalizeService {
       formData.append('requestUuid', requestId.toString());
 
       const uploadResponse = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(`${environment.apiUrl}/upload-file`, formData)
+        this.wizardApiService.uploadFile(formData)
       );
 
       return uploadResponse?.url || null;

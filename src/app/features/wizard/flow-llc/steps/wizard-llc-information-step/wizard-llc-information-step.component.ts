@@ -1,13 +1,11 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
 import { AperturaLlcFormComponent } from '../../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -96,8 +94,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private fb: FormBuilder,
-    private http: HttpClient
+    private fb: FormBuilder
   ) {
     // Inicializar formulario con estructura de apertura-llc-form
     // Campos con Validators.required son obligatorios
@@ -348,10 +345,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       }
 
       const response = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
 
       if (response && response.url) {

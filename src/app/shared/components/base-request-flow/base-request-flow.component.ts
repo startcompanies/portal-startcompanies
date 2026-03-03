@@ -8,7 +8,9 @@ import { RequestFlowConfigService } from '../../services/request-flow-config.ser
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-indicator.component';
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
+import { WizardApiService } from '../../../features/wizard/services/wizard-api.service';
 import { DraftRequestService } from '../../services/draft-request.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Componente base abstracto para manejar flujos de solicitud unificados
@@ -113,6 +115,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
 
   private envInjector = inject(EnvironmentInjector);
   private wizardStateService = inject(WizardStateService, { optional: true });
+  private wizardApiService = inject(WizardApiService, { optional: true });
   private draftRequestService = inject(DraftRequestService, { optional: true });
   
   // Propiedades para manejo de borradores
@@ -409,7 +412,17 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    */
   async nextStep(): Promise<void> {
     const currentStep = this.flowSteps[this.currentStepIndex];
-    
+
+    // Paso REGISTER (wizard): llamar registerUser() antes de validar/avanzar (igual que flow-cuenta-bancaria)
+    if (currentStep?.step === RequestFlowStep.REGISTER && this.context === RequestFlowContext.WIZARD && this.stepComponentRef?.instance) {
+      const instance = this.stepComponentRef.instance as any;
+      if (typeof instance.registerUser === 'function') {
+        const registered = await instance.registerUser();
+        // Si retorna false = usuario creado pero debe verificar email → igual avanzamos al paso EMAIL_VERIFICATION
+        // saveStepState ya guardará los datos que el componente haya puesto en el estado
+      }
+    }
+
     // Validar paso actual
     if (!await this.validateStep(currentStep)) {
       return;
@@ -523,6 +536,52 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.successMessage = null;
     this.currentStepValid = true;
   }
+
+  /**
+   * Maneja el reenvío del código de verificación (paso EMAIL_VERIFICATION en wizard).
+   * Llama al API y notifica al componente hijo para que quite el loading (notifyResendResult).
+   */
+  private async handleResendCode(stepInstance: any): Promise<void> {
+    if (!this.wizardStateService || !this.wizardApiService || typeof stepInstance?.notifyResendResult !== 'function') {
+      stepInstance?.notifyResendResult?.(false, 'Configuración incompleta. Intenta de nuevo.');
+      return;
+    }
+    const stepData = this.wizardStateService.getStepData(1) || {};
+    const email = stepData.email;
+    const password = stepData.password;
+    const fullName = stepData.fullName || `${stepData.firstName || ''} ${stepData.lastName || ''}`.trim();
+    const phone = stepData.phone;
+
+    if (!email || !password) {
+      stepInstance.notifyResendResult(false, 'No se encontró el email o contraseña. Vuelve al paso de registro.');
+      return;
+    }
+
+    try {
+      const nameParts = fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      await firstValueFrom(this.wizardApiService.register({
+        firstName,
+        lastName,
+        email,
+        phone: phone || undefined,
+        password
+      }));
+
+      stepInstance.notifyResendResult(true, 'Código de verificación reenviado. Revisa tu bandeja de entrada.');
+    } catch (error: any) {
+      if (error?.error?.message?.includes('confirmado')) {
+        stepInstance.notifyResendResult(true, 'Tu email ya está confirmado. Puedes continuar.');
+        this.currentStepValid = true;
+        this.nextStep();
+      } else {
+        const msg = error?.error?.message || 'Error al reenviar el código. Intenta de nuevo.';
+        stepInstance.notifyResendResult(false, msg);
+      }
+    }
+  }
   
   /**
    * Obtiene los inputs para pasar al componente del paso
@@ -622,9 +681,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Verifica si se puede proceder al siguiente paso
+   * Verifica si se puede proceder al siguiente paso.
+   * En REGISTER y EMAIL_VERIFICATION (wizard) el botón no se deshabilita: misma lógica que flow-cuenta-bancaria
+   * (la validación/registro se hace al hacer click en nextStep()).
    */
   protected canProceedToNext(): boolean {
+    const current = this.getCurrentStep();
+    if (current && (current.step === RequestFlowStep.REGISTER || current.step === RequestFlowStep.EMAIL_VERIFICATION)) {
+      return true;
+    }
     return this.currentStepValid;
   }
   
@@ -805,6 +870,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       });
       // Avanzar al siguiente paso
       this.nextStep();
+    });
+
+    // Wizard: reenviar código de verificación (evitar que isResending quede en true)
+    subscribeIfEmitter('resendRequested', () => {
+      this.handleResendCode(instance);
     });
 
     // Pago
