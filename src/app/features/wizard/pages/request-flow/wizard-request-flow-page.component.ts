@@ -4,11 +4,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
 import { RequestFlowConfigService } from '../../../../shared/services/request-flow-config.service';
+import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-wizard-request-flow-page',
   standalone: true,
-  imports: [CommonModule, WizardRequestFlowComponent],
+  imports: [CommonModule, WizardRequestFlowComponent, ResponsiveImageComponent],
   templateUrl: './wizard-request-flow-page.component.html',
   styleUrls: ['./wizard-request-flow-page.component.css'],
 })
@@ -16,6 +17,15 @@ export class WizardRequestFlowPageComponent implements OnInit {
   serviceType: ServiceType | null = null;
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
+
+  logoImages = {
+    mobile: '/assets/logo-mobile.webp',
+    tablet: '/assets/logo-tablet.webp',
+    desktop: '/assets/logo.webp',
+    fallback: '/assets/logo.webp',
+    alt: 'Start Companies Logo',
+    priority: false,
+  };
 
   constructor(
     private route: ActivatedRoute,

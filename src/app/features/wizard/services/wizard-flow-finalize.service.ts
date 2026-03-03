@@ -28,6 +28,11 @@ export class WizardFlowFinalizeService {
       signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
     }
 
+    // Leer datos del wizard para obtener información adicional del flujo
+    const allData = this.wizardStateService.getAllData();
+    const step2 = allData?.step2 || {};
+    const plan = step2?.plan;
+
     const updateData: any = {
       type: serviceType,
       status: 'solicitud-recibida',
@@ -35,6 +40,15 @@ export class WizardFlowFinalizeService {
 
     if (signatureUrl) {
       updateData.signatureUrl = signatureUrl;
+    }
+
+    // Para apertura-llc, propagar el plan seleccionado también en la actualización final
+    if (serviceType === 'apertura-llc' && plan) {
+      updateData.plan = plan;
+      updateData.aperturaLlcData = {
+        ...(updateData.aperturaLlcData || {}),
+        plan,
+      };
     }
 
     await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));

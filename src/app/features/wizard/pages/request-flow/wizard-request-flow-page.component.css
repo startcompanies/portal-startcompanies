@@ -53,6 +53,16 @@
   flex-shrink: 0;
 }
 
+:host .wizard-panel__logo {
+  margin-bottom: 1.5rem;
+}
+
+:host .wizard-sidebar-logo {
+  width: 140px;
+  height: 40px;
+  display: block;
+}
+
 :host .wizard-panel__service {
   display: block;
   font-size: 1.125rem;

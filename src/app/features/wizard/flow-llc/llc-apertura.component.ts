@@ -389,7 +389,7 @@ export class LLCAperturaComponent implements OnInit {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
-    
+
     // Verificar que existe un request
     if (!requestId) {
       this.errorMessage = 'Error: No se encontró la solicitud. Por favor, completa el pago primero.';
@@ -408,6 +408,11 @@ export class LLCAperturaComponent implements OnInit {
         signatureUrl = await this.uploadSignature(event.signature, requestId);
       }
 
+      // Leer datos del wizard para obtener el plan seleccionado en el paso de Estado/Plan
+      const allData = this.wizardStateService.getAllData();
+      const step2 = allData?.step2 || {};
+      const plan = step2?.plan;
+
       // Actualizar el estado y la firma
       const updateData: any = {
         type: 'apertura-llc',
@@ -416,6 +421,15 @@ export class LLCAperturaComponent implements OnInit {
       
       if (signatureUrl) {
         updateData.signatureUrl = signatureUrl;
+      }
+
+      // Si hay plan, incluirlo tanto en el campo plano como dentro de aperturaLlcData
+      if (plan) {
+        updateData.plan = plan;
+        updateData.aperturaLlcData = {
+          ...(updateData.aperturaLlcData || {}),
+          plan,
+        };
       }
 
       console.log('[LLCAperturaComponent] Actualizando estado de solicitud:', requestId, updateData);

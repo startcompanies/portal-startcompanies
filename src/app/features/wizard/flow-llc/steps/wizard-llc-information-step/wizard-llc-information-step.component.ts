@@ -6,6 +6,7 @@ import { WizardApiService } from '../../../services/wizard-api.service';
 import { AperturaLlcFormComponent } from '../../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
+import { WizardPlansService } from '../../../services/wizard-plans.service';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -94,7 +95,8 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private wizardPlansService: WizardPlansService
   ) {
     // Inicializar formulario con estructura de apertura-llc-form
     // Campos con Validators.required son obligatorios
@@ -172,13 +174,14 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
-    // Obtener el estado seleccionado del paso anterior (estado y plan) PRIMERO
-    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
+    // Obtener el estado/plan seleccionado de forma robusta (independiente del número exacto de paso)
+    const statePlanData = this.getStatePlanData();
+    const normalizedPlanCode = this.normalizePlanCode(statePlanData?.plan);
     
     // Regla de negocio:
     // - Pack Premium: solo Single Member (New Mexico o Wyoming)
     // - Pack Emprendedor: solo Single Member (New Mexico)
-    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    this.forceSingleMember = this.isSingleMemberOnlyPlan(normalizedPlanCode);
     
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -231,7 +234,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     }
 
     // Estado según plan: Emprendedor = siempre New Mexico; Elite = elegido; Premium = NM o Wyoming
-    if (statePlanData?.plan === 'Entrepreneur') {
+    if (normalizedPlanCode === 'Entrepreneur') {
       const nmState = 'New Mexico';
       this.serviceDataForm.get('incorporationState')?.setValue(nmState);
       this.serviceDataForm.get('incorporationState')?.disable(); // Fijo, no editable
@@ -293,6 +296,73 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    */
   private saveStepData(): void {
     this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.getRawValue());
+  }
+
+  /**
+   * Obtiene los datos de estado/plan del wizard de forma robusta, sin depender
+   * únicamente de previousStepNumber (que puede variar entre flujos o configuraciones).
+   */
+  private getStatePlanData(): any {
+    // 1) Intentar con el paso indicado explícitamente
+    const fromPrevious = this.wizardStateService.getStepData(this.previousStepNumber) || {};
+    if (fromPrevious && (fromPrevious.plan || fromPrevious.state)) {
+      return fromPrevious;
+    }
+
+    // 2) Usar getAllData para localizar el paso que contiene el plan/estado
+    const allData: any = (this.wizardStateService as any).getAllData
+      ? (this.wizardStateService as any).getAllData()
+      : null;
+
+    if (allData) {
+      // Priorizar step2 (selección estado/plan clásico)
+      if (allData.step2 && (allData.step2.plan || allData.step2.state)) {
+        return allData.step2;
+      }
+      // Luego step3 (cuando el plan se haya guardado ahí)
+      if (allData.step3 && (allData.step3.plan || allData.step3.state)) {
+        return allData.step3;
+      }
+    }
+
+    // Fallback: devolver lo que venga de previousStepNumber aunque esté incompleto
+    return fromPrevious;
+  }
+
+  /**
+   * Normaliza el código de plan a los valores internos del sistema
+   * (Entrepreneur, Elite, Premium) independientemente de si llega el value o el label.
+   */
+  private normalizePlanCode(rawPlan: string | null | undefined): string | null {
+    if (!rawPlan) {
+      return null;
+    }
+
+    // 1) Intentar por value directo (Entrepreneur/Elite/Premium)
+    const byValue = this.wizardPlansService.getPlan(rawPlan);
+    if (byValue) {
+      return byValue.value;
+    }
+
+    // 2) Intentar por label (ej. 'Pack Emprendedor', 'Pack Premium')
+    const allPlans = this.wizardPlansService.getPlans();
+    const byLabel = allPlans.find(p => p.label === rawPlan);
+    if (byLabel) {
+      return byLabel.value;
+    }
+
+    // 3) Fallback: devolver el plan como viene
+    return rawPlan;
+  }
+
+  /**
+   * Indica si el plan es de tipo \"solo Single Member\" (Emprendedor / Premium).
+   */
+  private isSingleMemberOnlyPlan(planCode: string | null | undefined): boolean {
+    if (!planCode) {
+      return false;
+    }
+    return planCode === 'Entrepreneur' || planCode === 'Premium';
   }
 
   /**
