@@ -127,8 +127,5 @@
     <div *ngIf="errorMessage && !stripePaymentProcessed && !transferenciaProcessed" class="alert alert-danger mt-2 py-2 small">
       <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
     </div>
-    <div *ngIf="(stripePaymentProcessed || transferenciaProcessed) && !errorMessage" class="alert alert-success mt-2 py-2 small">
-      <i class="bi bi-check-circle-fill me-2"></i><strong>Pago registrado.</strong> Puedes continuar al siguiente paso.
-    </div>
   </form>
 </div>

@@ -56,9 +56,9 @@ import { firstValueFrom } from 'rxjs';
           Anterior
         </button>
         <div *ngIf="(!canGoBack() || isServiceFormStep()) && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
-        <!-- En última sección de Información de la LLC el Siguiente va dentro del paso (mismo diseño que Siguiente Sección) -->
+        <!-- En Información del Servicio la navegación (Siguiente Sección / Siguiente) va siempre dentro del paso; no mostrar botón del base -->
         <button 
-          *ngIf="canGoNext() && (!isServiceFormStep() || !isInLastSectionOfServiceForm())" 
+          *ngIf="canGoNext() && !isServiceFormStep()" 
           type="button"
           class="btn btn-primary"
           (click)="nextStep()"
@@ -515,12 +515,13 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Si hay borrador activo y estamos en panel, hacer autosave inmediato
+    // Si hay borrador activo y estamos en panel, hacer autosave y esperar antes de avanzar (p. ej. última sección del formulario de servicio)
     if (this.draftRequestId && this.draftRequestService && this.context !== RequestFlowContext.WIZARD) {
-      // Trigger autosave después de un pequeño delay para evitar múltiples llamadas
-      setTimeout(() => {
-        this.performAutosave();
-      }, 500);
+      if (step.step === RequestFlowStep.SERVICE_FORM) {
+        await this.performAutosave();
+      } else {
+        setTimeout(() => this.performAutosave(), 500);
+      }
     }
     
     // Los datos ya están guardados por el componente del paso en flowStateService
@@ -966,15 +967,30 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       this.currentStepValid = true;
     });
     
-    // Service form: cambios de sección
+    // Service form: cambios de sección — persistir datos del formulario y luego actualizar sección
     subscribeIfEmitter('sectionChanged', (section: number) => {
-      // Guardar la sección actual
       const currentData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM) || {};
+      // Obtener datos actuales del componente del paso si expone getFormData (wizard y panel)
+      if (this.stepComponentRef?.instance && typeof (this.stepComponentRef.instance as any).getFormData === 'function') {
+        try {
+          const formData = (this.stepComponentRef.instance as any).getFormData();
+          Object.assign(currentData, formData);
+        } catch (e) {
+          console.warn('[BaseRequestFlowComponent] sectionChanged: no se pudo obtener getFormData', e);
+        }
+      }
       this.flowStateService.setStepData(RequestFlowStep.SERVICE_FORM, {
         ...currentData,
         currentSection: section
       });
-      // Actualizar el borrador al cambiar de sección (panel) para asegurar que se envían bien los datos
+      // Sincronizar con WizardStateService en wizard
+      if (this.context === RequestFlowContext.WIZARD && this.wizardStateService && currentData && Object.keys(currentData).length > 0) {
+        const stepConfig = this.flowSteps[this.currentStepIndex];
+        if (stepConfig?.order != null) {
+          this.wizardStateService.setStepData(stepConfig.order, currentData);
+        }
+      }
+      // Actualizar el borrador al cambiar de sección (panel)
       if (this.draftRequestId && this.draftRequestService && this.context !== RequestFlowContext.WIZARD) {
         setTimeout(() => this.performAutosave(), 300);
       }

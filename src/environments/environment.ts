@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
   staging: false,
-  apiUrl: 'http://localhost:3002',
+  apiUrl: 'http://localhost:3000',
   //apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/blog/posts/get-sandbox-posts',
   categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',

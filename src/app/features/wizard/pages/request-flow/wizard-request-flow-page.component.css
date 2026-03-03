@@ -196,18 +196,18 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 1rem 1.5rem 1rem;
+  justify-content: flex-start;
+  padding: 2rem 1.5rem 2rem;
   background: #fff;
 }
 
-/* Card del formulario: una sola tarjeta, poco padding para caber en una pantalla */
-:host .wizard-main {
+/* Card del formulario: una sola tarjeta, ancho generoso para formularios de dos columnas */
+:host .wizard-panel--right app-wizard-request-flow.wizard-main {
   flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 640px;
+  max-width: 860px;
   width: 100%;
   padding: 1.5rem 2rem 1.5rem;
   min-height: min-content;
@@ -217,29 +217,20 @@
   border: 1px solid rgba(40, 58, 72, 0.06);
 }
 
-/* De enfrente: solo el contenido, sin segunda card (sin borde ni sombra) */
-:host .wizard-main__body {
-  background: transparent;
-  border-radius: 0;
-  padding: 0;
-  box-shadow: none;
-  border: none;
-}
-
-/* Contenido del flujo dentro del body: sin contenedor extra */
-:host .wizard-main__body app-base-request-flow .base-request-flow-container {
+/* Contenido del flujo dentro del wizard: sin contenedor extra */
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .base-request-flow-container {
   max-width: 100%;
   padding: 0;
 }
 
-:host .wizard-main__body app-base-request-flow .flow-content {
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-content {
   min-height: 0;
   padding: 0;
 }
 
 /* Quitar sombra y card interna del step-wrapper (el formulario ya va en la card wizard-main) */
-:host ::ng-deep .wizard-main__body app-base-request-flow .step-wrapper,
-:host .wizard-main__body app-base-request-flow .step-wrapper {
+:host ::ng-deep .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .step-wrapper,
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .step-wrapper {
   background: transparent;
   padding: 0;
   box-shadow: none !important;
@@ -247,19 +238,19 @@
   border-radius: 0;
 }
 
-:host .wizard-main__body app-base-request-flow .flow-actions {
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions {
   margin-top: 2rem;
   padding-top: 1.75rem;
   border-top: 1px solid rgba(40, 58, 72, 0.08);
 }
 
-:host .wizard-main__body app-base-request-flow .flow-actions .btn-primary {
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions .btn-primary {
   background: var(--color-secundario-tecnico);
   border-color: var(--color-secundario-tecnico);
 }
 
-:host .wizard-main__body app-base-request-flow .flow-actions .btn-outline-secondary,
-:host .wizard-main__body app-base-request-flow .flow-actions a.btn-outline-secondary {
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions .btn-outline-secondary,
+:host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions a.btn-outline-secondary {
   background: #fff;
   border: 1px solid rgba(0, 106, 254, 0.45);
   color: var(--color-secundario-tecnico);
@@ -345,14 +336,10 @@
     font-size: 0.875rem;
   }
 
-  :host .wizard-main {
+  :host .wizard-panel--right app-wizard-request-flow.wizard-main {
     padding: 1rem 1rem 1rem;
     justify-content: flex-start;
     border-radius: 14px;
-  }
-
-  :host .wizard-main__body {
-    padding: 0;
   }
 }
 
@@ -387,12 +374,8 @@
     font-size: 0.65rem;
   }
 
-  :host .wizard-main {
+  :host .wizard-panel--right app-wizard-request-flow.wizard-main {
     padding: 1rem 0.875rem 1rem;
     border-radius: 12px;
-  }
-
-  :host .wizard-main__body {
-    padding: 0;
   }
 }

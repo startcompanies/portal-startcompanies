@@ -27,8 +27,8 @@
     ></app-apertura-llc-form>
   </div>
   
-  <!-- Navegación entre secciones (sección 3: Siguiente va aquí mismo, mismo diseño que Siguiente Sección) -->
-  <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+  <!-- Barra de acciones fija (misma posición visual que flow-actions del base) -->
+  <div class="service-form-actions d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
     <button 
       type="button" 
       class="btn btn-outline-secondary"
@@ -54,12 +54,13 @@
     <button 
       type="button" 
       class="btn btn-primary"
-      (click)="nextStepRequested.emit()"
-      [disabled]="!isSectionValid()"
+      (click)="onLastSectionNext()"
+      [disabled]="!isSectionValid() || isSaving"
       *ngIf="currentSection === 3"
     >
-      Siguiente
-      <i class="bi bi-arrow-right ms-1"></i>
+      <span *ngIf="!isSaving">Siguiente</span>
+      <span *ngIf="isSaving"><span class="spinner-border spinner-border-sm me-1"></span>Guardando...</span>
+      <i class="bi bi-arrow-right ms-1" *ngIf="!isSaving"></i>
     </button>
   </div>
 </div>

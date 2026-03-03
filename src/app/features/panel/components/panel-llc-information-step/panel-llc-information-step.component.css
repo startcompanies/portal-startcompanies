@@ -24,6 +24,7 @@
   margin-top: 1.5rem;
 }
 
+/* Barra de acciones fija (misma posición visual que flow-actions del base) */
 .section-actions {
   display: flex;
   justify-content: space-between;
@@ -31,6 +32,7 @@
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid #e9ecef;
+  min-height: 52px;
 }
 
 .section-actions .btn {

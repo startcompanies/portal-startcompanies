@@ -579,5 +579,25 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       this.isSaving = false;
     }
   }
+
+  /**
+   * Devuelve los datos del formulario para que el base los persista al avanzar.
+   */
+  getFormData(): Record<string, unknown> {
+    return this.serviceDataForm.value as Record<string, unknown>;
+  }
+
+  /**
+   * Al pulsar "Siguiente" en la última sección: guardar estado, persistir en API y luego emitir nextStepRequested.
+   */
+  async onLastSectionNext(): Promise<void> {
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    this.saveStepData();
+    await this.saveToApi();
+    this.nextStepRequested.emit();
+  }
 }
 

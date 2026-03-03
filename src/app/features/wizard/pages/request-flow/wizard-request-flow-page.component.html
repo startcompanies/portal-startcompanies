@@ -45,14 +45,11 @@
 
   <!-- Panel derecho: contenido del flujo -->
   <main class="wizard-panel wizard-panel--right">
-    <div class="wizard-main">
-      <div class="wizard-main__body">
-        <app-wizard-request-flow
-          [serviceType]="serviceType"
-          [hideStepsIndicator]="true"
-          (stepIndexChange)="currentStepIndex = $event"
-        ></app-wizard-request-flow>
-      </div>
-    </div>
+    <app-wizard-request-flow
+      class="wizard-main"
+      [serviceType]="serviceType"
+      [hideStepsIndicator]="true"
+      (stepIndexChange)="currentStepIndex = $event"
+    ></app-wizard-request-flow>
   </main>
 </div>

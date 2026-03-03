@@ -38,6 +38,14 @@
   background: #02b8d0;
 }
 
+/* Barra de acciones fija (misma posición visual que flow-actions del base) */
+.wizard-renovacion-llc-information-step .service-form-actions {
+  flex-shrink: 0;
+  min-height: 52px;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid #e9ecef;
+}
+
 /* Botones de navegación entre secciones: fijos abajo, no en scroll */
 .wizard-renovacion-llc-information-step .d-flex.border-top {
   flex-shrink: 0;

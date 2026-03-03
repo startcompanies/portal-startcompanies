@@ -1,2 +1,11 @@
 /* Estilos para el formulario de Apertura LLC en el Wizard */
 
+.form-section {
+  min-width: 0;
+}
+
+input.form-control,
+select.form-select,
+textarea.form-control {
+  max-width: 100%;
+}

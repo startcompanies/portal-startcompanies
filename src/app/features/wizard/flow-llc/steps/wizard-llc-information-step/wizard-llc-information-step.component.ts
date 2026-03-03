@@ -230,8 +230,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (statePlanData && statePlanData.state) {
-      // Establecer el estado en incorporationState (el estado viene del paso 2)
+    // Estado según plan: Emprendedor = siempre New Mexico; Elite = elegido; Premium = NM o Wyoming
+    if (statePlanData?.plan === 'Entrepreneur') {
+      const nmState = 'New Mexico';
+      this.serviceDataForm.get('incorporationState')?.setValue(nmState);
+      this.serviceDataForm.get('incorporationState')?.disable(); // Fijo, no editable
+      console.log('[WizardLlcInformationStep] Pack Emprendedor: estado fijado a', nmState);
+    } else if (statePlanData && statePlanData.state) {
       const stateValue = statePlanData.state;
       this.serviceDataForm.get('incorporationState')?.setValue(stateValue);
       console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
@@ -583,6 +588,26 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     } finally {
       this.isSaving = false;
     }
+  }
+
+  /**
+   * Devuelve los datos del formulario para que el base los persista al avanzar (getRawValue incluye controles deshabilitados).
+   */
+  getFormData(): Record<string, unknown> {
+    return this.serviceDataForm.getRawValue() as Record<string, unknown>;
+  }
+
+  /**
+   * Al pulsar "Siguiente" en la última sección: guardar estado, persistir en API y luego emitir nextStepRequested.
+   */
+  async onLastSectionNext(): Promise<void> {
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    this.saveStepData();
+    await this.saveToApi();
+    this.nextStepRequested.emit();
   }
 
   onLlcTypeChanged(llcType: string): void {

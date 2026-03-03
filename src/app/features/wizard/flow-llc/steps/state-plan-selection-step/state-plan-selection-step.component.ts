@@ -121,12 +121,13 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             }
             if (savedData.plan) {
                 this.selectedPlan = savedData.plan;
-                // Emprendedor: estado siempre New Mexico (por si se restauró sin estado)
                 const planObj = this.wizardPlansService.getPlan(savedData.plan);
-                if (planObj && !planObj.states.includes('all') && planObj.states.length === 1 && !savedData.state) {
+                // Pack Emprendedor: estado siempre New Mexico y deshabilitado
+                if (planObj && !planObj.states.includes('all') && planObj.states.length === 1) {
                     const autoState = planObj.states[0];
                     this.selectedState = autoState;
                     this.form.get('state')?.setValue(autoState);
+                    this.form.get('state')?.disable();
                 }
             }
         }
@@ -148,11 +149,12 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     }
 
     /**
-     * Guarda los datos del paso
+     * Guarda los datos del paso (getRawValue incluye controles deshabilitados, p. ej. state en Pack Emprendedor)
      */
     private saveStepData(): void {
-        if (this.form.valid) {
-            this.wizardStateService.setStepData(this.stepNumber, this.form.value);
+        const raw = this.form.getRawValue();
+        if (raw.plan) {
+            this.wizardStateService.setStepData(this.stepNumber, raw);
         }
     }
 
@@ -195,13 +197,15 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         
         const selectedPlanObj = this.wizardPlansService.getPlan(planValue);
         if (selectedPlanObj) {
-            // Emprendedor: siempre New Mexico. Premium: solo NM o Wyoming. Elite: cualquier estado.
+            // Pack Emprendedor: estado fijo New Mexico, deshabilitar selector
             if (!selectedPlanObj.states.includes('all') && selectedPlanObj.states.length === 1) {
                 const autoState = selectedPlanObj.states[0];
                 this.selectedState = autoState;
                 this.form.get('state')?.setValue(autoState);
+                this.form.get('state')?.disable(); // No editable para Pack Emprendedor
                 this.stripeService.setState(autoState);
             } else {
+                this.form.get('state')?.enable();
                 // Validar si el estado actual es compatible con el plan seleccionado
                 const currentState = this.selectedState || this.form.get('state')?.value;
                 if (currentState) {

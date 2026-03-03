@@ -588,4 +588,17 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       currentSection: this.currentSection
     };
   }
+
+  /**
+   * Al pulsar "Siguiente" en la última sección: actualizar estado del paso y luego emitir nextStepRequested
+   * (el base guardará borrador y esperará antes de avanzar).
+   */
+  onLastSectionNext(): void {
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    this.saveStepData();
+    this.nextStepRequested.emit();
+  }
 }
