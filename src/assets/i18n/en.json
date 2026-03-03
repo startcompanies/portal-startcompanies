@@ -140,7 +140,7 @@
           "4": "Tax and social address for bank opening.",
           "5": "Registered Agent - R.A. ⓘ",
           "6": "Support with the implementation of sales systems like Stripe.",
-          "7": "BOIR report mandatory for ⓘ legal compliance.",
+          "7": "General advisory on LLC legal obligations.",
           "8": "E-book with information about LLCs."
         }
       },
@@ -238,7 +238,7 @@
       "answer5": "The cost depends on the selected state. At Start Companies, we offer services starting at $499 in New Mexico up to $600 in states like Delaware, Wyoming, or Florida. This price includes:",
       "answer5List": {
         "1": "Official LLC registration",
-        "2": "BOI report",
+        "2": "General advisory on LLC legal obligations.",
         "3": "Articles of Organization",
         "4": "Operating Agreement",
         "5": "Personalized advice"
@@ -451,7 +451,7 @@
         "paymentSystems": "Stripe/sales payment systems consultation",
         "shareIssuance": "Share issuance consultation",
         "taxPlanning": "Tax planning consultation",
-        "borReport": "Mandatory BOR report for legal compliance",
+        "borReport": "General advisory on LLC legal obligations",
         "ebook": "E-book about LLCs",
         "choosePlan": "Choose plan",
         "idealForEntrepreneur": "Freelancers, agencies, and startups without a physical presence in the USA.",
