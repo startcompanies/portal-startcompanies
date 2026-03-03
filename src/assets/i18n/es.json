@@ -139,7 +139,7 @@
           "4": "Dirección fiscal y social en para apertura bancaria.",
           "5": "Registered Agent - R.A. ⓘ",
           "6": "Asistencia con la implementación de sistemas de ventas como Stripe.",
-          "7": "Reporte BOIR obligatorio para ⓘ cumplimiento legal.",
+          "7": "Asesoría general sobre obligaciones legales de la LLC.",
           "8": "E-book con información sobre LLCs."
         }
       },
@@ -237,7 +237,7 @@
       "answer5": "El costo depende del estado seleccionado. En Start Companies, ofrecemos servicios desde $499 en Nuevo México hasta $600 en estados como Delaware, Wyoming o Florida. Este precio incluye:",
       "answer5List": {
         "1": "Registro oficial de la LLC",
-        "2": "Reporte BOI",
+        "2": "Asesoría general sobre obligaciones legales de la LLC.",
         "3": "Artículos de Organización",
         "4": "Operating Agreement",
         "5": "Asesoría personalizada"
@@ -447,7 +447,7 @@
         "paymentSystems": "Asesoría en sistemas de pago Stripe/ventas",
         "shareIssuance": "Asesoría en emisión de acciones",
         "taxPlanning": "Consulta de planificación fiscal",
-        "borReport": "Reporte BOR obligatorio para cumplimiento legal",
+        "borReport": "Asesoría general sobre obligaciones legales de la LLC",
         "ebook": "E-book sobre LLCs",
         "choosePlan": "Elegir plan",
         "idealForEntrepreneur": "Freelancers, agencias y startups sin presencia física en EEUU.",

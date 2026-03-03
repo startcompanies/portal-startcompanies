@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   staging: false,
+  noIndex: true, // Desarrollo local: noindex y sin PageSense (usa index.staging.html)
   apiUrl: 'http://localhost:3000',
   //apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/blog/posts/get-sandbox-posts',

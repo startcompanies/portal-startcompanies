@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   staging: false,
+  noIndex: false,
   apiUrl: 'https://api-web.startcompanies.us',
   postsEndpoint: '/blog/posts/get-from-portal',
   categoriesEndpoint: '/blog/categories/with-posts-count',

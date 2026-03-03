@@ -83,7 +83,8 @@
               "extractLicenses": false,
               "sourceMap": true,
               "prerender": false,
-              "ssr": false
+              "ssr": false,
+              "index": "src/index.staging.html"
             },
             "staging": {
               "fileReplacements": [
@@ -119,7 +120,8 @@
               "sourceMap": false,
               "extractLicenses": false,
               "namedChunks": false,
-              "serviceWorker": "ngsw-config.json"
+              "serviceWorker": "ngsw-config.json",
+              "index": "src/index.staging.html"
             }
           },
           "defaultConfiguration": "development"
