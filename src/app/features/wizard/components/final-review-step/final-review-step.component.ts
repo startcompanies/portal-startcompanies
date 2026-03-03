@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +14,7 @@ import { SignaturePadComponent } from '../../../../shared/components/signature-p
 @Component({
   selector: 'app-wizard-final-review-step',
   standalone: true,
-  imports: [CommonModule, TranslocoPipe, ReactiveFormsModule, SignaturePadComponent],
+  imports: [CommonModule, ReactiveFormsModule, SignaturePadComponent],
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
