@@ -116,76 +116,291 @@
         </div>
       </div>
     </div>
-  </div>
 
-</section>
-
-<!-- Sección: ¿Qué incluye tu llamada gratuita? -->
-<section class="free-call-includes-section">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-12 text-center mb-4">
-        <h2 class="free-call-title">
-          ¿Qué incluye tu llamada gratuita?
-        </h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-8 mx-auto">
-        <ul class="free-call-list list-unstyled">
-          <li>
-            <i class="bi bi-check-circle-fill me-3"></i>
-            <span>Qué tipo de LLC te conviene según tu país</span>
-          </li>
-          <li>
-            <i class="bi bi-check-circle-fill me-3"></i>
-            <span>Revisión de impuestos y bancarización</span>
-          </li>
-          <li>
-            <i class="bi bi-check-circle-fill me-3"></i>
-            <span>Explicación paso a paso del proceso</span>
-          </li>
-          <li>
-            <i class="bi bi-check-circle-fill me-3"></i>
-            <span>Acompañamiento personal durante todo el trámite</span>
-          </li>
-          <li>
-            <i class="bi bi-check-circle-fill me-3"></i>
-            <span>100% gratis, sin compromiso</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Calendly inline widget -->
-<section #calendly class="calendly-cta-section">
-  <div class="container pb-3">
-    <div class="row">
+    <!-- Trust Strip como row dentro del mismo container -->
+    <div class="row trust-strip-row mt-4">
       <div class="col-12 text-center">
-        <h2 class="calendly-title">
-          {{ "LANDINGS.calendly.title" | transloco }}
-        </h2>
-        <p class="calendly-subtitle">
-          {{ "LANDINGS.calendly.subtitle" | transloco }}
-        </p>
+        <div class="trust-number">400+</div>
+        <div class="trust-label">empresas creadas</div>
+        <div class="trust-countries">
+          México · Argentina · Colombia · Chile · España · y más países
+        </div>
       </div>
     </div>
   </div>
-  <app-calendly-section
-    (calendlyClick)="onCalendlyClick()"
-  ></app-calendly-section>
+
+</section>
+
+<!-- Sección: ¿Es para ti? - Card flotante -->
+<section class="who-for-floating-section position-relative">
+  <div class="container">
+    <div class="who-for-card-floating card text-center p-5 shadow-lg">
+      <h2 class="who-for-title mb-3">
+        ¿Es para ti?
+      </h2>
+      <p class="who-for-subtitle mb-4">
+        Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.
+      </p>
+      
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-laptop mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Freelancers y consultores</h5>
+            <p class="text-muted mb-0 small">Cobran en dólares</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-bag-check mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">E‑commerce</h5>
+            <p class="text-muted mb-0 small">Clientes internacionales</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-people mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Agencias digitales</h5>
+            <p class="text-muted mb-0 small">Clientes en EE.UU. y el mundo</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-play-circle mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Creadores de contenido</h5>
+            <p class="text-muted mb-0 small">Plataformas globales</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- Key Benefits Section -->
 <app-key-benefits-section></app-key-benefits-section>
 
-<!-- Steps Section -->
-<app-steps-section></app-steps-section>
+<!-- Steps Section - Diseño con círculos conectados -->
+<section class="lp-steps-section py-5">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="steps-title mb-3">
+          {{ 'LANDINGS.steps.title' | transloco }}
+        </h2>
+      </div>
+    </div>
 
-<!-- Testimonials -->
-<app-testimonials></app-testimonials>
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="steps-timeline">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="step-circle-container">
+                <div class="step-circle-bg">
+                  <i class="bi bi-calendar-check step-circle-icon"></i>
+                </div>
+                <div class="step-circle-number">1</div>
+              </div>
+              <h4 class="step-circle-title">{{ 'LANDINGS.steps.step1.title' | transloco }}</h4>
+              <p class="step-circle-description">{{ 'LANDINGS.steps.step1.description' | transloco }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <div class="step-circle-container">
+                <div class="step-circle-bg">
+                  <i class="bi bi-card-checklist step-circle-icon"></i>
+                </div>
+                <div class="step-circle-number">2</div>
+              </div>
+              <h4 class="step-circle-title">{{ 'LANDINGS.steps.step2.title' | transloco }}</h4>
+              <p class="step-circle-description">{{ 'LANDINGS.steps.step2.description' | transloco }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <div class="step-circle-container">
+                <div class="step-circle-bg">
+                  <i class="bi bi-file-text step-circle-icon"></i>
+                </div>
+                <div class="step-circle-number">3</div>
+              </div>
+              <h4 class="step-circle-title">{{ 'LANDINGS.steps.step3.title' | transloco }}</h4>
+              <p class="step-circle-description">{{ 'LANDINGS.steps.step3.description' | transloco }}</p>
+            </div>
+
+            <div class="col-md-3">
+              <div class="step-circle-container">
+                <div class="step-circle-bg">
+                  <i class="bi bi-check-circle step-circle-icon"></i>
+                </div>
+                <div class="step-circle-number">4</div>
+              </div>
+              <h4 class="step-circle-title">{{ 'LANDINGS.steps.step4.title' | transloco }}</h4>
+              <p class="step-circle-description">{{ 'LANDINGS.steps.step4.description' | transloco }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials - Versión compacta con carousel para esta LP -->
+<section class="lp-testimonials-section py-5">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12 text-center">
+        <h2 class="lp-testimonials-title mb-3">Lo que dicen nuestros clientes</h2>
+        <p class="lp-testimonials-subtitle">Más de 200 clientes nos califican como Excelente</p>
+      </div>
+    </div>
+
+    <!-- Carousel Desktop (3 cards por slide) -->
+    <div id="lpTestimonialsCarouselDesktop" class="carousel slide d-none d-md-block" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="Franco Caputo" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Franco Caputo</h5>
+                <p class="lp-testimonial-location">Argentina</p>
+                <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en rubio. Lo encontré de pura casualidad después de haber tenido una experiencia HORRIBLE con otro proveedor.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="Bauti Roig" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Bauti Roig</h5>
+                <p class="lp-testimonial-location">Argentina</p>
+                <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al %100 sin esperar nada a cambio, sabiendo que yo ya contaba con una compañía. Habló de calidad de personas y valores. Voy a continuar renovando siempre con ellos.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="Nacho Campo" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Nacho Campo</h5>
+                <p class="lp-testimonial-location">Argentina</p>
+                <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada. Eficiente desde el principio hasta el final de la gestión.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="carousel-item">
+          <div class="row g-3 justify-content-center">
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="Carlos Méndez" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Carlos Méndez</h5>
+                <p class="lp-testimonial-location">México</p>
+                <p class="lp-testimonial-text">Excelente servicio y atención personalizada. El proceso fue muy claro y me ayudaron en cada paso. Totalmente recomendado para emprendedores latinos.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="María Torres" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">María Torres</h5>
+                <p class="lp-testimonial-location">Colombia</p>
+                <p class="lp-testimonial-text">Profesionales de primer nivel. Me acompañaron durante todo el proceso y resolvieron todas mis dudas. Mi LLC está funcionando perfectamente.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="lp-testimonial-card">
+                <img src="assets/testimonials/img_young_bearded_m.png" alt="Luis González" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Luis González</h5>
+                <p class="lp-testimonial-location">Chile</p>
+                <p class="lp-testimonial-text">Rápido, eficiente y confiable. En menos de una semana tenía mi empresa lista. El mejor servicio que pude encontrar para crear mi LLC.</p>
+                <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="carousel-indicators lp-testimonials-carousel-indicators">
+        <button type="button" data-bs-target="#lpTestimonialsCarouselDesktop" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselDesktop" data-bs-slide-to="1"></button>
+      </div>
+    </div>
+
+    <!-- Carousel Mobile (1 card por slide) -->
+    <div id="lpTestimonialsCarouselMobile" class="carousel slide d-md-none" data-bs-ride="carousel" data-bs-interval="5000">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Franco Caputo" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Franco Caputo</h5>
+            <p class="lp-testimonial-location">Argentina</p>
+            <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en rubio.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Bauti Roig" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Bauti Roig</h5>
+            <p class="lp-testimonial-location">Argentina</p>
+            <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al %100 sin esperar nada a cambio.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Nacho Campo" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Nacho Campo</h5>
+            <p class="lp-testimonial-location">Argentina</p>
+            <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Carlos Méndez" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Carlos Méndez</h5>
+            <p class="lp-testimonial-location">México</p>
+            <p class="lp-testimonial-text">Excelente servicio y atención personalizada. El proceso fue muy claro y me ayudaron en cada paso.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="María Torres" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">María Torres</h5>
+            <p class="lp-testimonial-location">Colombia</p>
+            <p class="lp-testimonial-text">Profesionales de primer nivel. Me acompañaron durante todo el proceso y resolvieron todas mis dudas.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="lp-testimonial-card">
+            <img src="assets/testimonials/img_young_bearded_m.png" alt="Luis González" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Luis González</h5>
+            <p class="lp-testimonial-location">Chile</p>
+            <p class="lp-testimonial-text">Rápido, eficiente y confiable. En menos de una semana tenía mi empresa lista.</p>
+            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="carousel-indicators lp-testimonials-carousel-indicators">
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="0" class="active"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="1"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="2"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="3"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="4"></button>
+        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="5"></button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- Relay, un banco -->
 <app-video-section
