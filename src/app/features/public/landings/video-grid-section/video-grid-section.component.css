@@ -159,23 +159,23 @@
   height: 100%;
 }
 
-/* Responsive design */
+/* Responsive design - mobile */
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
 
   .main-title {
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
   
   .title-part,
   .title-highlight {
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
 
   .description {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .video-grid-section {
@@ -199,12 +199,12 @@
 
 @media (max-width: 480px) {
   .main-title {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
   
   .title-part,
   .title-highlight {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
   }
 
   .description {

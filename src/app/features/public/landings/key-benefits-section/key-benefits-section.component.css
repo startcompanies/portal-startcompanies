@@ -80,20 +80,60 @@
   width: 45px;
 }
 
+/* Mobile: tipografía proporcional */
+@media (max-width: 768px) {
+  .main-title h2,
+  .title-part,
+  .title-highlight {
+    font-size: 1.4rem !important;
+  }
+
+  .description p,
+  .subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .card-title {
+    font-size: 1.05rem !important;
+  }
+
+  .benefit-description {
+    font-size: 0.9rem !important;
+  }
+
+  .image-icon {
+    height: 38px;
+    width: 38px;
+  }
+}
+
 @media (max-width: 1020px) {  
   .benefit-description {
     font-size: 0.8rem;
   }
 }
 @media (max-width: 450px) {
-  .card-title {
+  .main-title h2,
+  .title-part,
+  .title-highlight {
+    font-size: 1.25rem !important;
+  }
+
+  .description p,
+  .subtitle {
     font-size: 0.9rem !important;
   }
-  .benefit-description {
-    font-size: 0.5rem;
+
+  .card-title {
+    font-size: 0.95rem !important;
   }
+
+  .benefit-description {
+    font-size: 0.85rem !important;
+  }
+
   .image-icon {
-    height: 25px;
-    width: 25px;
+    height: 32px;
+    width: 32px;
   }
 }

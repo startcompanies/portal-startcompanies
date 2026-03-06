@@ -117,22 +117,17 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const doc = this.browser.document;
     const win = this.browser.window;
     if (!doc || !win) return;
-    
-    // Buscar las secciones en el DOM
-    const heroSection = doc.querySelector('.hero-section');
-    const calendlySection = doc.querySelector('.calendly-cta-section');
 
-    if (heroSection && calendlySection) {
-      const heroRect = heroSection.getBoundingClientRect();
-      const calendlyRect = calendlySection.getBoundingClientRect();
+    const isMobile = win.innerWidth <= 768;
+    if (!isMobile) return;
 
-      // Mostrar botón cuando ambas secciones (hero y calendly) estén fuera de vista
-      const isHeroOutOfView = heroRect.bottom < 0;
-      const isCalendlyOutOfView = calendlyRect.bottom < 0;
-
-      // Mostrar botón solo en mobile y cuando ambas secciones estén fuera de vista
-      this.showFloatingButton =
-        win.innerWidth <= 768 && isHeroOutOfView && isCalendlyOutOfView;
+    // En mobile: mostrar botón solo cuando el usuario llegó a la sección "¿Es para ti?"
+    const whoForSection = doc.querySelector('.who-for-floating-section');
+    if (whoForSection) {
+      const rect = whoForSection.getBoundingClientRect();
+      const windowHeight = win.innerHeight;
+      // Mostrar cuando la sección está en vista o ya pasó (top de la sección llegó al tercio superior de la pantalla)
+      this.showFloatingButton = rect.top <= windowHeight * 0.85;
     }
   }
 
@@ -141,6 +136,7 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     if (this.browser.isBrowser) {
       this.checkScrollDepth();
       this.checkFloatingButton();
+      this.checkScrollForFloatingButton();
     }
   }
 
@@ -173,9 +169,12 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const win = this.browser.window;
     const doc = this.browser.document;
     if (!win || !doc) return;
-    
-    const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
-    this.showFloatingButton = scrollTop > 300;
+
+    // Solo en desktop: mostrar botón después de cierto scroll. En mobile lo controla checkScrollForFloatingButton.
+    if (win.innerWidth > 768) {
+      const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
+      this.showFloatingButton = scrollTop > 300;
+    }
   }
 
   scrollToCalendly(): void {
