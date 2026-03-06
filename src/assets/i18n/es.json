@@ -230,7 +230,8 @@
         "1": "Pasaporte vigente",
         "2": "Comprobante de domicilio (factura de servicio)",
         "3": "Elegir el estado de registro",
-        "4": "Descripción de la actividad empresarial"
+        "4": "Descripción de la actividad empresarial",
+        "5": "Pago de costos estatales y del servicio. Nuestro equipo te guía en cada paso."
       },
       "question5": "¿Cuánto cuesta abrir una LLC?",
       "answer5": "Desde $499 en Nuevo México hasta $600 en Delaware, Wyoming o Florida. Incluye:",
@@ -238,7 +239,8 @@
         "1": "Registro oficial",
         "2": "Artículos de Organización",
         "3": "Operating Agreement",
-        "4": "Asesoría personalizada"
+        "4": "Asesoría personalizada",
+        "5": "Soporte y seguimiento post-registro"
       },
       "question6": "¿Qué impuestos debo pagar en EE.UU. con mi LLC?",
       "answer6": "Sin presencia física ni nexo: solo presentas formularios (1120+5472 o 1065). Con nexo: pagas impuestos y solicitas ITIN.",

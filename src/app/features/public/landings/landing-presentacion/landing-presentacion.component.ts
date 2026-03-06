@@ -187,6 +187,18 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     }
   }
 
+  openCalModal(): void {
+    // Abrir el modal de Cal.com usando la API correcta
+    if (typeof window !== 'undefined' && (window as any).Cal) {
+      const Cal = (window as any).Cal;
+      // Simplemente llamar al namespace que abrirá el modal
+      // El floatingButton ya está configurado en index.html
+      if (Cal.ns && Cal.ns['30min']) {
+        Cal.ns['30min']('ui');
+      }
+    }
+  }
+
   scrollTargetSection(sectionId: string) {
     const element = this.calendlySection?.nativeElement;
     if (element instanceof HTMLElement) {

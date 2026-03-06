@@ -1,11 +1,4 @@
 <section class="hero-section">
-  <app-responsive-image
-    [images]="heroImages"
-    context="hero"
-    loading="eager"
-    cssClass="sc-hero-bg"
-  >
-  </app-responsive-image>
 
   <div class="container py-5">
     <div class="row d-none d-md-block">
@@ -43,31 +36,13 @@
           <button
             class="btn hero-btn-primary mobile-cta-btn"
             type="button"
-            (click)="navigateToCalendlySection()"
+            data-cal-link="startcompanies-businessenusa/30min"
+            data-cal-namespace="agenda-organica"
+            data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
           >
             {{'LANDINGS.schedule_consultation_2' | transloco}}
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
-        </div>
-        <div class="mt-3 text-center d-md-none">
-          <ul class="hero-features-list list-unstyled text-white mb-0">
-            <li>
-              <i class="bi bi-calendar-check-fill me-2"></i>
-              <span>7 días</span>
-            </li>
-            <li>
-              <i class="bi bi-laptop me-2"></i>
-              <span>100% remoto</span>
-            </li>
-            <li>
-              <i class="bi bi-credit-card me-2"></i>
-              <span>pagas después</span>
-            </li>
-            <li>
-              <i class="bi bi-people-fill me-2"></i>
-              <span>+400 clientes</span>
-            </li>
-          </ul>
         </div>
       </div>
       <div class="col-lg-6">
@@ -86,7 +61,9 @@
               <button
                 class="btn hero-btn-primary"
                 type="button"
-                (click)="navigateToCalendlySection()"
+                data-cal-link="startcompanies-businessenusa/30min"
+                data-cal-namespace="agenda-organica"
+                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
               >
                 {{'LANDINGS.start_my_llc_process' | transloco}}
                 <i class="bi bi-arrow-right ms-2"></i>
@@ -94,32 +71,12 @@
             </div>
           </div>
         </div>
-        <div class="mt-3 d-none d-md-block">
-          <ul class="hero-features-list list-unstyled text-white mb-0">
-            <li>
-              <i class="bi bi-calendar-check-fill me-2"></i>
-              <span>7 días</span>
-            </li>
-            <li>
-              <i class="bi bi-laptop me-2"></i>
-              <span>100% remoto</span>
-            </li>
-            <li>
-              <i class="bi bi-credit-card me-2"></i>
-              <span>pagas después</span>
-            </li>
-            <li>
-              <i class="bi bi-people-fill me-2"></i>
-              <span>+400 clientes</span>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
 
     <!-- Trust Strip como row dentro del mismo container -->
     <div class="row trust-strip-row mt-4">
-      <div class="col-12 text-center">
+      <div class="col-12 text-center pb-4">
         <div class="trust-number">400+</div>
         <div class="trust-label">empresas creadas</div>
         <div class="trust-countries">
@@ -136,7 +93,8 @@
   <div class="container">
     <div class="who-for-card-floating card text-center p-5 shadow-lg">
       <h2 class="who-for-title mb-3">
-        ¿Es para ti?
+        <span class="title-dark">¿Es </span>
+        <span class="title-blue">para ti?</span>
       </h2>
       <p class="who-for-subtitle mb-4">
         Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.
@@ -187,8 +145,9 @@
   <div class="container">
     <div class="row mb-5">
       <div class="col-12 text-center">
-        <h2 class="steps-title mb-3">
-          {{ 'LANDINGS.steps.title' | transloco }}
+        <h2 class="steps-title">
+          <span class="title-dark">Tu LLC en </span>
+          <span class="title-blue">4 pasos</span>
         </h2>
       </div>
     </div>
@@ -250,10 +209,16 @@
 <!-- Testimonials - Versión compacta con carousel para esta LP -->
 <section class="lp-testimonials-section py-5">
   <div class="container">
-    <div class="row mb-4">
+    <div class="row mb-5">
       <div class="col-12 text-center">
-        <h2 class="lp-testimonials-title mb-3">Lo que dicen nuestros clientes</h2>
-        <p class="lp-testimonials-subtitle">Más de 200 clientes nos califican como Excelente</p>
+        <h2 class="lp-testimonials-title">
+          <span class="title-dark">Lo que dicen </span>
+          <span class="title-blue">nuestros clientes</span>
+        </h2>
+        <p class="lp-testimonials-subtitle">
+          Más de 200 clientes nos califican como 
+          <span class="lp-testimonials-highlight">Excelente</span>
+        </p>
       </div>
     </div>
 
@@ -262,30 +227,30 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="row g-3 justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="Franco Caputo" class="lp-testimonial-avatar">
+                <img src="https://user-images.trustpilot.com/66be140346190e388ae1e82a/73x73.png" alt="Franco Caputo" class="lp-testimonial-avatar">
                 <h5 class="lp-testimonial-name">Franco Caputo</h5>
                 <p class="lp-testimonial-location">Argentina</p>
-                <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en rubio. Lo encontré de pura casualidad después de haber tenido una experiencia HORRIBLE con otro proveedor.</p>
+                <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en el rubro. Está atento en todo momento y genuinamente se preocupa de sus clientes...</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="Bauti Roig" class="lp-testimonial-avatar">
+                <img src="https://user-images.trustpilot.com/6882b28364d5cf6431772e9c/73x73.png" alt="Bauti Roig" class="lp-testimonial-avatar">
                 <h5 class="lp-testimonial-name">Bauti Roig</h5>
                 <p class="lp-testimonial-location">Argentina</p>
-                <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al %100 sin esperar nada a cambio, sabiendo que yo ya contaba con una compañía. Habló de calidad de personas y valores. Voy a continuar renovando siempre con ellos.</p>
+                <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al 100% sin esperar nada a cambio, sabiendo que yo ya contaba con una compañía. Habla de calidad de persona y valores...</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="Nacho Campo" class="lp-testimonial-avatar">
+                <img src="https://user-images.trustpilot.com/688141f464d5cfe8f0756ccc/73x73.png" alt="Nacho Campo" class="lp-testimonial-avatar">
                 <h5 class="lp-testimonial-name">Nacho Campo</h5>
                 <p class="lp-testimonial-location">Argentina</p>
-                <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada. Eficiente desde el principio hasta el final de la gestión.</p>
+                <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada. Eficientes desde el principio hasta el final de la gestión.</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
@@ -294,30 +259,30 @@
         
         <div class="carousel-item">
           <div class="row g-3 justify-content-center">
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="Carlos Méndez" class="lp-testimonial-avatar">
-                <h5 class="lp-testimonial-name">Carlos Méndez</h5>
-                <p class="lp-testimonial-location">México</p>
-                <p class="lp-testimonial-text">Excelente servicio y atención personalizada. El proceso fue muy claro y me ayudaron en cada paso. Totalmente recomendado para emprendedores latinos.</p>
+                <img src="https://user-images.trustpilot.com/665df08f3a31091f4f637ee1/73x73.png" alt="Ezequiel Correa" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Ezequiel Correa</h5>
+                <p class="lp-testimonial-location">Argentina</p>
+                <p class="lp-testimonial-text">Soy consultor en tecnología y brindo servicios en el exterior por medio de una LLC. Excelente servicio. Hiper profesional. Me asombró la rapidez con la que trabajan...</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="María Torres" class="lp-testimonial-avatar">
-                <h5 class="lp-testimonial-name">María Torres</h5>
+                <img src="https://user-images.trustpilot.com/68829c8c65125e0f7b2903b1/73x73.png" alt="Julian Bernal" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Julian Bernal</h5>
                 <p class="lp-testimonial-location">Colombia</p>
-                <p class="lp-testimonial-text">Profesionales de primer nivel. Me acompañaron durante todo el proceso y resolvieron todas mis dudas. Mi LLC está funcionando perfectamente.</p>
+                <p class="lp-testimonial-text">Muy rápidos y lo mejor que pagas al final. Siempre existe miedo al tomar una decisión como está. Sin embargo siempre me sentí acompañado y respondieron muy rápido...</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-4 pt-2">
               <div class="lp-testimonial-card">
-                <img src="assets/testimonials/img_young_bearded_m.png" alt="Luis González" class="lp-testimonial-avatar">
-                <h5 class="lp-testimonial-name">Luis González</h5>
-                <p class="lp-testimonial-location">Chile</p>
-                <p class="lp-testimonial-text">Rápido, eficiente y confiable. En menos de una semana tenía mi empresa lista. El mejor servicio que pude encontrar para crear mi LLC.</p>
+                <img src="https://user-images.trustpilot.com/66be140346190e388ae1e82a/73x73.png" alt="Franco Caputo" class="lp-testimonial-avatar">
+                <h5 class="lp-testimonial-name">Franco Caputo</h5>
+                <p class="lp-testimonial-location">Argentina</p>
+                <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en el rubro. Está atento en todo momento...</p>
                 <div class="lp-rating">⭐⭐⭐⭐⭐</div>
               </div>
             </div>
@@ -336,55 +301,46 @@
       <div class="carousel-inner">
         <div class="carousel-item active">
           <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="Franco Caputo" class="lp-testimonial-avatar">
+            <img src="https://user-images.trustpilot.com/66be140346190e388ae1e82a/73x73.png" alt="Franco Caputo" class="lp-testimonial-avatar">
             <h5 class="lp-testimonial-name">Franco Caputo</h5>
             <p class="lp-testimonial-location">Argentina</p>
-            <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en rubio.</p>
+            <p class="lp-testimonial-text">Nacho es simplemente una de las personas más trabajadoras, honestas y llanamente BUENAS que conocí en el rubro...</p>
             <div class="lp-rating">⭐⭐⭐⭐⭐</div>
           </div>
         </div>
         <div class="carousel-item">
           <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="Bauti Roig" class="lp-testimonial-avatar">
+            <img src="https://user-images.trustpilot.com/6882b28364d5cf6431772e9c/73x73.png" alt="Bauti Roig" class="lp-testimonial-avatar">
             <h5 class="lp-testimonial-name">Bauti Roig</h5>
             <p class="lp-testimonial-location">Argentina</p>
-            <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al %100 sin esperar nada a cambio.</p>
+            <p class="lp-testimonial-text">Excelente. 10/10. Ignacio me llamó, y me asesoró al 100% sin esperar nada a cambio...</p>
             <div class="lp-rating">⭐⭐⭐⭐⭐</div>
           </div>
         </div>
         <div class="carousel-item">
           <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="Nacho Campo" class="lp-testimonial-avatar">
+            <img src="https://user-images.trustpilot.com/688141f464d5cfe8f0756ccc/73x73.png" alt="Nacho Campo" class="lp-testimonial-avatar">
             <h5 class="lp-testimonial-name">Nacho Campo</h5>
             <p class="lp-testimonial-location">Argentina</p>
-            <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada.</p>
+            <p class="lp-testimonial-text">Necesitaba una cuenta bancaria, los contacté y como prometieron, en menos de 72 hs tenía mi cuenta aprobada...</p>
             <div class="lp-rating">⭐⭐⭐⭐⭐</div>
           </div>
         </div>
         <div class="carousel-item">
           <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="Carlos Méndez" class="lp-testimonial-avatar">
-            <h5 class="lp-testimonial-name">Carlos Méndez</h5>
-            <p class="lp-testimonial-location">México</p>
-            <p class="lp-testimonial-text">Excelente servicio y atención personalizada. El proceso fue muy claro y me ayudaron en cada paso.</p>
+            <img src="https://user-images.trustpilot.com/665df08f3a31091f4f637ee1/73x73.png" alt="Ezequiel Correa" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Ezequiel Correa</h5>
+            <p class="lp-testimonial-location">Argentina</p>
+            <p class="lp-testimonial-text">Soy consultor en tecnología y brindo servicios en el exterior por medio de una LLC. Excelente servicio...</p>
             <div class="lp-rating">⭐⭐⭐⭐⭐</div>
           </div>
         </div>
         <div class="carousel-item">
           <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="María Torres" class="lp-testimonial-avatar">
-            <h5 class="lp-testimonial-name">María Torres</h5>
+            <img src="https://user-images.trustpilot.com/68829c8c65125e0f7b2903b1/73x73.png" alt="Julian Bernal" class="lp-testimonial-avatar">
+            <h5 class="lp-testimonial-name">Julian Bernal</h5>
             <p class="lp-testimonial-location">Colombia</p>
-            <p class="lp-testimonial-text">Profesionales de primer nivel. Me acompañaron durante todo el proceso y resolvieron todas mis dudas.</p>
-            <div class="lp-rating">⭐⭐⭐⭐⭐</div>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <div class="lp-testimonial-card">
-            <img src="assets/testimonials/img_young_bearded_m.png" alt="Luis González" class="lp-testimonial-avatar">
-            <h5 class="lp-testimonial-name">Luis González</h5>
-            <p class="lp-testimonial-location">Chile</p>
-            <p class="lp-testimonial-text">Rápido, eficiente y confiable. En menos de una semana tenía mi empresa lista.</p>
+            <p class="lp-testimonial-text">Muy rápidos y lo mejor que pagas al final. Siempre existe miedo al tomar una decisión como está...</p>
             <div class="lp-rating">⭐⭐⭐⭐⭐</div>
           </div>
         </div>
@@ -396,7 +352,6 @@
         <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="2"></button>
         <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="3"></button>
         <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="4"></button>
-        <button type="button" data-bs-target="#lpTestimonialsCarouselMobile" data-bs-slide-to="5"></button>
       </div>
     </div>
   </div>
@@ -438,7 +393,9 @@
 <button
   class="floating-cta-button"
   [class.show]="showFloatingButton"
-  (click)="scrollToCalendly()"
+  data-cal-link="startcompanies-businessenusa/30min"
+  data-cal-namespace="agenda-organica"
+  data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
 >
   {{ "LANDINGS.start_free_meeting" | transloco }}
 </button>
