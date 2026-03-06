@@ -107,6 +107,33 @@
   }
 }
 
+/* Tablet: tipografía proporcional */
+@media (min-width: 769px) and (max-width: 991px) {
+  .main-title h2,
+  .title-part,
+  .title-highlight {
+    font-size: 1.75rem !important;
+  }
+
+  .description p,
+  .subtitle {
+    font-size: 1rem !important;
+  }
+
+  .card-title {
+    font-size: 1.1rem !important;
+  }
+
+  .benefit-description {
+    font-size: 0.95rem !important;
+  }
+
+  .image-icon {
+    height: 40px;
+    width: 40px;
+  }
+}
+
 @media (max-width: 1020px) {  
   .benefit-description {
     font-size: 0.8rem;

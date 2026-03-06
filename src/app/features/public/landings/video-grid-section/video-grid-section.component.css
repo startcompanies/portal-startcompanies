@@ -183,6 +183,26 @@
   }
 }
 
+/* Tablet: tipografía proporcional */
+@media (min-width: 769px) and (max-width: 991px) {
+  .main-title {
+    font-size: 1.75rem;
+  }
+  
+  .title-part,
+  .title-highlight {
+    font-size: 1.75rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .video-grid-section-wrapper {
+    padding: 3rem 2rem 4rem 2rem;
+  }
+}
+
 @media (max-width: 576px) {
   .video-grid {
     grid-template-columns: repeat(2, 1fr);

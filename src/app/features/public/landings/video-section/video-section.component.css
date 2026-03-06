@@ -101,6 +101,26 @@
   }
 }
 
+/* Tablet: tipografía proporcional */
+@media (min-width: 769px) and (max-width: 991px) {
+  .main-title {
+    font-size: 1.75rem;
+  }
+  
+  .title-part,
+  .title-highlight {
+    font-size: 1.75rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .video-section {
+    padding: 3rem 0 4rem 0;
+  }
+}
+
 @media (max-width: 480px) {
   .main-title {
     font-size: 1.25rem;
