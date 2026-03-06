@@ -576,6 +576,12 @@
       "what_they_say": "See what our clients have to say about us"
     },
     "start_my_llc_process": "Start my LLC process",
+    "trust_strip": {
+      "days": "days for your LLC",
+      "companies": "companies created",
+      "online": "online",
+      "countries": "Mexico · Argentina · Colombia · Chile · Spain · and more countries"
+    },
     "description": "We take care of the bureaucracy so you can focus on growing.",
     "discover_why": "Discover why more than",
     "200_clients": "2000 clients",

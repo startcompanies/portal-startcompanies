@@ -572,6 +572,12 @@
     },
     "start_free_meeting": "Empezar con una reunión gratuita",
     "start_my_llc_process": "Quiero abrir mi LLC",
+    "trust_strip": {
+      "days": "días para tu LLC",
+      "companies": "empresas creadas",
+      "online": "online",
+      "countries": "México · Argentina · Colombia · Chile · España · y más países"
+    },
     "description": "Te acompañamos en todo el proceso para que te enfoques en crecer.",
     "discover_why": "Descubre por qué más de",
     "200_clients": "400 empresas",

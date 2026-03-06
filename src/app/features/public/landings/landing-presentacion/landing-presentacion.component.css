@@ -642,22 +642,28 @@
   }
 }
 
-/* Trust Strip como row dentro del hero - Con jerarquía y espaciado */
+/* Trust Strip como row dentro del hero - 3 datos: izq | centro 400+ | der */
 .trust-strip-row {
   margin-top: 2rem !important;
   padding: 1.5rem 0 2.5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.15);
+  align-items: center;
 }
 
-.trust-strip-row .col-12 {
-  padding: 0;
+.trust-strip-item {
+  padding: 0.5rem 0.75rem;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
+  justify-content: center !important;
+}
+
+.trust-strip-center .trust-number {
+  font-size: 3.5rem;
 }
 
 .trust-number {
-  font-size: 3.5rem;
+  font-size: 2.75rem;
   font-weight: 900;
   color: var(--color-fondo-claro);
   line-height: 1;
@@ -668,12 +674,12 @@
 }
 
 .trust-label {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--color-fondo-claro);
   text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  margin-bottom: 0.5rem;
+  letter-spacing: 0.08rem;
+  margin-bottom: 0;
   line-height: 1.2;
   display: block !important;
   width: 100%;
@@ -1081,12 +1087,20 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .trust-strip-item {
+    padding: 0.75rem 0.5rem;
+  }
+
   .trust-number {
-    font-size: 3rem;
+    font-size: 2.25rem;
+  }
+
+  .trust-strip-center .trust-number {
+    font-size: 2.75rem;
   }
 
   .trust-label {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .trust-countries {

@@ -74,13 +74,23 @@
       </div>
     </div>
 
-    <!-- Trust Strip como row dentro del mismo container -->
+    <!-- Trust Strip: refuerza el hero (rapidez | confianza | sin adelantos) -->
     <div class="row trust-strip-row mt-4">
-      <div class="col-12 text-center pb-4">
+      <div class="col-12 col-md-4 text-center trust-strip-item">
+        <div class="trust-number">7</div>
+        <div class="trust-label">{{ 'LANDINGS.trust_strip.days' | transloco }}</div>
+      </div>
+      <div class="col-12 col-md-4 text-center trust-strip-item trust-strip-center">
         <div class="trust-number">400+</div>
-        <div class="trust-label">empresas creadas</div>
+        <div class="trust-label">{{ 'LANDINGS.trust_strip.companies' | transloco }}</div>
+      </div>
+      <div class="col-12 col-md-4 text-center trust-strip-item">
+        <div class="trust-number">100%</div>
+        <div class="trust-label">{{ 'LANDINGS.trust_strip.online' | transloco }}</div>
+      </div>
+      <div class="col-12 text-center mt-2 pb-5">
         <div class="trust-countries">
-          México · Argentina · Colombia · Chile · España · y más países
+          {{ 'LANDINGS.trust_strip.countries' | transloco }}
         </div>
       </div>
     </div>
