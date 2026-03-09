@@ -741,28 +741,45 @@
 /* Ajustes para mobile */
 @media (max-width: 768px) {
   .hero-features-list {
-    gap: 0.4rem 0.8rem;
+    gap: 0.5rem 1rem;
     justify-content: center;
   }
 
   .hero-features-list li {
-    font-size: 0.75rem;
+    font-size: 0.95rem;
   }
 
   .hero-features-list i {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 }
 
-/* Ajustes para desktop */
+/* Ajustes para desktop: texto del hero alineado a la izquierda */
+@media (min-width: 769px) {
+  .hero-section .col-lg-6.d-none.d-md-block .hero-title,
+  .hero-section .col-lg-6.d-none.d-md-block .hero-description {
+    text-align: left !important;
+  }
+  .hero-section .col-lg-6.d-none.d-md-block .hero-description:last-of-type {
+    text-align: left !important;
+  }
+}
+
+/* Ajustes para desktop: una sola línea, centrado, más ancho y texto más grande */
 @media (min-width: 769px) {
   .hero-features-list {
-    justify-content: flex-start;
-    gap: 0.5rem 1.2rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 1rem 2rem;
   }
 
   .hero-features-list li {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .hero-features-list i {
+    font-size: 1.15rem;
   }
 }
 
@@ -1260,6 +1277,7 @@
   .hero-section .mobile-video-container {
     margin-left: auto;
     margin-right: auto;
+    margin-top: 2rem;
   }
 
   .hero-btn-primary,

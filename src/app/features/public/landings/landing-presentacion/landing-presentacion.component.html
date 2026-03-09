@@ -21,18 +21,46 @@
           ></app-wistia-player>
         </div>
       </div>
+      <!--Visible en pantalla de escritorio: texto + CTA-->
+      <div class="col-lg-6 d-none d-md-block">
+        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
+          {{'LANDINGS.no_advance_payments_2' | transloco}}
+        </h1>
+        <p class="lead hero-description">
+          {{'LANDINGS.open_your_llc' | transloco}}
+        </p>
+        <p class="lead hero-description">
+          {{'LANDINGS.skip_commissions' | transloco}}
+        </p>
+        <div class="d-flex hero-btn-container">
+          <div class="row">
+            <div class="d-grid col-6">
+              <button
+                class="btn hero-btn-primary"
+                type="button"
+                data-cal-link="startcompanies-businessenusa/30min"
+                data-cal-namespace="agenda-organica"
+                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
+              >
+                {{'LANDINGS.schedule_consultation_2' | transloco}}
+                <i class="bi bi-arrow-right ms-2"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <!--Visible en pantalla de movil-->
       <div class="col-lg-12 d-md-none">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
           {{'LANDINGS.no_advance_payments_2' | transloco}}
         </h1>
-        <div class="mobile-video-container">
-          <app-wistia-vertical-player
-            mediaId="y6ofymeow3"
-          ></app-wistia-vertical-player>
-        </div>
-        <!-- CTA específico para mobile debajo del video -->
-        <div class="mt-3 d-md-none text-center">
+        <p class="lead hero-description">
+          {{'LANDINGS.open_your_llc' | transloco}}
+        </p>
+        <p class="lead hero-description">
+          {{'LANDINGS.skip_commissions' | transloco}}
+        </p>
+        <div class="mt-3 text-center">
           <button
             class="btn hero-btn-primary mobile-cta-btn"
             type="button"
@@ -44,33 +72,31 @@
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
         </div>
-      </div>
-      <div class="col-lg-6">
-        <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title d-none d-md-block">
-          {{'LANDINGS.no_advance_payments_2' | transloco}}
-        </h1>
-        <p class="lead hero-description">
-          {{'LANDINGS.open_your_llc' | transloco}}
-        </p>
-        <p class="lead hero-description">
-          {{'LANDINGS.skip_commissions' | transloco}}
-        </p>
-        <div class="d-flex hero-btn-container d-none d-md-flex">
-          <div class="row">
-            <div class="d-grid col-6">
-              <button
-                class="btn hero-btn-primary"
-                type="button"
-                data-cal-link="startcompanies-businessenusa/30min"
-                data-cal-namespace="agenda-organica"
-                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
-              >
-                {{'LANDINGS.start_my_llc_process' | transloco}}
-                <i class="bi bi-arrow-right ms-2"></i>
-              </button>
-            </div>
-          </div>
+        <div class="mobile-video-container">
+          <app-wistia-vertical-player
+            mediaId="y6ofymeow3"
+          ></app-wistia-vertical-player>
         </div>
+      </div>
+      <div class="col-12">
+        <ul class="hero-features-list list-unstyled text-white mb-0">
+          <li>
+            <i class="bi bi-percent me-2" aria-hidden="true"></i>
+            <span>Optimiza impuestos</span>
+          </li>
+          <li>
+            <i class="bi bi-wallet2 me-2" aria-hidden="true"></i>
+            <span>Reduce comisiones</span>
+          </li>
+          <li>
+            <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
+            <span>Protege tu patrimonio</span>
+          </li>
+          <li>
+            <i class="bi bi-globe me-2" aria-hidden="true"></i>
+            <span>Opera globalmente</span>
+          </li>
+        </ul>
       </div>
     </div>
 
@@ -81,7 +107,7 @@
         <div class="trust-label">{{ 'LANDINGS.trust_strip.days' | transloco }}</div>
       </div>
       <div class="col-12 col-md-4 text-center trust-strip-item trust-strip-center">
-        <div class="trust-number">400+</div>
+        <div class="trust-number">1000+</div>
         <div class="trust-label">{{ 'LANDINGS.trust_strip.companies' | transloco }}</div>
       </div>
       <div class="col-12 col-md-4 text-center trust-strip-item">
@@ -97,58 +123,6 @@
   </div>
 
 </section>
-
-<!-- Sección: ¿Es para ti? - Card flotante -->
-<section class="who-for-floating-section position-relative">
-  <div class="container">
-    <div class="who-for-card-floating card text-center p-5 shadow-lg">
-      <h2 class="who-for-title mb-3">
-        <span class="title-dark">¿Es </span>
-        <span class="title-blue">para ti?</span>
-      </h2>
-      <p class="who-for-subtitle mb-4">
-        Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.
-      </p>
-      
-      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-        <div class="col">
-          <div class="who-for-item p-3">
-            <i class="bi bi-laptop mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Freelancers y consultores</h5>
-            <p class="text-muted mb-0 small">Cobran en dólares</p>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="who-for-item p-3">
-            <i class="bi bi-bag-check mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">E‑commerce</h5>
-            <p class="text-muted mb-0 small">Clientes internacionales</p>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="who-for-item p-3">
-            <i class="bi bi-people mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Agencias digitales</h5>
-            <p class="text-muted mb-0 small">Clientes en EE.UU. y el mundo</p>
-          </div>
-        </div>
-
-        <div class="col">
-          <div class="who-for-item p-3">
-            <i class="bi bi-play-circle mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Creadores de contenido</h5>
-            <p class="text-muted mb-0 small">Plataformas globales</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Key Benefits Section -->
-<app-key-benefits-section></app-key-benefits-section>
 
 <!-- Steps Section - Diseño con círculos conectados -->
 <section class="lp-steps-section py-5">
@@ -215,6 +189,60 @@
     </div>
   </div>
 </section>
+
+<!-- Sección: ¿Es para ti? - Card flotante 
+<section class="who-for-floating-section position-relative">
+  <div class="container">
+    <div class="who-for-card-floating card text-center p-5 shadow-lg">
+      <h2 class="who-for-title mb-3">
+        <span class="title-dark">¿Es </span>
+        <span class="title-blue">para ti?</span>
+      </h2>
+      <p class="who-for-subtitle mb-4">
+        Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.
+      </p>
+      
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-laptop mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Freelancers y consultores</h5>
+            <p class="text-muted mb-0 small">Cobran en dólares</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-bag-check mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">E‑commerce</h5>
+            <p class="text-muted mb-0 small">Clientes internacionales</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-people mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Agencias digitales</h5>
+            <p class="text-muted mb-0 small">Clientes en EE.UU. y el mundo</p>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="who-for-item p-3">
+            <i class="bi bi-play-circle mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
+            <h5 class="fw-bold mb-2">Creadores de contenido</h5>
+            <p class="text-muted mb-0 small">Plataformas globales</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>-->
+
+<!-- Key Benefits Section -->
+<app-key-benefits-section></app-key-benefits-section>
+
+
 
 <!-- Testimonials - Versión compacta con carousel para esta LP -->
 <section class="lp-testimonials-section py-5">
@@ -407,7 +435,7 @@
   data-cal-namespace="agenda-organica"
   data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
 >
-  {{ "LANDINGS.start_free_meeting" | transloco }}
+  {{ "LANDINGS.schedule_consultation_2" | transloco }}
 </button>
 
 <!--<app-sc-footer></app-sc-footer>-->

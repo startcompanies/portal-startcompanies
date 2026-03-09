@@ -122,7 +122,7 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     if (!isMobile) return;
 
     // En mobile: mostrar botón solo cuando el usuario llegó a la sección "¿Es para ti?"
-    const whoForSection = doc.querySelector('.who-for-floating-section');
+    const whoForSection = doc.querySelector('.lp-steps-section');
     if (whoForSection) {
       const rect = whoForSection.getBoundingClientRect();
       const windowHeight = win.innerHeight;
