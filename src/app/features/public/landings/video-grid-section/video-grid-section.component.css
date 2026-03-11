@@ -1,12 +1,12 @@
 .video-grid-section-wrapper {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 4rem 2rem 5rem 2rem;
 }
 
 
 .main-title {
-  font-size: 3rem;
+  font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
   line-height: 1.2;
@@ -15,16 +15,18 @@
 
 .title-part {
   color: #333;
+  font-size: 2.5rem;
 }
 
 .title-highlight {
   color: var(--color-secundario-tecnico);
   margin-left: 0.5rem;
+  font-size: 2.5rem;
 }
 
 .description {
   color: #666;
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   margin-bottom: 3rem;
   font-weight: 400;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -157,22 +159,47 @@
   height: 100%;
 }
 
-/* Responsive design */
+/* Responsive design - mobile */
 @media (max-width: 768px) {
   .container {
     padding: 0 1rem;
   }
 
   .main-title {
-    font-size: 2.5rem;
+    font-size: 1.4rem;
+  }
+  
+  .title-part,
+  .title-highlight {
+    font-size: 1.4rem;
   }
 
   .description {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
 
   .video-grid-section {
     padding: 2rem 0;
+  }
+}
+
+/* Tablet: tipografía proporcional */
+@media (min-width: 769px) and (max-width: 991px) {
+  .main-title {
+    font-size: 1.75rem;
+  }
+  
+  .title-part,
+  .title-highlight {
+    font-size: 1.75rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .video-grid-section-wrapper {
+    padding: 3rem 2rem 4rem 2rem;
   }
 }
 
@@ -192,10 +219,15 @@
 
 @media (max-width: 480px) {
   .main-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .title-part,
+  .title-highlight {
+    font-size: 1.25rem;
   }
 
   .description {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 }

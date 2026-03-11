@@ -236,6 +236,18 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
       },
       {
+        path: 'evaluar-caso',
+        loadComponent: () => import('../features/public/landings/landing-presentacion-2/landing-presentacion-2.component').then(m => m.LandingPresentacion2Component)
+      },
+      {
+        path: 'asesoria-llc',
+        loadComponent: () => import('../features/public/landings/landing-presentacion-3/landing-presentacion-3.component').then(m => m.LandingPresentacion3Component)
+      },
+      {
+        path: 'llc-7-dias',
+        loadComponent: () => import('../features/public/landings/landing-presentacion-4/landing-presentacion-4.component').then(m => m.LandingPresentacion4Component)
+      },
+      {
         path: 'apertura-banco-relay',
         loadComponent: () => import('../features/public/landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent)
       },
@@ -869,6 +881,63 @@ export const routes: Routes = [
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
             canonical: getCanonicalUrl('/en/presentation'),
+          },
+        },
+      },
+      {
+        path: 'evaluate-case',
+        loadComponent: () =>
+          import(
+            '../features/public/landings/landing-presentacion-2/landing-presentacion-2.component'
+          ).then((m) => m.LandingPresentacion2Component),
+        data: {
+          seo: {
+            title: 'Evaluate Your Case - LLC in the U.S. | Start Companies',
+            description: 'Get a free evaluation for your LLC in the United States. More than 1,000 entrepreneurs trust us.',
+            keywords: 'evaluate case LLC USA, free consultation LLC, Start Companies',
+            ogTitle: 'Evaluate Your Case - Start Companies',
+            ogDescription: 'Get a free evaluation for your LLC in the United States.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/evaluate-case'),
+          },
+        },
+      },
+      {
+        path: 'llc-consultation',
+        loadComponent: () =>
+          import(
+            '../features/public/landings/landing-presentacion-3/landing-presentacion-3.component'
+          ).then((m) => m.LandingPresentacion3Component),
+        data: {
+          seo: {
+            title: 'Free LLC Consultation - Start Companies',
+            description: 'Free consultation for your LLC in the United States. We guide you through the entire process.',
+            keywords: 'LLC consultation USA, free advice LLC, Start Companies',
+            ogTitle: 'Free LLC Consultation - Start Companies',
+            ogDescription: 'Free consultation for your LLC in the United States.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/llc-consultation'),
+          },
+        },
+      },
+      {
+        path: 'llc-7-days',
+        loadComponent: () =>
+          import(
+            '../features/public/landings/landing-presentacion-4/landing-presentacion-4.component'
+          ).then((m) => m.LandingPresentacion4Component),
+        data: {
+          seo: {
+            title: 'Your LLC in 7 Days - 100% Online | Start Companies',
+            description: 'Form your LLC in the U.S. in 7 days, 100% online. No advance payments.',
+            keywords: 'LLC 7 days USA, online LLC formation, Start Companies',
+            ogTitle: 'Your LLC in 7 Days - Start Companies',
+            ogDescription: 'Form your LLC in the U.S. in 7 days, 100% online.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/llc-7-days'),
           },
         },
       },
