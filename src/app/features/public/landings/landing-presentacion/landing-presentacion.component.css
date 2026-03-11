@@ -1,9 +1,22 @@
 .hero-section {
   position: relative;
+  background: linear-gradient(180deg, rgba(0, 73, 198, 0.95) 0%, rgba(0, 106, 254, 0.85) 100%);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   overflow: hidden;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 0;
+}
+
+.hero-section .container.py-5 {
+  padding-bottom: 0 !important;
 }
 
 .hero-section app-hero-section {
@@ -51,7 +64,6 @@
 }
 
 .video-grid-section {
-  padding: 4rem 0;
   text-align: center;
 }
 
@@ -168,7 +180,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
+  opacity: 0.2;
+  mix-blend-mode: overlay;
 }
 
 @media(max-width: 768px) {
@@ -200,14 +214,14 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background-color: #5BCADF;
+  background-color: #006AFE;
   color: white;
-  border: none;
+  border: 3px solid transparent;
   border-radius: 2.5rem;
   padding: 0.6rem 2.5rem;
   font-weight: 600;
   font-size: 1.1rem;
-  box-shadow: 0 8px 25px rgba(91, 202, 223, 0.4);
+  box-shadow: 0 8px 25px rgba(0, 106, 254, 0.4);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   opacity: 0;
   visibility: hidden;
@@ -220,11 +234,13 @@
 }
 
 .floating-cta-button:hover {
-  background-color: #4BB8C9;
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 12px 30px rgba(91, 202, 223, 0.6);
+  background-color: #0052CC;
+  transform: translateX(-50%) translateY(-3px);
+  border-color: #ffc107;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(255, 193, 7, 0.4);
 }
 
+/* Borde amarillo bien visible + sombra de profundidad para que flote sobre el contenido */
 .floating-cta-button.show {
   opacity: 1;
   visibility: visible;
@@ -234,6 +250,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  border: 3px solid #ffc107;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 .floating-cta-button i {
@@ -332,7 +350,7 @@
 
 .hero-title {
   color: var(--color-fondo-claro) !important;
-  text-align: left;
+  text-align: center;
   margin-bottom: 1.5rem;
   line-height: 1.3;
 }
@@ -349,6 +367,48 @@
   margin-bottom: 2rem;
   font-weight: 600;
   font-size: 1.2rem;
+}
+
+/* Badge Trustpilot: fondo verde oscuro, estrellas y 4.9 Excelente */
+.hero-trustpilot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  background-color: #1a5f4a;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hero-trustpilot-name {
+  color: #fff;
+  font-weight: 700;
+}
+
+.hero-trustpilot-stars {
+  color: #ffc107;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+.hero-trustpilot-rating {
+  color: #fff;
+  font-weight: 700;
+}
+
+.hero-trustpilot-label {
+  color: #7bc9a0;
+  font-weight: 700;
+}
+
+.hero-trustpilot-badge--center {
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-btn-container {
@@ -381,11 +441,6 @@
 }
 
 @media (max-width: 768px) {
-  .hero-btn-primary {
-    font-size: 0.7rem;
-    padding: 0.8rem 2rem;
-  }
-
   .hero-iframe {
     min-height: 400px;
   }
@@ -419,7 +474,7 @@
   }
 }
 
-/* Estilos específicos para tablet */
+/* Estilos específicos para tablet (769px - 991px): hero centrado y tipografía proporcional */
 @media (min-width: 769px) and (max-width: 991px) {
   .desktop-video-container {
     min-height: 350px;
@@ -431,8 +486,137 @@
     padding: 1.5rem;
   }
 
+  /* Tablet: orden hero = texto + CTA primero, video después */
+  .hero-section .row.align-items-center {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .hero-section .row.align-items-center .col-lg-6:first-child {
+    order: 2;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-section .row.align-items-center .col-lg-6:last-child {
+    order: 1;
+    width: 100%;
+  }
+
   .row.align-items-center {
-    align-items: flex-start !important;
+    align-items: center !important;
+  }
+
+  /* Hero: título más grande y texto secundario más pequeño para marcar jerarquía */
+  .hero-section .row.align-items-center .col-lg-6:last-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .hero-section .col-lg-6:last-child .hero-title {
+    text-align: center !important;
+    font-size: 2.5rem !important;
+    line-height: 1.25;
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-section .col-lg-6:last-child .hero-description {
+    text-align: center !important;
+    font-size: 1rem !important;
+    line-height: 1.5;
+  }
+
+  .hero-section .col-lg-6:last-child .hero-description:last-of-type {
+    font-size: 1.05rem !important;
+    text-align: center !important;
+  }
+
+  .hero-section .hero-btn-container {
+    justify-content: center;
+  }
+
+  /* Tipografía proporcional en el resto de la página */
+  .who-for-title,
+  .who-for-title .title-dark,
+  .who-for-title .title-blue {
+    font-size: 1.75rem !important;
+  }
+
+  .who-for-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .who-for-item h5 {
+    font-size: 1rem !important;
+  }
+
+  .who-for-item p {
+    font-size: 0.9rem !important;
+  }
+
+  .who-for-card-floating {
+    padding: 2rem 1.5rem !important;
+  }
+
+  .lp-steps-section .steps-title,
+  .lp-steps-section .steps-title .title-dark,
+  .lp-steps-section .steps-title .title-blue {
+    font-size: 1.75rem !important;
+  }
+
+  .steps-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .step-circle-title {
+    font-size: 1.05rem !important;
+  }
+
+  .step-circle-description {
+    font-size: 0.95rem !important;
+  }
+
+  .lp-testimonials-title,
+  .lp-testimonials-title .title-dark,
+  .lp-testimonials-title .title-blue {
+    font-size: 1.75rem !important;
+  }
+
+  .lp-testimonials-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .lp-testimonial-card {
+    padding: 1.25rem !important;
+    min-height: 300px;
+  }
+
+  .lp-testimonial-name {
+    font-size: 0.95rem !important;
+  }
+
+  .lp-testimonial-text {
+    font-size: 0.9rem !important;
+  }
+
+  /* Trust strip: tamaños proporcionales */
+  .trust-number {
+    font-size: 2.75rem;
+  }
+
+  .trust-strip-center .trust-number {
+    font-size: 3.25rem;
+  }
+
+  .trust-label {
+    font-size: 0.95rem;
+  }
+
+  .trust-countries {
+    font-size: 0.9rem;
   }
 }
 
@@ -603,27 +787,723 @@
 /* Ajustes para mobile */
 @media (max-width: 768px) {
   .hero-features-list {
-    gap: 0.4rem 0.8rem;
+    gap: 0.5rem 1rem;
     justify-content: center;
   }
 
   .hero-features-list li {
-    font-size: 0.75rem;
+    font-size: 0.95rem;
   }
 
   .hero-features-list i {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
 }
 
-/* Ajustes para desktop */
+/* Ajustes para desktop: texto del hero alineado a la izquierda */
+@media (min-width: 769px) {
+  .hero-section .col-lg-6.d-none.d-md-block .hero-title,
+  .hero-section .col-lg-6.d-none.d-md-block .hero-description {
+    text-align: left !important;
+  }
+  .hero-section .col-lg-6.d-none.d-md-block .hero-description:last-of-type {
+    text-align: left !important;
+  }
+}
+
+/* Hero sin video (evaluar-caso, asesoria-llc): centrar texto en desktop */
+@media (min-width: 769px) {
+  .hero-section--no-video .row.align-items-center {
+    justify-content: center;
+    text-align: center;
+  }
+  .hero-section--no-video .col-lg-6.d-none.d-md-block {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-section--no-video .col-lg-6.d-none.d-md-block .hero-title,
+  .hero-section--no-video .col-lg-6.d-none.d-md-block .hero-description {
+    text-align: center !important;
+  }
+  .hero-section--no-video .hero-btn-container {
+    justify-content: center;
+  }
+  .hero-section--no-video .hero-trustpilot-badge:not(.hero-trustpilot-badge--center) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Ajustes para desktop: una sola línea, centrado, más ancho y texto más grande */
 @media (min-width: 769px) {
   .hero-features-list {
-    justify-content: flex-start;
-    gap: 0.5rem 1.2rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: 1rem 2rem;
   }
 
   .hero-features-list li {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .hero-features-list i {
+    font-size: 1.15rem;
+  }
+}
+
+/* Trust Strip como row dentro del hero - 3 datos: izq | centro 400+ | der */
+.trust-strip-row {
+  margin-top: 2rem !important;
+  padding: 1.5rem 0 2.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  align-items: center;
+}
+
+.trust-strip-item {
+  padding: 0.5rem 0.75rem;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.trust-strip-center .trust-number {
+  font-size: 3.5rem;
+}
+
+.trust-number {
+  font-size: 2.75rem;
+  font-weight: 900;
+  color: var(--color-fondo-claro);
+  line-height: 1;
+  margin-bottom: 0.35rem;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  display: block !important;
+  width: 100%;
+}
+
+.trust-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-fondo-claro);
+  text-transform: uppercase;
+  letter-spacing: 0.08rem;
+  margin-bottom: 0;
+  line-height: 1.2;
+  display: block !important;
+  width: 100%;
+}
+
+.trust-countries {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 0;
+  display: block !important;
+  width: 100%;
+}
+
+/* Card flotante "¿Es para ti?" */
+.who-for-floating-section {
+  padding: 4rem 0 5rem 0;
+  background: white;
+}
+
+.who-for-card-floating {
+  border-radius: 1.5rem;
+  border: none;
+  background: white;
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: -6rem;
+  position: relative;
+  z-index: 10;
+}
+
+.who-for-card-floating:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12) !important;
+}
+
+.who-for-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+}
+
+.who-for-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-texto-oscuro);
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+.who-for-item {
+  background: transparent;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.who-for-item:hover {
+  background: #f8f9fa;
+  transform: translateY(-3px);
+}
+
+.who-for-item h5 {
+  font-size: 1rem;
+  color: var(--color-texto-oscuro);
+}
+
+.who-for-item p {
+  font-size: 0.9rem;
+}
+
+/* Steps Section - Diseño con círculos conectados */
+.lp-steps-section {
+  background: white;
+  position: relative;
+  padding: 4rem 0 5rem 0;
+}
+
+.lp-steps-section .steps-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+}
+
+.steps-timeline {
+  position: relative;
+}
+
+.steps-timeline .row {
+  position: relative;
+}
+
+/* Línea conectora entre círculos - solo desktop */
+@media (min-width: 768px) {
+  .steps-timeline .row::before {
+    content: '';
+    position: absolute;
+    top: 60px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 3px;
+    background: linear-gradient(90deg, #d1e7ff 0%, #b3d9ff 50%, #d1e7ff 100%);
+    z-index: 1;
+  }
+}
+
+.step-circle-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem auto;
+  z-index: 2;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.step-circle-container:hover {
+  transform: translateY(-5px);
+}
+
+.step-circle-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  box-shadow: 0 4px 20px rgba(66, 133, 244, 0.15);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-circle-icon {
+  font-size: 3rem;
+  color: #2196F3;
+  transition: all 0.3s ease;
+}
+
+.step-circle-container:hover .step-circle-icon {
+  color: white;
+  transform: scale(1.1);
+}
+
+.step-circle-container:hover .step-circle-bg {
+  background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
+  box-shadow: 0 8px 30px rgba(0, 73, 198, 0.35);
+}
+
+.step-circle-number {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  font-size: 1.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+  z-index: 3;
+  border: 4px solid white;
+  transition: all 0.3s ease;
+}
+
+.step-circle-container:hover .step-circle-number {
+  background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
+  box-shadow: 0 6px 20px rgba(0, 73, 198, 0.5);
+  transform: scale(1.05);
+}
+
+.step-circle-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.75rem;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.step-circle-description {
+  font-size: 0.95rem;
+  color: var(--color-texto-oscuro);
+  opacity: 0.7;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.steps-cta-text {
+  font-size: 1.25rem;
+  color: var(--color-texto-oscuro);
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+  .lp-steps-section .steps-title {
+    font-size: 2rem;
+  }
+
+  .step-circle-container {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+  }
+
+  .step-circle-number {
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    top: -8px;
+    right: -8px;
+  }
+
+  .step-circle-title {
+    font-size: 1.05rem;
+  }
+
+  .step-circle-description {
     font-size: 0.9rem;
+  }
+
+  .steps-cta-text {
+    font-size: 1.1rem;
+  }
+
+  .col-md-3 {
+    margin-bottom: 2rem;
+  }
+}
+
+/* Testimonials - Versión compacta con carousel para esta LP */
+.lp-testimonials-section {
+  background: white;
+  padding: 4rem 0 5rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.lp-testimonials-section .row.mb-5 .col-12 {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.lp-testimonials-title {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  color: var(--color-texto-oscuro) !important;
+  margin-bottom: 0.75rem !important;
+  display: block !important;
+  line-height: 1.2 !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.title-dark {
+  color: var(--color-texto-oscuro);
+  font-weight: 700;
+}
+
+.title-blue {
+  color: #006afe;
+  font-weight: 700;
+}
+
+.lp-testimonials-subtitle {
+  font-size: 1.125rem !important;
+  color: var(--color-texto-oscuro) !important;
+  opacity: 0.8 !important;
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+  display: block !important;
+  line-height: 1.5 !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.lp-testimonials-highlight {
+  color: #006afe !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+.lp-testimonial-card {
+  background: white;
+  border: 3px solid #006afe;
+  border-radius: 50px;
+  padding: 1.75rem;
+  text-align: center;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 380px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.lp-testimonial-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 106, 254, 0.15);
+  z-index: 10;
+}
+
+.lp-testimonial-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  object-fit: cover;
+}
+
+.lp-testimonial-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-texto-oscuro);
+  margin-bottom: 0.25rem;
+}
+
+.lp-testimonial-location {
+  font-size: 0.9rem;
+  color: var(--color-texto-oscuro);
+  opacity: 0.7;
+  margin-bottom: 0.75rem;
+}
+
+.lp-testimonial-text {
+  font-size: 0.85rem;
+  color: var(--color-texto-oscuro);
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+  flex-grow: 1;
+}
+
+.lp-rating {
+  font-size: 0.9rem;
+  margin-top: auto;
+}
+
+.lp-testimonials-carousel-indicators {
+  bottom: -50px;
+  margin-bottom: 0;
+}
+
+.lp-testimonials-carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(0, 106, 254, 0.3);
+  border: 2px solid rgba(0, 106, 254, 0.2);
+  margin: 0 6px;
+  transition: all 0.3s ease;
+}
+
+.lp-testimonials-carousel-indicators button.active {
+  background-color: #006afe;
+  border-color: #006afe;
+  transform: scale(1.2);
+}
+
+.lp-testimonials-carousel-indicators button:hover {
+  background-color: rgba(0, 106, 254, 0.7);
+  border-color: rgba(0, 106, 254, 0.7);
+}
+
+@media (max-width: 767px) {
+  .lp-testimonials-title {
+    font-size: 1.75rem;
+  }
+
+  .lp-testimonials-section {
+    padding: 2.5rem 0 3rem 0 !important;
+  }
+
+  .lp-testimonials-section .row.mb-5 {
+    margin-bottom: 1rem !important;
+  }
+
+  .lp-testimonial-card {
+    min-height: unset;
+    padding: 0.85rem 1rem;
+    border-radius: 28px;
+    max-width: 100%;
+  }
+
+  .lp-testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 0.5rem;
+  }
+
+  .lp-testimonial-name {
+    margin-bottom: 0.15rem;
+  }
+
+  .lp-testimonial-location {
+    margin-bottom: 0.4rem;
+  }
+
+  .lp-testimonial-text {
+    font-size: 0.8rem;
+    line-height: 1.45;
+    margin-bottom: 0.4rem;
+  }
+
+  .lp-rating {
+    margin-top: 0.25rem;
+  }
+
+  .lp-testimonials-carousel-indicators {
+    bottom: -40px;
+  }
+
+  .lp-testimonials-carousel-indicators button {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* Responsive - solo mobile: tipografía proporcional y botón flotante desde "¿Es para ti?" */
+@media (max-width: 768px) {
+  /* Hero: centrado y textos un poco más grandes que el resto de la página */
+  .hero-section .row.align-items-center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-section .col-lg-12.d-md-none {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .hero-section .d-md-none .hero-title {
+    text-align: center !important;
+    font-size: 1.8rem !important;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+    max-width: 100%;
+  }
+
+  .hero-section .mobile-video-container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2rem;
+  }
+
+  .hero-btn-primary,
+  .mobile-cta-btn {
+    font-size: 1rem !important;
+    padding: 0.8rem 1.75rem;
+  }
+
+  /* Texto secundario del hero: más grande y centrado en mobile */
+  .hero-title {
+    font-size: 1.8rem !important;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 1.1rem !important;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+    text-align: center !important;
+  }
+
+  .hero-description:last-of-type {
+    font-size: 1.15rem !important;
+    text-align: center !important;
+  }
+
+  /* Columna del hero con textos secundarios: centrada en mobile */
+  .hero-section .row.align-items-center .col-lg-6:last-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .trust-strip-item {
+    padding: 0.75rem 0.5rem;
+  }
+
+  /* Orden en mobile: 7 → 100% → 400+ → países al final */
+  .trust-strip-row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .trust-strip-row .col-12:nth-child(1) { order: 1; }
+  .trust-strip-row .col-12:nth-child(2) { order: 3; }
+  .trust-strip-row .col-12:nth-child(3) { order: 2; }
+  .trust-strip-row .col-12:nth-child(4) { order: 4; }
+
+  .trust-number {
+    font-size: 2.25rem;
+  }
+
+  .trust-strip-center .trust-number {
+    font-size: 2.75rem;
+  }
+
+  .trust-label {
+    font-size: 0.9rem;
+  }
+
+  .trust-countries {
+    font-size: 0.85rem;
+  }
+
+  /* ¿Es para ti? */
+  .who-for-card-floating {
+    margin-top: -4rem;
+    padding: 1.5rem 1rem !important;
+  }
+
+  .who-for-title,
+  .who-for-title .title-dark,
+  .who-for-title .title-blue {
+    font-size: 1.4rem !important;
+    line-height: 1.3;
+  }
+
+  .who-for-subtitle {
+    font-size: 0.95rem !important;
+    line-height: 1.45;
+  }
+
+  .who-for-item h5 {
+    font-size: 0.95rem !important;
+  }
+
+  .who-for-item p {
+    font-size: 0.85rem !important;
+  }
+
+  /* Por qué Start Companies (key-benefits usa su propio CSS, se añade en ese componente) */
+
+  /* Pasos */
+  .lp-steps-section .steps-title,
+  .lp-steps-section .steps-title .title-dark,
+  .lp-steps-section .steps-title .title-blue {
+    font-size: 1.4rem !important;
+  }
+
+  .steps-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .step-title,
+  .step-circle-title {
+    font-size: 1rem !important;
+  }
+
+  .step-description,
+  .step-circle-description {
+    font-size: 0.9rem !important;
+  }
+
+  .lp-step-item {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .step-number {
+    margin: 0 auto;
+  }
+
+  .steps-cta-text {
+    font-size: 1rem !important;
+  }
+
+  /* Testimonials */
+  .lp-testimonials-title,
+  .lp-testimonials-title .title-dark,
+  .lp-testimonials-title .title-blue {
+    font-size: 1.4rem !important;
+  }
+
+  .lp-testimonials-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .lp-testimonial-name {
+    font-size: 0.9rem !important;
+  }
+
+  .lp-testimonial-location {
+    font-size: 0.8rem !important;
+  }
+
+  .lp-testimonial-text {
+    font-size: 0.85rem !important;
+  }
+
+  .lp-testimonial-card {
+    padding: 0.85rem 1rem !important;
+    min-height: unset !important;
+    border-radius: 28px !important;
   }
 }

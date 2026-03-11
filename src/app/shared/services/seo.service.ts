@@ -44,6 +44,10 @@ export class SeoService {
     // Meta tags básicos
     this.meta.updateTag({ name: 'description', content: data.description });
     this.meta.updateTag({ name: 'keywords', content: data.keywords });
+    this.meta.updateTag({
+      name: 'robots',
+      content: environment.noIndex ? 'noindex, nofollow' : 'index, follow',
+    });
 
     // Open Graph tags
     this.meta.updateTag({ property: 'og:title', content: data.ogTitle || data.title });

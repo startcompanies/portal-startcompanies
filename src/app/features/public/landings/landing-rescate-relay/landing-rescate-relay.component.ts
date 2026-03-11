@@ -109,41 +109,8 @@ export class LandingRescateRelayComponent implements OnInit {
     }
   }
 
-  // Método para trackear click en botón "Completa el formulario ahora"
+  // Método para click en botón "Completa el formulario ahora" (sin tracking InitiateCheckout)
   onCompleteFormClick(): void {
-    this.facebookPixelService.trackInitiateCheckout(
-      'Relay Form Completion',
-      'Banking Services',
-      0.0
-    );
-    
-    // Redirigir al formulario
     this.router.navigate(['/form-apertura-relay']);
-  }
-
-  // Método para trackear reproducción de video Wistia
-  onWistiaVideoPlay(): void {
-    this.facebookPixelService.trackVideoPlay(
-      'Relay Banking Service',
-      'Wistia Video',
-      'Relay Rescue Landing'
-    );
-  }
-
-  // Método para trackear reproducción de video YouTube
-  onYouTubeVideoPlay(): void {
-    this.facebookPixelService.trackVideoPlay(
-      'Relay Banking Service',
-      'YouTube Video',
-      'Relay Rescue Landing'
-    );
-  }
-
-  // Método para trackear interacción con testimonios
-  onTestimonialsInteraction(): void {
-    this.facebookPixelService.trackViewContent(
-      'Customer Testimonials',
-      'Social Proof'
-    );
   }
 }

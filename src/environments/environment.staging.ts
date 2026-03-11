@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   staging: true,
+  noIndex: true,
   apiUrl: 'https://api-web.startcompanies.io',
   postsEndpoint: '/blog/posts/get-sandbox-posts',
   categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',

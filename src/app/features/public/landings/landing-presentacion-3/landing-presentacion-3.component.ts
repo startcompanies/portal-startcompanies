@@ -20,16 +20,12 @@ import { ScrollService } from '../../../../shared/services/scroll.service';
 import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { WistiaPlayerComponent } from '../wistia-player/wistia-player.component';
-import { WistiaVerticalPlayerComponent } from '../wistia-vertical-player/wistia-vertical-player.component';
 import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
-  selector: 'app-landing-presentacion',
+  selector: 'app-landing-presentacion-3',
   standalone: true,
   imports: [
-    WistiaPlayerComponent,
-    WistiaVerticalPlayerComponent,
     ResponsiveImageComponent,
     CalendlySectionComponent,
     TestimonialsComponent,
@@ -41,10 +37,10 @@ import { BrowserService } from '../../../../shared/services/browser.service';
     ResponsiveImageComponent,
     TranslocoPipe
   ],
-  templateUrl: './landing-presentacion.component.html',
-  styleUrl: './landing-presentacion.component.css',
+  templateUrl: './landing-presentacion-3.component.html',
+  styleUrl: '../landing-presentacion/landing-presentacion.component.css',
 })
-export class LandingPresentacionComponent implements AfterViewInit, OnInit {
+export class LandingPresentacion3Component implements AfterViewInit, OnInit {
   @ViewChild('calendly', { static: false })
   calendlySection!: ElementRef<HTMLElement>;
 
@@ -61,7 +57,6 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     priority: true,
   };
 
-  // Hero images - usando las mismas imágenes que abre-tu-llc
   heroImages: ResponsiveImage = {
     mobile: '/assets/hero-bg-mobile.webp',
     tablet: '/assets/hero-bg-tablet.webp',
@@ -78,16 +73,11 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Inicializar Facebook Pixel para página de presentación
     this.facebookPixelService.initializePixel('llc');
-
-    // Trackear vista de página
     this.facebookPixelService.trackViewContent(
-      'Presentación LLC Landing',
+      'Landing Presentación 3 - Asesoría LLC',
       'LLC Presentation Services'
     );
-
-    // Trackear scroll inicial
     if (this.browser.isBrowser) {
       this.checkScrollDepth();
     }
@@ -117,16 +107,12 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const doc = this.browser.document;
     const win = this.browser.window;
     if (!doc || !win) return;
-
     const isMobile = win.innerWidth <= 768;
     if (!isMobile) return;
-
-    // En mobile: mostrar botón solo cuando el usuario llegó a la sección "¿Es para ti?"
     const whoForSection = doc.querySelector('.lp-steps-section');
     if (whoForSection) {
       const rect = whoForSection.getBoundingClientRect();
       const windowHeight = win.innerHeight;
-      // Mostrar cuando la sección está en vista o ya pasó (top de la sección llegó al tercio superior de la pantalla)
       this.showFloatingButton = rect.top <= windowHeight * 0.85;
     }
   }
@@ -144,23 +130,20 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const win = this.browser.window;
     const doc = this.browser.document;
     if (!win || !doc) return;
-    
     const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
     const windowHeight = win.innerHeight;
     const documentHeight = doc.documentElement.scrollHeight;
     const scrollPercentage = Math.round(
       (scrollTop / (documentHeight - windowHeight)) * 100
     );
-
-    // Trackear scroll profundo en puntos clave
     if (scrollPercentage >= 25 && this.scrollDepth < 25) {
-      this.facebookPixelService.trackDeepScroll('Presentación LLC', 25);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 25);
       this.scrollDepth = 25;
     } else if (scrollPercentage >= 50 && this.scrollDepth < 50) {
-      this.facebookPixelService.trackDeepScroll('Presentación LLC', 50);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 50);
       this.scrollDepth = 50;
     } else if (scrollPercentage >= 75 && this.scrollDepth < 75) {
-      this.facebookPixelService.trackDeepScroll('Presentación LLC', 75);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 75);
       this.scrollDepth = 75;
     }
   }
@@ -169,8 +152,6 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const win = this.browser.window;
     const doc = this.browser.document;
     if (!win || !doc) return;
-
-    // Solo en desktop: mostrar botón después de cierto scroll. En mobile lo controla checkScrollForFloatingButton.
     if (win.innerWidth > 768) {
       const scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
       this.showFloatingButton = scrollTop > 300;
@@ -187,11 +168,8 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
   }
 
   openCalModal(): void {
-    // Abrir el modal de Cal.com usando la API correcta
     if (typeof window !== 'undefined' && (window as any).Cal) {
       const Cal = (window as any).Cal;
-      // Simplemente llamar al namespace que abrirá el modal
-      // El floatingButton ya está configurado en index.html
       if (Cal.ns && Cal.ns['30min']) {
         Cal.ns['30min']('ui');
       }
@@ -202,33 +180,22 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     const element = this.calendlySection?.nativeElement;
     if (element instanceof HTMLElement) {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      console.warn('calendlySection no es un HTMLElement válido:', element);
     }
   }
 
-  startProcess(event?: Event) {
-    if (event) {
-      event.preventDefault();
-    }
-    console.log('Iniciar proceso');
-  }
-
-  // Método para trackear clicks en calendario
   onCalendlyClick(): void {
     this.facebookPixelService.trackLead(
-      'Calendly CTA - Presentación LLC',
+      'Calendly CTA - Landing Presentación 3',
       'LLC Presentation Services',
       0.0
     );
   }
 
-  // Método para trackear reproducción de videos
   onVideoPlay(videoTitle: string): void {
     this.facebookPixelService.trackVideoPlay(
       videoTitle,
       'Testimonial',
-      'Presentación LLC Landing'
+      'Landing Presentación 3'
     );
   }
 
@@ -236,7 +203,6 @@ export class LandingPresentacionComponent implements AfterViewInit, OnInit {
     if (this.scrollSubscription) {
       this.scrollSubscription.unsubscribe();
     }
-    // Evita scrolls pendientes al salir
     this.scrollService.clearTarget();
   }
 }
