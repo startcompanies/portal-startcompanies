@@ -576,6 +576,25 @@
       "what_they_say": "See what our clients have to say about us"
     },
     "start_my_llc_process": "Start my LLC process",
+    "landing_2": {
+      "title": "Want to invoice abroad and optimize taxes?",
+      "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
+      "desc2": "Trustpilot review",
+      "cta": "Evaluate my case"
+    },
+    "landing_3": {
+      "title": "Free consultation for your LLC in the United States",
+      "desc1": "We guide you through the entire formation and bank account process.",
+      "desc2": "Trustpilot review",
+      "cta": "Evaluate my case"
+    },
+    "landing_4": {
+      "title": "Your LLC in the U.S. in 7 days. 100% online.",
+      "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
+      "desc2": "No advance payments. You only pay at the end.",
+      "cta": "Evaluate my case"
+    },
+    "trustpilot_badge_label": "Excellent",
     "trust_strip": {
       "days": "days for your LLC",
       "companies": "companies created",

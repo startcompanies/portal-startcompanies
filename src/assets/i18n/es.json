@@ -572,6 +572,25 @@
     },
     "start_free_meeting": "Empezar con una reunión gratuita",
     "start_my_llc_process": "Quiero abrir mi LLC",
+    "landing_2": {
+      "title": "¿Quieres facturar al exterior y optimizar impuestos?",
+      "desc1": "Más de 1.000 emprendedores ya usan una LLC en EE.UU.",
+      "desc2": "Reseña Trustpilot",
+      "cta": "Evaluar mi caso"
+    },
+    "landing_3": {
+      "title": "Asesoría gratuita para tu LLC en Estados Unidos",
+      "desc1": "Te guiamos en todo el proceso de constitución y cuenta bancaria.",
+      "desc2": "Reseña Trustpilot",
+      "cta": "Evaluar mi caso"
+    },
+    "landing_4": {
+      "title": "Tu LLC en EE.UU. en 7 días. 100% online.",
+      "desc1": "Más de 1.000 emprendedores ya usan una LLC en EE.UU.",
+      "desc2": "Sin adelantos. Solo pagas al final.",
+      "cta": "Evaluar mi caso"
+    },
+    "trustpilot_badge_label": "Excelente",
     "trust_strip": {
       "days": "días para tu LLC",
       "companies": "LLC creadas",

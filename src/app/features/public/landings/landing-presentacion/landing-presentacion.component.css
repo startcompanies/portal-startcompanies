@@ -216,7 +216,7 @@
   z-index: 1000;
   background-color: #006AFE;
   color: white;
-  border: none;
+  border: 3px solid transparent;
   border-radius: 2.5rem;
   padding: 0.6rem 2.5rem;
   font-weight: 600;
@@ -235,10 +235,12 @@
 
 .floating-cta-button:hover {
   background-color: #0052CC;
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0, 82, 204, 0.5);
+  transform: translateX(-50%) translateY(-3px);
+  border-color: #ffc107;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18), 0 0 0 3px rgba(255, 193, 7, 0.4);
 }
 
+/* Borde amarillo bien visible + sombra de profundidad para que flote sobre el contenido */
 .floating-cta-button.show {
   opacity: 1;
   visibility: visible;
@@ -248,6 +250,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  border: 3px solid #ffc107;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 .floating-cta-button i {
@@ -363,6 +367,48 @@
   margin-bottom: 2rem;
   font-weight: 600;
   font-size: 1.2rem;
+}
+
+/* Badge Trustpilot: fondo verde oscuro, estrellas y 4.9 Excelente */
+.hero-trustpilot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  background-color: #1a5f4a;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hero-trustpilot-name {
+  color: #fff;
+  font-weight: 700;
+}
+
+.hero-trustpilot-stars {
+  color: #ffc107;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+}
+
+.hero-trustpilot-rating {
+  color: #fff;
+  font-weight: 700;
+}
+
+.hero-trustpilot-label {
+  color: #7bc9a0;
+  font-weight: 700;
+}
+
+.hero-trustpilot-badge--center {
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-btn-container {
@@ -762,6 +808,31 @@
   }
   .hero-section .col-lg-6.d-none.d-md-block .hero-description:last-of-type {
     text-align: left !important;
+  }
+}
+
+/* Hero sin video (evaluar-caso, asesoria-llc): centrar texto en desktop */
+@media (min-width: 769px) {
+  .hero-section--no-video .row.align-items-center {
+    justify-content: center;
+    text-align: center;
+  }
+  .hero-section--no-video .col-lg-6.d-none.d-md-block {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-section--no-video .col-lg-6.d-none.d-md-block .hero-title,
+  .hero-section--no-video .col-lg-6.d-none.d-md-block .hero-description {
+    text-align: center !important;
+  }
+  .hero-section--no-video .hero-btn-container {
+    justify-content: center;
+  }
+  .hero-section--no-video .hero-trustpilot-badge:not(.hero-trustpilot-badge--center) {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
