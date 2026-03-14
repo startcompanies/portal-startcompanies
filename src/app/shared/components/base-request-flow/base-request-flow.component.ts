@@ -713,8 +713,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if (!this.isServiceFormStep()) return false;
     const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     const section = serviceData?.currentSection;
-    // Apertura LLC y Renovación LLC tienen 3 secciones; la última es la 3
-    return section === 3;
+    // Leer totalSections dinámicamente desde el componente del paso activo
+    const totalSections = (this.stepComponentRef?.instance as any)?.totalSections ?? 3;
+    return section === totalSections;
   }
   
   /**

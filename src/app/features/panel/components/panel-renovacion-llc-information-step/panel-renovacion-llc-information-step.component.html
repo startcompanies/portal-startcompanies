@@ -1,0 +1,77 @@
+<div class="panel-renovacion-llc-information-step">
+  <div class="step-header mb-4">
+    <h3 class="step-title">
+      <i class="bi bi-arrow-repeat me-2"></i>
+      Información de Renovación LLC
+    </h3>
+    <p class="text-muted">
+      Completa la información para la renovación de tu LLC.
+    </p>
+  </div>
+
+  <!-- Mostrar el estado seleccionado del paso anterior -->
+  <div class="alert alert-info mb-4" *ngIf="serviceDataForm.get('state')?.value">
+    <i class="bi bi-geo-alt me-2"></i>
+    <strong>Estado:</strong> {{ serviceDataForm.get('state')?.value }}
+  </div>
+
+  <!-- Formulario compartido de renovación -->
+  <div class="llc-form-container">
+    <app-renovacion-llc-form
+      [serviceDataForm]="serviceDataForm"
+      [usStates]="usStates"
+      [llcTypes]="llcTypes"
+      [fileUploadStates]="fileUploadStates"
+      [currentSection]="currentSection"
+      (fileSelected)="onFileSelected($event)"
+      (fileCleared)="onFileCleared($event)"
+      (addOwnerRequested)="onAddOwnerRequested()"
+      (removeOwnerRequested)="onRemoveOwnerRequested($event)"
+    ></app-renovacion-llc-form>
+  </div>
+
+  <!-- Mensaje de error de guardado -->
+  <div class="alert alert-danger mt-3" *ngIf="saveError">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ saveError }}
+  </div>
+
+  <!-- Navegación entre secciones -->
+  <div class="section-actions">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="goToPreviousSection()"
+      *ngIf="currentSection > 1"
+    >
+      <i class="bi bi-arrow-left me-1"></i>
+      Sección Anterior
+    </button>
+    <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="goToNextSection()"
+      [disabled]="isSaving"
+      *ngIf="currentSection < totalSections"
+    >
+      Siguiente Sección
+      <i class="bi bi-arrow-right ms-1"></i>
+    </button>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="onLastSectionNext()"
+      [disabled]="!isSectionValid() || isSaving"
+      *ngIf="currentSection === totalSections"
+    >
+      <span *ngIf="!isSaving">Siguiente</span>
+      <span *ngIf="isSaving">
+        <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+      </span>
+      <i class="bi bi-arrow-right ms-1" *ngIf="!isSaving"></i>
+    </button>
+  </div>
+</div>
