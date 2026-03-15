@@ -3,6 +3,7 @@ import { Translation, TranslocoLoader } from "@jsverse/transloco";
 import { HttpClient } from "@angular/common/http";
 import { isPlatformBrowser } from "@angular/common";
 import { Observable, of } from "rxjs";
+import { catchError } from "rxjs/operators";
 import { BrowserService } from "./shared/services/browser.service";
 
 @Injectable({ providedIn: 'root' })
@@ -37,7 +38,12 @@ export class TranslocoHttpLoader implements TranslocoLoader {
             }
         }
         
-        // En el navegador, usar HTTP
-        return this.http.get<Translation>(`./assets/i18n/${lang}.json`);
+        // En el navegador, usar HTTP con manejo de errores
+        return this.http.get<Translation>(`./assets/i18n/${lang}.json`).pipe(
+            catchError((err) => {
+                console.error(`Error loading translation for ${lang} via HTTP:`, err);
+                return of({} as Translation);
+            })
+        );
     }
 }

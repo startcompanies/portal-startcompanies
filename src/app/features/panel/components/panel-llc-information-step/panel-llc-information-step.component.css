@@ -24,16 +24,22 @@
   margin-top: 1.5rem;
 }
 
-.section-actions {
+/* Barra de acciones con posición consistente */
+.flow-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  padding: 1.5rem 0;
   border-top: 1px solid #e9ecef;
+  margin-top: 2rem;
+  min-height: 52px;
 }
 
-.section-actions .btn {
+.flow-actions .flex-grow-1 {
+  flex: 1;
+}
+
+.flow-actions .btn {
   min-width: 150px;
   padding: 0.75rem 1.5rem;
   font-weight: 500;
@@ -41,28 +47,28 @@
   transition: all 0.2s;
 }
 
-.section-actions .btn:hover:not(:disabled) {
+.flow-actions .btn:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.section-actions .btn-primary {
+.flow-actions .btn-primary {
   background: var(--color-degradado, linear-gradient(135deg, #01c9e2 0%, #007bff 100%));
   border: none;
   color: white;
 }
 
-.section-actions .btn-primary:hover:not(:disabled) {
+.flow-actions .btn-primary:hover:not(:disabled) {
   background: var(--color-secundario-tecnico, #01c9e2);
   box-shadow: 0 4px 12px rgba(1, 201, 226, 0.3);
 }
 
-.section-actions .btn-outline-secondary {
+.flow-actions .btn-outline-secondary {
   border: 1px solid #e9ecef;
   color: #6c757d;
 }
 
-.section-actions .btn-outline-secondary:hover:not(:disabled) {
+.flow-actions .btn-outline-secondary:hover:not(:disabled) {
   background: #f8f9fa;
   border-color: #dee2e6;
   color: #495057;
@@ -70,12 +76,12 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .section-actions {
+  .flow-actions {
     flex-direction: column-reverse;
     gap: 0.5rem;
   }
   
-  .section-actions .btn {
+  .flow-actions .btn {
     width: 100%;
     min-width: unset;
   }

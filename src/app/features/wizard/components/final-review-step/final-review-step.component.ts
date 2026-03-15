@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
@@ -15,7 +14,7 @@ import { SignaturePadComponent } from '../../../../shared/components/signature-p
 @Component({
   selector: 'app-wizard-final-review-step',
   standalone: true,
-  imports: [CommonModule, TranslocoPipe, ReactiveFormsModule, SignaturePadComponent],
+  imports: [CommonModule, ReactiveFormsModule, SignaturePadComponent],
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
@@ -135,9 +134,13 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   private loadAllData(): void {
     const allData = this.wizardStateService.getAllData();
     
-    // Paso 1: Datos de registro
-    this.registrationData = allData.step1 || {};
-    
+    // Paso 1: Datos de registro (sin password)
+    const step1 = allData.step1 || {};
+    const { password: _p, ...restStep1 } = step1 as { password?: string; [k: string]: unknown };
+    this.registrationData = { ...restStep1 };
+    const rd = this.registrationData as Record<string, unknown>;
+    rd['fullName'] = (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || (rd['email'] as string) || '';
+
     // Paso 2: Estado/Plan (para apertura y renovación)
     this.statePlanData = allData.step2 || {};
     
@@ -342,13 +345,22 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene campos específicos para apertura LLC
-   * Basado en wizard-apertura-llc-form.component.html
+   * Formatea un objeto de dirección a texto
+   */
+  private formatAddress(addr: any): string {
+    if (!addr || typeof addr !== 'object') return '';
+    const parts = [addr.street, addr.building, addr.unit, addr.city, addr.state, addr.stateRegion, addr.postalCode, addr.zipCode, addr.country].filter(Boolean);
+    return parts.join(', ');
+  }
+
+  /**
+   * Obtiene todos los campos del formulario de Apertura LLC para el resumen de confirmación
    */
   getAperturaLlcFields(): { label: string; value: any }[] {
     const fields: { label: string; value: any }[] = [];
     const data = this.serviceData;
-    
+    if (!data) return fields;
+
     // Sección 1: Información de la LLC
     if (data.llcName) fields.push({ label: 'Nombre de la LLC (Opción 1)', value: data.llcName });
     if (data.llcNameOption2) fields.push({ label: 'Nombre de la LLC (Opción 2)', value: data.llcNameOption2 });
@@ -356,19 +368,62 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
     if (data.incorporationState) fields.push({ label: 'Estado de Incorporación', value: data.incorporationState });
     if (data.businessDescription) fields.push({ label: 'Actividad Principal', value: data.businessDescription });
     if (data.llcType) fields.push({ label: 'Estructura Societaria', value: data.llcType === 'single' ? 'Single Member' : 'Multi Member' });
+    if (data.llcPhoneNumber) fields.push({ label: 'Teléfono de la LLC', value: data.llcPhoneNumber });
+    if (data.website) fields.push({ label: 'Sitio web', value: data.website });
+    if (data.llcEmail) fields.push({ label: 'Email de la LLC', value: data.llcEmail });
     if (data.linkedin) fields.push({ label: 'LinkedIn', value: data.linkedin });
-    
-    // Sección 3: Información para Apertura Bancaria
-    if (data.periodicIncome10k) fields.push({ label: '¿Tendrá ingresos periódicos que suman USD 10,000 o más?', value: data.periodicIncome10k });
-    if (data.bankAccountLinkedEmail) fields.push({ label: 'Correo Electrónico Vinculado a la Cuenta Bancaria', value: data.bankAccountLinkedEmail });
-    if (data.bankAccountLinkedPhone) fields.push({ label: 'Número de Teléfono Vinculado a la Cuenta Bancaria', value: data.bankAccountLinkedPhone });
+    if (data.incorporationDate) fields.push({ label: 'Fecha de incorporación', value: this.formatDate(data.incorporationDate) });
+    if (data.hasEin !== undefined && data.hasEin !== null) fields.push({ label: '¿Tiene EIN?', value: this.formatBoolean(data.hasEin) });
+    if (data.einNumber) fields.push({ label: 'Número de EIN', value: data.einNumber });
+    if (data.einDocumentUrl) fields.push({ label: 'Documento EIN', value: 'Archivo subido ✓' });
+    if (data.noEinReason) fields.push({ label: 'Motivo sin EIN', value: data.noEinReason });
+    if (data.certificateOfFormationUrl) fields.push({ label: 'Certificado de Formación', value: 'Archivo subido ✓' });
+    if (data.accountType) fields.push({ label: 'Tipo de cuenta', value: data.accountType });
+    if (data.estadoConstitucion) fields.push({ label: 'Estado de constitución', value: data.estadoConstitucion });
+    if (data.annualRevenue !== null && data.annualRevenue !== undefined) fields.push({ label: 'Ingresos anuales', value: this.formatMoney(data.annualRevenue) });
+
+    // Dirección Registered Agent
+    const raAddr = this.formatAddress(data.registeredAgentAddress);
+    if (raAddr) fields.push({ label: 'Dirección del Registered Agent', value: raAddr });
+    if (data.registeredAgentName) fields.push({ label: 'Nombre del Registered Agent', value: data.registeredAgentName });
+    if (data.registeredAgentEmail) fields.push({ label: 'Email del Registered Agent', value: data.registeredAgentEmail });
+    if (data.registeredAgentPhone) fields.push({ label: 'Teléfono del Registered Agent', value: data.registeredAgentPhone });
+    if (data.registeredAgentType) fields.push({ label: 'Tipo de Registered Agent', value: data.registeredAgentType });
+
+    // Información bancaria / apertura bancaria
+    if (data.needsBankVerificationHelp !== undefined) fields.push({ label: '¿Necesita ayuda con verificación bancaria?', value: this.formatBoolean(data.needsBankVerificationHelp) });
+    if (data.bankAccountType) fields.push({ label: 'Tipo de cuenta bancaria', value: data.bankAccountType });
+    if (data.bankName) fields.push({ label: 'Banco', value: data.bankName });
+    if (data.bankAccountNumber) fields.push({ label: 'Número de cuenta', value: data.bankAccountNumber });
+    if (data.bankRoutingNumber) fields.push({ label: 'Routing number', value: data.bankRoutingNumber });
+    if (data.bankStatementUrl) fields.push({ label: 'Resumen Bancario', value: 'Archivo subido ✓' });
+    if (data.serviceBillUrl) fields.push({ label: 'Factura de Servicio (Prueba de Dirección)', value: 'Archivo subido ✓' });
+    if (data.periodicIncome10k) fields.push({ label: '¿Ingresos periódicos USD 10,000 o más?', value: data.periodicIncome10k });
+    if (data.bankAccountLinkedEmail) fields.push({ label: 'Correo vinculado a la cuenta bancaria', value: data.bankAccountLinkedEmail });
+    if (data.bankAccountLinkedPhone) fields.push({ label: 'Teléfono vinculado a la cuenta bancaria', value: data.bankAccountLinkedPhone });
     if (data.actividadFinancieraEsperada) fields.push({ label: 'Actividad financiera esperada', value: data.actividadFinancieraEsperada });
     if (data.projectOrCompanyUrl) fields.push({ label: 'URL del Proyecto o Empresa', value: data.projectOrCompanyUrl });
-    
-    // Archivos
-    if (data.serviceBillUrl) fields.push({ label: 'Factura de Servicio (Prueba de Dirección)', value: 'Archivo subido ✓' });
-    if (data.bankStatementUrl) fields.push({ label: 'Resumen Bancario', value: 'Archivo subido ✓' });
-    
+    if (data.veracityConfirmation) fields.push({ label: 'Confirmación de veracidad', value: data.veracityConfirmation });
+
+    // Dirección personal del propietario
+    const ownerAddr = this.formatAddress(data.ownerPersonalAddress);
+    if (ownerAddr) fields.push({ label: 'Dirección personal del propietario', value: ownerAddr });
+    if (data.ownerNationality) fields.push({ label: 'Nacionalidad del propietario', value: data.ownerNationality });
+    if (data.ownerCountryOfResidence) fields.push({ label: 'País de residencia del propietario', value: data.ownerCountryOfResidence });
+    if (data.ownerPhoneNumber) fields.push({ label: 'Teléfono del propietario', value: data.ownerPhoneNumber });
+    if (data.ownerEmail) fields.push({ label: 'Email del propietario', value: data.ownerEmail });
+
+    // Preguntas sí/no
+    if (data.almacenaProductosDepositoUSA !== undefined) fields.push({ label: '¿Almacena productos en depósito en EE.UU.?', value: this.formatBoolean(data.almacenaProductosDepositoUSA) });
+    if (data.declaroImpuestosAntes !== undefined) fields.push({ label: '¿Declaró impuestos antes?', value: this.formatBoolean(data.declaroImpuestosAntes) });
+    if (data.llcConStartCompanies !== undefined) fields.push({ label: '¿LLC con Start Companies?', value: this.formatBoolean(data.llcConStartCompanies) });
+    if (data.ingresosMayor250k !== undefined) fields.push({ label: '¿Ingresos mayores a 250k?', value: this.formatBoolean(data.ingresosMayor250k) });
+    if (data.activosEnUSA !== undefined) fields.push({ label: '¿Activos en EE.UU.?', value: this.formatBoolean(data.activosEnUSA) });
+    if (data.ingresosPeriodicos10k !== undefined) fields.push({ label: '¿Ingresos periódicos 10k?', value: this.formatBoolean(data.ingresosPeriodicos10k) });
+    if (data.contrataServiciosUSA !== undefined) fields.push({ label: '¿Contrata servicios en EE.UU.?', value: this.formatBoolean(data.contrataServiciosUSA) });
+    if (data.propiedadEnUSA !== undefined) fields.push({ label: '¿Propiedad en EE.UU.?', value: this.formatBoolean(data.propiedadEnUSA) });
+    if (data.tieneCuentasBancarias !== undefined) fields.push({ label: '¿Tiene cuentas bancarias?', value: this.formatBoolean(data.tieneCuentasBancarias) });
+
     return fields;
   }
 

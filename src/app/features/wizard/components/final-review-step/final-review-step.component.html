@@ -37,7 +37,7 @@
     </div>
 
   <!-- Datos de Registro -->
-  <div class="review-section mb-4" *ngIf="registrationData && (registrationData.fullName || registrationData.email)">
+  <div class="review-section mb-4" *ngIf="registrationData && (registrationData.fullName || registrationData.firstName || registrationData.lastName || registrationData.email || registrationData.phone)">
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-person-circle me-2 text-primary"></i>
@@ -50,6 +50,18 @@
           <div class="review-item">
             <span class="review-label">Nombre Completo</span>
             <span class="review-value">{{ registrationData.fullName }}</span>
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="!registrationData.fullName && registrationData.firstName">
+          <div class="review-item">
+            <span class="review-label">Nombre</span>
+            <span class="review-value">{{ registrationData.firstName }}</span>
+          </div>
+        </div>
+        <div class="col-md-6" *ngIf="!registrationData.fullName && registrationData.lastName">
+          <div class="review-item">
+            <span class="review-label">Apellido</span>
+            <span class="review-value">{{ registrationData.lastName }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="registrationData.email">

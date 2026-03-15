@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, HostBinding, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, HostBinding, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { ResponsiveImage } from '../../../shared/services/responsive-image.service';
+import { LoggerService } from '../../../shared/services/logger.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
@@ -76,7 +77,8 @@ import { Subject } from 'rxjs';
     img.loaded {
       opacity: 1;
     }
-  `]
+  `],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() images!: ResponsiveImage;
@@ -102,7 +104,8 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
 
   constructor(
     private breakpointObserver: BreakpointObserver,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private logger: LoggerService
   ) {}
 
   ngOnInit() {
@@ -228,12 +231,12 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
 
   onImageLoad() {
     // Imagen cargada exitosamente
-    console.log(`✅ Imagen cargada: ${this.currentImageSrc}`);
+    this.logger.log(`Imagen cargada: ${this.currentImageSrc}`);
   }
 
   onImageError() {
     // Fallback a imagen por defecto
-    console.warn(`⚠️ Error cargando imagen: ${this.currentImageSrc}, usando fallback`);
+    this.logger.warn(`Error cargando imagen: ${this.currentImageSrc}, usando fallback`);
     this.currentImageSrc = this.images.fallback;
     this.cdr.detectChanges();
   }

@@ -1,6 +1,8 @@
+import { APP_CONFIG } from './app.config.constants';
+
 export const whatsappConfig = {
-  phoneNumber: '+17869354213', // Número real de WhatsApp de Start Companies
-  defaultMessage: 'Hola, vengo de Start Companies. Tengo algunas consultas para hacerles.',
+  phoneNumber: APP_CONFIG.contact.whatsapp.number,
+  defaultMessage: APP_CONFIG.contact.whatsapp.message,
   tooltipText: '¡Chatea con nosotros!',
   excludedRoutes: [
     '/blog',

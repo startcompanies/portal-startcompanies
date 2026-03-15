@@ -72,6 +72,7 @@
             (userCreated)="onUserCreated($event)"
             (registrationCompleted)="onEmailVerified()"
           ></app-wizard-basic-register-step>
+          <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
           <div class="step-actions">
             <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
             <button type="button" class="btn btn-primary" (click)="nextStep()">Siguiente</button>
