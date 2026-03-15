@@ -38,13 +38,14 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardStatePlanSelectionStepComponent,
     WizardPaymentStepComponent,
     WizardLlcInformationStepComponent,
     WizardFinalReviewStepComponent
-],
+  ],
   templateUrl: './llc-apertura.component.html',
   styleUrls: ['./llc-apertura.component.css']
 })

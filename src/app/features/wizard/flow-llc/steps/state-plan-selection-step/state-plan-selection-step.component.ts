@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../../shared/shared/shared.module';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 import { StripeService } from '../../../services/stripe.service';
@@ -14,7 +15,7 @@ import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 @Component({
     selector: 'app-wizard-state-plan-selection-step',
     standalone: true,
-    imports: [SharedModule, ReactiveFormsModule],
+    imports: [SharedModule, ReactiveFormsModule, TranslocoPipe],
     templateUrl: './state-plan-selection-step.component.html',
     styleUrls: ['./state-plan-selection-step.component.css'],
 })

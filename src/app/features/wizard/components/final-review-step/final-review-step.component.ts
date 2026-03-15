@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 import { SignaturePadComponent } from '../../../../shared/components/signature-pad/signature-pad.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente reutilizable para el paso de revisión final
@@ -14,7 +15,7 @@ import { SignaturePadComponent } from '../../../../shared/components/signature-p
 @Component({
   selector: 'app-wizard-final-review-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SignaturePadComponent],
+  imports: [CommonModule, ReactiveFormsModule, SignaturePadComponent, TranslocoPipe],
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
