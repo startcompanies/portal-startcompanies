@@ -1,4 +1,4 @@
-<section class="hero-section">
+<section class="hero-section hero-section--no-video">
 
   <div class="container py-5">
     <div class="row d-none d-md-block">
@@ -13,21 +13,13 @@
       </div>
     </div>
     <div class="row align-items-center g-5 py-3 px-4">
-      <!--Visible en pantalla de escritorio y tablet-->
-      <div class="col-lg-6 d-none d-md-block">
-        <div class="desktop-video-container">
-          <app-wistia-player
-            mediaId="ty5yrdaz48"
-          ></app-wistia-player>
-        </div>
-      </div>
-      <!--Visible en pantalla de escritorio: texto + CTA-->
+      <!--Visible en pantalla de escritorio: solo texto + CTA (sin video)-->
       <div class="col-lg-6 d-none d-md-block">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-          {{'LANDINGS.no_advance_payments_2' | transloco}}
+          {{'LANDINGS.landing_3.title' | transloco}}
         </h1>
         <p class="lead hero-description">
-          {{'LANDINGS.open_your_llc' | transloco}}
+          {{'LANDINGS.landing_3.desc1' | transloco}}
         </p>
         <div class="hero-trustpilot-badge" role="img" [attr.aria-label]="'Trustpilot 4.9 ' + ('LANDINGS.trustpilot_badge_label' | transloco)">
           <span class="hero-trustpilot-name">Trustpilot</span>
@@ -45,7 +37,7 @@
                 data-cal-namespace="agenda-organica"
                 data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
               >
-                {{'LANDINGS.schedule_consultation_2' | transloco}}
+                {{'LANDINGS.landing_3.cta' | transloco}}
                 <i class="bi bi-arrow-right ms-2"></i>
               </button>
             </div>
@@ -55,10 +47,10 @@
       <!--Visible en pantalla de movil-->
       <div class="col-lg-12 d-md-none">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-          {{'LANDINGS.no_advance_payments_2' | transloco}}
+          {{'LANDINGS.landing_3.title' | transloco}}
         </h1>
         <p class="lead hero-description">
-          {{'LANDINGS.open_your_llc' | transloco}}
+          {{'LANDINGS.landing_3.desc1' | transloco}}
         </p>
         <div class="hero-trustpilot-badge hero-trustpilot-badge--center" role="img" [attr.aria-label]="'Trustpilot 4.9 ' + ('LANDINGS.trustpilot_badge_label' | transloco)">
           <span class="hero-trustpilot-name">Trustpilot</span>
@@ -74,14 +66,9 @@
             data-cal-namespace="agenda-organica"
             data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
           >
-            {{'LANDINGS.schedule_consultation_2' | transloco}}
+            {{'LANDINGS.landing_3.cta' | transloco}}
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
-        </div>
-        <div class="mobile-video-container">
-          <app-wistia-vertical-player
-            mediaId="y6ofymeow3"
-          ></app-wistia-vertical-player>
         </div>
       </div>
       <div class="col-12">
@@ -441,7 +428,7 @@
   data-cal-namespace="agenda-organica"
   data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
 >
-  {{ "LANDINGS.schedule_consultation_2" | transloco }}
+  {{ "LANDINGS.landing_3.cta" | transloco }}
 </button>
 
 <!--<app-sc-footer></app-sc-footer>-->

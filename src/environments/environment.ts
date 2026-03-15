@@ -3,6 +3,7 @@ import { DOMAIN } from './environment.base';
 export const environment = {
   production: false,
   staging: false,
+  noIndex: true, // Desarrollo local: noindex y sin PageSense (usa index.staging.html)
   apiUrl: 'http://localhost:3000',
   //apiUrl: DOMAIN.api.staging,
   postsEndpoint: '/blog/posts/get-sandbox-posts',

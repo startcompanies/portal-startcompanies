@@ -17,11 +17,15 @@ export function app(): express.Express {
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Helper function para obtener baseUrl dinámicamente
+  // Helper function para obtener baseUrl dinámicamente (siempre https para sitemap/SEO)
   const getBaseUrl = (req: express.Request): string => {
     // Intentar obtener desde el header Host
     const host = req.get('host') || req.headers.host || '';
-    const protocol = req.protocol || (req.get('x-forwarded-proto') || 'https').split(',')[0].trim();
+    let protocol = req.protocol || (req.get('x-forwarded-proto') || 'https').split(',')[0].trim();
+    // Forzar https en las URLs del sitemap
+    if (protocol !== 'https') {
+      protocol = 'https';
+    }
     
     // Portal prod y staging usan .io; .us ya no existe (solo la API está en .us)
     if (host.includes('startcompanies.io')) {
@@ -29,8 +33,8 @@ export function app(): express.Express {
     }
 
     // Fallback: usar variable de entorno o valor por defecto
-    return process.env['BASE_URL'] || process.env['DOMAIN'] 
-      ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace('https://', '')}`
+    return process.env['BASE_URL'] || process.env['DOMAIN']
+      ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace(/^https?:\/\//, '')}`
       : APP_CONFIG.domain.production;
   };
 
@@ -212,7 +216,7 @@ export function app(): express.Express {
 
       // Generar entradas de URL para cada post
       const postEntries = publishedPosts.map(post => {
-        const url = `${baseUrl}/blog/post/${post.slug}`;
+        const url = `${baseUrl}/blog/${post.slug}`;
         const lastmod = post.published_at 
           ? new Date(post.published_at).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0];

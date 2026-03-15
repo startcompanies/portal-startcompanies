@@ -142,7 +142,7 @@
   background-color: var(--color-secundario-tecnico) !important;
   color: var(--color-fondo-claro) !important;
   border-radius: 2rem !important;
-  font-size: 1.3rem !important;
+  font-size: 1.05rem !important;
   padding: 1rem 2rem !important;
   transition: all 0.3s ease !important;
 }

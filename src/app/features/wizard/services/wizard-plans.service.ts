@@ -48,7 +48,7 @@ export class WizardPlansService {
         'Dirección fiscal y social en para apertura bancaria.',
         'Registered Agent - R.A.',
         'Asistencia con la implementación de sistemas de ventas como Stripe.',
-        'Reporte BOIR obligatorio para cumplimiento legal.',
+        'Asesoría general sobre obligaciones legales de la LLC.',
         'E-book con información sobre LLCs.'
       ]
     },
@@ -67,7 +67,7 @@ export class WizardPlansService {
         'Dirección fiscal y social en para apertura bancaria.',
         'Registered Agent - R.A.',
         'Asistencia con la implementación de sistemas de ventas como Stripe.',
-        'Reporte BOIR obligatorio para cumplimiento legal.',
+        'Asesoría general sobre obligaciones legales de la LLC.',
         'E-book con información sobre LLCs.'
       ]
     },
@@ -86,7 +86,7 @@ export class WizardPlansService {
         'Dirección fiscal y social en para apertura bancaria.',
         'Registered Agent - R.A.',
         'Asistencia con la implementación de sistemas de ventas como Stripe.',
-        'Reporte BOIR obligatorio para cumplimiento legal.',
+        'Asesoría general sobre obligaciones legales de la LLC.',
         'E-book con información sobre LLCs.'
       ],
       renewalFeatures: [
