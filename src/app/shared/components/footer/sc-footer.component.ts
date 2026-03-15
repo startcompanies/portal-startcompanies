@@ -4,6 +4,7 @@ import { ResponsiveImageComponent } from '../../components/responsive-image/resp
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
 import { LanguageService } from '../../../shared/services/language.service';
 import { APP_CONFIG } from '../../../core/config/app.config.constants';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sc-footer',
@@ -14,7 +15,10 @@ import { APP_CONFIG } from '../../../core/config/app.config.constants';
 })
 export class ScFooterComponent implements OnInit {
   currentLang = 'es';
-  
+
+  /** Controla visibilidad del bloque de enlaces a wizard/panel (Abrir LLC, Renovar LLC, Abrir cuenta) */
+  readonly wizardAndPanelEnabled = environment.wizardAndPanelEnabled;
+
   readonly contactEmail = APP_CONFIG.contact.email;
   readonly contactPhone = APP_CONFIG.contact.phoneDisplay;
   readonly whatsappUrl = APP_CONFIG.contact.whatsapp.url;

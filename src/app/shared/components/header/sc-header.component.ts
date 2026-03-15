@@ -18,6 +18,7 @@ import { BehaviorSubject, Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { LanguageService } from '../../../shared/services/language.service';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sc-header',
@@ -28,6 +29,11 @@ import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-
 })
 export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() hideLogin = false;
+
+  /** Mostrar botón de login solo si wizard/panel están habilitados y el padre no lo oculta */
+  get showLoginButton(): boolean {
+    return environment.wizardAndPanelEnabled && !this.hideLogin;
+  }
 
   @ViewChild('navbar', { static: false }) navbar?: ElementRef<HTMLElement>;
 

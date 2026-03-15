@@ -233,9 +233,18 @@ export const routes: Routes = [
         path: 'presentacion',
         loadComponent: () => import('../features/public/landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
       },
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
         path: 'apertura-banco-relay',
-        loadComponent: () => import('../features/public/landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent)
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+                (m) => m.CuentaBancariaComponent
+              )
+          : () =>
+              import('../features/public/landings/landing-apertura-relay/landing-apertura-relay.component').then(
+                (m) => m.LandingAperturaRelayComponent
+              ),
       },
       {
         path: 'agenda',
@@ -246,21 +255,36 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
       // Wizard unificado en URLs de formularios (apertura-llc, renovar-llc)
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'apertura-llc',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
-        data: { serviceType: 'apertura-llc' },
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/apertura-llc/apertura-llc.component').then(
+                (m) => m.AperturaLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
+        },
       },
       {
         path: 'renovar-llc',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
-        data: { serviceType: 'renovacion-llc' },
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/renovar-llc/renovar-llc.component').then(
+                (m) => m.RenovarLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'renovacion-llc' }),
+        },
       },
       {
         path: 'form-apertura-relay',
@@ -879,12 +903,18 @@ export const routes: Routes = [
           },
         },
       },
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
         path: 'relay-account-opening',
-        loadComponent: () =>
-          import(
-            '../features/public/landings/landing-apertura-relay/landing-apertura-relay.component'
-          ).then((m) => m.LandingAperturaRelayComponent),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+                (m) => m.CuentaBancariaComponent
+              )
+          : () =>
+              import(
+                '../features/public/landings/landing-apertura-relay/landing-apertura-relay.component'
+              ).then((m) => m.LandingAperturaRelayComponent),
         data: {
           seo: {
             title: 'Relay Bank Opening - Start Companies',
@@ -918,14 +948,20 @@ export const routes: Routes = [
         },
       },
       /** Wizard unificado EN (llc-opening, llc-renewal) */
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'llc-opening',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/apertura-llc/apertura-llc.component').then(
+                (m) => m.AperturaLlcComponent
+              ),
         data: {
-          serviceType: 'apertura-llc',
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
           seo: {
             title: 'LLC Opening in the United States - Start Companies',
             description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
@@ -940,12 +976,17 @@ export const routes: Routes = [
       },
       {
         path: 'llc-renewal',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/renovar-llc/renovar-llc.component').then(
+                (m) => m.RenovarLlcComponent
+              ),
         data: {
-          serviceType: 'renovacion-llc',
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'renovacion-llc' }),
           seo: {
             title: 'LLC Renewal in the United States - Start Companies',
             description: 'We renew your LLC in the United States before it expires. Avoid penalties and keep your business active.',

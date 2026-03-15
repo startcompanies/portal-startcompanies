@@ -12,7 +12,6 @@ import { LangRouterLinkDirective } from '../../../../../shared/directives/lang-r
   styleUrl: './tabs.component.css'
 })
 export class TabsComponent {
-  
   // Variable para controlar qué tab está activa en móvil/tablet
   activeMobileTab: string = 'llc';
 

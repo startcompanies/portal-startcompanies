@@ -23,16 +23,11 @@ export function app(): express.Express {
     const host = req.get('host') || req.headers.host || '';
     const protocol = req.protocol || (req.get('x-forwarded-proto') || 'https').split(',')[0].trim();
     
-    // Si el host contiene startcompanies.io, usar ese dominio
+    // Portal prod y staging usan .io; .us ya no existe (solo la API está en .us)
     if (host.includes('startcompanies.io')) {
       return `${protocol}://${host}`;
     }
-    
-    // Si el host contiene startcompanies.us, usar ese dominio
-    if (host.includes('startcompanies.us')) {
-      return `${protocol}://${host}`;
-    }
-    
+
     // Fallback: usar variable de entorno o valor por defecto
     return process.env['BASE_URL'] || process.env['DOMAIN'] 
       ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace('https://', '')}`
