@@ -4,6 +4,7 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
+import { APP_CONFIG } from './src/app/core/config/app.config.constants';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
@@ -35,7 +36,7 @@ export function app(): express.Express {
     // Fallback: usar variable de entorno o valor por defecto
     return process.env['BASE_URL'] || process.env['DOMAIN'] 
       ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace('https://', '')}`
-      : 'https://startcompanies.us';
+      : APP_CONFIG.domain.production;
   };
 
   // Helper para obtener la URL de la API según el host (staging vs producción)
@@ -48,12 +49,12 @@ export function app(): express.Express {
     const host = (req.get('host') || req.headers.host || '').toLowerCase();
     // Staging: staging.startcompanies.io -> api-web.startcompanies.io
     if (host.includes('staging.startcompanies.io')) {
-      return 'https://api-web.startcompanies.io';
+      return APP_CONFIG.domain.api.staging;
     }
     if (host.includes('startcompanies.io')) {
-      return 'https://api-web.startcompanies.io';
+      return APP_CONFIG.domain.api.staging;
     }
-    return 'https://api-web.startcompanies.us';
+    return APP_CONFIG.domain.api.production;
   };
 
   // Example Express Rest API endpoints

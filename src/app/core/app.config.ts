@@ -12,6 +12,11 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { authInterceptor } from '../features/panel/interceptors/auth.interceptor';
 import { TranslocoHttpLoader } from '../transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
+/**
+ * NOTA: provideTranslocoPersistLang está deshabilitado temporalmente.
+ * Razón: Se usa localStorage directamente en LanguageService para persistir el idioma.
+ * TODO: Evaluar migrar a transloco-persist-lang en una futura versión.
+ */
 /*import {
   cookiesStorage,
   provideTranslocoPersistLang,

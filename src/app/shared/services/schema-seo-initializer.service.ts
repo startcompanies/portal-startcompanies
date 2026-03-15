@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
+import { APP_CONFIG } from '../../core/config/app.config.constants';
 
 /**
  * Inyecta/actualiza JSON-LD (Organization, WebSite) y canonical con environment.baseUrl
@@ -59,9 +60,9 @@ export class SchemaSeoInitializerService {
       },
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+1-786-935-4213',
+        telephone: APP_CONFIG.contact.phone,
         contactType: 'customer service',
-        email: 'administracion@startcompanies.us',
+        email: APP_CONFIG.contact.email,
         availableLanguage: ['Spanish', 'English'],
       },
       foundingDate: '2020',

@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-import { title } from 'process';
 import { languageGuard } from '../shared/guards/language.guard';
-import { CampaignRedirectGuard } from '../shared/guards/campaign-redirect.guard';
 import { environment } from '../../environments/environment';
 import { authGuard } from '../features/panel/guards/auth.guard';
 import { roleGuard } from '../features/panel/guards/role.guard';

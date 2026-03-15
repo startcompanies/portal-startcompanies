@@ -12,6 +12,7 @@ import {
 import { Router, UrlTree } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 import { Subscription } from 'rxjs';
+import { ROUTE_MAPPINGS_ES_TO_EN, ROUTE_MAPPINGS_EN_TO_ES } from '../constants/route-mappings.constant';
 
 @Directive({
   selector: '[langRouterLink]',
@@ -105,60 +106,14 @@ export class LangRouterLinkDirective implements OnChanges, OnDestroy {
     if (lang === 'en') {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
-          const routeMapping: { [key: string]: string } = {
-            '': 'home', // Raíz en español mapea a 'home' en inglés
-            'inicio': 'home', // Mantener compatibilidad
-            'nosotros': 'about-us',
-            'contacto': 'contact',
-            'planes': 'plans',
-            'blog': 'blog',
-            'aviso-de-privacidad': 'privacy-policy',
-            'terminos-y-condiciones': 'terms-and-conditions',
-            'apertura-llc': 'llc-opening',
-            'renovar-llc': 'llc-renewal',
-            'form-apertura-relay': 'relay-opening-form',
-            'abre-tu-llc': 'llc-formation',
-            'presentacion': 'presentation',
-            'apertura-banco-relay': 'relay-account-opening',
-            'agendar': 'schedule',
-            'fixcal': 'fixcal',
-            'abotax': 'abotax',
-            'category': 'category',
-            'post': 'post',
-            'registro-cliente': 'client-register',
-            'cuenta-bancaria': 'bank-account',
-            'wizard/cuenta-bancaria': 'wizard/bank-account',
-          };
-          return routeMapping[cmd] || cmd;
+          return ROUTE_MAPPINGS_ES_TO_EN[cmd] ?? cmd;
         }
         return cmd;
       });
     } else if (lang === 'es') {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
-          const routeMapping: { [key: string]: string } = {
-            'home': '', // 'home' en inglés mapea a raíz '' en español
-            'about-us': 'nosotros',
-            'contact': 'contacto',
-            'plans': 'planes',
-            'blog': 'blog',
-            'privacy-policy': 'aviso-de-privacidad',
-            'terms-and-conditions': 'terminos-y-condiciones',
-            'llc-opening': 'apertura-llc',
-            'llc-renewal': 'renovar-llc',
-            'relay-opening-form': 'form-apertura-relay',
-            'llc-formation': 'abre-tu-llc',
-            'presentation': 'presentacion',
-            'relay-account-opening': 'apertura-banco-relay',
-            'schedule': 'agendar',
-            'fixcal': 'fixcal',
-            'abotax': 'abotax',
-            'category': 'category',
-            'post': 'post',
-            'bank-account': 'cuenta-bancaria',
-            'wizard/bank-account': 'wizard/cuenta-bancaria',
-          };
-          return routeMapping[cmd] || cmd;
+          return ROUTE_MAPPINGS_EN_TO_ES[cmd] ?? cmd;
         }
         return cmd;
       });

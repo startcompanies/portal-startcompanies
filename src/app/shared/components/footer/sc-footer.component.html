@@ -53,8 +53,8 @@
                 <a [langRouterLink]="'apertura-llc'">{{
                   "FOOTER.categories.llc" | transloco
                 }}</a>
-                <a [langRouterLink]="'renovar-llc'">Renueva tu LLC</a>
-                <a [langRouterLink]="'apertura-banco-relay'">Abrir cuenta</a>
+                <a [langRouterLink]="'renovar-llc'">{{ 'FOOTER.categories.renew' | transloco }}</a>
+                <a [langRouterLink]="'apertura-banco-relay'">{{ 'FOOTER.categories.account' | transloco }}</a>
               </div>
             </div>
           </div>
@@ -72,23 +72,23 @@
                 alt="Email"
                 class="contact-icon mt-1"
               />
-              <span>administracion&#64;startcompanies.us</span>
+              <span>{{ contactEmail }}</span>
             </div>
-            <div
+            <a
               class="contact-item d-flex align-items-start gap-2"
-              (click)="
-                openUrl(
-                  'https://api.whatsapp.com/send/?phone=17869354213&text=Hola%2C+vengo+de+Start+Companies.+Tengo+algunas+consultas+para+hacerles.&type=phone_number&app_absent=0'
-                )
-              "
+              [href]="whatsappUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'Contactar por WhatsApp al ' + contactPhone"
             >
               <img
                 src="assets/footer/img_phone.svg"
-                alt="Phone"
+                alt=""
                 class="contact-icon mt-1"
+                aria-hidden="true"
               />
-              <span>+1 (786) 935-4213</span>
-            </div>
+              <span>{{ contactPhone }}</span>
+            </a>
             <div class="contact-item d-flex align-items-start gap-2">
               <img
                 src="assets/footer/img_location_on.svg"

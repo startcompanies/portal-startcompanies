@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   OnInit,
+  OnDestroy,
   AfterViewInit,
   AfterViewChecked,
   SecurityContext,
@@ -26,6 +27,9 @@ import { BrowserService } from '../../../../shared/services/browser.service';
 import { BlogAuthorCardComponent } from '../../../../shared/components/blog-author-card/blog-author-card.component';
 import { BlogPostHeroComponent } from '../../../../shared/components/blog-post-hero/blog-post-hero.component';
 import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonial-avatars';
+import { HtmlParserService } from '../services/html-parser.service';
+import { BlogTocService } from '../services/blog-toc.service';
+import { SocialShareService } from '../../../../shared/services/social-share.service';
 
 @Component({
   selector: 'app-blog-post-v2',
@@ -44,14 +48,19 @@ import { TESTIMONIAL_AVATAR_URLS } from '../../../../shared/constants/testimonia
   templateUrl: './blog-post-v2.component.html',
   styleUrl: './blog-post-v2.component.css',
 })
-export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChecked {
+export class BlogPostV2Component implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   @ViewChild('heroEndSentinel') heroEndSentinel?: ElementRef<HTMLElement>;
 
   private blogService = inject(BlogService);
   baseUrl = environment.baseUrl;
 
+  private readonly HEADING_ID_ASSIGNMENT_DELAY_MS = 500;
+  private readonly TOC_INIT_DELAY_REGULAR_MS = 800;
+  private readonly TOC_INIT_DELAY_LANDING_MS = 1200;
+  private readonly TOC_REINIT_DELAY_MS = 1000;
+  private readonly NOT_FOUND_DELAY_MS = 500;
+
   postArticle?: Post;
-  contentBlocks: any[] = [];
   hasSections = false;
   firstSectionContent = '';
   firstSectionImage = '';
@@ -65,6 +74,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
   /** CTA móvil "Agendá asesoría": se muestra solo después de pasar el hero para no chocar con compartir */
   showMobileCtaAfterHero = false;
   private heroSentinelObserverSetup = false;
+
+  private timeoutIds: number[] = [];
+  private intersectionObserver?: IntersectionObserver;
+  private tocEventListeners: { element: HTMLElement; handler: EventListener }[] = [];
 
   // Getter para acceso desde el template
   get isBrowser(): boolean {
@@ -107,7 +120,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
     private route: ActivatedRoute,
     private blogSeoService: BlogSeoService,
     private browser: BrowserService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private htmlParser: HtmlParserService,
+    private blogToc: BlogTocService,
+    private socialShare: SocialShareService
   ) {}
 
   ngOnInit(): void {
@@ -146,7 +162,36 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
       },
       { threshold: 0 }
     );
+    this.intersectionObserver = observer;
     observer.observe(el);
+  }
+
+  ngOnDestroy(): void {
+    this.timeoutIds.forEach((id) => clearTimeout(id));
+    this.timeoutIds = [];
+
+    this.tocEventListeners.forEach(({ element, handler }) => {
+      element.removeEventListener('click', handler);
+    });
+    this.tocEventListeners = [];
+
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+      this.intersectionObserver = undefined;
+    }
+  }
+
+  private setSafeTimeout(callback: () => void, delay: number): void {
+    const win = this.browser.window as (Window & typeof globalThis) | undefined;
+    if (!win) return;
+    const timeoutId = win.setTimeout(() => {
+      callback();
+      const index = this.timeoutIds.indexOf(timeoutId);
+      if (index > -1) {
+        this.timeoutIds.splice(index, 1);
+      }
+    }, delay);
+    this.timeoutIds.push(timeoutId);
   }
 
   private async loadPost(slug: string): Promise<void> {
@@ -173,12 +218,11 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
         (typeof post === 'object' && Object.keys(post).length === 0)
       ) {
         // Esperar un momento antes de marcar como no encontrado para evitar parpadeo
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, this.NOT_FOUND_DELAY_MS));
         this.postNotFound = true;
         this.isLoading = false;
         return;
       }
-
       // Resetear hasSections antes de cargar el nuevo post
       this.hasSections = false;
       this.heroCardContent = '';
@@ -194,7 +238,6 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
 
       // ✅ Parseo del contenido HTML (solo en el navegador)
       if (this.browser.isBrowser && post.content) {
-        this.contentBlocks = this.parseHtmlContent(post.content);
         // Detectar si el contenido tiene secciones <section></section>
         // Solo considerar como landing si hay secciones al inicio del contenido
         this.hasSections = this.detectSections(post.content);
@@ -211,9 +254,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
       if (this.browser.isBrowser && !this.hasSections && post.content) {
         this.tocLinks = this.extractTOCLinks(post.content);
         // Asignar IDs a los encabezados después de que se renderice el contenido
-        setTimeout(() => {
+        this.setSafeTimeout(() => {
           this.assignHeadingIds();
-        }, 500);
+        }, this.HEADING_ID_ASSIGNMENT_DELAY_MS);
       } else {
         this.tocLinks = [];
       }
@@ -221,14 +264,13 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
       // Inicializar TOC después de que el contenido se renderice
       if (this.browser.isBrowser) {
         // Para posts tipo landing, esperar más tiempo para que el contenido se renderice completamente
-        const timeout = this.hasSections ? 1200 : 800;
-        setTimeout(() => {
+        const timeout = this.hasSections ? this.TOC_INIT_DELAY_LANDING_MS : this.TOC_INIT_DELAY_REGULAR_MS;
+        this.setSafeTimeout(() => {
           this.initializeTOC();
-          // Para posts tipo landing, reintentar inicialización después de más tiempo
           if (this.hasSections) {
-            setTimeout(() => {
+            this.setSafeTimeout(() => {
               this.initializeTOC();
-            }, 1000);
+            }, this.TOC_REINIT_DELAY_MS);
           }
         }, timeout);
       }
@@ -237,48 +279,10 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
     } catch (error) {
       console.error('❌ Error cargando post:', error);
       // Esperar un momento antes de marcar como no encontrado
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, this.NOT_FOUND_DELAY_MS));
       this.postNotFound = true;
       this.isLoading = false;
     }
-  }
-
-  private parseHtmlContent(content: string): any[] {
-    const doc = this.browser.document;
-    if (!doc) return [];
-
-    const blocks: any[] = [];
-    const container = doc.createElement('div');
-    container.innerHTML = content;
-
-    Array.from(container.childNodes).forEach((node) => {
-      if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-        blocks.push({ type: 'p', content: node.textContent.trim() });
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        const el = node as HTMLElement;
-        switch (el.tagName) {
-          case 'P':
-            blocks.push({ type: 'p', content: el.innerText.trim() });
-            break;
-          case 'IMG':
-            blocks.push({
-              type: 'img',
-              src: el.getAttribute('src'),
-              alt: el.getAttribute('alt') || '',
-            });
-            break;
-          case 'A':
-            blocks.push({
-              type: 'a',
-              href: el.getAttribute('href'),
-              text: el.innerText.trim(),
-            });
-            break;
-        }
-      }
-    });
-
-    return blocks;
   }
 
   private detectSections(content: string): boolean {
@@ -960,64 +964,23 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
   }
 
   shareOnWhatsApp(): void {
-    const win = this.browser.window;
-    if (!win) return;
-    const url = encodeURIComponent(this.getCurrentUrl());
-    const text = encodeURIComponent(this.getShareText());
-    const whatsappUrl = `https://wa.me/?text=${text}%20${url}`;
-    win.open(whatsappUrl, '_blank');
+    this.socialShare.shareOnWhatsApp(this.getCurrentUrl(), this.getShareText());
   }
 
   shareOnLinkedIn(): void {
-    const win = this.browser.window;
-    if (!win) return;
-    const url = encodeURIComponent(this.getCurrentUrl());
-    const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
-    win.open(linkedinUrl, '_blank');
+    this.socialShare.shareOnLinkedIn(this.getCurrentUrl());
   }
 
   shareOnFacebook(): void {
-    const win = this.browser.window;
-    if (!win) return;
-    const url = encodeURIComponent(this.getCurrentUrl());
-    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-    win.open(facebookUrl, '_blank');
+    this.socialShare.shareOnFacebook(this.getCurrentUrl());
   }
 
   shareNative(): void {
-    const win = this.browser.window;
-    if (!win) return;
-
-    if (win.navigator.share) {
-      win.navigator
-        .share({
-          title: this.postArticle?.title || 'Start Companies',
-          text: this.getShareText(),
-          url: this.getCurrentUrl(),
-        })
-        .catch((error) => {
-          console.log('Error al compartir:', error);
-        });
-    } else {
-      // Fallback: copiar al portapapeles
-      this.copyToClipboard();
-    }
-  }
-
-  private copyToClipboard(): void {
-    const win = this.browser.window;
-    if (!win) return;
-
-    const url = this.getCurrentUrl();
-    win.navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        // Opcional: mostrar un mensaje de confirmación
-        alert('Enlace copiado al portapapeles');
-      })
-      .catch((error) => {
-        console.log('Error al copiar:', error);
-      });
+    this.socialShare.shareNative(
+      this.getCurrentUrl(),
+      this.postArticle?.title || 'Start Companies',
+      this.getShareText()
+    );
   }
 
   private initializeTOC(): void {
@@ -1051,9 +1014,9 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
           // Añadir el evento click solo si no tiene ya un listener
           if (!headerElement.dataset['tocInitialized']) {
             headerElement.dataset['tocInitialized'] = 'true';
-            headerElement.addEventListener('click', () => {
-              this.toggleTOC();
-            });
+            const handler: EventListener = () => this.toggleTOC();
+            headerElement.addEventListener('click', handler);
+            this.tocEventListeners.push({ element: headerElement, handler });
           }
 
           // Inicializar navegación por scroll para los enlaces del índice (posts tipo landing)
@@ -1115,151 +1078,18 @@ export class BlogPostV2Component implements OnInit, AfterViewInit, AfterViewChec
     }
   }
 
-  /**
-   * Genera un ID único basado en el texto del encabezado
-   */
   private generateHeadingId(text: string): string {
-    if (!text) return '';
-    // Convertir a minúsculas, eliminar acentos y caracteres especiales
-    return text
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
-      .replace(/[^a-z0-9\s-]/g, '') // Eliminar caracteres especiales
-      .trim()
-      .replace(/\s+/g, '-') // Reemplazar espacios con guiones
-      .replace(/-+/g, '-') // Reemplazar múltiples guiones con uno solo
-      .substring(0, 50); // Limitar longitud
+    return this.blogToc.generateHeadingId(text);
   }
 
-  /**
-   * Extrae los encabezados y enlaces del contenido HTML del post para generar el TOC
-   */
   private extractTOCLinks(
     content: string
   ): Array<{ href: string; text: string; isHeading?: boolean }> {
-    const doc = this.browser.document;
-    if (!content || !doc) return [];
-
-    const links: Array<{ href: string; text: string; isHeading?: boolean }> =
-      [];
-    const container = doc.createElement('div');
-    container.innerHTML = content;
-
-    // Primero, buscar todos los encabezados (h1, h2, h3, h4, h5, h6)
-    const headings = container.querySelectorAll('h1, h2, h3, h4, h5, h6');
-
-    headings.forEach((heading) => {
-      const headingElement = heading as HTMLElement;
-      const text = headingElement.textContent?.trim() || '';
-
-      if (text) {
-        // Obtener o generar ID para el encabezado
-        let headingId = headingElement.id;
-
-        if (!headingId) {
-          // Generar un ID basado en el texto
-          headingId = this.generateHeadingId(text);
-          // Asegurar que el ID sea único añadiendo un contador si es necesario
-          let uniqueId = headingId;
-          let counter = 1;
-          while (links.some((link) => link.href === `#${uniqueId}`)) {
-            uniqueId = `${headingId}-${counter}`;
-            counter++;
-          }
-          headingId = uniqueId;
-        }
-
-        links.push({
-          href: `#${headingId}`,
-          text,
-          isHeading: true,
-        });
-      }
-    });
-
-    // También buscar enlaces con anclas internas (como respaldo)
-    const anchorElements = container.querySelectorAll('a[href]');
-    anchorElements.forEach((anchor) => {
-      const href = anchor.getAttribute('href');
-      const anchorElement = anchor as HTMLElement;
-      let text =
-        anchor.textContent?.trim() || anchorElement.innerText?.trim() || '';
-
-      if (href && text) {
-        // Solo incluir enlaces que sean anclas internas (empiezan con #)
-        if (href.startsWith('#')) {
-          // Verificar que no esté ya en la lista
-          if (!links.some((link) => link.href === href)) {
-            links.push({ href, text, isHeading: false });
-          }
-        } else if (href.startsWith('/')) {
-          // Enlaces internos del sitio que pueden tener anclas
-          const hashIndex = href.indexOf('#');
-          if (hashIndex !== -1) {
-            const anchorPart = href.substring(hashIndex);
-            if (!links.some((link) => link.href === anchorPart)) {
-              links.push({ href: anchorPart, text, isHeading: false });
-            }
-          }
-        } else {
-          const win = this.browser.window;
-          if (
-            win &&
-            href.includes('#') &&
-            (href.includes(win.location.hostname) || !href.startsWith('http'))
-          ) {
-            // URLs absolutas o relativas con anclas
-            const hashIndex = href.indexOf('#');
-            if (hashIndex !== -1) {
-              const anchorPart = href.substring(hashIndex);
-              if (!links.some((link) => link.href === anchorPart)) {
-                links.push({ href: anchorPart, text, isHeading: false });
-              }
-            }
-          }
-        }
-      }
-    });
-
-    return links;
+    return this.blogToc.extractTOCLinks(content);
   }
 
-  /**
-   * Asigna IDs a los encabezados que no los tengan para permitir navegación
-   */
   private assignHeadingIds(): void {
-    const doc = this.browser.document;
-    if (!doc) return;
-
-    const contentContainer = doc.querySelector('.app-post-content');
-    if (!contentContainer) return;
-
-    const headings = contentContainer.querySelectorAll(
-      'h1, h2, h3, h4, h5, h6'
-    );
-
-    headings.forEach((heading) => {
-      const headingElement = heading as HTMLElement;
-
-      // Solo asignar ID si no tiene uno
-      if (!headingElement.id) {
-        const text = headingElement.textContent?.trim() || '';
-        if (text) {
-          const generatedId = this.generateHeadingId(text);
-
-          // Asegurar que el ID sea único en el documento
-          let uniqueId = generatedId;
-          let counter = 1;
-          while (doc.getElementById(uniqueId)) {
-            uniqueId = `${generatedId}-${counter}`;
-            counter++;
-          }
-
-          headingElement.id = uniqueId;
-        }
-      }
-    });
+    this.blogToc.assignHeadingIds();
   }
 
   /**

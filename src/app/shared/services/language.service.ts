@@ -6,6 +6,8 @@ import { filter } from 'rxjs/operators';
 import { BehaviorSubject, firstValueFrom, of } from 'rxjs';
 import { catchError, take } from 'rxjs/operators';
 import { BrowserService } from './browser.service';
+import { LoggerService } from './logger.service';
+import { ROUTE_MAPPINGS_ES_TO_EN, ROUTE_MAPPINGS_EN_TO_ES } from '../constants/route-mappings.constant';
 
 @Injectable({ providedIn: 'root' })
 export class LanguageService {
@@ -17,7 +19,8 @@ export class LanguageService {
   constructor(
     private transloco: TranslocoService,
     private router: Router,
-    private browser: BrowserService
+    private browser: BrowserService,
+    private logger: LoggerService
   ) {
     // Escuchar navegaciones posteriores (asegura sincronía durante runtime)
     this.router.events
@@ -78,7 +81,7 @@ export class LanguageService {
       this.transloco.load(lang).pipe(
         take(1),
         catchError((error) => {
-          console.error(`[LanguageService] Error loading language "${lang}"`, error);
+          this.logger.error(`[LanguageService] Error loading language "${lang}"`, error);
           return of({});
         })
       )
@@ -110,26 +113,7 @@ export class LanguageService {
     if (lang === 'en') {
       return commands.map(cmd => {
         if (typeof cmd === 'string') {
-          const routeMapping: { [key: string]: string } = {
-            'nosotros': 'about-us',
-            'contacto': 'contact',
-            'planes': 'plans',
-            'blog': 'blog',
-            'aviso-de-privacidad': 'privacy-policy',
-            'terminos-y-condiciones': 'terms-and-conditions',
-            'apertura-llc': 'llc-opening',
-            'renovar-llc': 'llc-renewal',
-            'form-apertura-relay': 'relay-opening-form',
-            'abre-tu-llc': 'llc-formation',
-            'presentacion': 'presentation',
-            'apertura-banco-relay': 'relay-account-opening',
-            'agendar': 'schedule',
-            'fixcal': 'fixcal',
-            'abotax': 'abotax',
-            'category': 'category',
-            'post': 'post'
-          };
-          return routeMapping[cmd] || cmd;
+          return ROUTE_MAPPINGS_ES_TO_EN[cmd] ?? cmd;
         }
         return cmd;
       });
@@ -192,29 +176,7 @@ export class LanguageService {
    */
   private mapRouteForLanguage(route: string, targetLang: string): string {
     if (targetLang === 'es') {
-      // Mapear de inglés a español
-      const englishToSpanish: { [key: string]: string } = {
-        'home': '', // Raíz en español
-        'about-us': 'nosotros',
-        'contact': 'contacto',
-        'plans': 'planes',
-        'blog': 'blog',
-        'privacy-policy': 'aviso-de-privacidad',
-        'terms-and-conditions': 'terminos-y-condiciones',
-        'llc-formation': 'abre-tu-llc',
-        'presentation': 'presentacion',
-        'relay-account-opening': 'apertura-banco-relay',
-        'schedule': 'agendar',
-        'llc-opening': 'apertura-llc',
-        'llc-renewal': 'renovar-llc',
-        'relay-opening-form': 'form-apertura-relay',
-        'fixcal': 'fixcal',
-        'abotax': 'abotax',
-        'category': 'category',
-        'post': 'post',
-        'wizard/bank-account': 'wizard/cuenta-bancaria'
-      };
-      const mapped = englishToSpanish[route];
+      const mapped = ROUTE_MAPPINGS_EN_TO_ES[route];
       if (mapped !== undefined) return mapped;
       // Rutas compuestas (ej. blog/slug, blog/category/xyz): mantener si el primer segmento es válido
       const first = route.split('/')[0];
@@ -222,30 +184,7 @@ export class LanguageService {
       // Cualquier otra ruta EN sin mapeo → ir a home en ES para evitar 404
       return '';
     } else {
-      // Mapear de español a inglés
-      const spanishToEnglish: { [key: string]: string } = {
-        '': 'home', // Raíz en español mapea a 'home' en inglés
-        'inicio': 'home', // Mantener compatibilidad con rutas antiguas
-        'nosotros': 'about-us',
-        'contacto': 'contact',
-        'planes': 'plans',
-        'blog': 'blog',
-        'aviso-de-privacidad': 'privacy-policy',
-        'terminos-y-condiciones': 'terms-and-conditions',
-        'abre-tu-llc': 'llc-formation',
-        'presentacion': 'presentation',
-        'apertura-banco-relay': 'relay-account-opening',
-        'agendar': 'schedule',
-        'apertura-llc': 'llc-opening',
-        'renovar-llc': 'llc-renewal',
-        'form-apertura-relay': 'relay-opening-form',
-        'fixcal': 'fixcal',
-        'abotax': 'abotax',
-        'category': 'category',
-        'post': 'post',
-        'wizard/cuenta-bancaria': 'wizard/bank-account'
-      };
-      return spanishToEnglish[route] || route;
+      return ROUTE_MAPPINGS_ES_TO_EN[route] ?? route;
     }
   }
 

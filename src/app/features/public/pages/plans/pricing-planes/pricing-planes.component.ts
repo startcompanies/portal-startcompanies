@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ScHeaderComponent } from '../../../../../shared/components/header/sc-header.component';
 import { ScFooterComponent } from '../../../../../shared/components/footer/sc-footer.component';
 import { OurPricingComponent } from '../our-pricing/our-pricing.component';
@@ -19,6 +19,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   ],
   templateUrl: './pricing-planes.component.html',
   styleUrl: './pricing-planes.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PricingPlanesComponent {
   // Configuración de imágenes para NgOptimizedImage
