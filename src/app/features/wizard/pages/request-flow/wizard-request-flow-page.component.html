@@ -1,0 +1,59 @@
+<div class="wizard-root" *ngIf="serviceType">
+  <!-- Panel izquierdo: identidad, progreso, orientación -->
+  <aside class="wizard-panel wizard-panel--left">
+    <div class="wizard-panel__head">
+      <div class="wizard-panel__logo pb-3">
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="logo wizard-sidebar-logo">
+        </app-responsive-image>
+      </div>
+      <span class="wizard-panel__service">{{ serviceTitle }}</span>
+      <p class="wizard-panel__tagline">{{ serviceTagline }}</p>
+    </div>
+    <!-- Progreso móvil: barra + "Paso X de N" -->
+    <div class="wizard-progress-mobile" aria-label="Paso actual">
+      <div class="wizard-progress-mobile__text">
+        <span class="wizard-progress-mobile__counter">Paso {{ currentStepIndex + 1 }} de {{ flowSteps.length }}</span>
+        <span class="wizard-progress-mobile__name">{{ getStepLabel(currentStepIndex) }}</span>
+      </div>
+      <div class="wizard-progress-mobile__bar">
+        <div class="wizard-progress-mobile__fill" [style.width.%]="flowSteps.length ? ((currentStepIndex + 1) / flowSteps.length) * 100 : 0"></div>
+      </div>
+    </div>
+    <!-- Progreso desktop: lista vertical de pasos -->
+    <nav class="wizard-progress" aria-label="Progreso del proceso">
+      <div
+        *ngFor="let step of flowSteps; let i = index"
+        class="wizard-progress__item"
+        [class.is-active]="currentStepIndex === i"
+        [class.is-completed]="currentStepIndex > i">
+        <span class="wizard-progress__num">{{ i + 1 }}</span>
+        <span class="wizard-progress__line"></span>
+        <span class="wizard-progress__label">{{ step.label }}</span>
+      </div>
+    </nav>
+    <div class="wizard-panel__meta">
+      <div class="wizard-meta__item">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        <span>Datos protegidos y confidenciales</span>
+      </div>
+      <div class="wizard-meta__item">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        <span>Unos 5–10 minutos</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Panel derecho: contenido del flujo -->
+  <main class="wizard-panel wizard-panel--right">
+    <app-wizard-request-flow
+      class="wizard-main"
+      [serviceType]="serviceType"
+      [hideStepsIndicator]="true"
+      (stepIndexChange)="currentStepIndex = $event"
+    ></app-wizard-request-flow>
+  </main>
+</div>

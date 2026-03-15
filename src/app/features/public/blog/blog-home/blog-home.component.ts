@@ -1,4 +1,4 @@
-import { Component, Inject, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, Inject, inject, OnInit, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogComponent } from '../../home/sections/blog/blog.component';
@@ -27,6 +27,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   ],
   templateUrl: './blog-home.component.html',
   styleUrl: './blog-home.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BlogHomeComponent implements OnInit {
   isBrowser = false;

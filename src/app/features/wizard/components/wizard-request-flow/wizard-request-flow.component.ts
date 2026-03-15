@@ -16,15 +16,20 @@ import { WizardFlowFinalizeService } from '../../services/wizard-flow-finalize.s
     <app-base-request-flow
       [context]="RequestFlowContext.WIZARD"
       [serviceType]="serviceType"
+      [hideStepsIndicator]="hideStepsIndicator"
       (flowCompleted)="onFlowCompleted($event)"
-      (flowCancelled)="onFlowCancelled()">
+      (flowCancelled)="onFlowCancelled()"
+      (stepIndexChange)="stepIndexChange.emit($event)">
     </app-base-request-flow>
   `
 })
 export class WizardRequestFlowComponent implements OnInit {
   @Input() serviceType!: ServiceType;
+  /** Oculta el indicador de pasos superior (cuando la página usa layout con sidebar) */
+  @Input() hideStepsIndicator = false;
   @Output() flowCompleted = new EventEmitter<any>();
   @Output() flowCancelled = new EventEmitter<void>();
+  @Output() stepIndexChange = new EventEmitter<number>();
   
   RequestFlowContext = RequestFlowContext;
   private isFinalizing = false;

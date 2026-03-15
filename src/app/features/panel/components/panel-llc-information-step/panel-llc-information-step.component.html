@@ -28,7 +28,7 @@
   </div>
   
   <!-- Navegación entre secciones del formulario -->
-  <div class="section-actions">
+  <div class="flow-actions">
     <button 
       type="button" 
       class="btn btn-outline-secondary"
@@ -55,7 +55,7 @@
     <button 
       type="button" 
       class="btn btn-primary"
-      (click)="nextStepRequested.emit()"
+      (click)="onLastSectionNext()"
       [disabled]="!isSectionValid()"
       *ngIf="currentSection === 3"
     >

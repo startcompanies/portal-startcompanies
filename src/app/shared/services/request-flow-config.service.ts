@@ -13,10 +13,12 @@ import { WizardCuentaBancariaInformationStepComponent } from '../../features/wiz
 
 // Importaciones de wrappers panel
 import { PanelLlcInformationStepComponent } from '../../features/panel/components/panel-llc-information-step/panel-llc-information-step.component';
+import { PanelRenovacionLlcInformationStepComponent } from '../../features/panel/components/panel-renovacion-llc-information-step/panel-renovacion-llc-information-step.component';
+import { PanelCuentaBancariaInformationStepComponent } from '../../features/panel/components/panel-cuenta-bancaria-information-step/panel-cuenta-bancaria-information-step.component';
 import { PanelPaymentStepComponent } from '../../features/panel/components/panel-payment-step/panel-payment-step.component';
 import { WizardFinalReviewStepComponent } from '../../features/wizard/components/final-review-step/final-review-step.component';
 
-// Importaciones de componentes del panel (a crear)
+// Importaciones de componentes del panel
 import { ClientAssociationStepComponent } from '../../features/panel/components/client-association-step/client-association-step.component';
 import { PartnerClientSelectionStepComponent } from '../../features/panel/components/partner-client-selection-step/partner-client-selection-step.component';
 import { ServiceTypeSelectionStepComponent } from '../../shared/components/service-type-selection-step/service-type-selection-step.component';
@@ -226,11 +228,9 @@ export class RequestFlowConfigService {
         case 'apertura-llc':
           return PanelLlcInformationStepComponent;
         case 'renovacion-llc':
-          // TODO: Crear PanelRenovacionLlcInformationStepComponent
-          return WizardRenovacionLlcInformationStepComponent; // Temporal
+          return PanelRenovacionLlcInformationStepComponent;
         case 'cuenta-bancaria':
-          // TODO: Crear PanelCuentaBancariaInformationStepComponent
-          return WizardCuentaBancariaInformationStepComponent; // Temporal
+          return PanelCuentaBancariaInformationStepComponent;
         default:
           throw new Error(`Unknown service type: ${serviceType}`);
       }

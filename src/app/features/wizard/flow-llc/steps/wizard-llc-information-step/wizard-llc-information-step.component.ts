@@ -1,13 +1,15 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
 import { AperturaLlcFormComponent } from '../../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../../../environments/environment';
+import { WizardPlansService } from '../../../services/wizard-plans.service';
+import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -30,60 +32,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   currentSection = 1;
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
   
-  // Lista de estados de USA (igual que en new-request)
-  usStates = [
-    { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-    { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-    { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-    { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-    { value: 'California', label: 'California', abbreviation: 'CA' },
-    { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-    { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-    { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-    { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-    { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-    { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-    { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-    { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-    { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-    { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-    { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-    { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-    { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-    { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-    { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-    { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-    { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-    { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-    { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-    { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-    { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-    { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-    { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-    { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-    { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-    { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-    { value: 'New York', label: 'New York', abbreviation: 'NY' },
-    { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-    { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-    { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-    { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-    { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-    { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-    { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-    { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-    { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-    { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-    { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-    { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-    { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-    { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-    { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-    { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-    { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-    { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' },
-    { value: 'District of Columbia', label: 'District of Columbia', abbreviation: 'DC' },
-  ];
+  usStates = US_STATES;
 
   private formSubscription?: Subscription;
   
@@ -97,91 +46,24 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
     private fb: FormBuilder,
-    private http: HttpClient
+    private wizardPlansService: WizardPlansService,
+    private serviceFormBuilder: ServiceFormBuilderService,
+    private logger: LoggerService
   ) {
-    // Inicializar formulario con estructura de apertura-llc-form
-    // Campos con Validators.required son obligatorios
-    this.serviceDataForm = this.fb.group({
-      // Sección 1: Información de la LLC
-      llcType: ['', Validators.required],
-      llcName: ['', Validators.required],
-      llcNameOption2: [''],
-      llcNameOption3: [''],
-      businessDescription: ['', Validators.required],
-      llcPhoneNumber: [''],
-      website: [''],
-      llcEmail: ['', [Validators.email]],
-      linkedin: [''],
-      incorporationState: [''], // Se establecerá desde el paso anterior
-      incorporationDate: [''],
-      hasEin: [false],
-      einNumber: [''],
-      einDocumentUrl: [''],
-      noEinReason: [''],
-      certificateOfFormationUrl: [''],
-      accountType: [''],
-      estadoConstitucion: [''],
-      annualRevenue: [null],
-      actividadFinancieraEsperada: [''],
-      registeredAgentAddress: this.fb.group({
-        street: [''],
-        building: [''],
-        city: [''],
-        state: [''],
-        postalCode: [''],
-        country: ['']
-      }),
-      registeredAgentName: [''],
-      registeredAgentEmail: [''],
-      registeredAgentPhone: [''],
-      registeredAgentType: [''],
-      needsBankVerificationHelp: [false],
-      bankAccountType: [''],
-      bankName: [''],
-      bankAccountNumber: [''],
-      bankRoutingNumber: [''],
-      bankStatementUrl: [''],
-      serviceBillUrl: [''],
-      periodicIncome10k: [''],
-      bankAccountLinkedEmail: ['', [Validators.email]],
-      bankAccountLinkedPhone: [''],
-      projectOrCompanyUrl: [''],
-      veracityConfirmation: [''],
-      ownerNationality: [''],
-      ownerCountryOfResidence: [''],
-      ownerPersonalAddress: this.fb.group({
-        street: [''],
-        building: [''],
-        city: [''],
-        state: [''],
-        postalCode: [''],
-        country: ['']
-      }),
-      ownerPhoneNumber: [''],
-      ownerEmail: ['', [Validators.email]],
-      almacenaProductosDepositoUSA: [false],
-      declaroImpuestosAntes: [false],
-      llcConStartCompanies: [false],
-      ingresosMayor250k: [false],
-      activosEnUSA: [false],
-      ingresosPeriodicos10k: [false],
-      contrataServiciosUSA: [false],
-      propiedadEnUSA: [false],
-      tieneCuentasBancarias: [false],
-      members: this.fb.array([])
-    });
+    this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
   }
 
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
     
-    // Obtener el estado seleccionado del paso anterior (estado y plan) PRIMERO
-    const statePlanData = this.wizardStateService.getStepData(this.previousStepNumber);
+    // Obtener el estado/plan seleccionado de forma robusta (independiente del número exacto de paso)
+    const statePlanData = this.getStatePlanData();
+    const normalizedPlanCode = this.normalizePlanCode(statePlanData?.plan);
     
     // Regla de negocio:
     // - Pack Premium: solo Single Member (New Mexico o Wyoming)
     // - Pack Emprendedor: solo Single Member (New Mexico)
-    this.forceSingleMember = statePlanData?.plan === 'Premium' || statePlanData?.plan === 'Entrepreneur';
+    this.forceSingleMember = this.isSingleMemberOnlyPlan(normalizedPlanCode);
     
     // Cargar datos guardados
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -224,7 +106,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
           });
           membersArray.push(memberGroup);
         });
-        console.log('[WizardLlcInformationStep] Miembros restaurados:', membersArray.length);
+        this.logger.log('[WizardLlcInformationStep] Miembros restaurados:', membersArray.length);
       }
       
       // Si forceSingleMember está activo, sobrescribir el llcType guardado
@@ -233,11 +115,16 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       }
     }
 
-    if (statePlanData && statePlanData.state) {
-      // Establecer el estado en incorporationState (el estado viene del paso 2)
+    // Estado según plan: Emprendedor = siempre New Mexico; Elite = elegido; Premium = NM o Wyoming
+    if (normalizedPlanCode === 'Entrepreneur') {
+      const nmState = 'New Mexico';
+      this.serviceDataForm.get('incorporationState')?.setValue(nmState);
+      this.serviceDataForm.get('incorporationState')?.disable(); // Fijo, no editable
+      this.logger.log('[WizardLlcInformationStep] Pack Emprendedor: estado fijado a', nmState);
+    } else if (statePlanData && statePlanData.state) {
       const stateValue = statePlanData.state;
       this.serviceDataForm.get('incorporationState')?.setValue(stateValue);
-      console.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
+      this.logger.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
     }
 
     // Si forceSingleMember está activo (Emprendedor o Premium), forzar y bloquear estructura societaria
@@ -253,7 +140,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         this.onLlcTypeChanged('single');
       }
       
-      console.log('[WizardLlcInformationStep] Pack Emprendedor/Premium - Single Member forzado');
+      this.logger.log('[WizardLlcInformationStep] Pack Emprendedor/Premium - Single Member forzado');
     } else {
       // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
       const llcType = this.serviceDataForm.get('llcType')?.value;
@@ -261,7 +148,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       
       if (llcType && membersArray.length === 0) {
         // Si hay un llcType guardado pero no hay miembros (ni restaurados), inicializarlos
-        console.log('[WizardLlcInformationStep] Inicializando miembros para llcType:', llcType);
+        this.logger.log('[WizardLlcInformationStep] Inicializando miembros para llcType:', llcType);
         this.onLlcTypeChanged(llcType);
       }
     }
@@ -291,6 +178,73 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    */
   private saveStepData(): void {
     this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.getRawValue());
+  }
+
+  /**
+   * Obtiene los datos de estado/plan del wizard de forma robusta, sin depender
+   * únicamente de previousStepNumber (que puede variar entre flujos o configuraciones).
+   */
+  private getStatePlanData(): any {
+    // 1) Intentar con el paso indicado explícitamente
+    const fromPrevious = this.wizardStateService.getStepData(this.previousStepNumber) || {};
+    if (fromPrevious && (fromPrevious.plan || fromPrevious.state)) {
+      return fromPrevious;
+    }
+
+    // 2) Usar getAllData para localizar el paso que contiene el plan/estado
+    const allData: any = (this.wizardStateService as any).getAllData
+      ? (this.wizardStateService as any).getAllData()
+      : null;
+
+    if (allData) {
+      // Priorizar step2 (selección estado/plan clásico)
+      if (allData.step2 && (allData.step2.plan || allData.step2.state)) {
+        return allData.step2;
+      }
+      // Luego step3 (cuando el plan se haya guardado ahí)
+      if (allData.step3 && (allData.step3.plan || allData.step3.state)) {
+        return allData.step3;
+      }
+    }
+
+    // Fallback: devolver lo que venga de previousStepNumber aunque esté incompleto
+    return fromPrevious;
+  }
+
+  /**
+   * Normaliza el código de plan a los valores internos del sistema
+   * (Entrepreneur, Elite, Premium) independientemente de si llega el value o el label.
+   */
+  private normalizePlanCode(rawPlan: string | null | undefined): string | null {
+    if (!rawPlan) {
+      return null;
+    }
+
+    // 1) Intentar por value directo (Entrepreneur/Elite/Premium)
+    const byValue = this.wizardPlansService.getPlan(rawPlan);
+    if (byValue) {
+      return byValue.value;
+    }
+
+    // 2) Intentar por label (ej. 'Pack Emprendedor', 'Pack Premium')
+    const allPlans = this.wizardPlansService.getPlans();
+    const byLabel = allPlans.find(p => p.label === rawPlan);
+    if (byLabel) {
+      return byLabel.value;
+    }
+
+    // 3) Fallback: devolver el plan como viene
+    return rawPlan;
+  }
+
+  /**
+   * Indica si el plan es de tipo \"solo Single Member\" (Emprendedor / Premium).
+   */
+  private isSingleMemberOnlyPlan(planCode: string | null | undefined): boolean {
+    if (!planCode) {
+      return false;
+    }
+    return planCode === 'Entrepreneur' || planCode === 'Premium';
   }
 
   /**
@@ -342,16 +296,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       // Si ya hay un request creado, incluir el UUID
       if (requestId) {
         formData.append('requestUuid', requestId.toString());
-        console.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
       } else {
-        console.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
 
       const response = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
 
       if (response && response.url) {
@@ -361,14 +312,14 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
           control.setValue(response.url, { emitEvent: true });
           control.markAsTouched();
           control.markAsDirty();
-          console.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
+          this.logger.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
         }
         
         // Limpiar el archivo del estado (ya fue subido)
         this.fileUploadStates[fileKey].file = null;
       }
     } catch (error: any) {
-      console.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
+      this.logger.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
       this.fileUploadStates[fileKey].file = null;
     } finally {
       this.fileUploadStates[fileKey].uploading = false;
@@ -560,7 +511,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   async saveToApi(): Promise<void> {
     const requestId = this.wizardStateService.getRequestId();
     if (!requestId) {
-      console.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
+      this.logger.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
       return;
     }
     
@@ -579,16 +530,36 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         }
       };
       
-      console.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
+      this.logger.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
-      console.log('[WizardLlcInformationStep] Datos guardados exitosamente');
+      this.logger.log('[WizardLlcInformationStep] Datos guardados exitosamente');
       
     } catch (error: any) {
-      console.error('[WizardLlcInformationStep] Error al guardar:', error);
+      this.logger.error('[WizardLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
     } finally {
       this.isSaving = false;
     }
+  }
+
+  /**
+   * Devuelve los datos del formulario para que el base los persista al avanzar (getRawValue incluye controles deshabilitados).
+   */
+  getFormData(): Record<string, unknown> {
+    return this.serviceDataForm.getRawValue() as Record<string, unknown>;
+  }
+
+  /**
+   * Al pulsar "Siguiente" en la última sección: guardar estado, persistir en API y luego emitir nextStepRequested.
+   */
+  async onLastSectionNext(): Promise<void> {
+    if (!this.isSectionValid()) {
+      this.markSectionAsTouched();
+      return;
+    }
+    this.saveStepData();
+    await this.saveToApi();
+    this.nextStepRequested.emit();
   }
 
   onLlcTypeChanged(llcType: string): void {

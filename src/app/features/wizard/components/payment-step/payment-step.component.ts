@@ -5,10 +5,8 @@ import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { StripeService } from '../../services/stripe.service';
-import { HttpClient } from '@angular/common/http';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
 import { WizardPlansService } from '../../services/wizard-plans.service';
-import { environment } from '../../../../../environments/environment';
 
 /**
  * Componente reutilizable para el paso de pago
@@ -67,8 +65,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
     private stripeService: StripeService,
-    private wizardPlansService: WizardPlansService,
-    private http: HttpClient
+    private wizardPlansService: WizardPlansService
   ) {
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     this.form = new FormGroup({
@@ -345,10 +342,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       formData.append('file', this.selectedPaymentProofFile);
       formData.append('servicio', serviceType);
       const response = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
       if (response?.url) {
         this.form.patchValue({ paymentProofUrl: response.url });

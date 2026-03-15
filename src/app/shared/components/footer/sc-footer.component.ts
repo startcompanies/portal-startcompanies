@@ -3,7 +3,8 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { ResponsiveImageComponent } from '../../components/responsive-image/responsive-image.component';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
 import { LanguageService } from '../../../shared/services/language.service';
-import { BrowserService } from '../../../shared/services/browser.service';
+import { APP_CONFIG } from '../../../core/config/app.config.constants';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-sc-footer',
@@ -14,22 +15,27 @@ import { BrowserService } from '../../../shared/services/browser.service';
 })
 export class ScFooterComponent implements OnInit {
   currentLang = 'es';
-  
-  // Configuración de imágenes del logo del footer para NgOptimizedImage
+
+  /** Controla visibilidad del bloque de enlaces a wizard/panel (Abrir LLC, Renovar LLC, Abrir cuenta) */
+  readonly wizardAndPanelEnabled = environment.wizardAndPanelEnabled;
+
+  readonly contactEmail = APP_CONFIG.contact.email;
+  readonly contactPhone = APP_CONFIG.contact.phoneDisplay;
+  readonly whatsappUrl = APP_CONFIG.contact.whatsapp.url;
+
   footerLogoImages = {
-    mobile: "/assets/footer/img_footer_logo.webp",
-    tablet: "/assets/footer/img_footer_logo.webp",
-    desktop: "/assets/footer/img_footer_logo.webp",
-    fallback: "/assets/footer/img_footer_logo.webp",
-    alt: "Start Companies Footer Logo",
-    priority: false
+    mobile: '/assets/footer/img_footer_logo.webp',
+    tablet: '/assets/footer/img_footer_logo.webp',
+    desktop: '/assets/footer/img_footer_logo.webp',
+    fallback: '/assets/footer/img_footer_logo.webp',
+    alt: 'Start Companies Footer Logo',
+    priority: false,
   };
 
   constructor(
     private languageService: LanguageService,
     private translocoService: TranslocoService,
-    private cdr: ChangeDetectorRef,
-    private browser: BrowserService
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -45,12 +51,5 @@ export class ScFooterComponent implements OnInit {
       this.currentLang = lang;
       this.cdr.markForCheck();
     });
-  }
-
-  openUrl(url: string) {
-    const win = this.browser.window;
-    if (win) {
-      win.open(url, '_blank');
-    }
   }
 }

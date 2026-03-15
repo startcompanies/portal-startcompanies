@@ -8,6 +8,8 @@ import { BrowserService } from '../services/browser.service';
 export class LazyImageDirective implements OnInit {
   @Input() appLazyImage: string = '';
   @Input() fallback: string = '';
+
+  private static webpSupported: boolean | null = null;
   @Input() alt: string = '';
   @Input() loading: 'lazy' | 'eager' = 'lazy';
 
@@ -103,15 +105,21 @@ export class LazyImageDirective implements OnInit {
   }
 
   private checkWebPSupport(): boolean {
+    if (LazyImageDirective.webpSupported !== null) {
+      return LazyImageDirective.webpSupported;
+    }
+
     const doc = this.browser.document;
     if (!doc) {
-      return false; // En SSR, asumir que no hay soporte WebP
+      LazyImageDirective.webpSupported = false;
+      return false;
     }
     
     const canvas = doc.createElement('canvas');
     canvas.width = 1;
     canvas.height = 1;
-    return canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    LazyImageDirective.webpSupported = canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
+    return LazyImageDirective.webpSupported;
   }
 
   ngOnDestroy() {

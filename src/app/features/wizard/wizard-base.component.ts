@@ -7,6 +7,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { LanguageService } from '../../shared/services/language.service';
 import { WizardStateService } from '../wizard/services/wizard-state.service';
+import { BrowserService } from '../../shared/services/browser.service';
 import { ResponsiveImageComponent } from '../../shared/components/responsive-image/responsive-image.component';
 import { fromEvent, Subject, Subscription } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
@@ -70,7 +71,8 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
     private languageService: LanguageService,
     public translocoService: TranslocoService,
     private router: Router,
-    private wizardStateService: WizardStateService
+    private wizardStateService: WizardStateService,
+    private browserService: BrowserService
   ) { }
 
   ngOnInit(): void {
@@ -96,7 +98,7 @@ export class WizardBaseComponent implements OnInit, OnChanges, AfterViewInit, On
     }, 100);
 
     // Escuchar cambios de tamaño de ventana
-    if (typeof window !== 'undefined') {
+    if (this.browserService.isBrowser) {
       fromEvent(window, 'resize')
         .pipe(
           debounceTime(150),
