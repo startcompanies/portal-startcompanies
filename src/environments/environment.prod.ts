@@ -3,6 +3,7 @@ import { DOMAIN } from './environment.base';
 export const environment = {
   production: true,
   staging: false,
+  noIndex: false,
   apiUrl: DOMAIN.api.production,
   postsEndpoint: '/blog/posts/get-from-portal',
   categoriesEndpoint: '/blog/categories/with-posts-count',
