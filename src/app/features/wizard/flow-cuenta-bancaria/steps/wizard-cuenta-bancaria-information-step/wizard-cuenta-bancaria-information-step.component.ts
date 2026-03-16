@@ -10,6 +10,7 @@ import { environment } from '../../../../../../environments/environment';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { LoggerService } from '../../../../../shared/services/logger.service';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar wizard-cuenta-bancaria-form en el wizard
@@ -18,7 +19,7 @@ import { ServiceFormBuilderService } from '../../../../../shared/services/form-b
 @Component({
   selector: 'app-wizard-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent, TranslocoPipe],
   templateUrl: './wizard-cuenta-bancaria-information-step.component.html',
   styleUrls: ['./wizard-cuenta-bancaria-information-step.component.css']
 })

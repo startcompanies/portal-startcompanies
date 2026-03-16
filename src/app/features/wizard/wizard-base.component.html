@@ -25,7 +25,7 @@
               (click)="scrollSteps('prev')"
               [disabled]="!canScrollPrev"
               type="button"
-              aria-label="Pasos anteriores"
+              [attr.aria-label]="'WIZARD.previous' | transloco"
               *ngIf="steps.length > 4"
             >
               <mat-icon>chevron_left</mat-icon>
@@ -54,7 +54,7 @@
               (click)="scrollSteps('next')"
               [disabled]="!canScrollNext"
               type="button"
-              aria-label="Siguientes pasos"
+              [attr.aria-label]="'WIZARD.next' | transloco"
               *ngIf="steps.length > 4"
             >
               <mat-icon>chevron_right</mat-icon>

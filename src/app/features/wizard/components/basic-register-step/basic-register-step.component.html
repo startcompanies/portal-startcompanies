@@ -1,6 +1,6 @@
 <div class="basic-register-step">
   <p class="text-muted mb-3">
-    Completa tus datos para crear tu cuenta. Tendrás acceso a la plataforma para ver el estado de tus solicitudes.
+    {{ 'WIZARD.basic_register.intro' | transloco }}
   </p>
   
   <form [formGroup]="form">
@@ -45,21 +45,21 @@
           <!-- Indicador de carga mientras valida -->
           <div *ngIf="form.get('email')?.pending" class="text-info mt-1 small">
             <span class="spinner-border spinner-border-sm me-1"></span>
-            Verificando disponibilidad del email...
+            {{ 'WIZARD.basic_register.email_checking' | transloco }}
           </div>
           <!-- Error de formato de email -->
           <div *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['email'] && !form.get('email')?.errors?.['emailTaken']" class="text-danger mt-1">
-            El formato del email no es válido
+            {{ 'WIZARD.basic_register.email_invalid' | transloco }}
           </div>
           <!-- Error de email ya registrado -->
           <div *ngIf="form.get('email')?.touched && form.get('email')?.errors?.['emailTaken']" class="text-danger mt-1">
             <i class="bi bi-exclamation-triangle me-1"></i>
-            {{ form.get('email')?.errors?.['emailTaken']?.message || 'Este email ya está registrado' }}
+            {{ form.get('email')?.errors?.['emailTaken']?.message || ('WIZARD.basic_register.email_taken' | transloco) }}
           </div>
           <!-- Mensaje de éxito cuando el email está disponible -->
           <div *ngIf="form.get('email')?.valid && form.get('email')?.touched && !form.get('email')?.pending && !form.get('email')?.errors?.['emailTaken']" class="text-success mt-1 small">
             <i class="bi bi-check-circle me-1"></i>
-            Email disponible
+            {{ 'WIZARD.basic_register.email_available' | transloco }}
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@
               class="form-control" 
               formControlName="password"
               (input)="calculatePasswordStrength($any($event.target).value)"
-              placeholder="Mínimo 8 caracteres"
+              [placeholder]="'WIZARD.basic_register.password_placeholder' | transloco"
             />
             <button 
               type="button" 
@@ -84,7 +84,7 @@
             </button>
           </div>
           <div *ngIf="form.get('password')?.touched && form.get('password')?.errors?.['minlength']" class="text-danger mt-1">
-            La contraseña debe tener al menos 8 caracteres
+            {{ 'WIZARD.basic_register.password_min_length' | transloco }}
           </div>
           <!-- Indicador de seguridad de contraseña -->
           <div *ngIf="passwordStrength" class="mt-2">
@@ -105,7 +105,7 @@
                 'bi-shield-exclamation': passwordStrength === 'medium',
                 'bi-shield-check': passwordStrength === 'strong'
               }"></i>
-              Seguridad: {{ passwordStrengthText }}
+              {{ 'WIZARD.basic_register.strength' | transloco }}: {{ passwordStrengthText }}
             </small>
           </div>
         </div>
@@ -129,14 +129,13 @@
     <div class="d-flex align-items-start">
       <i class="bi bi-envelope-check fs-3 me-3"></i>
       <div class="flex-grow-1">
-        <h5 class="mb-2">Esperando confirmación de correo</h5>
+        <h5 class="mb-2">{{ 'WIZARD.basic_register.waiting_title' | transloco }}</h5>
         <p class="mb-2">
-          Te hemos enviado un email de verificación a <strong>{{ form.get('email')?.value }}</strong>.
-          Por favor, revisa tu bandeja de entrada y haz clic en el enlace de verificación.
+          {{ 'WIZARD.basic_register.waiting_body' | transloco }} <strong>{{ form.get('email')?.value }}</strong>.
         </p>
         <p class="mb-0 small text-muted">
           <i class="bi bi-info-circle me-1"></i>
-          Una vez que verifiques tu correo, podrás continuar con el proceso de apertura de tu LLC.
+          {{ 'WIZARD.basic_register.waiting_footer' | transloco }}
         </p>
         <button 
           type="button" 
@@ -144,7 +143,7 @@
           (click)="resendVerificationEmail()"
         >
           <i class="bi bi-arrow-clockwise me-1"></i>
-          Reenviar email de verificación
+          {{ 'WIZARD.basic_register.resend_email' | transloco }}
         </button>
       </div>
     </div>
@@ -152,11 +151,11 @@
   
   <div *ngIf="registeredUserId && !waitingEmailVerification && isUserAuthenticated()" class="alert alert-success mt-3">
     <i class="bi bi-check-circle me-2"></i>
-    Cuenta verificada exitosamente. Puedes continuar al siguiente paso.
+    {{ 'WIZARD.basic_register.account_verified' | transloco }}
   </div>
   
   <div *ngIf="isLoading" class="alert alert-info mt-3">
     <span class="spinner-border spinner-border-sm me-2"></span>
-    Creando tu cuenta...
+    {{ 'WIZARD.basic_register.creating_account' | transloco }}
   </div>
 </div>

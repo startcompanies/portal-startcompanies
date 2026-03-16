@@ -38,12 +38,12 @@ export class RequestFlowConfigService {
     
     // Si se requiere selección de tipo de servicio, agregarlo primero
     if (includeServiceTypeSelection && (context === RequestFlowContext.PANEL_CLIENT || context === RequestFlowContext.PANEL_PARTNER)) {
-      configs.push({
+        configs.push({
         step: RequestFlowStep.SERVICE_TYPE_SELECTION,
         required: true,
         component: ServiceTypeSelectionStepComponent,
         order: 1,
-        label: 'Tipo de Servicio',
+        label: 'WIZARD.steps.service_type',
         icon: 'bi-list-check'
       });
     }
@@ -56,7 +56,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardBasicRegisterStepComponent, 
             order: 1,
-            label: 'Registro',
+            label: 'WIZARD.steps.step_register',
             icon: 'bi-person-plus'
           },
           { 
@@ -64,7 +64,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardEmailVerificationComponent, 
             order: 2,
-            label: 'Verificación de Email',
+            label: 'WIZARD.steps.step_verify_email',
             icon: 'bi-envelope-check'
           }
         );
@@ -76,7 +76,7 @@ export class RequestFlowConfigService {
             required: true,
             component: this.getPlanStateComponent(serviceType),
             order: 3,
-            label: serviceType === 'renovacion-llc' ? 'Selección de Estado' : 'Selección de Estado/Plan',
+            label: serviceType === 'renovacion-llc' ? 'WIZARD.steps.step_state' : 'WIZARD.steps.step_state_plan',
             icon: 'bi-geo-alt'
           });
         }
@@ -87,7 +87,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardPaymentStepComponent, 
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 4 : 3,
-            label: 'Pago',
+            label: 'WIZARD.steps.payment',
             icon: 'bi-credit-card'
           },
               {
@@ -95,7 +95,7 @@ export class RequestFlowConfigService {
                 required: true,
                 component: this.getServiceFormComponent(serviceType, RequestFlowContext.WIZARD),
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 5 : 4,
-            label: 'Información del Servicio',
+            label: 'WIZARD.steps.step_service_info',
             icon: 'bi-file-text'
           },
           { 
@@ -103,7 +103,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardFinalReviewStepComponent, 
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 6 : 5,
-            label: 'Confirmación',
+            label: 'WIZARD.steps.step_confirmation',
             icon: 'bi-check-circle'
           }
         );

@@ -4,22 +4,22 @@
     <div class="success-icon mb-4">
       <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
     </div>
-    <h2 class="mb-3">¡Solicitud Enviada Exitosamente!</h2>
+    <h2 class="mb-3">{{ 'WIZARD.review.success_title' | transloco }}</h2>
     <p class="text-muted mb-4 fs-5">
-      Tu solicitud de <strong>{{ getServiceTitle() }}</strong> ha sido recibida correctamente.
+      {{ 'WIZARD.review.success_body' | transloco }} <strong>{{ getServiceTitle() }}</strong>.
     </p>
     <div class="alert alert-info mx-auto" style="max-width: 500px;">
       <i class="bi bi-info-circle me-2"></i>
-      Nuestro equipo revisará tu información y se pondrá en contacto contigo pronto para los siguientes pasos.
+      {{ 'WIZARD.review.success_info' | transloco }}
     </div>
     <div class="d-flex justify-content-center gap-3 mt-4">
       <button type="button" class="btn btn-primary btn-lg" (click)="navigateToPanel()">
         <i class="bi bi-grid-1x2 me-2"></i>
-        Ir al Panel
+        {{ 'WIZARD.review.go_to_panel' | transloco }}
       </button>
       <button type="button" class="btn btn-outline-secondary btn-lg" (click)="navigateToHome()">
         <i class="bi bi-house me-2"></i>
-        Ir al Inicio
+        {{ 'WIZARD.review.go_to_home' | transloco }}
       </button>
     </div>
   </div>
@@ -29,10 +29,10 @@
     <div class="review-header mb-4">
       <h4 class="mb-2">
         <i class="bi bi-clipboard-check me-2"></i>
-        Revisión Final
+        {{ 'WIZARD.review.title' | transloco }}
       </h4>
       <p class="text-muted">
-        Revisa toda la información antes de enviar tu solicitud de <strong>{{ getServiceTitle() }}</strong>.
+        {{ 'WIZARD.review.description' | transloco }} <strong>{{ getServiceTitle() }}</strong>.
       </p>
     </div>
 
@@ -41,38 +41,38 @@
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-person-circle me-2 text-primary"></i>
-        Datos de Registro
+        {{ 'WIZARD.review.registration_data' | transloco }}
       </h5>
     </div>
     <div class="section-content">
       <div class="row">
         <div class="col-md-6" *ngIf="registrationData.fullName">
           <div class="review-item">
-            <span class="review-label">Nombre Completo</span>
+            <span class="review-label">{{ 'WIZARD.review.full_name' | transloco }}</span>
             <span class="review-value">{{ registrationData.fullName }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="!registrationData.fullName && registrationData.firstName">
           <div class="review-item">
-            <span class="review-label">Nombre</span>
+            <span class="review-label">{{ 'WIZARD.review.first_name' | transloco }}</span>
             <span class="review-value">{{ registrationData.firstName }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="!registrationData.fullName && registrationData.lastName">
           <div class="review-item">
-            <span class="review-label">Apellido</span>
+            <span class="review-label">{{ 'WIZARD.review.last_name' | transloco }}</span>
             <span class="review-value">{{ registrationData.lastName }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="registrationData.email">
           <div class="review-item">
-            <span class="review-label">Correo Electrónico</span>
+            <span class="review-label">{{ 'WIZARD.review.email' | transloco }}</span>
             <span class="review-value">{{ registrationData.email }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="registrationData.phone">
           <div class="review-item">
-            <span class="review-label">Teléfono</span>
+            <span class="review-label">{{ 'WIZARD.review.phone' | transloco }}</span>
             <span class="review-value">{{ registrationData.phone }}</span>
           </div>
         </div>
@@ -85,26 +85,26 @@
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-geo-alt me-2 text-primary"></i>
-        Estado y Plan
+        {{ 'WIZARD.review.state_plan' | transloco }}
       </h5>
     </div>
     <div class="section-content">
       <div class="row">
         <div class="col-md-6" *ngIf="statePlanData.state">
           <div class="review-item">
-            <span class="review-label">Estado Seleccionado</span>
+            <span class="review-label">{{ 'WIZARD.review.state_selected' | transloco }}</span>
             <span class="review-value">{{ statePlanData.state }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="statePlanData.plan">
           <div class="review-item">
-            <span class="review-label">Plan</span>
+            <span class="review-label">{{ 'WIZARD.review.plan' | transloco }}</span>
             <span class="review-value">{{ statePlanData.plan }}</span>
           </div>
         </div>
         <div class="col-md-6" *ngIf="statePlanData.amount">
           <div class="review-item">
-            <span class="review-label">Monto</span>
+            <span class="review-label">{{ 'WIZARD.review.amount' | transloco }}</span>
             <span class="review-value text-primary fw-bold">{{ formatMoney(statePlanData.amount) }}</span>
           </div>
         </div>
@@ -117,13 +117,13 @@
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-credit-card me-2 text-success"></i>
-        Pago
+        {{ 'WIZARD.review.payment' | transloco }}
       </h5>
     </div>
     <div class="section-content">
       <div class="alert alert-success mb-0">
         <i class="bi bi-check-circle me-2"></i>
-        Pago procesado exitosamente por <strong>{{ formatMoney(paymentData.amount) }}</strong>
+        {{ 'WIZARD.review.payment_success' | transloco }} <strong>{{ formatMoney(paymentData.amount) }}</strong>
       </div>
     </div>
   </div>
@@ -133,7 +133,7 @@
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-building me-2 text-primary"></i>
-        Información de {{ getServiceTitle() }}
+        {{ 'WIZARD.review.service_info' | transloco }} {{ getServiceTitle() }}
       </h5>
     </div>
     <div class="section-content">
@@ -153,31 +153,31 @@
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-people me-2 text-primary"></i>
-        {{ serviceType === 'apertura-llc' ? 'Miembros' : 'Propietarios' }} ({{ members.length }})
+        {{ (serviceType === 'apertura-llc' ? 'WIZARD.review.members' : 'WIZARD.review.owners') | transloco }} ({{ members.length }})
       </h5>
     </div>
     <div class="section-content">
       <div class="member-card" *ngFor="let member of members; let i = index">
         <div class="member-header">
-          <strong>{{ serviceType === 'apertura-llc' ? 'Miembro' : 'Propietario' }} {{ i + 1 }}</strong>
+          <strong>{{ (serviceType === 'apertura-llc' ? 'WIZARD.review.member_label' : 'WIZARD.review.owner_label') | transloco }} {{ i + 1 }}</strong>
         </div>
         <div class="row">
           <!-- Campos comunes -->
           <div class="col-md-4" *ngIf="member.firstName || member.name">
             <div class="review-item">
-              <span class="review-label">Nombre</span>
+              <span class="review-label">{{ 'WIZARD.review.first_name' | transloco }}</span>
               <span class="review-value">{{ member.firstName || member.name }} {{ member.lastName }}</span>
             </div>
           </div>
           <div class="col-md-4" *ngIf="member.email">
             <div class="review-item">
-              <span class="review-label">Email</span>
+              <span class="review-label">{{ 'WIZARD.review.email' | transloco }}</span>
               <span class="review-value">{{ member.email }}</span>
             </div>
           </div>
           <div class="col-md-4" *ngIf="member.phone || member.phoneNumber">
             <div class="review-item">
-              <span class="review-label">Teléfono</span>
+              <span class="review-label">{{ 'WIZARD.review.phone' | transloco }}</span>
               <span class="review-value">{{ member.phone || member.phoneNumber }}</span>
             </div>
           </div>
@@ -335,10 +335,10 @@
             [class.is-invalid]="form.get('confirm')?.invalid && form.get('confirm')?.touched"
           />
           <label class="form-check-label" for="confirmCheck">
-            He revisado toda la información y confirmo que los datos son correctos.
+            {{ 'WIZARD.review.confirm_check_label' | transloco }}
           </label>
           <div *ngIf="form.get('confirm')?.invalid && form.get('confirm')?.touched" class="invalid-feedback d-block">
-            Debes confirmar que has revisado la información
+            {{ 'WIZARD.review.confirm_required' | transloco }}
           </div>
         </div>
         
@@ -354,7 +354,7 @@
         
         <div class="alert alert-info mt-3">
           <i class="bi bi-info-circle me-2"></i>
-          Al enviar esta solicitud, nuestro equipo revisará la información y se pondrá en contacto contigo para los siguientes pasos.
+          {{ 'WIZARD.review.submit_info' | transloco }}
         </div>
 
         <!-- Error de envío -->
@@ -373,11 +373,11 @@
           >
             <span *ngIf="!isSubmitting && !submittingLocal">
               <i class="bi bi-check-circle me-2"></i>
-              Enviar Solicitud
+              {{ 'WIZARD.review.submit_btn' | transloco }}
             </span>
             <span *ngIf="isSubmitting || submittingLocal">
               <span class="spinner-border spinner-border-sm me-2"></span>
-              Enviando...
+              {{ 'WIZARD.review.submitting' | transloco }}
             </span>
           </button>
         </div>

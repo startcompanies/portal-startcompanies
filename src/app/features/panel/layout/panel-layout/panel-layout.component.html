@@ -1,4 +1,7 @@
 <div class="panel-layout">
+  <!-- Modal de idioma (primera vez) -->
+  <app-choose-language-modal *ngIf="showLanguageModal" (closed)="onLanguageModalClosed()"></app-choose-language-modal>
+
   <!-- Sidebar -->
   <aside class="sidebar" [class.collapsed]="!isSidebarOpen">
     <div class="sidebar-header">
@@ -19,10 +22,10 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{exact: true}"
             class="nav-link"
-            [title]="!isSidebarOpen ? item.label : ''"
+            [title]="!isSidebarOpen ? (item.label | transloco) : ''"
           >
             <i [class]="'bi ' + item.icon"></i>
-            <span *ngIf="isSidebarOpen">{{ item.label }}</span>
+            <span *ngIf="isSidebarOpen">{{ item.label | transloco }}</span>
           </a>
         </li>
       </ul>
@@ -31,7 +34,7 @@
     <div class="sidebar-footer">
       <a routerLink="/" class="nav-link">
         <i class="bi-house"></i>
-        <span *ngIf="isSidebarOpen">Volver al sitio</span>
+        <span *ngIf="isSidebarOpen">{{ 'PANEL.layout.back_to_site' | transloco }}</span>
       </a>
     </div>
   </aside>
@@ -45,9 +48,9 @@
           <i class="bi-list"></i>
         </button>
         <h1 class="page-title">
-          <span *ngIf="currentUser?.type === 'admin'">Panel Administrativo</span>
-          <span *ngIf="currentUser?.type === 'partner'">Panel Partner</span>
-          <span *ngIf="currentUser?.type === 'client'">Mi Panel</span>
+          <span *ngIf="currentUser?.type === 'admin'">{{ 'PANEL.layout.admin_panel' | transloco }}</span>
+          <span *ngIf="currentUser?.type === 'partner'">{{ 'PANEL.layout.partner_panel' | transloco }}</span>
+          <span *ngIf="currentUser?.type === 'client'">{{ 'PANEL.layout.my_panel' | transloco }}</span>
         </h1>
       </div>
       <div class="header-right">
@@ -61,13 +64,13 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
               <li>
                 <a class="dropdown-item" routerLink="/panel/settings">
-                  <i class="bi-gear me-2"></i>Configuración
+                  <i class="bi-gear me-2"></i>{{ 'PANEL.layout.settings' | transloco }}
                 </a>
               </li>
               <li><hr class="dropdown-divider"></li>
               <li>
                 <a class="dropdown-item" (click)="logout()" style="cursor: pointer;">
-                  <i class="bi-box-arrow-right me-2"></i>Cerrar Sesión
+                  <i class="bi-box-arrow-right me-2"></i>{{ 'PANEL.layout.logout' | transloco }}
                 </a>
               </li>
             </ul>

@@ -22,28 +22,27 @@
     </div>
 
     <div class="form-group mt-3">
-      <label for="llcType">Tipo de LLC</label>
+      <label for="llcType">{{ 'WIZARD.state_step.llc_type_label' | transloco }}</label>
       <select id="llcType" class="form-control" formControlName="llcType">
-        <option value="">Selecciona el tipo de LLC</option>
+        <option value="">{{ 'WIZARD.state_step.llc_type_placeholder' | transloco }}</option>
         <option *ngFor="let t of llcTypes" [value]="t.value">{{ t.label }}</option>
       </select>
       <div
         *ngIf="form.get('llcType')?.touched && form.get('llcType')?.invalid"
         class="text-danger mt-1"
       >
-        Este campo es requerido
+        {{ 'WIZARD.state_step.required_field' | transloco }}
       </div>
     </div>
 
     <!-- Precio calculado -->
     <div class="alert alert-info mt-3" *ngIf="amount !== null && !showUnsupportedAlert">
-      <strong>Precio de renovación:</strong> ${{ amount }} USD
+      <strong>{{ 'WIZARD.state_step.renewal_price' | transloco }}:</strong> ${{ amount }} USD
     </div>
 
     <!-- Estado no soportado -->
     <div class="alert alert-warning mt-3" *ngIf="showUnsupportedAlert">
-      <strong>Estado no cotizable automáticamente.</strong>
-      Comunícate con soporte para cotizar la renovación del estado elegido.
+      {{ 'WIZARD.state_step.state_not_supported' | transloco }}
     </div>
   </form>
 </div>

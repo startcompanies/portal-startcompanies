@@ -567,6 +567,7 @@
     "open_your_llc": "Your LLC in the U.S. with expert support from start to finish.",
     "skip_commissions": "Avoid unnecessary fees and taxes with our comprehensive management.",
     "schedule_consultation_2": "Schedule your free consultation.",
+    "hero_cta_subtitle": "Talk to an expert advisor and find out if a U.S. LLC is right for you.",
     "no_advance_payments_2": "No advance payments: you pay after having your LLC and bank account",
     "open_your_llc_2": "Open your company in the U.S. in less than 7 days, 100% online and with expert support.",
     "skip_commissions_2": "Avoid unnecessary fees and taxes with our comprehensive management.",
@@ -580,19 +581,22 @@
       "title": "Want to invoice abroad and optimize taxes?",
       "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
       "desc2": "Trustpilot review",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "A specialist will review your case and explain the best structure for invoicing abroad."
     },
     "landing_3": {
       "title": "Free consultation for your LLC in the United States",
       "desc1": "We guide you through the entire formation and bank account process.",
       "desc2": "Trustpilot review",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "Get your questions answered by an LLC expert. No cost, no commitment."
     },
     "landing_4": {
       "title": "Your LLC in the U.S. in 7 days. 100% online.",
       "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
       "desc2": "No advance payments. You only pay at the end.",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "Schedule a call and we'll show you how to get your LLC ready in 7 days, no commitment."
     },
     "trustpilot_badge_label": "Excellent",
     "trust_strip": {
@@ -601,13 +605,49 @@
       "online": "online",
       "countries": "Mexico · Argentina · Colombia · Chile · Spain · and more countries"
     },
+    "hero_features": {
+      "optimize_taxes": "Optimize taxes",
+      "reduce_fees": "Reduce fees",
+      "protect_assets": "Protect your assets",
+      "operate_globally": "Operate globally"
+    },
+    "hero_short_features": {
+      "days": "7 days",
+      "remote": "100% remote",
+      "pay_later": "pay later",
+      "clients": "+400 clients"
+    },
+    "relay_video_title": "Want to open a Relay bank account? Start Companies can help you do it.",
+    "lp_testimonials": {
+      "title_part1": "Comments from ",
+      "title_part2": "our customers",
+      "subtitle_part1": "More than 200 clients rate us as ",
+      "subtitle_highlight": "Excellent"
+    },
+    "lp_steps_title": {
+      "part1": "Your LLC in ",
+      "part2": "4 steps"
+    },
+    "who_for": {
+      "title_part1": "Is it ",
+      "title_part2": "for you?",
+      "subtitle": "If you're a freelancer, have an e‑commerce business, an agency, or are a content creator and want to get paid in dollars with a U.S. LLC.",
+      "freelancers_title": "Freelancers and consultants",
+      "freelancers_desc": "Get paid in dollars",
+      "ecommerce_title": "E‑commerce",
+      "ecommerce_desc": "International customers",
+      "agencies_title": "Digital agencies",
+      "agencies_desc": "Customers in the U.S. and worldwide",
+      "creators_title": "Content creators",
+      "creators_desc": "Global platforms"
+    },
     "description": "We take care of the bureaucracy so you can focus on growing.",
     "discover_why": "Discover why more than",
     "200_clients": "2000 clients",
     "calificate_us": "rate us as",
     "excellent": "Excellent",
-    "startcompanies_benefits": "Benefits of choosing ",
-    "startcompanies_hightlight": "Start Companies",
+    "startcompanies_benefits": "Why choose ",
+    "startcompanies_hightlight": "Start Companies?",
     "benefit1": {
       "title": "FREE tax advice",
       "description": "We'll be with you from the start, and you only pay when we submit the documentation."
@@ -957,17 +997,42 @@
       "review": "Final Review",
       "zoho": "Send to Zoho CRM",
       "state_plan": "State and Plan",
-      "llc_info": "LLC Information"
+      "llc_info": "LLC Information",
+      "step_register": "Registration",
+      "step_verify_email": "Email Verification",
+      "step_state_plan": "State/Plan Selection",
+      "step_state": "State Selection",
+      "step_service_info": "Service Information",
+      "step_confirmation": "Confirmation",
+      "service_type": "Service Type"
     },
     "basic_register": {
+      "intro": "Complete your details to create your account. You will have access to the platform to track your requests.",
       "full_name": "Full Name",
       "full_name_required": "Full name is required.",
       "phone": "Phone",
       "phone_required": "Phone is required.",
       "email": "Email",
       "email_required": "Email is required.",
+      "email_checking": "Checking email availability...",
+      "email_invalid": "The email format is not valid",
+      "email_taken": "This email is already registered",
+      "email_available": "Email available",
       "password": "Password",
-      "password_required": "Password is required."
+      "password_required": "Password is required.",
+      "password_placeholder": "Minimum 8 characters",
+      "password_min_length": "Password must be at least 8 characters",
+      "strength": "Strength",
+      "strength_very_weak": "Very weak - minimum 8 characters",
+      "strength_weak": "Weak",
+      "strength_medium": "Medium",
+      "strength_strong": "Strong",
+      "waiting_title": "Waiting for email confirmation",
+      "waiting_body": "We have sent you a verification email. Please check your inbox and click the verification link.",
+      "waiting_footer": "Once you verify your email, you can continue with the LLC opening process.",
+      "resend_email": "Resend verification email",
+      "account_verified": "Account verified successfully. You can continue to the next step.",
+      "creating_account": "Creating your account..."
     },
     "password": "Password",
     "state": "State",
@@ -1001,13 +1066,63 @@
       "title": "Final Review",
       "description": "Carefully review the entered data. Check the confirmation box to continue submitting to Zoho CRM.",
       "confirm_label": "I confirm that the data displayed is correct.",
-      "section_title": "Data Collected"
+      "section_title": "Data Collected",
+      "success_title": "Request Submitted Successfully!",
+      "success_body": "Your request has been received successfully.",
+      "success_info": "Our team will review your information and contact you soon for the next steps.",
+      "go_to_panel": "Go to Panel",
+      "go_to_home": "Go to Home",
+      "registration_data": "Registration Data",
+      "state_plan": "State and Plan",
+      "payment": "Payment",
+      "payment_success": "Payment processed successfully for",
+      "service_info": "Information for",
+      "members": "Members",
+      "owners": "Owners",
+      "member_label": "Member",
+      "owner_label": "Owner",
+      "full_name": "Full Name",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "nationality": "Nationality",
+      "passport": "Passport",
+      "dob": "Date of Birth",
+      "participation": "Participation",
+      "member_address": "Member Address",
+      "scanned_passport": "Scanned passport",
+      "file_uploaded": "File uploaded ✓",
+      "full_address": "Full Address",
+      "ssn_itin": "SSN/ITIN",
+      "cuit": "CUIT",
+      "capital_2025": "Capital Contributions to LLC 2025",
+      "loans_2025": "Loans to LLC 2025",
+      "loans_repaid_2025": "Loans Repaid 2025",
+      "capital_withdrawals_2025": "Capital Withdrawals 2025",
+      "has_investments_usa": "Do you have investments or assets in the U.S.?",
+      "is_us_citizen": "Are you a U.S. citizen?",
+      "tax_country": "Country under whose laws you file taxes",
+      "was_in_usa_31_days": "Were you in the U.S. more than 31 days in 2025?",
+      "state_selected": "Selected State",
+      "plan": "Plan",
+      "amount": "Amount",
+      "confirm_check_label": "I have reviewed all the information and confirm that the data is correct.",
+      "confirm_required": "You must confirm that you have reviewed the information",
+      "submit_info": "By submitting this request, our team will review the information and contact you for the next steps.",
+      "submit_btn": "Submit Request",
+      "submitting": "Submitting..."
     },
     "state_step": {
       "title": "Select the hiring state",
       "label": "State",
       "placeholder": "Select a state",
       "required": "State is required",
+      "llc_type_label": "LLC Type",
+      "llc_type_placeholder": "Select LLC type",
+      "required_field": "This field is required",
+      "renewal_price": "Renewal price",
+      "state_not_supported": "State not automatically quotable. Contact support to get a quote for the selected state renewal.",
       "options": {
         "florida": "Florida",
         "delaware": "Delaware",
@@ -1017,7 +1132,9 @@
     },
     "zoho_step": {
       "title": "Send to Zoho CRM",
-      "subtitle": "We'll review the data before sending it to the CRM."
+      "subtitle": "We'll review the data before sending it to the CRM.",
+      "success": "Data sent successfully.",
+      "error": "Error sending data. Please try again."
     },
     "bank_account": {
       "applicant": {
@@ -1169,6 +1286,10 @@
       }
     },
     "llc_info_step": {
+      "intro": "Complete your LLC information. The incorporation state will be the one selected in the previous step.",
+      "section_prev": "Previous Section",
+      "section_next": "Next Section",
+      "saving": "Saving...",
       "llc_name_one": "LLC Name - Option 1",
       "llc_name_one_required": "LLC name (option 1) is required.",
       "llc_name_two": "LLC Name - Option 2",
@@ -1192,9 +1313,14 @@
       "plan": "Plan",
       "plan_label": "Select a plan",
       "plan_required": "Plan is required.",
+      "recommended": "Recommended",
       "state": "State",
       "state_label": "Select a state",
       "state_required": "State is required.",
+      "other_states": "Other states",
+      "select_state_placeholder": "Select a state...",
+      "select_plan_first": "First select a plan to see available states",
+      "states_by_plan": "States available according to the selected plan",
       "state_new_mexico": "New Mexico",
       "state_texas": "Texas",
       "other_option": "Other option",
@@ -1210,6 +1336,86 @@
     },
     "checkout": {
       "pay_button": "Pay ${{amount}}"
+    },
+    "flow": {
+      "step_of": "Step {{ current }} of {{ total }}",
+      "llc_title": "LLC Formation",
+      "llc_tagline": "We guide you step by step with security and regulatory compliance.",
+      "renovation_title": "LLC Renewal",
+      "renovation_tagline": "We guide you step by step with security and regulatory compliance.",
+      "bank_account_title": "Bank Account",
+      "bank_account_tagline": "Complete the process to open your bank account with security and regulatory compliance.",
+      "data_protected": "Data protected and confidential",
+      "minutes": "About 15–20 minutes",
+      "minutes_short": "About 5–10 minutes",
+      "compliance": "Compliance at every step",
+      "back_to_register": "Back to registration",
+      "continue": "Continue",
+      "verify_email_title": "Verify your email"
+    },
+    "payment_step": {
+      "summary_title": "Summary of your request",
+      "plan": "Plan",
+      "state": "State",
+      "not_specified": "Not specified",
+      "not_selected": "Not selected",
+      "method_label": "Payment method",
+      "card_stripe": "Card (Stripe)",
+      "transfer": "Bank transfer",
+      "secure_note": "Secure payment. Data protected by Stripe. We do not store your card.",
+      "pay_btn": "Pay",
+      "processing": "Processing...",
+      "select_plan_state": "Select plan and state to see the amount.",
+      "instructions": "Instructions: Make the transfer to the account indicated and upload the proof.",
+      "proof_label": "Transfer proof",
+      "proof_hint": "PDF, JPG, PNG, DOC (max. 10MB)",
+      "proof_uploaded": "Proof uploaded.",
+      "view": "View",
+      "create_with_transfer": "Create request with transfer",
+      "uploading": "Uploading..."
+    }
+  },
+  "PANEL": {
+    "menu": {
+      "dashboard": "Dashboard",
+      "zoho_sync": "Zoho Sync",
+      "requests": "Requests",
+      "clients": "Clients",
+      "partners": "Partners",
+      "partner_reports": "Partner Reports",
+      "settings": "Settings",
+      "my_requests": "My Requests",
+      "my_clients": "My Clients"
+    },
+    "layout": {
+      "back_to_site": "Back to site",
+      "admin_panel": "Admin Panel",
+      "partner_panel": "Partner Panel",
+      "my_panel": "My Panel",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "language_modal": {
+      "title": "Choose your language",
+      "subtitle": "Select the language for the panel.",
+      "spanish": "Español",
+      "english": "English"
+    },
+    "auth": {
+      "login": "Log in",
+      "register": "Register",
+      "email": "Email",
+      "password": "Password",
+      "forgot_password": "Forgot your password?",
+      "reset_password": "Reset password",
+      "set_password": "Set password",
+      "back_to_login": "Back to login"
+    },
+    "settings_page": {
+      "title": "Settings",
+      "preferences": "Preferences",
+      "language": "Language",
+      "language_help": "Panel language"
     }
   }
 }

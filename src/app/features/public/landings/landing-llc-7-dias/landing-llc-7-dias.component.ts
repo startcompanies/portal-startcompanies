@@ -25,7 +25,7 @@ import { WistiaVerticalPlayerComponent } from '../wistia-vertical-player/wistia-
 import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
-  selector: 'app-landing-presentacion-4',
+  selector: 'app-landing-llc-7-dias',
   standalone: true,
   imports: [
     WistiaPlayerComponent,
@@ -41,10 +41,10 @@ import { BrowserService } from '../../../../shared/services/browser.service';
     ResponsiveImageComponent,
     TranslocoPipe
   ],
-  templateUrl: './landing-presentacion-4.component.html',
+  templateUrl: './landing-llc-7-dias.component.html',
   styleUrl: '../landing-presentacion/landing-presentacion.component.css',
 })
-export class LandingPresentacion4Component implements AfterViewInit, OnInit {
+export class LandingLlc7DiasComponent implements AfterViewInit, OnInit {
   @ViewChild('calendly', { static: false })
   calendlySection!: ElementRef<HTMLElement>;
 

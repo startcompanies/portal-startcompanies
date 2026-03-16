@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FlowStepConfig } from '../../models/request-flow-context';
 import { RequestFlowContext } from '../../models/request-flow-context';
 
@@ -9,7 +10,7 @@ import { RequestFlowContext } from '../../models/request-flow-context';
 @Component({
   selector: 'app-flow-steps-indicator',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslocoPipe],
   templateUrl: './flow-steps-indicator.component.html',
   styleUrls: ['./flow-steps-indicator.component.css']
 })

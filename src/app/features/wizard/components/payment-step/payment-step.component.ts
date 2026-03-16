@@ -7,6 +7,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { StripeService } from '../../services/stripe.service';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
 import { WizardPlansService } from '../../services/wizard-plans.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente reutilizable para el paso de pago
@@ -21,7 +22,7 @@ import { WizardPlansService } from '../../services/wizard-plans.service';
 @Component({
   selector: 'app-wizard-payment-step',
   standalone: true,
-  imports: [SharedModule, ReactiveFormsModule, StripePaymentFormComponent],
+  imports: [SharedModule, ReactiveFormsModule, StripePaymentFormComponent, TranslocoPipe],
   templateUrl: './payment-step.component.html',
   styleUrls: ['./payment-step.component.css'],
 
