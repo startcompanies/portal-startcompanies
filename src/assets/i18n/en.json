@@ -567,6 +567,7 @@
     "open_your_llc": "Your LLC in the U.S. with expert support from start to finish.",
     "skip_commissions": "Avoid unnecessary fees and taxes with our comprehensive management.",
     "schedule_consultation_2": "Schedule your free consultation.",
+    "hero_cta_subtitle": "Talk to an expert advisor and find out if a U.S. LLC is right for you.",
     "no_advance_payments_2": "No advance payments: you pay after having your LLC and bank account",
     "open_your_llc_2": "Open your company in the U.S. in less than 7 days, 100% online and with expert support.",
     "skip_commissions_2": "Avoid unnecessary fees and taxes with our comprehensive management.",
@@ -580,19 +581,22 @@
       "title": "Want to invoice abroad and optimize taxes?",
       "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
       "desc2": "Trustpilot review",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "A specialist will review your case and explain the best structure for invoicing abroad."
     },
     "landing_3": {
       "title": "Free consultation for your LLC in the United States",
       "desc1": "We guide you through the entire formation and bank account process.",
       "desc2": "Trustpilot review",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "Get your questions answered by an LLC expert. No cost, no commitment."
     },
     "landing_4": {
       "title": "Your LLC in the U.S. in 7 days. 100% online.",
       "desc1": "More than 1,000 entrepreneurs already use an LLC in the U.S.",
       "desc2": "No advance payments. You only pay at the end.",
-      "cta": "Evaluate my case"
+      "cta": "Evaluate my case",
+      "hero_cta_subtitle": "Schedule a call and we'll show you how to get your LLC ready in 7 days, no commitment."
     },
     "trustpilot_badge_label": "Excellent",
     "trust_strip": {
@@ -601,13 +605,49 @@
       "online": "online",
       "countries": "Mexico · Argentina · Colombia · Chile · Spain · and more countries"
     },
+    "hero_features": {
+      "optimize_taxes": "Optimize taxes",
+      "reduce_fees": "Reduce fees",
+      "protect_assets": "Protect your assets",
+      "operate_globally": "Operate globally"
+    },
+    "hero_short_features": {
+      "days": "7 days",
+      "remote": "100% remote",
+      "pay_later": "pay later",
+      "clients": "+400 clients"
+    },
+    "relay_video_title": "Want to open a Relay bank account? Start Companies can help you do it.",
+    "lp_testimonials": {
+      "title_part1": "Comments from ",
+      "title_part2": "our customers",
+      "subtitle_part1": "More than 200 clients rate us as ",
+      "subtitle_highlight": "Excellent"
+    },
+    "lp_steps_title": {
+      "part1": "Your LLC in ",
+      "part2": "4 steps"
+    },
+    "who_for": {
+      "title_part1": "Is it ",
+      "title_part2": "for you?",
+      "subtitle": "If you're a freelancer, have an e‑commerce business, an agency, or are a content creator and want to get paid in dollars with a U.S. LLC.",
+      "freelancers_title": "Freelancers and consultants",
+      "freelancers_desc": "Get paid in dollars",
+      "ecommerce_title": "E‑commerce",
+      "ecommerce_desc": "International customers",
+      "agencies_title": "Digital agencies",
+      "agencies_desc": "Customers in the U.S. and worldwide",
+      "creators_title": "Content creators",
+      "creators_desc": "Global platforms"
+    },
     "description": "We take care of the bureaucracy so you can focus on growing.",
     "discover_why": "Discover why more than",
     "200_clients": "2000 clients",
     "calificate_us": "rate us as",
     "excellent": "Excellent",
-    "startcompanies_benefits": "Benefits of choosing ",
-    "startcompanies_hightlight": "Start Companies",
+    "startcompanies_benefits": "Why choose ",
+    "startcompanies_hightlight": "Start Companies?",
     "benefit1": {
       "title": "FREE tax advice",
       "description": "We'll be with you from the start, and you only pay when we submit the documentation."

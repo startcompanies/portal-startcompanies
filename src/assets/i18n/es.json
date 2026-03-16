@@ -562,6 +562,7 @@
     "open_your_llc": "Más de 1.000 emprendedores ya usan una LLC en EE.UU.",
     "skip_commissions": "Reseña Trupilot",
     "schedule_consultation_2": "Evaluar mi caso",
+    "hero_cta_subtitle": "Habla con un asesor experto y descubre si una LLC en EE.UU. es para ti.",
     "no_advance_payments_2": "Facturas al exterior pero sigues pagando impuestos altos",
     "open_your_llc_2": "Tu LLC en EE.UU. en 7 días. 100% online.",
     "skip_commissions_2": "Sin adelantos. Solo pagas al final.",
@@ -576,19 +577,22 @@
       "title": "¿Quieres facturar al exterior y optimizar impuestos?",
       "desc1": "Más de 1.000 emprendedores ya usan una LLC en EE.UU.",
       "desc2": "Reseña Trustpilot",
-      "cta": "Evaluar mi caso"
+      "cta": "Evaluar mi caso",
+      "hero_cta_subtitle": "Un especialista revisará tu caso y te explicará la mejor estructura para facturar al exterior."
     },
     "landing_3": {
       "title": "Asesoría gratuita para tu LLC en Estados Unidos",
       "desc1": "Te guiamos en todo el proceso de constitución y cuenta bancaria.",
       "desc2": "Reseña Trustpilot",
-      "cta": "Evaluar mi caso"
+      "cta": "Evaluar mi caso",
+      "hero_cta_subtitle": "Resuelve tus dudas con un experto en LLC. Sin costo ni compromiso."
     },
     "landing_4": {
       "title": "Tu LLC en EE.UU. en 7 días. 100% online.",
       "desc1": "Más de 1.000 emprendedores ya usan una LLC en EE.UU.",
       "desc2": "Sin adelantos. Solo pagas al final.",
-      "cta": "Evaluar mi caso"
+      "cta": "Evaluar mi caso",
+      "hero_cta_subtitle": "Agenda una llamada y te contamos cómo tener tu LLC lista en 7 días, sin compromiso."
     },
     "trustpilot_badge_label": "Excelente",
     "trust_strip": {
@@ -597,13 +601,49 @@
       "online": "online",
       "countries": "México · Argentina · Colombia · Chile · España · y más países"
     },
+    "hero_features": {
+      "optimize_taxes": "Optimiza impuestos",
+      "reduce_fees": "Reduce comisiones",
+      "protect_assets": "Protege tu patrimonio",
+      "operate_globally": "Opera globalmente"
+    },
+    "hero_short_features": {
+      "days": "7 días",
+      "remote": "100% remoto",
+      "pay_later": "pagas después",
+      "clients": "+400 clientes"
+    },
+    "relay_video_title": "¿Quieres abrir una cuenta bancaria con Relay? En Start Companies te ayudamos a realizarlo.",
+    "lp_testimonials": {
+      "title_part1": "Comentarios de ",
+      "title_part2": "nuestros clientes",
+      "subtitle_part1": "Más de 200 clientes nos califican como ",
+      "subtitle_highlight": "Excelente"
+    },
+    "lp_steps_title": {
+      "part1": "Tu LLC en ",
+      "part2": "4 pasos"
+    },
+    "who_for": {
+      "title_part1": "¿Es ",
+      "title_part2": "para ti?",
+      "subtitle": "Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.",
+      "freelancers_title": "Freelancers y consultores",
+      "freelancers_desc": "Cobran en dólares",
+      "ecommerce_title": "E‑commerce",
+      "ecommerce_desc": "Clientes internacionales",
+      "agencies_title": "Agencias digitales",
+      "agencies_desc": "Clientes en EE.UU. y el mundo",
+      "creators_title": "Creadores de contenido",
+      "creators_desc": "Plataformas globales"
+    },
     "description": "Te acompañamos en todo el proceso para que te enfoques en crecer.",
     "discover_why": "Descubre por qué más de",
     "200_clients": "400 empresas",
     "calificate_us": "nos eligen",
     "excellent": "para facturar en EE.UU.",
-    "startcompanies_benefits": "Por qué ",
-    "startcompanies_hightlight": "Start Companies",
+    "startcompanies_benefits": "¿Por qué ",
+    "startcompanies_hightlight": "Start Companies?",
     "benefit1": {
       "title": "Asesoría personalizada GRATIS",
       "description": "Te acompañamos desde la primera llamada sin costo."
