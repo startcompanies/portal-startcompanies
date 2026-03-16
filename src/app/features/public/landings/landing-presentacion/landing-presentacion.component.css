@@ -46,6 +46,11 @@
   border-color: #006afe;
 }
 
+.hero-cta-subtitle {
+  opacity: 0.95;
+  font-size: 0.9rem;
+}
+
 .hero-btn-secondary {
   background-color: transparent;
   color: #f3f6fa;
@@ -1003,12 +1008,6 @@
   height: 120px;
   margin: 0 auto 1.5rem auto;
   z-index: 2;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-}
-
-.step-circle-container:hover {
-  transform: translateY(-5px);
 }
 
 .step-circle-bg {
@@ -1032,16 +1031,6 @@
   transition: all 0.3s ease;
 }
 
-.step-circle-container:hover .step-circle-icon {
-  color: white;
-  transform: scale(1.1);
-}
-
-.step-circle-container:hover .step-circle-bg {
-  background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
-  box-shadow: 0 8px 30px rgba(0, 73, 198, 0.35);
-}
-
 .step-circle-number {
   position: absolute;
   top: -10px;
@@ -1062,10 +1051,113 @@
   transition: all 0.3s ease;
 }
 
-.step-circle-container:hover .step-circle-number {
-  background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
-  box-shadow: 0 6px 20px rgba(0, 73, 198, 0.5);
-  transform: scale(1.05);
+/* Animación automática paso a paso (mismo efecto que hover, en secuencia 1→2→3→4) */
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(1) .step-circle-container {
+  animation: stepContainerPulse 8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(2) .step-circle-container {
+  animation: stepContainerPulse 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(3) .step-circle-container {
+  animation: stepContainerPulse 8s ease-in-out infinite;
+  animation-delay: 4s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(4) .step-circle-container {
+  animation: stepContainerPulse 8s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(1) .step-circle-bg {
+  animation: stepBgPulse 8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(2) .step-circle-bg {
+  animation: stepBgPulse 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(3) .step-circle-bg {
+  animation: stepBgPulse 8s ease-in-out infinite;
+  animation-delay: 4s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(4) .step-circle-bg {
+  animation: stepBgPulse 8s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(1) .step-circle-icon {
+  animation: stepIconPulse 8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(2) .step-circle-icon {
+  animation: stepIconPulse 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(3) .step-circle-icon {
+  animation: stepIconPulse 8s ease-in-out infinite;
+  animation-delay: 4s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(4) .step-circle-icon {
+  animation: stepIconPulse 8s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(1) .step-circle-number {
+  animation: stepNumberPulse 8s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(2) .step-circle-number {
+  animation: stepNumberPulse 8s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(3) .step-circle-number {
+  animation: stepNumberPulse 8s ease-in-out infinite;
+  animation-delay: 4s;
+}
+.lp-steps-section .steps-timeline .row > .col-md-3:nth-child(4) .step-circle-number {
+  animation: stepNumberPulse 8s ease-in-out infinite;
+  animation-delay: 6s;
+}
+
+@keyframes stepContainerPulse {
+  0% { transform: translateY(-5px); }
+  25%, 100% { transform: translateY(0); }
+}
+
+@keyframes stepBgPulse {
+  0% {
+    background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
+    box-shadow: 0 8px 30px rgba(0, 73, 198, 0.35);
+  }
+  25%, 100% {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    box-shadow: 0 4px 20px rgba(66, 133, 244, 0.15);
+  }
+}
+
+@keyframes stepIconPulse {
+  0% {
+    color: white;
+    transform: scale(1.1);
+  }
+  25%, 100% {
+    color: #2196F3;
+    transform: scale(1);
+  }
+}
+
+@keyframes stepNumberPulse {
+  0% {
+    background: linear-gradient(135deg, #0049c6 0%, #006afe 100%);
+    box-shadow: 0 6px 20px rgba(0, 73, 198, 0.5);
+    transform: scale(1.05);
+  }
+  25%, 100% {
+    background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+    box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+    transform: scale(1);
+  }
 }
 
 .step-circle-title {

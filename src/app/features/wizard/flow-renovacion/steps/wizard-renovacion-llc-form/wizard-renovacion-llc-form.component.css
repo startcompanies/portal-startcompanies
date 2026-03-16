@@ -1,2 +1,58 @@
 /* Estilos para el formulario de Renovación LLC en el Wizard */
 
+/* Contenedor principal */
+.renovacion-form-wrapper {
+  display: block;
+}
+
+/* Área con scroll: limita la altura y muestra barra de desplazamiento */
+.renovacion-form-scroll {
+  max-height: min(70vh, 720px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Scrollbar más discreta en navegadores que lo soportan */
+.renovacion-form-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.renovacion-form-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.renovacion-form-scroll::-webkit-scrollbar-thumb {
+  background: #006afe;
+  border-radius: 4px;
+}
+
+.renovacion-form-scroll::-webkit-scrollbar-thumb:hover {
+  background: #02b8d0;
+}
+
+/* Espaciado entre secciones */
+.renovacion-form-scroll .form-section {
+  margin-bottom: 1.5rem;
+}
+
+.renovacion-form-scroll .form-section:last-child {
+  margin-bottom: 0;
+}
+
+/* En pantallas pequeñas, usar más altura disponible */
+@media (max-height: 700px) {
+  .renovacion-form-scroll {
+    max-height: 55vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .renovacion-form-scroll {
+    max-height: 60vh;
+    padding-right: 0.25rem;
+  }
+}

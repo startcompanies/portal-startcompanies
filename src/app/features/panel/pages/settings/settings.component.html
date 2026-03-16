@@ -1,6 +1,6 @@
 <div class="settings-container">
   <div class="settings-header">
-    <h2>Configuración</h2>
+    <h2>{{ 'PANEL.settings_page.title' | transloco }}</h2>
     <p class="text-muted">Gestiona tu perfil, preferencias y configuraciones</p>
   </div>
 
@@ -25,7 +25,7 @@
         type="button"
       >
         <i class="bi bi-gear me-2"></i>
-        Preferencias
+        {{ 'PANEL.settings_page.preferences' | transloco }}
       </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -131,16 +131,16 @@
   <!-- Tab Content: Preferences -->
   <div *ngIf="activeTab === 'preferences'" class="tab-content">
     <div class="settings-card">
-      <h4>Preferencias de Usuario</h4>
+      <h4>{{ 'PANEL.settings_page.preferences' | transloco }}</h4>
       <p class="text-muted">Personaliza tu experiencia en el panel</p>
 
       <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="form-label">Idioma</label>
+            <label class="form-label">{{ 'PANEL.settings_page.language' | transloco }}</label>
             <select class="form-select" formControlName="language">
-              <option value="es">Español</option>
-              <option value="en">English</option>
+              <option value="es">{{ 'PANEL.language_modal.spanish' | transloco }}</option>
+              <option value="en">{{ 'PANEL.language_modal.english' | transloco }}</option>
             </select>
           </div>
           <div class="col-md-6">

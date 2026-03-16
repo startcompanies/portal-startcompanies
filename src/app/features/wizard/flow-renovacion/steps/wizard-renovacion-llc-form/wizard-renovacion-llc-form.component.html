@@ -1,5 +1,6 @@
-<div [formGroup]="serviceDataForm">
-  <!-- Sección 1: Información General de la LLC -->
+<div class="renovacion-form-wrapper" [formGroup]="serviceDataForm">
+  <div class="renovacion-form-scroll">
+    <!-- Sección 1: Información General de la LLC -->
   <div *ngIf="currentSection === 1" class="form-section">
     <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LA LLC</strong></h4>
     <div class="row g-3">
@@ -691,5 +692,6 @@
     </div>
   </div>
 
+  </div>
 </div>
 

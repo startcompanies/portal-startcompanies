@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../../../../../shared/shared/shared.module';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { Subscription } from 'rxjs';
 import { StripeService } from '../../../services/stripe.service';
 import { WizardPlan, WizardPlansService } from '../../../services/wizard-plans.service';
+import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 
 /**
  * Componente reutilizable para el paso de registro básico
@@ -13,7 +15,7 @@ import { WizardPlan, WizardPlansService } from '../../../services/wizard-plans.s
 @Component({
     selector: 'app-wizard-state-plan-selection-step',
     standalone: true,
-    imports: [SharedModule, ReactiveFormsModule],
+    imports: [SharedModule, ReactiveFormsModule, TranslocoPipe],
     templateUrl: './state-plan-selection-step.component.html',
     styleUrls: ['./state-plan-selection-step.component.css'],
 })
@@ -22,59 +24,7 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     @Input() previousStepNumber: number = 1; // Paso anterior para mostrar resumen
 
     // Lista completa de estados de USA (igual que en new-request)
-    usStates = [
-        { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-        { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-        { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-        { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-        { value: 'California', label: 'California', abbreviation: 'CA' },
-        { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-        { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-        { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-        { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-        { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-        { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-        { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-        { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-        { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-        { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-        { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-        { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-        { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-        { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-        { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-        { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-        { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-        { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-        { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-        { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-        { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-        { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-        { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-        { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-        { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-        { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-        { value: 'New York', label: 'New York', abbreviation: 'NY' },
-        { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-        { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-        { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-        { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-        { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-        { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-        { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-        { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-        { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-        { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-        { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-        { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-        { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-        { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-        { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-        { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-        { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-        { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' },
-        { value: 'District of Columbia', label: 'District of Columbia', abbreviation: 'DC' },
-    ];
+    usStates = US_STATES;
     
     // Planes disponibles (centralizados en WizardPlansService)
     planes: WizardPlan[] = [];
@@ -121,12 +71,13 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
             }
             if (savedData.plan) {
                 this.selectedPlan = savedData.plan;
-                // Emprendedor: estado siempre New Mexico (por si se restauró sin estado)
                 const planObj = this.wizardPlansService.getPlan(savedData.plan);
-                if (planObj && !planObj.states.includes('all') && planObj.states.length === 1 && !savedData.state) {
+                // Pack Emprendedor: estado siempre New Mexico y deshabilitado
+                if (planObj && !planObj.states.includes('all') && planObj.states.length === 1) {
                     const autoState = planObj.states[0];
                     this.selectedState = autoState;
                     this.form.get('state')?.setValue(autoState);
+                    this.form.get('state')?.disable();
                 }
             }
         }
@@ -148,11 +99,12 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
     }
 
     /**
-     * Guarda los datos del paso
+     * Guarda los datos del paso (getRawValue incluye controles deshabilitados, p. ej. state en Pack Emprendedor)
      */
     private saveStepData(): void {
-        if (this.form.valid) {
-            this.wizardStateService.setStepData(this.stepNumber, this.form.value);
+        const raw = this.form.getRawValue();
+        if (raw.plan) {
+            this.wizardStateService.setStepData(this.stepNumber, raw);
         }
     }
 
@@ -195,13 +147,15 @@ export class WizardStatePlanSelectionStepComponent implements OnInit, OnDestroy 
         
         const selectedPlanObj = this.wizardPlansService.getPlan(planValue);
         if (selectedPlanObj) {
-            // Emprendedor: siempre New Mexico. Premium: solo NM o Wyoming. Elite: cualquier estado.
+            // Pack Emprendedor: estado fijo New Mexico, deshabilitar selector
             if (!selectedPlanObj.states.includes('all') && selectedPlanObj.states.length === 1) {
                 const autoState = selectedPlanObj.states[0];
                 this.selectedState = autoState;
                 this.form.get('state')?.setValue(autoState);
+                this.form.get('state')?.disable(); // No editable para Pack Emprendedor
                 this.stripeService.setState(autoState);
             } else {
+                this.form.get('state')?.enable();
                 // Validar si el estado actual es compatible con el plan seleccionado
                 const currentState = this.selectedState || this.form.get('state')?.value;
                 if (currentState) {

@@ -1,63 +1,78 @@
 import { APP_BASE_HREF } from '@angular/common';
 import { CommonEngine } from '@angular/ssr';
 import express from 'express';
-import { fileURLToPath } from 'node:url';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
 import bootstrap from './src/main.server';
+import { APP_CONFIG } from './src/app/core/config/app.config.constants';
+
+// Dist: desde cwd (npm run serve:ssr se ejecuta desde la raíz del proyecto)
+const DIST_ROOT = join(process.cwd(), 'dist/portal-startcompanies');
+const BROWSER_SUBFOLDER = join(DIST_ROOT, 'browser');
+
+// Con development/staging el build puede usar index.staging.html y emitir ese nombre en dist
+const INDEX_NAMES = ['index.html', 'index.staging.html'];
+
+function resolveBrowserPaths(): { browserDistFolder: string; indexHtml: string } {
+  for (const name of INDEX_NAMES) {
+    const inBrowser = join(BROWSER_SUBFOLDER, name);
+    if (existsSync(inBrowser)) {
+      return { browserDistFolder: BROWSER_SUBFOLDER, indexHtml: inBrowser };
+    }
+    const inRoot = join(DIST_ROOT, name);
+    if (existsSync(inRoot)) {
+      return { browserDistFolder: DIST_ROOT, indexHtml: inRoot };
+    }
+  }
+  // Fallback: usar browser/index.html (evitar ENOENT si el build cambia)
+  return { browserDistFolder: BROWSER_SUBFOLDER, indexHtml: join(BROWSER_SUBFOLDER, 'index.html') };
+}
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
-  const browserDistFolder = join(process.cwd(), 'dist/portal-startcompanies/browser');
-  const indexHtml = join(browserDistFolder, 'index.html');
+  const { browserDistFolder, indexHtml } = resolveBrowserPaths();
 
   const commonEngine = new CommonEngine();
 
   server.set('view engine', 'html');
   server.set('views', browserDistFolder);
 
-  // Helper function para obtener baseUrl dinámicamente (siempre https para sitemap/SEO)
+  /**
+   * Base URL del portal (sitemap/SEO). Orden: 1) Host si es *.startcompanies.io,
+   * 2) BASE_URL/DOMAIN env (se normaliza a https), 3) APP_CONFIG.domain.production (portal .io).
+   */
   const getBaseUrl = (req: express.Request): string => {
-    // Intentar obtener desde el header Host
     const host = req.get('host') || req.headers.host || '';
     let protocol = req.protocol || (req.get('x-forwarded-proto') || 'https').split(',')[0].trim();
-    // Forzar https en las URLs del sitemap
     if (protocol !== 'https') {
       protocol = 'https';
     }
-    
-    // Si el host contiene startcompanies.io, usar ese dominio
     if (host.includes('startcompanies.io')) {
       return `${protocol}://${host}`;
     }
-    
-    // Si el host contiene startcompanies.us, usar ese dominio
-    if (host.includes('startcompanies.us')) {
-      return `${protocol}://${host}`;
-    }
-    
-    // Fallback: usar variable de entorno o valor por defecto (siempre https)
-    return process.env['BASE_URL'] || process.env['DOMAIN'] 
-      ? `https://${process.env['DOMAIN'] || process.env['BASE_URL']?.replace(/^https?:\/\//, '')}`
-      : 'https://startcompanies.us';
+    return process.env['BASE_URL'] || process.env['DOMAIN']
+      ? `https://${(process.env['DOMAIN'] || process.env['BASE_URL'] || '').replace(/^https?:\/\//, '').replace(/\/+$/, '')}`
+      : APP_CONFIG.domain.production;
   };
 
-  // Helper para obtener la URL de la API según el host (staging vs producción)
-  // Así posts.xml usa la API correcta aunque no se defina API_URL en el despliegue
+  /**
+   * URL de la API. Orden: 1) API_URL/NX_API_URL env, 2) Host staging.startcompanies.io -> api.staging,
+   * 3) Host startcompanies.io -> api.staging, 4) Resto -> api.production (api-web.startcompanies.us).
+   */
   const getApiUrl = (req: express.Request): string => {
     const fromEnv = process.env['API_URL'] || process.env['NX_API_URL'];
     if (fromEnv && fromEnv.trim()) {
       return fromEnv.replace(/\/+$/, '');
     }
     const host = (req.get('host') || req.headers.host || '').toLowerCase();
-    // Staging: staging.startcompanies.io -> api-web.startcompanies.io
     if (host.includes('staging.startcompanies.io')) {
-      return 'https://api-web.startcompanies.io';
+      return APP_CONFIG.domain.api.staging;
     }
     if (host.includes('startcompanies.io')) {
-      return 'https://api-web.startcompanies.io';
+      return APP_CONFIG.domain.api.staging;
     }
-    return 'https://api-web.startcompanies.us';
+    return APP_CONFIG.domain.api.production;
   };
 
   // Example Express Rest API endpoints

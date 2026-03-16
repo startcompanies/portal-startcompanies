@@ -151,10 +151,19 @@
     justify-content: start;
     /* Centra los ítems de contacto en móvil */
     cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
 }
 
 .contact-item:hover {
     color: #006afe;
+    opacity: 0.8;
+}
+
+.contact-item:focus {
+    outline: 2px solid #01c9e2;
+    outline-offset: 2px;
 }
 
 /* Alinea los ítems de contacto a la izquierda en desktop */

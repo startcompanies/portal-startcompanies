@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription } from 'rxjs';
@@ -49,7 +49,8 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private transloco: TranslocoService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
@@ -159,19 +160,19 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     // Determinar nivel
     if (password.length < 8) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_very_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 3) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 5) {
       this.passwordStrength = 'medium';
-      this.passwordStrengthText = 'Media';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_medium');
       this.passwordStrengthClass = 'text-warning';
     } else {
       this.passwordStrength = 'strong';
-      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_strong');
       this.passwordStrengthClass = 'text-success';
     }
   }

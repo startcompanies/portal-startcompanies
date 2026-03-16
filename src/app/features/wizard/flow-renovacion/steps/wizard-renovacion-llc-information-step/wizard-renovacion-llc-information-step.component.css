@@ -1,54 +1,46 @@
-/* Estilos para el componente wrapper de información de renovación LLC */
-
-/* Botones de navegación entre secciones */
-.wizard-renovacion-llc-information-step .btn-primary {
-  background-color: #006afe;
-  border-color: #006afe;
-  color: #ffffff;
-  min-width: 120px;
+.wizard-renovacion-llc-information-step {
+  width: 100%;
 }
 
-.wizard-renovacion-llc-information-step .btn-primary:hover {
-  background-color: #02b8d0;
-  border-color: #02b8d0;
-  color: #ffffff;
-}.wizard-renovacion-llc-information-step .btn-primary:focus {
-  background-color: #006afe;
-  border-color: #006afe;
-  color: #ffffff;
-  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+.llc-form-container {
+  margin-bottom: 1rem;
 }
 
-.wizard-renovacion-llc-information-step .btn-primary:disabled {
-  background-color: #006afe;
-  border-color: #006afe;
-  opacity: 0.6;
-  color: #ffffff;
+.flow-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e9ecef;
+  margin-top: 2rem;
+  min-height: 52px;
 }
 
-.wizard-renovacion-llc-information-step .btn-outline-secondary {
-  background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
-  min-width: 120px;
+.flow-actions .flex-grow-1 {
+  flex: 1;
 }
 
-.wizard-renovacion-llc-information-step .btn-outline-secondary:hover {
-  background-color: #f8f9fa;
-  border-color: #02b8d0;
-  color: #02b8d0;
+.flow-actions .btn {
+  min-width: 150px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s;
 }
 
-.wizard-renovacion-llc-information-step .btn-outline-secondary:focus {
-  background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
-  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+.flow-actions .btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-.wizard-renovacion-llc-information-step .btn-outline-secondary:disabled {
-  background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
-  opacity: 0.6;
+@media (max-width: 768px) {
+  .flow-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .flow-actions .btn {
+    width: 100%;
+    min-width: unset;
+  }
 }

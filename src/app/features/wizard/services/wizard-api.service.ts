@@ -83,19 +83,24 @@ export interface EmailAvailabilityResponse {
 }
 
 /**
- * Servicio para comunicarse con los endpoints del wizard en el backend
+ * Servicio para comunicarse con los endpoints del wizard en el backend (apiUrl).
+ * Todas las validaciones y solicitudes usan environment.apiUrl.
+ *
  * Endpoints:
- * - GET /wizard/requests/check-email - Verificar disponibilidad de email
- * - POST /wizard/requests/register - Registrar usuario
- * - POST /wizard/requests/confirm-email - Confirmar email y obtener tokens
- * - POST /wizard/requests - Crear solicitud (requiere autenticación)
- * - PATCH /wizard/requests/:id - Actualizar solicitud (requiere autenticación)
+ * - GET  {apiUrl}/wizard/requests/check-email - Verificar disponibilidad de email
+ * - POST {apiUrl}/wizard/requests/register - Registrar usuario
+ * - POST {apiUrl}/wizard/requests/confirm-email - Confirmar email y obtener tokens
+ * - POST {apiUrl}/wizard/requests - Crear solicitud (requiere autenticación)
+ * - PATCH {apiUrl}/wizard/requests/:id - Actualizar solicitud (requiere autenticación)
+ * - POST {apiUrl}/upload-file - Subir archivos (comprobantes, pasaportes, etc.)
  */
 @Injectable({
   providedIn: 'root'
 })
 export class WizardApiService {
-  private apiUrl = `${environment.apiUrl}/wizard/requests`;
+  /** Base URL de la API (environment.apiUrl). Todas las peticiones del wizard usan esta base. */
+  private readonly baseUrl = environment.apiUrl;
+  private apiUrl = `${this.baseUrl}/wizard/requests`;
   
   // Estado de autenticación del wizard
   private accessTokenSubject = new BehaviorSubject<string | null>(null);
@@ -251,5 +256,17 @@ export class WizardApiService {
     console.log('[WizardApiService] Actualizando solicitud:', id);
     const headers = this.getAuthHeaders();
     return this.http.patch(`${this.apiUrl}/${id}`, data, { headers });
+  }
+
+  /**
+   * Sube un archivo al backend (apiUrl).
+   * POST {apiUrl}/upload-file
+   * Usado por flow-llc, flow-renovacion, payment-step e información de servicio.
+   */
+  uploadFile(formData: FormData): Observable<{ url: string; key: string; message: string }> {
+    return this.http.post<{ url: string; key: string; message: string }>(
+      `${this.baseUrl}/upload-file`,
+      formData
+    );
   }
 }

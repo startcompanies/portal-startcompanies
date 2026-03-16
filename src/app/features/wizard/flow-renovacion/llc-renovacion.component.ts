@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -20,6 +18,7 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
 
 // Componente wrapper para información de renovación LLC
 import { WizardRenovacionLlcInformationStepComponent } from './steps/wizard-renovacion-llc-information-step/wizard-renovacion-llc-information-step.component';
+import { US_STATES } from '../../../shared/constants/us-states.constant';
 
 /**
  * Componente principal para el flujo de renovación de LLC
@@ -87,59 +86,7 @@ export class LLCRenovacionComponent implements OnInit {
   // Formulario de datos del servicio
   serviceDataForm!: FormGroup;
   
-  // Estados de USA
-  usStates = [
-    { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-    { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-    { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-    { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-    { value: 'California', label: 'California', abbreviation: 'CA' },
-    { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-    { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-    { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-    { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-    { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-    { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-    { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-    { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-    { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-    { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-    { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-    { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-    { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-    { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-    { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-    { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-    { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-    { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-    { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-    { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-    { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-    { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-    { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-    { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-    { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-    { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-    { value: 'New York', label: 'New York', abbreviation: 'NY' },
-    { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-    { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-    { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-    { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-    { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-    { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-    { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-    { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-    { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-    { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-    { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-    { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-    { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-    { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-    { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-    { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-    { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-    { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' }
-  ];
+  usStates = US_STATES;
 
   // Tipos de LLC
   llcTypes = [
@@ -158,8 +105,7 @@ export class LLCRenovacionComponent implements OnInit {
     private languageService: LanguageService,
     public translocoService: TranslocoService,
     private router: Router,
-    private fb: FormBuilder,
-    private http: HttpClient
+    private fb: FormBuilder
   ) {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
@@ -258,25 +204,27 @@ export class LLCRenovacionComponent implements OnInit {
 
   /**
    * Navega al siguiente paso asegurando el flujo de registro → verificación de email.
+   * Paso 1: misma lógica que flow-cuenta-bancaria.
    */
   async nextStep(): Promise<void> {
     this.errorMessage = null;
 
-    // Paso 1 (index 0): registro + verificación
+    // Paso 1 (index 0): registro + verificación (misma lógica que flow-cuenta-bancaria)
     if (this.currentStepIndex === 0 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
-        return; // ya está en verificación
+        return;
       }
 
       if (this.registerStep) {
         const registered = await this.registerStep.registerUser();
         if (!registered) {
-          // Si retorna false, significa que necesita verificación de email
           const stepData = this.wizardStateService.getStepData(1);
-          if (stepData.email) {
+          if (stepData?.email) {
             this.registeredEmail = stepData.email;
             this.registeredPassword = stepData.password || '';
             this.showEmailVerification = true;
+          } else {
+            this.errorMessage = this.registerStep.errorMessage || 'Por favor, completa todos los campos requeridos (nombre, email, contraseña).';
           }
           return;
         }
@@ -627,10 +575,7 @@ export class LLCRenovacionComponent implements OnInit {
       formData.append('requestUuid', requestId.toString());
       
       const uploadResponse = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
+        this.wizardApiService.uploadFile(formData)
       );
       
       if (uploadResponse && uploadResponse.url) {

@@ -1,0 +1,59 @@
+<div class="wizard-root" *ngIf="serviceType">
+  <!-- Panel izquierdo: identidad, progreso, orientación -->
+  <aside class="wizard-panel wizard-panel--left">
+    <div class="wizard-panel__head">
+      <div class="wizard-panel__logo pb-3">
+        <app-responsive-image
+          [images]="logoImages"
+          context="logo"
+          loading="eager"
+          cssClass="logo wizard-sidebar-logo">
+        </app-responsive-image>
+      </div>
+      <span class="wizard-panel__service">{{ serviceTitleKey | transloco }}</span>
+      <p class="wizard-panel__tagline">{{ serviceTaglineKey | transloco }}</p>
+    </div>
+    <!-- Progreso móvil: barra + "Paso X de N" -->
+    <div class="wizard-progress-mobile" [attr.aria-label]="'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: flowSteps.length }">
+      <div class="wizard-progress-mobile__text">
+        <span class="wizard-progress-mobile__counter">{{ 'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: flowSteps.length } }}</span>
+        <span class="wizard-progress-mobile__name">{{ getStepLabel(currentStepIndex) | transloco }}</span>
+      </div>
+      <div class="wizard-progress-mobile__bar">
+        <div class="wizard-progress-mobile__fill" [style.width.%]="flowSteps.length ? ((currentStepIndex + 1) / flowSteps.length) * 100 : 0"></div>
+      </div>
+    </div>
+    <!-- Progreso desktop: lista vertical de pasos -->
+    <nav class="wizard-progress" aria-label="Progreso del proceso">
+      <div
+        *ngFor="let step of flowSteps; let i = index"
+        class="wizard-progress__item"
+        [class.is-active]="currentStepIndex === i"
+        [class.is-completed]="currentStepIndex > i">
+        <span class="wizard-progress__num">{{ i + 1 }}</span>
+        <span class="wizard-progress__line"></span>
+        <span class="wizard-progress__label">{{ step.label | transloco }}</span>
+      </div>
+    </nav>
+    <div class="wizard-panel__meta">
+      <div class="wizard-meta__item">
+        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+        <span>{{ 'WIZARD.flow.data_protected' | transloco }}</span>
+      </div>
+      <div class="wizard-meta__item">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+        <span>{{ 'WIZARD.flow.minutes_short' | transloco }}</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Panel derecho: contenido del flujo -->
+  <main class="wizard-panel wizard-panel--right">
+    <app-wizard-request-flow
+      class="wizard-main"
+      [serviceType]="serviceType"
+      [hideStepsIndicator]="true"
+      (stepIndexChange)="currentStepIndex = $event"
+    ></app-wizard-request-flow>
+  </main>
+</div>

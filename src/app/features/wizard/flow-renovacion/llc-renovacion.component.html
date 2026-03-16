@@ -2,14 +2,14 @@
   <!-- Panel izquierdo: identidad, progreso, orientación -->
   <aside class="wizard-panel wizard-panel--left">
     <div class="wizard-panel__head">
-      <span class="wizard-panel__service">Renovación de LLC</span>
-      <p class="wizard-panel__tagline">Te guiamos paso a paso con seguridad y cumplimiento normativo.</p>
+      <span class="wizard-panel__service">{{ 'WIZARD.flow.renovation_title' | transloco }}</span>
+      <p class="wizard-panel__tagline">{{ 'WIZARD.flow.renovation_tagline' | transloco }}</p>
     </div>
     <!-- Progreso móvil: barra + "Paso X de 5" (solo visible en pantallas pequeñas) -->
-    <div class="wizard-progress-mobile" aria-label="Paso actual">
+    <div class="wizard-progress-mobile" [attr.aria-label]="'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: 5 }">
       <div class="wizard-progress-mobile__text">
-        <span class="wizard-progress-mobile__counter">Paso {{ currentStepIndex + 1 }} de 5</span>
-        <span class="wizard-progress-mobile__name">{{ stepTitles[currentStepIndex + 1] || 'Registro Básico' }}</span>
+        <span class="wizard-progress-mobile__counter">{{ 'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: 5 } }}</span>
+        <span class="wizard-progress-mobile__name">{{ stepTitles[currentStepIndex + 1] || ('WIZARD.steps.register' | transloco) }}</span>
       </div>
       <div class="wizard-progress-mobile__bar">
         <div class="wizard-progress-mobile__fill" [style.width.%]="((currentStepIndex + 1) / 5) * 100"></div>
@@ -20,41 +20,41 @@
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 0" [class.is-completed]="currentStepIndex > 0">
         <span class="wizard-progress__num">1</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[1] || 'Registro Básico' }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[1] || ('WIZARD.steps.register' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 1" [class.is-completed]="currentStepIndex > 1">
         <span class="wizard-progress__num">2</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[2] || 'Estado' }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[2] || ('WIZARD.steps.state' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 2" [class.is-completed]="currentStepIndex > 2">
         <span class="wizard-progress__num">3</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[3] || 'Pago' }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 3" [class.is-completed]="currentStepIndex > 3">
         <span class="wizard-progress__num">4</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[4] || 'Información de la LLC' }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 4" [class.is-completed]="currentStepIndex > 4">
         <span class="wizard-progress__num">5</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[5] || 'Revisión Final' }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[5] || ('WIZARD.steps.review' | transloco) }}</span>
       </div>
     </nav>
     <div class="wizard-panel__meta">
       <div class="wizard-meta__item">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        <span>Datos protegidos y confidenciales</span>
+        <span>{{ 'WIZARD.flow.data_protected' | transloco }}</span>
       </div>
       <div class="wizard-meta__item">
         <i class="bi bi-clock-history" aria-hidden="true"></i>
-        <span>Unos 15–20 minutos</span>
+        <span>{{ 'WIZARD.flow.minutes' | transloco }}</span>
       </div>
       <div class="wizard-meta__item">
         <i class="bi bi-journal-check" aria-hidden="true"></i>
-        <span>Cumplimiento en cada paso</span>
+        <span>{{ 'WIZARD.flow.compliance' | transloco }}</span>
       </div>
     </div>
   </aside>
@@ -65,16 +65,17 @@
       <div class="wizard-main__body">
         <!-- Paso 1: Registro Básico -->
         <div *ngIf="currentStepIndex === 0 && !showEmailVerification" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[1] || 'Registro Básico' }}</h2>
+          <h2 class="form-step__title">{{ stepTitles[1] || ('WIZARD.steps.register' | transloco) }}</h2>
           <app-wizard-basic-register-step
             #registerStep
             [stepNumber]="1"
             (userCreated)="onUserCreated($event)"
             (registrationCompleted)="onEmailVerified()"
           ></app-wizard-basic-register-step>
+          <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
           <div class="step-actions">
-            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()">Siguiente</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">{{ 'WIZARD.cancel' | transloco }}</button>
+            <button type="button" class="btn btn-primary" (click)="nextStep()">{{ 'WIZARD.next' | transloco }}</button>
           </div>
         </div>
 
@@ -88,24 +89,24 @@
           ></app-wizard-email-verification>
           <div class="step-actions mt-4">
             <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">
-              <i class="bi bi-arrow-left me-2"></i>Volver al registro
+              <i class="bi bi-arrow-left me-2"></i>{{ 'WIZARD.flow.back_to_register' | transloco }}
             </button>
           </div>
         </div>
 
         <!-- Paso 2: Selección de Estado -->
         <div *ngIf="currentStepIndex === 1" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[2] || 'Estado' }}</h2>
+          <h2 class="form-step__title">{{ stepTitles[2] || ('WIZARD.steps.state' | transloco) }}</h2>
           <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
           <div class="step-actions">
-            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">Anterior</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStateStep()">Siguiente</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
+            <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStateStep()">{{ 'WIZARD.next' | transloco }}</button>
           </div>
         </div>
 
         <!-- Paso 3: Pago -->
         <div *ngIf="currentStepIndex === 2" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[3] || 'Pago' }}</h2>
+          <h2 class="form-step__title">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</h2>
           <app-wizard-payment-step
             #paymentStep
             [stepNumber]="3"
@@ -114,14 +115,14 @@
             (paymentError)="onPaymentError($event)"
           ></app-wizard-payment-step>
           <div class="step-actions mt-4">
-            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="paymentProcessed">Anterior</button>
-            <button type="button" class="btn btn-primary" (click)="onStepChanged(3)" [disabled]="!paymentProcessed">Continuar</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="paymentProcessed">{{ 'WIZARD.previous' | transloco }}</button>
+            <button type="button" class="btn btn-primary" (click)="onStepChanged(3)" [disabled]="!paymentProcessed">{{ 'WIZARD.flow.continue' | transloco }}</button>
           </div>
         </div>
 
         <!-- Paso 4: Información de la LLC -->
         <div *ngIf="currentStepIndex === 3" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[4] || 'Información de la LLC' }}</h2>
+          <h2 class="form-step__title">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</h2>
           <app-wizard-renovacion-llc-information-step
             #renovacionInformationStep
             [stepNumber]="4"
@@ -129,8 +130,8 @@
             (sectionChanged)="onRenovacionInfoSectionChanged($event)"
           ></app-wizard-renovacion-llc-information-step>
           <div class="step-actions" *ngIf="renovacionInfoCurrentSection === 5">
-            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(2)">Anterior</button>
-            <button type="button" class="btn btn-primary" (click)="onStepChanged(4)">Siguiente</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(2)">{{ 'WIZARD.previous' | transloco }}</button>
+            <button type="button" class="btn btn-primary" (click)="onStepChanged(4)">{{ 'WIZARD.next' | transloco }}</button>
           </div>
         </div>
 
@@ -148,7 +149,7 @@
             (goToHome)="onGoToHome()"
           ></app-wizard-final-review-step>
           <div class="step-actions" *ngIf="!isSubmitted">
-            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(3)">Anterior</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(3)">{{ 'WIZARD.previous' | transloco }}</button>
           </div>
         </div>
       </div>

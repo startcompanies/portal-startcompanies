@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoginComponent } from '../../auth/login/login.component';
@@ -6,6 +6,7 @@ import { RegisterComponent } from '../../auth/register/register.component';
 import { ResetPasswordComponent } from '../../auth/reset-password/reset-password.component';
 import { SetPasswordComponent } from '../../auth/set-password/set-password.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
+import { PanelLanguageService } from '../../services/panel-language.service';
 
 @Component({
   selector: 'app-auth-layout',
@@ -14,7 +15,7 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.css'
 })
-export class AuthLayoutComponent {
+export class AuthLayoutComponent implements OnInit {
   currentRoute: string = '';
 
   logoImages = {
@@ -26,11 +27,19 @@ export class AuthLayoutComponent {
     priority: true
   };
 
-  constructor(private router: Router, private route: ActivatedRoute) {
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private panelLanguage: PanelLanguageService
+  ) {
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
     });
     this.currentRoute = this.router.url;
+  }
+
+  ngOnInit(): void {
+    this.panelLanguage.applyStoredLanguage();
   }
 
   get isLogin() {

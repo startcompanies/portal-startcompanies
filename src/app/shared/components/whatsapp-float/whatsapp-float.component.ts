@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { whatsappConfig } from '../../../core/config/whatsapp.config';
 import { BrowserService } from '../../../shared/services/browser.service';
 
@@ -11,11 +12,13 @@ import { BrowserService } from '../../../shared/services/browser.service';
   templateUrl: './whatsapp-float.component.html',
   styleUrl: './whatsapp-float.component.css'
 })
-export class WhatsappFloatComponent implements OnInit {
+export class WhatsappFloatComponent implements OnInit, OnDestroy {
   showWhatsApp = false;
   phoneNumber = whatsappConfig.phoneNumber;
   defaultMessage = whatsappConfig.defaultMessage;
   tooltipText = whatsappConfig.tooltipText;
+
+  private routerSubscription?: Subscription;
 
   constructor(
     public router: Router,
@@ -26,9 +29,15 @@ export class WhatsappFloatComponent implements OnInit {
     this.checkCurrentRoute();
     
     // Suscribirse a cambios de ruta
-    this.router.events.subscribe(() => {
+    this.routerSubscription = this.router.events.subscribe(() => {
       this.checkCurrentRoute();
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 
   private checkCurrentRoute(): void {

@@ -1,19 +1,19 @@
 <div class="payment-step">
   <!-- Resumen compacto -->
   <div class="payment-summary">
-    <h6 class="payment-summary__title"><i class="bi bi-receipt me-2"></i>Resumen de tu solicitud</h6>
+    <h6 class="payment-summary__title"><i class="bi bi-receipt me-2"></i>{{ 'WIZARD.payment_step.summary_title' | transloco }}</h6>
     <div class="payment-summary__row">
       <div class="payment-summary__item">
         <i class="bi bi-box-seam me-2 text-primary"></i>
-        <strong>Plan:</strong>
+        <strong>{{ 'WIZARD.payment_step.plan' | transloco }}:</strong>
         <span *ngIf="packId; else noPlan">{{ packId }}</span>
-        <ng-template #noPlan><span class="text-muted">No especificado</span></ng-template>
+        <ng-template #noPlan><span class="text-muted">{{ 'WIZARD.payment_step.not_specified' | transloco }}</span></ng-template>
       </div>
       <div class="payment-summary__item">
         <i class="bi bi-geo-alt me-2 text-primary"></i>
-        <strong>Estado:</strong>
+        <strong>{{ 'WIZARD.payment_step.state' | transloco }}:</strong>
         <span *ngIf="state; else noState">{{ state }}</span>
-        <ng-template #noState><span class="text-muted">No seleccionado</span></ng-template>
+        <ng-template #noState><span class="text-muted">{{ 'WIZARD.payment_step.not_selected' | transloco }}</span></ng-template>
       </div>
     </div>
   </div>
@@ -21,7 +21,7 @@
   <form [formGroup]="form">
     <!-- Método de pago -->
     <div class="payment-methods">
-      <label class="payment-methods__label">Método de pago <span class="text-danger">*</span></label>
+      <label class="payment-methods__label">{{ 'WIZARD.payment_step.method_label' | transloco }} <span class="text-danger">*</span></label>
       <div class="payment-methods__options">
         <div
           class="payment-method-option"
@@ -30,7 +30,7 @@
         >
           <input type="radio" id="pay-stripe" value="stripe" formControlName="paymentMethod" class="d-none" />
           <label for="pay-stripe" class="payment-method-option__label">
-            <i class="bi bi-credit-card me-2"></i>Tarjeta (Stripe)
+            <i class="bi bi-credit-card me-2"></i>{{ 'WIZARD.payment_step.card_stripe' | transloco }}
           </label>
         </div>
         <div
@@ -40,7 +40,7 @@
         >
           <input type="radio" id="pay-transferencia" value="transferencia" formControlName="paymentMethod" class="d-none" />
           <label for="pay-transferencia" class="payment-method-option__label">
-            <i class="bi bi-bank me-2"></i>Transferencia bancaria
+            <i class="bi bi-bank me-2"></i>{{ 'WIZARD.payment_step.transfer' | transloco }}
           </label>
         </div>
       </div>
@@ -50,7 +50,7 @@
     <div *ngIf="form.get('paymentMethod')?.value === 'stripe'" class="payment-card-section">
       <div class="payment-card-section__security">
         <i class="bi bi-shield-check text-success me-2"></i>
-        <span><strong>Pago seguro.</strong> <span class="text-muted small">Datos protegidos por Stripe. No almacenamos tu tarjeta.</span></span>
+        <span>{{ 'WIZARD.payment_step.secure_note' | transloco }}</span>
       </div>
       <app-stripe-payment-form
         [amount]="totalAmount"
@@ -67,21 +67,21 @@
           (click)="processStripePayment()"
           [disabled]="stripeProcessing || totalAmount <= 0"
         >
-          <span *ngIf="!stripeProcessing"><i class="bi bi-credit-card me-2"></i>Pagar ${{ totalAmount }} USD</span>
-          <span *ngIf="stripeProcessing"><span class="spinner-border spinner-border-sm me-2"></span>Procesando...</span>
+          <span *ngIf="!stripeProcessing"><i class="bi bi-credit-card me-2"></i>{{ 'WIZARD.payment_step.pay_btn' | transloco }} ${{ totalAmount }} USD</span>
+          <span *ngIf="stripeProcessing"><span class="spinner-border spinner-border-sm me-2"></span>{{ 'WIZARD.payment_step.processing' | transloco }}</span>
         </button>
       </div>
       <small class="text-muted d-block mt-2" *ngIf="totalAmount <= 0">
-        <i class="bi bi-exclamation-triangle me-1"></i>Selecciona plan y estado para ver el monto.
+        <i class="bi bi-exclamation-triangle me-1"></i>{{ 'WIZARD.payment_step.select_plan_state' | transloco }}
       </small>
     </div>
 
     <!-- Transferencia bancaria -->
     <div *ngIf="form.get('paymentMethod')?.value === 'transferencia'" class="payment-transfer-section">
-      <small class="text-muted d-block mb-2" *ngIf="totalAmount <= 0"><i class="bi bi-info-circle me-1"></i>Selecciona plan y estado para ver el monto.</small>
+      <small class="text-muted d-block mb-2" *ngIf="totalAmount <= 0"><i class="bi bi-info-circle me-1"></i>{{ 'WIZARD.payment_step.select_plan_state' | transloco }}</small>
     <div *ngIf="totalAmount > 0">
       <div class="payment-transfer-section__info">
-        <p class="small mb-2"><strong>Instrucciones:</strong> Realiza la transferencia a la cuenta indicada y sube el comprobante.</p>
+        <p class="small mb-2">{{ 'WIZARD.payment_step.instructions' | transloco }}</p>
         <div class="payment-transfer-section__bank">
           <div><strong>Beneficiario:</strong> EbizBoost LLC</div>
           <div><strong>Banco:</strong> THREAD</div>
@@ -90,7 +90,7 @@
         </div>
       </div>
       <div class="payment-transfer-section__upload">
-        <label class="form-label small">Comprobante de transferencia</label>
+        <label class="form-label small">{{ 'WIZARD.payment_step.proof_label' | transloco }}</label>
         <input
           type="file"
           class="form-control form-control-sm"
@@ -98,7 +98,7 @@
           accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
           [disabled]="isUploadingPaymentProof"
         />
-        <small class="text-muted">PDF, JPG, PNG, DOC (máx. 10MB)</small>
+        <small class="text-muted">{{ 'WIZARD.payment_step.proof_hint' | transloco }}</small>
         <div *ngIf="selectedPaymentProofFile && !isUploadingPaymentProof" class="mt-2 d-flex align-items-center justify-content-between">
           <span class="small"><i class="bi bi-file-earmark me-1"></i>{{ selectedPaymentProofFile.name }}</span>
           <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearPaymentProofFile()"><i class="bi bi-x"></i></button>
@@ -107,7 +107,7 @@
           <div class="progress" style="height: 6px;"><div class="progress-bar progress-bar-striped progress-bar-animated" [style.width.%]="paymentProofUploadProgress"></div></div>
         </div>
         <div *ngIf="form.get('paymentProofUrl')?.value && !selectedPaymentProofFile && !isUploadingPaymentProof" class="alert alert-success small mt-2 py-2">
-          <i class="bi bi-check-circle me-1"></i>Comprobante subido. <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="alert-link">Ver</a>
+          <i class="bi bi-check-circle me-1"></i>{{ 'WIZARD.payment_step.proof_uploaded' | transloco }} <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="alert-link">{{ 'WIZARD.payment_step.view' | transloco }}</a>
         </div>
       </div>
       <div class="d-grid gap-2 mt-2" *ngIf="!transferenciaProcessed">
@@ -117,8 +117,8 @@
           (click)="processTransferenciaPayment()"
           [disabled]="isUploadingPaymentProof || !form.get('paymentProofUrl')?.value || totalAmount <= 0"
         >
-          <span *ngIf="!isUploadingPaymentProof"><i class="bi bi-bank me-2"></i>Crear solicitud con transferencia ${{ totalAmount }} USD</span>
-          <span *ngIf="isUploadingPaymentProof"><span class="spinner-border spinner-border-sm me-2"></span>Subiendo...</span>
+          <span *ngIf="!isUploadingPaymentProof"><i class="bi bi-bank me-2"></i>{{ 'WIZARD.payment_step.create_with_transfer' | transloco }} ${{ totalAmount }} USD</span>
+          <span *ngIf="isUploadingPaymentProof"><span class="spinner-border spinner-border-sm me-2"></span>{{ 'WIZARD.payment_step.uploading' | transloco }}</span>
         </button>
       </div>
     </div>
@@ -126,9 +126,6 @@
 
     <div *ngIf="errorMessage && !stripePaymentProcessed && !transferenciaProcessed" class="alert alert-danger mt-2 py-2 small">
       <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
-    </div>
-    <div *ngIf="(stripePaymentProcessed || transferenciaProcessed) && !errorMessage" class="alert alert-success mt-2 py-2 small">
-      <i class="bi bi-check-circle-fill me-2"></i><strong>Pago registrado.</strong> Puedes continuar al siguiente paso.
     </div>
   </form>
 </div>

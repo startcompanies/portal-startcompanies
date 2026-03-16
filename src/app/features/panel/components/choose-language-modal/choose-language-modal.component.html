@@ -1,0 +1,20 @@
+<div class="modal-backdrop show" role="dialog" aria-modal="true" aria-labelledby="languageModalTitle">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="languageModalTitle">{{ 'PANEL.language_modal.title' | transloco }}</h5>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted mb-3">{{ 'PANEL.language_modal.subtitle' | transloco }}</p>
+        <div class="d-flex gap-2 justify-content-center flex-wrap">
+          <button type="button" class="btn btn-primary btn-lg" (click)="choose('es')">
+            {{ 'PANEL.language_modal.spanish' | transloco }}
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-lg" (click)="choose('en')">
+            {{ 'PANEL.language_modal.english' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

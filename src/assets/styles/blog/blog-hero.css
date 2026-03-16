@@ -333,19 +333,20 @@
   text-align: left;
 }
 
-.mission-description :deep(a) {
+/* Selectores sin :deep() para compatibilidad con el parser CSS de SSR */
+.mission-description a {
   margin-top: 30px;
   text-decoration: none;
 }
 
-.mission-description :deep(p) {
+.mission-description p {
   margin-bottom: 1rem;
   color: #ffffff;
   text-align: left;
 }
 
-.mission-description :deep(ul),
-.mission-description :deep(ol) {
+.mission-description ul,
+.mission-description ol {
   margin-bottom: 1rem;
   padding-left: 1.5rem;
   color: #ffffff;
@@ -356,26 +357,26 @@
   padding-left: 0.5rem;
 }
 
-.mission-description :deep(li) {
+.mission-description li {
   margin-bottom: 0.5rem;
   color: #ffffff;
   text-align: left;
 }
 
-.mission-description :deep(div) {
+.mission-description div {
   text-align: left;
 }
 
-.mission-description :deep(h1),
-.mission-description :deep(h2),
-.mission-description :deep(h3),
-.mission-description :deep(h4),
-.mission-description :deep(h5),
-.mission-description :deep(h6) {
+.mission-description h1,
+.mission-description h2,
+.mission-description h3,
+.mission-description h4,
+.mission-description h5,
+.mission-description h6 {
   text-align: left;
 }
 
-.mission-description :deep(a.-light) {
+.mission-description a.-light {
   text-decoration: none;
   text-transform: none;
 }

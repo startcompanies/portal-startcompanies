@@ -5,7 +5,7 @@
             <div class="col-md-12">
               <p class="text-muted">Proporcione tres opciones posibles para el nombre de su LLC, incluyendo 'LLC' al final.</p>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="llcName" class="form-label">Nombre de la LLC - Opción 1 <span class="text-danger">*</span></label>
               <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC"
                 [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
@@ -14,17 +14,17 @@
                 Este campo es obligatorio.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2 <span class="text-danger">*</span></label>
               <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3 <span class="text-danger">*</span></label>
               <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="incorporationState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
               <!-- Si el estado ya viene del paso anterior, mostrarlo como readonly -->
               <div *ngIf="serviceDataForm.get('incorporationState')?.value" class="input-group">
@@ -64,7 +64,7 @@
                 Este campo es obligatorio.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="llcType" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
               <!-- Emprendedor / Premium: siempre Single Member, solo lectura -->
               <div *ngIf="forceSingleMember" class="form-control bg-light d-flex align-items-center" style="min-height: 38px;">
@@ -82,7 +82,7 @@
                 Debe seleccionar una estructura societaria.
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="col-md-6">
               <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
               <input type="url" id="linkedin" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/...">
             </div>

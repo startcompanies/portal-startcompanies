@@ -24,29 +24,32 @@ import { firstValueFrom } from 'rxjs';
   template: `
     <div class="new-request-container">
       <!-- Header -->
-      <div class="request-header" *ngIf="!isLoading && !errorMessage && (partnerFlowConfig || clientFlowConfig)">
-        <h2>Nueva Solicitud</h2>
-        <p class="text-muted">Crea una nueva solicitud para un cliente</p>
+      <div class="new-request-header" *ngIf="!isLoading && !errorMessage && (partnerFlowConfig || clientFlowConfig)">
+        <h2 class="new-request-title">Nueva Solicitud</h2>
+        <p class="new-request-subtitle">Crea una nueva solicitud para un cliente</p>
       </div>
 
-      <!-- Partner Flow -->
-      <app-panel-partner-request-flow
-        *ngIf="isPartner && partnerFlowConfig"
-        [serviceType]="partnerFlowConfig.serviceType"
-        [draftRequestUuid]="partnerFlowConfig.draftRequestUuid"
-        [initialClientId]="partnerFlowConfig.initialClientId"
-        (flowCompleted)="onFlowCompleted()"
-        (flowCancelled)="onFlowCancelled()">
-      </app-panel-partner-request-flow>
+      <!-- Área del flujo (panel) - aislada para que los estilos no choquen con el resto del sitio -->
+      <div class="panel-request-flow-area">
+        <!-- Partner Flow -->
+        <app-panel-partner-request-flow
+          *ngIf="isPartner && partnerFlowConfig"
+          [serviceType]="partnerFlowConfig.serviceType"
+          [draftRequestUuid]="partnerFlowConfig.draftRequestUuid"
+          [initialClientId]="partnerFlowConfig.initialClientId"
+          (flowCompleted)="onFlowCompleted()"
+          (flowCancelled)="onFlowCancelled()">
+        </app-panel-partner-request-flow>
 
-      <!-- Client Flow -->
-      <app-panel-client-request-flow
-        *ngIf="!isPartner && clientFlowConfig"
-        [serviceType]="clientFlowConfig.serviceType"
-        [draftRequestUuid]="clientFlowConfig.draftRequestUuid"
-        (flowCompleted)="onFlowCompleted()"
-        (flowCancelled)="onFlowCancelled()">
-      </app-panel-client-request-flow>
+        <!-- Client Flow -->
+        <app-panel-client-request-flow
+          *ngIf="!isPartner && clientFlowConfig"
+          [serviceType]="clientFlowConfig.serviceType"
+          [draftRequestUuid]="clientFlowConfig.draftRequestUuid"
+          (flowCompleted)="onFlowCompleted()"
+          (flowCancelled)="onFlowCancelled()">
+        </app-panel-client-request-flow>
+      </div>
 
       <!-- Loading State -->
       <div *ngIf="isLoading" class="text-center py-5">
@@ -66,22 +69,23 @@ import { firstValueFrom } from 'rxjs';
     .new-request-container {
       min-height: 60vh;
     }
-    
-    .request-header {
+    .new-request-header {
       margin-bottom: 2rem;
     }
-    
-    .request-header h2 {
+    .new-request-title {
       color: var(--color-texto-oscuro, #212529);
       font-size: 2rem;
       font-weight: 600;
       margin-bottom: 0.5rem;
     }
-    
-    .request-header .text-muted {
+    .new-request-subtitle {
       color: #6c757d;
       font-size: 1rem;
       margin: 0;
+    }
+    /* Contenedor del flujo en panel: estilos solo para esta área */
+    .panel-request-flow-area {
+      isolation: isolate;
     }
   `]
 })

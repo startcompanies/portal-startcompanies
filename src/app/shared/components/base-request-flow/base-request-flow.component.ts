@@ -3,12 +3,15 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
 import { RequestFlowConfigService } from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-indicator.component';
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
+import { WizardApiService } from '../../../features/wizard/services/wizard-api.service';
 import { DraftRequestService } from '../../services/draft-request.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Componente base abstracto para manejar flujos de solicitud unificados
@@ -17,16 +20,17 @@ import { DraftRequestService } from '../../services/draft-request.service';
 @Component({
   selector: 'app-base-request-flow',
   standalone: true,
-  imports: [CommonModule, FlowStepsIndicatorComponent, RouterLink],
+  imports: [CommonModule, TranslocoPipe, FlowStepsIndicatorComponent, RouterLink],
   template: `
     <div class="base-request-flow-container">
-      <!-- Indicador de pasos -->
-      <app-flow-steps-indicator 
-        [steps]="flowSteps" 
+      <!-- Indicador de pasos (oculto cuando se usa layout con sidebar en wizard) -->
+      <app-flow-steps-indicator
+        *ngIf="!hideStepsIndicator"
+        [steps]="flowSteps"
         [currentStep]="currentStepIndex"
         [context]="context">
       </app-flow-steps-indicator>
-      
+
       <!-- Contenedor dinámico de pasos -->
       <div class="flow-content">
         <div class="step-wrapper">
@@ -41,7 +45,7 @@ import { DraftRequestService } from '../../services/draft-request.service';
           *ngIf="!canGoBack() && isServiceTypeSelectionStep() && (this.context === 'panel-client' || this.context === 'panel-partner')"
           routerLink="/panel/my-requests"
           class="btn btn-outline-secondary">
-          Cancelar
+          {{ 'WIZARD.cancel' | transloco }}
         </a>
         <button 
           *ngIf="canGoBack() && !isServiceFormStep()" 
@@ -50,17 +54,17 @@ import { DraftRequestService } from '../../services/draft-request.service';
           (click)="previousStep()"
           [disabled]="isLoading">
           <i class="bi bi-arrow-left me-2"></i>
-          Anterior
+          {{ 'WIZARD.previous' | transloco }}
         </button>
         <div *ngIf="(!canGoBack() || isServiceFormStep()) && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
-        <!-- En última sección de Información de la LLC el Siguiente va dentro del paso (mismo diseño que Siguiente Sección) -->
+        <!-- En Información del Servicio la navegación (Siguiente Sección / Siguiente) va siempre dentro del paso; no mostrar botón del base -->
         <button 
-          *ngIf="canGoNext() && (!isServiceFormStep() || !isInLastSectionOfServiceForm())" 
+          *ngIf="canGoNext() && !isServiceFormStep()" 
           type="button"
           class="btn btn-primary"
           (click)="nextStep()"
           [disabled]="isLoading || !canProceedToNext()">
-          Siguiente
+          {{ 'WIZARD.next' | transloco }}
           <i class="bi bi-arrow-right ms-2"></i>
         </button>
         <button 
@@ -70,7 +74,7 @@ import { DraftRequestService } from '../../services/draft-request.service';
           (click)="finishFlow()"
           [disabled]="isLoading || !canFinish()">
           <i class="bi bi-check-circle me-2"></i>
-          Finalizar
+          {{ 'WIZARD.finish' | transloco }}
         </button>
       </div>
       
@@ -90,10 +94,14 @@ import { DraftRequestService } from '../../services/draft-request.service';
 export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   @Input() context!: RequestFlowContext;
   @Input() serviceType: ServiceType | null = null; // Ahora opcional
-  
+  /** Cuando true, no se muestra el indicador de pasos (ej. layout wizard con sidebar) */
+  @Input() hideStepsIndicator = false;
+
   @Output() flowCompleted = new EventEmitter<any>();
   @Output() flowCancelled = new EventEmitter<void>();
-  @Output() serviceTypeChanged = new EventEmitter<ServiceType>(); // Nuevo output
+  @Output() serviceTypeChanged = new EventEmitter<ServiceType>();
+  /** Emite el índice del paso actual cuando cambia (para sincronizar sidebar en layout wizard) */
+  @Output() stepIndexChange = new EventEmitter<number>();
   
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
@@ -108,6 +116,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
 
   private envInjector = inject(EnvironmentInjector);
   private wizardStateService = inject(WizardStateService, { optional: true });
+  private wizardApiService = inject(WizardApiService, { optional: true });
   private draftRequestService = inject(DraftRequestService, { optional: true });
   
   // Propiedades para manejo de borradores
@@ -404,7 +413,17 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    */
   async nextStep(): Promise<void> {
     const currentStep = this.flowSteps[this.currentStepIndex];
-    
+
+    // Paso REGISTER (wizard): llamar registerUser() antes de validar/avanzar (igual que flow-cuenta-bancaria)
+    if (currentStep?.step === RequestFlowStep.REGISTER && this.context === RequestFlowContext.WIZARD && this.stepComponentRef?.instance) {
+      const instance = this.stepComponentRef.instance as any;
+      if (typeof instance.registerUser === 'function') {
+        const registered = await instance.registerUser();
+        // Si retorna false = usuario creado pero debe verificar email → igual avanzamos al paso EMAIL_VERIFICATION
+        // saveStepState ya guardará los datos que el componente haya puesto en el estado
+      }
+    }
+
     // Validar paso actual
     if (!await this.validateStep(currentStep)) {
       return;
@@ -497,12 +516,13 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Si hay borrador activo y estamos en panel, hacer autosave inmediato
+    // Si hay borrador activo y estamos en panel, hacer autosave y esperar antes de avanzar (p. ej. última sección del formulario de servicio)
     if (this.draftRequestId && this.draftRequestService && this.context !== RequestFlowContext.WIZARD) {
-      // Trigger autosave después de un pequeño delay para evitar múltiples llamadas
-      setTimeout(() => {
-        this.performAutosave();
-      }, 500);
+      if (step.step === RequestFlowStep.SERVICE_FORM) {
+        await this.performAutosave();
+      } else {
+        setTimeout(() => this.performAutosave(), 500);
+      }
     }
     
     // Los datos ya están guardados por el componente del paso en flowStateService
@@ -517,6 +537,52 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     this.successMessage = null;
     this.currentStepValid = true;
+  }
+
+  /**
+   * Maneja el reenvío del código de verificación (paso EMAIL_VERIFICATION en wizard).
+   * Llama al API y notifica al componente hijo para que quite el loading (notifyResendResult).
+   */
+  private async handleResendCode(stepInstance: any): Promise<void> {
+    if (!this.wizardStateService || !this.wizardApiService || typeof stepInstance?.notifyResendResult !== 'function') {
+      stepInstance?.notifyResendResult?.(false, 'Configuración incompleta. Intenta de nuevo.');
+      return;
+    }
+    const stepData = this.wizardStateService.getStepData(1) || {};
+    const email = stepData.email;
+    const password = stepData.password;
+    const fullName = stepData.fullName || `${stepData.firstName || ''} ${stepData.lastName || ''}`.trim();
+    const phone = stepData.phone;
+
+    if (!email || !password) {
+      stepInstance.notifyResendResult(false, 'No se encontró el email o contraseña. Vuelve al paso de registro.');
+      return;
+    }
+
+    try {
+      const nameParts = fullName.trim().split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      await firstValueFrom(this.wizardApiService.register({
+        firstName,
+        lastName,
+        email,
+        phone: phone || undefined,
+        password
+      }));
+
+      stepInstance.notifyResendResult(true, 'Código de verificación reenviado. Revisa tu bandeja de entrada.');
+    } catch (error: any) {
+      if (error?.error?.message?.includes('confirmado')) {
+        stepInstance.notifyResendResult(true, 'Tu email ya está confirmado. Puedes continuar.');
+        this.currentStepValid = true;
+        this.nextStep();
+      } else {
+        const msg = error?.error?.message || 'Error al reenviar el código. Intenta de nuevo.';
+        stepInstance.notifyResendResult(false, msg);
+      }
+    }
   }
   
   /**
@@ -617,9 +683,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Verifica si se puede proceder al siguiente paso
+   * Verifica si se puede proceder al siguiente paso.
+   * En REGISTER y EMAIL_VERIFICATION (wizard) el botón no se deshabilita: misma lógica que flow-cuenta-bancaria
+   * (la validación/registro se hace al hacer click en nextStep()).
    */
   protected canProceedToNext(): boolean {
+    const current = this.getCurrentStep();
+    if (current && (current.step === RequestFlowStep.REGISTER || current.step === RequestFlowStep.EMAIL_VERIFICATION)) {
+      return true;
+    }
     return this.currentStepValid;
   }
   
@@ -642,8 +714,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if (!this.isServiceFormStep()) return false;
     const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     const section = serviceData?.currentSection;
-    // Apertura LLC y Renovación LLC tienen 3 secciones; la última es la 3
-    return section === 3;
+    // Leer totalSections dinámicamente desde el componente del paso activo
+    const totalSections = (this.stepComponentRef?.instance as any)?.totalSections ?? 3;
+    return section === totalSections;
   }
   
   /**
@@ -802,6 +875,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       this.nextStep();
     });
 
+    // Wizard: reenviar código de verificación (evitar que isResending quede en true)
+    subscribeIfEmitter('resendRequested', () => {
+      this.handleResendCode(instance);
+    });
+
     // Pago
     subscribeIfEmitter('paymentAndRequestCreated', (evt: any) => {
       // Guardar en ambos servicios para mantener compatibilidad
@@ -891,15 +969,30 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       this.currentStepValid = true;
     });
     
-    // Service form: cambios de sección
+    // Service form: cambios de sección — persistir datos del formulario y luego actualizar sección
     subscribeIfEmitter('sectionChanged', (section: number) => {
-      // Guardar la sección actual
       const currentData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM) || {};
+      // Obtener datos actuales del componente del paso si expone getFormData (wizard y panel)
+      if (this.stepComponentRef?.instance && typeof (this.stepComponentRef.instance as any).getFormData === 'function') {
+        try {
+          const formData = (this.stepComponentRef.instance as any).getFormData();
+          Object.assign(currentData, formData);
+        } catch (e) {
+          console.warn('[BaseRequestFlowComponent] sectionChanged: no se pudo obtener getFormData', e);
+        }
+      }
       this.flowStateService.setStepData(RequestFlowStep.SERVICE_FORM, {
         ...currentData,
         currentSection: section
       });
-      // Actualizar el borrador al cambiar de sección (panel) para asegurar que se envían bien los datos
+      // Sincronizar con WizardStateService en wizard
+      if (this.context === RequestFlowContext.WIZARD && this.wizardStateService && currentData && Object.keys(currentData).length > 0) {
+        const stepConfig = this.flowSteps[this.currentStepIndex];
+        if (stepConfig?.order != null) {
+          this.wizardStateService.setStepData(stepConfig.order, currentData);
+        }
+      }
+      // Actualizar el borrador al cambiar de sección (panel)
       if (this.draftRequestId && this.draftRequestService && this.context !== RequestFlowContext.WIZARD) {
         setTimeout(() => this.performAutosave(), 300);
       }
@@ -922,5 +1015,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         draftRequestId: this.draftRequestId ?? state?.payment?.requestId ?? undefined,
       });
     });
+
+    this.stepIndexChange.emit(this.currentStepIndex);
   }
 }

@@ -1,34 +1,79 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
-import { ServiceType } from '../../../../shared/models/request-flow-context';
+import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
+import { RequestFlowConfigService } from '../../../../shared/services/request-flow-config.service';
+import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 
 @Component({
   selector: 'app-wizard-request-flow-page',
   standalone: true,
-  imports: [CommonModule, WizardRequestFlowComponent],
-  template: `
-    <app-wizard-request-flow
-      *ngIf="serviceType"
-      [serviceType]="serviceType"
-    ></app-wizard-request-flow>
-  `,
+  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent],
+  templateUrl: './wizard-request-flow-page.component.html',
+  styleUrls: ['./wizard-request-flow-page.component.css'],
 })
 export class WizardRequestFlowPageComponent implements OnInit {
   serviceType: ServiceType | null = null;
+  flowSteps: FlowStepConfig[] = [];
+  currentStepIndex = 0;
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  logoImages = {
+    mobile: '/assets/logo-mobile.webp',
+    tablet: '/assets/logo-tablet.webp',
+    desktop: '/assets/logo.webp',
+    fallback: '/assets/logo.webp',
+    alt: 'Start Companies Logo',
+    priority: false,
+  };
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private flowConfig: RequestFlowConfigService,
+  ) {}
+
+  /** Clave de traducción para el título del servicio (sidebar). */
+  get serviceTitleKey(): string {
+    const keys: Record<string, string> = {
+      'apertura-llc': 'WIZARD.flow.llc_title',
+      'renovacion-llc': 'WIZARD.flow.renovation_title',
+      'cuenta-bancaria': 'WIZARD.flow.bank_account_title',
+    };
+    return this.serviceType ? keys[this.serviceType] || 'WIZARD.flow.llc_title' : 'WIZARD.flow.llc_title';
+  }
+
+  /** Clave de traducción para el tagline del servicio (sidebar). */
+  get serviceTaglineKey(): string {
+    const keys: Record<string, string> = {
+      'apertura-llc': 'WIZARD.flow.llc_tagline',
+      'renovacion-llc': 'WIZARD.flow.renovation_tagline',
+      'cuenta-bancaria': 'WIZARD.flow.bank_account_tagline',
+    };
+    return this.serviceType ? keys[this.serviceType] || 'WIZARD.flow.llc_tagline' : 'WIZARD.flow.llc_tagline';
+  }
+
+  getStepLabel(index: number): string {
+    return this.flowSteps[index]?.label || 'WIZARD.steps.step_register';
+  }
 
   ngOnInit(): void {
-    const raw = this.route.snapshot.paramMap.get('serviceType');
+    const fromData = this.route.snapshot.data['serviceType'] as string | undefined;
+    const fromParam = this.route.snapshot.paramMap.get('serviceType');
+    const raw = fromData ?? fromParam;
+
     if (raw === 'apertura-llc' || raw === 'renovacion-llc' || raw === 'cuenta-bancaria') {
       this.serviceType = raw;
+      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, raw, false);
+      return;
+    }
+    if (raw === 'renovar-llc') {
+      this.serviceType = 'renovacion-llc';
+      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, 'renovacion-llc', false);
       return;
     }
 
-    // fallback
     this.router.navigate(['/']);
   }
 }
-
