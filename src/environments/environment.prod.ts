@@ -19,4 +19,5 @@ export const environment = {
   stripe: {
     publishableKey: '',
   },
+  liliEnv: 'Prod' as const,
 };

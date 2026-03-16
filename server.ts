@@ -28,6 +28,65 @@ function resolveBrowserPaths(): { browserDistFolder: string; indexHtml: string }
   return { browserDistFolder: BROWSER_SUBFOLDER, indexHtml: join(BROWSER_SUBFOLDER, 'index.html') };
 }
 
+type LiliLinkPayload = {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  businessName?: string;
+  exp: number;
+};
+
+type JsonRecord = Record<string, unknown>;
+
+type NormalizedLiliWebhook = {
+  event: string;
+  status?: string;
+  personId?: string;
+  customerId?: string;
+  businessExternalId?: string;
+  email?: string;
+  token?: string;
+  raw: unknown;
+};
+
+function encodeLiliLinkPayload(payload: LiliLinkPayload): string {
+  return Buffer.from(JSON.stringify(payload)).toString('base64url');
+}
+
+function isRecord(value: unknown): value is JsonRecord {
+  return typeof value === 'object' && value !== null;
+}
+
+function getStringField(record: JsonRecord, key: string): string | undefined {
+  const value = record[key];
+  return typeof value === 'string' && value.trim() ? value : undefined;
+}
+
+function normalizeLiliWebhook(body: unknown): NormalizedLiliWebhook {
+  const root = isRecord(body) ? body : {};
+  const data = isRecord(root['data']) ? root['data'] : {};
+  const business = isRecord(root['business'])
+    ? root['business']
+    : isRecord(data['business'])
+      ? data['business']
+      : {};
+
+  return {
+    event: getStringField(root, 'event')
+      || getStringField(root, 'action')
+      || 'unknown',
+    status: getStringField(data, 'status')
+      || getStringField(root, 'onboardingStatus')
+      || getStringField(business, 'status'),
+    personId: getStringField(root, 'personId') || getStringField(data, 'personId'),
+    customerId: getStringField(root, 'customerId') || getStringField(data, 'customerId'),
+    businessExternalId: getStringField(business, 'externalId'),
+    email: getStringField(root, 'email') || getStringField(data, 'email'),
+    token: getStringField(root, 'token') || getStringField(data, 'token'),
+    raw: body,
+  };
+}
+
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
   const server = express();
@@ -77,6 +136,146 @@ export function app(): express.Express {
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
+
+  // ─── JSON body parsing for API routes ───────────────────────────────────────
+  server.use('/api', express.json());
+
+  // ─── Lili: generate protected onboarding link ────────────────────────────────
+  server.post('/api/auth/generate-lili-link', (req, res) => {
+    const { email, firstName, lastName, businessName } = req.body || {};
+
+    if (!email) {
+      res.status(400).json({ error: 'email is required' });
+      return;
+    }
+
+    const token = encodeLiliLinkPayload({
+      email,
+      firstName,
+      lastName,
+      businessName,
+      exp: Math.floor(Date.now() / 1000) + 48 * 60 * 60,
+    });
+
+    const baseUrl = getBaseUrl(req);
+    res.json({ link: `${baseUrl}/banking?t=${token}` });
+  });
+
+  // ─── Lili: create application and return embed token ─────────────────────────
+  server.post('/api/lili/create-application', async (req, res) => {
+    const { email, firstName, lastName, businessName } = req.body || {};
+
+    if (!email) {
+      res.status(400).json({ error: 'email is required' });
+      return;
+    }
+
+    const accessKey = process.env['LILI_ACCESS_KEY'];
+    const secretKey = process.env['LILI_SECRET_KEY'];
+
+    if (!accessKey || !secretKey) {
+      res.status(500).json({ error: 'Lili credentials not configured' });
+      return;
+    }
+
+    const liliEnv = process.env['LILI_ENV'] || 'Sandbox';
+    const liliBaseUrl = liliEnv === 'Prod'
+      ? 'https://prod.lili.co'
+      : 'https://sandbox.lili.co';
+
+    try {
+      const response = await fetch(`${liliBaseUrl}/lili/api/v1/lead`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `lili ${accessKey}:${secretKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, firstName, lastName, businessName }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`[Lili] API error ${response.status}:`, text);
+        res.status(response.status).json({ error: `Lili API error: ${response.status}` });
+        return;
+      }
+
+      const data = await response.json() as { token: string; location: string };
+      res.status(201).json({ token: data.token, location: data.location });
+    } catch (err: any) {
+      console.error('[Lili] Fetch error:', err?.message);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
+  // ─── Lili: webhook inspector storage (in-memory, last 20 events) ─────────────
+  const liliWebhookLog: { receivedAt: string; body: unknown; normalized: NormalizedLiliWebhook; _simulated?: boolean }[] = [];
+
+  // ─── Lili: webhook ────────────────────────────────────────────────────────────
+  server.post('/api/lili/webhook', async (req, res) => {
+    const body = req.body || {};
+    const normalized = normalizeLiliWebhook(body);
+    const entry = { receivedAt: new Date().toISOString(), body, normalized };
+
+    // Keep last 20 events
+    liliWebhookLog.unshift(entry);
+    if (liliWebhookLog.length > 20) liliWebhookLog.pop();
+
+    console.log('\n━━━ [Lili Webhook] ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.log('[Lili Webhook] Normalized:', JSON.stringify(normalized, null, 2));
+    console.log(JSON.stringify(body, null, 2));
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+    switch (normalized.event) {
+      case 'onboardingComplete':
+      case 'applicationCompleted':
+        // TODO: Update CRM — status = 'cuenta_abierta'
+        break;
+      case 'applicationRejected':
+      case 'onboardingRejected':
+        // TODO: Update CRM — status = 'rechazado'
+        break;
+      default:
+        console.log(`[Lili Webhook] Unhandled event: ${normalized.event}`);
+    }
+
+    res.sendStatus(200);
+
+  });
+
+  // ─── Lili: inspect last webhook events (dev/staging only) ────────────────────
+  server.get('/api/lili/webhook/inspect', (req, res) => {
+    res.json({
+      count: liliWebhookLog.length,
+      events: liliWebhookLog,
+    });
+  });
+
+  // ─── Lili: simulate a webhook call for testing ────────────────────────────────
+  server.post('/api/lili/webhook/test', (req, res) => {
+    const mockEvent = req.body?.event || req.body?.action || 'onboardingComplete';
+    const mockBody = {
+      event: mockEvent,
+      data: req.body?.data || {
+        email: 'test@example.com',
+        customerId: 'mock-customer-id-123',
+        personId: 'mock-person-id-123',
+        status: 'approved',
+      },
+    };
+
+    const normalized = normalizeLiliWebhook(mockBody);
+    const entry = { receivedAt: new Date().toISOString(), body: mockBody, normalized, _simulated: true };
+    liliWebhookLog.unshift(entry);
+    if (liliWebhookLog.length > 20) liliWebhookLog.pop();
+
+    console.log('\n━━━ [Lili Webhook - SIMULATED] ━━━━━━━━━━━━━━━━━━━');
+    console.log('[Lili Webhook - SIMULATED] Normalized:', JSON.stringify(normalized, null, 2));
+    console.log(JSON.stringify(mockBody, null, 2));
+    console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+
+    res.json({ ok: true, simulated: mockBody, normalized });
+  });
 
   // Endpoint para sitemap.xml - Redirige al sitemap-index
   server.get('/sitemap.xml', async (req, res) => {
