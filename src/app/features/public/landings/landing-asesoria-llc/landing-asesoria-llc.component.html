@@ -16,10 +16,10 @@
       <!--Visible en pantalla de escritorio: solo texto + CTA (sin video)-->
       <div class="col-lg-6 d-none d-md-block">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-          {{'LANDINGS.landing_2.title' | transloco}}
+          {{'LANDINGS.landing_3.title' | transloco}}
         </h1>
         <p class="lead hero-description">
-          {{'LANDINGS.landing_2.desc1' | transloco}}
+          {{'LANDINGS.landing_3.desc1' | transloco}}
         </p>
         <div class="hero-trustpilot-badge" role="img" [attr.aria-label]="'Trustpilot 4.9 ' + ('LANDINGS.trustpilot_badge_label' | transloco)">
           <span class="hero-trustpilot-name">Trustpilot</span>
@@ -37,20 +37,21 @@
                 data-cal-namespace="agenda-organica"
                 data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
               >
-                {{'LANDINGS.landing_2.cta' | transloco}}
+                {{'LANDINGS.landing_3.cta' | transloco}}
                 <i class="bi bi-arrow-right ms-2"></i>
               </button>
             </div>
           </div>
         </div>
+        <p class="hero-cta-subtitle text-white small mt-2 mb-0">{{ 'LANDINGS.landing_3.hero_cta_subtitle' | transloco }}</p>
       </div>
       <!--Visible en pantalla de movil-->
       <div class="col-lg-12 d-md-none">
         <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 hero-title">
-          {{'LANDINGS.landing_2.title' | transloco}}
+          {{'LANDINGS.landing_3.title' | transloco}}
         </h1>
         <p class="lead hero-description">
-          {{'LANDINGS.landing_2.desc1' | transloco}}
+          {{'LANDINGS.landing_3.desc1' | transloco}}
         </p>
         <div class="hero-trustpilot-badge hero-trustpilot-badge--center" role="img" [attr.aria-label]="'Trustpilot 4.9 ' + ('LANDINGS.trustpilot_badge_label' | transloco)">
           <span class="hero-trustpilot-name">Trustpilot</span>
@@ -66,28 +67,29 @@
             data-cal-namespace="agenda-organica"
             data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
           >
-            {{'LANDINGS.landing_2.cta' | transloco}}
+            {{'LANDINGS.landing_3.cta' | transloco}}
             <i class="bi bi-arrow-right ms-2"></i>
           </button>
         </div>
+        <p class="hero-cta-subtitle text-white small mt-2 mb-0 text-center">{{ 'LANDINGS.landing_3.hero_cta_subtitle' | transloco }}</p>
       </div>
       <div class="col-12">
         <ul class="hero-features-list list-unstyled text-white mb-0">
           <li>
             <i class="bi bi-percent me-2" aria-hidden="true"></i>
-            <span>Optimiza impuestos</span>
+            <span>{{ 'LANDINGS.hero_features.optimize_taxes' | transloco }}</span>
           </li>
           <li>
             <i class="bi bi-wallet2 me-2" aria-hidden="true"></i>
-            <span>Reduce comisiones</span>
+            <span>{{ 'LANDINGS.hero_features.reduce_fees' | transloco }}</span>
           </li>
           <li>
             <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
-            <span>Protege tu patrimonio</span>
+            <span>{{ 'LANDINGS.hero_features.protect_assets' | transloco }}</span>
           </li>
           <li>
             <i class="bi bi-globe me-2" aria-hidden="true"></i>
-            <span>Opera globalmente</span>
+            <span>{{ 'LANDINGS.hero_features.operate_globally' | transloco }}</span>
           </li>
         </ul>
       </div>
@@ -123,8 +125,8 @@
     <div class="row mb-5">
       <div class="col-12 text-center">
         <h2 class="steps-title">
-          <span class="title-dark">Tu LLC en </span>
-          <span class="title-blue">4 pasos</span>
+          <span class="title-dark">{{ 'LANDINGS.lp_steps_title.part1' | transloco }}</span>
+          <span class="title-blue">{{ 'LANDINGS.lp_steps_title.part2' | transloco }}</span>
         </h2>
       </div>
     </div>
@@ -188,43 +190,43 @@
   <div class="container">
     <div class="who-for-card-floating card text-center p-5 shadow-lg">
       <h2 class="who-for-title mb-3">
-        <span class="title-dark">¿Es </span>
-        <span class="title-blue">para ti?</span>
+        <span class="title-dark">{{ 'LANDINGS.who_for.title_part1' | transloco }}</span>
+        <span class="title-blue">{{ 'LANDINGS.who_for.title_part2' | transloco }}</span>
       </h2>
       <p class="who-for-subtitle mb-4">
-        Si eres freelancer, tienes e‑commerce, una agencia o eres creador de contenido y quieres cobrar en dólares con una LLC en EE.UU.
+        {{ 'LANDINGS.who_for.subtitle' | transloco }}
       </p>
       
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         <div class="col">
           <div class="who-for-item p-3">
             <i class="bi bi-laptop mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Freelancers y consultores</h5>
-            <p class="text-muted mb-0 small">Cobran en dólares</p>
+            <h5 class="fw-bold mb-2">{{ 'LANDINGS.who_for.freelancers_title' | transloco }}</h5>
+            <p class="text-muted mb-0 small">{{ 'LANDINGS.who_for.freelancers_desc' | transloco }}</p>
           </div>
         </div>
 
         <div class="col">
           <div class="who-for-item p-3">
             <i class="bi bi-bag-check mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">E‑commerce</h5>
-            <p class="text-muted mb-0 small">Clientes internacionales</p>
+            <h5 class="fw-bold mb-2">{{ 'LANDINGS.who_for.ecommerce_title' | transloco }}</h5>
+            <p class="text-muted mb-0 small">{{ 'LANDINGS.who_for.ecommerce_desc' | transloco }}</p>
           </div>
         </div>
 
         <div class="col">
           <div class="who-for-item p-3">
             <i class="bi bi-people mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Agencias digitales</h5>
-            <p class="text-muted mb-0 small">Clientes en EE.UU. y el mundo</p>
+            <h5 class="fw-bold mb-2">{{ 'LANDINGS.who_for.agencies_title' | transloco }}</h5>
+            <p class="text-muted mb-0 small">{{ 'LANDINGS.who_for.agencies_desc' | transloco }}</p>
           </div>
         </div>
 
         <div class="col">
           <div class="who-for-item p-3">
             <i class="bi bi-play-circle mb-3" style="font-size: 2.5rem; color: var(--color-secundario-tecnico);"></i>
-            <h5 class="fw-bold mb-2">Creadores de contenido</h5>
-            <p class="text-muted mb-0 small">Plataformas globales</p>
+            <h5 class="fw-bold mb-2">{{ 'LANDINGS.who_for.creators_title' | transloco }}</h5>
+            <p class="text-muted mb-0 small">{{ 'LANDINGS.who_for.creators_desc' | transloco }}</p>
           </div>
         </div>
       </div>
@@ -243,12 +245,12 @@
     <div class="row mb-5">
       <div class="col-12 text-center">
         <h2 class="lp-testimonials-title">
-          <span class="title-dark">Comentarios de </span>
-          <span class="title-blue">nuestros clientes</span>
+          <span class="title-dark">{{ 'LANDINGS.lp_testimonials.title_part1' | transloco }}</span>
+          <span class="title-blue">{{ 'LANDINGS.lp_testimonials.title_part2' | transloco }}</span>
         </h2>
         <p class="lp-testimonials-subtitle">
-          Más de 200 clientes nos califican como 
-          <span class="lp-testimonials-highlight">Excelente</span>
+          {{ 'LANDINGS.lp_testimonials.subtitle_part1' | transloco }}
+          <span class="lp-testimonials-highlight">{{ 'LANDINGS.lp_testimonials.subtitle_highlight' | transloco }}</span>
         </p>
       </div>
     </div>
@@ -398,7 +400,7 @@
     'LANDINGS.relay_landing.video_section.description' | transloco
   }}"
   videoId="g5w4pudrrb"
-  videoTitle="¿Quieres Abrir una cuenta bancaria con Relay ? - En Start Companies te ayudamos a realizarlo."
+  [videoTitle]="'LANDINGS.relay_video_title' | transloco"
   (videoPlay)="onVideoPlay('Relay Banking Service')"
 >
 </app-video-section>
@@ -428,7 +430,7 @@
   data-cal-namespace="agenda-organica"
   data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true"}'
 >
-  {{ "LANDINGS.landing_2.cta" | transloco }}
+  {{ "LANDINGS.landing_3.cta" | transloco }}
 </button>
 
 <!--<app-sc-footer></app-sc-footer>-->

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
 import { RenovacionLlcFormComponent } from '../../../../../shared/components/service-forms/renovacion-llc-form/renovacion-llc-form.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
@@ -16,7 +17,7 @@ import { LoggerService } from '../../../../../shared/services/logger.service';
 @Component({
   selector: 'app-wizard-renovacion-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent, TranslocoPipe],
   templateUrl: './wizard-renovacion-llc-information-step.component.html',
   styleUrls: ['./wizard-renovacion-llc-information-step.component.css']
 })

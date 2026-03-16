@@ -2,13 +2,13 @@
   <form [formGroup]="form">
     <!-- Selección de Plan -->
     <div class="form-group mb-4">
-      <label for="plan">Plan <span class="text-danger">*</span></label>
+      <label for="plan">{{ 'WIZARD.state_plan_step.plan' | transloco }} <span class="text-danger">*</span></label>
       <div class="plan-cards-list">
         <div class="plan-card" *ngFor="let plan of planes" [class.selected]="selectedPlan === plan.value" (click)="selectPlan(plan.value)">
           <div class="plan-card__main">
             <div class="plan-name-block">
               <span class="plan-name">{{ plan.label }}</span>
-              <span class="recommended-badge" *ngIf="plan.recommended">Recomendado</span>
+              <span class="recommended-badge" *ngIf="plan.recommended">{{ 'WIZARD.state_plan_step.recommended' | transloco }}</span>
             </div>
             <span class="plan-price">${{ plan.price }}</span>
             <span
@@ -26,7 +26,7 @@
     
     <!-- Selección de Estado -->
     <div class="form-group mb-3">
-      <label for="state">Estado <span class="text-danger">*</span></label>
+      <label for="state">{{ 'WIZARD.state_plan_step.state' | transloco }} <span class="text-danger">*</span></label>
       
       <!-- Mostrar estado pre-seleccionado si el plan solo tiene un estado -->
       <div *ngIf="selectedPlan && getSelectedPlanStates().length === 1" class="mb-3">
@@ -74,7 +74,7 @@
       
       <!-- Selector de otros estados (solo cuando el plan permite cualquier estado, p. ej. Elite) -->
       <label for="state-select" class="small text-muted" *ngIf="selectedPlan && getSelectedPlanStates().length === 0">
-        Otros estados
+        {{ 'WIZARD.state_plan_step.other_states' | transloco }}
       </label>
       <select 
         id="state-select" 
@@ -83,7 +83,7 @@
         (change)="changeState()"
         *ngIf="selectedPlan && getSelectedPlanStates().length === 0"
       >
-        <option value="">Selecciona un estado...</option>
+        <option value="">{{ 'WIZARD.state_plan_step.select_state_placeholder' | transloco }}</option>
         <option *ngFor="let state of getAvailableStates()" [value]="state.value">
           {{ state.label }} ({{ state.abbreviation }})
         </option>
@@ -91,11 +91,11 @@
       
       <small class="text-muted d-block mt-2" *ngIf="!selectedPlan">
         <i class="bi bi-info-circle me-1"></i>
-        Primero selecciona un plan para ver los estados disponibles
+        {{ 'WIZARD.state_plan_step.select_plan_first' | transloco }}
       </small>
       <small class="text-muted d-block mt-2" *ngIf="selectedPlan">
         <i class="bi bi-info-circle me-1"></i>
-        Estados disponibles según el plan seleccionado
+        {{ 'WIZARD.state_plan_step.states_by_plan' | transloco }}
       </small>
     </div>
     

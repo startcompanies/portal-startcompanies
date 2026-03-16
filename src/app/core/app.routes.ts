@@ -236,15 +236,15 @@ export const routes: Routes = [
       // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
         path: 'evaluar-caso',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-2/landing-presentacion-2.component').then(m => m.LandingPresentacion2Component)
+        loadComponent: () => import('../features/public/landings/landing-evaluar-caso/landing-evaluar-caso.component').then(m => m.LandingEvaluarCasoComponent)
       },
       {
         path: 'asesoria-llc',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-3/landing-presentacion-3.component').then(m => m.LandingPresentacion3Component)
+        loadComponent: () => import('../features/public/landings/landing-asesoria-llc/landing-asesoria-llc.component').then(m => m.LandingAsesoriaLlcComponent)
       },
       {
         path: 'llc-7-dias',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-4/landing-presentacion-4.component').then(m => m.LandingPresentacion4Component)
+        loadComponent: () => import('../features/public/landings/landing-llc-7-dias/landing-llc-7-dias.component').then(m => m.LandingLlc7DiasComponent)
       },
       {
         path: 'apertura-banco-relay',
@@ -920,8 +920,8 @@ export const routes: Routes = [
         path: 'evaluate-case',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-2/landing-presentacion-2.component'
-          ).then((m) => m.LandingPresentacion2Component),
+            '../features/public/landings/landing-evaluar-caso/landing-evaluar-caso.component'
+          ).then((m) => m.LandingEvaluarCasoComponent),
         data: {
           seo: {
             title: 'Evaluate Your Case - LLC in the U.S. | Start Companies',
@@ -939,8 +939,8 @@ export const routes: Routes = [
         path: 'llc-consultation',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-3/landing-presentacion-3.component'
-          ).then((m) => m.LandingPresentacion3Component),
+            '../features/public/landings/landing-asesoria-llc/landing-asesoria-llc.component'
+          ).then((m) => m.LandingAsesoriaLlcComponent),
         data: {
           seo: {
             title: 'Free LLC Consultation - Start Companies',
@@ -958,8 +958,8 @@ export const routes: Routes = [
         path: 'llc-7-days',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-4/landing-presentacion-4.component'
-          ).then((m) => m.LandingPresentacion4Component),
+            '../features/public/landings/landing-llc-7-dias/landing-llc-7-dias.component'
+          ).then((m) => m.LandingLlc7DiasComponent),
         data: {
           seo: {
             title: 'Your LLC in 7 Days - 100% Online | Start Companies',

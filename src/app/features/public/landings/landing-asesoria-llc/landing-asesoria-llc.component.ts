@@ -23,7 +23,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
-  selector: 'app-landing-presentacion-2',
+  selector: 'app-landing-asesoria-llc',
   standalone: true,
   imports: [
     ResponsiveImageComponent,
@@ -37,10 +37,10 @@ import { BrowserService } from '../../../../shared/services/browser.service';
     ResponsiveImageComponent,
     TranslocoPipe
   ],
-  templateUrl: './landing-presentacion-2.component.html',
+  templateUrl: './landing-asesoria-llc.component.html',
   styleUrl: '../landing-presentacion/landing-presentacion.component.css',
 })
-export class LandingPresentacion2Component implements AfterViewInit, OnInit {
+export class LandingAsesoriaLlcComponent implements AfterViewInit, OnInit {
   @ViewChild('calendly', { static: false })
   calendlySection!: ElementRef<HTMLElement>;
 
@@ -75,7 +75,7 @@ export class LandingPresentacion2Component implements AfterViewInit, OnInit {
   ngOnInit(): void {
     this.facebookPixelService.initializePixel('llc');
     this.facebookPixelService.trackViewContent(
-      'Landing Presentación 2 - Evaluar caso',
+      'Landing Presentación 3 - Asesoría LLC',
       'LLC Presentation Services'
     );
     if (this.browser.isBrowser) {
@@ -137,13 +137,13 @@ export class LandingPresentacion2Component implements AfterViewInit, OnInit {
       (scrollTop / (documentHeight - windowHeight)) * 100
     );
     if (scrollPercentage >= 25 && this.scrollDepth < 25) {
-      this.facebookPixelService.trackDeepScroll('Landing Presentación 2', 25);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 25);
       this.scrollDepth = 25;
     } else if (scrollPercentage >= 50 && this.scrollDepth < 50) {
-      this.facebookPixelService.trackDeepScroll('Landing Presentación 2', 50);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 50);
       this.scrollDepth = 50;
     } else if (scrollPercentage >= 75 && this.scrollDepth < 75) {
-      this.facebookPixelService.trackDeepScroll('Landing Presentación 2', 75);
+      this.facebookPixelService.trackDeepScroll('Landing Presentación 3', 75);
       this.scrollDepth = 75;
     }
   }
@@ -185,7 +185,7 @@ export class LandingPresentacion2Component implements AfterViewInit, OnInit {
 
   onCalendlyClick(): void {
     this.facebookPixelService.trackLead(
-      'Calendly CTA - Landing Presentación 2',
+      'Calendly CTA - Landing Presentación 3',
       'LLC Presentation Services',
       0.0
     );
@@ -195,7 +195,7 @@ export class LandingPresentacion2Component implements AfterViewInit, OnInit {
     this.facebookPixelService.trackVideoPlay(
       videoTitle,
       'Testimonial',
-      'Landing Presentación 2'
+      'Landing Presentación 3'
     );
   }
 

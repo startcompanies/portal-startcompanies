@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
 import { RequestFlowConfigService } from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
@@ -19,7 +20,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-base-request-flow',
   standalone: true,
-  imports: [CommonModule, FlowStepsIndicatorComponent, RouterLink],
+  imports: [CommonModule, TranslocoPipe, FlowStepsIndicatorComponent, RouterLink],
   template: `
     <div class="base-request-flow-container">
       <!-- Indicador de pasos (oculto cuando se usa layout con sidebar en wizard) -->
@@ -44,7 +45,7 @@ import { firstValueFrom } from 'rxjs';
           *ngIf="!canGoBack() && isServiceTypeSelectionStep() && (this.context === 'panel-client' || this.context === 'panel-partner')"
           routerLink="/panel/my-requests"
           class="btn btn-outline-secondary">
-          Cancelar
+          {{ 'WIZARD.cancel' | transloco }}
         </a>
         <button 
           *ngIf="canGoBack() && !isServiceFormStep()" 
@@ -53,7 +54,7 @@ import { firstValueFrom } from 'rxjs';
           (click)="previousStep()"
           [disabled]="isLoading">
           <i class="bi bi-arrow-left me-2"></i>
-          Anterior
+          {{ 'WIZARD.previous' | transloco }}
         </button>
         <div *ngIf="(!canGoBack() || isServiceFormStep()) && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
         <!-- En Información del Servicio la navegación (Siguiente Sección / Siguiente) va siempre dentro del paso; no mostrar botón del base -->
@@ -63,7 +64,7 @@ import { firstValueFrom } from 'rxjs';
           class="btn btn-primary"
           (click)="nextStep()"
           [disabled]="isLoading || !canProceedToNext()">
-          Siguiente
+          {{ 'WIZARD.next' | transloco }}
           <i class="bi bi-arrow-right ms-2"></i>
         </button>
         <button 
@@ -73,7 +74,7 @@ import { firstValueFrom } from 'rxjs';
           (click)="finishFlow()"
           [disabled]="isLoading || !canFinish()">
           <i class="bi bi-check-circle me-2"></i>
-          Finalizar
+          {{ 'WIZARD.finish' | transloco }}
         </button>
       </div>
       

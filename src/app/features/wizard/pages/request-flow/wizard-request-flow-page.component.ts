@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
 import { RequestFlowConfigService } from '../../../../shared/services/request-flow-config.service';
@@ -9,7 +10,7 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 @Component({
   selector: 'app-wizard-request-flow-page',
   standalone: true,
-  imports: [CommonModule, WizardRequestFlowComponent, ResponsiveImageComponent],
+  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent],
   templateUrl: './wizard-request-flow-page.component.html',
   styleUrls: ['./wizard-request-flow-page.component.css'],
 })
@@ -33,26 +34,28 @@ export class WizardRequestFlowPageComponent implements OnInit {
     private flowConfig: RequestFlowConfigService,
   ) {}
 
-  get serviceTitle(): string {
-    const titles: Record<string, string> = {
-      'apertura-llc': 'Apertura de LLC',
-      'renovacion-llc': 'Renovación de LLC',
-      'cuenta-bancaria': 'Cuenta Bancaria',
+  /** Clave de traducción para el título del servicio (sidebar). */
+  get serviceTitleKey(): string {
+    const keys: Record<string, string> = {
+      'apertura-llc': 'WIZARD.flow.llc_title',
+      'renovacion-llc': 'WIZARD.flow.renovation_title',
+      'cuenta-bancaria': 'WIZARD.flow.bank_account_title',
     };
-    return this.serviceType ? titles[this.serviceType] || 'Formulario' : '';
+    return this.serviceType ? keys[this.serviceType] || 'WIZARD.flow.llc_title' : 'WIZARD.flow.llc_title';
   }
 
-  get serviceTagline(): string {
-    const taglines: Record<string, string> = {
-      'apertura-llc': 'Te guiamos paso a paso con seguridad y cumplimiento normativo.',
-      'renovacion-llc': 'Renueva tu LLC antes de que venza. Proceso simple y seguro.',
-      'cuenta-bancaria': 'Abre tu cuenta bancaria para tu LLC con soporte paso a paso.',
+  /** Clave de traducción para el tagline del servicio (sidebar). */
+  get serviceTaglineKey(): string {
+    const keys: Record<string, string> = {
+      'apertura-llc': 'WIZARD.flow.llc_tagline',
+      'renovacion-llc': 'WIZARD.flow.renovation_tagline',
+      'cuenta-bancaria': 'WIZARD.flow.bank_account_tagline',
     };
-    return this.serviceType ? taglines[this.serviceType] || 'Te guiamos paso a paso.' : '';
+    return this.serviceType ? keys[this.serviceType] || 'WIZARD.flow.llc_tagline' : 'WIZARD.flow.llc_tagline';
   }
 
   getStepLabel(index: number): string {
-    return this.flowSteps[index]?.label || 'Paso';
+    return this.flowSteps[index]?.label || 'WIZARD.steps.step_register';
   }
 
   ngOnInit(): void {

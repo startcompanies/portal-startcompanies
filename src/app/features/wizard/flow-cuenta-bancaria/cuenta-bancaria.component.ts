@@ -42,6 +42,7 @@ import { US_STATES } from '../../../shared/constants/us-states.constant';
   standalone: true,
   imports: [
     CommonModule,
+    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardPaymentStepComponent,
