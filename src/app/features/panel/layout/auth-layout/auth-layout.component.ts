@@ -18,11 +18,12 @@ import { PanelLanguageService } from '../../services/panel-language.service';
 export class AuthLayoutComponent implements OnInit {
   currentRoute: string = '';
 
+  /* Login con fondo oscuro en vista: usar logo (blanco/negativo) */
   logoImages = {
     mobile: '/assets/logo-mobile.webp',
     tablet: '/assets/logo-tablet.webp',
     desktop: '/assets/logo.webp',
-    fallback: '/assets/logo.webp',
+    fallback: '/assets/logo.png',
     alt: 'Start Companies Logo',
     priority: true
   };

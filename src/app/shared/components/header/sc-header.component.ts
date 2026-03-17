@@ -43,14 +43,26 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private routerSubscription?: Subscription;
 
-  private logoImagesSubject = new BehaviorSubject({
+  /** Logo para fondo oscuro (hero, navbar transparente) */
+  private readonly logoLight = {
     mobile: '/assets/logo-mobile.webp',
     tablet: '/assets/logo-tablet.webp',
     desktop: '/assets/logo.webp',
-    fallback: '/assets/logo.webp',
+    fallback: '/assets/logo.png',
     alt: 'Start Companies Logo',
     priority: false,
-  });
+  };
+  /** Logo para fondo claro (navbar con scroll) - reemplazo de logo-gray/logo-grey */
+  private readonly logoDark = {
+    mobile: '/assets/logo-dark-mobile.webp',
+    tablet: '/assets/logo-dark-tablet.webp',
+    desktop: '/assets/logo-dark.webp',
+    fallback: '/assets/logo-dark.png',
+    alt: 'Start Companies Logo',
+    priority: false,
+  };
+
+  private logoImagesSubject = new BehaviorSubject(this.logoLight);
 
   logoImages$ = this.logoImagesSubject.asObservable();
 
@@ -59,20 +71,8 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private updateLogoImages(): void {
-    const isDarkMode = this.isOpen || this.isNavbarShrunk;
-
-    this.logoImagesSubject.next({
-      ...this.logoImages,
-      mobile: isDarkMode
-        ? '/assets/logo-grey-mobile.webp'
-        : '/assets/logo-mobile.webp',
-      tablet: isDarkMode
-        ? '/assets/logo-grey-tablet.webp'
-        : '/assets/logo-tablet.webp',
-      desktop: isDarkMode ? '/assets/logo-grey-desktop.webp' : '/assets/logo.webp',
-      fallback: isDarkMode ? '/assets/logo-grey.png' : '/assets/logo.webp',
-    });
-
+    const overLightBackground = this.isNavbarShrunk;
+    this.logoImagesSubject.next(overLightBackground ? this.logoDark : this.logoLight);
     this.cdr.markForCheck();
   }
 
@@ -98,6 +98,8 @@ export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
     
     // Registrar listener de scroll manualmente (en lugar de @HostListener para SSR)
     win.addEventListener('scroll', this.onWindowScroll.bind(this));
+    // Evaluar scroll inicial por si la página cargó con scroll > 100 (logo claro vs oscuro)
+    this.navbarScroll();
     
     // Asegurar que el menú esté cerrado después de que la vista se inicialice
     setTimeout(() => {

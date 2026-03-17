@@ -14,7 +14,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   styleUrl: './hero-section.component.css',
 })
 export class HeroSectionComponent implements OnInit {
-  // Configuración de imágenes del logo para NgOptimizedImage
+  // Fondo oscuro: usar logo (negativo/blanco)
   logoImages = {
     mobile: '/assets/logo-mobile.webp',
     tablet: '/assets/logo-tablet.webp',

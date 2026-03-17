@@ -40,7 +40,7 @@ export class SchemaSeoInitializerService {
       url: this.baseUrl,
       description:
         'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online, sin comisiones y con garantía.',
-      logo: `${this.baseUrl}/assets/logo-dark.webp`,
+      logo: `${this.baseUrl}/assets/logo.webp`,
       sameAs: [
         'https://www.facebook.com/startcompanies',
         'https://x.com/startcompaniess',
