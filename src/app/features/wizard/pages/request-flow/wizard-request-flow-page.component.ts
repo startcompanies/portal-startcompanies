@@ -19,11 +19,12 @@ export class WizardRequestFlowPageComponent implements OnInit {
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
 
+  /* Fondo oscuro del wizard: usar logo (blanco/negativo) */
   logoImages = {
     mobile: '/assets/logo-mobile.webp',
     tablet: '/assets/logo-tablet.webp',
     desktop: '/assets/logo.webp',
-    fallback: '/assets/logo.webp',
+    fallback: '/assets/logo.png',
     alt: 'Start Companies Logo',
     priority: false,
   };

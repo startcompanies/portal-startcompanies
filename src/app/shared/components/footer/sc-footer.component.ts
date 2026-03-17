@@ -24,11 +24,11 @@ export class ScFooterComponent implements OnInit {
   readonly whatsappUrl = APP_CONFIG.contact.whatsapp.url;
 
   footerLogoImages = {
-    mobile: '/assets/footer/img_footer_logo.webp',
-    tablet: '/assets/footer/img_footer_logo.webp',
-    desktop: '/assets/footer/img_footer_logo.webp',
-    fallback: '/assets/footer/img_footer_logo.webp',
-    alt: 'Start Companies Footer Logo',
+    mobile: '/assets/logo-mobile.webp',
+    tablet: '/assets/logo-tablet.webp',
+    desktop: '/assets/logo.webp',
+    fallback: '/assets/logo.png',
+    alt: 'Start Companies Logo',
     priority: false,
   };
 
