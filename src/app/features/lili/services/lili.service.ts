@@ -17,8 +17,7 @@ export interface LiliApplicationResponse {
 
 @Injectable({ providedIn: 'root' })
 export class LiliService {
-  // Use relative URL so it works both in dev (via proxy) and production (same server)
-  private readonly apiUrl = `/api/lili/create-application`;
+  private readonly apiUrl = `${environment.apiUrl}/lili/create-application`;
 
   constructor(private http: HttpClient) {}
 
