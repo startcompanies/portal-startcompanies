@@ -23,18 +23,6 @@ const responsiveImages = {
     mobile: 'logo-dark-mobile.webp',
     alt: 'Logo oscuro de Start Companies'
   },
-  'logo-gray': {
-    desktop: 'logo-gray-desktop.webp',
-    tablet: 'logo-gray-tablet.webp',
-    mobile: 'logo-gray-mobile.webp',
-    alt: 'Logo gris de Start Companies'
-  },
-  'logo-grey': {
-    desktop: 'logo-grey-desktop.webp',
-    tablet: 'logo-grey-tablet.webp',
-    mobile: 'logo-grey-mobile.webp',
-    alt: 'Logo gris de Start Companies'
-  },
   'pricing-bg': {
     desktop: 'pricing-bg-desktop.webp',
     tablet: 'pricing-bg-tablet.webp',

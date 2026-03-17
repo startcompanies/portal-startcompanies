@@ -47,24 +47,27 @@ import { Subject } from 'rxjs';
       max-height: none;
     }
     
-    /* Estilos específicos para logos */
-    :host.logo img {
+    /* Estilos específicos para logos: no recortar */
+    :host.logo,
+    :host.logo-footer {
+      overflow: visible;
+    }
+    :host.logo img,
+    :host.logo-footer img {
       object-fit: contain;
       object-position: center;
-      /* Estilos adicionales para logos en Safari */
       -webkit-box-sizing: border-box;
       box-sizing: border-box;
-      /* Prevenir que Safari cambie el aspect-ratio */
       aspect-ratio: auto;
     }
     
-    /* Estilos específicos para Safari */
+    /* Estilos específicos para Safari: logo menú más pequeño, sin recortar */
     @supports (-webkit-appearance: none) {
       :host.logo img {
-        /* Forzar dimensiones en Safari */
-        width: 70px !important;
-        height: 70px !important;
-        /* Asegurar que Safari no aplique estilos por defecto */
+        height: 52px !important;
+        width: auto !important;
+        max-width: 128px !important;
+        object-fit: contain;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
       }
@@ -87,7 +90,8 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
   @Input() cssClass: string = '';
 
   @HostBinding('class') get hostClass() {
-    return this.cssClass;
+    const classes = [this.cssClass, this.context].filter(Boolean);
+    return classes.join(' ');
   }
 
   currentImageSrc: string = '';
@@ -212,12 +216,14 @@ export class ResponsiveImageComponent implements OnInit, OnDestroy, OnChanges {
         this.currentHeight = 200;
         break;
       case 'logo':
-        this.currentWidth = 100;
-        this.currentHeight = 100;
+        // Logo de cabecera: más pequeño, aspecto rectangular (~2.5:1)
+        this.currentWidth = 128;
+        this.currentHeight = 52;
         break;
       case 'logo-footer':
-        this.currentWidth = 150;
-        this.currentHeight = 150;
+        // Logo de footer un poco más pequeño, mismo aspecto
+        this.currentWidth = 190;
+        this.currentHeight = 77;
         break;
       case 'tabs':
         this.currentWidth = 570;

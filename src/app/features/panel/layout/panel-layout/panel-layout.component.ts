@@ -32,10 +32,11 @@ export class PanelLayoutComponent implements OnInit {
   showLanguageModal = false;
 
   logoImages = {
+    // Logo blanco (negativo) para sidebar con fondo azul
     mobile: '/assets/logo-mobile.webp',
     tablet: '/assets/logo-tablet.webp',
     desktop: '/assets/logo.webp',
-    fallback: '/assets/logo.webp',
+    fallback: '/assets/logo.png',
     alt: 'Start Companies Logo',
     priority: true
   };

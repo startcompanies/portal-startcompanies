@@ -26,13 +26,12 @@ export class HeaderManejoComponent implements OnDestroy {
   currentRoute: string = '';
   private routerSubscription?: Subscription;
 
-  // Configuración de imágenes del logo para NgOptimizedImage
-  // Usar logo gris como en el header principal cuando está en modo scroll
+  // Logo para fondos claros (tinta negra)
   logoImages = {
-    mobile: '/assets/logo-grey-mobile.webp',
-    tablet: '/assets/logo-grey-tablet.webp',
-    desktop: '/assets/logo-grey-desktop.webp',
-    fallback: '/assets/logo-grey.png',
+    mobile: '/assets/logo-dark-mobile.webp',
+    tablet: '/assets/logo-dark-tablet.webp',
+    desktop: '/assets/logo-dark.webp',
+    fallback: '/assets/logo-dark.png',
     alt: 'Start Companies Logo',
     priority: true,
   };

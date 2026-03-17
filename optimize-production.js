@@ -24,12 +24,16 @@ if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
 }
 
-// Función para optimizar una imagen
+// Función para optimizar una imagen (sin añadir fondo; preservar transparencia en logos)
 async function optimizeImage(inputPath, outputPath, options = {}) {
   try {
-    const { width, height, quality = 80, format = 'webp' } = options;
+    const { width, height, quality = 80, format = 'webp', preserveAlpha = false } = options;
     
     let pipeline = sharp(inputPath);
+    // Logos: asegurar canal alpha para que WebP/PNG no reciban fondo opaco
+    if (preserveAlpha) {
+      pipeline = pipeline.ensureAlpha();
+    }
     
     if (width || height) {
       pipeline = pipeline.resize(width, height, {
@@ -39,7 +43,8 @@ async function optimizeImage(inputPath, outputPath, options = {}) {
     }
     
     if (format === 'webp') {
-      pipeline = pipeline.webp({ quality });
+      // Preservar transparencia: no flatten; alphaQuality alto para logos sin fondo
+      pipeline = pipeline.webp({ quality, alphaQuality: preserveAlpha ? 100 : 90 });
     } else if (format === 'jpeg') {
       pipeline = pipeline.jpeg({ quality });
     } else if (format === 'png') {
@@ -53,12 +58,10 @@ async function optimizeImage(inputPath, outputPath, options = {}) {
   }
 }
 
-// Configuración de imágenes que necesitan versiones responsive
+// Configuración de imágenes que necesitan versiones responsive (solo logo y logo-dark; sin logo-grey/logo-gray)
 const responsiveImageConfig = {
-  'logo-grey': { mobile: 768, tablet: 1024, desktop: 2482 },
   'logo': { mobile: 768, tablet: 1024, desktop: 2482 },
   'logo-dark': { mobile: 768, tablet: 1024, desktop: 2482 },
-  'logo-gray': { mobile: 768, tablet: 1024, desktop: 2482 },
   'hero-bg': { mobile: 768, tablet: 1024, desktop: 1920 },
   'pricing-bg': { mobile: 768, tablet: 1024, desktop: 1920 }
 };
@@ -78,53 +81,56 @@ async function createResponsiveVersions(inputPath, baseName, relativePath) {
     { name: `${baseName}-desktop${ext}`, size: config.desktop }
   ];
 
+  // Logos: mantener proporción (solo width); no forzar height para no deformar aspecto ~2.47:1
   const isLogo = baseName.includes('logo');
+  const resizeHeight = isLogo ? undefined : undefined;
 
   for (const version of versions) {
     const sourcePath = path.join(baseDir, version.name);
-    
-    // Crear versión responsive en src/assets si no existe (para desarrollo)
-    if (!fs.existsSync(sourcePath)) {
+    const forceOverwrite = baseName === 'logo' || baseName === 'logo-dark';
+
+    // Crear versión responsive en src/assets (si no existe o si es logo/logo-dark para regenerar)
+    if (forceOverwrite || !fs.existsSync(sourcePath)) {
       const devOutputPath = sourcePath;
       const devOutputDirPath = path.dirname(devOutputPath);
       if (!fs.existsSync(devOutputDirPath)) {
         fs.mkdirSync(devOutputDirPath, { recursive: true });
       }
-      
-      // Crear versión responsive PNG en src/assets
+
+      const keepAlpha = baseName === 'logo' || baseName === 'logo-dark';
       await optimizeImage(inputPath, devOutputPath, {
         width: version.size,
-        height: isLogo ? version.size : undefined,
+        height: resizeHeight,
         quality: 100,
-        format: 'png'
+        format: 'png',
+        preserveAlpha: keepAlpha
       });
-      
-      // También crear versión WebP en src/assets
+
       const devWebpPath = devOutputPath.replace(/\.(jpg|jpeg|png)$/i, '.webp');
       await optimizeImage(inputPath, devWebpPath, {
         width: version.size,
-        height: isLogo ? version.size : undefined,
+        height: resizeHeight,
         quality: 85,
-        format: 'webp'
+        format: 'webp',
+        preserveAlpha: keepAlpha
       });
     }
-    
-    // Crear versión para producción (dist)
+
     const sourceImage = fs.existsSync(sourcePath) ? sourcePath : inputPath;
     const outputPath = path.join(outputDir, relativePath.replace(path.basename(inputPath), version.name).replace(/\.(jpg|jpeg|png)$/i, '.webp'));
-    
-    // Crear directorio padre si no existe
+
     const outputDirPath = path.dirname(outputPath);
     if (!fs.existsSync(outputDirPath)) {
       fs.mkdirSync(outputDirPath, { recursive: true });
     }
-    
-    // Crear versión responsive y convertir a WebP para producción
+
+    const keepAlpha = baseName === 'logo' || baseName === 'logo-dark';
     await optimizeImage(sourceImage, outputPath, {
       width: version.size,
-      height: isLogo ? version.size : undefined,
+      height: resizeHeight,
       quality: 85,
-      format: 'webp'
+      format: 'webp',
+      preserveAlpha: keepAlpha
     });
   }
 }
@@ -155,21 +161,27 @@ async function processDirectory(dir, relativePath = '') {
       if (needsResponsive) {
         // Crear versiones responsive
         await createResponsiveVersions(fullPath, nameWithoutExt, relativeItemPath);
+        // Generar base WebP en src/assets para desarrollo (logo y logo-dark)
+        if (nameWithoutExt === 'logo' || nameWithoutExt === 'logo-dark') {
+          const baseDir = path.dirname(fullPath);
+          const baseWebpPath = path.join(baseDir, `${nameWithoutExt}.webp`);
+          await optimizeImage(fullPath, baseWebpPath, { quality: 85, format: 'webp', preserveAlpha: true });
+        }
       }
       
-      // También optimizar la imagen original
+      // También optimizar la imagen original (logos sin fondo: preserveAlpha)
       const outputPath = path.join(outputDir, relativeItemPath.replace(/\.(jpg|jpeg|png)$/i, '.webp'));
       
-      // Crear directorio padre si no existe
       const outputDirPath = path.dirname(outputPath);
       if (!fs.existsSync(outputDirPath)) {
         fs.mkdirSync(outputDirPath, { recursive: true });
       }
       
-      // Optimizar imagen
+      const isLogoAsset = nameWithoutExt === 'logo' || nameWithoutExt === 'logo-dark';
       await optimizeImage(fullPath, outputPath, {
-        quality: 80,
-        format: 'webp'
+        quality: isLogoAsset ? 85 : 80,
+        format: 'webp',
+        preserveAlpha: isLogoAsset
       });
     }
   }
