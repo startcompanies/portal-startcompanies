@@ -1,46 +1,44 @@
 /* Footer */
 .footer {
     background-color: var(--color-oscuro-tecnico);
-    /* Fondo gris azulado oscuro */
     color: #ffffff;
-    /* Color de texto general blanco */
     padding: 40px 16px;
+    overflow: visible;
 }
 
 .footer-content {
     max-width: 1200px;
     margin: 0 auto;
+    overflow: visible;
 }
 
-/* Sección principal del footer (ahora un row de Bootstrap) */
+/* Sección principal del footer */
 .footer-main {
-    /* display: grid; */
-    /* Eliminado, Bootstrap row lo maneja */
-    /* grid-template-columns: 1fr; */
-    /* Eliminado */
-    /* gap: 40px; */
-    /* Eliminado, Bootstrap g-4 lo maneja */
     margin-bottom: 32px;
     text-align: center;
-    /* Centra el contenido de las columnas en móvil */
+    overflow: visible;
 }
 
-/* Alineación específica para la columna del logo en desktop */
-.footer-main>div:first-child {
+/* Columna del logo: no recortar */
+.footer-main > div:first-child {
     text-align: left;
-    /* Alinea el contenido a la izquierda en desktop */
+    overflow: visible;
 }
 
+/* Logo footer: un poco más pequeño, sin recortar (aspecto ~2.47:1) */
 .footer-logo {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 190px;
+    max-height: 77px;
+    min-width: 120px;
+    overflow: visible;
+    display: block;
 }
 
-/* Estilos para app-responsive-image en el footer */
 .footer-logo app-responsive-image {
-    max-width: 120px;
-    max-height: 120px;
+    max-width: 190px;
+    max-height: 77px;
     display: block;
+    overflow: visible;
 }
 
 .footer-logo app-responsive-image img {
@@ -49,6 +47,7 @@
     width: auto;
     height: auto;
     object-fit: contain;
+    object-position: left center;
 }
 
 .footer-social {
@@ -291,9 +290,17 @@
     }
 
     .footer-logo {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 160px;
+        max-height: 65px;
+        min-width: 100px;
         margin-bottom: 20px;
+        overflow: visible;
+    }
+
+    .footer-logo app-responsive-image {
+        max-width: 160px;
+        max-height: 65px;
+        overflow: visible;
     }
 
     .footer-social {

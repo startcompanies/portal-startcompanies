@@ -31,9 +31,21 @@
   transform: scale(1.05);
 }
 
+/* Logo más pequeño, proporción rectangular */
 .auth-logo {
-  height: 120px;
+  height: 64px;
   width: auto;
+  max-width: 158px;
+  display: block;
+  object-fit: contain;
+}
+
+.auth-logo img,
+.auth-logo app-responsive-image img {
+  height: 64px !important;
+  width: auto !important;
+  max-width: 158px !important;
+  object-fit: contain;
 }
 
 .auth-content {
@@ -53,6 +65,13 @@
   }
 
   .auth-logo {
-    height: 100px;
+    height: 56px;
+    max-width: 138px;
+  }
+
+  .auth-logo img,
+  .auth-logo app-responsive-image img {
+    height: 56px !important;
+    max-width: 138px !important;
   }
 }

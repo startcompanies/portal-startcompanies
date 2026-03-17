@@ -17,12 +17,14 @@
   width: 100%;
 }
 
-/* Logo perfectamente centrado */
+/* Logo centrado, proporción rectangular ~2.47:1 */
 .img-fluid {
-  width: 7rem;
+  max-width: 12rem;
+  width: 100%;
   height: auto;
   margin: 0 auto 0.5rem auto;
   display: block;
+  object-fit: contain;
 }
 /* Ocultar logo en mobile */
 @media (max-width: 768px) {
