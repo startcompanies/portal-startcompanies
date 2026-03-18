@@ -10,8 +10,10 @@ import { FacebookPixelService } from '../shared/services/facebook-pixel.service'
 
 /** Rutas que son Landing Pages (LP): el pixel lo gestiona cada LP, no el flujo global. */
 const LANDING_PATHS = new Set([
-  'abre-tu-llc', 'presentacion', 'apertura-banco-relay', 'agenda', 'agendar', 'rescate-relay',
-  'llc-formation', 'presentation', 'relay-account-opening', 'schedule'
+  'abre-tu-llc', 'presentacion', 'evaluar-caso', 'asesoria-llc', 'llc-7-dias',
+  'apertura-banco-relay', 'agenda', 'agendar', 'rescate-relay',
+  'llc-formation', 'presentation', 'evaluate-case', 'llc-consultation', 'llc-7-days',
+  'relay-account-opening', 'schedule'
 ]);
 
 function isLandingPageUrl(url: string): boolean {

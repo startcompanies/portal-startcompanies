@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
+import { LoggerService } from '../../../../shared/services/logger.service';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
@@ -8,6 +10,7 @@ import { AperturaLlcFormComponent } from '../../../../shared/components/service-
 import { RequestsService } from '../../services/requests.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { US_STATES } from '../../../../shared/constants/us-states.constant';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el panel
@@ -36,60 +39,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   currentSection = 1;
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
   
-  // Lista de estados de USA
-  usStates = [
-    { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-    { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-    { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-    { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-    { value: 'California', label: 'California', abbreviation: 'CA' },
-    { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-    { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-    { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-    { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-    { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-    { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-    { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-    { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-    { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-    { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-    { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-    { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-    { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-    { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-    { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-    { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-    { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-    { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-    { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-    { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-    { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-    { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-    { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-    { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-    { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-    { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-    { value: 'New York', label: 'New York', abbreviation: 'NY' },
-    { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-    { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-    { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-    { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-    { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-    { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-    { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-    { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-    { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-    { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-    { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-    { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-    { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-    { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-    { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-    { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-    { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-    { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' },
-    { value: 'District of Columbia', label: 'District of Columbia', abbreviation: 'DC' },
-  ];
+  usStates = US_STATES;
 
   private formSubscription?: Subscription;
   
@@ -103,78 +53,11 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     private flowStateService: RequestFlowStateService,
     private requestsService: RequestsService,
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private serviceFormBuilder: ServiceFormBuilderService,
+    private logger: LoggerService
   ) {
-    // Inicializar formulario con estructura de apertura-llc-form
-    this.serviceDataForm = this.fb.group({
-      // Sección 1: Información de la LLC
-      llcType: ['', Validators.required],
-      llcName: ['', Validators.required],
-      llcNameOption2: [''],
-      llcNameOption3: [''],
-      businessDescription: ['', Validators.required],
-      llcPhoneNumber: [''],
-      website: [''],
-      llcEmail: ['', [Validators.email]],
-      linkedin: [''],
-      incorporationState: [''], // Se establecerá desde el paso anterior
-      incorporationDate: [''],
-      hasEin: [false],
-      einNumber: [''],
-      einDocumentUrl: [''],
-      noEinReason: [''],
-      certificateOfFormationUrl: [''],
-      accountType: [''],
-      estadoConstitucion: [''],
-      annualRevenue: [null],
-      actividadFinancieraEsperada: [''],
-      registeredAgentAddress: this.fb.group({
-        street: [''],
-        building: [''],
-        city: [''],
-        state: [''],
-        postalCode: [''],
-        country: ['']
-      }),
-      registeredAgentName: [''],
-      registeredAgentEmail: [''],
-      registeredAgentPhone: [''],
-      registeredAgentType: [''],
-      needsBankVerificationHelp: [false],
-      bankAccountType: [''],
-      bankName: [''],
-      bankAccountNumber: [''],
-      bankRoutingNumber: [''],
-      bankStatementUrl: [''],
-      serviceBillUrl: [''],
-      periodicIncome10k: [''],
-      bankAccountLinkedEmail: ['', [Validators.email]],
-      bankAccountLinkedPhone: [''],
-      projectOrCompanyUrl: [''],
-      veracityConfirmation: [''],
-      ownerNationality: [''],
-      ownerCountryOfResidence: [''],
-      ownerPersonalAddress: this.fb.group({
-        street: [''],
-        building: [''],
-        city: [''],
-        state: [''],
-        postalCode: [''],
-        country: ['']
-      }),
-      ownerPhoneNumber: [''],
-      ownerEmail: ['', [Validators.email]],
-      almacenaProductosDepositoUSA: [false],
-      declaroImpuestosAntes: [false],
-      llcConStartCompanies: [false],
-      ingresosMayor250k: [false],
-      activosEnUSA: [false],
-      ingresosPeriodicos10k: [false],
-      contrataServiciosUSA: [false],
-      propiedadEnUSA: [false],
-      tieneCuentasBancarias: [false],
-      members: this.fb.array([])
-    });
+    this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
   }
 
   ngOnInit(): void {
@@ -356,7 +239,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         this.fileUploadStates[fileKey].file = null;
       }
     } catch (error: any) {
-      console.error(`[PanelLlcInformationStep] Error al subir archivo ${fileKey}:`, error);
+      this.logger.error(`[PanelLlcInformationStep] Error al subir archivo ${fileKey}:`, error);
       this.fileUploadStates[fileKey].file = null;
     } finally {
       this.fileUploadStates[fileKey].uploading = false;

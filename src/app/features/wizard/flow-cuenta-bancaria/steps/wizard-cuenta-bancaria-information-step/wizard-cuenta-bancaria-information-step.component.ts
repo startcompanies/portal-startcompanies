@@ -7,6 +7,10 @@ import { WizardApiService } from '../../../services/wizard-api.service';
 import { CuentaBancariaFormComponent } from '../../../../../shared/components/service-forms/cuenta-bancaria-form/cuenta-bancaria-form.component';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
+import { US_STATES } from '../../../../../shared/constants/us-states.constant';
+import { LoggerService } from '../../../../../shared/services/logger.service';
+import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar wizard-cuenta-bancaria-form en el wizard
@@ -15,7 +19,7 @@ import { environment } from '../../../../../../environments/environment';
 @Component({
   selector: 'app-wizard-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent, TranslocoPipe],
   templateUrl: './wizard-cuenta-bancaria-information-step.component.html',
   styleUrls: ['./wizard-cuenta-bancaria-information-step.component.css']
 })
@@ -24,6 +28,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   @Input() previousStepNumber: number = 1;
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() isMultiMemberChanged = new EventEmitter<boolean>();
+  @Output() nextStepRequested = new EventEmitter<void>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -41,67 +46,10 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    * Verifica si se deben mostrar los botones de navegación entre secciones
    */
   get shouldShowSectionNavigation(): boolean {
-    // Si estamos en la sección 5 y no es multimember, no mostrar los botones de sección
-    if (this.currentSection === 5 && !this.isMultiMember) {
-      return false;
-    }
-    // Mostrar los botones si no es la última sección
     return this.currentSection < this.totalSections;
   }
   
-  // Lista de estados de USA
-  usStates = [
-    { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-    { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-    { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-    { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-    { value: 'California', label: 'California', abbreviation: 'CA' },
-    { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-    { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-    { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-    { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-    { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-    { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-    { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-    { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-    { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-    { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-    { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-    { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-    { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-    { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-    { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-    { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-    { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-    { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-    { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-    { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-    { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-    { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-    { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-    { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-    { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-    { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-    { value: 'New York', label: 'New York', abbreviation: 'NY' },
-    { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-    { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-    { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-    { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-    { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-    { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-    { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-    { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-    { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-    { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-    { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-    { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-    { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-    { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-    { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-    { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-    { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-    { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' }
-  ];
+  usStates = US_STATES;
 
   totalSections = 6; // Total de secciones para Cuenta Bancaria
 
@@ -114,11 +62,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
     private fb: FormBuilder,
-    private http: HttpClient
+    private http: HttpClient,
+    private serviceFormBuilder: ServiceFormBuilderService,
+    private logger: LoggerService
   ) {
-    // Inicializar formulario con estructura de cuenta-bancaria-form
-    this.serviceDataForm = this.fb.group({});
-    this.initializeCuentaBancariaForm(this.serviceDataForm);
+    this.serviceDataForm = this.serviceFormBuilder.createCuentaBancariaForm();
   }
 
   ngOnInit(): void {
@@ -229,66 +177,6 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
   }
 
-  /**
-   * Inicializa el formulario de cuenta bancaria
-   */
-  private initializeCuentaBancariaForm(group: FormGroup): void {
-    // Paso 1: Información de la LLC
-    group.addControl('businessType', this.fb.control(''));
-    // Sección 1: Información del negocio (campos requeridos)
-    group.addControl('legalBusinessName', this.fb.control('', Validators.required));
-    group.addControl('industry', this.fb.control('', Validators.required));
-    group.addControl('numberOfEmployees', this.fb.control('', Validators.required));
-    group.addControl('briefDescription', this.fb.control('', Validators.required));
-    group.addControl('websiteOrSocialMedia', this.fb.control(''));
-    group.addControl('einLetterUrl', this.fb.control(''));
-    group.addControl('einNumber', this.fb.control(''));
-    group.addControl('articlesOrCertificateUrl', this.fb.control(''));
-    
-    // Sección 2: Dirección del Registered Agent
-    group.addControl('registeredAgentStreet', this.fb.control('', Validators.required));
-    group.addControl('registeredAgentUnit', this.fb.control(''));
-    group.addControl('registeredAgentCity', this.fb.control('', Validators.required));
-    group.addControl('registeredAgentState', this.fb.control('', Validators.required));
-    group.addControl('registeredAgentZipCode', this.fb.control('', Validators.required));
-    group.addControl('registeredAgentCountry', this.fb.control('United States'));
-    group.addControl('incorporationState', this.fb.control(''));
-    group.addControl('incorporationMonthYear', this.fb.control(''));
-    group.addControl('countriesWhereBusiness', this.fb.control([]));
-    
-    // Sección 3: Información de la persona que verificará la cuenta bancaria
-    group.addControl('validatorMemberId', this.fb.control(''));
-    group.addControl('validatorTitle', this.fb.control('', Validators.required));
-    group.addControl('validatorIncomeSource', this.fb.control(''));
-    group.addControl('validatorAnnualIncome', this.fb.control(''));
-    group.addControl('validatorFirstName', this.fb.control('', Validators.required));
-    group.addControl('validatorLastName', this.fb.control('', Validators.required));
-    group.addControl('validatorDateOfBirth', this.fb.control('', Validators.required));
-    group.addControl('validatorNationality', this.fb.control('', Validators.required));
-    group.addControl('validatorCitizenship', this.fb.control(''));
-    group.addControl('validatorPassportNumber', this.fb.control('', Validators.required));
-    group.addControl('validatorPassportUrl', this.fb.control(''));
-    group.addControl('validatorWorkEmail', this.fb.control('', [Validators.required, Validators.email]));
-    group.addControl('validatorPhone', this.fb.control('', Validators.required));
-    group.addControl('canReceiveSMS', this.fb.control(false));
-    group.addControl('isUSResident', this.fb.control(''));
-    
-    // Sección 4: Dirección personal del propietario
-    group.addControl('ownerPersonalStreet', this.fb.control('', Validators.required));
-    group.addControl('ownerPersonalUnit', this.fb.control(''));
-    group.addControl('ownerPersonalCity', this.fb.control('', Validators.required));
-    group.addControl('ownerPersonalState', this.fb.control('', Validators.required));
-    group.addControl('ownerPersonalCountry', this.fb.control('', Validators.required));
-    group.addControl('ownerPersonalPostalCode', this.fb.control('', Validators.required));
-    group.addControl('serviceBillUrl', this.fb.control(''));
-    
-    // Sección 5: Tipo de LLC
-    group.addControl('isMultiMember', this.fb.control('', Validators.required));
-    group.addControl('llcType', this.fb.control(''));
-    
-    // Sección 6: Propietarios (FormArray)
-    group.addControl('owners', this.fb.array([]));
-  }
 
   /**
    * Maneja la selección de archivos y los sube al S3
@@ -338,9 +226,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
 
       if (requestId) {
         formData.append('requestUuid', requestId.toString());
-        console.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
       } else {
-        console.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
 
       const response = await firstValueFrom(
@@ -356,12 +244,12 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
           control.setValue(response.url, { emitEvent: true });
           control.markAsTouched();
           control.markAsDirty();
-          console.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
+          this.logger.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
         }
         this.fileUploadStates[fileKey].file = null;
       }
     } catch (error: any) {
-      console.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
+      this.logger.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
       this.fileUploadStates[fileKey].file = null;
     } finally {
       this.fileUploadStates[fileKey].uploading = false;
@@ -631,8 +519,8 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       if (isMultiMemberValue === 'no') {
         // Guardar datos en la API antes de terminar
         await this.saveToApi();
-        // Emitir evento especial para indicar que se debe avanzar al siguiente paso del wizard
-        this.sectionChanged.emit(0); // 0 indica que se debe avanzar al siguiente paso del wizard
+        // Avanzar al siguiente paso del wizard
+        this.nextStepRequested.emit();
         return;
       }
     }
@@ -665,11 +553,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     
     // Si no hay requestId, intentar crear el request (para flujo sin pago)
     if (!requestId) {
-      console.log('[WizardCuentaBancariaInformationStep] No hay requestId, intentando crear request');
+      this.logger.log('[WizardCuentaBancariaInformationStep] No hay requestId, intentando crear request');
       
       // Verificar si el usuario está autenticado
       if (!this.wizardApiService.isAuthenticated()) {
-        console.log('[WizardCuentaBancariaInformationStep] Usuario no autenticado, no se puede crear request');
+        this.logger.log('[WizardCuentaBancariaInformationStep] Usuario no autenticado, no se puede crear request');
         this.saveError = 'Por favor, verifica tu email primero.';
         return;
       }
@@ -704,26 +592,26 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
           cuentaBancariaData: {}
         };
         
-        console.log('[WizardCuentaBancariaInformationStep] Creando request sin pago:', requestData);
+        this.logger.log('[WizardCuentaBancariaInformationStep] Creando request sin pago:', requestData);
         const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
         
         if (response && response.id) {
           this.wizardStateService.setRequestId(response.id);
           requestId = response.id;
-          console.log('[WizardCuentaBancariaInformationStep] Request creado:', response.id);
+          this.logger.log('[WizardCuentaBancariaInformationStep] Request creado:', response.id);
         } else {
           this.saveError = 'Error al crear la solicitud.';
           return;
         }
       } catch (error: any) {
-        console.error('[WizardCuentaBancariaInformationStep] Error al crear request:', error);
+        this.logger.error('[WizardCuentaBancariaInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud.';
         return;
       }
     }
     
     if (!requestId) {
-      console.log('[WizardCuentaBancariaInformationStep] No se pudo obtener requestId');
+      this.logger.log('[WizardCuentaBancariaInformationStep] No se pudo obtener requestId');
       return;
     }
     
@@ -778,12 +666,12 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
         }
       };
       
-      console.log('[WizardCuentaBancariaInformationStep] Guardando datos en API:', updateData);
+      this.logger.log('[WizardCuentaBancariaInformationStep] Guardando datos en API:', updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
-      console.log('[WizardCuentaBancariaInformationStep] Datos guardados exitosamente');
+      this.logger.log('[WizardCuentaBancariaInformationStep] Datos guardados exitosamente');
       
     } catch (error: any) {
-      console.error('[WizardCuentaBancariaInformationStep] Error al guardar:', error);
+      this.logger.error('[WizardCuentaBancariaInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
     } finally {
       this.isSaving = false;

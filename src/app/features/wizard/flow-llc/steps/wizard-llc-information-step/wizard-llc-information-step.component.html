@@ -5,7 +5,7 @@
       {{ 'WIZARD.steps.llc_info' | transloco }}
     </h4>
     <p class="text-muted">
-      Completa la información de tu LLC. El estado de incorporación será el seleccionado en el paso anterior.
+      {{ 'WIZARD.llc_info_step.intro' | transloco }}
     </p>
   </div>
   
@@ -27,8 +27,8 @@
     ></app-apertura-llc-form>
   </div>
   
-  <!-- Barra de acciones fija (misma posición visual que flow-actions del base) -->
-  <div class="service-form-actions d-flex justify-content-between align-items-center mt-4 pt-3 border-top">
+  <!-- Barra de acciones con posición consistente -->
+  <div class="flow-actions">
     <button 
       type="button" 
       class="btn btn-outline-secondary"
@@ -37,7 +37,7 @@
       *ngIf="currentSection > 1"
     >
       <i class="bi bi-arrow-left me-1"></i>
-      Sección Anterior
+      {{ 'WIZARD.llc_info_step.section_prev' | transloco }}
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
     
@@ -48,7 +48,7 @@
       [disabled]="currentSection >= 3"
       *ngIf="currentSection < 3"
     >
-      Siguiente Sección
+      {{ 'WIZARD.llc_info_step.section_next' | transloco }}
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
     <button 
@@ -58,8 +58,8 @@
       [disabled]="!isSectionValid() || isSaving"
       *ngIf="currentSection === 3"
     >
-      <span *ngIf="!isSaving">Siguiente</span>
-      <span *ngIf="isSaving"><span class="spinner-border spinner-border-sm me-1"></span>Guardando...</span>
+      <span *ngIf="!isSaving">{{ 'WIZARD.next' | transloco }}</span>
+      <span *ngIf="isSaving"><span class="spinner-border spinner-border-sm me-1"></span>{{ 'WIZARD.llc_info_step.saving' | transloco }}</span>
       <i class="bi bi-arrow-right ms-1" *ngIf="!isSaving"></i>
     </button>
   </div>

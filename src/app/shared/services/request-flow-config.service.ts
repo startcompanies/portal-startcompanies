@@ -13,10 +13,12 @@ import { WizardCuentaBancariaInformationStepComponent } from '../../features/wiz
 
 // Importaciones de wrappers panel
 import { PanelLlcInformationStepComponent } from '../../features/panel/components/panel-llc-information-step/panel-llc-information-step.component';
+import { PanelRenovacionLlcInformationStepComponent } from '../../features/panel/components/panel-renovacion-llc-information-step/panel-renovacion-llc-information-step.component';
+import { PanelCuentaBancariaInformationStepComponent } from '../../features/panel/components/panel-cuenta-bancaria-information-step/panel-cuenta-bancaria-information-step.component';
 import { PanelPaymentStepComponent } from '../../features/panel/components/panel-payment-step/panel-payment-step.component';
 import { WizardFinalReviewStepComponent } from '../../features/wizard/components/final-review-step/final-review-step.component';
 
-// Importaciones de componentes del panel (a crear)
+// Importaciones de componentes del panel
 import { ClientAssociationStepComponent } from '../../features/panel/components/client-association-step/client-association-step.component';
 import { PartnerClientSelectionStepComponent } from '../../features/panel/components/partner-client-selection-step/partner-client-selection-step.component';
 import { ServiceTypeSelectionStepComponent } from '../../shared/components/service-type-selection-step/service-type-selection-step.component';
@@ -36,12 +38,12 @@ export class RequestFlowConfigService {
     
     // Si se requiere selección de tipo de servicio, agregarlo primero
     if (includeServiceTypeSelection && (context === RequestFlowContext.PANEL_CLIENT || context === RequestFlowContext.PANEL_PARTNER)) {
-      configs.push({
+        configs.push({
         step: RequestFlowStep.SERVICE_TYPE_SELECTION,
         required: true,
         component: ServiceTypeSelectionStepComponent,
         order: 1,
-        label: 'Tipo de Servicio',
+        label: 'WIZARD.steps.service_type',
         icon: 'bi-list-check'
       });
     }
@@ -54,7 +56,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardBasicRegisterStepComponent, 
             order: 1,
-            label: 'Registro',
+            label: 'WIZARD.steps.step_register',
             icon: 'bi-person-plus'
           },
           { 
@@ -62,7 +64,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardEmailVerificationComponent, 
             order: 2,
-            label: 'Verificación de Email',
+            label: 'WIZARD.steps.step_verify_email',
             icon: 'bi-envelope-check'
           }
         );
@@ -74,7 +76,7 @@ export class RequestFlowConfigService {
             required: true,
             component: this.getPlanStateComponent(serviceType),
             order: 3,
-            label: serviceType === 'renovacion-llc' ? 'Selección de Estado' : 'Selección de Estado/Plan',
+            label: serviceType === 'renovacion-llc' ? 'WIZARD.steps.step_state' : 'WIZARD.steps.step_state_plan',
             icon: 'bi-geo-alt'
           });
         }
@@ -85,7 +87,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardPaymentStepComponent, 
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 4 : 3,
-            label: 'Pago',
+            label: 'WIZARD.steps.payment',
             icon: 'bi-credit-card'
           },
               {
@@ -93,7 +95,7 @@ export class RequestFlowConfigService {
                 required: true,
                 component: this.getServiceFormComponent(serviceType, RequestFlowContext.WIZARD),
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 5 : 4,
-            label: 'Información del Servicio',
+            label: 'WIZARD.steps.step_service_info',
             icon: 'bi-file-text'
           },
           { 
@@ -101,7 +103,7 @@ export class RequestFlowConfigService {
             required: true, 
             component: WizardFinalReviewStepComponent, 
             order: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 6 : 5,
-            label: 'Confirmación',
+            label: 'WIZARD.steps.step_confirmation',
             icon: 'bi-check-circle'
           }
         );
@@ -226,11 +228,9 @@ export class RequestFlowConfigService {
         case 'apertura-llc':
           return PanelLlcInformationStepComponent;
         case 'renovacion-llc':
-          // TODO: Crear PanelRenovacionLlcInformationStepComponent
-          return WizardRenovacionLlcInformationStepComponent; // Temporal
+          return PanelRenovacionLlcInformationStepComponent;
         case 'cuenta-bancaria':
-          // TODO: Crear PanelCuentaBancariaInformationStepComponent
-          return WizardCuentaBancariaInformationStepComponent; // Temporal
+          return PanelCuentaBancariaInformationStepComponent;
         default:
           throw new Error(`Unknown service type: ${serviceType}`);
       }

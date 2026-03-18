@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
-import { title } from 'process';
 import { languageGuard } from '../shared/guards/language.guard';
-import { CampaignRedirectGuard } from '../shared/guards/campaign-redirect.guard';
 import { environment } from '../../environments/environment';
 import { authGuard } from '../features/panel/guards/auth.guard';
 import { roleGuard } from '../features/panel/guards/role.guard';
@@ -235,21 +233,30 @@ export const routes: Routes = [
         path: 'presentacion',
         loadComponent: () => import('../features/public/landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
       },
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
         path: 'evaluar-caso',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-2/landing-presentacion-2.component').then(m => m.LandingPresentacion2Component)
+        loadComponent: () => import('../features/public/landings/landing-evaluar-caso/landing-evaluar-caso.component').then(m => m.LandingEvaluarCasoComponent)
       },
       {
         path: 'asesoria-llc',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-3/landing-presentacion-3.component').then(m => m.LandingPresentacion3Component)
+        loadComponent: () => import('../features/public/landings/landing-asesoria-llc/landing-asesoria-llc.component').then(m => m.LandingAsesoriaLlcComponent)
       },
       {
         path: 'llc-7-dias',
-        loadComponent: () => import('../features/public/landings/landing-presentacion-4/landing-presentacion-4.component').then(m => m.LandingPresentacion4Component)
+        loadComponent: () => import('../features/public/landings/landing-llc-7-dias/landing-llc-7-dias.component').then(m => m.LandingLlc7DiasComponent)
       },
       {
         path: 'apertura-banco-relay',
-        loadComponent: () => import('../features/public/landings/landing-apertura-relay/landing-apertura-relay.component').then(m => m.LandingAperturaRelayComponent)
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+                (m) => m.CuentaBancariaComponent
+              )
+          : () =>
+              import('../features/public/landings/landing-apertura-relay/landing-apertura-relay.component').then(
+                (m) => m.LandingAperturaRelayComponent
+              ),
       },
       {
         path: 'agenda',
@@ -260,21 +267,36 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
       // Wizard unificado en URLs de formularios (apertura-llc, renovar-llc)
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'apertura-llc',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
-        data: { serviceType: 'apertura-llc' },
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/apertura-llc/apertura-llc.component').then(
+                (m) => m.AperturaLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
+        },
       },
       {
         path: 'renovar-llc',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
-        data: { serviceType: 'renovacion-llc' },
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/renovar-llc/renovar-llc.component').then(
+                (m) => m.RenovarLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'renovacion-llc' }),
+        },
       },
       {
         path: 'form-apertura-relay',
@@ -893,12 +915,13 @@ export const routes: Routes = [
           },
         },
       },
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
         path: 'evaluate-case',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-2/landing-presentacion-2.component'
-          ).then((m) => m.LandingPresentacion2Component),
+            '../features/public/landings/landing-evaluar-caso/landing-evaluar-caso.component'
+          ).then((m) => m.LandingEvaluarCasoComponent),
         data: {
           seo: {
             title: 'Evaluate Your Case - LLC in the U.S. | Start Companies',
@@ -916,8 +939,8 @@ export const routes: Routes = [
         path: 'llc-consultation',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-3/landing-presentacion-3.component'
-          ).then((m) => m.LandingPresentacion3Component),
+            '../features/public/landings/landing-asesoria-llc/landing-asesoria-llc.component'
+          ).then((m) => m.LandingAsesoriaLlcComponent),
         data: {
           seo: {
             title: 'Free LLC Consultation - Start Companies',
@@ -935,8 +958,8 @@ export const routes: Routes = [
         path: 'llc-7-days',
         loadComponent: () =>
           import(
-            '../features/public/landings/landing-presentacion-4/landing-presentacion-4.component'
-          ).then((m) => m.LandingPresentacion4Component),
+            '../features/public/landings/landing-llc-7-dias/landing-llc-7-dias.component'
+          ).then((m) => m.LandingLlc7DiasComponent),
         data: {
           seo: {
             title: 'Your LLC in 7 Days - 100% Online | Start Companies',
@@ -952,10 +975,15 @@ export const routes: Routes = [
       },
       {
         path: 'relay-account-opening',
-        loadComponent: () =>
-          import(
-            '../features/public/landings/landing-apertura-relay/landing-apertura-relay.component'
-          ).then((m) => m.LandingAperturaRelayComponent),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+                (m) => m.CuentaBancariaComponent
+              )
+          : () =>
+              import(
+                '../features/public/landings/landing-apertura-relay/landing-apertura-relay.component'
+              ).then((m) => m.LandingAperturaRelayComponent),
         data: {
           seo: {
             title: 'Relay Bank Opening - Start Companies',
@@ -989,14 +1017,20 @@ export const routes: Routes = [
         },
       },
       /** Wizard unificado EN (llc-opening, llc-renewal) */
+      // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'llc-opening',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/apertura-llc/apertura-llc.component').then(
+                (m) => m.AperturaLlcComponent
+              ),
         data: {
-          serviceType: 'apertura-llc',
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
           seo: {
             title: 'LLC Opening in the United States - Start Companies',
             description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
@@ -1011,12 +1045,17 @@ export const routes: Routes = [
       },
       {
         path: 'llc-renewal',
-        loadComponent: () =>
-          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
-            (m) => m.WizardRequestFlowPageComponent
-          ),
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/renovar-llc/renovar-llc.component').then(
+                (m) => m.RenovarLlcComponent
+              ),
         data: {
-          serviceType: 'renovacion-llc',
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'renovacion-llc' }),
           seo: {
             title: 'LLC Renewal in the United States - Start Companies',
             description: 'We renew your LLC in the United States before it expires. Avoid penalties and keep your business active.',

@@ -10,14 +10,14 @@
           cssClass="logo wizard-sidebar-logo">
         </app-responsive-image>
       </div>
-      <span class="wizard-panel__service">{{ serviceTitle }}</span>
-      <p class="wizard-panel__tagline">{{ serviceTagline }}</p>
+      <span class="wizard-panel__service">{{ serviceTitleKey | transloco }}</span>
+      <p class="wizard-panel__tagline">{{ serviceTaglineKey | transloco }}</p>
     </div>
     <!-- Progreso móvil: barra + "Paso X de N" -->
-    <div class="wizard-progress-mobile" aria-label="Paso actual">
+    <div class="wizard-progress-mobile" [attr.aria-label]="'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: flowSteps.length }">
       <div class="wizard-progress-mobile__text">
-        <span class="wizard-progress-mobile__counter">Paso {{ currentStepIndex + 1 }} de {{ flowSteps.length }}</span>
-        <span class="wizard-progress-mobile__name">{{ getStepLabel(currentStepIndex) }}</span>
+        <span class="wizard-progress-mobile__counter">{{ 'WIZARD.flow.step_of' | transloco: { current: currentStepIndex + 1, total: flowSteps.length } }}</span>
+        <span class="wizard-progress-mobile__name">{{ getStepLabel(currentStepIndex) | transloco }}</span>
       </div>
       <div class="wizard-progress-mobile__bar">
         <div class="wizard-progress-mobile__fill" [style.width.%]="flowSteps.length ? ((currentStepIndex + 1) / flowSteps.length) * 100 : 0"></div>
@@ -32,17 +32,17 @@
         [class.is-completed]="currentStepIndex > i">
         <span class="wizard-progress__num">{{ i + 1 }}</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ step.label }}</span>
+        <span class="wizard-progress__label">{{ step.label | transloco }}</span>
       </div>
     </nav>
     <div class="wizard-panel__meta">
       <div class="wizard-meta__item">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        <span>Datos protegidos y confidenciales</span>
+        <span>{{ 'WIZARD.flow.data_protected' | transloco }}</span>
       </div>
       <div class="wizard-meta__item">
         <i class="bi bi-clock-history" aria-hidden="true"></i>
-        <span>Unos 5–10 minutos</span>
+        <span>{{ 'WIZARD.flow.minutes_short' | transloco }}</span>
       </div>
     </div>
   </aside>

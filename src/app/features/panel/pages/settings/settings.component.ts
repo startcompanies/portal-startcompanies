@@ -7,6 +7,8 @@ import { ZohoConfigService, ZohoConfig } from '../../services/zoho-config.servic
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { PanelLanguageService } from '../../services/panel-language.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 interface UserPreferences {
   language: 'es' | 'en';
@@ -23,7 +25,7 @@ interface UserPreferences {
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslocoPipe],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
@@ -31,7 +33,7 @@ export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
   activeTab: 'profile' | 'preferences' | 'security' | 'processes' | 'zoho' = 'profile';
-  showPreferences = false; // Ocultar preferencias por el momento
+  showPreferences = true;
   
   // Formularios
   profileForm: FormGroup;
@@ -63,7 +65,8 @@ export class SettingsComponent implements OnInit {
     private usersService: UsersService,
     private zohoConfigService: ZohoConfigService,
     private fb: FormBuilder,
-    private browser: BrowserService
+    private browser: BrowserService,
+    private panelLanguage: PanelLanguageService
   ) {
     this.profileForm = this.fb.group({
       full_name: ['', Validators.required], // Nombre completo en un solo campo
@@ -178,7 +181,6 @@ export class SettingsComponent implements OnInit {
   }
 
   loadPreferences(): void {
-    // TODO: Cargar preferencias desde el backend
     const savedPreferences = localStorage.getItem('user_preferences');
     if (savedPreferences) {
       try {
@@ -188,6 +190,10 @@ export class SettingsComponent implements OnInit {
         console.error('Error loading preferences:', e);
       }
     }
+    // Idioma del panel: usar la misma fuente que PanelLanguageService
+    this.preferencesForm.patchValue({
+      language: this.panelLanguage.getPreferredLang()
+    });
   }
 
   loadProcessConfig(): void {
@@ -269,16 +275,18 @@ export class SettingsComponent implements OnInit {
     this.isLoading = true;
     this.saveError = null;
 
-    // Guardar en localStorage temporalmente
+    const lang = this.preferencesForm.get('language')?.value as 'es' | 'en';
+    if (lang === 'es' || lang === 'en') {
+      this.panelLanguage.setPreferredLang(lang);
+    }
+
     localStorage.setItem('user_preferences', JSON.stringify(this.preferencesForm.value));
-    
-    // TODO: Guardar preferencias en el backend
+
     setTimeout(() => {
-      console.log('Guardar preferencias:', this.preferencesForm.value);
       this.isLoading = false;
       this.saveSuccess = true;
       setTimeout(() => this.saveSuccess = false, 3000);
-    }, 1000);
+    }, 500);
   }
 
   changePassword(): void {

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { FormGroup } from '@angular/forms';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
 import { RequestFlowConfigService } from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
@@ -19,7 +21,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-base-request-flow',
   standalone: true,
-  imports: [CommonModule, FlowStepsIndicatorComponent, RouterLink],
+  imports: [CommonModule, TranslocoPipe, FlowStepsIndicatorComponent, RouterLink],
   template: `
     <div class="base-request-flow-container">
       <!-- Indicador de pasos (oculto cuando se usa layout con sidebar en wizard) -->
@@ -44,7 +46,7 @@ import { firstValueFrom } from 'rxjs';
           *ngIf="!canGoBack() && isServiceTypeSelectionStep() && (this.context === 'panel-client' || this.context === 'panel-partner')"
           routerLink="/panel/my-requests"
           class="btn btn-outline-secondary">
-          Cancelar
+          {{ 'WIZARD.cancel' | transloco }}
         </a>
         <button 
           *ngIf="canGoBack() && !isServiceFormStep()" 
@@ -53,7 +55,7 @@ import { firstValueFrom } from 'rxjs';
           (click)="previousStep()"
           [disabled]="isLoading">
           <i class="bi bi-arrow-left me-2"></i>
-          Anterior
+          {{ 'WIZARD.previous' | transloco }}
         </button>
         <div *ngIf="(!canGoBack() || isServiceFormStep()) && !isServiceTypeSelectionStep()" class="flex-grow-1"></div>
         <!-- En Información del Servicio la navegación (Siguiente Sección / Siguiente) va siempre dentro del paso; no mostrar botón del base -->
@@ -63,7 +65,7 @@ import { firstValueFrom } from 'rxjs';
           class="btn btn-primary"
           (click)="nextStep()"
           [disabled]="isLoading || !canProceedToNext()">
-          Siguiente
+          {{ 'WIZARD.next' | transloco }}
           <i class="bi bi-arrow-right ms-2"></i>
         </button>
         <button 
@@ -73,7 +75,7 @@ import { firstValueFrom } from 'rxjs';
           (click)="finishFlow()"
           [disabled]="isLoading || !canFinish()">
           <i class="bi bi-check-circle me-2"></i>
-          Finalizar
+          {{ 'WIZARD.finish' | transloco }}
         </button>
       </div>
       
@@ -125,6 +127,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private draftRequestId: number | null = null;
   private autosaveInterval: any = null;
   private autosaveEnabled = false;
+
+  /** Subscripción al statusChanges del form del paso activo (si existe). */
+  private activeFormSub: Subscription | null = null;
   
   constructor(
     protected flowConfigService: RequestFlowConfigService,
@@ -463,6 +468,18 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if (!step.required) {
       return true;
     }
+
+    // Si el paso expone un FormGroup, validarlo aquí para bloquear avance
+    const activeForm = this.getActiveStepForm(step);
+    if (activeForm) {
+      activeForm.updateValueAndValidity();
+      if (activeForm.invalid) {
+        activeForm.markAllAsTouched();
+        this.currentStepValid = false;
+        return false;
+      }
+      this.currentStepValid = true;
+    }
     
     // Validaciones básicas según el tipo de paso
     switch (step.step) {
@@ -483,7 +500,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         return true;
       default:
         // Por defecto, permitir avanzar
-        return true;
+        return this.currentStepValid;
     }
   }
   
@@ -536,6 +553,26 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     this.successMessage = null;
     this.currentStepValid = true;
+  }
+
+  /**
+   * Intenta obtener el FormGroup asociado al paso actual.
+   * - Prioriza propiedades comunes del componente del paso: `form` / `serviceDataForm`
+   * - En contexto wizard, intenta fallback a WizardStateService (registerForm)
+   */
+  private getActiveStepForm(step?: FlowStepConfig): FormGroup | undefined {
+    const instance: any = this.stepComponentRef?.instance;
+    const maybeForm = instance?.form ?? instance?.serviceDataForm ?? instance?.paymentForm;
+    if (maybeForm instanceof FormGroup) {
+      return maybeForm;
+    }
+    if (this.context === RequestFlowContext.WIZARD && this.wizardStateService) {
+      const order = step?.order ?? this.getCurrentStep()?.order;
+      if (typeof order === 'number') {
+        return this.wizardStateService.getForm(order);
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -687,9 +724,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    * (la validación/registro se hace al hacer click en nextStep()).
    */
   protected canProceedToNext(): boolean {
-    const current = this.getCurrentStep();
-    if (current && (current.step === RequestFlowStep.REGISTER || current.step === RequestFlowStep.EMAIL_VERIFICATION)) {
-      return true;
+    // El botón debe reflejar el estado real del formulario del paso (si existe).
+    // Esto aplica también a REGISTER / EMAIL_VERIFICATION cuando el step expone un FormGroup.
+    const form = this.getActiveStepForm();
+    if (form) {
+      return form.valid && !form.pending;
     }
     return this.currentStepValid;
   }
@@ -713,8 +752,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if (!this.isServiceFormStep()) return false;
     const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     const section = serviceData?.currentSection;
-    // Apertura LLC y Renovación LLC tienen 3 secciones; la última es la 3
-    return section === 3;
+    // Leer totalSections dinámicamente desde el componente del paso activo
+    const totalSections = (this.stepComponentRef?.instance as any)?.totalSections ?? 3;
+    return section === totalSections;
   }
   
   /**
@@ -790,6 +830,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // limpiar subs anteriores
     this.stepSubscriptions.forEach(s => s.unsubscribe());
     this.stepSubscriptions = [];
+    this.activeFormSub?.unsubscribe();
+    this.activeFormSub = null;
     this.stepComponentRef?.destroy();
     this.stepComponentRef = null;
 
@@ -818,6 +860,16 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         instance[k] = inputs[k];
       } catch (_) {}
     });
+
+    // Enlazar validez del paso al estado del FormGroup si existe
+    const activeForm = this.getActiveStepForm(stepConfig);
+    if (activeForm) {
+      activeForm.updateValueAndValidity();
+      this.currentStepValid = activeForm.valid && !activeForm.pending;
+      this.activeFormSub = activeForm.statusChanges.subscribe(() => {
+        this.currentStepValid = activeForm.valid && !activeForm.pending;
+      });
+    }
 
     // Conectar outputs comunes si existen
     const subscribeIfEmitter = (prop: string, handler: (v: any) => void) => {

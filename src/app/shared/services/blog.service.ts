@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Post } from '../models/post.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,28 +33,40 @@ export class BlogService {
   }
 
   getCategories(): Promise<any[]> {
-    return this.http
-      .get<any[]>(this.joinUrl(this.apiUrl, this.categoriesEndpoint))
-      .toPromise()
-      .then((res) => res ?? []);
+    return firstValueFrom(
+      this.http
+        .get<any[]>(this.joinUrl(this.apiUrl, this.categoriesEndpoint))
+        .pipe(
+          map((res) => res ?? []),
+          catchError(() => of([]))
+        )
+    );
   }
 
   getAllPosts(): Promise<any[]> {
-    return this.http
-      .get<any[]>(this.joinUrl(this.apiUrl, this.postsEndpoint))
-      .toPromise()
-      .then((res) => res ?? []);
+    return firstValueFrom(
+      this.http
+        .get<any[]>(this.joinUrl(this.apiUrl, this.postsEndpoint))
+        .pipe(
+          map((res) => res ?? []),
+          catchError(() => of([]))
+        )
+    );
   }
 
   getPostsBySlug(slug: string): Promise<any> {
     // Nota: en el backend existe get-from-portal/:slug. No hay get-sandbox-posts/:slug.
     // En staging, si el post no está publicado, este endpoint devolverá vacío/404.
-    return this.http
-      .get<any[]>(
-        this.joinUrl(this.apiUrl, `/blog/posts/get-from-portal/${slug}`)
-      )
-      .toPromise()
-      .then((res) => res ?? []);
+    return firstValueFrom(
+      this.http
+        .get<any[]>(
+          this.joinUrl(this.apiUrl, `/blog/posts/get-from-portal/${slug}`)
+        )
+        .pipe(
+          map((res) => res ?? []),
+          catchError(() => of([]))
+        )
+    );
   }
 
   // Nuevo método para obtener posts por slug de categoría

@@ -38,13 +38,14 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    TranslocoPipe,
     WizardBasicRegisterStepComponent,
     WizardEmailVerificationComponent,
     WizardStatePlanSelectionStepComponent,
     WizardPaymentStepComponent,
     WizardLlcInformationStepComponent,
     WizardFinalReviewStepComponent
-],
+  ],
   templateUrl: './llc-apertura.component.html',
   styleUrls: ['./llc-apertura.component.css']
 })
@@ -164,7 +165,7 @@ export class LLCAperturaComponent implements OnInit {
    * - Paso 3: Procesa el pago y crea el request
    * - Paso 4+: Actualiza el request existente
    */
-  async nextStep(): Promise<void> {    
+  async nextStep(): Promise<void> {
     this.errorMessage = null;
     
     // Paso 1 (registro): misma lógica que flow-cuenta-bancaria

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { SharedModule } from '../../../../shared/shared/shared.module';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
 import { Subscription } from 'rxjs';
@@ -49,29 +49,28 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private transloco: TranslocoService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
 
     /**
-     * CAMPOS OPCIONALES - Se puede navegar sin completar todos los campos
-     * - fullName: Nombre completo (opcional)
-     * - phone: Teléfono (opcional)
-     * - email: Correo electrónico (opcional, pero debe tener formato válido si se completa)
-     * - password: Contraseña (mínimo 8 caracteres)
-     * 
-     * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
+     * Campos obligatorios para registro:
+     * - fullName
+     * - email (formato válido)
+     * - password (mín. 8 caracteres)
+     * phone es opcional.
      */
     this.form = new FormGroup({
-      fullName: new FormControl(savedData.fullName || ''),
+      fullName: new FormControl(savedData.fullName || '', Validators.required),
       phone: new FormControl(savedData.phone || ''),
       email: new FormControl(
-        savedData.email || '', 
-        [Validators.email],
+        savedData.email || '',
+        [Validators.required, Validators.email],
         [this.emailAvailabilityValidator()]
       ),
-      password: new FormControl(savedData.password || '', [Validators.minLength(8)]),
+      password: new FormControl(savedData.password || '', [Validators.required, Validators.minLength(8)]),
     });
   }
 
@@ -159,19 +158,19 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     // Determinar nivel
     if (password.length < 8) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_very_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 3) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 5) {
       this.passwordStrength = 'medium';
-      this.passwordStrengthText = 'Media';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_medium');
       this.passwordStrengthClass = 'text-warning';
     } else {
       this.passwordStrength = 'strong';
-      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthText = this.transloco.translate('WIZARD.basic_register.strength_strong');
       this.passwordStrengthClass = 'text-success';
     }
   }
@@ -232,9 +231,9 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
    * Guarda los datos del paso
    */
   private saveStepData(): void {
-    if (this.form.valid) {
-      this.wizardStateService.setStepData(this.stepNumber, this.form.value);
-    }
+    // Guardar SIEMPRE. Si solo guardamos cuando es válido, al borrar campos queda estado viejo en localStorage.
+    // getRawValue incluye valores aunque haya controles deshabilitados.
+    this.wizardStateService.setStepData(this.stepNumber, this.form.getRawValue());
   }
 
   /**

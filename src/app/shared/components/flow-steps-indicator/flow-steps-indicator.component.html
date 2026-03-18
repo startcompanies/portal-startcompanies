@@ -8,6 +8,6 @@
     <div class="step-number">
       <span>{{ i + 1 }}</span>
     </div>
-    <div class="step-label">{{ step.label || step.step }}</div>
+    <div class="step-label">{{ (step.label || step.step) | transloco }}</div>
   </div>
 </div>

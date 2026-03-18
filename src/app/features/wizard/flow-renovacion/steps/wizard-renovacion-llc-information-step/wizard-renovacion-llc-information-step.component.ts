@@ -4,7 +4,11 @@ import { CommonModule } from '@angular/common';
 import { WizardStateService } from '../../../services/wizard-state.service';
 import { WizardApiService } from '../../../services/wizard-api.service';
 import { RenovacionLlcFormComponent } from '../../../../../shared/components/service-forms/renovacion-llc-form/renovacion-llc-form.component';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
+import { US_STATES } from '../../../../../shared/constants/us-states.constant';
+import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
 
 /**
  * Componente wrapper para usar wizard-renovacion-llc-form en el wizard
@@ -13,7 +17,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-wizard-renovacion-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent, TranslocoPipe],
   templateUrl: './wizard-renovacion-llc-information-step.component.html',
   styleUrls: ['./wizard-renovacion-llc-information-step.component.css']
 })
@@ -27,59 +31,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   currentSection = 1;
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
   
-  // Lista de estados de USA
-  usStates = [
-    { value: 'Alabama', label: 'Alabama', abbreviation: 'AL' },
-    { value: 'Alaska', label: 'Alaska', abbreviation: 'AK' },
-    { value: 'Arizona', label: 'Arizona', abbreviation: 'AZ' },
-    { value: 'Arkansas', label: 'Arkansas', abbreviation: 'AR' },
-    { value: 'California', label: 'California', abbreviation: 'CA' },
-    { value: 'Colorado', label: 'Colorado', abbreviation: 'CO' },
-    { value: 'Connecticut', label: 'Connecticut', abbreviation: 'CT' },
-    { value: 'Delaware', label: 'Delaware', abbreviation: 'DE' },
-    { value: 'Florida', label: 'Florida', abbreviation: 'FL' },
-    { value: 'Georgia', label: 'Georgia', abbreviation: 'GA' },
-    { value: 'Hawaii', label: 'Hawaii', abbreviation: 'HI' },
-    { value: 'Idaho', label: 'Idaho', abbreviation: 'ID' },
-    { value: 'Illinois', label: 'Illinois', abbreviation: 'IL' },
-    { value: 'Indiana', label: 'Indiana', abbreviation: 'IN' },
-    { value: 'Iowa', label: 'Iowa', abbreviation: 'IA' },
-    { value: 'Kansas', label: 'Kansas', abbreviation: 'KS' },
-    { value: 'Kentucky', label: 'Kentucky', abbreviation: 'KY' },
-    { value: 'Louisiana', label: 'Louisiana', abbreviation: 'LA' },
-    { value: 'Maine', label: 'Maine', abbreviation: 'ME' },
-    { value: 'Maryland', label: 'Maryland', abbreviation: 'MD' },
-    { value: 'Massachusetts', label: 'Massachusetts', abbreviation: 'MA' },
-    { value: 'Michigan', label: 'Michigan', abbreviation: 'MI' },
-    { value: 'Minnesota', label: 'Minnesota', abbreviation: 'MN' },
-    { value: 'Mississippi', label: 'Mississippi', abbreviation: 'MS' },
-    { value: 'Missouri', label: 'Missouri', abbreviation: 'MO' },
-    { value: 'Montana', label: 'Montana', abbreviation: 'MT' },
-    { value: 'Nebraska', label: 'Nebraska', abbreviation: 'NE' },
-    { value: 'Nevada', label: 'Nevada', abbreviation: 'NV' },
-    { value: 'New Hampshire', label: 'New Hampshire', abbreviation: 'NH' },
-    { value: 'New Jersey', label: 'New Jersey', abbreviation: 'NJ' },
-    { value: 'New Mexico', label: 'New Mexico', abbreviation: 'NM' },
-    { value: 'New York', label: 'New York', abbreviation: 'NY' },
-    { value: 'North Carolina', label: 'North Carolina', abbreviation: 'NC' },
-    { value: 'North Dakota', label: 'North Dakota', abbreviation: 'ND' },
-    { value: 'Ohio', label: 'Ohio', abbreviation: 'OH' },
-    { value: 'Oklahoma', label: 'Oklahoma', abbreviation: 'OK' },
-    { value: 'Oregon', label: 'Oregon', abbreviation: 'OR' },
-    { value: 'Pennsylvania', label: 'Pennsylvania', abbreviation: 'PA' },
-    { value: 'Rhode Island', label: 'Rhode Island', abbreviation: 'RI' },
-    { value: 'South Carolina', label: 'South Carolina', abbreviation: 'SC' },
-    { value: 'South Dakota', label: 'South Dakota', abbreviation: 'SD' },
-    { value: 'Tennessee', label: 'Tennessee', abbreviation: 'TN' },
-    { value: 'Texas', label: 'Texas', abbreviation: 'TX' },
-    { value: 'Utah', label: 'Utah', abbreviation: 'UT' },
-    { value: 'Vermont', label: 'Vermont', abbreviation: 'VT' },
-    { value: 'Virginia', label: 'Virginia', abbreviation: 'VA' },
-    { value: 'Washington', label: 'Washington', abbreviation: 'WA' },
-    { value: 'West Virginia', label: 'West Virginia', abbreviation: 'WV' },
-    { value: 'Wisconsin', label: 'Wisconsin', abbreviation: 'WI' },
-    { value: 'Wyoming', label: 'Wyoming', abbreviation: 'WY' }
-  ];
+  usStates = US_STATES;
 
   // Tipos de LLC
   llcTypes = [
@@ -97,11 +49,11 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private serviceFormBuilder: ServiceFormBuilderService,
+    private logger: LoggerService
   ) {
-    // Inicializar formulario con estructura de renovacion-llc-form
-    this.serviceDataForm = this.fb.group({});
-    this.initializeRenovacionLlcForm(this.serviceDataForm);
+    this.serviceDataForm = this.serviceFormBuilder.createRenovacionLlcForm();
   }
 
   ngOnInit(): void {
@@ -157,7 +109,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       if (llcType && ownersArray && ownersArray.length === 0) {
         // Si hay llcType pero no hay propietarios, crear uno automáticamente
         this.onAddOwnerRequested();
-        console.log('[WizardRenovacionLlcInformationStep] Inicializado propietario automáticamente para llcType:', llcType);
+        this.logger.log('[WizardRenovacionLlcInformationStep] Inicializado propietario automáticamente para llcType:', llcType);
       }
     }, 100);
 
@@ -206,47 +158,6 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
   }
 
-  /**
-   * Inicializa el formulario de renovación LLC con validaciones
-   */
-  private initializeRenovacionLlcForm(group: FormGroup): void {
-    // Sección 1: Información de la LLC (campos requeridos)
-    group.addControl('llcName', this.fb.control('', Validators.required));
-    group.addControl('state', this.fb.control(''));
-    group.addControl('llcType', this.fb.control('', Validators.required));
-    group.addControl('mainActivity', this.fb.control(''));
-    group.addControl('hasPropertyInUSA', this.fb.control(''));
-    group.addControl('almacenaProductosDepositoUSA', this.fb.control(''));
-    group.addControl('contrataServiciosUSA', this.fb.control(''));
-    group.addControl('tieneCuentasBancarias', this.fb.control(''));
-    group.addControl('einNumber', this.fb.control(''));
-    group.addControl('countriesWhereLLCDoesBusiness', this.fb.control([]));
-    group.addControl('llcCreationDate', this.fb.control(''));
-    group.addControl('declaracionInicial', this.fb.control(false));
-    group.addControl('declaracionAnoCorriente', this.fb.control(false));
-    group.addControl('cambioDireccionRA', this.fb.control(false));
-    group.addControl('cambioNombre', this.fb.control(false));
-    group.addControl('declaracionAnosAnteriores', this.fb.control(false));
-    group.addControl('agregarCambiarSocio', this.fb.control(false));
-    group.addControl('declaracionCierre', this.fb.control(false));
-    group.addControl('owners', this.fb.array([]));
-    group.addControl('llcOpeningCost', this.fb.control(''));
-    group.addControl('paidToFamilyMembers', this.fb.control(''));
-    group.addControl('paidToLocalCompanies', this.fb.control(''));
-    group.addControl('paidForLLCFormation', this.fb.control(''));
-    group.addControl('paidForLLCDissolution', this.fb.control(''));
-    group.addControl('bankAccountBalanceEndOfYear', this.fb.control(''));
-    group.addControl('totalRevenue2025', this.fb.control(''));
-    group.addControl('hasFinancialInvestmentsInUSA', this.fb.control(''));
-    group.addControl('hasFiledTaxesBefore', this.fb.control(''));
-    group.addControl('wasConstitutedWithStartCompanies', this.fb.control(''));
-    group.addControl('partnersPassportsFileUrl', this.fb.control(''));
-    group.addControl('operatingAgreementAdditionalFileUrl', this.fb.control(''));
-    group.addControl('form147Or575FileUrl', this.fb.control(''));
-    group.addControl('articlesOfOrganizationAdditionalFileUrl', this.fb.control(''));
-    group.addControl('boiReportFileUrl', this.fb.control(''));
-    group.addControl('bankStatementsFileUrl', this.fb.control(''));
-  }
 
   /**
    * Maneja la selección de archivos y los sube al S3
@@ -282,9 +193,9 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
 
       if (requestId) {
         formData.append('requestUuid', requestId.toString());
-        console.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
       } else {
-        console.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
 
       const response = await firstValueFrom(
@@ -297,12 +208,12 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
           control.setValue(response.url, { emitEvent: true });
           control.markAsTouched();
           control.markAsDirty();
-          console.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
+          this.logger.log(`[WizardUpload] Archivo subido exitosamente: ${response.url}`);
         }
         this.fileUploadStates[fileKey].file = null;
       }
     } catch (error: any) {
-      console.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
+      this.logger.error(`[WizardUpload] Error al subir archivo ${fileKey}:`, error);
       this.fileUploadStates[fileKey].file = null;
     } finally {
       this.fileUploadStates[fileKey].uploading = false;
@@ -485,7 +396,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
         const ownersArray = this.serviceDataForm.get('owners') as FormArray;
         if (llcType && ownersArray && ownersArray.length === 0) {
           this.onAddOwnerRequested();
-          console.log('[WizardRenovacionLlcInformationStep] Inicializado propietario al navegar a sección 2');
+          this.logger.log('[WizardRenovacionLlcInformationStep] Inicializado propietario al navegar a sección 2');
         }
       }
       
@@ -499,7 +410,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   async saveToApi(): Promise<void> {
     const requestId = this.wizardStateService.getRequestId();
     if (!requestId) {
-      console.log('[WizardRenovacionLlcInformationStep] No hay requestId, saltando guardado en API');
+      this.logger.log('[WizardRenovacionLlcInformationStep] No hay requestId, saltando guardado en API');
       return;
     }
     
@@ -567,13 +478,13 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
         }
       };
       
-      console.log('[WizardRenovacionLlcInformationStep] Guardando datos en API:', updateData);
-      console.log('[WizardRenovacionLlcInformationStep] Members a enviar:', members);
+      this.logger.log('[WizardRenovacionLlcInformationStep] Guardando datos en API:', updateData);
+      this.logger.log('[WizardRenovacionLlcInformationStep] Members a enviar:', members);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
-      console.log('[WizardRenovacionLlcInformationStep] Datos guardados exitosamente');
+      this.logger.log('[WizardRenovacionLlcInformationStep] Datos guardados exitosamente');
       
     } catch (error: any) {
-      console.error('[WizardRenovacionLlcInformationStep] Error al guardar:', error);
+      this.logger.error('[WizardRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
     } finally {
       this.isSaving = false;
