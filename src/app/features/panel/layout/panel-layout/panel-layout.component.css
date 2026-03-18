@@ -228,11 +228,14 @@
 /* Content Area */
 :host .content-area {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
+  min-height: 0;
+}
+
+:host .page-wrapper {
   max-width: 1280px;
-  width: 100%;
   margin: 0 auto;
+  padding: 2rem;
   box-sizing: border-box;
 }
 
