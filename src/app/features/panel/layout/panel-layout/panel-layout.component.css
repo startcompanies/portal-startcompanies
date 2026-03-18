@@ -245,7 +245,8 @@
     transform: translateX(-100%);
   }
 
-  :host .sidebar.open {
+  /* El template usa [class.collapsed]="!isSidebarOpen"; sin .collapsed = visible */
+  :host .sidebar:not(.collapsed) {
     transform: translateX(0);
   }
 
@@ -257,7 +258,7 @@
     display: block;
   }
 
-  :host .content-area {
+  :host .page-wrapper {
     padding: 1rem;
   }
 }

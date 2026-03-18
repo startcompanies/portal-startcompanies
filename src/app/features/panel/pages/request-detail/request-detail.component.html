@@ -134,10 +134,10 @@
       </div>
 
       <!-- Mostrar iframe con WorkDrive embed solo si está disponible y el proceso está avanzado (no en solicitud-recibida) -->
-      <div *ngIf="canShowWorkDriveIframe() && getSafeWorkDriveUrl()" class="workdrive-container">
+      <div *ngIf="canShowWorkDriveIframe() && safeWorkDriveUrl" class="workdrive-container">
         <div class="workdrive-iframe-wrapper">
           <iframe
-            [src]="getSafeWorkDriveUrl()"
+            [src]="safeWorkDriveUrl"
             class="workdrive-iframe"
             frameborder="0"
             allowfullscreen
@@ -150,7 +150,7 @@
       </div>
 
       <!-- Fallback: enlace si no se puede generar la URL de embed y el proceso está avanzado -->
-      <div *ngIf="canShowWorkDriveIframe() && !getSafeWorkDriveUrl()" class="workdrive-container">
+      <div *ngIf="canShowWorkDriveIframe() && !safeWorkDriveUrl" class="workdrive-container">
         <div class="workdrive-link-container">
           <div class="workdrive-info">
             <i class="bi bi-folder-fill me-2"></i>
@@ -274,7 +274,7 @@
 
   <!-- Modal: Ver Todos los Datos -->
   <div *ngIf="showAllDataModal" class="modal fade show d-block modal-full-width" tabindex="-1" (click)="closeAllDataModal()">
-    <div class="modal-dialog modal-dialog-centered modal-xl modal-full-width-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-dialog modal-dialog-centered modal-lg" (click)="$event.stopPropagation()">
       <div class="modal-content">
         <div class="modal-header modal-header-custom">
           <h5 class="modal-title">

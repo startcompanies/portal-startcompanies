@@ -388,7 +388,8 @@
   padding: 1rem;
 }
 
-.modal-content {
+/* Modal de subir documentos (custom, no Bootstrap) */
+.modal-overlay .modal-content {
   background: var(--color-fondo-claro);
   border-radius: 12px;
   width: 100%;
@@ -440,6 +441,8 @@
 
 /* Asegurar que el modal-content ocupe todo el espacio disponible */
 .modal-xl .modal-content {
+  max-width: 100%;
+  width: 100%;
   max-height: 90vh;
   display: flex;
   flex-direction: column;

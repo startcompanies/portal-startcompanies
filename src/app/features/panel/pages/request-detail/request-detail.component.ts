@@ -70,6 +70,9 @@ export class RequestDetailComponent implements OnInit {
   selectedStep: ProcessStep | null = null;
   availableAssignees: string[] = ['Equipo Legal', 'Equipo Contable', 'Equipo Administrativo', 'Sistema'];
 
+  // WorkDrive URL cacheada (evita bucle infinito por nuevo objeto en cada CD)
+  safeWorkDriveUrl: SafeResourceUrl | null = null;
+
   // Upload document
   showUploadModal = false;
   selectedFile: File | null = null;
@@ -526,7 +529,10 @@ export class RequestDetailComponent implements OnInit {
         documents: [], // TODO: Cargar documentos desde el backend
         steps: steps
       };
-      
+
+      // Cachear URL una sola vez para evitar bucle infinito en change detection
+      this.safeWorkDriveUrl = this.getSafeWorkDriveUrl();
+
       console.log('Datos completos de la solicitud:', apiRequest);
       console.log('Stage recibido:', apiRequest.stage);
       console.log('Steps generados:', steps);
