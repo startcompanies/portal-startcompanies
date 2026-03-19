@@ -66,7 +66,8 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
      */
     this.form = new FormGroup({
       fullName: new FormControl(savedData.fullName || '', [Validators.required]),
-      phone: new FormControl(savedData.phone || ''),
+      // UI marca el teléfono como obligatorio (*), así que también debe validarse
+      phone: new FormControl(savedData.phone || '', [Validators.required]),
       email: new FormControl(
         savedData.email || '',
         [Validators.required, Validators.email],
@@ -205,6 +206,11 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
         if (!this.form.get('email')?.value) {
           this.form.patchValue({ email: user.email || '', fullName });
+          // Si hay un usuario autenticado, también precargar teléfono para que
+          // el paso no permita avanzar con campos faltantes.
+          if (!this.form.get('phone')?.value) {
+            this.form.patchValue({ phone: user.phone || '' });
+          }
           // La contraseña no se restaura por seguridad; usar un placeholder para satisfacer required
           if (!this.form.get('password')?.value) {
             this.form.get('password')?.clearValidators();
@@ -264,11 +270,26 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       return false; // Necesita verificar el email primero
     }
 
+    // Forzar que el input de teléfono actualice su valor para que la validación del FormControl sea correcta
+    if (!this.phoneInput) {
+      this.errorMessage = 'Por favor completa el teléfono.';
+      return false;
+    }
+
+    this.phoneInput.validate();
+    this.form.updateValueAndValidity();
+
     const formValue = this.form.value;
     const { fullName, email, password, phone } = formValue;
 
-    if (!fullName || !email || !password) {
-      this.errorMessage = 'Por favor completa todos los campos requeridos (nombre, email, contraseña)';
+    // Si el componente de teléfono considera el valor inválido, bloquear el registro
+    if (this.phoneInput && !this.phoneInput.isValid) {
+      this.errorMessage = 'Por favor completa el teléfono con un formato válido.';
+      return false;
+    }
+
+    if (!fullName || !email || !password || !phone) {
+      this.errorMessage = 'Por favor completa todos los campos requeridos (nombre, teléfono, email, contraseña)';
       return false;
     }
 
@@ -332,18 +353,32 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
 
   /**
    * Verifica si el usuario puede avanzar al siguiente paso
-   * Retorna true si está autenticado o si el formulario está completo para registro
+   * Retorna true si el formulario está completo (incluyendo los campos obligatorios).
    */
   canProceed(): boolean {
-    // Si ya está autenticado, puede avanzar
-    if (this.wizardApiService.isAuthenticated()) {
-      return true;
-    }
     // Si está esperando verificación, no puede avanzar
     if (this.waitingEmailVerification) {
       return false;
     }
-    // Si el formulario es válido, puede intentar registrarse
+    // Forzar que el input de teléfono actualice su valor
+    // Si el componente de teléfono aún no está disponible, no permitir avanzar
+    if (!this.phoneInput) {
+      return false;
+    }
+
+    this.phoneInput.validate();
+    this.form.updateValueAndValidity();
+
+    const phoneValue = this.form.get('phone')?.value;
+    // Bloquear si el teléfono no está presente o si el componente marca inválido
+    if (!phoneValue) {
+      return false;
+    }
+    if (this.phoneInput && !this.phoneInput.isValid) {
+      return false;
+    }
+
+    // Si el formulario es válido, puede intentar registrarse/continuar.
     return this.form.valid;
   }
 

@@ -75,7 +75,14 @@
           <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
           <div class="step-actions">
             <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">{{ 'WIZARD.cancel' | transloco }}</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()">{{ 'WIZARD.next' | transloco }}</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="nextStep()"
+              [disabled]="!registerStep?.canProceed()"
+            >
+              {{ 'WIZARD.next' | transloco }}
+            </button>
           </div>
         </div>
 

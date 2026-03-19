@@ -343,8 +343,22 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       // Validar que todos los owners tengan los campos requeridos
       return ownersArray.controls.every(owner => owner.valid);
     }
-    
-    // Sección 3 y siguientes no tienen campos obligatorios estrictos
+
+    if (this.currentSection === 5) {
+      // Sección 5: Archivos adicionales si la LLC NO se constituyó con Start Companies
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+
+      if (wasConstituted === 'no') {
+        return !!(
+          this.serviceDataForm.get('form147Or575FileUrl')?.valid &&
+          this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.valid
+        );
+      }
+
+      return true;
+    }
+
+    // Sección 3 y 4 no tienen campos obligatorios estrictos
     return true;
   }
 
@@ -363,6 +377,14 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       ownersArray?.controls.forEach(owner => {
         (owner as FormGroup).markAllAsTouched();
       });
+    }
+
+    if (this.currentSection === 5) {
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+      if (wasConstituted === 'no') {
+        this.serviceDataForm.get('form147Or575FileUrl')?.markAsTouched();
+        this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.markAsTouched();
+      }
     }
   }
 

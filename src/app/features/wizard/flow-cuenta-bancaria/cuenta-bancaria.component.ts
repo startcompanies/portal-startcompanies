@@ -241,6 +241,17 @@ export class CuentaBancariaComponent implements OnInit {
   async nextStep(): Promise<void> {
     this.errorMessage = null;
 
+    // Paso 1 (registro): impedir avanzar si el formulario del registro no está válido
+    // (aplique incluso si ya hay sesión del wizard).
+    if (this.currentStepIndex === 0 && !this.showEmailVerification && this.registerStep) {
+      if (!this.registerStep.canProceed()) {
+        this.registerStep.form.markAllAsTouched();
+        this.errorMessage =
+          this.registerStep.errorMessage || 'Por favor completa todos los campos requeridos para continuar.';
+        return;
+      }
+    }
+
     // Paso 1 (index 0): registro + verificación
     if (this.currentStepIndex === 0 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
@@ -248,17 +259,30 @@ export class CuentaBancariaComponent implements OnInit {
       }
 
       if (this.registerStep) {
-        const registered = await this.registerStep.registerUser();
-        if (!registered) {
-          const stepData = this.wizardStateService.getStepData(1);
-          if (stepData.email) {
-            this.registeredEmail = stepData.email;
-            this.registeredPassword = stepData.password || '';
-            this.showEmailVerification = true;
-          }
+        // Validar antes de registrar: evita mostrar verificación si faltan campos obligatorios
+        if (!this.registerStep.canProceed()) {
+          this.registerStep.form.markAllAsTouched();
+          this.errorMessage = this.registerStep.errorMessage || 'Por favor completa todos los campos requeridos para continuar.';
           return;
         }
+
+        await this.registerStep.registerUser();
+
+        if (this.registerStep.waitingEmailVerification && this.registerStep.registeredEmail) {
+          this.registeredEmail = this.registerStep.registeredEmail;
+          const stepData = this.wizardStateService.getStepData(1);
+          this.registeredPassword = stepData?.password || '';
+          this.showEmailVerification = true;
+        } else {
+          this.errorMessage =
+            this.registerStep.errorMessage || 'No se pudo completar el registro. Revisa los campos e intenta nuevamente.';
+        }
+        return;
       }
+
+      // Guard-rail: en paso 1 sin autenticación, no se debe avanzar
+      this.errorMessage = this.errorMessage || 'Completa el registro antes de continuar.';
+      return;
     }
 
     // Si estamos avanzando al paso de información de cuenta bancaria (sin pago)

@@ -467,6 +467,17 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     
     // Validaciones básicas según el tipo de paso
     switch (step.step) {
+      case RequestFlowStep.REGISTER:
+        // En wizard: permitir avanzar SOLO cuando el registro quedó en estado de verificación
+        // (o si ya está autenticado).
+        if (this.context === RequestFlowContext.WIZARD) {
+          const instance: any = this.stepComponentRef?.instance;
+          if (instance?.waitingEmailVerification === true) {
+            return true;
+          }
+          return !!this.wizardApiService?.isAuthenticated?.();
+        }
+        return true;
       case RequestFlowStep.EMAIL_VERIFICATION:
         // En wizard: requiere que esté autenticado (tokens emitidos)
         if (this.context === RequestFlowContext.WIZARD) {
@@ -536,7 +547,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Implementación por defecto - limpiar mensajes
     this.errorMessage = null;
     this.successMessage = null;
-    this.currentStepValid = true;
+    const current = this.getCurrentStep();
+    // EMAIL_VERIFICATION en wizard: el botón Next debe permanecer bloqueado
+    // hasta que ocurra `verificationSuccess`.
+    this.currentStepValid = current?.step === RequestFlowStep.EMAIL_VERIFICATION ? false : true;
   }
 
   /**
@@ -689,9 +703,22 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    */
   protected canProceedToNext(): boolean {
     const current = this.getCurrentStep();
-    if (current && (current.step === RequestFlowStep.REGISTER || current.step === RequestFlowStep.EMAIL_VERIFICATION)) {
-      return true;
+    if (!current) return false;
+
+    // REGISTER (wizard): el botón Next debe depender de `canProceed()` del componente real.
+    if (current.step === RequestFlowStep.REGISTER && this.context === RequestFlowContext.WIZARD) {
+      const instance: any = this.stepComponentRef?.instance;
+      if (instance && typeof instance.canProceed === 'function') {
+        return !!instance.canProceed();
+      }
+      return false;
     }
+
+    // EMAIL_VERIFICATION (wizard): depender del estado `currentStepValid`.
+    if (current.step === RequestFlowStep.EMAIL_VERIFICATION && this.context === RequestFlowContext.WIZARD) {
+      return this.currentStepValid;
+    }
+
     return this.currentStepValid;
   }
   

@@ -30,7 +30,7 @@ export class ServiceFormBuilderService {
       accountType: [''],
       estadoConstitucion: [''],
       annualRevenue: [null],
-      actividadFinancieraEsperada: [''],
+      actividadFinancieraEsperada: ['', Validators.required],
       registeredAgentAddress: this.fb.group({
         street: [''],
         building: [''],
@@ -48,11 +48,11 @@ export class ServiceFormBuilderService {
       bankName: [''],
       bankAccountNumber: [''],
       bankRoutingNumber: [''],
-      bankStatementUrl: [''],
-      serviceBillUrl: [''],
-      periodicIncome10k: [''],
-      bankAccountLinkedEmail: ['', [Validators.email]],
-      bankAccountLinkedPhone: [''],
+      bankStatementUrl: ['', Validators.required],
+      serviceBillUrl: ['', Validators.required],
+      periodicIncome10k: ['', Validators.required],
+      bankAccountLinkedEmail: ['', [Validators.required, Validators.email]],
+      bankAccountLinkedPhone: ['', Validators.required],
       projectOrCompanyUrl: [''],
       veracityConfirmation: [''],
       ownerNationality: [''],
@@ -113,8 +113,8 @@ export class ServiceFormBuilderService {
     g.addControl('wasConstitutedWithStartCompanies', this.fb.control(''));
     g.addControl('partnersPassportsFileUrl', this.fb.control(''));
     g.addControl('operatingAgreementAdditionalFileUrl', this.fb.control(''));
-    g.addControl('form147Or575FileUrl', this.fb.control(''));
-    g.addControl('articlesOfOrganizationAdditionalFileUrl', this.fb.control(''));
+    g.addControl('form147Or575FileUrl', this.fb.control('', Validators.required));
+    g.addControl('articlesOfOrganizationAdditionalFileUrl', this.fb.control('', Validators.required));
     g.addControl('boiReportFileUrl', this.fb.control(''));
     g.addControl('bankStatementsFileUrl', this.fb.control(''));
     return g;

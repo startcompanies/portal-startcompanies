@@ -368,7 +368,19 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       
       return membersArray.controls.every(member => member.valid);
     }
-    
+
+    if (this.currentSection === 3) {
+      // Sección 3: Información bancaria/financiera (campos con * rojo)
+      return !!(
+        this.serviceDataForm.get('serviceBillUrl')?.valid &&
+        this.serviceDataForm.get('bankStatementUrl')?.valid &&
+        this.serviceDataForm.get('periodicIncome10k')?.valid &&
+        this.serviceDataForm.get('bankAccountLinkedEmail')?.valid &&
+        this.serviceDataForm.get('bankAccountLinkedPhone')?.valid &&
+        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid
+      );
+    }
+
     return true;
   }
 
@@ -416,6 +428,15 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       membersArray?.controls.forEach(member => {
         (member as FormGroup).markAllAsTouched();
       });
+    }
+
+    if (this.currentSection === 3) {
+      this.serviceDataForm.get('serviceBillUrl')?.markAsTouched();
+      this.serviceDataForm.get('bankStatementUrl')?.markAsTouched();
+      this.serviceDataForm.get('periodicIncome10k')?.markAsTouched();
+      this.serviceDataForm.get('bankAccountLinkedEmail')?.markAsTouched();
+      this.serviceDataForm.get('bankAccountLinkedPhone')?.markAsTouched();
+      this.serviceDataForm.get('actividadFinancieraEsperada')?.markAsTouched();
     }
   }
 

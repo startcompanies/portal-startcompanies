@@ -243,6 +243,11 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
       this.isValid = false;
       this.errorMessage = 'El teléfono es requerido';
       this.showError = true;
+      // IMPORTANTE: sincronizar el FormControl con el input real.
+      // Si no hacemos esto, el FormControl puede conservar un valor anterior
+      // y el wizard avanzará aunque el campo esté vacío.
+      this.value = '';
+      this.onChange('');
       return;
     }
 
@@ -251,6 +256,9 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
       this.isValid = true;
       this.errorMessage = '';
       this.showError = false;
+      // Limpia el FormControl para reflejar el input real.
+      this.value = '';
+      this.onChange('');
       return;
     }
 
@@ -259,8 +267,12 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
     
     if (!fullNumber || fullNumber === '') {
       this.isValid = false;
+      // Sincronizar FormControl para que los validadores required fallen
+      this.value = '';
+      this.onChange('');
       this.showError = true;
       this.errorMessage = 'El teléfono es requerido';
+      this.showError = true;
       return;
     }
     
