@@ -18,6 +18,7 @@ export class ResetPasswordComponent implements OnInit {
   emailSent = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  forgotPasswordMessage: string | null = null;
   resetToken: string | null = null;
   isResetMode = false;
   
@@ -132,15 +133,23 @@ export class ResetPasswordComponent implements OnInit {
       this.isLoading = true;
       this.errorMessage = null;
       this.emailSent = false;
+      this.forgotPasswordMessage = null;
 
       this.authService.forgotPassword(this.resetForm.value.email).subscribe({
-        next: () => {
+        next: (res) => {
           this.isLoading = false;
           this.emailSent = true;
+          // El backend devuelve un message genérico (por seguridad).
+          this.forgotPasswordMessage =
+            res?.message ||
+            'Si tu correo existe en nuestro sistema, te enviaremos un enlace para restablecer tu contraseña.';
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al enviar el correo. Verifica tu email e intenta nuevamente.';
+          this.errorMessage =
+            error?.error?.message ??
+            error?.message ??
+            'Error al enviar el correo. Verifica tu email e intenta nuevamente.';
           console.error('Forgot password error:', error);
         }
       });

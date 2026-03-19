@@ -16,6 +16,7 @@ export const environment = {
   baseUrl: DOMAIN.production,
   domain: DOMAIN.domainName.production,
   wizardAndPanelEnabled: false,
+  paymentEnabled: false,
   stripe: {
     publishableKey: '',
   },

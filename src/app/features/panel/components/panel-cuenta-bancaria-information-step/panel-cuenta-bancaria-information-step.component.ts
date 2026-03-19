@@ -30,15 +30,20 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number;
   @Input() initialData?: any;
+  @Input() flowStepNumber?: number;
 
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
   @Output() nextStepRequested = new EventEmitter<void>();
+  @Output() requestCreated = new EventEmitter<{ requestId: number }>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
   totalSections = 6;
   fileUploadStates: { [key: string]: { file: File | null; uploading: boolean; progress: number } } = {};
+
+  /** ID del request creado en este paso cuando no existía (panel sin paso de pago para cuenta bancaria). */
+  private _createdRequestId?: number;
 
   get isMultiMember(): boolean {
     return this.serviceDataForm.get('isMultiMember')?.value === 'yes';
@@ -252,12 +257,85 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
   }
 
   async saveToApi(): Promise<void> {
-    if (!this.requestId) return;
+    let effectiveId = this._createdRequestId ?? this.requestId;
+
+    if (!effectiveId) {
+      // Crear request en el primer guardado (cuenta bancaria no tiene paso de pago en panel).
+      try {
+        const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
+        const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
+        const formData = this.serviceDataForm.value;
+        const validatorAsFirstMember = {
+          firstName: formData.validatorFirstName || '',
+          lastName: formData.validatorLastName || '',
+          dateOfBirth: formData.validatorDateOfBirth || '',
+          nationality: formData.validatorNationality || '',
+          passportNumber: formData.validatorPassportNumber || '',
+          email: formData.validatorWorkEmail || '',
+          phoneNumber: formData.validatorPhone || '',
+          scannedPassportUrl: formData.validatorPassportUrl || '',
+          memberAddress: {
+            street: formData.ownerPersonalStreet || '',
+            unit: formData.ownerPersonalUnit || '',
+            city: formData.ownerPersonalCity || '',
+            stateRegion: formData.ownerPersonalState || '',
+            postalCode: formData.ownerPersonalPostalCode || '',
+            country: formData.ownerPersonalCountry || ''
+          },
+          percentageOfParticipation: 100,
+          validatesBankAccount: true,
+          ssnOrItin: '',
+          nationalTaxId: '',
+          taxFilingCountry: '',
+          ownerContributions: 0,
+          ownerLoansToLLC: 0,
+          loansReimbursedByLLC: 0,
+          profitDistributions: 0,
+          spentMoreThan31DaysInUS: '',
+          hasUSFinancialInvestments: '',
+          isUSCitizen: formData.isUSResident === 'yes' ? 'si' : 'no'
+        };
+        const additionalOwners = formData.owners || [];
+        const allMembers = [validatorAsFirstMember, ...additionalOwners];
+
+        const requestData: any = {
+          type: 'cuenta-bancaria',
+          status: 'pendiente',
+          paymentMethod: null,
+          paymentAmount: 0,
+          cuentaBancariaData: { ...formData, owners: allMembers }
+        };
+        if (clientSelection.clientId) {
+          requestData.clientId = clientSelection.clientId;
+        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+          requestData.clientData = {
+            firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
+            lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
+            email: clientSelection.clientEmail || clientAssociation.email || '',
+            phone: clientSelection.clientPhone || clientAssociation.phone || ''
+          };
+        }
+
+        this.logger.log('[PanelCuentaBancariaInformationStep] Creando request (sin paso de pago)');
+        const response = await this.requestsService.createRequest(requestData);
+        if (!response?.id) {
+          this.logger.error('[PanelCuentaBancariaInformationStep] createRequest no devolvió id');
+          return;
+        }
+        this._createdRequestId = response.id;
+        this.requestCreated.emit({ requestId: response.id });
+        effectiveId = response.id;
+      } catch (error: any) {
+        this.logger.error('[PanelCuentaBancariaInformationStep] Error al crear request:', error);
+        this.saveError = error?.error?.message || 'Error al crear la solicitud';
+        return;
+      }
+    }
+
     this.isSaving = true;
     this.saveError = null;
     try {
       const formData = this.serviceDataForm.value;
-      // Construir el primer member a partir del validador (misma lógica que el wizard)
       const validatorAsFirstMember = {
         firstName: formData.validatorFirstName || '',
         lastName: formData.validatorLastName || '',
@@ -290,11 +368,15 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       };
       const additionalOwners = formData.owners || [];
       const allMembers = [validatorAsFirstMember, ...additionalOwners];
-      await this.requestsService.updateRequest(this.requestId, {
+      const payload: any = {
         type: 'cuenta-bancaria',
         currentStepNumber: this.currentSection,
         cuentaBancariaData: { ...formData, owners: allMembers }
-      });
+      };
+      if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+        payload.currentStep = this.flowStepNumber;
+      }
+      await this.requestsService.updateRequest(effectiveId, payload);
     } catch (error: any) {
       this.logger.error('[PanelCuentaBancariaInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
@@ -326,7 +408,8 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', 'cuenta-bancaria');
-      if (this.requestId) formData.append('requestUuid', this.requestId.toString());
+      const effectiveRequestId = this._createdRequestId ?? this.requestId;
+      if (effectiveRequestId) formData.append('requestUuid', effectiveRequestId.toString());
       const response = await firstValueFrom(
         this.http.post<{ url: string; key: string; message: string }>(`${environment.apiUrl}/upload-file`, formData)
       );
