@@ -30,6 +30,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number;
   @Input() initialData?: any;
+  @Input() flowStepNumber?: number;
 
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
@@ -294,11 +295,15 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
         };
       }) : [];
       const { owners, ...restOfFormData } = formData;
-      await this.requestsService.updateRequest(this.requestId, {
+      const payload: any = {
         type: 'renovacion-llc',
         currentStepNumber: this.currentSection,
         renovacionLlcData: { ...restOfFormData, members }
-      });
+      };
+      if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+        payload.currentStep = this.flowStepNumber;
+      }
+      await this.requestsService.updateRequest(this.requestId, payload);
     } catch (error: any) {
       this.logger.error('[PanelRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';

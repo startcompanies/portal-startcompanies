@@ -324,7 +324,12 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       const llcType = this.serviceDataForm.get('llcType');
       const state = this.serviceDataForm.get('state');
 
-      return !!(llcName?.valid && llcType?.valid && state?.valid);
+      // Si el plan marca campos como readonly deshabilitándolos, Angular los pone en status DISABLED
+      // y `control.valid` típicamente => false. Aquí tratamos los deshabilitados como válidos si tienen valor.
+      const isFilled = (c: any) => c?.value !== null && c?.value !== undefined && `${c?.value}`.trim() !== '';
+      const isValidOrDisabled = (c: any) => (c?.disabled ? isFilled(c) : c?.valid);
+
+      return !!(isValidOrDisabled(llcName) && isValidOrDisabled(llcType) && isValidOrDisabled(state));
     }
     
     if (this.currentSection === 2) {

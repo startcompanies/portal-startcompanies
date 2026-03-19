@@ -8,6 +8,7 @@ import { RequestFlowStateService } from '../../../../shared/services/request-flo
 import { RequestFlowStep } from '../../../../shared/models/request-flow-context';
 import { AperturaLlcFormComponent } from '../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { RequestsService } from '../../services/requests.service';
+import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
@@ -30,10 +31,13 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number; // ID del request si ya fue creado (después del pago)
   @Input() initialData?: any; // Datos iniciales para hidratar el formulario
+  /** Paso principal del flujo (1-based) para enviar currentStep en PATCH y mantener BD consistente */
+  @Input() flowStepNumber?: number;
   
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
   @Output() nextStepRequested = new EventEmitter<void>();
+  @Output() requestCreated = new EventEmitter<{ requestId: number }>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -42,6 +46,8 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   usStates = US_STATES;
 
   private formSubscription?: Subscription;
+  /** ID del request creado en este paso cuando paymentEnabled es false (panel no tiene paso de pago). */
+  private _createdRequestId?: number;
   
   isSaving = false;
   saveError: string | null = null;
@@ -52,6 +58,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   constructor(
     private flowStateService: RequestFlowStateService,
     private requestsService: RequestsService,
+    private wizardPlansService: WizardPlansService,
     private fb: FormBuilder,
     private http: HttpClient,
     private serviceFormBuilder: ServiceFormBuilderService,
@@ -214,9 +221,9 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       formData.append('file', file);
       formData.append('servicio', serviceType);
 
-      // Si ya hay un request creado, incluir el UUID
-      if (this.requestId) {
-        formData.append('requestUuid', this.requestId.toString());
+      const effectiveRequestId = this._createdRequestId ?? this.requestId;
+      if (effectiveRequestId) {
+        formData.append('requestUuid', effectiveRequestId.toString());
       }
 
       const response = await firstValueFrom(
@@ -397,15 +404,16 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Navega a la siguiente sección
+   * Navega a la siguiente sección (guarda en API antes de avanzar).
    */
-  goToNextSection(): void {
+  async goToNextSection(): Promise<void> {
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;
     }
     
     if (this.currentSection < 3) {
+      await this.saveToApi();
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
       this.saveStepData(); // Actualizar estado del flujo para que el base muestre Siguiente en última sección
@@ -494,15 +502,105 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Al pulsar "Siguiente" en la última sección: actualizar estado del paso y luego emitir nextStepRequested
-   * (el base guardará borrador y esperará antes de avanzar).
+   * Al pulsar "Siguiente" en la última sección: guardar en API, actualizar estado y emitir nextStepRequested.
    */
-  onLastSectionNext(): void {
+  async onLastSectionNext(): Promise<void> {
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;
     }
     this.saveStepData();
+    await this.saveToApi();
     this.nextStepRequested.emit();
+  }
+
+  /**
+   * Guarda los datos en la API. Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado.
+   */
+  async saveToApi(): Promise<void> {
+    const effectiveId = this._createdRequestId ?? this.requestId;
+
+    if (!effectiveId && !this.requestId && !environment.paymentEnabled) {
+      // Crear request en el primer guardado del paso de Información (panel sin paso de pago).
+      try {
+        const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
+        const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
+        const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
+          this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+        const formData = this.serviceDataForm.getRawValue();
+
+        const plan = statePlanData.plan || formData.plan || '';
+        const amount = Number(statePlanData?.amount) || (plan ? this.wizardPlansService.calculateAmount(plan) : 0);
+        const requestData: any = {
+          type: 'apertura-llc',
+          status: 'pendiente',
+          paymentMethod: null,
+          paymentAmount: amount,
+        };
+        if (clientSelection.clientId) {
+          requestData.clientId = clientSelection.clientId;
+        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+          requestData.clientData = {
+            firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
+            lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
+            email: clientSelection.clientEmail || clientAssociation.email || '',
+            phone: clientSelection.clientPhone || clientAssociation.phone || '',
+          };
+        }
+        requestData.plan = plan;
+        requestData.aperturaLlcData = {
+          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
+          plan,
+          ...formData,
+          members: formData.members || [],
+        };
+
+        this.logger.log('[PanelLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
+        const response = await this.requestsService.createRequest(requestData);
+        if (!response?.id) {
+          this.logger.error('[PanelLlcInformationStep] createRequest no devolvió id');
+          return;
+        }
+        this._createdRequestId = response.id;
+        this.requestCreated.emit({ requestId: response.id });
+        // Seguir con updateRequest para persistir el payload actual del paso.
+      } catch (error: any) {
+        this.logger.error('[PanelLlcInformationStep] Error al crear request:', error);
+        this.saveError = error?.error?.message || 'Error al crear la solicitud';
+        return;
+      }
+    }
+
+    const id = this._createdRequestId ?? this.requestId;
+    if (!id) {
+      return;
+    }
+
+    this.isSaving = true;
+    this.saveError = null;
+    try {
+      const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
+        this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+      const formData = this.serviceDataForm.getRawValue();
+      const payload: any = {
+        type: 'apertura-llc',
+        currentStepNumber: this.currentSection,
+        aperturaLlcData: {
+          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
+          plan: statePlanData.plan || formData.plan || '',
+          ...formData,
+          members: formData.members || [],
+        },
+      };
+      if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+        payload.currentStep = this.flowStepNumber;
+      }
+      await this.requestsService.updateRequest(id, payload);
+    } catch (error: any) {
+      this.logger.error('[PanelLlcInformationStep] Error al guardar:', error);
+      this.saveError = error?.error?.message || 'Error al guardar los datos';
+    } finally {
+      this.isSaving = false;
+    }
   }
 }

@@ -82,11 +82,13 @@ export class WizardFlowFinalizeService {
     const step2 = allData?.step2 || {};   // estado/plan (sincronizado por syncToWizardStateService)
     const step4 = allData?.step4 || {};   // formulario de servicio (sincronizado por syncToWizardStateService)
 
+    // Con paymentEnabled=false guardamos plan y amount para saber cuánto cobrar después
+    const amount = Number(step2?.amount) || 0;
     const requestData: any = {
       type: serviceType,
       status: 'solicitud-recibida',
       paymentMethod: null,
-      paymentAmount: 0,
+      paymentAmount: amount,
       clientData: {
         firstName: step1.firstName || user.firstName || '',
         lastName: step1.lastName || user.lastName || '',
@@ -96,11 +98,13 @@ export class WizardFlowFinalizeService {
       },
     };
 
-    // Datos específicos del servicio con datos del formulario incluidos
+    // Datos específicos del servicio con datos del formulario incluidos (plan se envía al crear)
     if (serviceType === 'apertura-llc') {
+      const plan = step2.plan || '';
+      requestData.plan = plan;
       requestData.aperturaLlcData = {
         incorporationState: step2.state || '',
-        plan: step2.plan || '',
+        plan,
         ...step4,
       };
     } else if (serviceType === 'renovacion-llc') {

@@ -221,12 +221,23 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         this.syncToWizardStateService();
       }
       
-      // Restaurar paso desde la API: request.currentStep es 1-based (paso principal del flujo)
-      const apiStep = (request as any).currentStep;
-      if (typeof apiStep === 'number' && apiStep >= 1) {
-        const desiredIndex = Math.min(apiStep - 1, this.flowSteps.length - 1);
-        this.currentStepIndex = Math.max(0, desiredIndex);
+      // Restaurar paso desde la API: request.currentStep es 1-based (paso principal del flujo).
+      // Si el request tiene currentStepNumber en el sub-request (apertura/renovación/cuenta), estamos en el paso de formulario de servicio → ir ahí.
+      const req = request as any;
+      const serviceFormStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
+      const inServiceFormBySubStep =
+        serviceFormStepIndex >= 0 &&
+        ((this.serviceType === 'apertura-llc' && req.aperturaLlcRequest?.currentStepNumber >= 1) ||
+         (this.serviceType === 'renovacion-llc' && req.renovacionLlcRequest?.currentStepNumber >= 1) ||
+         (this.serviceType === 'cuenta-bancaria' && req.cuentaBancariaRequest?.currentStepNumber >= 1));
+      if (inServiceFormBySubStep) {
+        this.currentStepIndex = serviceFormStepIndex;
       } else {
+        const apiStep = req.currentStep;
+        if (typeof apiStep === 'number' && apiStep >= 1) {
+          const desiredIndex = Math.min(apiStep - 1, this.flowSteps.length - 1);
+          this.currentStepIndex = Math.max(0, desiredIndex);
+        } else {
         // Fallback: inferir paso por datos hidratados (comportamiento anterior)
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION);
         const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
@@ -251,6 +262,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
             this.currentStepIndex = serviceStepIndex;
           }
         }
+      }
       }
       
       // No mostrar mensaje "Borrador cargado exitosamente" en paso Información de la LLC
@@ -373,9 +385,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         draftData.stripeChargeId = paymentData.paymentInfo?.chargeId;
       }
       
-      // Agregar datos específicos del servicio (wizard y panel: incluir plan/state o state/llcType para validaciones al recargar)
+      // Agregar datos específicos del servicio (wizard y panel: incluir plan/amount/state para saber cuánto cobrar)
       if (serviceData) {
+        if (typeof serviceData.currentSection === 'number' && serviceData.currentSection >= 1) {
+          draftData.currentStepNumber = serviceData.currentSection;
+        }
         if (this.serviceType === 'apertura-llc') {
+          if (statePlanData?.plan != null) draftData.plan = statePlanData.plan;
+          const amount = statePlanData?.amount != null ? Number(statePlanData.amount) : undefined;
+          if (amount !== undefined && !isNaN(amount)) draftData.paymentAmount = amount;
           draftData.aperturaLlcData = {
             ...serviceData,
             ...(statePlanData?.plan != null && { plan: statePlanData.plan }),
@@ -646,18 +664,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
     }
     
-    // Service form steps: pueden necesitar datos del pago y datos hidratados
+    // Service form steps: pueden necesitar datos del pago, datos hidratados y paso del flujo (para enviar currentStep en PATCH)
     if (stepConfig.step === RequestFlowStep.SERVICE_FORM) {
       const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
-      // Pasar requestId si existe (después del pago)
       if (paymentData.requestId) {
         extra.requestId = paymentData.requestId;
       }
-      
-      // Pasar datos hidratados del servicio si existen
+      extra.flowStepNumber = this.currentStepIndex + 1;
       const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
       if (serviceData && Object.keys(serviceData).length > 0) {
-        // Pasar datos específicos según el tipo de servicio
         if (this.serviceType === 'apertura-llc') {
           extra.initialData = serviceData;
         } else if (this.serviceType === 'renovacion-llc') {
@@ -801,6 +816,20 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
 
     const stepConfig = this.flowSteps[this.currentStepIndex];
     if (!stepConfig) return;
+
+    // Wizard: si el paso es verificación de email y el usuario ya está autenticado (email verificado), saltar esta pantalla
+    if (
+      stepConfig.step === RequestFlowStep.EMAIL_VERIFICATION &&
+      this.context === RequestFlowContext.WIZARD &&
+      this.wizardApiService?.isAuthenticated?.()
+    ) {
+      if (this.currentStepIndex < this.flowSteps.length - 1) {
+        this.currentStepIndex++;
+        this.onStepChanged();
+        this.renderCurrentStep();
+        return;
+      }
+    }
 
     // Antes de destruir: si el siguiente paso es Confirmación, guardar datos actuales del paso SERVICE_FORM (incl. members)
     if (stepConfig.step === RequestFlowStep.CONFIRMATION && this.stepComponentRef?.instance) {
@@ -1028,6 +1057,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Última sección de Información de la LLC: el paso emite nextStepRequested y avanzamos (botón va dentro del panel)
     subscribeIfEmitter('nextStepRequested', () => {
       this.nextStep();
+    });
+
+    // Panel: cuando el paso de Información crea el request (paymentEnabled=false), guardar requestId en PAYMENT para el resto del flujo
+    subscribeIfEmitter('requestCreated', (evt: { requestId: number }) => {
+      if (evt?.requestId != null) {
+        const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, { ...paymentData, requestId: evt.requestId });
+      }
     });
 
     // Confirmación: enviar

@@ -98,7 +98,13 @@ export class AuthService {
         switchMap((response) => {
           const user = response?.user ?? null;
           if (!user) {
-            return throwError(() => new Error('Credenciales inválidas'));
+            // El backend puede responder con un body de error (sin `user`) pero con `message`.
+            // En ese caso, mostramos el mensaje real en vez del genérico.
+            const backendMessage =
+              (response as any)?.message ??
+              (response as any)?.error?.message ??
+              'Credenciales inválidas';
+            return throwError(() => new Error(backendMessage));
           }
           this.currentUserSubject.next(user);
           return of(response);

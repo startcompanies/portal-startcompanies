@@ -223,11 +223,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         }
       };
 
-      // Agregar datos específicos del servicio
+      // Agregar datos específicos del servicio (plan se envía al crear para apertura-llc)
       if (serviceType === 'apertura-llc') {
+        const plan = step2Data.plan || '';
+        requestData.plan = plan;
         requestData.aperturaLlcData = {
           incorporationState: step2Data.state || '',
-          plan: step2Data.plan || ''
+          plan
         };
       } else if (serviceType === 'renovacion-llc') {
         requestData.renovacionLlcData = {
@@ -403,7 +405,9 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       }
     };
     if (serviceType === 'apertura-llc') {
-      requestData.aperturaLlcData = { incorporationState: step2Data.state || '', plan: step2Data.plan || '' };
+      const plan = step2Data.plan || '';
+      requestData.plan = plan;
+      requestData.aperturaLlcData = { incorporationState: step2Data.state || '', plan };
     } else if (serviceType === 'renovacion-llc') {
       requestData.renovacionLlcData = { state: step2Data.state || '', llcType: step2Data.llcType || '' };
     } else if (serviceType === 'cuenta-bancaria') {
