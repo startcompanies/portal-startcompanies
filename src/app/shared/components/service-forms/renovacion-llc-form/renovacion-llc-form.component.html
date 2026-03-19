@@ -33,17 +33,21 @@
           El estado fue seleccionado en el paso anterior y no puede modificarse.
         </small>
         <!-- Solo mostrar select si no hay estado seleccionado -->
-        <select 
+        <select
           *ngIf="!serviceDataForm.get('state')?.value"
-          id="renovacionState" 
-          class="form-select" 
+          id="renovacionState"
+          class="form-select"
           formControlName="state"
+          [class.is-invalid]="serviceDataForm.get('state')?.invalid && serviceDataForm.get('state')?.touched"
         >
           <option value="">Selecciona un estado...</option>
           <option *ngFor="let state of usStates" [value]="state.value">
             {{ state.label }} ({{ state.abbreviation }})
           </option>
         </select>
+        <div *ngIf="serviceDataForm.get('state')?.invalid && serviceDataForm.get('state')?.touched" class="invalid-feedback d-block">
+          Este campo es obligatorio.
+        </div>
       </div>
       
       <div class="col-md-6">

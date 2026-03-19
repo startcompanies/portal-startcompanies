@@ -30,6 +30,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number;
   @Input() initialData?: any;
+  @Input() flowStepNumber?: number;
 
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
@@ -179,6 +180,20 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       if (!ownersArray || ownersArray.length < minOwners) return false;
       return ownersArray.controls.every(owner => owner.valid);
     }
+
+    if (this.currentSection === 5) {
+      // Sección 5: archivos adicionales si la LLC NO se constituyó con Start Companies
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+      if (wasConstituted === 'no') {
+        return !!(
+          this.serviceDataForm.get('form147Or575FileUrl')?.valid &&
+          this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.valid
+        );
+      }
+
+      return true;
+    }
+
     return true;
   }
 
@@ -190,6 +205,14 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
     if (this.currentSection === 2) {
       const ownersArray = this.serviceDataForm.get('owners') as FormArray;
       ownersArray?.controls.forEach(owner => (owner as FormGroup).markAllAsTouched());
+    }
+
+    if (this.currentSection === 5) {
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+      if (wasConstituted === 'no') {
+        this.serviceDataForm.get('form147Or575FileUrl')?.markAsTouched();
+        this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.markAsTouched();
+      }
     }
   }
 
@@ -272,11 +295,15 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
         };
       }) : [];
       const { owners, ...restOfFormData } = formData;
-      await this.requestsService.updateRequest(this.requestId, {
+      const payload: any = {
         type: 'renovacion-llc',
         currentStepNumber: this.currentSection,
         renovacionLlcData: { ...restOfFormData, members }
-      });
+      };
+      if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+        payload.currentStep = this.flowStepNumber;
+      }
+      await this.requestsService.updateRequest(this.requestId, payload);
     } catch (error: any) {
       this.logger.error('[PanelRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';

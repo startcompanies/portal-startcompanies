@@ -322,8 +322,14 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       // Sección 1: Información de la LLC
       const llcName = this.serviceDataForm.get('llcName');
       const llcType = this.serviceDataForm.get('llcType');
-      
-      return !!(llcName?.valid && llcType?.valid);
+      const state = this.serviceDataForm.get('state');
+
+      // Si el plan marca campos como readonly deshabilitándolos, Angular los pone en status DISABLED
+      // y `control.valid` típicamente => false. Aquí tratamos los deshabilitados como válidos si tienen valor.
+      const isFilled = (c: any) => c?.value !== null && c?.value !== undefined && `${c?.value}`.trim() !== '';
+      const isValidOrDisabled = (c: any) => (c?.disabled ? isFilled(c) : c?.valid);
+
+      return !!(isValidOrDisabled(llcName) && isValidOrDisabled(llcType) && isValidOrDisabled(state));
     }
     
     if (this.currentSection === 2) {
@@ -342,8 +348,22 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       // Validar que todos los owners tengan los campos requeridos
       return ownersArray.controls.every(owner => owner.valid);
     }
-    
-    // Sección 3 y siguientes no tienen campos obligatorios estrictos
+
+    if (this.currentSection === 5) {
+      // Sección 5: Archivos adicionales si la LLC NO se constituyó con Start Companies
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+
+      if (wasConstituted === 'no') {
+        return !!(
+          this.serviceDataForm.get('form147Or575FileUrl')?.valid &&
+          this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.valid
+        );
+      }
+
+      return true;
+    }
+
+    // Sección 3 y 4 no tienen campos obligatorios estrictos
     return true;
   }
 
@@ -354,6 +374,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     if (this.currentSection === 1) {
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('llcType')?.markAsTouched();
+      this.serviceDataForm.get('state')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -361,6 +382,14 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       ownersArray?.controls.forEach(owner => {
         (owner as FormGroup).markAllAsTouched();
       });
+    }
+
+    if (this.currentSection === 5) {
+      const wasConstituted = this.serviceDataForm.get('wasConstitutedWithStartCompanies')?.value;
+      if (wasConstituted === 'no') {
+        this.serviceDataForm.get('form147Or575FileUrl')?.markAsTouched();
+        this.serviceDataForm.get('articlesOfOrganizationAdditionalFileUrl')?.markAsTouched();
+      }
     }
   }
 

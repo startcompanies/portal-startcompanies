@@ -10,6 +10,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../../../services/wizard-plans.service';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
+import { environment } from '../../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -433,8 +434,20 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       const llcType = this.serviceDataForm.get('llcType');
       const llcName = this.serviceDataForm.get('llcName');
       const businessDescription = this.serviceDataForm.get('businessDescription');
-      
-      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid);
+      const incorporationState = this.serviceDataForm.get('incorporationState');
+
+      // En algunos planes ciertos campos se marcan como readonly deshabilitando el control.
+      // Angular pone status="DISABLED" y típicamente `control.valid` => false aunque el valor sea correcto.
+      // Por eso aquí tratamos los deshabilitados como válidos si tienen valor.
+      const isFilled = (c: any) => c?.value !== null && c?.value !== undefined && `${c?.value}`.trim() !== '';
+      const isValidOrDisabled = (c: any) => (c?.disabled ? isFilled(c) : c?.valid);
+
+      return !!(
+        isValidOrDisabled(llcType) &&
+        isValidOrDisabled(llcName) &&
+        isValidOrDisabled(businessDescription) &&
+        isValidOrDisabled(incorporationState)
+      );
     }
     
     if (this.currentSection === 2) {
@@ -454,7 +467,18 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       return membersArray.controls.every(member => member.valid);
     }
     
-    // Sección 3: No tiene campos obligatorios estrictos
+    if (this.currentSection === 3) {
+      // Sección 3: Información bancaria/financiera (campos con * rojo)
+      return !!(
+        this.serviceDataForm.get('serviceBillUrl')?.valid &&
+        this.serviceDataForm.get('bankStatementUrl')?.valid &&
+        this.serviceDataForm.get('periodicIncome10k')?.valid &&
+        this.serviceDataForm.get('bankAccountLinkedEmail')?.valid &&
+        this.serviceDataForm.get('bankAccountLinkedPhone')?.valid &&
+        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid
+      );
+    }
+
     return true;
   }
 
@@ -466,6 +490,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('llcType')?.markAsTouched();
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('businessDescription')?.markAsTouched();
+      this.serviceDataForm.get('incorporationState')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -473,6 +498,15 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       membersArray?.controls.forEach(member => {
         (member as FormGroup).markAllAsTouched();
       });
+    }
+
+    if (this.currentSection === 3) {
+      this.serviceDataForm.get('serviceBillUrl')?.markAsTouched();
+      this.serviceDataForm.get('bankStatementUrl')?.markAsTouched();
+      this.serviceDataForm.get('periodicIncome10k')?.markAsTouched();
+      this.serviceDataForm.get('bankAccountLinkedEmail')?.markAsTouched();
+      this.serviceDataForm.get('bankAccountLinkedPhone')?.markAsTouched();
+      this.serviceDataForm.get('actividadFinancieraEsperada')?.markAsTouched();
     }
   }
 
@@ -506,21 +540,76 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Guarda los datos en la API
+   * Guarda los datos en la API.
+   * Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado (primer "Siguiente Sección").
    */
   async saveToApi(): Promise<void> {
-    const requestId = this.wizardStateService.getRequestId();
+    let requestId = this.wizardStateService.getRequestId();
+
+    if (!requestId && !environment.paymentEnabled) {
+      // Crear request en el primer guardado del paso de Información (status pendiente; finalize pondrá solicitud-recibida).
+      try {
+        const user = this.wizardApiService.getUser();
+        if (!user) {
+          this.logger.log('[WizardLlcInformationStep] No hay usuario, saltando creación de request');
+          return;
+        }
+        const allData = this.wizardStateService.getAllData();
+        const step1 = allData?.step1 || {};
+        const step2 = allData?.step2 || {};
+        const step4 = this.serviceDataForm.getRawValue();
+
+        const plan = step2.plan ?? '';
+        const amount = Number(step2?.amount) || 0;
+        const requestData: any = {
+          type: 'apertura-llc',
+          status: 'pendiente',
+          paymentMethod: null,
+          paymentAmount: amount,
+          currentStepNumber: this.currentSection,
+          plan,
+          clientData: {
+            firstName: step1.firstName ?? user.firstName ?? '',
+            lastName: step1.lastName ?? user.lastName ?? '',
+            email: step1.email ?? user.email ?? '',
+            phone: step1.phone ?? user.phone ?? '',
+            password: step1.password ?? '',
+          },
+          aperturaLlcData: {
+            incorporationState: step2.state ?? step2.incorporationState ?? '',
+            plan,
+            ...step4,
+            members: step4.members || [],
+          },
+        };
+
+        this.logger.log('[WizardLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
+        const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
+        if (!response?.id) {
+          this.logger.error('[WizardLlcInformationStep] createRequest no devolvió id');
+          return;
+        }
+        this.wizardStateService.setRequestId(response.id);
+        requestId = response.id;
+      } catch (error: any) {
+        this.logger.error('[WizardLlcInformationStep] Error al crear request:', error);
+        this.saveError = error?.error?.message || 'Error al crear la solicitud';
+        this.isSaving = false;
+        return;
+      }
+    }
+
     if (!requestId) {
       this.logger.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
       return;
     }
-    
+
     this.isSaving = true;
     this.saveError = null;
-    
+
     try {
       const formData = this.serviceDataForm.getRawValue();
-      
+
       const updateData = {
         type: 'apertura-llc',
         currentStepNumber: this.currentSection,
@@ -529,11 +618,11 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
           members: formData.members || []
         }
       };
-      
+
       this.logger.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardLlcInformationStep] Datos guardados exitosamente');
-      
+
     } catch (error: any) {
       this.logger.error('[WizardLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';

@@ -160,14 +160,34 @@ export class LLCAperturaComponent implements OnInit {
   }
 
   /**
+   * Paso 2 (estado + plan): requeridos antes de continuar
+   */
+  canProceedFromStatePlanStep(): boolean {
+    const step2 = this.wizardStateService.getStepData(2) || {};
+    return !!(step2.state && step2.plan && typeof step2.amount === 'number' && step2.amount > 0);
+  }
+
+  /**
    * Navega al siguiente paso
-   * - Paso 1: Registra al usuario si no está autenticado (misma lógica que flow-cuenta-bancaria)
+   * - Paso 1: Registra al usuario si no está autenticado
+   * - Paso 2: Valida selección de estado y plan
    * - Paso 3: Procesa el pago y crea el request
    * - Paso 4+: Actualiza el request existente
    */
-  async nextStep(): Promise<void> {    
+  async nextStep(): Promise<void> {
     this.errorMessage = null;
-    
+
+    // Paso 1 (registro): impedir avanzar si el formulario del registro no está válido
+    // (aplique incluso si ya hay sesión del wizard, para evitar saltos con campos incompletos)
+    if (this.currentStep === 1 && !this.showEmailVerification && this.registerStep) {
+      if (!this.registerStep.canProceed()) {
+        this.registerStep.form.markAllAsTouched();
+        this.errorMessage =
+          this.registerStep.errorMessage || 'Por favor completa todos los campos requeridos (nombre, teléfono, email y contraseña).';
+        return;
+      }
+    }
+
     // Paso 1 (registro): misma lógica que flow-cuenta-bancaria
     if (this.currentStep === 1 && !this.wizardApiService.isAuthenticated()) {
       if (this.showEmailVerification) {
@@ -175,21 +195,40 @@ export class LLCAperturaComponent implements OnInit {
       }
 
       if (this.registerStep) {
-        const registered = await this.registerStep.registerUser();
-        if (!registered) {
-          const stepData = this.wizardStateService.getStepData(1);
-          if (stepData?.email) {
-            this.registeredEmail = stepData.email;
-            this.registeredPassword = stepData.password || '';
-            this.showEmailVerification = true;
-          } else {
-            this.errorMessage = this.registerStep.errorMessage || 'Por favor, completa todos los campos requeridos (nombre, email, contraseña).';
-          }
+        // Validar antes de registrar: evita avanzar/mostrar verificación con datos faltantes
+        if (!this.registerStep.canProceed()) {
+          this.registerStep.form.markAllAsTouched();
+          this.errorMessage = this.registerStep.errorMessage || 'Por favor completa todos los campos requeridos (nombre, teléfono, email y contraseña).';
           return;
         }
+
+        await this.registerStep.registerUser();
+
+        // Solo mostrar verificación si el registro realmente dejó el flujo esperando código
+        if (this.registerStep.waitingEmailVerification && this.registerStep.registeredEmail) {
+          this.registeredEmail = this.registerStep.registeredEmail;
+          const stepData = this.wizardStateService.getStepData(1);
+          this.registeredPassword = stepData?.password || '';
+          this.showEmailVerification = true;
+        } else {
+          this.errorMessage =
+            this.registerStep.errorMessage || 'No se pudo completar el registro. Revisa los campos e intenta nuevamente.';
+        }
+        return;
       }
+
+      // Guard-rail: en paso 1 sin autenticación, no se debe avanzar si el paso de registro
+      // aún no está disponible o no se pudo completar.
+      this.errorMessage = this.errorMessage || 'Completa el registro antes de continuar.';
+      return;
     }
     
+    // Paso 2 (estado + plan): validar selección antes de continuar
+    if (this.currentStep === 2 && !this.canProceedFromStatePlanStep()) {
+      this.errorMessage = 'Por favor selecciona un estado y plan para continuar.';
+      return;
+    }
+
     // Si estamos en paso 3 (pago), verificar que el pago esté procesado
     if (this.currentStep === 3 && !this.paymentProcessed) {
       // No permitir avanzar si el pago no está procesado

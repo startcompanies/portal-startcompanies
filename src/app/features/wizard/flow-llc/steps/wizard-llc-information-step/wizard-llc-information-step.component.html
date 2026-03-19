@@ -41,11 +41,11 @@
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
     
-    <button 
-      type="button" 
+    <button
+      type="button"
       class="btn btn-primary"
       (click)="goToNextSection()"
-      [disabled]="currentSection >= 3"
+      [disabled]="!isSectionValid()"
       *ngIf="currentSection < 3"
     >
       {{ 'WIZARD.llc_info_step.section_next' | transloco }}
