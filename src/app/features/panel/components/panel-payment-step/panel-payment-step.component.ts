@@ -341,12 +341,14 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
       };
     }
     
-    // Agregar datos del servicio
+    // Agregar datos del servicio (plan se envía al crear para apertura-llc)
     if (this.serviceType === 'apertura-llc') {
+      const plan = statePlanData?.plan || '';
+      requestData.plan = plan;
       requestData.aperturaLlcData = {
         ...serviceData,
         incorporationState: statePlanData?.state || '',
-        plan: statePlanData?.plan || ''
+        plan
       };
     } else if (this.serviceType === 'renovacion-llc') {
       requestData.renovacionLlcData = {

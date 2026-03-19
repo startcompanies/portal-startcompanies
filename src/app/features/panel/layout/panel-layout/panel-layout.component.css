@@ -228,8 +228,15 @@
 /* Content Area */
 :host .content-area {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
+  min-height: 0;
+}
+
+:host .page-wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
 }
 
 /* Responsive */
@@ -238,7 +245,8 @@
     transform: translateX(-100%);
   }
 
-  :host .sidebar.open {
+  /* El template usa [class.collapsed]="!isSidebarOpen"; sin .collapsed = visible */
+  :host .sidebar:not(.collapsed) {
     transform: translateX(0);
   }
 
@@ -250,7 +258,7 @@
     display: block;
   }
 
-  :host .content-area {
+  :host .page-wrapper {
     padding: 1rem;
   }
 }

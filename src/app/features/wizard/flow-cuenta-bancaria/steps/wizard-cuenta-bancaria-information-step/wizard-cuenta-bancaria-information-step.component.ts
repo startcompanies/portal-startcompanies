@@ -324,7 +324,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       ssnItin: [''],
       cuit: [''],
       participationPercentage: [participationPercentage, [Validators.required, Validators.min(0), Validators.max(100)]],
-      passportFileUrl: ['']
+      passportFileUrl: ['', Validators.required]
     });
   }
 
@@ -372,12 +372,17 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   isSectionValid(): boolean {
     if (this.currentSection === 1) {
       // Sección 1: Información del negocio
+      const businessType = this.serviceDataForm.get('businessType');
       const legalBusinessName = this.serviceDataForm.get('legalBusinessName');
       const industry = this.serviceDataForm.get('industry');
       const numberOfEmployees = this.serviceDataForm.get('numberOfEmployees');
       const briefDescription = this.serviceDataForm.get('briefDescription');
-      
-      return !!(legalBusinessName?.valid && industry?.valid && numberOfEmployees?.valid && briefDescription?.valid);
+      const einLetterUrl = this.serviceDataForm.get('einLetterUrl');
+      const einNumber = this.serviceDataForm.get('einNumber');
+      const articlesOrCertificateUrl = this.serviceDataForm.get('articlesOrCertificateUrl');
+
+      return !!(businessType?.valid && legalBusinessName?.valid && industry?.valid && numberOfEmployees?.valid &&
+                briefDescription?.valid && einLetterUrl?.valid && einNumber?.valid && articlesOrCertificateUrl?.valid);
     }
     
     if (this.currentSection === 2) {
@@ -397,12 +402,15 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       const validatorLastName = this.serviceDataForm.get('validatorLastName');
       const validatorDateOfBirth = this.serviceDataForm.get('validatorDateOfBirth');
       const validatorNationality = this.serviceDataForm.get('validatorNationality');
+      const validatorCitizenship = this.serviceDataForm.get('validatorCitizenship');
       const validatorPassportNumber = this.serviceDataForm.get('validatorPassportNumber');
+      const validatorPassportUrl = this.serviceDataForm.get('validatorPassportUrl');
       const validatorWorkEmail = this.serviceDataForm.get('validatorWorkEmail');
       const validatorPhone = this.serviceDataForm.get('validatorPhone');
-      
-      return !!(validatorTitle?.valid && validatorFirstName?.valid && validatorLastName?.valid && 
-                validatorDateOfBirth?.valid && validatorNationality?.valid && validatorPassportNumber?.valid && 
+
+      return !!(validatorTitle?.valid && validatorFirstName?.valid && validatorLastName?.valid &&
+                validatorDateOfBirth?.valid && validatorNationality?.valid && validatorCitizenship?.valid &&
+                validatorPassportNumber?.valid && validatorPassportUrl?.valid &&
                 validatorWorkEmail?.valid && validatorPhone?.valid);
     }
     
@@ -413,9 +421,10 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       const ownerPersonalState = this.serviceDataForm.get('ownerPersonalState');
       const ownerPersonalCountry = this.serviceDataForm.get('ownerPersonalCountry');
       const ownerPersonalPostalCode = this.serviceDataForm.get('ownerPersonalPostalCode');
-      
-      return !!(ownerPersonalStreet?.valid && ownerPersonalCity?.valid && ownerPersonalState?.valid && 
-                ownerPersonalCountry?.valid && ownerPersonalPostalCode?.valid);
+      const serviceBillUrl = this.serviceDataForm.get('serviceBillUrl');
+
+      return !!(ownerPersonalStreet?.valid && ownerPersonalCity?.valid && ownerPersonalState?.valid &&
+                ownerPersonalCountry?.valid && ownerPersonalPostalCode?.valid && serviceBillUrl?.valid);
     }
     
     if (this.currentSection === 5) {
@@ -449,10 +458,14 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    */
   markSectionAsTouched(): void {
     if (this.currentSection === 1) {
+      this.serviceDataForm.get('businessType')?.markAsTouched();
       this.serviceDataForm.get('legalBusinessName')?.markAsTouched();
       this.serviceDataForm.get('industry')?.markAsTouched();
       this.serviceDataForm.get('numberOfEmployees')?.markAsTouched();
       this.serviceDataForm.get('briefDescription')?.markAsTouched();
+      this.serviceDataForm.get('einLetterUrl')?.markAsTouched();
+      this.serviceDataForm.get('einNumber')?.markAsTouched();
+      this.serviceDataForm.get('articlesOrCertificateUrl')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -468,7 +481,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       this.serviceDataForm.get('validatorLastName')?.markAsTouched();
       this.serviceDataForm.get('validatorDateOfBirth')?.markAsTouched();
       this.serviceDataForm.get('validatorNationality')?.markAsTouched();
+      this.serviceDataForm.get('validatorCitizenship')?.markAsTouched();
       this.serviceDataForm.get('validatorPassportNumber')?.markAsTouched();
+      this.serviceDataForm.get('validatorPassportUrl')?.markAsTouched();
       this.serviceDataForm.get('validatorWorkEmail')?.markAsTouched();
       this.serviceDataForm.get('validatorPhone')?.markAsTouched();
     }
@@ -479,6 +494,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       this.serviceDataForm.get('ownerPersonalState')?.markAsTouched();
       this.serviceDataForm.get('ownerPersonalCountry')?.markAsTouched();
       this.serviceDataForm.get('ownerPersonalPostalCode')?.markAsTouched();
+      this.serviceDataForm.get('serviceBillUrl')?.markAsTouched();
     }
     
     if (this.currentSection === 5) {

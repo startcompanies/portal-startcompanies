@@ -49,19 +49,18 @@ export class DraftRequestService {
       draftRequestUuid: request.uuid
     });
 
-    // Si hay datos de pago procesado
+    // Siempre guardar requestId en PAYMENT para borradores (permite actualizar el request al guardar desde el paso de información)
+    const paymentPayload: any = { requestId: request.id };
     if (request.paymentStatus === 'succeeded' || request.stripeChargeId) {
-      this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
-        paymentProcessed: true,
-        requestId: request.id,
-        paymentInfo: {
-          amount: request.paymentAmount,
-          method: request.paymentMethod,
-          chargeId: request.stripeChargeId,
-          status: request.paymentStatus
-        }
-      });
+      paymentPayload.paymentProcessed = true;
+      paymentPayload.paymentInfo = {
+        amount: request.paymentAmount,
+        method: request.paymentMethod,
+        chargeId: request.stripeChargeId,
+        status: request.paymentStatus
+      };
     }
+    this.flowStateService.setStepData(RequestFlowStep.PAYMENT, paymentPayload);
 
     // Hidratar datos específicos del servicio según el tipo
     let serviceFormData: any = {};
@@ -119,6 +118,9 @@ export class DraftRequestService {
   private inferServiceSection(request: PanelRequest, serviceType: string): number {
     if (serviceType === 'apertura-llc' && request.aperturaLlcRequest) {
       const a: any = request.aperturaLlcRequest;
+      if (a.currentStepNumber != null && a.currentStepNumber >= 1) {
+        return a.currentStepNumber;
+      }
       const hasBankSection =
         !!a.serviceBillUrl ||
         !!a.bankStatementUrl ||
@@ -132,6 +134,14 @@ export class DraftRequestService {
       return 1;
     }
 
+    if (serviceType === 'renovacion-llc' && request.renovacionLlcRequest) {
+      const r: any = request.renovacionLlcRequest;
+      if (r.currentStepNumber != null && r.currentStepNumber >= 1) return r.currentStepNumber;
+    }
+    if (serviceType === 'cuenta-bancaria' && request.cuentaBancariaRequest) {
+      const c: any = request.cuentaBancariaRequest;
+      if (c.currentStepNumber != null && c.currentStepNumber >= 1) return c.currentStepNumber;
+    }
     const hasMembers = Array.isArray(request.members) && request.members.length > 0;
     if (hasMembers) return 2;
     return 1;

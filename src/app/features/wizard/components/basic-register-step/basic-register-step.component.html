@@ -22,7 +22,7 @@
             id="phone"
             formControlName="phone"
             [placeholder]="'WIZARD.basic_register.phone' | transloco"
-            [required]="false"
+            [required]="true"
             [initialCountry]="detectedCountryCode"
           ></app-intl-tel-input>
           <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="text-danger mt-1">
