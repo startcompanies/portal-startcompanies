@@ -20,7 +20,7 @@ export class ServiceFormBuilderService {
       website: [''],
       llcEmail: ['', [Validators.email]],
       linkedin: [''],
-      incorporationState: [''],
+      incorporationState: ['', Validators.required],
       incorporationDate: [''],
       hasEin: [false],
       einNumber: [''],
@@ -83,7 +83,7 @@ export class ServiceFormBuilderService {
   createRenovacionLlcForm(): FormGroup {
     const g = this.fb.group({});
     g.addControl('llcName', this.fb.control('', Validators.required));
-    g.addControl('state', this.fb.control(''));
+    g.addControl('state', this.fb.control('', Validators.required));
     g.addControl('llcType', this.fb.control('', Validators.required));
     g.addControl('mainActivity', this.fb.control(''));
     g.addControl('hasPropertyInUSA', this.fb.control(''));
@@ -122,15 +122,15 @@ export class ServiceFormBuilderService {
 
   createCuentaBancariaForm(): FormGroup {
     const g = this.fb.group({});
-    g.addControl('businessType', this.fb.control(''));
+    g.addControl('businessType', this.fb.control('', Validators.required));
     g.addControl('legalBusinessName', this.fb.control('', Validators.required));
     g.addControl('industry', this.fb.control('', Validators.required));
     g.addControl('numberOfEmployees', this.fb.control('', Validators.required));
     g.addControl('briefDescription', this.fb.control('', Validators.required));
     g.addControl('websiteOrSocialMedia', this.fb.control(''));
-    g.addControl('einLetterUrl', this.fb.control(''));
-    g.addControl('einNumber', this.fb.control(''));
-    g.addControl('articlesOrCertificateUrl', this.fb.control(''));
+    g.addControl('einLetterUrl', this.fb.control('', Validators.required));
+    g.addControl('einNumber', this.fb.control('', Validators.required));
+    g.addControl('articlesOrCertificateUrl', this.fb.control('', Validators.required));
     g.addControl('registeredAgentStreet', this.fb.control('', Validators.required));
     g.addControl('registeredAgentUnit', this.fb.control(''));
     g.addControl('registeredAgentCity', this.fb.control('', Validators.required));
@@ -148,9 +148,9 @@ export class ServiceFormBuilderService {
     g.addControl('validatorLastName', this.fb.control('', Validators.required));
     g.addControl('validatorDateOfBirth', this.fb.control('', Validators.required));
     g.addControl('validatorNationality', this.fb.control('', Validators.required));
-    g.addControl('validatorCitizenship', this.fb.control(''));
+    g.addControl('validatorCitizenship', this.fb.control('', Validators.required));
     g.addControl('validatorPassportNumber', this.fb.control('', Validators.required));
-    g.addControl('validatorPassportUrl', this.fb.control(''));
+    g.addControl('validatorPassportUrl', this.fb.control('', Validators.required));
     g.addControl('validatorWorkEmail', this.fb.control('', [Validators.required, Validators.email]));
     g.addControl('validatorPhone', this.fb.control('', Validators.required));
     g.addControl('canReceiveSMS', this.fb.control(false));
@@ -161,7 +161,7 @@ export class ServiceFormBuilderService {
     g.addControl('ownerPersonalState', this.fb.control('', Validators.required));
     g.addControl('ownerPersonalCountry', this.fb.control('', Validators.required));
     g.addControl('ownerPersonalPostalCode', this.fb.control('', Validators.required));
-    g.addControl('serviceBillUrl', this.fb.control(''));
+    g.addControl('serviceBillUrl', this.fb.control('', Validators.required));
     g.addControl('isMultiMember', this.fb.control('', Validators.required));
     g.addControl('llcType', this.fb.control(''));
     g.addControl('owners', this.fb.array([]));

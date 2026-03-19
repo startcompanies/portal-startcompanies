@@ -15,12 +15,12 @@
               </div>
             </div>
             <div class="col-md-6">
-              <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2 <span class="text-danger">*</span></label>
+              <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2</label>
               <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
             <div class="col-md-6">
-              <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3 <span class="text-danger">*</span></label>
+              <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3</label>
               <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3">
               <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
             </div>
@@ -44,17 +44,21 @@
                 El estado fue seleccionado en el paso anterior y no puede modificarse.
               </small>
               <!-- Solo mostrar select si no hay estado seleccionado -->
-              <select 
+              <select
                 *ngIf="!serviceDataForm.get('incorporationState')?.value"
-                id="incorporationState" 
-                class="form-select" 
+                id="incorporationState"
+                class="form-select"
                 formControlName="incorporationState"
+                [class.is-invalid]="serviceDataForm.get('incorporationState')?.invalid && serviceDataForm.get('incorporationState')?.touched"
               >
                 <option value="">Selecciona un estado...</option>
                 <option *ngFor="let state of usStates" [value]="state.value">
                   {{ state.label }} ({{ state.abbreviation }})
                 </option>
               </select>
+              <div *ngIf="serviceDataForm.get('incorporationState')?.invalid && serviceDataForm.get('incorporationState')?.touched" class="invalid-feedback d-block">
+                Este campo es obligatorio.
+              </div>
             </div>
             <div class="col-md-12">
               <label for="businessDescription" class="form-label">Actividad Principal de la LLC <span class="text-danger">*</span></label>

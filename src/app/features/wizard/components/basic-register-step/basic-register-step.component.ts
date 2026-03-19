@@ -65,14 +65,14 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
      * NOTA: Los campos ya no son obligatorios para navegar entre pasos.
      */
     this.form = new FormGroup({
-      fullName: new FormControl(savedData.fullName || ''),
+      fullName: new FormControl(savedData.fullName || '', [Validators.required]),
       phone: new FormControl(savedData.phone || ''),
       email: new FormControl(
-        savedData.email || '', 
-        [Validators.email],
+        savedData.email || '',
+        [Validators.required, Validators.email],
         [this.emailAvailabilityValidator()]
       ),
-      password: new FormControl(savedData.password || '', [Validators.minLength(8)]),
+      password: new FormControl(savedData.password || '', [Validators.required, Validators.minLength(8)]),
     });
   }
 
@@ -201,6 +201,16 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         this.registeredUserId = user.id;
         this.registeredEmail = user.email;
         this.waitingEmailVerification = false;
+        // Poblar el formulario con datos del usuario autenticado para que la validación pase
+        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+        if (!this.form.get('email')?.value) {
+          this.form.patchValue({ email: user.email || '', fullName });
+          // La contraseña no se restaura por seguridad; usar un placeholder para satisfacer required
+          if (!this.form.get('password')?.value) {
+            this.form.get('password')?.clearValidators();
+            this.form.get('password')?.updateValueAndValidity();
+          }
+        }
         // Emitir evento de registro completado
         this.registrationCompleted.emit();
       }

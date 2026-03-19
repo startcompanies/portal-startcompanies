@@ -83,6 +83,127 @@
       </div>
     </div>
 
+    <!-- ── Sección de Pago Pendiente ─────────────────────────────────────── -->
+    <div *ngIf="hasPendingPayment" class="payment-pending-section">
+      <div class="payment-pending-header">
+        <i class="bi bi-credit-card me-2"></i>
+        <div>
+          <h3>Confirmación de Pago</h3>
+          <p class="text-muted mb-0">Completa el pago para que tu solicitud pase a revisión</p>
+        </div>
+        <span *ngIf="pendingPaymentAmount > 0" class="payment-amount">${{ pendingPaymentAmount | number:'1.2-2' }} USD</span>
+      </div>
+
+      <div *ngIf="paymentErrorMessage" class="alert alert-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>{{ paymentErrorMessage }}
+      </div>
+
+      <!-- Selector de método de pago -->
+      <div class="payment-method-tabs">
+        <button
+          type="button"
+          class="payment-tab"
+          [class.active]="paymentMethod === 'stripe'"
+          (click)="paymentMethod = 'stripe'">
+          <i class="bi bi-credit-card me-2"></i>Tarjeta de Crédito / Débito
+        </button>
+        <button
+          type="button"
+          class="payment-tab"
+          [class.active]="paymentMethod === 'transferencia'"
+          (click)="paymentMethod = 'transferencia'">
+          <i class="bi bi-bank me-2"></i>Transferencia Bancaria
+        </button>
+      </div>
+
+      <!-- Stripe -->
+      <div *ngIf="paymentMethod === 'stripe'" class="payment-content">
+        <app-stripe-payment-form
+          [amount]="pendingPaymentAmount"
+          [showAmount]="false"
+          cardElementId="request-detail-card"
+          errorElementId="request-detail-card-errors">
+        </app-stripe-payment-form>
+        <button
+          type="button"
+          class="btn btn-primary btn-lg mt-3 w-100"
+          (click)="submitStripePayment()"
+          [disabled]="paymentProcessing">
+          <span *ngIf="paymentProcessing" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!paymentProcessing" class="bi bi-lock-fill me-2"></i>
+          {{ paymentProcessing ? 'Procesando...' : 'Pagar con Tarjeta' }}
+        </button>
+        <p class="text-muted text-center mt-2" style="font-size: 0.8rem;">
+          <i class="bi bi-shield-lock me-1"></i>Pago seguro procesado por Stripe
+        </p>
+      </div>
+
+      <!-- Transferencia bancaria -->
+      <div *ngIf="paymentMethod === 'transferencia'" class="payment-content">
+        <div class="transfer-info">
+          <h5><i class="bi bi-info-circle me-2"></i>Instrucciones de Transferencia</h5>
+          <div class="transfer-details">
+            <div class="transfer-row">
+              <span class="transfer-label">Banco:</span>
+              <span>Bank of America</span>
+            </div>
+            <div class="transfer-row">
+              <span class="transfer-label">Beneficiario:</span>
+              <span>Start Companies LLC</span>
+            </div>
+            <div class="transfer-row">
+              <span class="transfer-label">Cuenta:</span>
+              <span>XXXXXXXXXX</span>
+            </div>
+            <div class="transfer-row">
+              <span class="transfer-label">Routing:</span>
+              <span>XXXXXXXXX</span>
+            </div>
+            <div class="transfer-row" *ngIf="pendingPaymentAmount > 0">
+              <span class="transfer-label">Monto:</span>
+              <span class="fw-bold">${{ pendingPaymentAmount | number:'1.2-2' }} USD</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="proof-upload mt-3">
+          <label class="form-label fw-semibold">Sube el comprobante de transferencia</label>
+          <div *ngIf="!paymentProofUrl">
+            <input
+              type="file"
+              class="form-control"
+              accept=".pdf,.jpg,.jpeg,.png"
+              (change)="onProofFileSelected($event)"
+              [disabled]="isUploadingProof">
+            <small class="text-muted">PDF, JPG o PNG. Máximo 10MB.</small>
+          </div>
+          <div *ngIf="isUploadingProof" class="mt-2">
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+            </div>
+            <small class="text-muted">Subiendo comprobante...</small>
+          </div>
+          <div *ngIf="paymentProofUrl" class="proof-uploaded mt-2">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <span>Comprobante subido correctamente</span>
+            <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="paymentProofUrl = null">
+              Cambiar
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-lg mt-3 w-100"
+          (click)="submitTransferPayment()"
+          [disabled]="paymentProcessing || !paymentProofUrl">
+          <span *ngIf="paymentProcessing" class="spinner-border spinner-border-sm me-2"></span>
+          <i *ngIf="!paymentProcessing" class="bi bi-send me-2"></i>
+          {{ paymentProcessing ? 'Enviando...' : 'Enviar Comprobante' }}
+        </button>
+      </div>
+    </div>
+
     <!-- Timeline -->
     <div class="timeline-section">
       <div class="section-header">
@@ -134,7 +255,7 @@
       </div>
 
       <!-- Mostrar iframe con WorkDrive embed solo si está disponible y el proceso está avanzado (no en solicitud-recibida) -->
-      <div *ngIf="canShowWorkDriveIframe() && safeWorkDriveUrl" class="workdrive-container">
+      <div *ngIf="canShowWorkDrive && safeWorkDriveUrl" class="workdrive-container">
         <div class="workdrive-iframe-wrapper">
           <iframe
             [src]="safeWorkDriveUrl"
@@ -150,7 +271,7 @@
       </div>
 
       <!-- Fallback: enlace si no se puede generar la URL de embed y el proceso está avanzado -->
-      <div *ngIf="canShowWorkDriveIframe() && !safeWorkDriveUrl" class="workdrive-container">
+      <div *ngIf="canShowWorkDrive && !safeWorkDriveUrl" class="workdrive-container">
         <div class="workdrive-link-container">
           <div class="workdrive-info">
             <i class="bi bi-folder-fill me-2"></i>
@@ -169,7 +290,7 @@
       </div>
 
       <!-- Mensaje cuando no hay WorkDrive URL o cuando está en solicitud-recibida -->
-      <div *ngIf="!canShowWorkDriveIframe()" class="alert alert-info">
+      <div *ngIf="!canShowWorkDrive" class="alert alert-info">
         <i class="bi bi-info-circle me-2"></i>
         Los documentos estarán disponibles cuando el proceso esté completado.
       </div>

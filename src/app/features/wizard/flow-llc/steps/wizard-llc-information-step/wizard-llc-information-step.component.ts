@@ -433,8 +433,9 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       const llcType = this.serviceDataForm.get('llcType');
       const llcName = this.serviceDataForm.get('llcName');
       const businessDescription = this.serviceDataForm.get('businessDescription');
-      
-      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid);
+      const incorporationState = this.serviceDataForm.get('incorporationState');
+
+      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid && incorporationState?.valid);
     }
     
     if (this.currentSection === 2) {
@@ -466,6 +467,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('llcType')?.markAsTouched();
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('businessDescription')?.markAsTouched();
+      this.serviceDataForm.get('incorporationState')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {

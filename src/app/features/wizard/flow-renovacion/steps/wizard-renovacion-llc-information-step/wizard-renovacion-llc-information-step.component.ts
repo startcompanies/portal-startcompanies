@@ -322,8 +322,9 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       // Sección 1: Información de la LLC
       const llcName = this.serviceDataForm.get('llcName');
       const llcType = this.serviceDataForm.get('llcType');
-      
-      return !!(llcName?.valid && llcType?.valid);
+      const state = this.serviceDataForm.get('state');
+
+      return !!(llcName?.valid && llcType?.valid && state?.valid);
     }
     
     if (this.currentSection === 2) {
@@ -354,6 +355,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     if (this.currentSection === 1) {
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('llcType')?.markAsTouched();
+      this.serviceDataForm.get('state')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {

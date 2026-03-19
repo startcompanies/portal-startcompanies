@@ -16,6 +16,7 @@ export const environment = {
   baseUrl: DOMAIN.staging,
   domain: DOMAIN.domainName.staging,
   wizardAndPanelEnabled: true,
+  paymentEnabled: false,
   stripe: {
     publishableKey:
       'pk_test_51RxouuE99FVBtLePDq9TO4CeTnbeDLwYbVtCI9WoygjwdSvtxQ4Gzgif8nty1tQPB0MhmesI77JdoCEFaIc2qD9V00vbVxj5P4',

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -9,6 +9,10 @@ import { DocumentsService } from '../../services/documents.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { RequestsService, Request as ApiRequest } from '../../services/requests.service';
 import { BrowserService } from '../../../../shared/services/browser.service';
+import { StripePaymentFormComponent } from '../../components/stripe-payment-form/stripe-payment-form.component';
+import { WizardApiService } from '../../../wizard/services/wizard-api.service';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../../../environments/environment';
 
 interface ProcessStep {
   id: number;
@@ -45,7 +49,7 @@ interface RequestDisplay {
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.css'
 })
@@ -70,8 +74,21 @@ export class RequestDetailComponent implements OnInit {
   selectedStep: ProcessStep | null = null;
   availableAssignees: string[] = ['Equipo Legal', 'Equipo Contable', 'Equipo Administrativo', 'Sistema'];
 
-  // WorkDrive URL cacheada (evita bucle infinito por nuevo objeto en cada CD)
+  // WorkDrive: propiedades cacheadas para evitar evaluaciones en cada ciclo de CD
   safeWorkDriveUrl: SafeResourceUrl | null = null;
+  canShowWorkDrive = false;
+
+  // ── Pago post-envío ──────────────────────────────────────────────────────────
+  @ViewChild(StripePaymentFormComponent) stripePaymentForm?: StripePaymentFormComponent;
+  paymentMethod: 'stripe' | 'transferencia' = 'stripe';
+  paymentProcessing = false;
+  paymentSuccess = false;
+  paymentErrorMessage: string | null = null;
+  // Transferencia
+  selectedProofFile: File | null = null;
+  proofUploadProgress = 0;
+  isUploadingProof = false;
+  paymentProofUrl: string | null = null;
 
   // Upload document
   showUploadModal = false;
@@ -97,7 +114,8 @@ export class RequestDetailComponent implements OnInit {
     private notificationsService: NotificationsService,
     private requestsService: RequestsService,
     private sanitizer: DomSanitizer,
-    private browser: BrowserService
+    private browser: BrowserService,
+    private wizardApiService: WizardApiService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -215,15 +233,24 @@ export class RequestDetailComponent implements OnInit {
               completedBy: undefined
             });
           });
+        } else if (apiRequest.type === 'renovacion-llc') {
+          const isNM = this.isNewMexicoRenovacion(apiRequest);
+          const blueprintStages = this.getRenovacionBlueprintStages(isNM);
+          blueprintStages.forEach((stageName: string, index: number) => {
+            steps.push({
+              id: index + 2,
+              name: stageName,
+              description: `Etapa del proceso: ${stageName}`,
+              status: 'pending',
+              date: undefined,
+              completedBy: undefined
+            });
+          });
         } else {
-          // Para otros tipos (renovacion-llc), usar las definiciones genéricas
+          // Para otros tipos, usar las definiciones genéricas
           const stepDefinitions = this.getStepDefinitions(apiRequest.type);
           stepDefinitions.forEach((stepDef: { name: string; description: string }, index: number) => {
-            // Saltar "Solicitud Recibida" si está en las definiciones (ya está agregada)
-            if (stepDef.name === 'Solicitud Recibida') {
-              return;
-            }
-            
+            if (stepDef.name === 'Solicitud Recibida') return;
             steps.push({
               id: steps.length + 1,
               name: stepDef.name,
@@ -474,11 +501,47 @@ export class RequestDetailComponent implements OnInit {
                 completedBy: 'Sistema'
               });
             }
+          } else if (apiRequest.type === 'renovacion-llc') {
+            const isNM = this.isNewMexicoRenovacion(apiRequest);
+            const blueprintStages = this.getRenovacionBlueprintStages(isNM);
+            const specialStages = this.getRenovacionSpecialBlueprintStages();
+            const currentStage = apiRequest.stage || blueprintStages[0];
+            const currentStageIndex = blueprintStages.findIndex(s => s === currentStage);
+            const isSpecialStage = specialStages.includes(currentStage);
+
+            blueprintStages.forEach((stageName: string, index: number) => {
+              let status: 'completed' | 'current' | 'pending' = 'pending';
+              if (isSpecialStage) {
+                status = 'completed';
+              } else if (currentStageIndex >= 0) {
+                if (index < currentStageIndex) status = 'completed';
+                else if (index === currentStageIndex) status = 'current';
+              } else if (!isSpecialStage && index === 0) {
+                status = 'current';
+              }
+              steps.push({
+                id: index + 2,
+                name: stageName,
+                description: `Etapa del proceso: ${stageName}`,
+                status,
+                date: status === 'completed' || status === 'current' ? new Date() : undefined,
+                completedBy: status === 'completed' || status === 'current' ? 'Sistema' : undefined
+              });
+            });
+
+            if (currentStage === 'Renovación Perdida') {
+              steps.push({
+                id: steps.length + 1,
+                name: 'Renovación Perdida',
+                description: 'Etapa del proceso: Renovación Perdida',
+                status: 'current',
+                date: new Date(),
+                completedBy: 'Sistema'
+              });
+            }
           } else {
-            // Para otros tipos o cuenta-bancaria en solicitud-recibida, usar las definiciones genéricas
+            // Para otros tipos, usar las definiciones genéricas
             const stepDefinitions = this.getStepDefinitions(apiRequest.type);
-            
-            // Obtener el paso actual según el tipo de solicitud
             let currentStepNumber = 1;
             if (apiRequest.aperturaLlcRequest) {
               currentStepNumber = apiRequest.aperturaLlcRequest.currentStepNumber || 1;
@@ -487,23 +550,12 @@ export class RequestDetailComponent implements OnInit {
             } else if (apiRequest.cuentaBancariaRequest) {
               currentStepNumber = apiRequest.cuentaBancariaRequest.currentStepNumber || 1;
             }
-            
-            // Agregar las etapas genéricas (saltando "Solicitud Recibida" que ya está agregada)
             stepDefinitions.forEach((stepDef: { name: string; description: string }, index: number) => {
-              // Saltar "Solicitud Recibida" si está en las definiciones
-              if (stepDef.name === 'Solicitud Recibida') {
-                return;
-              }
-              
+              if (stepDef.name === 'Solicitud Recibida') return;
               const stepNumber = index + 1;
               let status: 'completed' | 'current' | 'pending' = 'pending';
-              
-              if (stepNumber < currentStepNumber) {
-                status = 'completed';
-              } else if (stepNumber === currentStepNumber) {
-                status = 'current';
-              }
-              
+              if (stepNumber < currentStepNumber) status = 'completed';
+              else if (stepNumber === currentStepNumber) status = 'current';
               steps.push({
                 id: steps.length + 1,
                 name: stepDef.name,
@@ -530,8 +582,9 @@ export class RequestDetailComponent implements OnInit {
         steps: steps
       };
 
-      // Cachear URL una sola vez para evitar bucle infinito en change detection
-      this.safeWorkDriveUrl = this.getSafeWorkDriveUrl();
+      // Cachear una sola vez para evitar evaluaciones en cada ciclo de change detection
+      this.canShowWorkDrive = !!this.request?.workDriveUrlExternal?.trim() && this.request.status !== 'solicitud-recibida';
+      this.safeWorkDriveUrl = this.canShowWorkDrive ? this.getSafeWorkDriveUrl() : null;
 
       console.log('Datos completos de la solicitud:', apiRequest);
       console.log('Stage recibido:', apiRequest.stage);
@@ -792,15 +845,13 @@ export class RequestDetailComponent implements OnInit {
     return [
       'Apertura Confirmada',
       'Filing Iniciado',
-      'EIN Solicitado',
-      'Operating Agreement',
-      'BOI Enviado',
+      'Documentación completada',
+      'Apertura Cuenta Bancaria',
       'Cuenta Bancaria Confirmada',
       'Confirmación pago',
-      // Las siguientes 3 etapas son especiales y se muestran condicionalmente:
-      // 'Apertura Activa',      - Solo se muestra si es el stage actual
-      // 'Apertura Perdida',     - Solo se muestra si es el stage actual (y ahí se queda)
-      // 'Apertura Cuenta Bancaria' - Solo se muestra si el stage actual es "Apertura Activa"
+      // Las siguientes etapas son especiales y se muestran condicionalmente:
+      // 'Apertura Activa',  - Solo se muestra si es el stage actual
+      // 'Apertura Perdida', - Solo se muestra si es el stage actual (y ahí se queda)
     ];
   }
 
@@ -811,8 +862,40 @@ export class RequestDetailComponent implements OnInit {
     return [
       'Apertura Activa',
       'Apertura Perdida',
-      'Apertura Cuenta Bancaria',
     ];
+  }
+
+  /**
+   * Determina si una solicitud de renovación es del estado New Mexico
+   */
+  private isNewMexicoRenovacion(apiRequest: ApiRequest): boolean {
+    const estado = apiRequest.renovacionLlcRequest?.estado || apiRequest.renovacionLlcRequest?.state || '';
+    return estado.toLowerCase().includes('new mexico') || estado.toLowerCase() === 'nm';
+  }
+
+  /**
+   * Obtiene las etapas del blueprint para Renovación LLC
+   * "Estatal en proceso" solo se incluye si el estado es New Mexico
+   */
+  getRenovacionBlueprintStages(isNewMexico: boolean = false): string[] {
+    const stages = [
+      'Renovación Confirmada',
+      'Aprobación cliente',
+      'Federal completada',
+      'RA completado',
+    ];
+    if (isNewMexico) {
+      stages.push('Estatal en proceso');
+    }
+    stages.push('Renovación completa');
+    return stages;
+  }
+
+  /**
+   * Obtiene las etapas especiales del blueprint para Renovación LLC
+   */
+  getRenovacionSpecialBlueprintStages(): string[] {
+    return ['Renovación Perdida'];
   }
 
   /**
@@ -1194,6 +1277,101 @@ export class RequestDetailComponent implements OnInit {
     
     console.warn('Formato de URL de WorkDrive no reconocido:', url);
     return null;
+  }
+
+  // ── Pago post-envío ──────────────────────────────────────────────────────────
+
+  /**
+   * Muestra la sección de pago solo para apertura-llc cuando el admin
+   * ha movido el stage a 'Confirmación pago'. No aplica a renovacion-llc ni cuenta-bancaria.
+   */
+  get hasPendingPayment(): boolean {
+    if (!this.request || this.isAdmin) return false;
+    if (this.request.type !== 'apertura-llc') return false;
+    if (this.request.status !== 'en-proceso' || this.request.stage !== 'Confirmación pago') return false;
+    const paymentDone = this.fullRequestData?.paymentStatus === 'succeeded' ||
+                        this.fullRequestData?.paymentMethod === 'free';
+    return !paymentDone && !this.paymentSuccess;
+  }
+
+  /** Monto a cobrar: usa el valor de la API o 0 si aún no se asignó */
+  get pendingPaymentAmount(): number {
+    return this.fullRequestData?.paymentAmount ?? 0;
+  }
+
+  onProofFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.selectedProofFile = file;
+      this.paymentErrorMessage = null;
+      this.uploadProofFile();
+    }
+  }
+
+  async uploadProofFile(): Promise<void> {
+    if (!this.selectedProofFile || !this.requestNumericId) return;
+    this.isUploadingProof = true;
+    this.paymentErrorMessage = null;
+    const formData = new FormData();
+    formData.append('file', this.selectedProofFile);
+    formData.append('servicio', this.request?.type || 'apertura-llc');
+    try {
+      const response = await firstValueFrom(
+        this.wizardApiService.uploadFile(formData)
+      );
+      if (response?.url) {
+        this.paymentProofUrl = response.url;
+        this.selectedProofFile = null;
+      }
+    } catch (error: any) {
+      this.paymentErrorMessage = error?.error?.message || 'Error al subir el comprobante';
+    } finally {
+      this.isUploadingProof = false;
+    }
+  }
+
+  async submitStripePayment(): Promise<void> {
+    if (!this.stripePaymentForm || !this.requestNumericId) return;
+    this.paymentProcessing = true;
+    this.paymentErrorMessage = null;
+    try {
+      const result = await this.stripePaymentForm.createPaymentToken();
+      if (result.error || !result.token) {
+        this.paymentErrorMessage = result.error || 'Error al crear token de pago';
+        return;
+      }
+      await this.requestsService.updateRequest(this.requestNumericId, {
+        paymentMethod: 'stripe',
+        stripeToken: result.token,
+        paymentAmount: this.pendingPaymentAmount,
+      });
+      this.paymentSuccess = true;
+      this.successMessage = '¡Pago procesado exitosamente! Nuestro equipo confirmará el pago a la brevedad.';
+    } catch (error: any) {
+      this.paymentErrorMessage = error?.error?.message || 'Error al procesar el pago';
+    } finally {
+      this.paymentProcessing = false;
+    }
+  }
+
+  async submitTransferPayment(): Promise<void> {
+    if (!this.paymentProofUrl || !this.requestNumericId) return;
+    this.paymentProcessing = true;
+    this.paymentErrorMessage = null;
+    try {
+      await this.requestsService.updateRequest(this.requestNumericId, {
+        paymentMethod: 'transferencia',
+        paymentProofUrl: this.paymentProofUrl,
+        paymentAmount: this.pendingPaymentAmount,
+      });
+      this.paymentSuccess = true;
+      this.successMessage = '¡Comprobante enviado exitosamente! Nuestro equipo verificará el pago a la brevedad.';
+    } catch (error: any) {
+      this.paymentErrorMessage = error?.error?.message || 'Error al enviar el comprobante';
+    } finally {
+      this.paymentProcessing = false;
+    }
   }
 
   // Helper para usar Math en el template
