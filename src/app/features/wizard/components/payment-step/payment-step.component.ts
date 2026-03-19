@@ -285,10 +285,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   /**
    * Maneja el evento de éxito del pago desde StripePaymentFormComponent
    */
+  /**
+   * Solo guarda el token cuando el elemento de tarjeta lo emite.
+   * NO marcar stripePaymentProcessed aquí: el pago real se confirma al crear el request en el backend (processStripePayment).
+   */
   onStripePaymentSuccess(result: StripePaymentResult): void {
     if (result.token) {
       this.stripePaymentToken = result.token;
-      this.stripePaymentProcessed = true;
       this.saveStepData();
     }
   }

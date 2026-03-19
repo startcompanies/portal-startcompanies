@@ -537,6 +537,9 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     }
     this.saveStepData();
     await this.saveToApi();
+    if (this.saveError) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 }

@@ -123,7 +123,15 @@
           ></app-wizard-payment-step>
           <div class="step-actions mt-4">
             <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="paymentProcessed">{{ 'WIZARD.previous' | transloco }}</button>
-            <button type="button" class="btn btn-primary" (click)="onStepChanged(3)" [disabled]="!paymentProcessed">{{ 'WIZARD.flow.continue' | transloco }}</button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="continueFromPaymentStep()"
+              [disabled]="!canContinueFromPaymentStep() || isLoading"
+            >
+              <span *ngIf="!isLoading">{{ 'WIZARD.flow.continue' | transloco }}</span>
+              <span *ngIf="isLoading"><span class="spinner-border spinner-border-sm me-2"></span>{{ 'WIZARD.payment_step.processing' | transloco }}</span>
+            </button>
           </div>
         </div>
 
@@ -135,10 +143,10 @@
             [stepNumber]="4"
             [previousStepNumber]="3"
             (sectionChanged)="onRenovacionInfoSectionChanged($event)"
+            (nextStepRequested)="onRenovacionInfoNext()"
           ></app-wizard-renovacion-llc-information-step>
           <div class="step-actions" *ngIf="renovacionInfoCurrentSection === 5">
             <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(2)">{{ 'WIZARD.previous' | transloco }}</button>
-            <button type="button" class="btn btn-primary" (click)="onStepChanged(4)">{{ 'WIZARD.next' | transloco }}</button>
           </div>
         </div>
 

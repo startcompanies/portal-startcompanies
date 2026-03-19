@@ -141,15 +141,20 @@ export class LLCRenovacionComponent implements OnInit {
     if (this.wizardApiService.isAuthenticated()) {
       console.log('[LLCRenovacionComponent] Usuario ya autenticado');
       if (this.wizardStateService.hasRequest()) {
-        this.paymentProcessed = true;
-        
+        this.syncPaymentProcessedFromWizardState();
+
         // Restaurar el paso guardado si es válido (después del pago)
         if (savedStep >= 2) {
-          this.currentStepIndex = savedStep - 1; // Convertir a índice base 0
+          let idx = savedStep - 1; // índice base 0
+          // Si hay solicitud pero el pago no quedó confirmado en el paso 3, no abrir información/revisión
+          if (!this.paymentProcessed && idx >= 3) {
+            idx = 2;
+          }
+          this.currentStepIndex = idx;
           this.renovacionInfoCurrentSection = savedStepNumber || 1;
           console.log('[LLCRenovacionComponent] Restaurando paso:', this.currentStepIndex, 'sección:', this.renovacionInfoCurrentSection);
         } else {
-          this.currentStepIndex = 3; // Ir al paso de información si ya pagó
+          this.currentStepIndex = this.paymentProcessed ? 3 : 2;
         }
       } else {
         // Usuario autenticado pero sin request
@@ -182,16 +187,102 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   async onStepChanged(index: number): Promise<void> {
-    // Si estamos saliendo del paso 4 (Información Renovación) y estamos en la última sección, guardar antes de avanzar
+    // No permitir saltar del paso de pago sin pago/comprobante completado según reglas del flujo
+    if (this.currentStepIndex === 2 && index > 2 && !this.paymentProcessed) {
+      return;
+    }
+
+    // Si estamos saliendo del paso 4 (Información Renovación) hacia revisión, guardar antes de avanzar
     if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
       if (this.renovacionInformationStep) {
         await this.renovacionInformationStep.saveToApi();
+        if (this.renovacionInformationStep.saveError) {
+          return;
+        }
       }
     }
-    
+
     this.currentStepIndex = index;
     // Guardar el paso actual en localStorage (convertir a base 1)
     this.wizardStateService.setCurrentStep(index + 1);
+  }
+
+  /**
+   * Pago completado solo si el paso 3 guardó el resultado correcto (Stripe backend OK o transferencia + solicitud creada).
+   */
+  private syncPaymentProcessedFromWizardState(): void {
+    if (!this.wizardStateService.hasRequest()) {
+      this.paymentProcessed = false;
+      return;
+    }
+    const step3 = this.wizardStateService.getStepData(3) || {};
+    if (step3.paymentMethod === 'transferencia') {
+      this.paymentProcessed = !!step3.transferenciaProcessed;
+    } else {
+      this.paymentProcessed = !!step3.stripePaymentProcessed;
+    }
+  }
+
+  /**
+   * Stripe: habilitar "Continuar" solo tras éxito en processStripePayment (paymentProcessed).
+   * Transferencia: habilitar cuando ya hay comprobante subido; al pulsar Continuar se crea la solicitud si aún no existe.
+   */
+  canContinueFromPaymentStep(): boolean {
+    if (this.paymentProcessed) {
+      return true;
+    }
+    const step3 = this.wizardStateService.getStepData(3) || {};
+    if (step3.paymentMethod === 'transferencia') {
+      const url = (step3.paymentProofUrl || this.paymentStep?.form?.get('paymentProofUrl')?.value || '') as string;
+      return !!String(url).trim();
+    }
+    return false;
+  }
+
+  /** Avanza del paso de pago (índice 2) al de información LLC (índice 3). */
+  private advanceFromPaymentToInfo(): void {
+    this.currentStepIndex = 3;
+    this.wizardStateService.setCurrentStep(4);
+  }
+
+  async continueFromPaymentStep(): Promise<void> {
+    this.errorMessage = null;
+    if (this.currentStepIndex !== 2) {
+      return;
+    }
+    if (this.paymentProcessed) {
+      this.advanceFromPaymentToInfo();
+      return;
+    }
+    const step3 = this.wizardStateService.getStepData(3) || {};
+    if (step3.paymentMethod === 'transferencia') {
+      this.isLoading = true;
+      try {
+        if (this.paymentStep) {
+          await this.paymentStep.processTransferenciaPayment();
+        }
+        this.syncPaymentProcessedFromWizardState();
+        if (this.paymentProcessed) {
+          this.advanceFromPaymentToInfo();
+        } else {
+          this.errorMessage =
+            this.errorMessage || 'Completa la transferencia: sube el comprobante y confirma la creación de la solicitud.';
+        }
+      } finally {
+        this.isLoading = false;
+      }
+      return;
+    }
+    this.errorMessage = 'Primero procesa el pago con tarjeta correctamente.';
+  }
+
+  /** Llamado cuando el paso de información emite nextStepRequested (última sección guardada OK). */
+  onRenovacionInfoNext(): void {
+    if (this.currentStepIndex !== 3) {
+      return;
+    }
+    this.currentStepIndex = 4;
+    this.wizardStateService.setCurrentStep(5);
   }
 
   /**
