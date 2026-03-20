@@ -100,6 +100,23 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           this.totalAmount = this.wizardPlansService.calculateAmount(rawPlanValue);
         }
       }
+
+      // Renovación: estado/monto pueden estar en step 3 u otro índice si hubo solapamiento en localStorage
+      if (this.wizardStateService.getServiceType() === 'renovacion-llc') {
+        const { state: mergedState } = this.getRenovacionLlcPayload();
+        if (mergedState) {
+          this.state = mergedState;
+        }
+        if (!this.totalAmount) {
+          for (const n of [this.previousStepNumber, 2, 3, 4]) {
+            const a = this.wizardStateService.getStepData(n)?.amount;
+            if (a != null && Number(a) > 0) {
+              this.totalAmount = Number(a);
+              break;
+            }
+          }
+        }
+      }
     }
 
     const serviceType = this.wizardStateService.getServiceType();
@@ -108,18 +125,20 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       this.packId = this.wizardPlansService.getServiceLabel(serviceType);
     }
 
-    // Cargar datos guardados
+    // Cargar datos guardados (paso configurado + cualquier paso que tenga bloque de pago, p. ej. clave 4)
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
-    if (savedData && Object.keys(savedData).length > 0) {
+    const payAny = this.wizardStateService.findPersistedPaymentData();
+    const merged = { ...payAny, ...(savedData && Object.keys(savedData).length > 0 ? savedData : {}) };
+    if (merged && Object.keys(merged).length > 0) {
       this.form.patchValue({
-        paymentMethod: savedData.paymentMethod || 'stripe',
-        paymentProofUrl: savedData.paymentProofUrl || '',
+        paymentMethod: merged.paymentMethod || 'stripe',
+        paymentProofUrl: merged.paymentProofUrl || '',
       });
-      if (savedData.stripePaymentProcessed) {
-        this.stripePaymentProcessed = savedData.stripePaymentProcessed;
-        this.stripePaymentToken = savedData.stripePaymentToken;
+      if (merged.stripePaymentProcessed || payAny.stripePaymentProcessed) {
+        this.stripePaymentProcessed = true;
+        this.stripePaymentToken = merged.stripePaymentToken ?? payAny.stripePaymentToken ?? null;
       }
-      if (savedData.transferenciaProcessed) {
+      if (merged.transferenciaProcessed || payAny.transferenciaProcessed) {
         this.transferenciaProcessed = true;
       }
     }
@@ -232,10 +251,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           plan
         };
       } else if (serviceType === 'renovacion-llc') {
-        requestData.renovacionLlcData = {
-          state: step2Data.state || '',
-          llcType: step2Data.llcType || ''
-        };
+        requestData.renovacionLlcData = this.getRenovacionLlcPayload();
       } else if (serviceType === 'cuenta-bancaria') {
         requestData.cuentaBancariaData = {};
       }
@@ -275,6 +291,9 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     } catch (error: any) {
       this.stripeProcessing = false;
       this.stripePaymentProcessed = false; // Asegurar que no se marque como procesado
+      // tok_ es de un solo uso: no persistir token tras fallo para forzar uno nuevo y evitar reintentos inválidos
+      this.stripePaymentToken = null;
+      this.saveStepData();
       this.errorMessage = error?.error?.message || 'Error al procesar el pago';
       console.error('Error al procesar pago:', error);
       this.paymentError.emit(this.errorMessage);
@@ -302,6 +321,32 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   handlePaymentError(error: string): void {
     console.error('Error en pago de Stripe:', error);
     this.stripeProcessing = false;
+  }
+
+  /**
+   * Estado y tipo LLC para renovación: merge de pasos 2–4 y UI (localStorage puede tener datos en clave distinta).
+   */
+  private getRenovacionLlcPayload(): { state: string; llcType: string } {
+    const { stateStep, paymentStep } = this.wizardStateService.getRenovacionStorageLayout();
+    const idx = new Set(
+      [stateStep - 1, stateStep, stateStep + 1, paymentStep, paymentStep + 1].filter((n) => n >= 2)
+    );
+    const blocks = [...idx]
+      .sort((a, b) => a - b)
+      .map((n) => this.wizardStateService.getStepData(n) || {});
+    const pick = (field: 'state' | 'llcType'): string => {
+      for (const b of blocks) {
+        const v = b[field];
+        if (v != null && String(v).trim() !== '') {
+          return String(v).trim();
+        }
+      }
+      if (field === 'state' && this.state?.trim()) {
+        return this.state.trim();
+      }
+      return '';
+    };
+    return { state: pick('state'), llcType: pick('llcType') };
   }
 
   /**
@@ -412,7 +457,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       requestData.plan = plan;
       requestData.aperturaLlcData = { incorporationState: step2Data.state || '', plan };
     } else if (serviceType === 'renovacion-llc') {
-      requestData.renovacionLlcData = { state: step2Data.state || '', llcType: step2Data.llcType || '' };
+      requestData.renovacionLlcData = this.getRenovacionLlcPayload();
     } else if (serviceType === 'cuenta-bancaria') {
       requestData.cuentaBancariaData = {};
     }
@@ -427,6 +472,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     } catch (error: any) {
       this.errorMessage = error?.error?.message || 'Error al crear la solicitud';
       this.paymentError.emit(this.errorMessage);
+      this.transferenciaProcessed = false;
+      this.saveStepData();
     }
   }
 }

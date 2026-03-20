@@ -104,7 +104,7 @@
         <!-- Paso 2: Selección de Estado -->
         <div *ngIf="currentStepIndex === 1" class="form-step">
           <h2 class="form-step__title">{{ stepTitles[2] || ('WIZARD.steps.state' | transloco) }}</h2>
-          <app-wizard-state-selection-step [stepNumber]="2"></app-wizard-state-selection-step>
+          <app-wizard-state-selection-step [stepNumber]="renovacionLayout.stateStep"></app-wizard-state-selection-step>
           <div class="step-actions">
             <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
             <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!canProceedFromStateStep()">{{ 'WIZARD.next' | transloco }}</button>
@@ -116,8 +116,8 @@
           <h2 class="form-step__title">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</h2>
           <app-wizard-payment-step
             #paymentStep
-            [stepNumber]="3"
-            [previousStepNumber]="2"
+            [stepNumber]="renovacionLayout.paymentStep"
+            [previousStepNumber]="renovacionLayout.stateStep"
             (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
             (paymentError)="onPaymentError($event)"
           ></app-wizard-payment-step>
@@ -140,20 +140,17 @@
           <h2 class="form-step__title">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</h2>
           <app-wizard-renovacion-llc-information-step
             #renovacionInformationStep
-            [stepNumber]="4"
-            [previousStepNumber]="3"
+            [stepNumber]="renovacionLayout.infoStep"
+            [previousStepNumber]="renovacionLayout.paymentStep"
             (sectionChanged)="onRenovacionInfoSectionChanged($event)"
             (nextStepRequested)="onRenovacionInfoNext()"
           ></app-wizard-renovacion-llc-information-step>
-          <div class="step-actions" *ngIf="renovacionInfoCurrentSection === 5">
-            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(2)">{{ 'WIZARD.previous' | transloco }}</button>
-          </div>
         </div>
 
         <!-- Paso 5: Revisión Final -->
         <div *ngIf="currentStepIndex === 4" class="form-step">
           <app-wizard-final-review-step
-            [stepNumber]="5"
+            [stepNumber]="renovacionLayout.reviewStep"
             [previousSteps]="[1, 2, 3, 4]"
             [serviceType]="'renovacion-llc'"
             [isSubmitted]="isSubmitted"

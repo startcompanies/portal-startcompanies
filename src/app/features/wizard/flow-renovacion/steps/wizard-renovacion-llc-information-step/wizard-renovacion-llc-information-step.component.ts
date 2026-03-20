@@ -46,6 +46,15 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   isSaving = false;
   saveError: string | null = null;
 
+  /** true cuando estado y tipo de LLC vienen del paso de selección y no deben editarse */
+  stateAndLlcLockedFromSelection = false;
+
+  /** Etiqueta legible del tipo de LLC bloqueado (para el aviso informativo) */
+  get lockedLlcTypeLabel(): string {
+    const v = this.serviceDataForm?.get('llcType')?.value;
+    return this.llcTypes.find((t) => t.value === v)?.label ?? String(v ?? '');
+  }
+
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
@@ -58,27 +67,16 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
 
   ngOnInit(): void {
     this.wizardStateService.registerForm(this.stepNumber, this.serviceDataForm);
-    
-    // Obtener el estado y estructura societaria del paso 2 (Estado de contratación) PRIMERO
-    const statePlanData = this.wizardStateService.getStepData(2); // Paso 2 es donde se selecciona estado y llcType
-    if (statePlanData) {
-      // Pre-llenar estado si existe
-      if (statePlanData.state) {
-        this.serviceDataForm.get('state')?.setValue(statePlanData.state, { emitEvent: false });
-      }
-      // Pre-llenar estructura societaria (llcType) si existe
-      if (statePlanData.llcType) {
-        this.serviceDataForm.get('llcType')?.setValue(statePlanData.llcType, { emitEvent: false });
-      }
-    }
-    
-    // Cargar datos guardados (después de pre-llenar desde paso 2)
+
+    const selection = this.getRenovacionStateSelectionFromWizard();
+
+    // Cargar datos guardados del paso actual
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
       // Separar los propietarios para restaurarlos manualmente
       const { owners, ...restOfData } = savedData;
       this.serviceDataForm.patchValue(restOfData);
-      
+
       // Restaurar propietarios manualmente
       const ownersArray = this.serviceDataForm.get('owners') as FormArray;
       ownersArray.clear(); // Limpiar antes de añadir
@@ -89,16 +87,20 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
           ownersArray.push(ownerGroup);
         });
       }
-      
-      // Si hay datos del paso 2, tienen prioridad sobre savedData
-      if (statePlanData) {
-        if (statePlanData.state) {
-          this.serviceDataForm.get('state')?.setValue(statePlanData.state, { emitEvent: false });
-        }
-        if (statePlanData.llcType) {
-          this.serviceDataForm.get('llcType')?.setValue(statePlanData.llcType, { emitEvent: false });
-        }
-      }
+    }
+
+    // Estado y estructura societaria: prioridad sobre lo guardado en este paso (suelen ir vacíos en localStorage)
+    // y se leen de los pasos previos (selección de estado, pago, etc.), igual que en el flujo de apertura.
+    if (selection.state) {
+      this.serviceDataForm.get('state')?.setValue(selection.state, { emitEvent: false });
+    }
+    if (selection.llcType) {
+      this.serviceDataForm.get('llcType')?.setValue(selection.llcType, { emitEvent: false });
+    }
+    if (selection.state && selection.llcType) {
+      this.serviceDataForm.get('state')?.disable({ emitEvent: false });
+      this.serviceDataForm.get('llcType')?.disable({ emitEvent: false });
+      this.stateAndLlcLockedFromSelection = true;
     }
 
     // Inicializar propietarios si llcType viene del paso 2 y no hay propietarios
@@ -141,6 +143,9 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       this.saveStepData();
     });
 
+    // Los setValue con emitEvent:false no disparan valueChanges; persistir estado/llcType ya aplicados
+    this.saveStepData();
+
     // Emitir la sección inicial
     this.sectionChanged.emit(this.currentSection);
   }
@@ -152,10 +157,28 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   }
 
   /**
-   * Guarda los datos del paso
+   * Estado + llcType capturados en pasos anteriores (p. ej. paso 2 selección, paso 3 pago con copia).
+   * No usar solo el paso 2: en algunos flujos la verificación u otros pasos desplazan la numeración.
+   */
+  private getRenovacionStateSelectionFromWizard(): { state: string; llcType: string } {
+    const pick = (field: 'state' | 'llcType'): string => {
+      for (let n = 2; n < this.stepNumber; n++) {
+        const block = this.wizardStateService.getStepData(n);
+        const v = block?.[field];
+        if (v != null && String(v).trim() !== '') {
+          return String(v).trim();
+        }
+      }
+      return '';
+    };
+    return { state: pick('state'), llcType: pick('llcType') };
+  }
+
+  /**
+   * Guarda los datos del paso (getRawValue incluye controles deshabilitados: state / llcType bloqueados)
    */
   private saveStepData(): void {
-    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
+    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.getRawValue());
   }
 
 
@@ -447,7 +470,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     this.saveError = null;
     
     try {
-      const formData = this.serviceDataForm.value;
+      const formData = this.serviceDataForm.getRawValue();
       
       // Mapear owners a members con todos los campos necesarios
       const ownersArray = this.serviceDataForm.get('owners') as FormArray;
@@ -524,7 +547,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
    * Devuelve los datos del formulario para que el base los persista al avanzar.
    */
   getFormData(): Record<string, unknown> {
-    return this.serviceDataForm.value as Record<string, unknown>;
+    return this.serviceDataForm.getRawValue() as Record<string, unknown>;
   }
 
   /**

@@ -139,6 +139,74 @@ export class WizardStateService {
   }
 
   /**
+   * Localiza datos persistidos del paso de pago.
+   * Pueden estar en otra clave si hubo pasos intermedios (p. ej. verificación en 2 y pago guardado en 4).
+   */
+  /**
+   * Claves en stepData para renovación LLC.
+   * Si el paso 2 guardó solo la verificación de email, estado/pago/info se desplazan a 3/4/5 y la revisión a 6.
+   */
+  getRenovacionStorageLayout(): {
+    stateStep: number;
+    paymentStep: number;
+    infoStep: number;
+    reviewStep: number;
+  } {
+    const d2 = this.getStepData(2);
+    const d3 = this.getStepData(3);
+    const d4 = this.getStepData(4);
+
+    const step2IsEmailVerification =
+      d2?.verified === true && !d2?.state && !d2?.llcType;
+
+    const paymentOn4 =
+      d4?.stripePaymentProcessed === true ||
+      d4?.transferenciaProcessed === true ||
+      d4?.paymentMethod === 'stripe' ||
+      d4?.paymentMethod === 'transferencia';
+
+    // Verificación en 2 → selección de estado debe usar 3 (no pisar el bucket de email)
+    if (step2IsEmailVerification) {
+      return { stateStep: 3, paymentStep: 4, infoStep: 5, reviewStep: 6 };
+    }
+
+    // Legado / localStorage sin verified en 2 pero estado en 3 y pago en 4
+    if (d3?.state && d3?.llcType && paymentOn4 && !d2?.state) {
+      return { stateStep: 3, paymentStep: 4, infoStep: 5, reviewStep: 6 };
+    }
+
+    return { stateStep: 2, paymentStep: 3, infoStep: 4, reviewStep: 5 };
+  }
+
+  findPersistedPaymentData(): any {
+    const all = this.getAllData();
+    const keys = Object.keys(all).sort((a, b) => {
+      const num = (k: string) => {
+        const m = /^step(\d+)$/.exec(k);
+        return m ? parseInt(m[1], 10) : 0;
+      };
+      return num(a) - num(b);
+    });
+    let fallback: any = null;
+    for (const k of keys) {
+      const s = all[k];
+      if (!s || typeof s !== 'object') continue;
+      const looksLikePayment =
+        'paymentMethod' in s ||
+        'stripePaymentProcessed' in s ||
+        'stripePaymentToken' in s ||
+        'transferenciaProcessed' in s ||
+        (typeof s.paymentProofUrl === 'string' && s.paymentProofUrl.trim().length > 0);
+      if (!looksLikePayment) continue;
+      if (fallback == null) fallback = s;
+      if (s.stripePaymentProcessed === true || s.transferenciaProcessed === true) {
+        return s;
+      }
+    }
+    return fallback ?? {};
+  }
+
+  /**
    * Obtiene los datos de los pasos anteriores
    */
   getPreviousSteps(currentStep: number): any[] {

@@ -3,14 +3,12 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../services/wizard-plans.service';
-import { environment } from '../../../../environments/environment';
 
 // Componentes reutilizables
 import { WizardBasicRegisterStepComponent } from '../components/basic-register-step/basic-register-step.component';
@@ -107,8 +105,7 @@ export class CuentaBancariaComponent implements OnInit {
     public translocoService: TranslocoService,
     private router: Router,
     private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private http: HttpClient
+    private fb: FormBuilder
   ) {
     // Inicializar el formulario de datos del servicio
     this.serviceDataForm = this.fb.group({});
@@ -604,10 +601,15 @@ export class CuentaBancariaComponent implements OnInit {
 
     try {
       let signatureUrl: string | null = null;
-      
-      // Si hay firma, subirla como archivo
+
       if (event?.signature) {
         signatureUrl = await this.uploadSignature(event.signature, finalRequestId);
+        if (!signatureUrl) {
+          this.errorMessage =
+            'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
+          this.isLoading = false;
+          return;
+        }
       }
 
       // Actualizar el estado y la firma
@@ -630,14 +632,15 @@ export class CuentaBancariaComponent implements OnInit {
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
       this.isLoading = false;
-
-      // Limpiar estado del wizard y tokens
-      this.wizardStateService.clear();
-      this.wizardApiService.clearToken();
-
     } catch (error: any) {
       console.error('[CuentaBancariaComponent] Error al finalizar solicitud:', error);
-      this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      const status = error?.status ?? error?.error?.statusCode;
+      if (status === 401) {
+        this.errorMessage =
+          'Tu sesión del asistente expiró o no es válida. Vuelve a iniciar el flujo y verifica tu correo para obtener un nuevo acceso.';
+      } else {
+        this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      }
       this.isLoading = false;
     }
   }
@@ -660,12 +663,7 @@ export class CuentaBancariaComponent implements OnInit {
       formData.append('servicio', 'cuenta-bancaria');
       formData.append('requestUuid', requestId.toString());
       
-      const uploadResponse = await firstValueFrom(
-        this.http.post<{ url: string; key: string; message: string }>(
-          `${environment.apiUrl}/upload-file`,
-          formData
-        )
-      );
+      const uploadResponse = await firstValueFrom(this.wizardApiService.uploadFile(formData));
       
       if (uploadResponse && uploadResponse.url) {
         console.log('[CuentaBancariaComponent] Firma subida exitosamente:', uploadResponse.url);
@@ -683,6 +681,7 @@ export class CuentaBancariaComponent implements OnInit {
    * Navega al panel del usuario
    */
   onGoToPanel(): void {
+    this.clearWizardSessionAfterExit();
     this.router.navigate(['/panel']);
   }
 
@@ -690,16 +689,22 @@ export class CuentaBancariaComponent implements OnInit {
    * Navega al home
    */
   onGoToHome(): void {
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
   }
 
   onCancel(): void {
-    this.wizardStateService.clear();
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
+  }
+
+  private clearWizardSessionAfterExit(): void {
+    this.wizardStateService.clear();
+    this.wizardApiService.clearToken();
   }
 
   /**
