@@ -159,8 +159,7 @@
               "buildTarget": "portal-startcompanies:build:production"
             },
             "development": {
-              "buildTarget": "portal-startcompanies:build:development",
-              "proxyConfig": "proxy.conf.json"
+              "buildTarget": "portal-startcompanies:build:development"
             },
             "staging": {
               "buildTarget": "portal-startcompanies:build:staging"
