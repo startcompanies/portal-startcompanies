@@ -3,6 +3,7 @@ import { languageGuard } from '../shared/guards/language.guard';
 import { environment } from '../../environments/environment';
 import { authGuard } from '../features/panel/guards/auth.guard';
 import { roleGuard } from '../features/panel/guards/role.guard';
+import { liliAuthGuard } from '../features/lili/guards/lili-auth.guard';
 
 // Helper function para generar URLs canónicas dinámicamente
 const getCanonicalUrl = (path: string): string => {
@@ -15,6 +16,25 @@ const getImageUrl = (path: string): string => {
 };
 
 export const routes: Routes = [
+  // ===== RUTA LILI BANKING =====
+  {
+    path: 'banking',
+    canActivate: [liliAuthGuard],
+    loadComponent: () =>
+      import('../features/lili/components/lili-onboarding/lili-onboarding.component').then(
+        (m) => m.LiliOnboardingComponent
+      ),
+  },
+
+  // ===== RUTA LILI LINK GENERATOR (internal, noindex) =====
+  {
+    path: 'generate-lili-link-form',
+    loadComponent: () =>
+      import('../features/lili/components/lili-link-generator/lili-link-generator.component').then(
+        (m) => m.LiliLinkGeneratorComponent
+      ),
+  },
+
   // ===== RUTAS ESPAÑOLAS SIN PREFIJO (RAÍZ) =====
   {
     path: '',
