@@ -252,6 +252,9 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
     }
     this.saveStepData();
     await this.saveToApi();
+    if (this.saveError) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 
@@ -260,10 +263,10 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
     this.isSaving = true;
     this.saveError = null;
     try {
-      const formData = this.serviceDataForm.value;
+      const formData = this.serviceDataForm.getRawValue() as Record<string, unknown>;
       const ownersArray = this.serviceDataForm.get('owners') as FormArray;
       const members = ownersArray ? ownersArray.controls.map((ctrl: any) => {
-        const v = ctrl.value;
+        const v = (ctrl as FormGroup).getRawValue();
         return {
           firstName: v.name || '',
           name: v.name || '',
@@ -294,7 +297,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
           percentageOfParticipation: v.participationPercentage || 0,
         };
       }) : [];
-      const { owners, ...restOfFormData } = formData;
+      const { owners: _owners, ...restOfFormData } = formData;
       const payload: any = {
         type: 'renovacion-llc',
         currentStepNumber: this.currentSection,
@@ -387,6 +390,6 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   }
 
   getFormData(): any {
-    return { ...this.serviceDataForm.value, currentSection: this.currentSection };
+    return { ...this.serviceDataForm.getRawValue(), currentSection: this.currentSection };
   }
 }

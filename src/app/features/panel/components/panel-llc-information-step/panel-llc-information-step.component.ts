@@ -496,7 +496,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
    */
   getFormData(): any {
     return {
-      ...this.serviceDataForm.value,
+      ...this.serviceDataForm.getRawValue(),
       currentSection: this.currentSection
     };
   }

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
 import { RequestsService } from '../../services/requests.service';
+import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
 
 /**
  * Componente específico para el flujo del panel-cliente (cliente autenticado)
@@ -33,7 +34,8 @@ export class PanelClientRequestFlowComponent implements OnInit {
   
   constructor(
     private router: Router,
-    private requestsService: RequestsService
+    private requestsService: RequestsService,
+    private requestFlowState: RequestFlowStateService
   ) {}
   
   ngOnInit(): void {
@@ -56,6 +58,7 @@ export class PanelClientRequestFlowComponent implements OnInit {
             draftRequestId: data?.draftRequestId,
           });
           this.isFinalizing = false;
+          this.clearFlowState();
           this.flowCompleted.emit(data);
           this.router.navigate(['/panel/my-requests']);
           return;
@@ -65,6 +68,7 @@ export class PanelClientRequestFlowComponent implements OnInit {
           serviceType,
           data.submit?.signature ?? null
         );
+        this.clearFlowState();
         this.flowCompleted.emit(data);
         this.router.navigate(['/panel/my-requests']);
       } catch (e) {
@@ -75,13 +79,20 @@ export class PanelClientRequestFlowComponent implements OnInit {
       return;
     }
 
+    this.clearFlowState();
     this.flowCompleted.emit(data);
     this.router.navigate(['/panel/my-requests']);
   }
   
   onFlowCancelled(): void {
     console.log('[PanelClientRequestFlowComponent] Flujo cancelado');
+    this.clearFlowState();
     this.flowCancelled.emit();
     this.router.navigate(['/panel/my-requests']);
+  }
+
+  /** Evita que una nueva visita a new-request rehidrate datos del flujo anterior (singleton). */
+  private clearFlowState(): void {
+    this.requestFlowState.clear();
   }
 }
