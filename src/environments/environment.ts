@@ -22,4 +22,6 @@ export const environment = {
     publishableKey:
       'pk_test_51T0zMVH949fSJ0tuCp9YJpU50hjcDkMtMOT3zwwzdnmrrwpIS25wGe7kTdWttGLirDUpYffm5xKNpQlizF3Lufm500Rc3Y3Dq4',
   },
+  liliEnv: 'Sandbox' as const,
+
 };
