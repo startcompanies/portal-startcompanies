@@ -3,7 +3,9 @@ import {
   provideZoneChangeDetection,
   isDevMode,
   APP_INITIALIZER,
+  importProvidersFrom,
 } from '@angular/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
@@ -30,6 +32,7 @@ import { SchemaSeoInitializerService } from '../shared/services/schema-seo-initi
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    importProvidersFrom(MatSnackBarModule),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     // provideClientHydration() se agrega solo en main.ts (browser) con withEventReplay()

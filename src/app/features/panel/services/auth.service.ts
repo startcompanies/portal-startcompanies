@@ -50,6 +50,38 @@ export interface RegisterData {
 
 const AUTH_BASE = `${environment.apiUrl || 'http://localhost:3000'}/auth`;
 
+/** Unifica respuesta de signIn y payload JWT de GET /auth/me (userName vs username). */
+function normalizePanelUser(raw: unknown): User | null {
+  if (raw == null || typeof raw !== 'object') {
+    return null;
+  }
+  const r = raw as Record<string, unknown>;
+  if (typeof r['id'] !== 'number') {
+    return null;
+  }
+  const email = r['email'];
+  if (typeof email !== 'string') {
+    return null;
+  }
+  const usernameSrc = r['username'] ?? r['userName'];
+  const username = typeof usernameSrc === 'string' ? usernameSrc : email;
+  const tr = r['type'];
+  const type: User['type'] =
+    tr === 'admin' || tr === 'partner' || tr === 'client' ? tr : 'client';
+  return {
+    id: r['id'] as number,
+    username,
+    email,
+    status: Boolean(r['status']),
+    type,
+    first_name: typeof r['first_name'] === 'string' ? r['first_name'] : undefined,
+    last_name: typeof r['last_name'] === 'string' ? r['last_name'] : undefined,
+    phone: typeof r['phone'] === 'string' ? r['phone'] : undefined,
+    company: typeof r['company'] === 'string' ? r['company'] : undefined,
+    bio: typeof r['bio'] === 'string' ? r['bio'] : undefined,
+  };
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -76,13 +108,13 @@ export class AuthService {
       return Promise.resolve();
     }
     return firstValueFrom(
-      this.http.get<User>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
+      this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
         timeout(8000),
         catchError(() => of(null)),
       ),
     )
-      .then((user) => {
-        this.currentUserSubject.next(user ?? null);
+      .then((raw) => {
+        this.currentUserSubject.next(normalizePanelUser(raw));
       })
       .catch(() => {
         this.currentUserSubject.next(null);
@@ -106,7 +138,10 @@ export class AuthService {
               'Credenciales inválidas';
             return throwError(() => new Error(backendMessage));
           }
-          this.currentUserSubject.next(user);
+          const normalized = normalizePanelUser(user);
+          if (normalized) {
+            this.currentUserSubject.next(normalized);
+          }
           return of(response);
         }),
         catchError((err) => {
@@ -146,7 +181,10 @@ export class AuthService {
       .pipe(
         switchMap((response) => {
           if (response?.user) {
-            this.currentUserSubject.next(response.user);
+            const u = normalizePanelUser(response.user);
+            if (u) {
+              this.currentUserSubject.next(u);
+            }
           } else if (response?.token) {
             this.loadUserFromToken(response.token);
           }
@@ -160,15 +198,7 @@ export class AuthService {
       const parts = token.split('.');
       if (parts.length < 2) return;
       const payload = JSON.parse(atob(parts[1]));
-      const user: User = {
-        id: payload.id,
-        username: payload.userName || payload.username,
-        email: payload.email,
-        status: payload.status,
-        type: payload.type || 'client',
-        first_name: payload.first_name,
-        last_name: payload.last_name,
-      };
+      const user = normalizePanelUser(payload);
       this.currentUserSubject.next(user);
     } catch {
       this.currentUserSubject.next(null);

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { RequestsService, Request } from '../../services/requests.service';
 
 @Component({
@@ -23,7 +24,8 @@ export class MyRequestsComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private requestsService: RequestsService,
-    private router: Router
+    private router: Router,
+    private panelSnackBar: PanelSnackBarService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -121,7 +123,9 @@ export class MyRequestsComponent implements OnInit {
     
     if (!request.uuid && !request.id) {
       console.error('La solicitud no tiene UUID ni ID');
-      alert('Error: La solicitud no tiene identificador válido');
+      this.panelSnackBar.error(
+        'Error: La solicitud no tiene identificador válido'
+      );
       return;
     }
     
@@ -131,7 +135,9 @@ export class MyRequestsComponent implements OnInit {
       },
       (error) => {
         console.error('Error en la navegación:', error);
-        alert('Error al navegar. Por favor, intente nuevamente.');
+        this.panelSnackBar.error(
+          'Error al navegar. Por favor, intente nuevamente.'
+        );
       }
     );
   }

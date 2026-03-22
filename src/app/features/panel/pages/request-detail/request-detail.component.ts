@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { DocumentsService } from '../../services/documents.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { RequestsService, Request as ApiRequest } from '../../services/requests.service';
@@ -115,7 +116,8 @@ export class RequestDetailComponent implements OnInit {
     private requestsService: RequestsService,
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
-    private wizardApiService: WizardApiService
+    private wizardApiService: WizardApiService,
+    private panelSnackBar: PanelSnackBarService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -637,7 +639,7 @@ export class RequestDetailComponent implements OnInit {
       const jsonString = this.getFullDataAsJson();
       if (win.navigator.clipboard) {
         await win.navigator.clipboard.writeText(jsonString);
-        alert('JSON copiado al portapapeles');
+        this.panelSnackBar.info('JSON copiado al portapapeles');
       } else {
         throw new Error('Clipboard API not available');
       }
@@ -650,7 +652,7 @@ export class RequestDetailComponent implements OnInit {
       textarea.select();
       doc.execCommand('copy');
       doc.body.removeChild(textarea);
-      alert('JSON copiado al portapapeles');
+      this.panelSnackBar.info('JSON copiado al portapapeles');
     }
   }
 
@@ -1081,7 +1083,7 @@ export class RequestDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al eliminar documento:', error);
-        alert('Error al eliminar el documento');
+        this.panelSnackBar.error('Error al eliminar el documento');
       }
     });
   }
@@ -1167,11 +1169,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud aprobada correctamente');
+      this.panelSnackBar.success('Solicitud aprobada correctamente');
     } catch (error: any) {
       console.error('Error al aprobar solicitud:', error);
-      alert(error?.error?.message || 'Error al aprobar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al aprobar la solicitud'
+      );
     }
   }
 
@@ -1193,11 +1196,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud rechazada correctamente');
+      this.panelSnackBar.success('Solicitud rechazada correctamente');
     } catch (error: any) {
       console.error('Error al rechazar solicitud:', error);
-      alert(error?.error?.message || 'Error al rechazar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al rechazar la solicitud'
+      );
     }
   }
 
