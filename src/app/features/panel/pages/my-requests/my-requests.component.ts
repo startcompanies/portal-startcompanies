@@ -20,6 +20,10 @@ export class MyRequestsComponent implements OnInit {
   currentUser: any = null;
   isPartner = false;
   error: string | null = null;
+  /** ID de solicitud en proceso de borrado (deshabilita botones y muestra spinner). */
+  deletingRequestId: number | null = null;
+  showDeleteModal = false;
+  requestToDelete: Request | null = null;
 
   constructor(
     private authService: AuthService,
@@ -140,6 +144,57 @@ export class MyRequestsComponent implements OnInit {
         );
       }
     );
+  }
+
+  /**
+   * Abre el modal de confirmación para eliminar un borrador pendiente.
+   */
+  openDeleteModal(request: Request): void {
+    if (!this.isPendingRequest(request) || !request.id) {
+      this.panelSnackBar.error('No se puede eliminar esta solicitud.');
+      return;
+    }
+    this.requestToDelete = request;
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete(): void {
+    if (this.deletingRequestId !== null) {
+      return;
+    }
+    this.showDeleteModal = false;
+    this.requestToDelete = null;
+  }
+
+  /**
+   * Ejecuta el borrado tras confirmar en el modal (sin `window.confirm`).
+   */
+  confirmDelete(): void {
+    const request = this.requestToDelete;
+    if (!request?.id) {
+      return;
+    }
+
+    this.deletingRequestId = request.id;
+    this.requestsService
+      .deleteRequest(request.id)
+      .then(() => {
+        this.panelSnackBar.success('Solicitud eliminada.');
+        this.showDeleteModal = false;
+        this.requestToDelete = null;
+        this.loadRequests();
+      })
+      .catch((err: unknown) => {
+        const httpErr = err as { error?: { message?: string }; message?: string };
+        const msg =
+          (typeof httpErr?.error?.message === 'string' && httpErr.error.message) ||
+          (typeof httpErr?.message === 'string' && httpErr.message) ||
+          'No se pudo eliminar la solicitud.';
+        this.panelSnackBar.error(msg);
+      })
+      .finally(() => {
+        this.deletingRequestId = null;
+      });
   }
 
   /**

@@ -9,6 +9,7 @@ import { RequestFlowStep } from '../../../../shared/models/request-flow-context'
 import { AperturaLlcFormComponent } from '../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { RequestsService } from '../../services/requests.service';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
+import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
@@ -58,6 +59,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
 
   constructor(
     private flowStateService: RequestFlowStateService,
+    private wizardStateService: WizardStateService,
     private requestsService: RequestsService,
     private wizardPlansService: WizardPlansService,
     private fb: FormBuilder,
@@ -66,6 +68,33 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     private logger: LoggerService
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
+  }
+
+  /**
+   * Si el flujo del panel no tiene plan/estado en PLAN_STATE_SELECTION, los toma de wizard stepData[2] (localStorage)
+   * y los escribe en RequestFlowStateService para validaciones y POST coherentes.
+   */
+  private ensurePlanStateFromWizard(): void {
+    const flowPlan = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) || {};
+    const flowStateOnly = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+    const w2 = this.wizardStateService.getStepData(2) || {};
+    const plan = (flowPlan.plan || (flowStateOnly as { plan?: string }).plan || w2.plan || '').trim();
+    const state = (flowPlan.state || flowStateOnly.state || w2.state || '').trim();
+    const amount =
+      flowPlan.amount ?? (flowStateOnly as { amount?: number }).amount ?? w2.amount;
+    if (!plan && !state) {
+      return;
+    }
+    if (flowPlan.plan && flowPlan.state) {
+      return;
+    }
+    const next = {
+      ...flowPlan,
+      plan: plan || flowPlan.plan || w2.plan || '',
+      state: state || flowPlan.state || w2.state || '',
+      ...(amount != null && amount !== '' ? { amount: Number(amount) } : {}),
+    };
+    this.flowStateService.setStepData(RequestFlowStep.PLAN_STATE_SELECTION, next);
   }
 
   ngOnInit(): void {
@@ -120,12 +149,23 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Panel: a veces plan/estado solo están en wizard localStorage (stepData["2"]), no en RequestFlowStateService
+    this.ensurePlanStateFromWizard();
+
     // Obtener el estado seleccionado del paso anterior (estado y plan), o del request hidratado (request.plan)
-    const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
+      this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) ||
+      {};
     const planFromService = (dataToLoad as any)?.plan; // Al recargar, el plan viene en request.plan y se hidrata en SERVICE_FORM
-    const effectivePlan = statePlanData?.plan ?? planFromService;
-    if (statePlanData && statePlanData.state) {
-      this.serviceDataForm.get('incorporationState')?.setValue(statePlanData.state);
+    const effectivePlan =
+      statePlanData?.plan ?? planFromService ?? this.wizardStateService.getStepData(2)?.plan;
+    const effectiveState =
+      statePlanData?.state ||
+      (dataToLoad as any)?.incorporationState ||
+      this.serviceDataForm.get('incorporationState')?.value ||
+      this.wizardStateService.getStepData(2)?.state;
+    if (effectiveState) {
+      this.serviceDataForm.get('incorporationState')?.setValue(effectiveState);
     }
 
     // Verificar restricción de plan (usar effectivePlan para que funcione al recargar con request.plan)
@@ -530,23 +570,40 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     if (!effectiveId && !this.requestId && !environment.paymentEnabled) {
       // Crear request en el primer guardado del paso de Información (panel sin paso de pago).
       try {
+        this.ensurePlanStateFromWizard();
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
         const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
         const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
           this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+        const w2 = this.wizardStateService.getStepData(2) || {};
         const formData = this.serviceDataForm.getRawValue();
 
-        const plan = statePlanData.plan || formData.plan || '';
-        const amount = Number(statePlanData?.amount) || (plan ? this.wizardPlansService.calculateAmount(plan) : 0);
+        const plan =
+          statePlanData.plan || formData.plan || w2.plan || '';
+        const amount =
+          Number(statePlanData?.amount) ||
+          (plan ? this.wizardPlansService.calculateAmount(plan) : 0);
         const requestData: any = {
           type: 'apertura-llc',
           status: 'pendiente',
           paymentMethod: null,
           paymentAmount: amount,
+          currentStepNumber: this.currentSection,
         };
+        if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+          requestData.currentStep = this.flowStepNumber;
+        }
         if (clientSelection.clientId) {
           requestData.clientId = clientSelection.clientId;
-        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+        } else if (clientAssociation.clientId) {
+          requestData.clientId = clientAssociation.clientId;
+        } else if (
+          clientSelection.clientFirstName ||
+          clientSelection.clientLastName ||
+          clientSelection.clientEmail
+        ) {
+          // Backend solo crea cliente desde clientData si clientId === 0 explícito
+          requestData.clientId = 0;
           requestData.clientData = {
             firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
             lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
@@ -556,7 +613,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         }
         requestData.plan = plan;
         requestData.aperturaLlcData = {
-          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
+          incorporationState:
+            statePlanData.state ||
+            statePlanData.incorporationState ||
+            formData.incorporationState ||
+            w2.state ||
+            '',
           plan,
           ...formData,
           members: formData.members || [],
@@ -586,15 +648,22 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     this.isSaving = true;
     this.saveError = null;
     try {
+      this.ensurePlanStateFromWizard();
       const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
         this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+      const w2 = this.wizardStateService.getStepData(2) || {};
       const formData = this.serviceDataForm.getRawValue();
       const payload: any = {
         type: 'apertura-llc',
         currentStepNumber: this.currentSection,
         aperturaLlcData: {
-          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
-          plan: statePlanData.plan || formData.plan || '',
+          incorporationState:
+            statePlanData.state ||
+            statePlanData.incorporationState ||
+            formData.incorporationState ||
+            w2.state ||
+            '',
+          plan: statePlanData.plan || formData.plan || w2.plan || '',
           ...formData,
           members: formData.members || [],
         },

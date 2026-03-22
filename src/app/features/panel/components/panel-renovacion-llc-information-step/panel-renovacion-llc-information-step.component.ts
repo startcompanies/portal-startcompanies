@@ -12,6 +12,7 @@ import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
+import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 
 /**
  * Componente wrapper para usar renovacion-llc-form en el panel.
@@ -36,6 +37,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
   @Output() nextStepRequested = new EventEmitter<void>();
+  @Output() requestCreated = new EventEmitter<{ requestId: number }>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -52,13 +54,21 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   isSaving = false;
   saveError: string | null = null;
 
+  /** Request creado en este paso cuando paymentEnabled es false y no venía requestId. */
+  private _createdRequestId?: number;
+
+  get effectiveRequestId(): number | undefined {
+    return this._createdRequestId ?? this.requestId;
+  }
+
   constructor(
     private flowStateService: RequestFlowStateService,
     private requestsService: RequestsService,
     private fb: FormBuilder,
     private http: HttpClient,
     private serviceFormBuilder: ServiceFormBuilderService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private wizardPlansService: WizardPlansService
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createRenovacionLlcForm();
   }
@@ -264,45 +274,119 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
     this.nextStepRequested.emit();
   }
 
+  private buildMembersPayload(): any[] {
+    const ownersArray = this.serviceDataForm.get('owners') as FormArray;
+    if (!ownersArray) return [];
+    return ownersArray.controls.map((ctrl: any) => {
+      const v = (ctrl as FormGroup).getRawValue();
+      return {
+        firstName: v.name || '',
+        name: v.name || '',
+        lastName: v.lastName || '',
+        dateOfBirth: v.dateOfBirth || '',
+        email: v.email || '',
+        phone: v.phone || '',
+        phoneNumber: v.phone || '',
+        fullAddress: v.fullAddress || '',
+        unit: v.unit || '',
+        city: v.city || '',
+        stateRegion: v.stateRegion || '',
+        postalCode: v.postalCode || '',
+        country: v.country || '',
+        passportNumber: v.passportNumber || '',
+        nationality: v.nationality || '',
+        ssnItin: v.ssnItin || '',
+        cuit: v.cuit || '',
+        capitalContributions2025: v.capitalContributions2025 || 0,
+        loansToLLC2025: v.loansToLLC2025 || 0,
+        loansRepaid2025: v.loansRepaid2025 || 0,
+        capitalWithdrawals2025: v.capitalWithdrawals2025 || 0,
+        hasInvestmentsInUSA: v.hasInvestmentsInUSA || '',
+        isUSCitizen: v.isUSCitizen || '',
+        taxCountry: v.taxCountry || '',
+        wasInUSA31Days2025: v.wasInUSA31Days2025 || '',
+        participationPercentage: v.participationPercentage || 0,
+        percentageOfParticipation: v.participationPercentage || 0,
+      };
+    });
+  }
+
   async saveToApi(): Promise<void> {
-    if (!this.requestId) return;
+    const idExisting = this.effectiveRequestId;
+
+    if (!idExisting && !environment.paymentEnabled) {
+      try {
+        const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
+        const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
+        const stateData = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+        const formData = this.serviceDataForm.getRawValue() as Record<string, unknown>;
+        const members = this.buildMembersPayload();
+        const { owners: _owners, ...restOfFormData } = formData;
+
+        const pricing = this.wizardPlansService.calculateRenewalAmount(
+          (stateData['state'] as string) || (formData['state'] as string),
+          (formData['llcType'] as 'single' | 'multi' | '') || ''
+        );
+        const paymentAmount =
+          stateData['amount'] != null && stateData['amount'] !== ''
+            ? Number(stateData['amount'])
+            : pricing.amount ?? 0;
+
+        const requestData: any = {
+          type: 'renovacion-llc',
+          status: 'pendiente',
+          paymentMethod: null,
+          paymentAmount: !isNaN(paymentAmount) ? paymentAmount : 0,
+          currentStepNumber: this.currentSection,
+          renovacionLlcData: { ...restOfFormData, members },
+        };
+        if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+          requestData.currentStep = this.flowStepNumber;
+        }
+
+        if (clientSelection.clientId) {
+          requestData.clientId = clientSelection.clientId;
+        } else if (clientAssociation.clientId) {
+          requestData.clientId = clientAssociation.clientId;
+        } else if (
+          clientSelection.clientFirstName ||
+          clientSelection.clientLastName ||
+          clientSelection.clientEmail
+        ) {
+          requestData.clientId = 0;
+          requestData.clientData = {
+            firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
+            lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
+            email: clientSelection.clientEmail || clientAssociation.email || '',
+            phone: clientSelection.clientPhone || clientAssociation.phone || '',
+          };
+        }
+
+        this.logger.log('[PanelRenovacionLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
+        const response = await this.requestsService.createRequest(requestData);
+        if (!response?.id) {
+          this.logger.error('[PanelRenovacionLlcInformationStep] createRequest no devolvió id');
+          return;
+        }
+        this._createdRequestId = response.id;
+        this.requestCreated.emit({ requestId: response.id });
+      } catch (error: any) {
+        this.logger.error('[PanelRenovacionLlcInformationStep] Error al crear request:', error);
+        this.saveError = error?.error?.message || 'Error al crear la solicitud';
+        return;
+      }
+    }
+
+    const id = this.effectiveRequestId;
+    if (!id) {
+      return;
+    }
+
     this.isSaving = true;
     this.saveError = null;
     try {
       const formData = this.serviceDataForm.getRawValue() as Record<string, unknown>;
-      const ownersArray = this.serviceDataForm.get('owners') as FormArray;
-      const members = ownersArray ? ownersArray.controls.map((ctrl: any) => {
-        const v = (ctrl as FormGroup).getRawValue();
-        return {
-          firstName: v.name || '',
-          name: v.name || '',
-          lastName: v.lastName || '',
-          dateOfBirth: v.dateOfBirth || '',
-          email: v.email || '',
-          phone: v.phone || '',
-          phoneNumber: v.phone || '',
-          fullAddress: v.fullAddress || '',
-          unit: v.unit || '',
-          city: v.city || '',
-          stateRegion: v.stateRegion || '',
-          postalCode: v.postalCode || '',
-          country: v.country || '',
-          passportNumber: v.passportNumber || '',
-          nationality: v.nationality || '',
-          ssnItin: v.ssnItin || '',
-          cuit: v.cuit || '',
-          capitalContributions2025: v.capitalContributions2025 || 0,
-          loansToLLC2025: v.loansToLLC2025 || 0,
-          loansRepaid2025: v.loansRepaid2025 || 0,
-          capitalWithdrawals2025: v.capitalWithdrawals2025 || 0,
-          hasInvestmentsInUSA: v.hasInvestmentsInUSA || '',
-          isUSCitizen: v.isUSCitizen || '',
-          taxCountry: v.taxCountry || '',
-          wasInUSA31Days2025: v.wasInUSA31Days2025 || '',
-          participationPercentage: v.participationPercentage || 0,
-          percentageOfParticipation: v.participationPercentage || 0,
-        };
-      }) : [];
+      const members = this.buildMembersPayload();
       const { owners: _owners, ...restOfFormData } = formData;
       const payload: any = {
         type: 'renovacion-llc',
@@ -312,7 +396,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
         payload.currentStep = this.flowStepNumber;
       }
-      await this.requestsService.updateRequest(this.requestId, payload);
+      await this.requestsService.updateRequest(id, payload);
     } catch (error: any) {
       this.logger.error('[PanelRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
@@ -334,7 +418,9 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', 'renovacion-llc');
-      if (this.requestId) formData.append('requestUuid', this.requestId.toString());
+      if (this.effectiveRequestId) {
+        formData.append('requestUuid', this.effectiveRequestId.toString());
+      }
       const response = await firstValueFrom(
         this.http.post<{ url: string; key: string; message: string }>(`${environment.apiUrl}/upload-file`, formData)
       );

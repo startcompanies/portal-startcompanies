@@ -68,9 +68,27 @@
         </div>
 
         <div class="request-footer">
-          <button type="button" (click)="continueRequest(request)" class="btn btn-sm btn-warning">
+          <button
+            type="button"
+            (click)="continueRequest(request)"
+            class="btn btn-sm btn-warning"
+            [disabled]="deletingRequestId === request.id">
             <i class="bi bi-arrow-right-circle me-2"></i>
             Continuar Solicitud
+          </button>
+          <button
+            type="button"
+            (click)="openDeleteModal(request)"
+            class="btn btn-sm btn-outline-danger"
+            [disabled]="deletingRequestId === request.id"
+            title="Eliminar borrador">
+            <span
+              *ngIf="deletingRequestId === request.id"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"></span>
+            <i *ngIf="deletingRequestId !== request.id" class="bi bi-trash me-1"></i>
+            Eliminar
           </button>
         </div>
       </div>
@@ -136,6 +154,57 @@
           <a [routerLink]="['/panel/my-requests', request.uuid || request.id]" class="btn btn-sm btn-outline-primary">
             Ver Detalles
           </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmar eliminación de borrador -->
+  <div
+    *ngIf="showDeleteModal && requestToDelete"
+    class="modal fade show d-block"
+    tabindex="-1"
+    style="background: rgba(0, 0, 0, 0.5);"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteRequestModalTitle">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteRequestModalTitle">Eliminar solicitud</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="cancelDelete()"
+            [disabled]="deletingRequestId !== null"
+            aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">
+            ¿Eliminar la solicitud de <strong>{{ getRequestTypeLabel(requestToDelete.type) }}</strong>?
+            Esta acción no se puede deshacer.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelDelete()"
+            [disabled]="deletingRequestId !== null">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmDelete()"
+            [disabled]="deletingRequestId !== null">
+            <span
+              *ngIf="deletingRequestId !== null"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"></span>
+            Eliminar
+          </button>
         </div>
       </div>
     </div>

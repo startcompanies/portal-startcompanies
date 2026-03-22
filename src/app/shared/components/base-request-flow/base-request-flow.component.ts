@@ -275,42 +275,30 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Sincroniza datos de RequestFlowStateService a WizardStateService
-   * Para que los componentes del wizard puedan acceder a los datos hidratados
+   * Copia estado/plan, pago, formulario de servicio y confirmación del flujo a WizardStateService
+   * (pasos 2–5) para que `WizardFinalReviewStepComponent` muestre el resumen completo (wizard y panel).
    */
-  private syncToWizardStateService(): void {
-    if (!this.wizardStateService) return;
-    
-    // Sincronizar datos de registro
-    const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
-    if (registerData && Object.keys(registerData).length > 0) {
-      this.wizardStateService.setStepData(1, registerData);
+  private syncReviewDataFromFlowToWizardState(): void {
+    const ws = this.wizardStateService;
+    if (!ws) {
+      return;
     }
-    
-    // Sincronizar datos de verificación de email
-    const emailVerificationData = this.flowStateService.getStepData(RequestFlowStep.EMAIL_VERIFICATION);
-    if (emailVerificationData && Object.keys(emailVerificationData).length > 0) {
-      this.wizardStateService.setStepData(2, emailVerificationData);
-    }
-    
-    // Sincronizar datos de selección de estado/plan
+
     const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
     const stateData = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION);
     const planStateData = statePlanData || stateData;
     if (planStateData && Object.keys(planStateData).length > 0) {
-      this.wizardStateService.setStepData(2, planStateData); // Paso 2 en wizard
+      ws.setStepData(2, planStateData);
     }
-    
-    // Sincronizar datos de pago
+
     const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
     if (paymentData && Object.keys(paymentData).length > 0) {
-      this.wizardStateService.setStepData(3, paymentData); // Paso 3 en wizard
+      ws.setStepData(3, paymentData);
       if (paymentData.requestId) {
-        this.wizardStateService.setRequestId(paymentData.requestId);
+        ws.setRequestId(paymentData.requestId);
       }
     }
-    
-    // Sincronizar datos del formulario de servicio (incl. members/owners para el resumen de confirmación)
+
     let serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     if (serviceData && Object.keys(serviceData).length > 0) {
       serviceData = { ...serviceData };
@@ -320,13 +308,50 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       if (!serviceData.members && serviceData.owners) {
         serviceData.members = serviceData.owners;
       }
-      this.wizardStateService.setStepData(4, serviceData); // Paso 4 en wizard
+      ws.setStepData(4, serviceData);
     }
-    
-    // Sincronizar datos de confirmación
+
     const confirmationData = this.flowStateService.getStepData(RequestFlowStep.CONFIRMATION);
     if (confirmationData && Object.keys(confirmationData).length > 0) {
-      this.wizardStateService.setStepData(5, confirmationData); // Paso 5 en wizard
+      ws.setStepData(5, confirmationData);
+    }
+  }
+
+  /**
+   * Sincroniza datos de RequestFlowStateService a WizardStateService
+   * Para que los componentes del wizard puedan acceder a los datos hidratados;
+   * en panel, también alimenta el resumen de Confirmación (mismo componente que el wizard).
+   */
+  private syncToWizardStateService(): void {
+    if (!this.wizardStateService) {
+      return;
+    }
+
+    if (this.context === RequestFlowContext.WIZARD) {
+      const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
+      if (registerData && Object.keys(registerData).length > 0) {
+        this.wizardStateService.setStepData(1, registerData);
+      }
+
+      const emailVerificationData = this.flowStateService.getStepData(RequestFlowStep.EMAIL_VERIFICATION);
+      if (emailVerificationData && Object.keys(emailVerificationData).length > 0) {
+        this.wizardStateService.setStepData(2, emailVerificationData);
+      }
+
+      this.syncReviewDataFromFlowToWizardState();
+      return;
+    }
+
+    if (
+      this.context === RequestFlowContext.PANEL_CLIENT ||
+      this.context === RequestFlowContext.PANEL_PARTNER
+    ) {
+      const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
+      if (registerData && Object.keys(registerData).length > 0) {
+        this.wizardStateService.setStepData(1, registerData);
+      }
+
+      this.syncReviewDataFromFlowToWizardState();
     }
   }
   
@@ -1064,6 +1089,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       if (evt?.requestId != null) {
         const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, { ...paymentData, requestId: evt.requestId });
+        this.draftRequestId = evt.requestId;
+        if (this.context !== RequestFlowContext.WIZARD) {
+          this.startAutosave();
+        }
       }
     });
 

@@ -7,6 +7,7 @@ import { PartnerClientsService } from '../../services/partner-clients.service';
 import { PanelPartnerRequestFlowComponent } from '../../components/panel-partner-request-flow/panel-partner-request-flow.component';
 import { PanelClientRequestFlowComponent } from '../../components/panel-client-request-flow/panel-client-request-flow.component';
 import { ServiceType } from '../../../../shared/models/request-flow-context';
+import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { firstValueFrom } from 'rxjs';
 
 /**
@@ -111,7 +112,8 @@ export class NewRequestComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private requestsService: RequestsService,
-    private partnerClientsService: PartnerClientsService
+    private partnerClientsService: PartnerClientsService,
+    private wizardStateService: WizardStateService
   ) {
     this.isPartner = this.authService.isPartner();
   }
@@ -263,6 +265,9 @@ export class NewRequestComponent implements OnInit {
         serviceType,
         draftRequestUuid
       };
+    }
+    if (!draftRequestUuid) {
+      this.wizardStateService.clear();
     }
     this.isLoading = false;
   }

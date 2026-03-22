@@ -313,7 +313,14 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
         };
         if (clientSelection.clientId) {
           requestData.clientId = clientSelection.clientId;
-        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+        } else if (clientAssociation.clientId) {
+          requestData.clientId = clientAssociation.clientId;
+        } else if (
+          clientSelection.clientFirstName ||
+          clientSelection.clientLastName ||
+          clientSelection.clientEmail
+        ) {
+          requestData.clientId = 0;
           requestData.clientData = {
             firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
             lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
