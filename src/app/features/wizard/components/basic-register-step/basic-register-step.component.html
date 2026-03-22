@@ -24,6 +24,7 @@
             [placeholder]="'WIZARD.basic_register.phone' | transloco"
             [required]="true"
             [initialCountry]="detectedCountryCode"
+            [showInlineErrors]="false"
           ></app-intl-tel-input>
           <div *ngIf="form.get('phone')?.touched && form.get('phone')?.invalid" class="text-danger mt-1">
             {{ 'WIZARD.basic_register.phone_required' | transloco }}

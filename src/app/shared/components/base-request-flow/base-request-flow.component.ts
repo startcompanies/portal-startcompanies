@@ -141,7 +141,12 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Usamos 'apertura-llc' como default temporal solo para obtener la estructura base
     // El paso de selección permitirá elegir el tipo real
     const tempServiceType: ServiceType = this.serviceType || 'apertura-llc';
-    this.flowSteps = this.flowConfigService.getFlowConfig(this.context, tempServiceType, this.serviceType === null);
+    this.flowSteps = this.flowConfigService.getFlowConfig(
+      this.context,
+      tempServiceType,
+      this.serviceType === null,
+      this.shouldSkipPartnerClientSelection()
+    );
     
     // Cargar borrador si hay UUID
     if (this.draftRequestUuid && this.draftRequestService) {
@@ -197,6 +202,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.stepSubscriptions = [];
     this.stepComponentRef?.destroy();
     this.stepComponentRef = null;
+  }
+
+  /** Partner con cliente ya resuelto (query, borrador, etc.): no incluir paso CLIENT_SELECTION en la config. */
+  private shouldSkipPartnerClientSelection(): boolean {
+    return this.context === RequestFlowContext.PANEL_PARTNER && this.initialClientId != null;
   }
   
   /**
@@ -1005,7 +1015,12 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         this.serviceTypeChanged.emit(serviceType);
         
         // Recargar la configuración del flujo con el nuevo serviceType (sin paso de selección)
-        const newFlowSteps = this.flowConfigService.getFlowConfig(this.context, serviceType, false);
+        const newFlowSteps = this.flowConfigService.getFlowConfig(
+          this.context,
+          serviceType,
+          false,
+          this.shouldSkipPartnerClientSelection()
+        );
         
         // Encontrar el índice del paso actual (SERVICE_TYPE_SELECTION)
         const currentStepIndex = this.currentStepIndex;

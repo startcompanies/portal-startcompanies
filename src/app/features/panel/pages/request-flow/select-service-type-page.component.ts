@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ServiceType } from '../../../../shared/models/request-flow-context';
 
@@ -20,8 +20,8 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
         <p class="text-muted">Crea una nueva solicitud para un cliente</p>
       </div>
 
-      <!-- Progress Steps -->
-      <div class="steps-indicator">
+      <!-- Progress Steps (sin paso cliente si ya viene en la URL desde Mis clientes) -->
+      <div class="steps-indicator" *ngIf="!hasClientPrefilled">
         <div class="step-item active">
           <div class="step-number">1</div>
           <div class="step-label">Tipo de Servicio</div>
@@ -36,6 +36,20 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
         </div>
         <div class="step-item">
           <div class="step-number">4</div>
+          <div class="step-label">Pago</div>
+        </div>
+      </div>
+      <div class="steps-indicator" *ngIf="hasClientPrefilled">
+        <div class="step-item active">
+          <div class="step-number">1</div>
+          <div class="step-label">Tipo de Servicio</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-label">Datos del Servicio</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
           <div class="step-label">Pago</div>
         </div>
       </div>
@@ -286,6 +300,8 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
 })
 export class SelectServiceTypePageComponent implements OnInit {
   selectedService: ServiceType | null = null;
+  /** true si la URL trae client o clientId (solicitud desde Mis clientes) */
+  hasClientPrefilled = false;
 
   serviceTypes = [
     { 
@@ -307,6 +323,7 @@ export class SelectServiceTypePageComponent implements OnInit {
   
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
   
@@ -316,6 +333,8 @@ export class SelectServiceTypePageComponent implements OnInit {
       this.router.navigate(['/panel/login']);
       return;
     }
+    const q = this.route.snapshot.queryParams;
+    this.hasClientPrefilled = !!(q['client'] || q['clientId']);
   }
   
   selectService(serviceType: ServiceType): void {
@@ -326,9 +345,14 @@ export class SelectServiceTypePageComponent implements OnInit {
     if (!this.selectedService) {
       return;
     }
-    // Entrada canónica del flujo: new-request (orquestador + BaseRequestFlowComponent compartido)
-    this.router.navigate(['/panel/new-request'], {
-      queryParams: { serviceType: this.selectedService },
-    });
+    const q = this.route.snapshot.queryParams;
+    const queryParams: Record<string, string> = { serviceType: this.selectedService };
+    if (q['client']) {
+      queryParams['client'] = q['client'];
+    }
+    if (q['clientId']) {
+      queryParams['clientId'] = q['clientId'];
+    }
+    this.router.navigate(['/panel/new-request'], { queryParams });
   }
 }

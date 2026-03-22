@@ -33,7 +33,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       // Wizard: JWT en sessionStorage (WizardApiService), no cookies del panel.
       // Un 401 aquí no debe disparar refresh/logout del panel ni ir a /panel/login.
-      if (req.url.includes('/wizard/requests')) {
+      if (req.url.includes('/wizard/requests') || req.url.includes('/wizard/geo')) {
         return throwError(() => error);
       }
 
