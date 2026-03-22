@@ -101,6 +101,9 @@
           
           <div *ngIf="shouldShowMembersSection()">
             <h4 class="section-title">Socios/Miembros de la LLC</h4>
+            <p *ngIf="serviceDataForm.get('llcType')?.value === 'multi'" class="alert alert-info small mb-3">
+              <strong>Multi Member LLC:</strong> la suma de los porcentajes de participación de todos los miembros debe ser exactamente 100%.
+            </p>
             <div formArrayName="members" *ngIf="membersFormArray">
               <div *ngFor="let member of membersFormArray.controls; let i = index" [formGroupName]="i" class="member-card mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">

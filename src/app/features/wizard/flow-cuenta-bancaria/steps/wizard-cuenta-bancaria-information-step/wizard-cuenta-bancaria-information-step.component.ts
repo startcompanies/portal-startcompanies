@@ -9,6 +9,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { LoggerService } from '../../../../../shared/services/logger.service';
+import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -444,6 +445,14 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       
       if (!ownersArray || ownersArray.length < minOwners) {
         return false;
+      }
+
+      const isMulti =
+        isMultiMember === 'yes' || isMultiMember === true || String(isMultiMember) === 'true';
+      if (isMulti) {
+        if (!isMultiMemberParticipationTotal100(ownersArray, 'participationPercentage')) {
+          return false;
+        }
       }
       
       // Validar que todos los owners tengan los campos requeridos

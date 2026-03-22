@@ -540,6 +540,9 @@
   <!-- Información de los propietarios (solo si es Multi-Member) -->
   <div *ngIf="currentSection === 6 && isMultiMember" class="form-section">
     <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DE LOS PROPIETARIOS</strong></h4>
+    <p class="alert alert-info small mb-3">
+      La suma de los porcentajes de participación de todos los propietarios listados debe ser exactamente 100%.
+    </p>
     <div class="row g-3">
       <div class="col-md-12">
         <small class="form-text text-muted">Proporciona la información de todos los propietarios o socios.</small>

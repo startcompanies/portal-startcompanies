@@ -11,6 +11,7 @@ import { environment } from '../../../../../environments/environment';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
+import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 
 /**
  * Componente wrapper para usar renovacion-llc-form en el panel.
@@ -178,6 +179,11 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       const llcType = this.serviceDataForm.get('llcType')?.value;
       const minOwners = llcType === 'multi' ? 2 : 1;
       if (!ownersArray || ownersArray.length < minOwners) return false;
+      if (llcType === 'multi') {
+        if (!isMultiMemberParticipationTotal100(ownersArray, 'participationPercentage')) {
+          return false;
+        }
+      }
       return ownersArray.controls.every(owner => owner.valid);
     }
 

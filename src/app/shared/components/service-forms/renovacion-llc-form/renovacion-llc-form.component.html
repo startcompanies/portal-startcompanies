@@ -197,6 +197,9 @@
   <!-- Sección 2: Información de Propietarios (single o multimember) -->
   <div *ngIf="currentSection === 2" class="form-section">
     <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN DEL PROPIETARIO</strong></h4>
+    <p *ngIf="serviceDataForm.get('llcType')?.value === 'multi'" class="alert alert-info small mb-3">
+      <strong>Multi Member LLC:</strong> la suma de los porcentajes de participación de todos los propietarios debe ser exactamente 100%.
+    </p>
     
     <div formArrayName="owners">
       <div *ngIf="ownersFormArray && ownersFormArray.length === 0" class="alert alert-info">

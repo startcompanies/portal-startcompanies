@@ -9,6 +9,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../../shared/services/logger.service';
+import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 
 /**
  * Componente wrapper para usar wizard-renovacion-llc-form en el wizard
@@ -366,6 +367,12 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       
       if (!ownersArray || ownersArray.length < minOwners) {
         return false;
+      }
+
+      if (llcType === 'multi') {
+        if (!isMultiMemberParticipationTotal100(ownersArray, 'participationPercentage')) {
+          return false;
+        }
       }
       
       // Validar que todos los owners tengan los campos requeridos

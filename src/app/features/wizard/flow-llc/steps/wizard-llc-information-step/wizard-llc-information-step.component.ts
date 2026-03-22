@@ -11,6 +11,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../../../services/wizard-plans.service';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { environment } from '../../../../../../environments/environment';
+import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -461,6 +462,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       
       if (!membersArray || membersArray.length < minMembers) {
         return false;
+      }
+
+      if (llcType === 'multi') {
+        if (!isMultiMemberParticipationTotal100(membersArray, 'percentageOfParticipation')) {
+          return false;
+        }
       }
       
       // Validar que todos los miembros tengan los campos requeridos

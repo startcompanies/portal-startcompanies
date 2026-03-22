@@ -11,6 +11,7 @@ import { RequestsService } from '../../services/requests.service';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 
 /**
@@ -371,6 +372,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       
       if (!membersArray || membersArray.length < minMembers) {
         return false;
+      }
+
+      if (llcType === 'multi') {
+        if (!isMultiMemberParticipationTotal100(membersArray, 'percentageOfParticipation')) {
+          return false;
+        }
       }
       
       return membersArray.controls.every(member => member.valid);
