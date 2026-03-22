@@ -270,7 +270,7 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       try {
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
         const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
-        const formData = this.serviceDataForm.getRawValue() as Record<string, any>;
+        const formData = this.serviceDataForm.getRawValue() as any;
         const validatorAsFirstMember = {
           firstName: formData.validatorFirstName || '',
           lastName: formData.validatorLastName || '',
@@ -341,7 +341,7 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
     this.isSaving = true;
     this.saveError = null;
     try {
-      const formData = this.serviceDataForm.getRawValue() as Record<string, any>;
+      const formData = this.serviceDataForm.getRawValue() as any;
       const validatorAsFirstMember = {
         firstName: formData.validatorFirstName || '',
         lastName: formData.validatorLastName || '',
