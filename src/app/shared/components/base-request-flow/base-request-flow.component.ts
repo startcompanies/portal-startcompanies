@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
 import { RequestFlowConfigService } from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
@@ -118,7 +118,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private wizardStateService = inject(WizardStateService, { optional: true });
   private wizardApiService = inject(WizardApiService, { optional: true });
   private draftRequestService = inject(DraftRequestService, { optional: true });
-  
+  private transloco = inject(TranslocoService);
+
   // Propiedades para manejo de borradores
   @Input() draftRequestUuid: string | null = null;
   @Input() initialClientId: number | null = null;
@@ -141,7 +142,12 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Usamos 'apertura-llc' como default temporal solo para obtener la estructura base
     // El paso de selección permitirá elegir el tipo real
     const tempServiceType: ServiceType = this.serviceType || 'apertura-llc';
-    this.flowSteps = this.flowConfigService.getFlowConfig(this.context, tempServiceType, this.serviceType === null);
+    this.flowSteps = this.flowConfigService.getFlowConfig(
+      this.context,
+      tempServiceType,
+      this.serviceType === null,
+      this.shouldSkipPartnerClientSelection()
+    );
     
     // Cargar borrador si hay UUID
     if (this.draftRequestUuid && this.draftRequestService) {
@@ -198,6 +204,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.stepComponentRef?.destroy();
     this.stepComponentRef = null;
   }
+
+  /** Partner con cliente ya resuelto (query, borrador, etc.): no incluir paso CLIENT_SELECTION en la config. */
+  private shouldSkipPartnerClientSelection(): boolean {
+    return this.context === RequestFlowContext.PANEL_PARTNER && this.initialClientId != null;
+  }
   
   /**
    * Carga un borrador por UUID y restaura el paso actual desde request.currentStep
@@ -212,7 +223,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     try {
       const request = await this.draftRequestService.loadDraftByUuid(uuid);
       if (!request) {
-        throw new Error('No se pudo cargar el borrador');
+        throw new Error(this.transloco.translate('PANEL.request_flow.err_load_failed'));
       }
       this.draftRequestId = request.id;
       
@@ -268,49 +279,37 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       // No mostrar mensaje "Borrador cargado exitosamente" en paso Información de la LLC
     } catch (error: any) {
       console.error('[BaseRequestFlowComponent] Error al cargar borrador:', error);
-      this.errorMessage = error?.message || 'Error al cargar el borrador';
+      this.errorMessage = error?.message || this.transloco.translate('PANEL.request_flow.err_draft');
     } finally {
       this.isLoading = false;
     }
   }
   
   /**
-   * Sincroniza datos de RequestFlowStateService a WizardStateService
-   * Para que los componentes del wizard puedan acceder a los datos hidratados
+   * Copia estado/plan, pago, formulario de servicio y confirmación del flujo a WizardStateService
+   * (pasos 2–5) para que `WizardFinalReviewStepComponent` muestre el resumen completo (wizard y panel).
    */
-  private syncToWizardStateService(): void {
-    if (!this.wizardStateService) return;
-    
-    // Sincronizar datos de registro
-    const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
-    if (registerData && Object.keys(registerData).length > 0) {
-      this.wizardStateService.setStepData(1, registerData);
+  private syncReviewDataFromFlowToWizardState(): void {
+    const ws = this.wizardStateService;
+    if (!ws) {
+      return;
     }
-    
-    // Sincronizar datos de verificación de email
-    const emailVerificationData = this.flowStateService.getStepData(RequestFlowStep.EMAIL_VERIFICATION);
-    if (emailVerificationData && Object.keys(emailVerificationData).length > 0) {
-      this.wizardStateService.setStepData(2, emailVerificationData);
-    }
-    
-    // Sincronizar datos de selección de estado/plan
+
     const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
     const stateData = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION);
     const planStateData = statePlanData || stateData;
     if (planStateData && Object.keys(planStateData).length > 0) {
-      this.wizardStateService.setStepData(2, planStateData); // Paso 2 en wizard
+      ws.setStepData(2, planStateData);
     }
-    
-    // Sincronizar datos de pago
+
     const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
     if (paymentData && Object.keys(paymentData).length > 0) {
-      this.wizardStateService.setStepData(3, paymentData); // Paso 3 en wizard
+      ws.setStepData(3, paymentData);
       if (paymentData.requestId) {
-        this.wizardStateService.setRequestId(paymentData.requestId);
+        ws.setRequestId(paymentData.requestId);
       }
     }
-    
-    // Sincronizar datos del formulario de servicio (incl. members/owners para el resumen de confirmación)
+
     let serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
     if (serviceData && Object.keys(serviceData).length > 0) {
       serviceData = { ...serviceData };
@@ -320,13 +319,50 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       if (!serviceData.members && serviceData.owners) {
         serviceData.members = serviceData.owners;
       }
-      this.wizardStateService.setStepData(4, serviceData); // Paso 4 en wizard
+      ws.setStepData(4, serviceData);
     }
-    
-    // Sincronizar datos de confirmación
+
     const confirmationData = this.flowStateService.getStepData(RequestFlowStep.CONFIRMATION);
     if (confirmationData && Object.keys(confirmationData).length > 0) {
-      this.wizardStateService.setStepData(5, confirmationData); // Paso 5 en wizard
+      ws.setStepData(5, confirmationData);
+    }
+  }
+
+  /**
+   * Sincroniza datos de RequestFlowStateService a WizardStateService
+   * Para que los componentes del wizard puedan acceder a los datos hidratados;
+   * en panel, también alimenta el resumen de Confirmación (mismo componente que el wizard).
+   */
+  private syncToWizardStateService(): void {
+    if (!this.wizardStateService) {
+      return;
+    }
+
+    if (this.context === RequestFlowContext.WIZARD) {
+      const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
+      if (registerData && Object.keys(registerData).length > 0) {
+        this.wizardStateService.setStepData(1, registerData);
+      }
+
+      const emailVerificationData = this.flowStateService.getStepData(RequestFlowStep.EMAIL_VERIFICATION);
+      if (emailVerificationData && Object.keys(emailVerificationData).length > 0) {
+        this.wizardStateService.setStepData(2, emailVerificationData);
+      }
+
+      this.syncReviewDataFromFlowToWizardState();
+      return;
+    }
+
+    if (
+      this.context === RequestFlowContext.PANEL_CLIENT ||
+      this.context === RequestFlowContext.PANEL_PARTNER
+    ) {
+      const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
+      if (registerData && Object.keys(registerData).length > 0) {
+        this.wizardStateService.setStepData(1, registerData);
+      }
+
+      this.syncReviewDataFromFlowToWizardState();
     }
   }
   
@@ -577,7 +613,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    */
   private async handleResendCode(stepInstance: any): Promise<void> {
     if (!this.wizardStateService || !this.wizardApiService || typeof stepInstance?.notifyResendResult !== 'function') {
-      stepInstance?.notifyResendResult?.(false, 'Configuración incompleta. Intenta de nuevo.');
+      stepInstance?.notifyResendResult?.(false, this.transloco.translate('PANEL.request_flow.err_config'));
       return;
     }
     const stepData = this.wizardStateService.getStepData(1) || {};
@@ -587,7 +623,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     const phone = stepData.phone;
 
     if (!email || !password) {
-      stepInstance.notifyResendResult(false, 'No se encontró el email o contraseña. Vuelve al paso de registro.');
+      stepInstance.notifyResendResult(false, this.transloco.translate('PANEL.request_flow.err_credentials'));
       return;
     }
 
@@ -604,14 +640,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         password
       }));
 
-      stepInstance.notifyResendResult(true, 'Código de verificación reenviado. Revisa tu bandeja de entrada.');
+      stepInstance.notifyResendResult(true, this.transloco.translate('PANEL.request_flow.code_resent'));
     } catch (error: any) {
       if (error?.error?.message?.includes('confirmado')) {
-        stepInstance.notifyResendResult(true, 'Tu email ya está confirmado. Puedes continuar.');
+        stepInstance.notifyResendResult(true, this.transloco.translate('PANEL.request_flow.email_confirmed'));
         this.currentStepValid = true;
         this.nextStep();
       } else {
-        const msg = error?.error?.message || 'Error al reenviar el código. Intenta de nuevo.';
+        const msg = error?.error?.message || this.transloco.translate('PANEL.request_flow.err_resend');
         stepInstance.notifyResendResult(false, msg);
       }
     }
@@ -961,11 +997,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
       
       this.currentStepValid = true;
-      this.successMessage = '¡Pago procesado exitosamente!';
+      this.successMessage = this.transloco.translate('PANEL.request_flow.payment_success');
     });
     subscribeIfEmitter('paymentError', (err: any) => {
       this.currentStepValid = false;
-      this.errorMessage = err || 'Error al procesar el pago';
+      this.errorMessage = err || this.transloco.translate('PANEL.request_flow.err_payment');
     });
 
     // Panel partner/client: validez del paso
@@ -980,7 +1016,12 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         this.serviceTypeChanged.emit(serviceType);
         
         // Recargar la configuración del flujo con el nuevo serviceType (sin paso de selección)
-        const newFlowSteps = this.flowConfigService.getFlowConfig(this.context, serviceType, false);
+        const newFlowSteps = this.flowConfigService.getFlowConfig(
+          this.context,
+          serviceType,
+          false,
+          this.shouldSkipPartnerClientSelection()
+        );
         
         // Encontrar el índice del paso actual (SERVICE_TYPE_SELECTION)
         const currentStepIndex = this.currentStepIndex;
@@ -1064,6 +1105,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       if (evt?.requestId != null) {
         const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, { ...paymentData, requestId: evt.requestId });
+        this.draftRequestId = evt.requestId;
+        if (this.context !== RequestFlowContext.WIZARD) {
+          this.startAutosave();
+        }
       }
     });
 

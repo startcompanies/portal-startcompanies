@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
 import { RequestsService } from '../../services/requests.service';
+import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
 
 /**
  * Componente específico para el flujo del panel-partner (partner creando para cliente)
@@ -35,7 +36,8 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
   
   constructor(
     private router: Router,
-    private requestsService: RequestsService
+    private requestsService: RequestsService,
+    private requestFlowState: RequestFlowStateService
   ) {}
   
   ngOnInit(): void {
@@ -58,6 +60,7 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
             draftRequestId: data?.draftRequestId,
           });
           this.isFinalizing = false;
+          this.clearFlowState();
           this.flowCompleted.emit(data);
           this.router.navigate(['/panel/my-requests']);
           return;
@@ -67,6 +70,7 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
           serviceType,
           data.submit?.signature ?? null
         );
+        this.clearFlowState();
         this.flowCompleted.emit(data);
         this.router.navigate(['/panel/my-requests']);
       } catch (e) {
@@ -77,13 +81,19 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
       return;
     }
 
+    this.clearFlowState();
     this.flowCompleted.emit(data);
     this.router.navigate(['/panel/my-requests']);
   }
   
   onFlowCancelled(): void {
     console.log('[PanelPartnerRequestFlowComponent] Flujo cancelado');
+    this.clearFlowState();
     this.flowCancelled.emit();
     this.router.navigate(['/panel/my-requests']);
+  }
+
+  private clearFlowState(): void {
+    this.requestFlowState.clear();
   }
 }

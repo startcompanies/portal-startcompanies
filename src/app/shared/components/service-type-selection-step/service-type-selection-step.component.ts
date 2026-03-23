@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { RequestFlowStep, ServiceType } from '../../models/request-flow-context';
 
@@ -11,7 +12,7 @@ import { RequestFlowStep, ServiceType } from '../../models/request-flow-context'
 @Component({
   selector: 'app-service-type-selection-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslocoPipe],
   templateUrl: './service-type-selection-step.component.html',
   styleUrls: ['./service-type-selection-step.component.css']
 })
@@ -25,23 +26,28 @@ export class ServiceTypeSelectionStepComponent implements OnInit {
   form!: FormGroup;
   selectedServiceType: ServiceType | null = null;
   
-  serviceTypes = [
-    { 
-      value: 'apertura-llc' as ServiceType, 
-      label: 'Apertura LLC', 
-      description: 'Formación de nueva LLC en Estados Unidos',
+  serviceTypes: Array<{
+    value: ServiceType;
+    labelKey: string;
+    descriptionKey: string;
+    icon: string;
+  }> = [
+    {
+      value: 'apertura-llc',
+      labelKey: 'PANEL.select_service.types.apertura_llc.label',
+      descriptionKey: 'PANEL.select_service.types.apertura_llc.description',
       icon: 'bi bi-building'
     },
-    { 
-      value: 'renovacion-llc' as ServiceType, 
-      label: 'Renovación LLC', 
-      description: 'Renovación de LLC existente',
+    {
+      value: 'renovacion-llc',
+      labelKey: 'PANEL.select_service.types.renovacion_llc.label',
+      descriptionKey: 'PANEL.select_service.types.renovacion_llc.description',
       icon: 'bi bi-arrow-repeat'
     },
-    { 
-      value: 'cuenta-bancaria' as ServiceType, 
-      label: 'Cuenta Bancaria', 
-      description: 'Apertura de cuenta bancaria para LLC',
+    {
+      value: 'cuenta-bancaria',
+      labelKey: 'PANEL.select_service.types.cuenta_bancaria.label',
+      descriptionKey: 'PANEL.select_service.types.cuenta_bancaria.description',
       icon: 'bi bi-bank'
     }
   ];

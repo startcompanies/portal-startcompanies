@@ -264,9 +264,11 @@ export class WizardApiService {
    * Usado por flow-llc, flow-renovacion, payment-step e información de servicio.
    */
   uploadFile(formData: FormData): Observable<{ url: string; key: string; message: string }> {
+    const headers = this.getAuthHeaders();
     return this.http.post<{ url: string; key: string; message: string }>(
       `${this.baseUrl}/upload-file`,
-      formData
+      formData,
+      { headers }
     );
   }
 }

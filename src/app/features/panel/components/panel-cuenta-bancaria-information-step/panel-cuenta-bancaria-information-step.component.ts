@@ -11,6 +11,8 @@ import { environment } from '../../../../../environments/environment';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
+import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar cuenta-bancaria-form en el panel.
@@ -19,7 +21,7 @@ import { LoggerService } from '../../../../shared/services/logger.service';
 @Component({
   selector: 'app-panel-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent, TranslocoPipe],
   templateUrl: './panel-cuenta-bancaria-information-step.component.html',
   styleUrls: ['./panel-cuenta-bancaria-information-step.component.css']
 })
@@ -178,6 +180,11 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
         const ownersArray = f.get('owners') as FormArray;
         const minOwners = this.isMultiMember ? 2 : 1;
         if (!ownersArray || ownersArray.length < minOwners) return false;
+        if (this.isMultiMember) {
+          if (!isMultiMemberParticipationTotal100(ownersArray, 'participationPercentage')) {
+            return false;
+          }
+        }
         return ownersArray.controls.every(owner => owner.valid);
       }
       default:
@@ -230,12 +237,17 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
     }
     // Sección 5 sin multimember: saltar sección 6 y terminar paso
     if (this.currentSection === 5 && !this.isMultiMember) {
-      await this.saveToApi();
-      this.nextStepRequested.emit();
+      const ok = await this.saveToApi();
+      if (ok) {
+        this.nextStepRequested.emit();
+      }
       return;
     }
     if (this.currentSection < this.totalSections) {
-      await this.saveToApi();
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
       this.currentSection++;
       if (this.currentSection === 6) {
         setTimeout(() => this.handleMultiMemberChange(this.serviceDataForm.get('isMultiMember')?.value), 100);
@@ -252,11 +264,16 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
+    const ok = await this.saveToApi();
+    if (!ok) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     let effectiveId = this._createdRequestId ?? this.requestId;
 
     if (!effectiveId) {
@@ -264,7 +281,7 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       try {
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
         const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
-        const formData = this.serviceDataForm.value;
+        const formData = this.serviceDataForm.getRawValue() as any;
         const validatorAsFirstMember = {
           firstName: formData.validatorFirstName || '',
           lastName: formData.validatorLastName || '',
@@ -303,11 +320,19 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
           status: 'pendiente',
           paymentMethod: null,
           paymentAmount: 0,
-          cuentaBancariaData: { ...formData, owners: allMembers }
+          currentStepNumber: this.currentSection,
+          cuentaBancariaData: { ...formData, owners: allMembers, currentSection: this.currentSection }
         };
         if (clientSelection.clientId) {
           requestData.clientId = clientSelection.clientId;
-        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+        } else if (clientAssociation.clientId) {
+          requestData.clientId = clientAssociation.clientId;
+        } else if (
+          clientSelection.clientFirstName ||
+          clientSelection.clientLastName ||
+          clientSelection.clientEmail
+        ) {
+          requestData.clientId = 0;
           requestData.clientData = {
             firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
             lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
@@ -320,7 +345,8 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelCuentaBancariaInformationStep] createRequest no devolvió id');
-          return;
+          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
+          return false;
         }
         this._createdRequestId = response.id;
         this.requestCreated.emit({ requestId: response.id });
@@ -328,14 +354,13 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
       } catch (error: any) {
         this.logger.error('[PanelCuentaBancariaInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        return;
+        return false;
       }
     }
 
     this.isSaving = true;
-    this.saveError = null;
     try {
-      const formData = this.serviceDataForm.value;
+      const formData = this.serviceDataForm.getRawValue() as any;
       const validatorAsFirstMember = {
         firstName: formData.validatorFirstName || '',
         lastName: formData.validatorLastName || '',
@@ -377,9 +402,11 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
         payload.currentStep = this.flowStepNumber;
       }
       await this.requestsService.updateRequest(effectiveId, payload);
+      return true;
     } catch (error: any) {
       this.logger.error('[PanelCuentaBancariaInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }
@@ -480,6 +507,6 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
   }
 
   getFormData(): any {
-    return { ...this.serviceDataForm.value, currentSection: this.currentSection };
+    return { ...this.serviceDataForm.getRawValue(), currentSection: this.currentSection };
   }
 }

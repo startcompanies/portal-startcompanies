@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { ServiceType } from '../../../../shared/models/request-flow-context';
 
@@ -11,38 +12,52 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
 @Component({
   selector: 'app-select-service-type-page',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslocoPipe],
   template: `
     <div class="select-service-type-page">
       <!-- Header -->
       <div class="request-header">
-        <h2>Nueva Solicitud</h2>
-        <p class="text-muted">Crea una nueva solicitud para un cliente</p>
+        <h2>{{ 'PANEL.new_request.title' | transloco }}</h2>
+        <p class="text-muted">{{ 'PANEL.new_request.subtitle' | transloco }}</p>
       </div>
 
-      <!-- Progress Steps -->
-      <div class="steps-indicator">
+      <!-- Progress Steps (sin paso cliente si ya viene en la URL desde Mis clientes) -->
+      <div class="steps-indicator" *ngIf="!hasClientPrefilled">
         <div class="step-item active">
           <div class="step-number">1</div>
-          <div class="step-label">Tipo de Servicio</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_service_type' | transloco }}</div>
         </div>
         <div class="step-item">
           <div class="step-number">2</div>
-          <div class="step-label">Información del Cliente</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_client_info' | transloco }}</div>
         </div>
         <div class="step-item">
           <div class="step-number">3</div>
-          <div class="step-label">Datos del Servicio</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_service_data' | transloco }}</div>
         </div>
         <div class="step-item">
           <div class="step-number">4</div>
-          <div class="step-label">Pago</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_payment' | transloco }}</div>
+        </div>
+      </div>
+      <div class="steps-indicator" *ngIf="hasClientPrefilled">
+        <div class="step-item active">
+          <div class="step-number">1</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_service_type' | transloco }}</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_service_data' | transloco }}</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-label">{{ 'PANEL.select_service.step_payment' | transloco }}</div>
         </div>
       </div>
 
       <!-- Form Step -->
       <div class="form-step">
-        <h3>Selecciona el Tipo de Servicio</h3>
+        <h3>{{ 'PANEL.select_service.heading' | transloco }}</h3>
         <div class="service-types-grid">
           <div 
             *ngFor="let service of serviceTypes" 
@@ -58,19 +73,19 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
               [checked]="selectedService === service.value"
             />
             <label [for]="'service-' + service.value" class="service-label">
-              <h4>{{ service.label }}</h4>
-              <p>{{ service.description }}</p>
+              <h4>{{ service.labelKey | transloco }}</h4>
+              <p>{{ service.descriptionKey | transloco }}</p>
             </label>
           </div>
         </div>
         <div class="step-actions">
-          <a routerLink="/panel/my-requests" class="btn btn-outline-secondary">Cancelar</a>
+          <a routerLink="/panel/my-requests" class="btn btn-outline-secondary">{{ 'PANEL.request_detail.cancel' | transloco }}</a>
           <button 
             type="button" 
             class="btn btn-primary" 
             (click)="continueToFlow()" 
             [disabled]="!selectedService">
-            Siguiente
+            {{ 'PANEL.select_service.next' | transloco }}
           </button>
         </div>
       </div>
@@ -286,27 +301,34 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
 })
 export class SelectServiceTypePageComponent implements OnInit {
   selectedService: ServiceType | null = null;
+  /** true si la URL trae client o clientId (solicitud desde Mis clientes) */
+  hasClientPrefilled = false;
 
-  serviceTypes = [
-    { 
-      value: 'apertura-llc' as ServiceType, 
-      label: 'Apertura LLC', 
-      description: 'Formación de nueva LLC en Estados Unidos'
+  serviceTypes: Array<{
+    value: ServiceType;
+    labelKey: string;
+    descriptionKey: string;
+  }> = [
+    {
+      value: 'apertura-llc',
+      labelKey: 'PANEL.select_service.types.apertura_llc.label',
+      descriptionKey: 'PANEL.select_service.types.apertura_llc.description'
     },
-    { 
-      value: 'renovacion-llc' as ServiceType, 
-      label: 'Renovación LLC', 
-      description: 'Renovación de LLC existente'
+    {
+      value: 'renovacion-llc',
+      labelKey: 'PANEL.select_service.types.renovacion_llc.label',
+      descriptionKey: 'PANEL.select_service.types.renovacion_llc.description'
     },
-    { 
-      value: 'cuenta-bancaria' as ServiceType, 
-      label: 'Cuenta Bancaria', 
-      description: 'Apertura de cuenta bancaria para LLC'
+    {
+      value: 'cuenta-bancaria',
+      labelKey: 'PANEL.select_service.types.cuenta_bancaria.label',
+      descriptionKey: 'PANEL.select_service.types.cuenta_bancaria.description'
     }
   ];
   
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private authService: AuthService
   ) {}
   
@@ -316,6 +338,8 @@ export class SelectServiceTypePageComponent implements OnInit {
       this.router.navigate(['/panel/login']);
       return;
     }
+    const q = this.route.snapshot.queryParams;
+    this.hasClientPrefilled = !!(q['client'] || q['clientId']);
   }
   
   selectService(serviceType: ServiceType): void {
@@ -326,9 +350,14 @@ export class SelectServiceTypePageComponent implements OnInit {
     if (!this.selectedService) {
       return;
     }
-    // Entrada canónica del flujo: new-request (orquestador + BaseRequestFlowComponent compartido)
-    this.router.navigate(['/panel/new-request'], {
-      queryParams: { serviceType: this.selectedService },
-    });
+    const q = this.route.snapshot.queryParams;
+    const queryParams: Record<string, string> = { serviceType: this.selectedService };
+    if (q['client']) {
+      queryParams['client'] = q['client'];
+    }
+    if (q['clientId']) {
+      queryParams['clientId'] = q['clientId'];
+    }
+    this.router.navigate(['/panel/new-request'], { queryParams });
   }
 }

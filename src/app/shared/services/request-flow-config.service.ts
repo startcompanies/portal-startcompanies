@@ -33,8 +33,14 @@ export class RequestFlowConfigService {
   /**
    * Obtiene la configuración de pasos según el contexto y tipo de servicio
    * @param includeServiceTypeSelection Si es true, incluye el paso de selección de tipo de servicio al inicio
+   * @param skipClientSelection Solo PANEL_PARTNER: no mostrar paso de selección de cliente (cliente ya resuelto)
    */
-  getFlowConfig(context: RequestFlowContext, serviceType: ServiceType, includeServiceTypeSelection: boolean = false): FlowStepConfig[] {
+  getFlowConfig(
+    context: RequestFlowContext,
+    serviceType: ServiceType,
+    includeServiceTypeSelection: boolean = false,
+    skipClientSelection: boolean = false
+  ): FlowStepConfig[] {
     const configs: FlowStepConfig[] = [];
     
     // Si se requiere selección de tipo de servicio, agregarlo primero
@@ -183,55 +189,61 @@ export class RequestFlowConfigService {
         );
         break;
         
-      case RequestFlowContext.PANEL_PARTNER:
+      case RequestFlowContext.PANEL_PARTNER: {
         // El orden base depende de si hay selección de tipo de servicio
         const partnerBaseOrder = includeServiceTypeSelection ? 2 : 1;
-        
-        // Agregar selección de cliente solo si no viene cliente inicial
-        // Esto se manejará dinámicamente, pero por ahora lo incluimos siempre
-        // El componente puede ocultarse si ya hay cliente
-        configs.push(
-          { 
-            step: RequestFlowStep.CLIENT_SELECTION, 
-            required: true, 
-            component: PartnerClientSelectionStepComponent, 
+        // c0: hueco ocupado por el paso de cliente; si se omite, los demás suben un nivel
+        const c0 = skipClientSelection ? 0 : 1;
+        // Renovación LLC: no paso dedicado de estado/tipo en partner (se recoge en Información LLC)
+        const partnerIncludesLlcStateStep = serviceType === 'apertura-llc';
+        const partnerServiceOrderOffset =
+          serviceType === 'cuenta-bancaria' ? 0 : partnerIncludesLlcStateStep ? 1 : 0;
+        const partnerConfirmOrderOffset =
+          serviceType === 'cuenta-bancaria' ? 1 : partnerIncludesLlcStateStep ? 2 : 1;
+
+        if (!skipClientSelection) {
+          configs.push({
+            step: RequestFlowStep.CLIENT_SELECTION,
+            required: true,
+            component: PartnerClientSelectionStepComponent,
             order: partnerBaseOrder,
             label: 'Información del Cliente',
             icon: 'bi-people'
-          }
-        );
-        
-        // Agregar selección de estado/plan solo para LLC types
-        if (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') {
+          });
+        }
+
+        // Selección estado/plan: solo apertura LLC; en renovación el partner rellena estado/tipo en Información LLC
+        if (partnerIncludesLlcStateStep) {
           configs.push({
             step: this.getStateSelectionStep(serviceType),
             required: true,
             component: this.getPlanStateComponent(serviceType),
-            order: partnerBaseOrder + 1,
-            label: serviceType === 'renovacion-llc' ? 'Selección de Estado' : 'Selección de Estado/Plan',
+            order: partnerBaseOrder + c0,
+            label: 'Selección de Estado/Plan',
             icon: 'bi-geo-alt'
           });
         }
-        
+
         configs.push(
-              {
-                step: RequestFlowStep.SERVICE_FORM,
-                required: true,
-                component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_PARTNER),
-            order: partnerBaseOrder + (serviceType === 'cuenta-bancaria' ? 1 : 2),
+          {
+            step: RequestFlowStep.SERVICE_FORM,
+            required: true,
+            component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_PARTNER),
+            order: partnerBaseOrder + c0 + partnerServiceOrderOffset,
             label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Datos del Servicio',
             icon: 'bi-file-text'
           },
-          { 
-            step: RequestFlowStep.CONFIRMATION, 
-            required: true, 
-            component: WizardFinalReviewStepComponent, 
-            order: partnerBaseOrder + (serviceType === 'cuenta-bancaria' ? 2 : 3),
+          {
+            step: RequestFlowStep.CONFIRMATION,
+            required: true,
+            component: WizardFinalReviewStepComponent,
+            order: partnerBaseOrder + c0 + partnerConfirmOrderOffset,
             label: 'Confirmación',
             icon: 'bi-check-circle'
           }
         );
         break;
+      }
     }
     
     return configs.sort((a, b) => a.order - b.order);
@@ -295,15 +307,28 @@ export class RequestFlowConfigService {
   /**
    * Obtiene el número total de pasos para un contexto
    */
-  getTotalSteps(context: RequestFlowContext, serviceType: ServiceType, includeServiceTypeSelection: boolean = false): number {
-    return this.getFlowConfig(context, serviceType, includeServiceTypeSelection).length;
+  getTotalSteps(
+    context: RequestFlowContext,
+    serviceType: ServiceType,
+    includeServiceTypeSelection: boolean = false,
+    skipClientSelection: boolean = false
+  ): number {
+    return this.getFlowConfig(context, serviceType, includeServiceTypeSelection, skipClientSelection).length;
   }
   
   /**
    * Verifica si un paso es requerido en un contexto
    */
-  isStepRequired(context: RequestFlowContext, step: RequestFlowStep, serviceType: ServiceType, includeServiceTypeSelection: boolean = false): boolean {
-    const config = this.getFlowConfig(context, serviceType, includeServiceTypeSelection).find(c => c.step === step);
+  isStepRequired(
+    context: RequestFlowContext,
+    step: RequestFlowStep,
+    serviceType: ServiceType,
+    includeServiceTypeSelection: boolean = false,
+    skipClientSelection: boolean = false
+  ): boolean {
+    const config = this.getFlowConfig(context, serviceType, includeServiceTypeSelection, skipClientSelection).find(
+      c => c.step === step
+    );
     return config?.required ?? false;
   }
 }

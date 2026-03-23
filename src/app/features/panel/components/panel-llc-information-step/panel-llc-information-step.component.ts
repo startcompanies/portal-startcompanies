@@ -9,9 +9,12 @@ import { RequestFlowStep } from '../../../../shared/models/request-flow-context'
 import { AperturaLlcFormComponent } from '../../../../shared/components/service-forms/apertura-llc-form/apertura-llc-form.component';
 import { RequestsService } from '../../services/requests.service';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
+import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el panel
@@ -20,7 +23,7 @@ import { US_STATES } from '../../../../shared/constants/us-states.constant';
 @Component({
   selector: 'app-panel-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AperturaLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, AperturaLlcFormComponent, TranslocoPipe],
   templateUrl: './panel-llc-information-step.component.html',
   styleUrls: ['./panel-llc-information-step.component.css']
 })
@@ -57,6 +60,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
 
   constructor(
     private flowStateService: RequestFlowStateService,
+    private wizardStateService: WizardStateService,
     private requestsService: RequestsService,
     private wizardPlansService: WizardPlansService,
     private fb: FormBuilder,
@@ -65,6 +69,33 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     private logger: LoggerService
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
+  }
+
+  /**
+   * Si el flujo del panel no tiene plan/estado en PLAN_STATE_SELECTION, los toma de wizard stepData[2] (localStorage)
+   * y los escribe en RequestFlowStateService para validaciones y POST coherentes.
+   */
+  private ensurePlanStateFromWizard(): void {
+    const flowPlan = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) || {};
+    const flowStateOnly = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+    const w2 = this.wizardStateService.getStepData(2) || {};
+    const plan = (flowPlan.plan || (flowStateOnly as { plan?: string }).plan || w2.plan || '').trim();
+    const state = (flowPlan.state || flowStateOnly.state || w2.state || '').trim();
+    const amount =
+      flowPlan.amount ?? (flowStateOnly as { amount?: number }).amount ?? w2.amount;
+    if (!plan && !state) {
+      return;
+    }
+    if (flowPlan.plan && flowPlan.state) {
+      return;
+    }
+    const next = {
+      ...flowPlan,
+      plan: plan || flowPlan.plan || w2.plan || '',
+      state: state || flowPlan.state || w2.state || '',
+      ...(amount != null && amount !== '' ? { amount: Number(amount) } : {}),
+    };
+    this.flowStateService.setStepData(RequestFlowStep.PLAN_STATE_SELECTION, next);
   }
 
   ngOnInit(): void {
@@ -119,12 +150,23 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Panel: a veces plan/estado solo están en wizard localStorage (stepData["2"]), no en RequestFlowStateService
+    this.ensurePlanStateFromWizard();
+
     // Obtener el estado seleccionado del paso anterior (estado y plan), o del request hidratado (request.plan)
-    const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
+      this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) ||
+      {};
     const planFromService = (dataToLoad as any)?.plan; // Al recargar, el plan viene en request.plan y se hidrata en SERVICE_FORM
-    const effectivePlan = statePlanData?.plan ?? planFromService;
-    if (statePlanData && statePlanData.state) {
-      this.serviceDataForm.get('incorporationState')?.setValue(statePlanData.state);
+    const effectivePlan =
+      statePlanData?.plan ?? planFromService ?? this.wizardStateService.getStepData(2)?.plan;
+    const effectiveState =
+      statePlanData?.state ||
+      (dataToLoad as any)?.incorporationState ||
+      this.serviceDataForm.get('incorporationState')?.value ||
+      this.wizardStateService.getStepData(2)?.state;
+    if (effectiveState) {
+      this.serviceDataForm.get('incorporationState')?.setValue(effectiveState);
     }
 
     // Verificar restricción de plan (usar effectivePlan para que funcione al recargar con request.plan)
@@ -372,6 +414,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       if (!membersArray || membersArray.length < minMembers) {
         return false;
       }
+
+      if (llcType === 'multi') {
+        if (!isMultiMemberParticipationTotal100(membersArray, 'percentageOfParticipation')) {
+          return false;
+        }
+      }
       
       return membersArray.controls.every(member => member.valid);
     }
@@ -413,7 +461,10 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     }
     
     if (this.currentSection < 3) {
-      await this.saveToApi();
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
       this.saveStepData(); // Actualizar estado del flujo para que el base muestre Siguiente en última sección
@@ -496,7 +547,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
    */
   getFormData(): any {
     return {
-      ...this.serviceDataForm.value,
+      ...this.serviceDataForm.getRawValue(),
       currentSection: this.currentSection
     };
   }
@@ -510,36 +561,58 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
+    const ok = await this.saveToApi();
+    if (!ok) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 
   /**
    * Guarda los datos en la API. Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado.
    */
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     const effectiveId = this._createdRequestId ?? this.requestId;
 
     if (!effectiveId && !this.requestId && !environment.paymentEnabled) {
       // Crear request en el primer guardado del paso de Información (panel sin paso de pago).
       try {
+        this.ensurePlanStateFromWizard();
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
         const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
         const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
           this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+        const w2 = this.wizardStateService.getStepData(2) || {};
         const formData = this.serviceDataForm.getRawValue();
 
-        const plan = statePlanData.plan || formData.plan || '';
-        const amount = Number(statePlanData?.amount) || (plan ? this.wizardPlansService.calculateAmount(plan) : 0);
+        const plan =
+          statePlanData.plan || formData.plan || w2.plan || '';
+        const amount =
+          Number(statePlanData?.amount) ||
+          (plan ? this.wizardPlansService.calculateAmount(plan) : 0);
         const requestData: any = {
           type: 'apertura-llc',
           status: 'pendiente',
           paymentMethod: null,
           paymentAmount: amount,
+          currentStepNumber: this.currentSection,
         };
+        if (typeof this.flowStepNumber === 'number' && this.flowStepNumber >= 1) {
+          requestData.currentStep = this.flowStepNumber;
+        }
         if (clientSelection.clientId) {
           requestData.clientId = clientSelection.clientId;
-        } else if (clientSelection.clientFirstName || clientAssociation.clientId) {
+        } else if (clientAssociation.clientId) {
+          requestData.clientId = clientAssociation.clientId;
+        } else if (
+          clientSelection.clientFirstName ||
+          clientSelection.clientLastName ||
+          clientSelection.clientEmail
+        ) {
+          // Backend solo crea cliente desde clientData si clientId === 0 explícito
+          requestData.clientId = 0;
           requestData.clientData = {
             firstName: clientSelection.clientFirstName || clientAssociation.firstName || '',
             lastName: clientSelection.clientLastName || clientAssociation.lastName || '',
@@ -549,7 +622,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         }
         requestData.plan = plan;
         requestData.aperturaLlcData = {
-          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
+          incorporationState:
+            statePlanData.state ||
+            statePlanData.incorporationState ||
+            formData.incorporationState ||
+            w2.state ||
+            '',
           plan,
           ...formData,
           members: formData.members || [],
@@ -559,7 +637,8 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelLlcInformationStep] createRequest no devolvió id');
-          return;
+          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
+          return false;
         }
         this._createdRequestId = response.id;
         this.requestCreated.emit({ requestId: response.id });
@@ -567,27 +646,36 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       } catch (error: any) {
         this.logger.error('[PanelLlcInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        return;
+        return false;
       }
     }
 
     const id = this._createdRequestId ?? this.requestId;
     if (!id) {
-      return;
+      if (!this.saveError) {
+        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      }
+      return false;
     }
 
     this.isSaving = true;
-    this.saveError = null;
     try {
+      this.ensurePlanStateFromWizard();
       const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
         this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {};
+      const w2 = this.wizardStateService.getStepData(2) || {};
       const formData = this.serviceDataForm.getRawValue();
       const payload: any = {
         type: 'apertura-llc',
         currentStepNumber: this.currentSection,
         aperturaLlcData: {
-          incorporationState: statePlanData.state || statePlanData.incorporationState || formData.incorporationState || '',
-          plan: statePlanData.plan || formData.plan || '',
+          incorporationState:
+            statePlanData.state ||
+            statePlanData.incorporationState ||
+            formData.incorporationState ||
+            w2.state ||
+            '',
+          plan: statePlanData.plan || formData.plan || w2.plan || '',
           ...formData,
           members: formData.members || [],
         },
@@ -596,9 +684,11 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         payload.currentStep = this.flowStepNumber;
       }
       await this.requestsService.updateRequest(id, payload);
+      return true;
     } catch (error: any) {
       this.logger.error('[PanelLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }

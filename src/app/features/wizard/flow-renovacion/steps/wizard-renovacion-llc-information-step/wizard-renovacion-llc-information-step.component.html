@@ -1,8 +1,13 @@
 <div class="wizard-renovacion-llc-information-step">
-  <!-- Mostrar el estado seleccionado -->
+  <!-- Estado y estructura capturados en pasos anteriores (no modificables si están bloqueados) -->
   <div class="alert alert-info mb-4" *ngIf="serviceDataForm.get('state')?.value">
     <i class="bi bi-geo-alt me-2"></i>
     <strong>Estado:</strong> {{ serviceDataForm.get('state')?.value }}
+    <ng-container *ngIf="stateAndLlcLockedFromSelection && serviceDataForm.get('llcType')?.value">
+      <br />
+      <i class="bi bi-diagram-3 me-2"></i>
+      <strong>Estructura societaria:</strong> {{ lockedLlcTypeLabel }}
+    </ng-container>
   </div>
   
   <!-- Usar el componente wizard-renovacion-llc-form -->

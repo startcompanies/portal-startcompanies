@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { DocumentsService } from '../../services/documents.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { RequestsService, Request as ApiRequest } from '../../services/requests.service';
@@ -13,6 +14,7 @@ import { StripePaymentFormComponent } from '../../components/stripe-payment-form
 import { WizardApiService } from '../../../wizard/services/wizard-api.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 interface ProcessStep {
   id: number;
@@ -49,7 +51,7 @@ interface RequestDisplay {
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent],
+  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent, TranslocoPipe],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.css'
 })
@@ -100,10 +102,10 @@ export class RequestDetailComponent implements OnInit {
   uploadError: string | null = null;
 
   documentTypes = [
-    { value: 'certificate', label: 'Certificado' },
-    { value: 'document', label: 'Documento' },
-    { value: 'form', label: 'Formulario' },
-    { value: 'other', label: 'Otro' }
+    { value: 'certificate', labelKey: 'PANEL.request_detail.doc_type_certificate' },
+    { value: 'document', labelKey: 'PANEL.request_detail.doc_type_document' },
+    { value: 'form', labelKey: 'PANEL.request_detail.doc_type_form' },
+    { value: 'other', labelKey: 'PANEL.request_detail.doc_type_other' }
   ];
 
   constructor(
@@ -115,12 +117,31 @@ export class RequestDetailComponent implements OnInit {
     private requestsService: RequestsService,
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
-    private wizardApiService: WizardApiService
+    private wizardApiService: WizardApiService,
+    private panelSnackBar: PanelSnackBarService,
+    private transloco: TranslocoService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
     this.isPartner = this.authService.isPartner();
     this.isAdmin = this.authService.isAdmin();
+  }
+
+  yesNoBoolean(v: boolean | null | undefined): string {
+    if (v === true) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    if (v === false) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.no');
+    }
+    return '—';
+  }
+
+  yesNoSiString(v: string | boolean | null | undefined): string {
+    if (v === true || v === 'si' || v === 'yes') {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    return this.transloco.translate('PANEL.forms_renovacion_llc.no');
   }
 
   // Año relevante para el formulario de renovación (año fiscal que se está renovando)
@@ -637,7 +658,7 @@ export class RequestDetailComponent implements OnInit {
       const jsonString = this.getFullDataAsJson();
       if (win.navigator.clipboard) {
         await win.navigator.clipboard.writeText(jsonString);
-        alert('JSON copiado al portapapeles');
+        this.panelSnackBar.info('JSON copiado al portapapeles');
       } else {
         throw new Error('Clipboard API not available');
       }
@@ -650,7 +671,7 @@ export class RequestDetailComponent implements OnInit {
       textarea.select();
       doc.execCommand('copy');
       doc.body.removeChild(textarea);
-      alert('JSON copiado al portapapeles');
+      this.panelSnackBar.info('JSON copiado al portapapeles');
     }
   }
 
@@ -1081,7 +1102,7 @@ export class RequestDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al eliminar documento:', error);
-        alert('Error al eliminar el documento');
+        this.panelSnackBar.error('Error al eliminar el documento');
       }
     });
   }
@@ -1108,14 +1129,18 @@ export class RequestDetailComponent implements OnInit {
         this.request.steps[stepIndex].date = new Date();
         this.request.steps[stepIndex].completedBy = this.currentUser?.username || 'Administrador';
         
-        // Crear notificación para el cliente/partner
-        this.notificationsService.createNotification({
-          type: 'success',
-          title: 'Proceso Actualizado',
-          message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
-          link: `/panel/my-requests/${this.request.id}`,
-          requestId: this.request.id
-        });
+        const data = this.fullRequestData;
+        const targetUserId = data?.client?.userId ?? data?.partner?.id;
+        if (targetUserId) {
+          this.notificationsService.createNotificationRemote({
+            userId: targetUserId,
+            type: 'success',
+            title: 'Proceso Actualizado',
+            message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
+            link: `/panel/my-requests/${this.request.id}`,
+            requestId: this.request.id,
+          });
+        }
       }
       
       // Si se completa un paso, el siguiente pasa a ser "current"
@@ -1167,11 +1192,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud aprobada correctamente');
+      this.panelSnackBar.success('Solicitud aprobada correctamente');
     } catch (error: any) {
       console.error('Error al aprobar solicitud:', error);
-      alert(error?.error?.message || 'Error al aprobar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al aprobar la solicitud'
+      );
     }
   }
 
@@ -1193,11 +1219,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud rechazada correctamente');
+      this.panelSnackBar.success('Solicitud rechazada correctamente');
     } catch (error: any) {
       console.error('Error al rechazar solicitud:', error);
-      alert(error?.error?.message || 'Error al rechazar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al rechazar la solicitud'
+      );
     }
   }
 

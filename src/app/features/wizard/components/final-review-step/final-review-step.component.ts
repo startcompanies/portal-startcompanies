@@ -144,16 +144,19 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
 
     // Paso 2: Estado/Plan (para apertura y renovación)
     this.statePlanData = allData.step2 || {};
-    
+
     // Paso 3: Datos de pago
     this.paymentData = allData.step3 || {};
-    
+
     // Paso 4+: Datos del servicio específico
     if (this.serviceType === 'apertura-llc') {
       this.serviceData = allData.step4 || {};
       this.members = this.serviceData.members || [];
     } else if (this.serviceType === 'renovacion-llc') {
-      this.serviceData = allData.step4 || {};
+      const rl = this.wizardStateService.getRenovacionStorageLayout();
+      this.statePlanData = allData[`step${rl.stateStep}`] || this.statePlanData;
+      this.paymentData = allData[`step${rl.paymentStep}`] || this.paymentData;
+      this.serviceData = allData[`step${rl.infoStep}`] || allData.step4 || {};
       this.members = this.serviceData.owners || [];
     } else if (this.serviceType === 'cuenta-bancaria') {
       // Para cuenta bancaria, los datos pueden estar en step2 o step3 dependiendo del flujo

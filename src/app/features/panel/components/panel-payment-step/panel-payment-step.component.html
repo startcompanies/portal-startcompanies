@@ -1,56 +1,57 @@
 <div class="panel-payment-step">
-  <h3>Información de Pago</h3>
-  
-  <!-- Mensaje cuando el pago ya fue procesado -->
+  <h3>{{ 'PANEL.payment_step.title' | transloco }}</h3>
+
   <div *ngIf="paymentAlreadyProcessed" class="alert alert-success mb-4">
-    <h5><i class="bi bi-check-circle-fill me-2"></i>Pago Procesado Exitosamente</h5>
+    <h5><i class="bi bi-check-circle-fill me-2"></i>{{ 'PANEL.payment_step.processed_title' | transloco }}</h5>
     <div class="row mt-3">
       <div class="col-md-6">
-        <p class="mb-2"><strong>Método de Pago:</strong></p>
+        <p class="mb-2"><strong>{{ 'PANEL.payment_step.method_label' | transloco }}</strong></p>
         <p class="mb-0">
           <i [class]="processedPaymentMethod === 'stripe' ? 'bi bi-credit-card me-2' : 'bi bi-bank me-2'"></i>
-          {{ processedPaymentMethod === 'stripe' ? 'Tarjeta de Crédito/Débito (Stripe)' : processedPaymentMethod === 'transferencia' ? 'Transferencia Bancaria' : processedPaymentMethod }}
+          <ng-container *ngIf="processedPaymentMethod === 'stripe'">{{ 'PANEL.payment_step.stripe_label' | transloco }}</ng-container>
+          <ng-container *ngIf="processedPaymentMethod === 'transferencia'">{{ 'PANEL.payment_step.transfer_label' | transloco }}</ng-container>
+          <ng-container *ngIf="processedPaymentMethod && processedPaymentMethod !== 'stripe' && processedPaymentMethod !== 'transferencia'">{{ processedPaymentMethod }}</ng-container>
         </p>
       </div>
       <div class="col-md-6">
-        <p class="mb-2"><strong>Monto Pagado:</strong></p>
+        <p class="mb-2"><strong>{{ 'PANEL.payment_step.amount_paid' | transloco }}</strong></p>
         <p class="mb-0">${{ processedPaymentAmount | number:'1.2-2' }} USD</p>
       </div>
       <div class="col-md-6" *ngIf="processedStripeChargeId">
-        <p class="mb-2"><strong>ID de Transacción:</strong></p>
+        <p class="mb-2"><strong>{{ 'PANEL.payment_step.tx_id' | transloco }}</strong></p>
         <p class="mb-0"><code>{{ processedStripeChargeId }}</code></p>
       </div>
       <div class="col-md-6" *ngIf="processedPaymentMethod === 'transferencia' && form.get('paymentProofUrl')?.value">
-        <p class="mb-2"><strong>Comprobante de Pago:</strong></p>
+        <p class="mb-2"><strong>{{ 'PANEL.payment_step.proof_link' | transloco }}</strong></p>
         <p class="mb-0">
           <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
             <i class="bi bi-box-arrow-up-right me-1"></i>
-            Ver comprobante
+            {{ 'PANEL.payment_step.view_proof' | transloco }}
           </a>
         </p>
       </div>
       <div class="col-md-6">
-        <p class="mb-2"><strong>Estado:</strong></p>
+        <p class="mb-2"><strong>{{ 'PANEL.payment_step.status_label' | transloco }}</strong></p>
         <p class="mb-0">
-          <span class="badge bg-success">{{ processedPaymentStatus === 'succeeded' ? 'Completado' : processedPaymentStatus }}</span>
+          <span class="badge bg-success">{{ processedPaymentStatus === 'succeeded' ? ('PANEL.payment_step.completed' | transloco) : processedPaymentStatus }}</span>
         </p>
       </div>
     </div>
     <div class="mt-3">
       <p class="mb-0 text-muted">
         <i class="bi bi-info-circle me-2"></i>
-        El pago ya fue procesado y no se puede modificar. Si necesitas realizar cambios, contacta al soporte.
+        {{ 'PANEL.payment_step.processed_notice' | transloco }}
       </p>
     </div>
   </div>
-  
+
   <form [formGroup]="form" *ngIf="!paymentAlreadyProcessed">
     <div class="row g-3">
       <div class="col-md-12">
-        <label for="paymentMethod" class="form-label">Método de Pago <span class="text-danger">*</span></label>
+        <label for="paymentMethod" class="form-label">{{ 'PANEL.payment_step.method_required' | transloco }} <span class="text-danger">*</span></label>
         <div class="payment-methods">
-          <div 
-            *ngFor="let method of paymentMethods" 
+          <div
+            *ngFor="let method of paymentMethods"
             class="payment-method-card"
             [class.selected]="form.get('paymentMethod')?.value === method.value"
             (click)="form.get('paymentMethod')?.setValue(method.value)"
@@ -64,7 +65,7 @@
             />
             <label [for]="'payment-' + method.value" class="payment-label">
               <i [class]="'bi ' + method.icon + ' me-2'"></i>
-              {{ method.label }}
+              {{ method.labelKey | transloco }}
             </label>
           </div>
         </div>
@@ -72,7 +73,7 @@
 
       <div class="col-md-12">
         <label for="paymentAmount" class="form-label">
-          Monto a Pagar (USD) 
+          {{ 'PANEL.payment_step.amount_label' | transloco }}
           <span class="text-danger" *ngIf="paymentAmount > 0">*</span>
         </label>
         <div class="input-group">
@@ -91,72 +92,70 @@
           />
         </div>
         <small class="form-text text-muted" *ngIf="shouldCalculateAmount()">
-          <i class="bi bi-info-circle me-1"></i>El monto se calcula automáticamente según el tipo de servicio y estado seleccionado.
+          <i class="bi bi-info-circle me-1"></i>{{ 'PANEL.payment_step.amount_calculated_hint' | transloco }}
         </small>
         <div class="alert alert-info mt-2" *ngIf="shouldCalculateAmount() && paymentAmount === 0">
-          <i class="bi bi-info-circle me-2"></i>Cuenta bancaria gratuita seleccionada. No se requiere pago.
+          <i class="bi bi-info-circle me-2"></i>{{ 'PANEL.payment_step.free_bank_hint' | transloco }}
         </div>
         <div class="invalid-feedback" *ngIf="form.get('paymentAmount')?.invalid && form.get('paymentAmount')?.touched && !shouldCalculateAmount()">
-          El monto debe ser mayor a $0.00
+          {{ 'PANEL.payment_step.amount_invalid' | transloco }}
         </div>
       </div>
 
-      <!-- Mensaje si el monto es 0 (cuenta bancaria gratuita) -->
       <div *ngIf="paymentAmount === 0 && serviceType === 'cuenta-bancaria'" class="col-md-12">
         <div class="alert alert-success">
-          <h5><i class="bi bi-check-circle me-2"></i>Cuenta Bancaria Gratuita</h5>
-          <p class="mb-0">Has seleccionado la opción gratuita. No se requiere pago para esta solicitud.</p>
+          <h5><i class="bi bi-check-circle me-2"></i>{{ 'PANEL.payment_step.free_bank_title' | transloco }}</h5>
+          <p class="mb-0">{{ 'PANEL.payment_step.free_bank_body' | transloco }}</p>
         </div>
       </div>
 
-      <!-- Transferencia Bancaria -->
       <div *ngIf="form.get('paymentMethod')?.value === 'transferencia' && paymentAmount > 0" class="col-md-12">
         <div class="alert alert-info">
-          <h5><i class="bi bi-info-circle me-2"></i>Instrucciones para Transferencia Bancaria</h5>
-          <p class="mb-3">Por favor, realiza la transferencia a la siguiente cuenta:</p>
-          
+          <h5><i class="bi bi-info-circle me-2"></i>{{ 'PANEL.payment_step.transfer_title' | transloco }}</h5>
+          <p class="mb-3">{{ 'PANEL.payment_step.transfer_intro' | transloco }}</p>
+
           <div class="bank-transfer-details">
             <div class="row g-3 mb-3">
               <div class="col-md-6">
                 <div class="bank-detail-item">
-                  <strong><i class="bi bi-building me-2"></i>Beneficiario:</strong>
+                  <strong><i class="bi bi-building me-2"></i>{{ 'PANEL.payment_step.beneficiary' | transloco }}</strong>
                   <p class="mb-0">EbizBoost LLC</p>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="bank-detail-item">
-                  <strong><i class="bi bi-bank me-2"></i>Banco:</strong>
+                  <strong><i class="bi bi-bank me-2"></i>{{ 'PANEL.payment_step.bank' | transloco }}</strong>
                   <p class="mb-0">THREAD</p>
                 </div>
               </div>
               <div class="col-md-12">
                 <div class="bank-detail-item">
-                  <strong><i class="bi bi-geo-alt me-2"></i>Dirección:</strong>
+                  <strong><i class="bi bi-geo-alt me-2"></i>{{ 'PANEL.payment_step.address' | transloco }}</strong>
                   <p class="mb-0">420 Southwest 7th Street, Suite:1019<br>Miami, FL, 33130, US</p>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="bank-detail-item">
-                  <strong><i class="bi bi-credit-card me-2"></i>Número de Cuenta:</strong>
+                  <strong><i class="bi bi-credit-card me-2"></i>{{ 'PANEL.payment_step.account_number' | transloco }}</strong>
                   <p class="mb-0"><code>200000776994</code></p>
                 </div>
               </div>
               <div class="col-md-6">
                 <div class="bank-detail-item">
-                  <strong><i class="bi bi-hash me-2"></i>Routing Number:</strong>
+                  <strong><i class="bi bi-hash me-2"></i>{{ 'PANEL.payment_step.routing' | transloco }}</strong>
                   <p class="mb-0"><code>064209588</code></p>
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="alert alert-warning mb-3">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <strong>Importante:</strong> Sube el comprobante de transferencia una vez realizada.
+            <strong>{{ 'PANEL.payment_step.important' | transloco }}</strong> {{ 'PANEL.payment_step.upload_proof_notice' | transloco }}
           </div>
         </div>
-        
-        <label for="paymentProofFile" class="form-label">Comprobante de Transferencia</label>
+
+        <label for="paymentProofFile" class="form-label">{{ 'PANEL.payment_step.proof_label' | transloco }}</label>
         <div class="file-upload-container">
           <input
             type="file"
@@ -167,10 +166,9 @@
             [disabled]="isUploadingPaymentProof"
           />
           <small class="form-text text-muted">
-            Formatos aceptados: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)
+            {{ 'PANEL.payment_step.file_formats' | transloco }}
           </small>
-          
-          <!-- Mostrar archivo seleccionado -->
+
           <div *ngIf="selectedPaymentProofFile && !isUploadingPaymentProof" class="selected-file-info mt-2">
             <div class="alert alert-info d-flex justify-content-between align-items-center">
               <span>
@@ -183,46 +181,42 @@
             </div>
           </div>
 
-          <!-- Mostrar progreso de carga -->
           <div *ngIf="isUploadingPaymentProof" class="upload-progress mt-2">
             <div class="progress">
-              <div 
-                class="progress-bar progress-bar-striped progress-bar-animated" 
-                role="progressbar" 
+              <div
+                class="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
                 [style.width.%]="paymentProofUploadProgress"
                 [attr.aria-valuenow]="paymentProofUploadProgress"
-                aria-valuemin="0" 
+                aria-valuemin="0"
                 aria-valuemax="100"
               >
                 {{ paymentProofUploadProgress }}%
               </div>
             </div>
-            <small class="text-muted">Subiendo archivo...</small>
+            <small class="text-muted">{{ 'PANEL.payment_step.uploading' | transloco }}</small>
           </div>
 
-          <!-- Mostrar URL si ya está subido -->
           <div *ngIf="form.get('paymentProofUrl')?.value && !selectedPaymentProofFile && !isUploadingPaymentProof" class="uploaded-file-info mt-2">
             <div class="alert alert-success">
               <i class="bi bi-check-circle me-2"></i>
-              <strong>Archivo subido exitosamente</strong>
+              <strong>{{ 'PANEL.payment_step.file_ok' | transloco }}</strong>
               <br>
               <a [href]="form.get('paymentProofUrl')?.value" target="_blank" class="text-decoration-none">
                 <i class="bi bi-box-arrow-up-right me-1"></i>
-                Ver comprobante
+                {{ 'PANEL.payment_step.view_proof' | transloco }}
               </a>
               <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearPaymentProofFile()">
                 <i class="bi bi-x-circle me-1"></i>
-                Cambiar archivo
+                {{ 'PANEL.payment_step.change_file' | transloco }}
               </button>
             </div>
           </div>
 
-          <!-- Campo oculto para guardar la URL -->
           <input type="hidden" formControlName="paymentProofUrl">
         </div>
       </div>
 
-      <!-- Stripe -->
       <div *ngIf="form.get('paymentMethod')?.value === 'stripe' && paymentAmount > 0" class="col-md-12">
         <app-stripe-payment-form
           [amount]="paymentAmount"
@@ -232,22 +226,21 @@
           (paymentSuccess)="onStripePaymentSuccess($event)"
           (paymentError)="onStripePaymentError($event)"
         ></app-stripe-payment-form>
-        
-        <!-- Botón para procesar pago con Stripe -->
+
         <div class="d-grid gap-2 mt-3" *ngIf="!stripePaymentProcessed">
-          <button 
-            type="button" 
-            class="btn btn-primary btn-lg" 
+          <button
+            type="button"
+            class="btn btn-primary btn-lg"
             (click)="processStripePayment()"
             [disabled]="stripeProcessing || paymentAmount <= 0"
           >
             <span *ngIf="!stripeProcessing">
               <i class="bi bi-credit-card me-2"></i>
-              Procesar Pago ${{ paymentAmount | number:'1.2-2' }} USD
+              {{ 'PANEL.payment_step.process_pay' | transloco: { amount: (paymentAmount | number:'1.2-2') } }}
             </span>
             <span *ngIf="stripeProcessing">
               <span class="spinner-border spinner-border-sm me-2" role="status"></span>
-              Procesando pago...
+              {{ 'PANEL.payment_step.processing' | transloco }}
             </span>
           </button>
         </div>
@@ -255,13 +248,13 @@
     </div>
 
     <div class="mb-3 mt-3">
-      <label for="notes" class="form-label">Notas Adicionales</label>
+      <label for="notes" class="form-label">{{ 'PANEL.payment_step.notes_label' | transloco }}</label>
       <textarea
         id="notes"
         class="form-control"
         rows="4"
         formControlName="notes"
-        placeholder="Información adicional sobre la solicitud..."
+        [attr.placeholder]="'PANEL.payment_step.notes_placeholder' | transloco"
       ></textarea>
     </div>
 

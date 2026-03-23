@@ -2,14 +2,13 @@
   <div class="step-header mb-4">
     <h3 class="step-title">
       <i class="bi bi-building me-2"></i>
-      Información de la LLC
+      {{ 'PANEL.panel_form_steps.llc_title' | transloco }}
     </h3>
     <p class="text-muted">
-      Completa la información de tu LLC. El estado de incorporación será el seleccionado en el paso anterior.
+      {{ 'PANEL.panel_form_steps.llc_subtitle' | transloco }}
     </p>
   </div>
-  
-  <!-- Usar el componente compartido apertura-llc-form -->
+
   <div class="llc-form-container">
     <app-apertura-llc-form
       [serviceDataForm]="serviceDataForm"
@@ -26,40 +25,38 @@
       (removeMemberRequested)="removeMember($event)"
     ></app-apertura-llc-form>
   </div>
-  
-  <!-- Navegación entre secciones del formulario -->
+
   <div class="flow-actions">
-    <button 
-      type="button" 
+    <button
+      type="button"
       class="btn btn-outline-secondary"
       (click)="goToPreviousSection()"
       [disabled]="currentSection === 1"
       *ngIf="currentSection > 1"
     >
       <i class="bi bi-arrow-left me-1"></i>
-      Sección Anterior
+      {{ 'PANEL.flow_nav.previous_section' | transloco }}
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
-    
-    <!-- Secciones 1 y 2: Siguiente Sección. Sección 3: Siguiente (ir a Confirmación), mismo estilo que Siguiente Sección -->
-    <button 
-      type="button" 
+
+    <button
+      type="button"
       class="btn btn-primary"
       (click)="goToNextSection()"
       [disabled]="currentSection >= 3"
       *ngIf="currentSection < 3"
     >
-      Siguiente Sección
+      {{ 'PANEL.flow_nav.next_section' | transloco }}
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
-    <button 
-      type="button" 
+    <button
+      type="button"
       class="btn btn-primary"
       (click)="onLastSectionNext()"
       [disabled]="!isSectionValid()"
       *ngIf="currentSection === 3"
     >
-      Siguiente
+      {{ 'PANEL.flow_nav.next' | transloco }}
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
   </div>

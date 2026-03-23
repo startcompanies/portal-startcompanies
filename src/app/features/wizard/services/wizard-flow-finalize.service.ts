@@ -10,7 +10,7 @@ import { environment } from '../../../../environments/environment';
  * - Si paymentEnabled=false y no existe requestId, crea el request con todos los datos recogidos
  * - Sube firma (opcional) vía apiUrl
  * - Actualiza estado a "solicitud-recibida"
- * - Limpia estado + tokens
+ * - No limpia estado ni token aquí: el contenedor debe llamar a clear tras salir de la pantalla de éxito o al navegar.
  */
 @Injectable({ providedIn: 'root' })
 export class WizardFlowFinalizeService {
@@ -34,6 +34,11 @@ export class WizardFlowFinalizeService {
     let signatureUrl: string | null = null;
     if (signatureDataUrl) {
       signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
+      if (!signatureUrl) {
+        throw new Error(
+          'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).'
+        );
+      }
     }
 
     // Leer datos del wizard para información adicional del flujo
@@ -60,8 +65,10 @@ export class WizardFlowFinalizeService {
     }
 
     await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
+  }
 
-    // Limpiar estado
+  /** Llamar al salir del wizard (panel, inicio o cancelar) para borrar localStorage y token wizard. */
+  clearWizardSession(): void {
     this.wizardStateService.clear();
     this.wizardApiService.clearToken();
   }

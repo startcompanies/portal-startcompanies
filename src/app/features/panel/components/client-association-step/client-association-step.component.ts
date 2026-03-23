@@ -6,6 +6,7 @@ import { RequestFlowStep } from '../../../../shared/models/request-flow-context'
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
 import { firstValueFrom } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente para asociar un cliente existente en el panel
@@ -14,7 +15,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-client-association-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent, TranslocoPipe],
   templateUrl: './client-association-step.component.html',
   styleUrls: ['./client-association-step.component.css']
 })

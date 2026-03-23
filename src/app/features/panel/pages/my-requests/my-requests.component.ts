@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { RequestsService, Request } from '../../services/requests.service';
 
 @Component({
   selector: 'app-my-requests',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './my-requests.component.html',
   styleUrl: './my-requests.component.css'
 })
@@ -19,11 +21,17 @@ export class MyRequestsComponent implements OnInit {
   currentUser: any = null;
   isPartner = false;
   error: string | null = null;
+  /** ID de solicitud en proceso de borrado (deshabilita botones y muestra spinner). */
+  deletingRequestId: number | null = null;
+  showDeleteModal = false;
+  requestToDelete: Request | null = null;
 
   constructor(
     private authService: AuthService,
     private requestsService: RequestsService,
-    private router: Router
+    private router: Router,
+    private panelSnackBar: PanelSnackBarService,
+    private transloco: TranslocoService,
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
@@ -53,30 +61,39 @@ export class MyRequestsComponent implements OnInit {
       })
       .catch((error) => {
         console.error('Error al cargar solicitudes:', error);
-        this.error = 'Error al cargar las solicitudes. Por favor, intente nuevamente.';
+        this.error = this.transloco.translate('PANEL.my_requests_page.error_load');
         this.requests = [];
         this.isLoading = false;
       });
   }
 
-  getRequestTypeLabel(type: string): string {
-    const types: { [key: string]: string } = {
-      'apertura-llc': 'Apertura LLC',
-      'renovacion-llc': 'Renovación LLC',
-      'cuenta-bancaria': 'Cuenta Bancaria'
-    };
-    return types[type] || type;
+  requestTypeTranslocoKey(type: string): string {
+    return `PANEL.dashboard.process_type.${type}`;
   }
 
-  getStatusLabel(status: string): string {
-    const statuses: { [key: string]: string } = {
-      'pendiente': 'Pendiente',
-      'solicitud-recibida': 'Solicitud Recibida',
-      'en-proceso': 'En Proceso',
-      'completada': 'Completada',
-      'rechazada': 'Rechazada'
+  statusTranslocoKey(status: string): string {
+    const map: Record<string, string> = {
+      pendiente: 'pendiente',
+      'solicitud-recibida': 'solicitud_recibida',
+      'en-proceso': 'en_proceso',
+      completada: 'completada',
+      rechazada: 'rechazada',
     };
-    return statuses[status] || status;
+    const k = map[status] ?? status.replace(/-/g, '_');
+    return `PANEL.dashboard.status.${k}`;
+  }
+
+  isClientUnavailableLabel(request: Request): boolean {
+    return this.getClientName(request) === this.transloco.translate('PANEL.my_requests_page.client_unavailable');
+  }
+
+  deleteConfirmMessage(): string {
+    const r = this.requestToDelete;
+    if (!r) {
+      return '';
+    }
+    const typeLabel = this.transloco.translate(this.requestTypeTranslocoKey(r.type));
+    return this.transloco.translate('PANEL.my_requests_page.delete_confirm', { type: typeLabel });
   }
 
   getStatusClass(status: string): string {
@@ -121,7 +138,9 @@ export class MyRequestsComponent implements OnInit {
     
     if (!request.uuid && !request.id) {
       console.error('La solicitud no tiene UUID ni ID');
-      alert('Error: La solicitud no tiene identificador válido');
+      this.panelSnackBar.error(
+        'Error: La solicitud no tiene identificador válido'
+      );
       return;
     }
     
@@ -131,27 +150,81 @@ export class MyRequestsComponent implements OnInit {
       },
       (error) => {
         console.error('Error en la navegación:', error);
-        alert('Error al navegar. Por favor, intente nuevamente.');
+        this.panelSnackBar.error(
+          'Error al navegar. Por favor, intente nuevamente.'
+        );
       }
     );
+  }
+
+  /**
+   * Abre el modal de confirmación para eliminar un borrador pendiente.
+   */
+  openDeleteModal(request: Request): void {
+    if (!this.isPendingRequest(request) || !request.id) {
+      this.panelSnackBar.error('No se puede eliminar esta solicitud.');
+      return;
+    }
+    this.requestToDelete = request;
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete(): void {
+    if (this.deletingRequestId !== null) {
+      return;
+    }
+    this.showDeleteModal = false;
+    this.requestToDelete = null;
+  }
+
+  /**
+   * Ejecuta el borrado tras confirmar en el modal (sin `window.confirm`).
+   */
+  confirmDelete(): void {
+    const request = this.requestToDelete;
+    if (!request?.id) {
+      return;
+    }
+
+    this.deletingRequestId = request.id;
+    this.requestsService
+      .deleteRequest(request.id)
+      .then(() => {
+        this.panelSnackBar.success('Solicitud eliminada.');
+        this.showDeleteModal = false;
+        this.requestToDelete = null;
+        this.loadRequests();
+      })
+      .catch((err: unknown) => {
+        const httpErr = err as { error?: { message?: string }; message?: string };
+        const msg =
+          (typeof httpErr?.error?.message === 'string' && httpErr.error.message) ||
+          (typeof httpErr?.message === 'string' && httpErr.message) ||
+          'No se pudo eliminar la solicitud.';
+        this.panelSnackBar.error(msg);
+      })
+      .finally(() => {
+        this.deletingRequestId = null;
+      });
   }
 
   /**
    * Obtiene el nombre del cliente de una solicitud
    */
   getClientName(request: Request): string {
-    if (!request) return 'Cliente no disponible';
-    
+    if (!request) {
+      return this.transloco.translate('PANEL.my_requests_page.client_unavailable');
+    }
+
     if (request.client) {
       const firstName = request.client.first_name || '';
       const lastName = request.client.last_name || '';
       if (firstName || lastName) {
         return `${firstName} ${lastName}`.trim();
       }
-      return request.client.username || request.client.email || 'Cliente';
+      return request.client.username || request.client.email || this.transloco.translate('PANEL.my_requests_page.client');
     }
-    
-    // Intentar acceder directamente si los datos están en el objeto principal
+
     const clientData = (request as any).clientData;
     if (clientData) {
       const firstName = clientData.firstName || clientData.first_name || '';
@@ -159,10 +232,10 @@ export class MyRequestsComponent implements OnInit {
       if (firstName || lastName) {
         return `${firstName} ${lastName}`.trim();
       }
-      return clientData.email || 'Cliente';
+      return clientData.email || this.transloco.translate('PANEL.my_requests_page.client');
     }
-    
-    return 'Cliente no disponible';
+
+    return this.transloco.translate('PANEL.my_requests_page.client_unavailable');
   }
 
   /**
