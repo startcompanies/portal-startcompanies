@@ -319,7 +319,8 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
           status: 'pendiente',
           paymentMethod: null,
           paymentAmount: 0,
-          cuentaBancariaData: { ...formData, owners: allMembers }
+          currentStepNumber: this.currentSection,
+          cuentaBancariaData: { ...formData, owners: allMembers, currentSection: this.currentSection }
         };
         if (clientSelection.clientId) {
           requestData.clientId = clientSelection.clientId;
