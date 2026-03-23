@@ -14,6 +14,7 @@ import { StripePaymentFormComponent } from '../../components/stripe-payment-form
 import { WizardApiService } from '../../../wizard/services/wizard-api.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 interface ProcessStep {
   id: number;
@@ -50,7 +51,7 @@ interface RequestDisplay {
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent],
+  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent, TranslocoPipe],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.css'
 })
@@ -101,10 +102,10 @@ export class RequestDetailComponent implements OnInit {
   uploadError: string | null = null;
 
   documentTypes = [
-    { value: 'certificate', label: 'Certificado' },
-    { value: 'document', label: 'Documento' },
-    { value: 'form', label: 'Formulario' },
-    { value: 'other', label: 'Otro' }
+    { value: 'certificate', labelKey: 'PANEL.request_detail.doc_type_certificate' },
+    { value: 'document', labelKey: 'PANEL.request_detail.doc_type_document' },
+    { value: 'form', labelKey: 'PANEL.request_detail.doc_type_form' },
+    { value: 'other', labelKey: 'PANEL.request_detail.doc_type_other' }
   ];
 
   constructor(
@@ -117,12 +118,30 @@ export class RequestDetailComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
     private wizardApiService: WizardApiService,
-    private panelSnackBar: PanelSnackBarService
+    private panelSnackBar: PanelSnackBarService,
+    private transloco: TranslocoService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
     this.isPartner = this.authService.isPartner();
     this.isAdmin = this.authService.isAdmin();
+  }
+
+  yesNoBoolean(v: boolean | null | undefined): string {
+    if (v === true) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    if (v === false) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.no');
+    }
+    return '—';
+  }
+
+  yesNoSiString(v: string | boolean | null | undefined): string {
+    if (v === true || v === 'si' || v === 'yes') {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    return this.transloco.translate('PANEL.forms_renovacion_llc.no');
   }
 
   // Año relevante para el formulario de renovación (año fiscal que se está renovando)

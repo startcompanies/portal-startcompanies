@@ -13,6 +13,7 @@ import { ServiceFormBuilderService } from '../../../../shared/services/form-buil
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar renovacion-llc-form en el panel.
@@ -21,7 +22,7 @@ import { WizardPlansService } from '../../../wizard/services/wizard-plans.servic
 @Component({
   selector: 'app-panel-renovacion-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, RenovacionLlcFormComponent, TranslocoPipe],
   templateUrl: './panel-renovacion-llc-information-step.component.html',
   styleUrls: ['./panel-renovacion-llc-information-step.component.css']
 })

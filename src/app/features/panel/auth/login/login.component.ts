@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { filter, take, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })

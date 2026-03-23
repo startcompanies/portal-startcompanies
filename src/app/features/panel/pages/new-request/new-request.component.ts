@@ -9,6 +9,7 @@ import { PanelClientRequestFlowComponent } from '../../components/panel-client-r
 import { ServiceType } from '../../../../shared/models/request-flow-context';
 import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { firstValueFrom } from 'rxjs';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 /**
  * Componente router/orchestrator para el flujo de nuevas solicitudes
@@ -19,6 +20,7 @@ import { firstValueFrom } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
+    TranslocoPipe,
     PanelPartnerRequestFlowComponent,
     PanelClientRequestFlowComponent
   ],
@@ -26,8 +28,8 @@ import { firstValueFrom } from 'rxjs';
     <div class="new-request-container">
       <!-- Header -->
       <div class="new-request-header" *ngIf="!isLoading && !errorMessage && (partnerFlowConfig || clientFlowConfig)">
-        <h2 class="new-request-title">Nueva Solicitud</h2>
-        <p class="new-request-subtitle">Crea una nueva solicitud para un cliente</p>
+        <h2 class="new-request-title">{{ 'PANEL.new_request.title' | transloco }}</h2>
+        <p class="new-request-subtitle">{{ 'PANEL.new_request.subtitle' | transloco }}</p>
       </div>
 
       <!-- Área del flujo (panel) - aislada para que los estilos no choquen con el resto del sitio -->
@@ -55,7 +57,7 @@ import { firstValueFrom } from 'rxjs';
       <!-- Loading State -->
       <div *ngIf="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Cargando...</span>
+          <span class="visually-hidden">{{ 'PANEL.common.loading' | transloco }}</span>
         </div>
       </div>
 
@@ -113,7 +115,8 @@ export class NewRequestComponent implements OnInit {
     private authService: AuthService,
     private requestsService: RequestsService,
     private partnerClientsService: PartnerClientsService,
-    private wizardStateService: WizardStateService
+    private wizardStateService: WizardStateService,
+    private transloco: TranslocoService
   ) {
     this.isPartner = this.authService.isPartner();
   }
@@ -152,7 +155,7 @@ export class NewRequestComponent implements OnInit {
 
     } catch (error: any) {
       console.error('[NewRequestComponent] Error:', error);
-      this.errorMessage = error?.message || 'Error al inicializar el flujo';
+      this.errorMessage = error?.message || this.transloco.translate('PANEL.new_request.err_init');
       this.isLoading = false;
     }
   }
@@ -169,14 +172,14 @@ export class NewRequestComponent implements OnInit {
 
       // Validar que el usuario tenga acceso
       if (!this.hasAccessToRequest(request)) {
-        this.errorMessage = 'No tienes acceso a esta solicitud';
+        this.errorMessage = this.transloco.translate('PANEL.new_request.err_no_access');
         this.isLoading = false;
         return;
       }
 
       const serviceType = serviceTypeParam || request.type as ServiceType;
       if (!this.isValidServiceType(serviceType)) {
-        this.errorMessage = 'Tipo de servicio inválido';
+        this.errorMessage = this.transloco.translate('PANEL.new_request.err_invalid_service');
         this.isLoading = false;
         return;
       }
@@ -191,7 +194,7 @@ export class NewRequestComponent implements OnInit {
 
     } catch (error: any) {
       console.error('[NewRequestComponent] Error al cargar borrador:', error);
-      this.errorMessage = 'Error al cargar el borrador';
+      this.errorMessage = this.transloco.translate('PANEL.new_request.err_draft');
       this.isLoading = false;
     }
   }
@@ -205,7 +208,7 @@ export class NewRequestComponent implements OnInit {
     serviceTypeParam?: ServiceType
   ): Promise<void> {
     if (!this.isPartner) {
-      this.errorMessage = 'Solo los partners pueden seleccionar clientes';
+      this.errorMessage = this.transloco.translate('PANEL.new_request.err_partner_only');
       this.isLoading = false;
       return;
     }
@@ -223,7 +226,7 @@ export class NewRequestComponent implements OnInit {
       }
 
       if (!clientId) {
-        this.errorMessage = 'Cliente no encontrado';
+        this.errorMessage = this.transloco.translate('PANEL.new_request.err_client_not_found');
         this.isLoading = false;
         return;
       }
@@ -241,7 +244,7 @@ export class NewRequestComponent implements OnInit {
 
     } catch (error: any) {
       console.error('[NewRequestComponent] Error al cargar cliente:', error);
-      this.errorMessage = 'Error al cargar el cliente';
+      this.errorMessage = this.transloco.translate('PANEL.new_request.err_client');
       this.isLoading = false;
     }
   }

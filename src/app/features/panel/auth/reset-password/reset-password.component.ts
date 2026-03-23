@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.css'
 })
@@ -35,7 +36,8 @@ export class ResetPasswordComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private transloco: TranslocoService
   ) {
     // Formulario para solicitar reset (forgot-password)
     this.resetForm = this.fb.group({
@@ -101,19 +103,19 @@ export class ResetPasswordComponent implements OnInit {
     // Determinar nivel
     if (password.length < 8) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Muy débil - mínimo 8 caracteres';
+      this.passwordStrengthText = this.transloco.translate('PANEL.auth.pwd_strength_very_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 3) {
       this.passwordStrength = 'weak';
-      this.passwordStrengthText = 'Débil';
+      this.passwordStrengthText = this.transloco.translate('PANEL.auth.pwd_strength_weak');
       this.passwordStrengthClass = 'text-danger';
     } else if (score <= 5) {
       this.passwordStrength = 'medium';
-      this.passwordStrengthText = 'Media';
+      this.passwordStrengthText = this.transloco.translate('PANEL.auth.pwd_strength_medium');
       this.passwordStrengthClass = 'text-warning';
     } else {
       this.passwordStrength = 'strong';
-      this.passwordStrengthText = 'Fuerte';
+      this.passwordStrengthText = this.transloco.translate('PANEL.auth.pwd_strength_strong');
       this.passwordStrengthClass = 'text-success';
     }
   }
@@ -142,14 +144,14 @@ export class ResetPasswordComponent implements OnInit {
           // El backend devuelve un message genérico (por seguridad).
           this.forgotPasswordMessage =
             res?.message ||
-            'Si tu correo existe en nuestro sistema, te enviaremos un enlace para restablecer tu contraseña.';
+            this.transloco.translate('PANEL.auth.forgot_pwd_generic_success');
         },
         error: (error) => {
           this.isLoading = false;
           this.errorMessage =
             error?.error?.message ??
             error?.message ??
-            'Error al enviar el correo. Verifica tu email e intenta nuevamente.';
+            this.transloco.translate('PANEL.auth.forgot_pwd_send_error');
           console.error('Forgot password error:', error);
         }
       });
@@ -170,14 +172,14 @@ export class ResetPasswordComponent implements OnInit {
       ).subscribe({
         next: () => {
           this.isLoading = false;
-          this.successMessage = 'Contraseña restablecida exitosamente. Redirigiendo al login...';
+          this.successMessage = this.transloco.translate('PANEL.auth.reset_success_redirect');
           setTimeout(() => {
             this.router.navigate(['/panel/login']);
           }, 2000);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al restablecer la contraseña. El token puede haber expirado.';
+          this.errorMessage = error.error?.message || this.transloco.translate('PANEL.auth.reset_error_expired');
           console.error('Reset password error:', error);
         }
       });

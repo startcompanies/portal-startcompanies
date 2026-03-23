@@ -1,5 +1,5 @@
 <div class="service-type-selection-step">
-  <h3>Selecciona el Tipo de Servicio</h3>
+  <h3>{{ 'PANEL.select_service.heading' | transloco }}</h3>
   
   <form [formGroup]="form">
     <div class="service-types-grid">
@@ -17,8 +17,8 @@
           class="service-radio"
         />
         <label [for]="'service-' + service.value" class="service-label">
-          <h4>{{ service.label }}</h4>
-          <p>{{ service.description }}</p>
+          <h4>{{ service.labelKey | transloco }}</h4>
+          <p>{{ service.descriptionKey | transloco }}</p>
         </label>
       </div>
     </div>
@@ -27,7 +27,7 @@
       *ngIf="serviceType?.touched && serviceType?.invalid" 
       class="text-danger mt-3"
     >
-      Por favor selecciona un tipo de servicio
+      {{ 'PANEL.select_service.validation_required' | transloco }}
     </div>
   </form>
 </div>

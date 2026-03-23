@@ -14,6 +14,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el panel
@@ -22,7 +23,7 @@ import { US_STATES } from '../../../../shared/constants/us-states.constant';
 @Component({
   selector: 'app-panel-llc-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, AperturaLlcFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, AperturaLlcFormComponent, TranslocoPipe],
   templateUrl: './panel-llc-information-step.component.html',
   styleUrls: ['./panel-llc-information-step.component.css']
 })

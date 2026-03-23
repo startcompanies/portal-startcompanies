@@ -12,6 +12,7 @@ import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar cuenta-bancaria-form en el panel.
@@ -20,7 +21,7 @@ import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/mem
 @Component({
   selector: 'app-panel-cuenta-bancaria-information-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CuentaBancariaFormComponent, TranslocoPipe],
   templateUrl: './panel-cuenta-bancaria-information-step.component.html',
   styleUrls: ['./panel-cuenta-bancaria-information-step.component.css']
 })

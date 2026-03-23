@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
 import { RequestFlowConfigService } from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
@@ -118,7 +118,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private wizardStateService = inject(WizardStateService, { optional: true });
   private wizardApiService = inject(WizardApiService, { optional: true });
   private draftRequestService = inject(DraftRequestService, { optional: true });
-  
+  private transloco = inject(TranslocoService);
+
   // Propiedades para manejo de borradores
   @Input() draftRequestUuid: string | null = null;
   @Input() initialClientId: number | null = null;
@@ -222,7 +223,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     try {
       const request = await this.draftRequestService.loadDraftByUuid(uuid);
       if (!request) {
-        throw new Error('No se pudo cargar el borrador');
+        throw new Error(this.transloco.translate('PANEL.request_flow.err_load_failed'));
       }
       this.draftRequestId = request.id;
       
@@ -278,7 +279,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       // No mostrar mensaje "Borrador cargado exitosamente" en paso Información de la LLC
     } catch (error: any) {
       console.error('[BaseRequestFlowComponent] Error al cargar borrador:', error);
-      this.errorMessage = error?.message || 'Error al cargar el borrador';
+      this.errorMessage = error?.message || this.transloco.translate('PANEL.request_flow.err_draft');
     } finally {
       this.isLoading = false;
     }
@@ -612,7 +613,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    */
   private async handleResendCode(stepInstance: any): Promise<void> {
     if (!this.wizardStateService || !this.wizardApiService || typeof stepInstance?.notifyResendResult !== 'function') {
-      stepInstance?.notifyResendResult?.(false, 'Configuración incompleta. Intenta de nuevo.');
+      stepInstance?.notifyResendResult?.(false, this.transloco.translate('PANEL.request_flow.err_config'));
       return;
     }
     const stepData = this.wizardStateService.getStepData(1) || {};
@@ -622,7 +623,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     const phone = stepData.phone;
 
     if (!email || !password) {
-      stepInstance.notifyResendResult(false, 'No se encontró el email o contraseña. Vuelve al paso de registro.');
+      stepInstance.notifyResendResult(false, this.transloco.translate('PANEL.request_flow.err_credentials'));
       return;
     }
 
@@ -639,14 +640,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         password
       }));
 
-      stepInstance.notifyResendResult(true, 'Código de verificación reenviado. Revisa tu bandeja de entrada.');
+      stepInstance.notifyResendResult(true, this.transloco.translate('PANEL.request_flow.code_resent'));
     } catch (error: any) {
       if (error?.error?.message?.includes('confirmado')) {
-        stepInstance.notifyResendResult(true, 'Tu email ya está confirmado. Puedes continuar.');
+        stepInstance.notifyResendResult(true, this.transloco.translate('PANEL.request_flow.email_confirmed'));
         this.currentStepValid = true;
         this.nextStep();
       } else {
-        const msg = error?.error?.message || 'Error al reenviar el código. Intenta de nuevo.';
+        const msg = error?.error?.message || this.transloco.translate('PANEL.request_flow.err_resend');
         stepInstance.notifyResendResult(false, msg);
       }
     }
@@ -996,11 +997,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       }
       
       this.currentStepValid = true;
-      this.successMessage = '¡Pago procesado exitosamente!';
+      this.successMessage = this.transloco.translate('PANEL.request_flow.payment_success');
     });
     subscribeIfEmitter('paymentError', (err: any) => {
       this.currentStepValid = false;
-      this.errorMessage = err || 'Error al procesar el pago';
+      this.errorMessage = err || this.transloco.translate('PANEL.request_flow.err_payment');
     });
 
     // Panel partner/client: validez del paso

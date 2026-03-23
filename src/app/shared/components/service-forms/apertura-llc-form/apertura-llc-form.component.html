@@ -3,29 +3,29 @@
         <div *ngIf="currentSection === 1" class="form-section">
           <div class="row g-3">
             <div class="col-md-12">
-              <p class="text-muted">Proporcione tres opciones posibles para el nombre de su LLC, incluyendo 'LLC' al final.</p>
+              <p class="text-muted">{{ 'PANEL.forms_apertura_llc.names_intro' | transloco }}</p>
             </div>
             <div class="col-md-6">
-              <label for="llcName" class="form-label">Nombre de la LLC - Opción 1 <span class="text-danger">*</span></label>
-              <input type="text" id="llcName" class="form-control" formControlName="llcName" placeholder="Mi Empresa LLC"
+              <label for="llcName" class="form-label">{{ 'PANEL.forms_apertura_llc.llc_name_1' | transloco }} <span class="text-danger">*</span></label>
+              <input type="text" id="llcName" class="form-control" formControlName="llcName" [attr.placeholder]="'PANEL.forms_apertura_llc.llc_name_ph' | transloco"
                 [class.is-invalid]="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched">
-              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+              <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.llc_suffix_hint' | transloco }}</small>
               <div *ngIf="serviceDataForm.get('llcName')?.invalid && serviceDataForm.get('llcName')?.touched" class="invalid-feedback d-block">
-                Este campo es obligatorio.
+                {{ 'PANEL.validation.required' | transloco }}
               </div>
             </div>
             <div class="col-md-6">
-              <label for="llcNameOption2" class="form-label">Nombre de la LLC - Opción 2</label>
+              <label for="llcNameOption2" class="form-label">{{ 'PANEL.forms_apertura_llc.llc_name_2' | transloco }}</label>
               <input type="text" id="llcNameOption2" class="form-control" formControlName="llcNameOption2">
-              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+              <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.llc_suffix_hint' | transloco }}</small>
             </div>
             <div class="col-md-6">
-              <label for="llcNameOption3" class="form-label">Nombre de la LLC - Opción 3</label>
+              <label for="llcNameOption3" class="form-label">{{ 'PANEL.forms_apertura_llc.llc_name_3' | transloco }}</label>
               <input type="text" id="llcNameOption3" class="form-control" formControlName="llcNameOption3">
-              <small class="form-text text-muted">Recuerde que 'LLC' debe ir al final del nombre.</small>
+              <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.llc_suffix_hint' | transloco }}</small>
             </div>
             <div class="col-md-6">
-              <label for="incorporationState" class="form-label">Estado de Registro de la LLC <span class="text-danger">*</span></label>
+              <label for="incorporationState" class="form-label">{{ 'PANEL.forms_apertura_llc.reg_state' | transloco }} <span class="text-danger">*</span></label>
               <!-- Si el estado ya viene del paso anterior, mostrarlo como readonly -->
               <div *ngIf="serviceDataForm.get('incorporationState')?.value" class="input-group">
                 <input 
@@ -41,7 +41,7 @@
               </div>
               <small *ngIf="serviceDataForm.get('incorporationState')?.value" class="form-text text-muted">
                 <i class="bi bi-info-circle me-1"></i>
-                El estado fue seleccionado en el paso anterior y no puede modificarse.
+                {{ 'PANEL.forms_apertura_llc.state_locked_hint' | transloco }}
               </small>
               <!-- Solo mostrar select si no hay estado seleccionado -->
               <select
@@ -51,44 +51,44 @@
                 formControlName="incorporationState"
                 [class.is-invalid]="serviceDataForm.get('incorporationState')?.invalid && serviceDataForm.get('incorporationState')?.touched"
               >
-                <option value="">Selecciona un estado...</option>
+                <option value="">{{ 'PANEL.forms_renovacion_llc.select_state' | transloco }}</option>
                 <option *ngFor="let state of usStates" [value]="state.value">
                   {{ state.label }} ({{ state.abbreviation }})
                 </option>
               </select>
               <div *ngIf="serviceDataForm.get('incorporationState')?.invalid && serviceDataForm.get('incorporationState')?.touched" class="invalid-feedback d-block">
-                Este campo es obligatorio.
+                {{ 'PANEL.validation.required' | transloco }}
               </div>
             </div>
             <div class="col-md-12">
-              <label for="businessDescription" class="form-label">Actividad Principal de la LLC <span class="text-danger">*</span></label>
-              <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" placeholder="Describa brevemente la actividad principal que realizará su empresa."
+              <label for="businessDescription" class="form-label">{{ 'PANEL.forms_apertura_llc.main_activity' | transloco }} <span class="text-danger">*</span></label>
+              <textarea id="businessDescription" class="form-control" formControlName="businessDescription" rows="3" [attr.placeholder]="'PANEL.forms_apertura_llc.main_activity_ph' | transloco"
                 [class.is-invalid]="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched"></textarea>
               <div *ngIf="serviceDataForm.get('businessDescription')?.invalid && serviceDataForm.get('businessDescription')?.touched" class="invalid-feedback d-block">
-                Este campo es obligatorio.
+                {{ 'PANEL.validation.required' | transloco }}
               </div>
             </div>
             <div class="col-md-6">
-              <label for="llcType" class="form-label">Estructura Societaria <span class="text-danger">*</span></label>
+              <label for="llcType" class="form-label">{{ 'PANEL.forms_apertura_llc.structure' | transloco }} <span class="text-danger">*</span></label>
               <!-- Emprendedor / Premium: siempre Single Member, solo lectura -->
               <div *ngIf="forceSingleMember" class="form-control bg-light d-flex align-items-center" style="min-height: 38px;">
                 <i class="bi bi-lock-fill text-muted me-2"></i>
-                <span>Single Member LLC</span>
+                <span>{{ 'PANEL.forms_apertura_llc.single_member_locked' | transloco }}</span>
               </div>
               <!-- Elite: el usuario puede elegir -->
               <select *ngIf="!forceSingleMember" id="llcType" class="form-select" formControlName="llcType" [class.is-invalid]="serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched">
-                <option value="">Selecciona...</option>
-                <option value="single">LLC de un solo miembro (Single Member LLC)</option>
-                <option value="multi">LLC con múltiples miembros (Multi Member LLC)</option>
+                <option value="">{{ 'PANEL.forms_renovacion_llc.select_structure' | transloco }}</option>
+                <option value="single">{{ 'PANEL.forms_apertura_llc.option_single' | transloco }}</option>
+                <option value="multi">{{ 'PANEL.forms_apertura_llc.option_multi' | transloco }}</option>
               </select>
-              <small *ngIf="forceSingleMember" class="form-text text-muted">Este plan solo permite Single Member.</small>
+              <small *ngIf="forceSingleMember" class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.plan_single_only' | transloco }}</small>
               <div *ngIf="!forceSingleMember && serviceDataForm.get('llcType')?.invalid && serviceDataForm.get('llcType')?.touched" class="invalid-feedback d-block">
-                Debe seleccionar una estructura societaria.
+                {{ 'PANEL.forms_renovacion_llc.structure_required' | transloco }}
               </div>
             </div>
             <div class="col-md-6">
-              <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
-              <input type="url" id="linkedin" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/...">
+              <label for="linkedin" class="form-label">{{ 'PANEL.forms_apertura_llc.linkedin_optional' | transloco }}</label>
+              <input type="url" id="linkedin" class="form-control" formControlName="linkedin" [attr.placeholder]="'PANEL.forms_apertura_llc.linkedin_ph' | transloco">
             </div>
           </div>
           
@@ -96,49 +96,49 @@
 
         <!-- Sección 2: Información del Propietario/Socios -->
         <div *ngIf="currentSection === 2" class="form-section">
-          <p class="text-muted"><strong>SECCIÓN: INFORMACIÓN DEL PROPIETARIO O SOCIOS</strong></p>
-          <p class="text-danger"><strong>Importante:</strong> Asegúrate de ingresar la información de todos los propietarios o socios.</p>
+          <p class="text-muted"><strong>{{ 'PANEL.forms_apertura_llc.s2_title' | transloco }}</strong></p>
+          <p class="text-danger"><strong>{{ 'PANEL.forms_apertura_llc.s2_important' | transloco }}</strong> {{ 'PANEL.forms_apertura_llc.s2_ensure_all' | transloco }}</p>
           
           <div *ngIf="shouldShowMembersSection()">
-            <h4 class="section-title">Socios/Miembros de la LLC</h4>
+            <h4 class="section-title">{{ 'PANEL.forms_apertura_llc.members_heading' | transloco }}</h4>
             <p *ngIf="serviceDataForm.get('llcType')?.value === 'multi'" class="alert alert-info small mb-3">
-              <strong>Multi Member LLC:</strong> la suma de los porcentajes de participación de todos los miembros debe ser exactamente 100%.
+              {{ 'PANEL.forms_apertura_llc.multi_sum_hint' | transloco }}
             </p>
             <div formArrayName="members" *ngIf="membersFormArray">
               <div *ngFor="let member of membersFormArray.controls; let i = index" [formGroupName]="i" class="member-card mb-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <h5 class="mb-0">Miembro {{ i + 1 }}</h5>
+                <h5 class="mb-0">{{ 'PANEL.forms_apertura_llc.member_title' | transloco: { n: i + 1 } }}</h5>
                 <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeMember(i)" *ngIf="membersFormArray.length > 1">
-                  <i class="bi bi-trash"></i> Eliminar
+                  <i class="bi bi-trash"></i> {{ 'PANEL.forms_apertura_llc.remove_member' | transloco }}
                 </button>
               </div>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label [for]="'memberFirstName' + i" class="form-label">Nombres <span class="text-danger">*</span></label>
+                  <label [for]="'memberFirstName' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.first_names' | transloco }} <span class="text-danger">*</span></label>
                   <input type="text" [id]="'memberFirstName' + i" class="form-control" formControlName="firstName"
                     [class.is-invalid]="member.get('firstName')?.invalid && member.get('firstName')?.touched">
                   <div *ngIf="member.get('firstName')?.invalid && member.get('firstName')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberLastName' + i" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                  <label [for]="'memberLastName' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.last_names' | transloco }} <span class="text-danger">*</span></label>
                   <input type="text" [id]="'memberLastName' + i" class="form-control" formControlName="lastName"
                     [class.is-invalid]="member.get('lastName')?.invalid && member.get('lastName')?.touched">
                   <div *ngIf="member.get('lastName')?.invalid && member.get('lastName')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPassport' + i" class="form-label">Número Pasaporte Completo <span class="text-danger">*</span></label>
-                  <input type="text" [id]="'memberPassport' + i" class="form-control" formControlName="passportNumber" placeholder="Ejemplo: A1234567, AB1234567, 123456789 (Varía según el país)"
+                  <label [for]="'memberPassport' + i" class="form-label">{{ 'PANEL.forms_renovacion_llc.passport_full' | transloco }} <span class="text-danger">*</span></label>
+                  <input type="text" [id]="'memberPassport' + i" class="form-control" formControlName="passportNumber" [attr.placeholder]="'PANEL.forms_renovacion_llc.passport_ph' | transloco"
                     [class.is-invalid]="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched">
                   <div *ngIf="member.get('passportNumber')?.invalid && member.get('passportNumber')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPassportScanned' + i" class="form-label">Pasaporte escaneado <span class="text-danger">*</span></label>
+                  <label [for]="'memberPassportScanned' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.passport_scan' | transloco }} <span class="text-danger">*</span></label>
                   <!-- Solo mostrar input de file si NO hay URL guardada -->
                   <div *ngIf="!member.get('scannedPassportUrl')?.value">
                     <input
@@ -149,7 +149,7 @@
                       accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                       [disabled]="getFileUploadState('memberPassport' + i).uploading"
                     />
-                    <small class="form-text text-muted">Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                    <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.file_formats_member' | transloco }}</small>
                     
                     <div *ngIf="getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="selected-file-info mt-2">
                       <div class="alert alert-info d-flex justify-content-between align-items-center">
@@ -169,108 +169,112 @@
                           {{ getFileUploadState('memberPassport' + i).progress }}%
                         </div>
                       </div>
-                      <small class="text-muted">Subiendo archivo...</small>
+                      <small class="text-muted">{{ 'PANEL.forms_renovacion_llc.uploading_file' | transloco }}</small>
                     </div>
                   </div>
                   <!-- Mostrar archivo existente si hay URL guardada -->
                   <div *ngIf="member.get('scannedPassportUrl')?.value && !getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="uploaded-file-info mt-2">
                     <div class="alert alert-success">
-                      <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
-                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
-                      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                      <i class="bi bi-check-circle me-2"></i><strong>{{ 'PANEL.forms_renovacion_llc.file_uploaded_ok' | transloco }}</strong><br>
+                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>{{ 'PANEL.forms_renovacion_llc.view_file' | transloco }}</a>
+                      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)"><i class="bi bi-x-circle me-1"></i>{{ 'PANEL.forms_renovacion_llc.change_file_doc' | transloco }}</button>
                     </div>
                   </div>
                   
                   <input type="hidden" formControlName="scannedPassportUrl">
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberNationality' + i" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+                  <label [for]="'memberNationality' + i" class="form-label">{{ 'PANEL.forms_renovacion_llc.nationality' | transloco }} <span class="text-danger">*</span></label>
                   <select [id]="'memberNationality' + i" class="form-select" formControlName="nationality"
                     [class.is-invalid]="member.get('nationality')?.invalid && member.get('nationality')?.touched">
-                    <option value="">Selecciona...</option>
+                    <option value="">{{ 'PANEL.forms_renovacion_llc.select_generic' | transloco }}</option>
                     <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
                   </select>
                   <div *ngIf="member.get('nationality')?.invalid && member.get('nationality')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberDateOfBirth' + i" class="form-label">Fecha de nacimiento <span class="text-danger">*</span></label>
+                  <label [for]="'memberDateOfBirth' + i" class="form-label">{{ 'PANEL.forms_renovacion_llc.dob_label' | transloco }} <span class="text-danger">*</span></label>
                   <input type="date" [id]="'memberDateOfBirth' + i" class="form-control" formControlName="dateOfBirth"
                     [class.is-invalid]="member.get('dateOfBirth')?.invalid && member.get('dateOfBirth')?.touched">
                   <div *ngIf="member.get('dateOfBirth')?.invalid && member.get('dateOfBirth')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberEmail' + i" class="form-label">Email <span class="text-danger">*</span></label>
+                  <label [for]="'memberEmail' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.email_label' | transloco }} <span class="text-danger">*</span></label>
                   <input type="email" [id]="'memberEmail' + i" class="form-control" formControlName="email"
                     [class.is-invalid]="member.get('email')?.invalid && member.get('email')?.touched">
                   <div *ngIf="member.get('email')?.invalid && member.get('email')?.touched" class="invalid-feedback d-block">
-                    <span *ngIf="member.get('email')?.errors?.['required']">Este campo es obligatorio.</span>
-                    <span *ngIf="member.get('email')?.errors?.['email']">Ingrese un email válido.</span>
+                    <span *ngIf="member.get('email')?.errors?.['required']">{{ 'PANEL.validation.required' | transloco }}</span>
+                    <span *ngIf="member.get('email')?.errors?.['email']">{{ 'PANEL.validation.email_invalid' | transloco }}</span>
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPhone' + i" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                  <label [for]="'memberPhone' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.phone_label' | transloco }} <span class="text-danger">*</span></label>
                   <app-intl-tel-input
                     [id]="'memberPhone' + i"
                     formControlName="phoneNumber"
-                    placeholder="Teléfono"
+                    [placeholder]="'PANEL.forms_apertura_llc.phone_ph' | transloco"
                     [class.is-invalid]="member.get('phoneNumber')?.invalid && member.get('phoneNumber')?.touched"
                   ></app-intl-tel-input>
                   <div *ngIf="member.get('phoneNumber')?.invalid && member.get('phoneNumber')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio.
+                    {{ 'PANEL.validation.required' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPercentage' + i" class="form-label">% de Participación <span class="text-danger">*</span></label>
+                  <label [for]="'memberPercentage' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.participation_pct' | transloco }} <span class="text-danger">*</span></label>
                   <input type="number" [id]="'memberPercentage' + i" class="form-control" formControlName="percentageOfParticipation" min="0" max="100"
                     [readonly]="isSingleMember() && membersFormArray.length === 1"
                     [class.is-invalid]="member.get('percentageOfParticipation')?.invalid && member.get('percentageOfParticipation')?.touched">
                   <div *ngIf="member.get('percentageOfParticipation')?.invalid && member.get('percentageOfParticipation')?.touched" class="invalid-feedback d-block">
-                    Este campo es obligatorio (0-100).
+                    {{ 'PANEL.validation.participation_range' | transloco }}
                   </div>
                 </div>
                 <div class="col-md-12">
-                  <label class="form-label">Dirección del Miembro <span class="text-danger">*</span></label>
+                  <label class="form-label">{{ 'PANEL.forms_apertura_llc.member_address' | transloco }} <span class="text-danger">*</span></label>
                   <div class="row g-2" *ngIf="getMemberAddressForm(member)" [formGroup]="getMemberAddressForm(member)!">
                     <div class="col-md-8">
-                      <input type="text" class="form-control" formControlName="street" placeholder="Calle"
+                      <input type="text" class="form-control" formControlName="street" [attr.placeholder]="'PANEL.forms_apertura_llc.street_ph' | transloco"
                         [class.is-invalid]="getMemberAddressForm(member)?.get('street')?.invalid && getMemberAddressForm(member)?.get('street')?.touched">
                       <div *ngIf="getMemberAddressForm(member)?.get('street')?.invalid && getMemberAddressForm(member)?.get('street')?.touched" class="invalid-feedback d-block">
-                        Este campo es obligatorio.
+                        {{ 'PANEL.validation.required' | transloco }}
                       </div>
                     </div>
                     <div class="col-md-4">
-                      <input type="text" class="form-control" formControlName="unit" placeholder="Unidad">
+                      <input type="text" class="form-control" formControlName="unit" [attr.placeholder]="'PANEL.forms_apertura_llc.unit_ph' | transloco">
                     </div>
                     <div class="col-md-6">
-                      <input type="text" class="form-control" formControlName="city" placeholder="Ciudad"
+                      <input type="text" class="form-control" formControlName="city" [attr.placeholder]="'PANEL.forms_apertura_llc.city_ph' | transloco"
                         [class.is-invalid]="getMemberAddressForm(member)?.get('city')?.invalid && getMemberAddressForm(member)?.get('city')?.touched">
                       <div *ngIf="getMemberAddressForm(member)?.get('city')?.invalid && getMemberAddressForm(member)?.get('city')?.touched" class="invalid-feedback d-block">
-                        Este campo es obligatorio.
+                        {{ 'PANEL.validation.required' | transloco }}
                       </div>
                     </div>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" formControlName="stateRegion" placeholder="Estado/Región"
+                      <input type="text" class="form-control" formControlName="stateRegion" [attr.placeholder]="'PANEL.forms_apertura_llc.state_region_ph' | transloco"
                         [class.is-invalid]="getMemberAddressForm(member)?.get('stateRegion')?.invalid && getMemberAddressForm(member)?.get('stateRegion')?.touched">
                       <div *ngIf="getMemberAddressForm(member)?.get('stateRegion')?.invalid && getMemberAddressForm(member)?.get('stateRegion')?.touched" class="invalid-feedback d-block">
-                        Obligatorio.
+                        {{ 'PANEL.validation.required_short' | transloco }}
                       </div>
                     </div>
                     <div class="col-md-3">
-                      <input type="text" class="form-control" formControlName="postalCode" placeholder="Código Postal"
+                      <input type="text" class="form-control" formControlName="postalCode" [attr.placeholder]="'PANEL.forms_apertura_llc.postal_ph' | transloco"
                         [class.is-invalid]="getMemberAddressForm(member)?.get('postalCode')?.invalid && getMemberAddressForm(member)?.get('postalCode')?.touched">
                       <div *ngIf="getMemberAddressForm(member)?.get('postalCode')?.invalid && getMemberAddressForm(member)?.get('postalCode')?.touched" class="invalid-feedback d-block">
-                        Obligatorio.
+                        {{ 'PANEL.validation.required_short' | transloco }}
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <input type="text" class="form-control" formControlName="country" placeholder="País"
+                      <label [for]="'memberAddressCountry' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.country_ph' | transloco }} <span class="text-danger">*</span></label>
+                      <select [id]="'memberAddressCountry' + i" class="form-select" formControlName="country"
                         [class.is-invalid]="getMemberAddressForm(member)?.get('country')?.invalid && getMemberAddressForm(member)?.get('country')?.touched">
+                        <option value="">{{ 'PANEL.forms_renovacion_llc.select_generic' | transloco }}</option>
+                        <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
+                      </select>
                       <div *ngIf="getMemberAddressForm(member)?.get('country')?.invalid && getMemberAddressForm(member)?.get('country')?.touched" class="invalid-feedback d-block">
-                        Este campo es obligatorio.
+                        {{ 'PANEL.validation.required' | transloco }}
                       </div>
                     </div>
                   </div>
@@ -278,7 +282,7 @@
               </div>
               </div>
               <button type="button" class="btn btn-outline-primary" (click)="addMember()" *ngIf="!isSingleMember()">
-                <i class="bi bi-plus-circle me-2"></i>Agregar Miembro
+                <i class="bi bi-plus-circle me-2"></i>{{ 'PANEL.forms_apertura_llc.add_member' | transloco }}
               </button>
             </div>
           </div>
@@ -286,12 +290,12 @@
 
         <!-- Sección 3: Información para Apertura Bancaria -->
         <div *ngIf="currentSection === 3" class="form-section">
-          <h4 class="section-title"><strong>SECCIÓN: INFORMACIÓN PARA APERTURA BANCARIA</strong></h4>
-          <p class="text-danger"><strong>Importante:</strong> La dirección en factura y resumen bancario debe coincidir, al igual que el nombre del titular o responsable de la LLC en ambos documentos. Si no coinciden, el banco podría rechazar la apertura.</p>
+          <h4 class="section-title"><strong>{{ 'PANEL.forms_apertura_llc.s3_title' | transloco }}</strong></h4>
+          <p class="text-danger"><strong>{{ 'PANEL.forms_apertura_llc.s3_important' | transloco }}</strong> {{ 'PANEL.forms_apertura_llc.s3_warning' | transloco }}</p>
           
           <div class="row g-3">
             <div class="col-md-12">
-              <label for="serviceBillFile" class="form-label">Factura de Servicio (Prueba de Dirección) <span class="text-danger">*</span></label>
+              <label for="serviceBillFile" class="form-label">{{ 'PANEL.forms_apertura_llc.service_bill' | transloco }} <span class="text-danger">*</span></label>
               <!-- Solo mostrar input de file si NO hay URL guardada -->
               <div *ngIf="!serviceDataForm.get('serviceBillUrl')?.value">
                 <input
@@ -302,7 +306,7 @@
                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                   [disabled]="getFileUploadState('serviceBill').uploading"
                 />
-                <small class="form-text text-muted">Sube una factura de servicio emitida en los últimos 3 meses como prueba de dirección. Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.service_bill_hint' | transloco }}</small>
                 
                 <div *ngIf="getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="selected-file-info mt-2">
                   <div class="alert alert-info d-flex justify-content-between align-items-center">
@@ -322,15 +326,15 @@
                       {{ getFileUploadState('serviceBill').progress }}%
                     </div>
                   </div>
-                  <small class="text-muted">Subiendo archivo...</small>
+                  <small class="text-muted">{{ 'PANEL.forms_renovacion_llc.uploading_file' | transloco }}</small>
                 </div>
               </div>
               <!-- Mostrar archivo existente si hay URL guardada -->
               <div *ngIf="serviceDataForm.get('serviceBillUrl')?.value && !getFileUploadState('serviceBill').file && !getFileUploadState('serviceBill').uploading" class="uploaded-file-info mt-2">
                 <div class="alert alert-success">
-                  <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
-                  <a [href]="serviceDataForm.get('serviceBillUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                  <i class="bi bi-check-circle me-2"></i><strong>{{ 'PANEL.forms_renovacion_llc.file_uploaded_ok' | transloco }}</strong><br>
+                  <a [href]="serviceDataForm.get('serviceBillUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>{{ 'PANEL.forms_renovacion_llc.view_file' | transloco }}</a>
+                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('serviceBill', 'serviceBillUrl', 'serviceBillFile')"><i class="bi bi-x-circle me-1"></i>{{ 'PANEL.forms_renovacion_llc.change_file_doc' | transloco }}</button>
                 </div>
               </div>
               
@@ -338,7 +342,7 @@
             </div>
             
             <div class="col-md-12">
-              <label for="bankStatementFile" class="form-label">Resumen Bancario <span class="text-danger">*</span></label>
+              <label for="bankStatementFile" class="form-label">{{ 'PANEL.forms_apertura_llc.bank_statement' | transloco }} <span class="text-danger">*</span></label>
               <!-- Solo mostrar input de file si NO hay URL guardada -->
               <div *ngIf="!serviceDataForm.get('bankStatementUrl')?.value">
                 <input
@@ -349,7 +353,7 @@
                   accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                   [disabled]="getFileUploadState('bankStatement').uploading"
                 />
-                <small class="form-text text-muted">Sube tu resumen bancario con la misma dirección que figura en la factura de servicio. Formatos: PDF, JPG, PNG, DOC, DOCX (máx. 10MB)</small>
+                <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.bank_statement_hint' | transloco }}</small>
                 
                 <div *ngIf="getFileUploadState('bankStatement').file && !getFileUploadState('bankStatement').uploading" class="selected-file-info mt-2">
                   <div class="alert alert-info d-flex justify-content-between align-items-center">
@@ -369,15 +373,15 @@
                       {{ getFileUploadState('bankStatement').progress }}%
                     </div>
                   </div>
-                  <small class="text-muted">Subiendo archivo...</small>
+                  <small class="text-muted">{{ 'PANEL.forms_renovacion_llc.uploading_file' | transloco }}</small>
                 </div>
               </div>
               <!-- Mostrar archivo existente si hay URL guardada -->
               <div *ngIf="serviceDataForm.get('bankStatementUrl')?.value && !getFileUploadState('bankStatement').file && !getFileUploadState('bankStatement').uploading" class="uploaded-file-info mt-2">
                 <div class="alert alert-success">
-                  <i class="bi bi-check-circle me-2"></i><strong>Archivo subido exitosamente</strong><br>
-                  <a [href]="serviceDataForm.get('bankStatementUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>Ver archivo</a>
-                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('bankStatement', 'bankStatementUrl', 'bankStatementFile')"><i class="bi bi-x-circle me-1"></i>Cambiar archivo</button>
+                  <i class="bi bi-check-circle me-2"></i><strong>{{ 'PANEL.forms_renovacion_llc.file_uploaded_ok' | transloco }}</strong><br>
+                  <a [href]="serviceDataForm.get('bankStatementUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>{{ 'PANEL.forms_renovacion_llc.view_file' | transloco }}</a>
+                  <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearFile('bankStatement', 'bankStatementUrl', 'bankStatementFile')"><i class="bi bi-x-circle me-1"></i>{{ 'PANEL.forms_renovacion_llc.change_file_doc' | transloco }}</button>
                 </div>
               </div>
               
@@ -385,39 +389,39 @@
             </div>
             
             <div class="col-md-12">
-              <label class="form-label">¿Tendrá ingresos periódicos que suman USD 10,000 o más en los próximos tres meses? <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'PANEL.forms_apertura_llc.q_periodic_10k' | transloco }} <span class="text-danger">*</span></label>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="periodicIncome10k" id="periodicIncome10kYes" [value]="'si'" formControlName="periodicIncome10k">
-                <label class="form-check-label" for="periodicIncome10kYes">Si</label>
+                <label class="form-check-label" for="periodicIncome10kYes">{{ 'PANEL.forms_renovacion_llc.yes' | transloco }}</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="periodicIncome10k" id="periodicIncome10kNo" [value]="'no'" formControlName="periodicIncome10k">
-                <label class="form-check-label" for="periodicIncome10kNo">No</label>
+                <label class="form-check-label" for="periodicIncome10kNo">{{ 'PANEL.forms_renovacion_llc.no' | transloco }}</label>
               </div>
             </div>
             
             <div class="col-md-12">
-              <label for="bankAccountLinkedEmail" class="form-label">Correo Electrónico Vinculado a la Cuenta Bancaria <span class="text-danger">*</span></label>
-              <input type="email" id="bankAccountLinkedEmail" class="form-control" formControlName="bankAccountLinkedEmail" placeholder="Este correo también será el correo asociado a la cuenta bancaria.">
+              <label for="bankAccountLinkedEmail" class="form-label">{{ 'PANEL.forms_apertura_llc.bank_linked_email' | transloco }} <span class="text-danger">*</span></label>
+              <input type="email" id="bankAccountLinkedEmail" class="form-control" formControlName="bankAccountLinkedEmail" [attr.placeholder]="'PANEL.forms_apertura_llc.bank_linked_email_ph' | transloco">
             </div>
             
             <div class="col-md-12">
-              <label for="bankAccountLinkedPhone" class="form-label">Número de Teléfono Vinculado a la Cuenta Bancaria <span class="text-danger">*</span></label>
+              <label for="bankAccountLinkedPhone" class="form-label">{{ 'PANEL.forms_apertura_llc.bank_linked_phone' | transloco }} <span class="text-danger">*</span></label>
               <app-intl-tel-input
                 id="bankAccountLinkedPhone"
                 formControlName="bankAccountLinkedPhone"
-                placeholder="Este número debe ser apto para recibir SMS. Indique el número con la característica del país."
+                [placeholder]="'PANEL.forms_apertura_llc.bank_linked_phone_ph' | transloco"
               ></app-intl-tel-input>
             </div>
             
             <div class="col-md-12">
-              <label for="actividadFinancieraEsperada" class="form-label">Actividad financiera esperada <span class="text-danger">*</span></label>
-              <textarea id="actividadFinancieraEsperada" class="form-control" formControlName="actividadFinancieraEsperada" rows="3" placeholder="Explique el uso esperado de la cuenta bancaria (Ejemplo: 'Recibir pagos de clientes internacionales')"></textarea>
+              <label for="actividadFinancieraEsperada" class="form-label">{{ 'PANEL.forms_apertura_llc.expected_activity' | transloco }} <span class="text-danger">*</span></label>
+              <textarea id="actividadFinancieraEsperada" class="form-control" formControlName="actividadFinancieraEsperada" rows="3" [attr.placeholder]="'PANEL.forms_apertura_llc.expected_activity_ph' | transloco"></textarea>
             </div>
             
             <div class="col-md-12">
-              <label for="projectOrCompanyUrl" class="form-label">URL del Proyecto o Empresa (Opcional)</label>
-              <input type="url" id="projectOrCompanyUrl" class="form-control" formControlName="projectOrCompanyUrl" placeholder="https://...">
+              <label for="projectOrCompanyUrl" class="form-label">{{ 'PANEL.forms_apertura_llc.project_url' | transloco }}</label>
+              <input type="url" id="projectOrCompanyUrl" class="form-control" formControlName="projectOrCompanyUrl" [attr.placeholder]="'PANEL.forms_apertura_llc.project_url_ph' | transloco">
             </div>
           </div>
           
