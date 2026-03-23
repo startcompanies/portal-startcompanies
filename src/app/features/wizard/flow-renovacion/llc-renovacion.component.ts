@@ -203,8 +203,8 @@ export class LLCRenovacionComponent implements OnInit {
     // Si estamos saliendo del paso 4 (Información Renovación) hacia revisión, guardar antes de avanzar
     if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
       if (this.renovacionInformationStep) {
-        await this.renovacionInformationStep.saveToApi();
-        if (this.renovacionInformationStep.saveError) {
+        const ok = await this.renovacionInformationStep.saveToApi();
+        if (!ok) {
           return;
         }
       }
@@ -378,7 +378,10 @@ export class LLCRenovacionComponent implements OnInit {
     if (this.currentStepIndex === 3 && this.wizardStateService.hasRequest()) {
       // Si estamos en la sección 5 (última sección), guardar antes de avanzar al siguiente paso del wizard
       if (this.renovacionInfoCurrentSection === 5 && this.renovacionInformationStep) {
-        await this.renovacionInformationStep.saveToApi();
+        const ok = await this.renovacionInformationStep.saveToApi();
+        if (!ok) {
+          return;
+        }
       } else {
         // Si no estamos en la última sección, actualizar normalmente
         await this.updateRequestData();

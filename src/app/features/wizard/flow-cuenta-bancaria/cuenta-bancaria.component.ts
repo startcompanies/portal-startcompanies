@@ -223,7 +223,10 @@ export class CuentaBancariaComponent implements OnInit {
         }
       }
       // Guardar los datos en la API antes de navegar
-      await this.cuentaBancariaInfoStep.saveToApi();
+      const saved = await this.cuentaBancariaInfoStep.saveToApi();
+      if (!saved) {
+        return;
+      }
       console.log('[CuentaBancariaComponent] Datos guardados en API antes de navegar a revisión, currentSection:', this.cuentaBancariaInfoStep.currentSection);
     }
     

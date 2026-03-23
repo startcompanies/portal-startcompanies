@@ -293,7 +293,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       fullAddress: ['', Validators.required],
-      unit: [''],
+      unit: ['', Validators.required],
       city: ['', Validators.required],
       stateRegion: ['', Validators.required],
       postalCode: ['', Validators.required],
@@ -445,8 +445,11 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     
     if (this.currentSection < this.totalSections) {
       // Guardar datos en la API antes de avanzar
-      await this.saveToApi();
-      
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
+
       this.currentSection++;
       
       // Si se navega a la sección 2 (propietarios) y no hay propietarios, crear uno automáticamente
@@ -466,16 +469,18 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
   /**
    * Guarda los datos en la API
    */
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     const requestId = this.wizardStateService.getRequestId();
     if (!requestId) {
       this.logger.log('[WizardRenovacionLlcInformationStep] No hay requestId, saltando guardado en API');
-      return;
+      this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      return false;
     }
-    
+
     this.isSaving = true;
-    this.saveError = null;
-    
+
     try {
       const formData = this.serviceDataForm.getRawValue();
       
@@ -541,10 +546,11 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       this.logger.log('[WizardRenovacionLlcInformationStep] Members a enviar:', members);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardRenovacionLlcInformationStep] Datos guardados exitosamente');
-      
+      return true;
     } catch (error: any) {
       this.logger.error('[WizardRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }
@@ -566,8 +572,8 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
-    if (this.saveError) {
+    const ok = await this.saveToApi();
+    if (!ok) {
       return;
     }
     this.nextStepRequested.emit();

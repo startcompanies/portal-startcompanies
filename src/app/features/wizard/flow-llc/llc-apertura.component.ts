@@ -240,7 +240,10 @@ export class LLCAperturaComponent implements OnInit {
     if (this.currentStep === 4 && this.wizardStateService.hasRequest()) {
       // Si estamos en la sección 3 (última sección), guardar antes de avanzar al siguiente paso del wizard
       if (this.llcInfoCurrentSection === 3 && this.llcInformationStep) {
-        await this.llcInformationStep.saveToApi();
+        const ok = await this.llcInformationStep.saveToApi();
+        if (!ok) {
+          return;
+        }
       } else {
         // Si no estamos en la última sección, actualizar normalmente
         await this.updateRequestData();

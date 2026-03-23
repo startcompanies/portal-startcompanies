@@ -539,8 +539,11 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     
     if (this.currentSection < 3) {
       // Guardar datos en la API antes de avanzar
-      await this.saveToApi();
-      
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
+
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
     }
@@ -550,7 +553,9 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    * Guarda los datos en la API.
    * Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado (primer "Siguiente Sección").
    */
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     let requestId = this.wizardStateService.getRequestId();
 
     if (!requestId && !environment.paymentEnabled) {
@@ -559,7 +564,8 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         const user = this.wizardApiService.getUser();
         if (!user) {
           this.logger.log('[WizardLlcInformationStep] No hay usuario, saltando creación de request');
-          return;
+          this.saveError = 'No se pudo obtener el usuario. Inicia sesión de nuevo.';
+          return false;
         }
         const allData = this.wizardStateService.getAllData();
         const step1 = allData?.step1 || {};
@@ -594,25 +600,27 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
         if (!response?.id) {
           this.logger.error('[WizardLlcInformationStep] createRequest no devolvió id');
-          return;
+          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
+          return false;
         }
         this.wizardStateService.setRequestId(response.id);
         requestId = response.id;
       } catch (error: any) {
         this.logger.error('[WizardLlcInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        this.isSaving = false;
-        return;
+        return false;
       }
     }
 
     if (!requestId) {
       this.logger.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
-      return;
+      if (!this.saveError) {
+        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      }
+      return false;
     }
 
     this.isSaving = true;
-    this.saveError = null;
 
     try {
       const formData = this.serviceDataForm.getRawValue();
@@ -629,10 +637,11 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.logger.log('[WizardLlcInformationStep] Guardando datos en API:', updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardLlcInformationStep] Datos guardados exitosamente');
-
+      return true;
     } catch (error: any) {
       this.logger.error('[WizardLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }
@@ -654,7 +663,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
+    const ok = await this.saveToApi();
+    if (!ok) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 

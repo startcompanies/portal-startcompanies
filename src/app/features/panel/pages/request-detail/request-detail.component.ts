@@ -1110,14 +1110,18 @@ export class RequestDetailComponent implements OnInit {
         this.request.steps[stepIndex].date = new Date();
         this.request.steps[stepIndex].completedBy = this.currentUser?.username || 'Administrador';
         
-        // Crear notificación para el cliente/partner
-        this.notificationsService.createNotification({
-          type: 'success',
-          title: 'Proceso Actualizado',
-          message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
-          link: `/panel/my-requests/${this.request.id}`,
-          requestId: this.request.id
-        });
+        const data = this.fullRequestData;
+        const targetUserId = data?.client?.userId ?? data?.partner?.id;
+        if (targetUserId) {
+          this.notificationsService.createNotificationRemote({
+            userId: targetUserId,
+            type: 'success',
+            title: 'Proceso Actualizado',
+            message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
+            link: `/panel/my-requests/${this.request.id}`,
+            requestId: this.request.id,
+          });
+        }
       }
       
       // Si se completa un paso, el siguiente pasa a ser "current"

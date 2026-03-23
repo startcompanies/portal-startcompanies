@@ -460,7 +460,10 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     }
     
     if (this.currentSection < 3) {
-      await this.saveToApi();
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
       this.currentSection++;
       this.sectionChanged.emit(this.currentSection);
       this.saveStepData(); // Actualizar estado del flujo para que el base muestre Siguiente en última sección
@@ -557,14 +560,19 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
+    const ok = await this.saveToApi();
+    if (!ok) {
+      return;
+    }
     this.nextStepRequested.emit();
   }
 
   /**
    * Guarda los datos en la API. Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado.
    */
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     const effectiveId = this._createdRequestId ?? this.requestId;
 
     if (!effectiveId && !this.requestId && !environment.paymentEnabled) {
@@ -628,7 +636,8 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelLlcInformationStep] createRequest no devolvió id');
-          return;
+          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
+          return false;
         }
         this._createdRequestId = response.id;
         this.requestCreated.emit({ requestId: response.id });
@@ -636,17 +645,19 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       } catch (error: any) {
         this.logger.error('[PanelLlcInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        return;
+        return false;
       }
     }
 
     const id = this._createdRequestId ?? this.requestId;
     if (!id) {
-      return;
+      if (!this.saveError) {
+        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      }
+      return false;
     }
 
     this.isSaving = true;
-    this.saveError = null;
     try {
       this.ensurePlanStateFromWizard();
       const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
@@ -672,9 +683,11 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         payload.currentStep = this.flowStepNumber;
       }
       await this.requestsService.updateRequest(id, payload);
+      return true;
     } catch (error: any) {
       this.logger.error('[PanelLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }

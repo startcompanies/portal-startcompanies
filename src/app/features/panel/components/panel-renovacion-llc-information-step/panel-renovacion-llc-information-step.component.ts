@@ -152,7 +152,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       fullAddress: ['', Validators.required],
-      unit: [''],
+      unit: ['', Validators.required],
       city: ['', Validators.required],
       stateRegion: ['', Validators.required],
       postalCode: ['', Validators.required],
@@ -247,7 +247,10 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       return;
     }
     if (this.currentSection < this.totalSections) {
-      await this.saveToApi();
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
       this.currentSection++;
       if (this.currentSection === 2) {
         const ownersArray = this.serviceDataForm.get('owners') as FormArray;
@@ -267,8 +270,8 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       return;
     }
     this.saveStepData();
-    await this.saveToApi();
-    if (this.saveError) {
+    const ok = await this.saveToApi();
+    if (!ok) {
       return;
     }
     this.nextStepRequested.emit();
@@ -311,7 +314,9 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
     });
   }
 
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     const idExisting = this.effectiveRequestId;
 
     if (!idExisting && !environment.paymentEnabled) {
@@ -366,24 +371,27 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelRenovacionLlcInformationStep] createRequest no devolvió id');
-          return;
+          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
+          return false;
         }
         this._createdRequestId = response.id;
         this.requestCreated.emit({ requestId: response.id });
       } catch (error: any) {
         this.logger.error('[PanelRenovacionLlcInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        return;
+        return false;
       }
     }
 
     const id = this.effectiveRequestId;
     if (!id) {
-      return;
+      if (!this.saveError) {
+        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      }
+      return false;
     }
 
     this.isSaving = true;
-    this.saveError = null;
     try {
       const formData = this.serviceDataForm.getRawValue() as Record<string, unknown>;
       const members = this.buildMembersPayload();
@@ -397,9 +405,11 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
         payload.currentStep = this.flowStepNumber;
       }
       await this.requestsService.updateRequest(id, payload);
+      return true;
     } catch (error: any) {
       this.logger.error('[PanelRenovacionLlcInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }
