@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Subscription, catchError, of } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { AuthService } from './auth.service';
 import { BrowserService } from '../../../shared/services/browser.service';
 import { environment } from '../../../../environments/environment';
+import { PanelPreferencesService } from './panel-preferences.service';
 
 export interface Notification {
   id: number;
@@ -33,7 +34,7 @@ interface NotificationApiPayload {
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationsService {
+export class NotificationsService implements OnDestroy {
   private readonly apiBase = `${environment.apiUrl}/panel/notifications`;
 
   private notificationsSubject = new BehaviorSubject<Notification[]>([]);
@@ -43,24 +44,50 @@ export class NotificationsService {
 
   private socket: Socket | null = null;
   private authSub: Subscription | null = null;
+  private prefsSub: Subscription | null = null;
 
   constructor(
     private http: HttpClient,
     private authService: AuthService,
     private browser: BrowserService,
+    private panelPreferences: PanelPreferencesService,
   ) {
     if (this.browser.isBrowser) {
       this.authSub = this.authService.currentUser$.subscribe((user) => {
         if (user) {
           this.loadFromApi();
-          this.connectSocket();
+          void this.syncSocketWithPushPreference();
         } else {
           this.disconnectSocket();
           this.notificationsSubject.next([]);
           this.updateUnreadCount();
         }
       });
+      /** Si push=false en preferencias, no mantener WebSocket (persistido en API; ver PanelPreferencesService). */
+      this.prefsSub = this.panelPreferences.preferences$.subscribe(() => {
+        if (this.authService.getCurrentUser()) {
+          this.syncSocketWithPushPreference();
+        }
+      });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.authSub?.unsubscribe();
+    this.prefsSub?.unsubscribe();
+  }
+
+  /** Espera GET /panel/settings/preferences para respetar notifications.push antes de abrir el socket. */
+  private async syncSocketWithPushPreference(): Promise<void> {
+    if (!this.authService.getCurrentUser()) {
+      return;
+    }
+    await this.panelPreferences.loadFromApi();
+    if (!this.panelPreferences.isPushEnabled()) {
+      this.disconnectSocket();
+      return;
+    }
+    this.connectSocket();
   }
 
   private mapNotification(raw: NotificationApiPayload): Notification {

@@ -194,6 +194,12 @@ export class RequestFlowConfigService {
         const partnerBaseOrder = includeServiceTypeSelection ? 2 : 1;
         // c0: hueco ocupado por el paso de cliente; si se omite, los demás suben un nivel
         const c0 = skipClientSelection ? 0 : 1;
+        // Renovación LLC: no paso dedicado de estado/tipo en partner (se recoge en Información LLC)
+        const partnerIncludesLlcStateStep = serviceType === 'apertura-llc';
+        const partnerServiceOrderOffset =
+          serviceType === 'cuenta-bancaria' ? 0 : partnerIncludesLlcStateStep ? 1 : 0;
+        const partnerConfirmOrderOffset =
+          serviceType === 'cuenta-bancaria' ? 1 : partnerIncludesLlcStateStep ? 2 : 1;
 
         if (!skipClientSelection) {
           configs.push({
@@ -206,14 +212,14 @@ export class RequestFlowConfigService {
           });
         }
 
-        // Agregar selección de estado/plan solo para LLC types
-        if (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') {
+        // Selección estado/plan: solo apertura LLC; en renovación el partner rellena estado/tipo en Información LLC
+        if (partnerIncludesLlcStateStep) {
           configs.push({
             step: this.getStateSelectionStep(serviceType),
             required: true,
             component: this.getPlanStateComponent(serviceType),
             order: partnerBaseOrder + c0,
-            label: serviceType === 'renovacion-llc' ? 'Selección de Estado' : 'Selección de Estado/Plan',
+            label: 'Selección de Estado/Plan',
             icon: 'bi-geo-alt'
           });
         }
@@ -223,7 +229,7 @@ export class RequestFlowConfigService {
             step: RequestFlowStep.SERVICE_FORM,
             required: true,
             component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_PARTNER),
-            order: partnerBaseOrder + c0 + (serviceType === 'cuenta-bancaria' ? 0 : 1),
+            order: partnerBaseOrder + c0 + partnerServiceOrderOffset,
             label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Datos del Servicio',
             icon: 'bi-file-text'
           },
@@ -231,7 +237,7 @@ export class RequestFlowConfigService {
             step: RequestFlowStep.CONFIRMATION,
             required: true,
             component: WizardFinalReviewStepComponent,
-            order: partnerBaseOrder + c0 + (serviceType === 'cuenta-bancaria' ? 1 : 2),
+            order: partnerBaseOrder + c0 + partnerConfirmOrderOffset,
             label: 'Confirmación',
             icon: 'bi-check-circle'
           }

@@ -6,6 +6,7 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 import { AuthService, User } from '../../services/auth.service';
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { PanelLanguageService } from '../../services/panel-language.service';
+import { PanelPreferencesService } from '../../services/panel-preferences.service';
 import { ChooseLanguageModalComponent } from '../../components/choose-language-modal/choose-language-modal.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -46,14 +47,19 @@ export class PanelLayoutComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private panelLanguage: PanelLanguageService
+    private panelLanguage: PanelLanguageService,
+    private panelPreferences: PanelPreferencesService
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.panelLanguage.applyStoredLanguage();
+    const localPrefs = this.panelPreferences.readLocalFallback();
+    if (localPrefs?.theme) {
+      this.panelPreferences.applyTheme(localPrefs.theme);
+    }
     this.setupMenuItems();
-    // Cargar preferencias desde la API (idioma puede venir de otro dispositivo) y luego decidir si mostrar modal
+    // Cargar preferencias desde la API (idioma, tema, etc.) y luego decidir si mostrar modal
     this.panelLanguage.loadPreferencesFromApi().then(() => {
       this.showLanguageModal = this.panelLanguage.shouldShowLanguageModal();
     });
