@@ -6,11 +6,11 @@
     [placeholder]="placeholder"
     [required]="required"
     [disabled]="disabled"
-    [class.is-invalid]="showError && !isValid"
-    [class.is-valid]="showError && isValid && value"
+    [class.is-invalid]="showInlineErrors && showError && !isValid"
+    [class.is-valid]="showInlineErrors && showError && isValid && value"
     class="form-control"
   />
-  <div *ngIf="showError && !isValid && errorMessage" class="invalid-feedback d-block">
+  <div *ngIf="showInlineErrors && showError && !isValid && errorMessage" class="invalid-feedback d-block">
     {{ errorMessage }}
   </div>
 </div>

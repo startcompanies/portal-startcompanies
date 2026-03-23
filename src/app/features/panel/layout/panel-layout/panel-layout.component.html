@@ -49,6 +49,7 @@
         </button>
         <h1 class="page-title">
           <span *ngIf="currentUser?.type === 'admin'">{{ 'PANEL.layout.admin_panel' | transloco }}</span>
+          <span *ngIf="currentUser?.type === 'user'">{{ 'PANEL.layout.user_panel' | transloco }}</span>
           <span *ngIf="currentUser?.type === 'partner'">{{ 'PANEL.layout.partner_panel' | transloco }}</span>
           <span *ngIf="currentUser?.type === 'client'">{{ 'PANEL.layout.my_panel' | transloco }}</span>
         </h1>

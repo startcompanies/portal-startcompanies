@@ -1,18 +1,18 @@
 <div class="my-requests-container">
   <div class="my-requests-header">
     <div>
-      <h2>Mis Solicitudes</h2>
-      <p class="text-muted">Sigue el estado de tus procesos</p>
+      <h2>{{ 'PANEL.my_requests_page.title' | transloco }}</h2>
+      <p class="text-muted">{{ 'PANEL.my_requests_page.subtitle' | transloco }}</p>
     </div>
     <a *ngIf="isPartner && (pendingRequests.length > 0 || completedRequests.length > 0)" routerLink="/panel/new-request" class="btn btn-primary">
       <i class="bi bi-plus-circle me-2"></i>
-      Nueva Solicitud
+      {{ 'PANEL.my_requests_page.new_request' | transloco }}
     </a>
   </div>
 
   <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
+      <span class="visually-hidden">{{ 'PANEL.my_requests_page.loading' | transloco }}</span>
     </div>
   </div>
 
@@ -20,7 +20,7 @@
     <i class="bi bi-exclamation-triangle me-2"></i>
     {{ error }}
     <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadRequests()">
-      Reintentar
+      {{ 'PANEL.my_requests_page.retry' | transloco }}
     </button>
   </div>
 
@@ -28,25 +28,25 @@
   <div *ngIf="!isLoading && !error && pendingRequests.length > 0" class="pending-requests-section mb-4">
     <h3 class="mb-3">
       <i class="bi bi-file-earmark-text me-2"></i>
-      Solicitudes en Progreso
+      {{ 'PANEL.my_requests_page.pending_section' | transloco }}
     </h3>
     <div class="requests-list">
       <div class="request-card border-warning" *ngFor="let request of pendingRequests">
         <div class="request-header">
           <div class="request-info">
             <h4>
-              {{ getRequestTypeLabel(request.type) }}
+              {{ requestTypeTranslocoKey(request.type) | transloco }}
               <span *ngIf="isPartner && request.client" class="text-muted" style="font-size: 0.85em; font-weight: normal;">
                 - {{ getClientName(request) }}
               </span>
             </h4>
             <span [class]="getStatusClass(request.status)">
-              {{ getStatusLabel(request.status) }}
+              {{ statusTranslocoKey(request.status) | transloco }}
             </span>
           </div>
           <div class="request-meta">
             <small class="text-muted">
-              Creada: {{ request.createdAt | date:'short' }}
+              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | date:'short' }}
             </small>
           </div>
         </div>
@@ -54,23 +54,41 @@
         <div class="request-body">
           <p class="text-muted mb-2">
             <i class="bi bi-info-circle me-2"></i>
-            Esta solicitud está en borrador. Continúa llenando los datos o completa el pago.
+            {{ 'PANEL.my_requests_page.draft_hint' | transloco }}
           </p>
-          <p *ngIf="getClientName(request) !== 'Cliente no disponible'" class="text-muted mb-1">
+          <p *ngIf="!isClientUnavailableLabel(request)" class="text-muted mb-1">
             <i class="bi bi-person me-2"></i>
-            <strong>Cliente:</strong> {{ getClientName(request) }}
+            <strong>{{ 'PANEL.my_requests_page.client' | transloco }}:</strong> {{ getClientName(request) }}
             <span *ngIf="request.client?.email"> ({{ request.client?.email }})</span>
           </p>
           <p *ngIf="getLlcName(request)" class="text-muted mb-0">
             <i class="bi bi-building me-2"></i>
-            <strong>LLC:</strong> {{ getLlcName(request) }}
+            <strong>{{ 'PANEL.my_requests_page.llc' | transloco }}:</strong> {{ getLlcName(request) }}
           </p>
         </div>
 
         <div class="request-footer">
-          <button type="button" (click)="continueRequest(request)" class="btn btn-sm btn-warning">
+          <button
+            type="button"
+            (click)="continueRequest(request)"
+            class="btn btn-sm btn-warning"
+            [disabled]="deletingRequestId === request.id">
             <i class="bi bi-arrow-right-circle me-2"></i>
-            Continuar Solicitud
+            {{ 'PANEL.my_requests_page.continue' | transloco }}
+          </button>
+          <button
+            type="button"
+            (click)="openDeleteModal(request)"
+            class="btn btn-sm btn-outline-danger"
+            [disabled]="deletingRequestId === request.id"
+            [title]="'PANEL.my_requests_page.delete_draft_title' | transloco">
+            <span
+              *ngIf="deletingRequestId === request.id"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"></span>
+            <i *ngIf="deletingRequestId !== request.id" class="bi bi-trash me-1"></i>
+            {{ 'PANEL.my_requests_page.delete' | transloco }}
           </button>
         </div>
       </div>
@@ -80,11 +98,11 @@
   <div *ngIf="!isLoading && !error && pendingRequests.length === 0 && completedRequests.length === 0" class="empty-state">
     <div class="empty-state-content">
       <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
-      <h3>No tienes solicitudes</h3>
-      <p class="text-muted">Aún no has iniciado ningún proceso</p>
+      <h3>{{ 'PANEL.my_requests_page.empty_title' | transloco }}</h3>
+      <p class="text-muted">{{ 'PANEL.my_requests_page.empty_subtitle' | transloco }}</p>
       <a routerLink="/panel/request-flow/select-service" class="btn btn-primary mt-3">
         <i class="bi bi-plus-circle me-2"></i>
-        Crear Nueva Solicitud
+        {{ 'PANEL.my_requests_page.create_cta' | transloco }}
       </a>
     </div>
   </div>
@@ -93,25 +111,25 @@
   <div *ngIf="!isLoading && !error && completedRequests.length > 0" class="completed-requests-section">
     <h3 class="mb-3">
       <i class="bi bi-check-circle me-2"></i>
-      Solicitudes Enviadas
+      {{ 'PANEL.my_requests_page.completed_section' | transloco }}
     </h3>
     <div class="requests-list">
       <div class="request-card" *ngFor="let request of completedRequests">
         <div class="request-header">
           <div class="request-info">
             <h4>
-              {{ getRequestTypeLabel(request.type) }}
+              {{ requestTypeTranslocoKey(request.type) | transloco }}
               <span *ngIf="isPartner && request.client" class="text-muted" style="font-size: 0.85em; font-weight: normal;">
                 - {{ getClientName(request) }}
               </span>
             </h4>
             <span [class]="getStatusClass(request.status)">
-              {{ getStatusLabel(request.status) }}
+              {{ statusTranslocoKey(request.status) | transloco }}
             </span>
           </div>
           <div class="request-meta">
             <small class="text-muted">
-              Creada: {{ request.createdAt | date:'short' }}
+              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | date:'short' }}
             </small>
           </div>
         </div>
@@ -119,23 +137,73 @@
         <div class="request-body">
           <div class="request-step" *ngIf="request.stage">
             <i class="bi bi-check-circle-fill text-success me-2"></i>
-            <span>Etapa actual: {{ request.stage }}</span>
+            <span>{{ 'PANEL.my_requests_page.current_stage' | transloco }}: {{ request.stage }}</span>
           </div>
-          <p *ngIf="getClientName(request) !== 'Cliente no disponible'" class="text-muted mb-1">
+          <p *ngIf="!isClientUnavailableLabel(request)" class="text-muted mb-1">
             <i class="bi bi-person me-2"></i>
-            <strong>Cliente:</strong> {{ getClientName(request) }}
+            <strong>{{ 'PANEL.my_requests_page.client' | transloco }}:</strong> {{ getClientName(request) }}
             <span *ngIf="request.client?.email"> ({{ request.client?.email }})</span>
           </p>
           <p *ngIf="getLlcName(request)" class="text-muted mb-0">
             <i class="bi bi-building me-2"></i>
-            <strong>LLC:</strong> {{ getLlcName(request) }}
+            <strong>{{ 'PANEL.my_requests_page.llc' | transloco }}:</strong> {{ getLlcName(request) }}
           </p>
         </div>
 
         <div class="request-footer">
           <a [routerLink]="['/panel/my-requests', request.uuid || request.id]" class="btn btn-sm btn-outline-primary">
-            Ver Detalles
+            {{ 'PANEL.my_requests_page.view_details' | transloco }}
           </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal confirmar eliminación de borrador -->
+  <div
+    *ngIf="showDeleteModal && requestToDelete"
+    class="modal fade show d-block"
+    tabindex="-1"
+    style="background: rgba(0, 0, 0, 0.5);"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteRequestModalTitle">
+    <div class="modal-dialog" (click)="$event.stopPropagation()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteRequestModalTitle">{{ 'PANEL.my_requests_page.delete_modal_title' | transloco }}</h5>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="cancelDelete()"
+            [disabled]="deletingRequestId !== null"
+            [attr.aria-label]="'PANEL.settings_page.alerts.dismiss' | transloco"></button>
+        </div>
+        <div class="modal-body">
+          <p class="mb-0">
+            {{ deleteConfirmMessage() }}
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelDelete()"
+            [disabled]="deletingRequestId !== null">
+            {{ 'PANEL.my_requests_page.cancel' | transloco }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="confirmDelete()"
+            [disabled]="deletingRequestId !== null">
+            <span
+              *ngIf="deletingRequestId !== null"
+              class="spinner-border spinner-border-sm me-1"
+              role="status"
+              aria-hidden="true"></span>
+            {{ 'PANEL.my_requests_page.delete' | transloco }}
+          </button>
         </div>
       </div>
     </div>

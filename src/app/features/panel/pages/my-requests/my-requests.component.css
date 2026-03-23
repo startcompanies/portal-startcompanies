@@ -1,6 +1,11 @@
 .my-requests-container {
 }
 
+/* Modal de confirmación: por encima del contenido del panel */
+.my-requests-container > .modal.show {
+  z-index: 1055;
+}
+
 .my-requests-header {
   display: flex;
   justify-content: space-between;
@@ -92,7 +97,10 @@
 
 .request-footer {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
+  gap: 0.5rem;
   padding-top: 1rem;
   border-top: 1px solid #e9ecef;
 }

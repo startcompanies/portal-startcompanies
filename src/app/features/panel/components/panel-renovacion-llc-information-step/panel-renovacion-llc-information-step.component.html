@@ -2,10 +2,10 @@
   <div class="step-header mb-4">
     <h3 class="step-title">
       <i class="bi bi-arrow-repeat me-2"></i>
-      Información de Renovación LLC
+      {{ 'PANEL.renovacion_wrapper.title' | transloco }}
     </h3>
     <p class="text-muted">
-      Completa la información para la renovación de tu LLC.
+      {{ 'PANEL.renovacion_wrapper.subtitle' | transloco }}
     </p>
   </div>
 
@@ -45,7 +45,7 @@
       *ngIf="currentSection > 1"
     >
       <i class="bi bi-arrow-left me-1"></i>
-      Sección Anterior
+      {{ 'PANEL.flow_nav.previous_section' | transloco }}
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
 
@@ -67,9 +67,9 @@
       [disabled]="!isSectionValid() || isSaving"
       *ngIf="currentSection === totalSections"
     >
-      <span *ngIf="!isSaving">Siguiente</span>
+      <span *ngIf="!isSaving">{{ 'PANEL.flow_nav.next' | transloco }}</span>
       <span *ngIf="isSaving">
-        <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+        <span class="spinner-border spinner-border-sm me-1"></span>{{ 'PANEL.common.saving' | transloco }}
       </span>
       <i class="bi bi-arrow-right ms-1" *ngIf="!isSaving"></i>
     </button>

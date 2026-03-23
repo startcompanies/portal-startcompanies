@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { UsersService, User } from '../../services/users.service';
 import { ZohoConfigService, ZohoConfig } from '../../services/zoho-config.service';
@@ -8,57 +10,48 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { PanelLanguageService } from '../../services/panel-language.service';
-import { TranslocoPipe } from '@jsverse/transloco';
-
-interface UserPreferences {
-  language: 'es' | 'en';
-  notifications: {
-    email: boolean;
-    push: boolean;
-    requestUpdates: boolean;
-    documentUploads: boolean;
-  };
-  theme: 'light' | 'dark' | 'auto';
-  timezone: string;
-}
+import {
+  PanelPreferencesService,
+  PanelUserPreferences,
+} from '../../services/panel-preferences.service';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
   imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslocoPipe],
   templateUrl: './settings.component.html',
-  styleUrl: './settings.component.css'
+  styleUrl: './settings.component.css',
 })
 export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
   activeTab: 'profile' | 'preferences' | 'security' | 'processes' | 'zoho' = 'profile';
   showPreferences = true;
-  
-  // Formularios
+
   profileForm: FormGroup;
   preferencesForm: FormGroup;
   passwordForm: FormGroup;
   processConfigForm: FormGroup;
   zohoConfigForm: FormGroup;
-  
-  // Zoho Config
+
   zohoConfigs: ZohoConfig[] = [];
   selectedConfig: ZohoConfig | null = null;
   isOAuthInProgress = false;
   environment = environment;
-  
+
   isLoading = false;
   saveSuccess = false;
   saveError: string | null = null;
 
-  timezones = [
-    { value: 'America/Mexico_City', label: 'México (GMT-6)' },
-    { value: 'America/New_York', label: 'Nueva York (GMT-5)' },
-    { value: 'America/Los_Angeles', label: 'Los Ángeles (GMT-8)' },
-    { value: 'America/Chicago', label: 'Chicago (GMT-6)' },
-    { value: 'UTC', label: 'UTC (GMT+0)' }
+  readonly timezoneOptions: { value: string; labelKey: string }[] = [
+    { value: 'America/Mexico_City', labelKey: 'PANEL.settings_page.timezones.america_mexico_city' },
+    { value: 'America/New_York', labelKey: 'PANEL.settings_page.timezones.america_new_york' },
+    { value: 'America/Los_Angeles', labelKey: 'PANEL.settings_page.timezones.america_los_angeles' },
+    { value: 'America/Chicago', labelKey: 'PANEL.settings_page.timezones.america_chicago' },
+    { value: 'UTC', labelKey: 'PANEL.settings_page.timezones.utc' },
   ];
+
+  private readonly authChangePasswordUrl = `${environment.apiUrl || 'http://localhost:3000'}/auth/change-password`;
 
   constructor(
     private authService: AuthService,
@@ -66,13 +59,16 @@ export class SettingsComponent implements OnInit {
     private zohoConfigService: ZohoConfigService,
     private fb: FormBuilder,
     private browser: BrowserService,
-    private panelLanguage: PanelLanguageService
+    private panelLanguage: PanelLanguageService,
+    private panelPreferences: PanelPreferencesService,
+    private transloco: TranslocoService,
+    private http: HttpClient,
   ) {
     this.profileForm = this.fb.group({
-      full_name: ['', Validators.required], // Nombre completo en un solo campo
+      full_name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       phone: [''],
-      company: ['']
+      company: [''],
     });
 
     this.preferencesForm = this.fb.group({
@@ -83,21 +79,24 @@ export class SettingsComponent implements OnInit {
         email: [true],
         push: [true],
         requestUpdates: [true],
-        documentUploads: [true]
-      })
+        documentUploads: [true],
+      }),
     });
 
-    this.passwordForm = this.fb.group({
-      currentPassword: ['', Validators.required],
-      newPassword: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required]
-    }, { validators: this.passwordMatchValidator });
+    this.passwordForm = this.fb.group(
+      {
+        currentPassword: ['', Validators.required],
+        newPassword: ['', [Validators.required, Validators.minLength(8)]],
+        confirmPassword: ['', Validators.required],
+      },
+      { validators: this.passwordMatchValidator },
+    );
 
     this.processConfigForm = this.fb.group({
       autoAdvanceSteps: [false],
       requireApproval: [true],
       defaultAssignee: [''],
-      notificationDelay: [24]
+      notificationDelay: [24],
     });
 
     this.zohoConfigForm = this.fb.group({
@@ -106,18 +105,17 @@ export class SettingsComponent implements OnInit {
       region: ['com', Validators.required],
       scopes: ['ZohoCRM.modules.ALL,ZohoCRM.settings.ALL', Validators.required],
       client_id: ['', Validators.required],
-      client_secret: ['', Validators.required]
+      client_secret: ['', Validators.required],
     });
-    
-    // Actualizar scopes cuando cambie el servicio
-    this.zohoConfigForm.get('service')?.valueChanges.subscribe(service => {
+
+    this.zohoConfigForm.get('service')?.valueChanges.subscribe((service) => {
       if (service === 'workdrive') {
         this.zohoConfigForm.patchValue({
-          scopes: 'WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL'
+          scopes: 'WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL',
         });
       } else if (service === 'crm') {
         this.zohoConfigForm.patchValue({
-          scopes: 'ZohoCRM.modules.ALL,ZohoCRM.settings.ALL'
+          scopes: 'ZohoCRM.modules.ALL,ZohoCRM.settings.ALL',
         });
       }
     });
@@ -127,7 +125,7 @@ export class SettingsComponent implements OnInit {
     this.currentUser = this.authService.getCurrentUser();
     this.isAdmin = this.authService.isAdmin();
     this.loadUserData();
-    this.loadPreferences();
+    void this.loadPreferences();
     if (this.isAdmin) {
       this.loadProcessConfig();
       this.loadZohoConfigs();
@@ -136,10 +134,8 @@ export class SettingsComponent implements OnInit {
   }
 
   loadUserData(): void {
-    // Cargar datos actualizados desde el backend
     this.usersService.getCurrentUser().subscribe({
       next: (user) => {
-        // Convertir User de UsersService a formato compatible
         this.currentUser = {
           id: user.id,
           username: user.username,
@@ -149,22 +145,17 @@ export class SettingsComponent implements OnInit {
           first_name: user.first_name,
           last_name: user.last_name,
           phone: user.phone,
-          company: user.company
+          company: user.company,
         };
-        
-        // Combinar first_name y last_name en un solo campo
         const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-        
         this.profileForm.patchValue({
           full_name: fullName || '',
           email: user.email || '',
           phone: user.phone || '',
-          company: user.company || ''
+          company: user.company || '',
         });
       },
-      error: (error) => {
-        console.error('Error al cargar datos del usuario:', error);
-        // Fallback a datos del token si falla la petición
+      error: () => {
         const authUser = this.authService.getCurrentUser();
         if (authUser) {
           this.currentUser = authUser;
@@ -173,38 +164,45 @@ export class SettingsComponent implements OnInit {
             full_name: fullName || '',
             email: authUser.email || '',
             phone: authUser.phone || '',
-            company: authUser.company || ''
+            company: authUser.company || '',
           });
         }
-      }
+      },
     });
   }
 
-  loadPreferences(): void {
-    const savedPreferences = localStorage.getItem('user_preferences');
-    if (savedPreferences) {
-      try {
-        const prefs: UserPreferences = JSON.parse(savedPreferences);
-        this.preferencesForm.patchValue(prefs);
-      } catch (e) {
-        console.error('Error loading preferences:', e);
-      }
+  async loadPreferences(): Promise<void> {
+    const fromApi = await this.panelPreferences.loadFromApi();
+    if (fromApi) {
+      this.patchPreferencesForm(fromApi);
+      return;
     }
-    // Idioma del panel: usar la misma fuente que PanelLanguageService
+    const local = this.panelPreferences.readLocalFallback();
+    if (local) {
+      this.patchPreferencesForm(local);
+    }
     this.preferencesForm.patchValue({
-      language: this.panelLanguage.getPreferredLang()
+      language: this.panelLanguage.getPreferredLang(),
+    });
+  }
+
+  private patchPreferencesForm(prefs: PanelUserPreferences): void {
+    this.preferencesForm.patchValue({
+      language: prefs.language,
+      theme: prefs.theme,
+      timezone: prefs.timezone,
+      notifications: prefs.notifications,
     });
   }
 
   loadProcessConfig(): void {
-    // TODO: Cargar configuración de procesos desde el backend
     const savedConfig = localStorage.getItem('process_config');
     if (savedConfig) {
       try {
         const config = JSON.parse(savedConfig);
         this.processConfigForm.patchValue(config);
-      } catch (e) {
-        console.error('Error loading process config:', e);
+      } catch {
+        /* ignore */
       }
     }
   }
@@ -223,27 +221,20 @@ export class SettingsComponent implements OnInit {
       this.markFormGroupTouched(this.profileForm);
       return;
     }
-
     this.isLoading = true;
     this.saveError = null;
-
-    // Separar nombre completo en first_name y last_name
     const fullName = this.profileForm.value.full_name.trim();
     const nameParts = fullName.split(' ');
     const first_name = nameParts[0] || '';
     const last_name = nameParts.slice(1).join(' ') || '';
-
     const updateData = {
       first_name,
       last_name,
       phone: this.profileForm.value.phone || undefined,
-      company: this.profileForm.value.company || undefined
+      company: this.profileForm.value.company || undefined,
     };
-
-    // Llamar al backend para actualizar el perfil
     this.usersService.updateCurrentUser(updateData).subscribe({
       next: (updatedUser) => {
-        // Actualizar el usuario en el servicio de auth
         this.currentUser = {
           id: updatedUser.id,
           username: updatedUser.username,
@@ -253,40 +244,40 @@ export class SettingsComponent implements OnInit {
           first_name: updatedUser.first_name,
           last_name: updatedUser.last_name,
           phone: updatedUser.phone,
-          company: updatedUser.company
+          company: updatedUser.company,
         };
         this.isLoading = false;
         this.saveSuccess = true;
-        setTimeout(() => this.saveSuccess = false, 3000);
+        setTimeout(() => (this.saveSuccess = false), 3000);
       },
       error: (error) => {
-        console.error('Error al actualizar perfil:', error);
-        this.saveError = error.error?.message || 'Error al guardar los cambios. Intenta nuevamente.';
+        this.saveError =
+          error.error?.message || this.transloco.translate('PANEL.settings_page.errors.generic_save');
         this.isLoading = false;
-      }
+      },
     });
   }
 
-  savePreferences(): void {
+  async savePreferences(): Promise<void> {
     if (this.preferencesForm.invalid) {
       return;
     }
-
     this.isLoading = true;
     this.saveError = null;
-
-    const lang = this.preferencesForm.get('language')?.value as 'es' | 'en';
-    if (lang === 'es' || lang === 'en') {
-      this.panelLanguage.setPreferredLang(lang);
-    }
-
-    localStorage.setItem('user_preferences', JSON.stringify(this.preferencesForm.value));
-
-    setTimeout(() => {
-      this.isLoading = false;
+    const v = this.preferencesForm.getRawValue();
+    const updated = await this.panelPreferences.saveToApi({
+      language: v.language,
+      theme: v.theme,
+      timezone: v.timezone,
+      notifications: v.notifications,
+    });
+    this.isLoading = false;
+    if (updated) {
       this.saveSuccess = true;
-      setTimeout(() => this.saveSuccess = false, 3000);
-    }, 500);
+      setTimeout(() => (this.saveSuccess = false), 3000);
+    } else {
+      this.saveError = this.transloco.translate('PANEL.settings_page.errors.generic_save');
+    }
   }
 
   changePassword(): void {
@@ -294,23 +285,41 @@ export class SettingsComponent implements OnInit {
       this.markFormGroupTouched(this.passwordForm);
       return;
     }
-
     if (this.passwordForm.value.newPassword !== this.passwordForm.value.confirmPassword) {
-      this.saveError = 'Las contraseñas no coinciden';
+      this.saveError = this.transloco.translate('PANEL.settings_page.security_section.mismatch');
       return;
     }
-
+    const email = this.currentUser?.email || this.profileForm.get('email')?.value;
+    if (!email) {
+      this.saveError = this.transloco.translate('PANEL.settings_page.errors.password_change');
+      return;
+    }
     this.isLoading = true;
     this.saveError = null;
-
-    // TODO: Cambiar contraseña en el backend
-    setTimeout(() => {
-      console.log('Cambiar contraseña');
-      this.isLoading = false;
-      this.saveSuccess = true;
-      this.passwordForm.reset();
-      setTimeout(() => this.saveSuccess = false, 3000);
-    }, 1000);
+    this.http
+      .post(
+        this.authChangePasswordUrl,
+        {
+          email,
+          oldPassword: this.passwordForm.value.currentPassword,
+          newPassword: this.passwordForm.value.newPassword,
+        },
+        { withCredentials: true },
+      )
+      .subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.saveSuccess = true;
+          this.passwordForm.reset();
+          setTimeout(() => (this.saveSuccess = false), 3000);
+        },
+        error: (error) => {
+          this.saveError =
+            error.error?.message ||
+            this.transloco.translate('PANEL.settings_page.errors.password_change');
+          this.isLoading = false;
+        },
+      });
   }
 
   saveProcessConfig(): void {
@@ -318,26 +327,19 @@ export class SettingsComponent implements OnInit {
       this.markFormGroupTouched(this.processConfigForm);
       return;
     }
-
     this.isLoading = true;
     this.saveError = null;
-
-    // Guardar en localStorage temporalmente
     localStorage.setItem('process_config', JSON.stringify(this.processConfigForm.value));
-    
-    // TODO: Guardar configuración de procesos en el backend
     setTimeout(() => {
-      console.log('Guardar configuración de procesos:', this.processConfigForm.value);
       this.isLoading = false;
       this.saveSuccess = true;
-      setTimeout(() => this.saveSuccess = false, 3000);
-    }, 1000);
+      setTimeout(() => (this.saveSuccess = false), 3000);
+    }, 500);
   }
 
   passwordMatchValidator(form: FormGroup) {
     const newPassword = form.get('newPassword');
     const confirmPassword = form.get('confirmPassword');
-    
     if (newPassword && confirmPassword && newPassword.value !== confirmPassword.value) {
       confirmPassword.setErrors({ passwordMismatch: true });
       return { passwordMismatch: true };
@@ -346,10 +348,9 @@ export class SettingsComponent implements OnInit {
   }
 
   markFormGroupTouched(formGroup: FormGroup): void {
-    Object.keys(formGroup.controls).forEach(key => {
+    Object.keys(formGroup.controls).forEach((key) => {
       const control = formGroup.get(key);
       control?.markAsTouched();
-      
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
       }
@@ -360,40 +361,38 @@ export class SettingsComponent implements OnInit {
     const field = form.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return 'Este campo es requerido';
+        return this.transloco.translate('PANEL.settings_page.validation.required');
       }
       if (field.errors['email']) {
-        return 'Email inválido';
+        return this.transloco.translate('PANEL.settings_page.validation.invalid_email');
       }
       if (field.errors['minlength']) {
-        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.transloco.translate('PANEL.settings_page.validation.min_length', {
+          length: field.errors['minlength'].requiredLength,
+        });
       }
       if (field.errors['passwordMismatch']) {
-        return 'Las contraseñas no coinciden';
+        return this.transloco.translate('PANEL.settings_page.validation.password_mismatch');
       }
     }
     return '';
   }
 
-  // ===== Zoho Config Methods =====
-  
   loadZohoConfigs(): void {
     this.zohoConfigService.getAllConfigs().subscribe({
       next: (configs) => {
         this.zohoConfigs = configs;
-        // Si hay configs, cargar la primera o buscar por org/service
         if (configs.length > 0) {
-          // Priorizar CRM, luego WorkDrive, luego cualquier otra
-          const defaultConfig = configs.find(c => c.org === 'startcompanies' && c.service === 'crm') ||
-                                configs.find(c => c.org === 'startcompanies' && c.service === 'workdrive') ||
-                                configs[0];
+          const defaultConfig =
+            configs.find((c) => c.org === 'startcompanies' && c.service === 'crm') ||
+            configs.find((c) => c.org === 'startcompanies' && c.service === 'workdrive') ||
+            configs[0];
           this.selectConfig(defaultConfig);
         }
       },
-      error: (error) => {
-        console.error('Error al cargar configuraciones de Zoho:', error);
-        this.saveError = 'Error al cargar configuraciones de Zoho';
-      }
+      error: () => {
+        this.saveError = this.transloco.translate('PANEL.settings_page.errors.load_zoho');
+      },
     });
   }
 
@@ -405,7 +404,7 @@ export class SettingsComponent implements OnInit {
       region: config.region,
       scopes: config.scopes,
       client_id: config.client_id,
-      client_secret: config.client_secret
+      client_secret: config.client_secret,
     });
   }
 
@@ -414,10 +413,9 @@ export class SettingsComponent implements OnInit {
       this.markFormGroupTouched(this.zohoConfigForm);
       return;
     }
-
-    // Si no hay configuración seleccionada o los datos han cambiado, guardar primero
     const formValue = this.zohoConfigForm.value;
-    const needsSave = !this.selectedConfig || 
+    const needsSave =
+      !this.selectedConfig ||
       this.selectedConfig.org !== formValue.org ||
       this.selectedConfig.service !== formValue.service ||
       this.selectedConfig.region !== formValue.region ||
@@ -426,24 +424,21 @@ export class SettingsComponent implements OnInit {
       this.selectedConfig.scopes !== formValue.scopes;
 
     if (needsSave) {
-      // Guardar primero
       this.isLoading = true;
       try {
         if (this.selectedConfig) {
-          await firstValueFrom(
-            this.zohoConfigService.updateConfig(this.selectedConfig.id, formValue)
-          );
+          await firstValueFrom(this.zohoConfigService.updateConfig(this.selectedConfig.id, formValue));
         } else {
-          const created = await firstValueFrom(
-            this.zohoConfigService.createConfig(formValue)
-          );
+          const created = await firstValueFrom(this.zohoConfigService.createConfig(formValue));
           this.selectedConfig = created;
           this.zohoConfigs.push(created);
         }
         this.isLoading = false;
       } catch (error: any) {
         this.isLoading = false;
-        this.saveError = error.error?.message || 'Error al guardar configuración antes de autorizar';
+        this.saveError =
+          error.error?.message ||
+          this.transloco.translate('PANEL.settings_page.errors.save_before_oauth');
         return;
       }
     }
@@ -459,14 +454,14 @@ export class SettingsComponent implements OnInit {
           formValue.region,
           formValue.client_id,
           formValue.client_secret,
-          formValue.scopes
-        )
+          formValue.scopes,
+        ),
       );
 
       const win = this.browser.window;
-      if (!win) return;
-      
-      // Abrir popup para autorización
+      if (!win) {
+        return;
+      }
       const width = 600;
       const height = 700;
       const left = (win.screen.width - width) / 2;
@@ -475,39 +470,36 @@ export class SettingsComponent implements OnInit {
       const popup = win.open(
         response.url,
         'Zoho OAuth',
-        `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+        `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
       );
 
       if (!popup) {
-        this.saveError = 'No se pudo abrir la ventana de autorización. Por favor, permite ventanas emergentes.';
+        this.saveError = this.transloco.translate('PANEL.settings_page.errors.oauth_popup');
         this.isOAuthInProgress = false;
         return;
       }
-
-      // El callback se manejará mediante postMessage
     } catch (error: any) {
-      console.error('Error al obtener URL de autorización:', error);
-      this.saveError = error.error?.message || 'Error al obtener URL de autorización';
+      this.saveError =
+        error.error?.message || this.transloco.translate('PANEL.settings_page.errors.oauth_url');
       this.isOAuthInProgress = false;
     }
   }
 
   setupOAuthListener(): void {
     const win = this.browser.window;
-    if (!win) return;
-    
-    // Escuchar mensajes del popup de OAuth
+    if (!win) {
+      return;
+    }
     win.addEventListener('message', (event) => {
       if (event.data.status === 'success') {
         this.isOAuthInProgress = false;
         this.saveSuccess = true;
         this.saveError = null;
-        // Recargar configuraciones
         this.loadZohoConfigs();
-        setTimeout(() => this.saveSuccess = false, 5000);
+        setTimeout(() => (this.saveSuccess = false), 5000);
       } else if (event.data.status === 'error') {
         this.isOAuthInProgress = false;
-        this.saveError = event.data.message || 'Error al procesar la autenticación';
+        this.saveError = event.data.message || this.transloco.translate('PANEL.settings_page.errors.oauth_url');
       }
     });
   }
@@ -517,55 +509,55 @@ export class SettingsComponent implements OnInit {
       this.markFormGroupTouched(this.zohoConfigForm);
       return;
     }
-
     this.isLoading = true;
     this.saveError = null;
-
     const formValue = this.zohoConfigForm.value;
 
     if (this.selectedConfig) {
-      // Actualizar configuración existente
       this.zohoConfigService.updateConfig(this.selectedConfig.id, formValue).subscribe({
         next: (updated) => {
           this.selectedConfig = updated;
           this.isLoading = false;
           this.saveSuccess = true;
-          setTimeout(() => this.saveSuccess = false, 3000);
+          setTimeout(() => (this.saveSuccess = false), 3000);
         },
         error: (error) => {
-          console.error('Error al actualizar configuración:', error);
-          this.saveError = error.error?.message || 'Error al actualizar configuración';
+          this.saveError =
+            error.error?.message || this.transloco.translate('PANEL.settings_page.errors.zoho_update');
           this.isLoading = false;
-        }
+        },
       });
     } else {
-      // Crear nueva configuración
       this.zohoConfigService.createConfig(formValue).subscribe({
         next: (created) => {
           this.selectedConfig = created;
           this.zohoConfigs.push(created);
           this.isLoading = false;
           this.saveSuccess = true;
-          setTimeout(() => this.saveSuccess = false, 3000);
+          setTimeout(() => (this.saveSuccess = false), 3000);
         },
         error: (error) => {
-          console.error('Error al crear configuración:', error);
-          this.saveError = error.error?.message || 'Error al crear configuración';
+          this.saveError =
+            error.error?.message || this.transloco.translate('PANEL.settings_page.errors.zoho_create');
           this.isLoading = false;
-        }
+        },
       });
     }
   }
 
   deleteZohoConfig(config: ZohoConfig): void {
-    if (!confirm(`¿Estás seguro de eliminar la configuración de ${config.org} - ${config.service}?`)) {
+    const msg = this.transloco.translate('PANEL.settings_page.zoho_section.confirm_delete', {
+      org: config.org,
+      service: config.service,
+    });
+    if (!confirm(msg)) {
       return;
     }
 
     this.isLoading = true;
     this.zohoConfigService.deleteConfig(config.id).subscribe({
       next: () => {
-        this.zohoConfigs = this.zohoConfigs.filter(c => c.id !== config.id);
+        this.zohoConfigs = this.zohoConfigs.filter((c) => c.id !== config.id);
         if (this.selectedConfig?.id === config.id) {
           this.selectedConfig = null;
           this.zohoConfigForm.reset({
@@ -574,18 +566,18 @@ export class SettingsComponent implements OnInit {
             region: 'com',
             scopes: 'ZohoCRM.modules.ALL,ZohoCRM.settings.ALL',
             client_id: '',
-            client_secret: ''
+            client_secret: '',
           });
         }
         this.isLoading = false;
         this.saveSuccess = true;
-        setTimeout(() => this.saveSuccess = false, 3000);
+        setTimeout(() => (this.saveSuccess = false), 3000);
       },
       error: (error) => {
-        console.error('Error al eliminar configuración:', error);
-        this.saveError = error.error?.message || 'Error al eliminar configuración';
+        this.saveError =
+          error.error?.message || this.transloco.translate('PANEL.settings_page.errors.zoho_delete');
         this.isLoading = false;
-      }
+      },
     });
   }
 
@@ -597,17 +589,7 @@ export class SettingsComponent implements OnInit {
       region: 'com',
       scopes: 'ZohoCRM.modules.ALL',
       client_id: '',
-      client_secret: ''
+      client_secret: '',
     });
   }
 }
-
-
-
-
-
-
-
-
-
-

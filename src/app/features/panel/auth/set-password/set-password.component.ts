@@ -2,12 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-set-password',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './set-password.component.html',
   styleUrl: './set-password.component.css'
 })
@@ -31,7 +32,8 @@ export class SetPasswordComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private transloco: TranslocoService
   ) {
     this.setPasswordForm = this.fb.group({
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -47,7 +49,7 @@ export class SetPasswordComponent implements OnInit {
       if (params['token']) {
         this.resetToken = params['token'];
       } else {
-        this.errorMessage = 'Token de invitación no válido o faltante.';
+        this.errorMessage = this.transloco.translate('PANEL.auth.invalid_invite_token');
       }
     });
   }
@@ -118,14 +120,14 @@ export class SetPasswordComponent implements OnInit {
       ).subscribe({
         next: () => {
           this.isLoading = false;
-          this.successMessage = 'Contraseña establecida exitosamente. Redirigiendo al login...';
+          this.successMessage = this.transloco.translate('PANEL.auth.set_password_success_redirect');
           setTimeout(() => {
             this.router.navigate(['/panel/login']);
           }, 2000);
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.error?.message || 'Error al establecer la contraseña. El token puede haber expirado.';
+          this.errorMessage = error.error?.message || this.transloco.translate('PANEL.auth.set_password_error_expired');
           console.error('Set password error:', error);
         }
       });

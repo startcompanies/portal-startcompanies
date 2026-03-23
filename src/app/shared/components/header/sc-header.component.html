@@ -40,11 +40,18 @@
             <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
               [langRouterLink]="'contacto'" (click)="closeMenu()">{{ "NAVBAR.contact" | transloco }}</a>
           </li>
-          <!-- Botón de iniciar sesión en móvil -->
+          <!-- Panel: login o nombre (móvil) -->
           @if (showLoginButton) {
             <li class="nav-item d-lg-none">
-              <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
-                routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
+              @if (currentUser$ | async; as user) {
+                <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link sc-nav-user-name"
+                  routerLink="/panel/home"
+                  [attr.aria-label]="'NAVBAR.go_panel' | transloco: { name: displayName(user) }"
+                  (click)="closeMenu()"><span class="sc-user-name-text">{{ displayName(user) }}</span></a>
+              } @else {
+                <a [ngClass]="{ 'nav-link-dark': isOpen || isNavbarShrunk }" class="nav-link"
+                  routerLink="/panel/login" (click)="closeMenu()">{{ "NAVBAR.login" | transloco }}</a>
+              }
             </li>
           }
         </ul>
@@ -54,9 +61,16 @@
     <div class="container justify-content-end sc-buttons-container">
       @if (showLoginButton) {
         <div class="d-none d-lg-block sc-button-wrapper">
-          <a routerLink="/panel/login" class="btn sc-btn-login">
-            {{ "NAVBAR.login" | transloco }}
-          </a>
+          @if (currentUser$ | async; as user) {
+            <a routerLink="/panel/home" class="btn sc-btn-login sc-user-name"
+              [attr.aria-label]="'NAVBAR.go_panel' | transloco: { name: displayName(user) }">
+              <span class="sc-user-name-text">{{ displayName(user) }}</span>
+            </a>
+          } @else {
+            <a routerLink="/panel/login" class="btn sc-btn-login">
+              {{ "NAVBAR.login" | transloco }}
+            </a>
+          }
         </div>
       }
       <div class="d-none d-lg-block sc-button-wrapper">

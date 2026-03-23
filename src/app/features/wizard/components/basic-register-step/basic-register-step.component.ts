@@ -277,13 +277,13 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
     }
 
     this.phoneInput.validate();
+    this.form.get('phone')?.markAsTouched();
     this.form.updateValueAndValidity();
 
     const formValue = this.form.value;
     const { fullName, email, password, phone } = formValue;
 
-    // Si el componente de teléfono considera el valor inválido, bloquear el registro
-    if (this.phoneInput && !this.phoneInput.isValid) {
+    if (this.phoneInput && !this.phoneInput.isValidNumber()) {
       this.errorMessage = 'Por favor completa el teléfono con un formato válido.';
       return false;
     }
@@ -366,19 +366,18 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       return false;
     }
 
-    this.phoneInput.validate();
+    // No usar validate(): el template llama canProceed() en cada CD y mostraría errores al cargar.
+    this.phoneInput.syncToFormControl();
     this.form.updateValueAndValidity();
 
     const phoneValue = this.form.get('phone')?.value;
-    // Bloquear si el teléfono no está presente o si el componente marca inválido
     if (!phoneValue) {
       return false;
     }
-    if (this.phoneInput && !this.phoneInput.isValid) {
+    if (!this.phoneInput.isValidNumber()) {
       return false;
     }
 
-    // Si el formulario es válido, puede intentar registrarse/continuar.
     return this.form.valid;
   }
 

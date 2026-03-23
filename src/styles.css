@@ -261,3 +261,19 @@ h2.note-heading {
   margin-top: auto !important;
   flex-shrink: 0 !important;
 }
+
+/* Panel: SnackBar acorde a marca (Material) */
+.mat-mdc-snack-bar-container.panel-snackbar {
+  --mdc-snackbar-container-color: var(--color-oscuro-tecnico, #001627);
+  --mat-snack-bar-button-color: #fff;
+  --mdc-snackbar-supporting-text-color: #fff;
+}
+.mat-mdc-snack-bar-container.panel-snackbar-success {
+  --mdc-snackbar-container-color: #0d6efd;
+}
+.mat-mdc-snack-bar-container.panel-snackbar-error {
+  --mdc-snackbar-container-color: #b02a37;
+}
+.mat-mdc-snack-bar-container.panel-snackbar-info {
+  --mdc-snackbar-container-color: var(--color-primario, #0068bd);
+}

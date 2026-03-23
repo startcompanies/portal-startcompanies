@@ -4,6 +4,7 @@ import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 interface Client extends PartnerClient {
   totalRequests?: number;
@@ -16,7 +17,7 @@ interface Client extends PartnerClient {
 @Component({
   selector: 'app-my-clients',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, TranslocoPipe],
   templateUrl: './my-clients.component.html',
   styleUrl: './my-clients.component.css'
 })
@@ -41,15 +42,16 @@ export class MyClientsComponent implements OnInit {
   createError: string | null = null;
 
   statusOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'active', label: 'Activos' },
-    { value: 'inactive', label: 'Inactivos' }
+    { value: 'all', labelKey: 'PANEL.my_clients.status_all' },
+    { value: 'active', labelKey: 'PANEL.my_clients.status_active' },
+    { value: 'inactive', labelKey: 'PANEL.my_clients.status_inactive' }
   ];
 
   constructor(
     private authService: AuthService,
     private partnerClientsService: PartnerClientsService,
-    private router: Router
+    private router: Router,
+    private transloco: TranslocoService
   ) {}
 
   ngOnInit(): void {
@@ -137,7 +139,7 @@ export class MyClientsComponent implements OnInit {
 
   createClient(): void {
     if (!this.newClient.name || !this.newClient.email) {
-      this.createError = 'Por favor completa los campos requeridos';
+      this.createError = this.transloco.translate('PANEL.my_clients.required_fields');
       return;
     }
 
@@ -167,7 +169,7 @@ export class MyClientsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al crear cliente:', error);
-        this.createError = error.error?.message || 'Error al crear el cliente. Intenta nuevamente.';
+        this.createError = error.error?.message || this.transloco.translate('PANEL.my_clients.error_create');
         this.isCreating = false;
       }
     });
@@ -184,7 +186,7 @@ export class MyClientsComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cambiar estado del cliente:', error);
-        this.createError = error.error?.message || 'Error al cambiar el estado. Intenta nuevamente.';
+        this.createError = error.error?.message || this.transloco.translate('PANEL.my_clients.error_toggle');
       }
     });
   }
@@ -196,7 +198,15 @@ export class MyClientsComponent implements OnInit {
 
   getStatusLabel(status: boolean | string): string {
     const isActive = typeof status === 'boolean' ? status : status === 'active';
-    return isActive ? 'Activo' : 'Inactivo';
+    return this.transloco.translate(
+      isActive ? 'PANEL.my_clients.status_active' : 'PANEL.my_clients.status_inactive'
+    );
+  }
+
+  getToggleTitle(client: Client): string {
+    return this.transloco.translate(
+      client.status ? 'PANEL.my_clients.title_deactivate' : 'PANEL.my_clients.title_activate'
+    );
   }
 
   get totalClients(): number {

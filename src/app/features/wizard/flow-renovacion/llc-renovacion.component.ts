@@ -83,6 +83,9 @@ export class LLCRenovacionComponent implements OnInit {
   // Para controlar la visibilidad de botones en el paso 4 (Información LLC)
   renovacionInfoCurrentSection = 1;
 
+  /** Claves stepData: 2/3/4/5 o 3/4/5/6 si el paso 2 es solo verificación de email */
+  renovacionLayout = { stateStep: 2, paymentStep: 3, infoStep: 4, reviewStep: 5 };
+
   // Formulario de datos del servicio
   serviceDataForm!: FormGroup;
   
@@ -124,6 +127,8 @@ export class LLCRenovacionComponent implements OnInit {
     
     // Establecer el tipo de servicio
     this.wizardStateService.setServiceType('renovacion-llc');
+
+    this.refreshRenovacionLayout();
     
     this.flowConfig = this.wizardConfigService.getFlowConfig(WizardFlowType.LLC_RENOVACION);
     this.initializeStepTitles();
@@ -141,15 +146,20 @@ export class LLCRenovacionComponent implements OnInit {
     if (this.wizardApiService.isAuthenticated()) {
       console.log('[LLCRenovacionComponent] Usuario ya autenticado');
       if (this.wizardStateService.hasRequest()) {
-        this.paymentProcessed = true;
-        
+        this.syncPaymentProcessedFromWizardState();
+
         // Restaurar el paso guardado si es válido (después del pago)
         if (savedStep >= 2) {
-          this.currentStepIndex = savedStep - 1; // Convertir a índice base 0
+          let idx = savedStep - 1; // índice base 0
+          // Si hay solicitud pero el pago no quedó confirmado en el paso 3, no abrir información/revisión
+          if (!this.paymentProcessed && idx >= 3) {
+            idx = 2;
+          }
+          this.currentStepIndex = idx;
           this.renovacionInfoCurrentSection = savedStepNumber || 1;
           console.log('[LLCRenovacionComponent] Restaurando paso:', this.currentStepIndex, 'sección:', this.renovacionInfoCurrentSection);
         } else {
-          this.currentStepIndex = 3; // Ir al paso de información si ya pagó
+          this.currentStepIndex = this.paymentProcessed ? 3 : 2;
         }
       } else {
         // Usuario autenticado pero sin request
@@ -182,24 +192,122 @@ export class LLCRenovacionComponent implements OnInit {
   }
 
   async onStepChanged(index: number): Promise<void> {
-    // Si estamos saliendo del paso 4 (Información Renovación) y estamos en la última sección, guardar antes de avanzar
-    if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
-      if (this.renovacionInformationStep) {
-        await this.renovacionInformationStep.saveToApi();
+    // Releer localStorage por si el pago quedó en otra clave de paso
+    if (this.currentStepIndex === 2 && index > 2) {
+      this.syncPaymentProcessedFromWizardState();
+      if (!this.paymentProcessed) {
+        return;
       }
     }
-    
+
+    // Si estamos saliendo del paso 4 (Información Renovación) hacia revisión, guardar antes de avanzar
+    if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
+      if (this.renovacionInformationStep) {
+        const ok = await this.renovacionInformationStep.saveToApi();
+        if (!ok) {
+          return;
+        }
+      }
+    }
+
     this.currentStepIndex = index;
     // Guardar el paso actual en localStorage (convertir a base 1)
     this.wizardStateService.setCurrentStep(index + 1);
   }
 
   /**
+   * Pago completado si algún paso persistió el resultado (Stripe OK o transferencia procesada).
+   * No asumir solo el paso 3: con verificación u otros pasos el pago puede quedar en otra clave en localStorage.
+   */
+  /** Recalcula mapeo de claves stepData (p. ej. tras verificar email o al cargar localStorage). */
+  refreshRenovacionLayout(): void {
+    this.renovacionLayout = this.wizardStateService.getRenovacionStorageLayout();
+  }
+
+  private syncPaymentProcessedFromWizardState(): void {
+    if (!this.wizardStateService.hasRequest()) {
+      this.paymentProcessed = false;
+      return;
+    }
+    const p = this.wizardStateService.findPersistedPaymentData();
+    if (p.paymentMethod === 'transferencia') {
+      this.paymentProcessed = !!p.transferenciaProcessed;
+    } else {
+      this.paymentProcessed = !!p.stripePaymentProcessed;
+    }
+  }
+
+  /**
+   * Stripe: habilitar "Continuar" solo tras éxito en processStripePayment (paymentProcessed).
+   * Transferencia: habilitar cuando ya hay comprobante subido; al pulsar Continuar se crea la solicitud si aún no existe.
+   */
+  canContinueFromPaymentStep(): boolean {
+    this.syncPaymentProcessedFromWizardState();
+    if (this.paymentProcessed) {
+      return true;
+    }
+    const p = this.wizardStateService.findPersistedPaymentData();
+    if (p.paymentMethod === 'transferencia') {
+      const url = (p.paymentProofUrl || this.paymentStep?.form?.get('paymentProofUrl')?.value || '') as string;
+      return !!String(url).trim();
+    }
+    return false;
+  }
+
+  /** Avanza del paso de pago (índice 2) al de información LLC (índice 3). */
+  private advanceFromPaymentToInfo(): void {
+    this.currentStepIndex = 3;
+    this.wizardStateService.setCurrentStep(4);
+  }
+
+  async continueFromPaymentStep(): Promise<void> {
+    this.errorMessage = null;
+    if (this.currentStepIndex !== 2) {
+      return;
+    }
+    this.syncPaymentProcessedFromWizardState();
+    if (this.paymentProcessed) {
+      this.advanceFromPaymentToInfo();
+      return;
+    }
+    const p = this.wizardStateService.findPersistedPaymentData();
+    if (p.paymentMethod === 'transferencia') {
+      this.isLoading = true;
+      try {
+        if (this.paymentStep) {
+          await this.paymentStep.processTransferenciaPayment();
+        }
+        this.syncPaymentProcessedFromWizardState();
+        if (this.paymentProcessed) {
+          this.advanceFromPaymentToInfo();
+        } else {
+          this.errorMessage =
+            this.errorMessage || 'Completa la transferencia: sube el comprobante y confirma la creación de la solicitud.';
+        }
+      } finally {
+        this.isLoading = false;
+      }
+      return;
+    }
+    this.errorMessage = 'Primero procesa el pago con tarjeta correctamente.';
+  }
+
+  /** Llamado cuando el paso de información emite nextStepRequested (última sección guardada OK). */
+  onRenovacionInfoNext(): void {
+    if (this.currentStepIndex !== 3) {
+      return;
+    }
+    this.currentStepIndex = 4;
+    this.wizardStateService.setCurrentStep(5);
+  }
+
+  /**
    * Para el paso 2 (estado + tipo LLC): solo permitir avanzar si hay amount calculado.
    */
   canProceedFromStateStep(): boolean {
-    const step2 = this.wizardStateService.getStepData(2) || {};
-    return !!(step2.state && step2.llcType && typeof step2.amount === 'number' && step2.amount > 0);
+    const st = this.renovacionLayout.stateStep;
+    const sel = this.wizardStateService.getStepData(st) || {};
+    return !!(sel.state && sel.llcType && typeof sel.amount === 'number' && sel.amount > 0);
   }
 
   /**
@@ -258,16 +366,22 @@ export class LLCRenovacionComponent implements OnInit {
       return;
     }
 
-    // Paso 3 (index 2): pago debe estar procesado
-    if (this.currentStepIndex === 2 && !this.paymentProcessed) {
-      return;
+    // Paso 3 (index 2): pago debe estar procesado (releer por si quedó en otra clave de paso)
+    if (this.currentStepIndex === 2) {
+      this.syncPaymentProcessedFromWizardState();
+      if (!this.paymentProcessed) {
+        return;
+      }
     }
 
     // Si estamos en paso 4 (Información Renovación) y ya hay un request, guardar los datos antes de avanzar
     if (this.currentStepIndex === 3 && this.wizardStateService.hasRequest()) {
       // Si estamos en la sección 5 (última sección), guardar antes de avanzar al siguiente paso del wizard
       if (this.renovacionInfoCurrentSection === 5 && this.renovacionInformationStep) {
-        await this.renovacionInformationStep.saveToApi();
+        const ok = await this.renovacionInformationStep.saveToApi();
+        if (!ok) {
+          return;
+        }
       } else {
         // Si no estamos en la última sección, actualizar normalmente
         await this.updateRequestData();
@@ -318,6 +432,13 @@ export class LLCRenovacionComponent implements OnInit {
   onEmailVerified(): void {
     console.log('[LLCRenovacionComponent] Email verificado exitosamente');
     this.showEmailVerification = false;
+    const prev2 = this.wizardStateService.getStepData(2) || {};
+    this.wizardStateService.setStepData(2, {
+      ...prev2,
+      verified: true,
+      timestamp: Date.now()
+    });
+    this.refreshRenovacionLayout();
     this.currentStepIndex = 1; // Avanzar al siguiente paso
     this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
   }
@@ -484,7 +605,8 @@ export class LLCRenovacionComponent implements OnInit {
     
     try {
       const allData = this.wizardStateService.getAllData();
-      const step2Data = allData.step2 || {};
+      const layout = this.wizardStateService.getRenovacionStorageLayout();
+      const step2Data = allData[`step${layout.stateStep}`] || allData.step2 || {};
       const serviceData = this.serviceDataForm.value;
       
       // Separar owners del resto de los datos
@@ -540,40 +662,44 @@ export class LLCRenovacionComponent implements OnInit {
 
     try {
       let signatureUrl: string | null = null;
-      
-      // Si hay firma, subirla como archivo
+
       if (event?.signature) {
         signatureUrl = await this.uploadSignature(event.signature, requestId);
+        if (!signatureUrl) {
+          this.errorMessage =
+            'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
+          this.isLoading = false;
+          return;
+        }
       }
 
-      // Actualizar el estado y la firma
       const updateData: any = {
         type: 'renovacion-llc',
         status: 'solicitud-recibida'
       };
-      
+
       if (signatureUrl) {
         updateData.signatureUrl = signatureUrl;
       }
 
       console.log('[LLCRenovacionComponent] Actualizando estado de solicitud:', requestId, updateData);
 
-      // Actualizar solo el estado de la solicitud
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
 
       console.log('[LLCRenovacionComponent] Solicitud finalizada exitosamente');
-      
+
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
       this.isLoading = false;
-
-      // Limpiar estado del wizard y tokens
-      this.wizardStateService.clear();
-      this.wizardApiService.clearToken();
-
     } catch (error: any) {
       console.error('[LLCRenovacionComponent] Error al finalizar solicitud:', error);
-      this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      const status = error?.status ?? error?.error?.statusCode;
+      if (status === 401) {
+        this.errorMessage =
+          'Tu sesión del asistente expiró o no es válida. Vuelve a iniciar el flujo y verifica tu correo para obtener un nuevo acceso.';
+      } else {
+        this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      }
       this.isLoading = false;
     }
   }
@@ -616,6 +742,7 @@ export class LLCRenovacionComponent implements OnInit {
    * Navega al panel del usuario
    */
   onGoToPanel(): void {
+    this.clearWizardSessionAfterExit();
     this.router.navigate(['/panel']);
   }
 
@@ -623,16 +750,23 @@ export class LLCRenovacionComponent implements OnInit {
    * Navega al home
    */
   onGoToHome(): void {
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
   }
 
   onCancel(): void {
-    this.wizardStateService.clear();
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
+  }
+
+  /** Borra estado local y token wizard al salir del flujo (éxito o cancelar). */
+  private clearWizardSessionAfterExit(): void {
+    this.wizardStateService.clear();
+    this.wizardApiService.clearToken();
   }
 
   /**

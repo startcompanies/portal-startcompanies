@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface GeolocationData {
   countryCode: string;
@@ -17,29 +18,20 @@ export class GeolocationService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtiene el código de país basado en la IP del usuario
-   * Usa ipapi.co como servicio de geolocalización
-   * @returns Observable con el código de país (ej: 'us', 'mx', 'co')
+   * Código de país por IP vía API propia (Nest → ipapi), evita CORS del navegador a terceros.
    */
   getCountryCodeByIP(): Observable<string> {
-    // Si ya tenemos el código en caché, lo retornamos
     if (this.cachedCountryCode) {
       return of(this.cachedCountryCode.toLowerCase());
     }
 
-    // Usamos ipapi.co que es gratuito y no requiere API key
-    return this.http.get<any>('https://ipapi.co/json/').pipe(
-      map((data: any) => {
-        const countryCode = data.country_code?.toLowerCase() || 'us';
-        // Guardamos en caché para futuras llamadas
-        this.cachedCountryCode = countryCode;
-        return countryCode;
+    const url = `${environment.apiUrl.replace(/\/$/, '')}/wizard/geo/country`;
+    return this.http.get<{ countryCode?: string }>(url).pipe(
+      map((data) => (data?.countryCode || 'us').toLowerCase()),
+      tap((code) => {
+        this.cachedCountryCode = code;
       }),
-      catchError((error) => {
-        console.warn('Error al obtener geolocalización por IP, usando "us" por defecto:', error);
-        // En caso de error, retornamos 'us' como país por defecto
-        return of('us');
-      })
+      catchError(() => of('us'))
     );
   }
 
@@ -48,18 +40,18 @@ export class GeolocationService {
    * @returns Observable con datos de geolocalización
    */
   getGeolocationData(): Observable<GeolocationData> {
-    return this.http.get<any>('https://ipapi.co/json/').pipe(
-      map((data: any) => ({
-        countryCode: data.country_code?.toLowerCase() || 'us',
-        countryName: data.country_name || 'United States'
+    const url = `${environment.apiUrl.replace(/\/$/, '')}/wizard/geo/country`;
+    return this.http.get<{ countryCode?: string; countryName?: string }>(url).pipe(
+      map((data) => ({
+        countryCode: (data?.countryCode || 'us').toLowerCase(),
+        countryName: data?.countryName || 'United States'
       })),
-      catchError((error) => {
-        console.warn('Error al obtener geolocalización:', error);
-        return of({
+      catchError(() =>
+        of({
           countryCode: 'us',
           countryName: 'United States'
-        });
-      })
+        })
+      )
     );
   }
 

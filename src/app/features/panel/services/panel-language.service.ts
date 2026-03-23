@@ -4,9 +4,13 @@ import { TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import { PanelPreferencesService } from './panel-preferences.service';
+import { PANEL_LANG_STORAGE_KEY } from './panel-storage-keys';
 
-const STORAGE_KEY_LANG = 'panel_lang';
 const STORAGE_KEY_MODAL_SHOWN = 'panel_lang_modal_shown';
+
+/** Re-export para compatibilidad con imports existentes. */
+export { PANEL_LANG_STORAGE_KEY } from './panel-storage-keys';
 
 export type PanelLang = 'es' | 'en';
 
@@ -26,6 +30,7 @@ export interface UserPreferencesResponse {
 export class PanelLanguageService {
   private readonly transloco = inject(TranslocoService);
   private readonly http = inject(HttpClient);
+  private readonly panelPreferences = inject(PanelPreferencesService);
 
   private get apiUrl(): string {
     return environment.apiUrl || 'http://localhost:3000';
@@ -42,7 +47,7 @@ export class PanelLanguageService {
     if (typeof localStorage === 'undefined') {
       return this.defaultLang;
     }
-    const stored = localStorage.getItem(STORAGE_KEY_LANG);
+    const stored = localStorage.getItem(PANEL_LANG_STORAGE_KEY);
     if (stored === 'es' || stored === 'en') {
       return stored;
     }
@@ -52,13 +57,15 @@ export class PanelLanguageService {
   /**
    * Guarda la preferencia de idioma en localStorage, aplica Transloco y opcionalmente en la API.
    */
-  setPreferredLang(lang: PanelLang): void {
+  setPreferredLang(lang: PanelLang, options?: { skipApi?: boolean }): void {
     if (typeof localStorage === 'undefined') {
       return;
     }
-    localStorage.setItem(STORAGE_KEY_LANG, lang);
+    localStorage.setItem(PANEL_LANG_STORAGE_KEY, lang);
     this.transloco.setActiveLang(lang);
-    this.savePreferencesToApi(lang).catch(() => {});
+    if (!options?.skipApi) {
+      this.savePreferencesToApi(lang).catch(() => {});
+    }
   }
 
   /**
@@ -78,18 +85,7 @@ export class PanelLanguageService {
     if (typeof localStorage === 'undefined') {
       return Promise.resolve();
     }
-    return firstValueFrom(
-      this.http
-        .get<UserPreferencesResponse>(`${this.apiUrl}/panel/settings/preferences`, {
-          withCredentials: true,
-        })
-        .pipe(catchError(() => of(null))),
-    ).then((body) => {
-      if (body?.language === 'es' || body?.language === 'en') {
-        localStorage.setItem(STORAGE_KEY_LANG, body.language);
-        this.transloco.setActiveLang(body.language);
-      }
-    }).catch(() => {});
+    return this.panelPreferences.loadFromApi().then(() => {}).catch(() => {});
   }
 
   /**
@@ -119,7 +115,7 @@ export class PanelLanguageService {
     if (shown === 'true') {
       return false;
     }
-    const lang = localStorage.getItem(STORAGE_KEY_LANG);
+    const lang = localStorage.getItem(PANEL_LANG_STORAGE_KEY);
     return lang !== 'es' && lang !== 'en';
   }
 

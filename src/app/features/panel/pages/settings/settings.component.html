@@ -1,25 +1,24 @@
 <div class="settings-container">
   <div class="settings-header">
     <h2>{{ 'PANEL.settings_page.title' | transloco }}</h2>
-    <p class="text-muted">Gestiona tu perfil, preferencias y configuraciones</p>
+    <p class="text-muted">{{ 'PANEL.settings_page.subtitle' | transloco }}</p>
   </div>
 
-  <!-- Tabs -->
   <ul class="nav nav-tabs mb-4" role="tablist">
     <li class="nav-item" role="presentation">
-      <button 
-        class="nav-link" 
+      <button
+        class="nav-link"
         [class.active]="activeTab === 'profile'"
         (click)="setActiveTab('profile')"
         type="button"
       >
         <i class="bi bi-person me-2"></i>
-        Perfil
+        {{ 'PANEL.settings_page.tabs.profile' | transloco }}
       </button>
     </li>
     <li *ngIf="showPreferences" class="nav-item" role="presentation">
-      <button 
-        class="nav-link" 
+      <button
+        class="nav-link"
         [class.active]="activeTab === 'preferences'"
         (click)="setActiveTab('preferences')"
         type="button"
@@ -29,91 +28,84 @@
       </button>
     </li>
     <li class="nav-item" role="presentation">
-      <button 
-        class="nav-link" 
+      <button
+        class="nav-link"
         [class.active]="activeTab === 'security'"
         (click)="setActiveTab('security')"
         type="button"
       >
         <i class="bi bi-shield-lock me-2"></i>
-        Seguridad
+        {{ 'PANEL.settings_page.tabs.security' | transloco }}
       </button>
     </li>
     <li *ngIf="isAdmin" class="nav-item" role="presentation">
-      <button 
-        class="nav-link" 
+      <button
+        class="nav-link"
         [class.active]="activeTab === 'processes'"
         (click)="setActiveTab('processes')"
         type="button"
       >
         <i class="bi bi-sliders me-2"></i>
-        Procesos
+        {{ 'PANEL.settings_page.tabs.processes' | transloco }}
       </button>
     </li>
     <li *ngIf="isAdmin" class="nav-item" role="presentation">
-      <button 
-        class="nav-link" 
+      <button
+        class="nav-link"
         [class.active]="activeTab === 'zoho'"
         (click)="setActiveTab('zoho')"
         type="button"
       >
         <i class="bi bi-cloud me-2"></i>
-        Zoho CRM
+        {{ 'PANEL.settings_page.tabs.zoho' | transloco }}
       </button>
     </li>
   </ul>
 
-  <!-- Messages -->
   <div *ngIf="saveSuccess" class="alert alert-success alert-dismissible fade show" role="alert">
     <i class="bi bi-check-circle me-2"></i>
-    Cambios guardados exitosamente
-    <button type="button" class="btn-close" (click)="saveSuccess = false" aria-label="Close"></button>
+    {{ 'PANEL.settings_page.alerts.saved_success' | transloco }}
+    <button type="button" class="btn-close" (click)="saveSuccess = false" [attr.aria-label]="'PANEL.settings_page.alerts.dismiss' | transloco"></button>
   </div>
 
   <div *ngIf="saveError" class="alert alert-danger alert-dismissible fade show" role="alert">
     <i class="bi bi-exclamation-triangle me-2"></i>
     {{ saveError }}
-    <button type="button" class="btn-close" (click)="saveError = null" aria-label="Close"></button>
+    <button type="button" class="btn-close" (click)="saveError = null" [attr.aria-label]="'PANEL.settings_page.alerts.dismiss' | transloco"></button>
   </div>
 
-  <!-- Tab Content: Profile -->
   <div *ngIf="activeTab === 'profile'" class="tab-content">
     <div class="settings-card">
-      <h4>Información Personal</h4>
-      <p class="text-muted">Actualiza tu información de perfil</p>
+      <h4>{{ 'PANEL.settings_page.profile.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.settings_page.profile.subtitle' | transloco }}</p>
 
       <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
         <div class="row g-3">
           <div class="col-md-12">
-            <label class="form-label">Nombre Completo <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
+            <label class="form-label"> {{ 'PANEL.settings_page.profile.full_name' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="text"
               class="form-control"
               [class.is-invalid]="profileForm.get('full_name')?.invalid && profileForm.get('full_name')?.touched"
               formControlName="full_name"
-              placeholder="Nombre y apellidos"
-            >
+              [placeholder]="'PANEL.settings_page.profile.full_name_placeholder' | transloco"
+            />
             <div class="invalid-feedback">
               {{ getFieldError(profileForm, 'full_name') }}
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Email <span class="text-danger">*</span></label>
-            <input 
-              type="email" 
-              class="form-control"
-              formControlName="email"
-              [disabled]="true"
-            >
-            <small class="form-text text-muted">El email no se puede modificar</small>
+            <label class="form-label"> {{ 'PANEL.settings_page.profile.email' | transloco }} <span class="text-danger">*</span> </label>
+            <input type="email" class="form-control" formControlName="email" [disabled]="true" />
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.profile.email_readonly' | transloco }}</small>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Teléfono</label>
-            <input type="tel" class="form-control" formControlName="phone">
+            <label class="form-label">{{ 'PANEL.settings_page.profile.phone' | transloco }}</label>
+            <input type="tel" class="form-control" formControlName="phone" />
           </div>
           <div class="col-md-12" *ngIf="isAdmin || currentUser?.type === 'partner'">
-            <label class="form-label">Empresa</label>
-            <input type="text" class="form-control" formControlName="company">
+            <label class="form-label">{{ 'PANEL.settings_page.profile.company' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="company" />
           </div>
         </div>
 
@@ -121,18 +113,17 @@
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
-            Guardar Cambios
+            {{ 'PANEL.settings_page.profile.save' | transloco }}
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Tab Content: Preferences -->
   <div *ngIf="activeTab === 'preferences'" class="tab-content">
     <div class="settings-card">
       <h4>{{ 'PANEL.settings_page.preferences' | transloco }}</h4>
-      <p class="text-muted">Personaliza tu experiencia en el panel</p>
+      <p class="text-muted">{{ 'PANEL.settings_page.preferences_section.subtitle' | transloco }}</p>
 
       <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
         <div class="row g-3">
@@ -144,56 +135,56 @@
             </select>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Tema</label>
+            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.theme' | transloco }}</label>
             <select class="form-select" formControlName="theme">
-              <option value="light">Claro</option>
-              <option value="dark">Oscuro</option>
-              <option value="auto">Automático</option>
+              <option value="light">{{ 'PANEL.settings_page.preferences_section.theme_light' | transloco }}</option>
+              <option value="dark">{{ 'PANEL.settings_page.preferences_section.theme_dark' | transloco }}</option>
+              <option value="auto">{{ 'PANEL.settings_page.preferences_section.theme_auto' | transloco }}</option>
             </select>
           </div>
           <div class="col-md-12">
-            <label class="form-label">Zona Horaria</label>
+            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.timezone' | transloco }}</label>
             <select class="form-select" formControlName="timezone">
-              <option *ngFor="let tz of timezones" [value]="tz.value">
-                {{ tz.label }}
+              <option *ngFor="let tz of timezoneOptions" [value]="tz.value">
+                {{ tz.labelKey | transloco }}
               </option>
             </select>
           </div>
         </div>
 
-        <hr class="my-4">
+        <hr class="my-4" />
 
-        <h5>Notificaciones</h5>
+        <h5>{{ 'PANEL.settings_page.preferences_section.notifications_heading' | transloco }}</h5>
         <div formGroupName="notifications" class="row g-3">
           <div class="col-md-6">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="email" id="notifEmail">
+              <input class="form-check-input" type="checkbox" formControlName="email" id="notifEmail" />
               <label class="form-check-label" for="notifEmail">
-                Notificaciones por Email
+                {{ 'PANEL.settings_page.preferences_section.notif_email' | transloco }}
               </label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="push" id="notifPush">
+              <input class="form-check-input" type="checkbox" formControlName="push" id="notifPush" />
               <label class="form-check-label" for="notifPush">
-                Notificaciones Push
+                {{ 'PANEL.settings_page.preferences_section.notif_push' | transloco }}
               </label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requestUpdates" id="notifRequest">
+              <input class="form-check-input" type="checkbox" formControlName="requestUpdates" id="notifRequest" />
               <label class="form-check-label" for="notifRequest">
-                Actualizaciones de Solicitudes
+                {{ 'PANEL.settings_page.preferences_section.notif_request_updates' | transloco }}
               </label>
             </div>
           </div>
           <div class="col-md-6">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="documentUploads" id="notifDocs">
+              <input class="form-check-input" type="checkbox" formControlName="documentUploads" id="notifDocs" />
               <label class="form-check-label" for="notifDocs">
-                Carga de Documentos
+                {{ 'PANEL.settings_page.preferences_section.notif_doc_uploads' | transloco }}
               </label>
             </div>
           </div>
@@ -203,54 +194,53 @@
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
-            Guardar Preferencias
+            {{ 'PANEL.settings_page.preferences_section.save' | transloco }}
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Tab Content: Security -->
   <div *ngIf="activeTab === 'security'" class="tab-content">
     <div class="settings-card">
-      <h4>Cambiar Contraseña</h4>
-      <p class="text-muted">Actualiza tu contraseña para mantener tu cuenta segura</p>
+      <h4>{{ 'PANEL.settings_page.security_section.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.settings_page.security_section.subtitle' | transloco }}</p>
 
       <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
         <div class="row g-3">
           <div class="col-md-12">
-            <label class="form-label">Contraseña Actual <span class="text-danger">*</span></label>
-            <input 
-              type="password" 
+            <label class="form-label"> {{ 'PANEL.settings_page.security_section.current' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="password"
               class="form-control"
               [class.is-invalid]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched"
               formControlName="currentPassword"
-            >
+            />
             <div class="invalid-feedback">
               {{ getFieldError(passwordForm, 'currentPassword') }}
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Nueva Contraseña <span class="text-danger">*</span></label>
-            <input 
-              type="password" 
+            <label class="form-label"> {{ 'PANEL.settings_page.security_section.new' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="password"
               class="form-control"
               [class.is-invalid]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
               formControlName="newPassword"
-            >
+            />
             <div class="invalid-feedback">
               {{ getFieldError(passwordForm, 'newPassword') }}
             </div>
-            <small class="form-text text-muted">Mínimo 8 caracteres</small>
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.security_section.min_length' | transloco }}</small>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-            <input 
-              type="password" 
+            <label class="form-label"> {{ 'PANEL.settings_page.security_section.confirm' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="password"
               class="form-control"
               [class.is-invalid]="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched"
               formControlName="confirmPassword"
-            >
+            />
             <div class="invalid-feedback">
               {{ getFieldError(passwordForm, 'confirmPassword') }}
             </div>
@@ -261,51 +251,55 @@
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-key me-2"></i>
-            Cambiar Contraseña
+            {{ 'PANEL.settings_page.security_section.save' | transloco }}
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Tab Content: Process Config (Admin Only) -->
   <div *ngIf="activeTab === 'processes' && isAdmin" class="tab-content">
     <div class="settings-card">
-      <h4>Configuración de Procesos</h4>
-      <p class="text-muted">Gestiona la configuración general de los procesos</p>
+      <h4>{{ 'PANEL.settings_page.processes_section.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.settings_page.processes_section.subtitle' | transloco }}</p>
 
       <form [formGroup]="processConfigForm" (ngSubmit)="saveProcessConfig()">
         <div class="row g-3">
           <div class="col-md-12">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="autoAdvanceSteps" id="autoAdvance">
+              <input class="form-check-input" type="checkbox" formControlName="autoAdvanceSteps" id="autoAdvance" />
               <label class="form-check-label" for="autoAdvance">
-                Avance Automático de Etapas
+                {{ 'PANEL.settings_page.processes_section.auto_advance' | transloco }}
               </label>
               <small class="form-text text-muted d-block">
-                Las etapas avanzarán automáticamente cuando se completen
+                {{ 'PANEL.settings_page.processes_section.auto_advance_help' | transloco }}
               </small>
             </div>
           </div>
           <div class="col-md-12">
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requireApproval" id="requireApproval">
+              <input class="form-check-input" type="checkbox" formControlName="requireApproval" id="requireApproval" />
               <label class="form-check-label" for="requireApproval">
-                Requerir Aprobación para Cambios
+                {{ 'PANEL.settings_page.processes_section.require_approval' | transloco }}
               </label>
               <small class="form-text text-muted d-block">
-                Los cambios importantes requerirán aprobación antes de aplicarse
+                {{ 'PANEL.settings_page.processes_section.require_approval_help' | transloco }}
               </small>
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Responsable por Defecto</label>
-            <input type="text" class="form-control" formControlName="defaultAssignee" placeholder="Usuario o equipo">
+            <label class="form-label">{{ 'PANEL.settings_page.processes_section.default_assignee' | transloco }}</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="defaultAssignee"
+              [placeholder]="'PANEL.settings_page.processes_section.default_assignee_placeholder' | transloco"
+            />
           </div>
           <div class="col-md-6">
-            <label class="form-label">Retraso de Notificaciones (horas)</label>
-            <input type="number" class="form-control" formControlName="notificationDelay" min="0" max="168">
-            <small class="form-text text-muted">Tiempo antes de enviar recordatorios</small>
+            <label class="form-label">{{ 'PANEL.settings_page.processes_section.notification_delay' | transloco }}</label>
+            <input type="number" class="form-control" formControlName="notificationDelay" min="0" max="168" />
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.processes_section.notification_delay_help' | transloco }}</small>
           </div>
         </div>
 
@@ -313,44 +307,42 @@
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
-            Guardar Configuración
+            {{ 'PANEL.settings_page.processes_section.save' | transloco }}
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Tab Content: Zoho Config (Admin Only) -->
   <div *ngIf="activeTab === 'zoho' && isAdmin" class="tab-content">
     <div class="settings-card">
-        <h4>Configuración de Zoho</h4>
-        <p class="text-muted">Gestiona la autenticación OAuth con Zoho (CRM y WorkDrive) para sincronización de datos</p>
+      <h4>{{ 'PANEL.settings_page.zoho_section.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.settings_page.zoho_section.subtitle' | transloco }}</p>
 
-      <!-- Lista de Configuraciones Existentes -->
       <div *ngIf="zohoConfigs.length > 0" class="mb-4">
-        <h5>Configuraciones Existentes</h5>
+        <h5>{{ 'PANEL.settings_page.zoho_section.existing' | transloco }}</h5>
         <div class="list-group">
-          <div 
-            *ngFor="let config of zohoConfigs" 
+          <div
+            *ngFor="let config of zohoConfigs"
             class="list-group-item d-flex justify-content-between align-items-center"
             [class.active]="selectedConfig?.id === config.id"
             (click)="selectConfig(config)"
-            style="cursor: pointer;"
+            style="cursor: pointer"
           >
             <div>
               <strong>{{ config.org }}</strong> - {{ config.service }} ({{ config.region }})
-              <br>
+              <br />
               <small class="text-muted">
                 <span *ngIf="config.refresh_token" class="text-success">
-                  <i class="bi bi-check-circle"></i> Token configurado
+                  <i class="bi bi-check-circle"></i> {{ 'PANEL.settings_page.zoho_section.token_ok' | transloco }}
                 </span>
                 <span *ngIf="!config.refresh_token" class="text-warning">
-                  <i class="bi bi-exclamation-triangle"></i> Sin token
+                  <i class="bi bi-exclamation-triangle"></i> {{ 'PANEL.settings_page.zoho_section.token_missing' | transloco }}
                 </span>
-                | Creado: {{ config.createdAt | date:'short' }}
+                | {{ 'PANEL.settings_page.zoho_section.created' | transloco }}: {{ config.createdAt | date:'short' }}
               </small>
             </div>
-            <button 
+            <button
               class="btn btn-sm btn-danger"
               (click)="deleteZohoConfig(config); $event.stopPropagation()"
               [disabled]="isLoading"
@@ -361,26 +353,25 @@
         </div>
       </div>
 
-      <!-- Formulario de Configuración -->
       <form [formGroup]="zohoConfigForm" (ngSubmit)="saveZohoConfig()">
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="form-label">Organización <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.org' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="text"
               class="form-control"
               [class.is-invalid]="zohoConfigForm.get('org')?.invalid && zohoConfigForm.get('org')?.touched"
               formControlName="org"
-              placeholder="startcompanies"
-            >
+              [placeholder]="'PANEL.settings_page.zoho_section.org_placeholder' | transloco"
+            />
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'org') }}
             </div>
-            <small class="form-text text-muted">Nombre de la organización en Zoho</small>
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.org_hint' | transloco }}</small>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Servicio <span class="text-danger">*</span></label>
-            <select 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.service' | transloco }} <span class="text-danger">*</span> </label>
+            <select
               class="form-select"
               [class.is-invalid]="zohoConfigForm.get('service')?.invalid && zohoConfigForm.get('service')?.touched"
               formControlName="service"
@@ -395,134 +386,141 @@
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Región <span class="text-danger">*</span></label>
-            <select 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.region' | transloco }} <span class="text-danger">*</span> </label>
+            <select
               class="form-select"
               [class.is-invalid]="zohoConfigForm.get('region')?.invalid && zohoConfigForm.get('region')?.touched"
               formControlName="region"
             >
-              <option value="com">com (Estados Unidos)</option>
-              <option value="eu">eu (Europa)</option>
-              <option value="in">in (India)</option>
-              <option value="au">au (Australia)</option>
-              <option value="com.cn">com.cn (China)</option>
+              <option value="com">{{ 'PANEL.settings_page.zoho_section.region_com' | transloco }}</option>
+              <option value="eu">{{ 'PANEL.settings_page.zoho_section.region_eu' | transloco }}</option>
+              <option value="in">{{ 'PANEL.settings_page.zoho_section.region_in' | transloco }}</option>
+              <option value="au">{{ 'PANEL.settings_page.zoho_section.region_au' | transloco }}</option>
+              <option value="com.cn">{{ 'PANEL.settings_page.zoho_section.region_cn' | transloco }}</option>
             </select>
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'region') }}
             </div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Scopes <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.scopes' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="text"
               class="form-control"
               [class.is-invalid]="zohoConfigForm.get('scopes')?.invalid && zohoConfigForm.get('scopes')?.touched"
               formControlName="scopes"
               placeholder="ZohoCRM.modules.ALL,ZohoCRM.settings.ALL"
-            >
+            />
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'scopes') }}
             </div>
             <small class="form-text text-muted">
-              Permisos solicitados.<br>
-              <strong>Para CRM:</strong> <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code><br>
-              <strong>Para WorkDrive:</strong> <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code><br>
-              <span class="text-warning">⚠️ Si ya tienes una configuración, necesitas re-autorizar con los nuevos scopes.</span>
+              {{ 'PANEL.settings_page.zoho_section.scopes_hint' | transloco }}<br />
+              <strong>{{ 'PANEL.settings_page.zoho_section.scopes_crm' | transloco }}</strong>
+              <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code><br />
+              <strong>{{ 'PANEL.settings_page.zoho_section.scopes_workdrive' | transloco }}</strong>
+              <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code><br />
+              <span class="text-warning">⚠️ {{ 'PANEL.settings_page.zoho_section.scopes_warning' | transloco }}</span>
             </small>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Client ID <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.client_id' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="text"
               class="form-control"
               [class.is-invalid]="zohoConfigForm.get('client_id')?.invalid && zohoConfigForm.get('client_id')?.touched"
               formControlName="client_id"
               placeholder="1000.XXXXXXXXXXXX"
-            >
+            />
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'client_id') }}
             </div>
-            <small class="form-text text-muted">Client ID de tu aplicación Zoho</small>
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.client_id_hint' | transloco }}</small>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Client Secret <span class="text-danger">*</span></label>
-            <input 
-              type="password" 
+            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.client_secret' | transloco }} <span class="text-danger">*</span> </label>
+            <input
+              type="password"
               class="form-control"
               [class.is-invalid]="zohoConfigForm.get('client_secret')?.invalid && zohoConfigForm.get('client_secret')?.touched"
               formControlName="client_secret"
-              placeholder="Tu client secret"
-            >
+              [placeholder]="'PANEL.settings_page.zoho_section.client_secret_placeholder' | transloco"
+            />
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'client_secret') }}
             </div>
-            <small class="form-text text-muted">Client Secret de tu aplicación Zoho</small>
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.client_secret_hint' | transloco }}</small>
           </div>
         </div>
 
-        <div class="mt-4 d-flex gap-2">
+        <div class="mt-4 d-flex gap-2 flex-wrap">
           <button type="submit" class="btn btn-primary" [disabled]="isLoading">
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
-            {{ selectedConfig ? 'Actualizar' : 'Guardar' }} Configuración
+            <ng-container *ngIf="selectedConfig">{{ 'PANEL.settings_page.zoho_section.update' | transloco }}</ng-container>
+            <ng-container *ngIf="!selectedConfig">{{ 'PANEL.settings_page.zoho_section.save' | transloco }}</ng-container>
           </button>
-          
-          <button 
-            type="button" 
-            class="btn btn-success" 
-            (click)="authorizeZoho()" 
+
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="authorizeZoho()"
             [disabled]="isLoading || isOAuthInProgress || zohoConfigForm.invalid"
           >
             <span *ngIf="isOAuthInProgress" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isOAuthInProgress" class="bi bi-key me-2"></i>
-            {{ (selectedConfig && selectedConfig.refresh_token) ? 'Re-autorizar' : 'Autorizar con Zoho' }}
+            <ng-container *ngIf="selectedConfig?.refresh_token">{{ 'PANEL.settings_page.zoho_section.reauthorize' | transloco }}</ng-container>
+            <ng-container *ngIf="!selectedConfig?.refresh_token">{{ 'PANEL.settings_page.zoho_section.authorize' | transloco }}</ng-container>
           </button>
 
-          <button 
-            type="button" 
-            class="btn btn-secondary" 
-            (click)="createNewConfig()"
-            [disabled]="isLoading"
-          >
+          <button type="button" class="btn btn-secondary" (click)="createNewConfig()" [disabled]="isLoading">
             <i class="bi bi-plus-circle me-2"></i>
-            Nueva Configuración
+            {{ 'PANEL.settings_page.zoho_section.new_config' | transloco }}
           </button>
         </div>
 
         <div *ngIf="selectedConfig?.refresh_token" class="mt-3 alert alert-success">
           <i class="bi bi-check-circle me-2"></i>
-          <strong>Token configurado:</strong> Esta configuración tiene un refresh token válido. 
-          Puedes re-autorizar si necesitas actualizar los permisos.
+          {{ 'PANEL.settings_page.zoho_section.token_banner_ok' | transloco }}
         </div>
 
-        <div *ngIf="selectedConfig?.refresh_token && selectedConfig?.scopes && !selectedConfig?.scopes?.includes('ZohoCRM.settings.ALL')" class="mt-3 alert alert-warning">
+        <div
+          *ngIf="selectedConfig?.refresh_token && selectedConfig?.scopes && !selectedConfig?.scopes?.includes('ZohoCRM.settings.ALL')"
+          class="mt-3 alert alert-warning"
+        >
           <i class="bi bi-exclamation-triangle me-2"></i>
-          <strong>Scopes insuficientes:</strong> Esta configuración no incluye <code>ZohoCRM.settings.ALL</code>, 
-          que es necesario para sincronizar datos. Por favor, actualiza los scopes y re-autoriza.
+          {{ 'PANEL.settings_page.zoho_section.scopes_insufficient' | transloco }}
         </div>
 
         <div *ngIf="selectedConfig && !selectedConfig.refresh_token" class="mt-3 alert alert-warning">
           <i class="bi bi-exclamation-triangle me-2"></i>
-          <strong>Sin token:</strong> Esta configuración no tiene un refresh token. 
-          Haz clic en "Autorizar con Zoho" para completar la configuración OAuth.
+          {{ 'PANEL.settings_page.zoho_section.no_token_banner' | transloco }}
         </div>
       </form>
 
-      <!-- Información adicional -->
       <div class="mt-4">
         <div class="card bg-light">
           <div class="card-body">
             <h6 class="card-title">
               <i class="bi bi-info-circle me-2"></i>
-              Información sobre OAuth
+              {{ 'PANEL.settings_page.zoho_section.oauth_info_title' | transloco }}
             </h6>
             <ul class="mb-0 small">
-              <li>Guarda primero la configuración antes de autorizar</li>
-              <li>Al hacer clic en "Autorizar con Zoho" se abrirá una ventana para que autorices la aplicación</li>
-              <li>El refresh token se guardará automáticamente después de la autorización</li>
-              <li>Asegúrate de que la URL de redirección en Zoho sea: <code>{{ environment.apiUrl || 'http://localhost:3000' }}/orgTk/callback</code> (sin /api)</li>
-              <li><strong>Scopes requeridos para CRM:</strong> <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code></li>
-              <li><strong>Scopes requeridos para WorkDrive:</strong> <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code></li>
+              <li>{{ 'PANEL.settings_page.zoho_section.oauth_info_1' | transloco }}</li>
+              <li>{{ 'PANEL.settings_page.zoho_section.oauth_info_2' | transloco }}</li>
+              <li>{{ 'PANEL.settings_page.zoho_section.oauth_info_3' | transloco }}</li>
+              <li>
+                {{ 'PANEL.settings_page.zoho_section.oauth_info_4' | transloco }}
+                <code>{{ environment.apiUrl || 'http://localhost:3000' }}/orgTk/callback</code> {{ 'PANEL.settings_page.zoho_section.oauth_info_5_no_api' | transloco }}
+              </li>
+              <li>
+                <strong>{{ 'PANEL.settings_page.zoho_section.oauth_crm_scopes' | transloco }}</strong>
+                <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code>
+              </li>
+              <li>
+                <strong>{{ 'PANEL.settings_page.zoho_section.oauth_workdrive_scopes' | transloco }}</strong>
+                <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code>
+              </li>
             </ul>
           </div>
         </div>
@@ -530,13 +528,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-

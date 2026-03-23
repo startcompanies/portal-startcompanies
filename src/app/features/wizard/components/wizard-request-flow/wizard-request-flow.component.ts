@@ -55,10 +55,12 @@ export class WizardRequestFlowComponent implements OnInit {
       try {
         const signature = data?.submit?.signature || null;
         await this.finalizeService.finalize(this.serviceType, signature);
+        this.finalizeService.clearWizardSession();
       } catch (e) {
         console.error('[WizardRequestFlowComponent] Error al finalizar wizard:', e);
+        return;
+      } finally {
         this.isFinalizing = false;
-        return; // no navegar si falla
       }
     }
 
@@ -68,6 +70,7 @@ export class WizardRequestFlowComponent implements OnInit {
   onFlowCancelled(): void {
     console.log('[WizardRequestFlowComponent] Flujo cancelado');
     this.flowCancelled.emit();
+    this.finalizeService.clearWizardSession();
     this.router.navigate(['/']);
   }
 }

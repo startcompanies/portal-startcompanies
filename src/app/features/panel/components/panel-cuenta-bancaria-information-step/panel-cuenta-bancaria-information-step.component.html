@@ -2,14 +2,13 @@
   <div class="step-header mb-4">
     <h3 class="step-title">
       <i class="bi bi-bank me-2"></i>
-      Información de Cuenta Bancaria
+      {{ 'PANEL.panel_form_steps.bank_title' | transloco }}
     </h3>
     <p class="text-muted">
-      Completa la información para la apertura de tu cuenta bancaria.
+      {{ 'PANEL.panel_form_steps.bank_subtitle' | transloco }}
     </p>
   </div>
 
-  <!-- Formulario compartido de cuenta bancaria -->
   <div class="form-container">
     <app-cuenta-bancaria-form
       [serviceDataForm]="serviceDataForm"
@@ -23,13 +22,11 @@
     ></app-cuenta-bancaria-form>
   </div>
 
-  <!-- Mensaje de error de guardado -->
   <div class="alert alert-danger mt-3" *ngIf="saveError">
     <i class="bi bi-exclamation-triangle me-2"></i>
     {{ saveError }}
   </div>
 
-  <!-- Navegación entre secciones -->
   <div class="flow-actions" *ngIf="shouldShowSectionNavigation">
     <button
       type="button"
@@ -38,7 +35,7 @@
       *ngIf="currentSection > 1"
     >
       <i class="bi bi-arrow-left me-1"></i>
-      Sección Anterior
+      {{ 'PANEL.flow_nav.previous_section' | transloco }}
     </button>
     <div *ngIf="currentSection === 1" class="flex-grow-1"></div>
 
@@ -49,12 +46,11 @@
       [disabled]="isSaving"
       *ngIf="currentSection < totalSections"
     >
-      Siguiente Sección
+      {{ 'PANEL.flow_nav.next_section' | transloco }}
       <i class="bi bi-arrow-right ms-1"></i>
     </button>
   </div>
 
-  <!-- Botón final de última sección (sección 6 para multimember) -->
   <div class="flow-actions" *ngIf="currentSection === totalSections">
     <button
       type="button"
@@ -62,7 +58,7 @@
       (click)="goToPreviousSection()"
     >
       <i class="bi bi-arrow-left me-1"></i>
-      Sección Anterior
+      {{ 'PANEL.flow_nav.previous_section' | transloco }}
     </button>
 
     <button
@@ -71,9 +67,9 @@
       (click)="onLastSectionNext()"
       [disabled]="!isSectionValid() || isSaving"
     >
-      <span *ngIf="!isSaving">Siguiente</span>
+      <span *ngIf="!isSaving">{{ 'PANEL.flow_nav.next' | transloco }}</span>
       <span *ngIf="isSaving">
-        <span class="spinner-border spinner-border-sm me-1"></span>Guardando...
+        <span class="spinner-border spinner-border-sm me-1"></span>{{ 'PANEL.panel_form_steps.saving' | transloco }}
       </span>
       <i class="bi bi-arrow-right ms-1" *ngIf="!isSaving"></i>
     </button>
