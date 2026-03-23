@@ -41,17 +41,6 @@
     <li *ngIf="isAdmin" class="nav-item" role="presentation">
       <button
         class="nav-link"
-        [class.active]="activeTab === 'processes'"
-        (click)="setActiveTab('processes')"
-        type="button"
-      >
-        <i class="bi bi-sliders me-2"></i>
-        {{ 'PANEL.settings_page.tabs.processes' | transloco }}
-      </button>
-    </li>
-    <li *ngIf="isAdmin" class="nav-item" role="presentation">
-      <button
-        class="nav-link"
         [class.active]="activeTab === 'zoho'"
         (click)="setActiveTab('zoho')"
         type="button"
@@ -252,62 +241,6 @@
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isLoading" class="bi bi-key me-2"></i>
             {{ 'PANEL.settings_page.security_section.save' | transloco }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div *ngIf="activeTab === 'processes' && isAdmin" class="tab-content">
-    <div class="settings-card">
-      <h4>{{ 'PANEL.settings_page.processes_section.title' | transloco }}</h4>
-      <p class="text-muted">{{ 'PANEL.settings_page.processes_section.subtitle' | transloco }}</p>
-
-      <form [formGroup]="processConfigForm" (ngSubmit)="saveProcessConfig()">
-        <div class="row g-3">
-          <div class="col-md-12">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="autoAdvanceSteps" id="autoAdvance" />
-              <label class="form-check-label" for="autoAdvance">
-                {{ 'PANEL.settings_page.processes_section.auto_advance' | transloco }}
-              </label>
-              <small class="form-text text-muted d-block">
-                {{ 'PANEL.settings_page.processes_section.auto_advance_help' | transloco }}
-              </small>
-            </div>
-          </div>
-          <div class="col-md-12">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requireApproval" id="requireApproval" />
-              <label class="form-check-label" for="requireApproval">
-                {{ 'PANEL.settings_page.processes_section.require_approval' | transloco }}
-              </label>
-              <small class="form-text text-muted d-block">
-                {{ 'PANEL.settings_page.processes_section.require_approval_help' | transloco }}
-              </small>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">{{ 'PANEL.settings_page.processes_section.default_assignee' | transloco }}</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="defaultAssignee"
-              [placeholder]="'PANEL.settings_page.processes_section.default_assignee_placeholder' | transloco"
-            />
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">{{ 'PANEL.settings_page.processes_section.notification_delay' | transloco }}</label>
-            <input type="number" class="form-control" formControlName="notificationDelay" min="0" max="168" />
-            <small class="form-text text-muted">{{ 'PANEL.settings_page.processes_section.notification_delay_help' | transloco }}</small>
-          </div>
-        </div>
-
-        <div class="mt-4">
-          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
-            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
-            {{ 'PANEL.settings_page.processes_section.save' | transloco }}
           </button>
         </div>
       </form>

@@ -160,6 +160,16 @@
         </div>
 
         <div class="mb-3">
+          <label for="partnerPhone" class="form-label">Teléfono <span class="text-danger">*</span></label>
+          <app-intl-tel-input
+            id="partnerPhone"
+            [(ngModel)]="newPartner.phone"
+            [required]="true"
+            [showInlineErrors]="true"
+          ></app-intl-tel-input>
+        </div>
+
+        <div class="mb-3">
           <label for="partnerCompany" class="form-label">Empresa (opcional)</label>
           <input
             type="text"
@@ -183,7 +193,7 @@
           type="button" 
           class="btn btn-primary" 
           (click)="createPartner()"
-          [disabled]="isCreating || !newPartner.name || !newPartner.email"
+          [disabled]="isCreating || !canSubmitNewPartner"
         >
           <span *ngIf="!isCreating">
             <i class="bi bi-check-circle me-2"></i>

@@ -1565,7 +1565,6 @@
       "tabs": {
         "profile": "Perfil",
         "security": "Seguridad",
-        "processes": "Procesos",
         "zoho": "Zoho CRM"
       },
       "alerts": {
@@ -1614,19 +1613,6 @@
         "save": "Cambiar contraseña",
         "success": "Contraseña actualizada correctamente",
         "mismatch": "Las contraseñas no coinciden"
-      },
-      "processes_section": {
-        "title": "Configuración de procesos",
-        "subtitle": "Gestiona la configuración general de los procesos",
-        "auto_advance": "Avance automático de etapas",
-        "auto_advance_help": "Las etapas avanzarán automáticamente cuando se completen",
-        "require_approval": "Requerir aprobación para cambios",
-        "require_approval_help": "Los cambios importantes requerirán aprobación antes de aplicarse",
-        "default_assignee": "Responsable por defecto",
-        "default_assignee_placeholder": "Usuario o equipo",
-        "notification_delay": "Retraso de notificaciones (horas)",
-        "notification_delay_help": "Tiempo antes de enviar recordatorios",
-        "save": "Guardar configuración"
       },
       "zoho_section": {
         "title": "Configuración de Zoho",

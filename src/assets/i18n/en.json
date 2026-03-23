@@ -1549,7 +1549,6 @@
       "tabs": {
         "profile": "Profile",
         "security": "Security",
-        "processes": "Processes",
         "zoho": "Zoho CRM"
       },
       "alerts": {
@@ -1598,19 +1597,6 @@
         "save": "Change password",
         "success": "Password updated successfully",
         "mismatch": "Passwords do not match"
-      },
-      "processes_section": {
-        "title": "Process configuration",
-        "subtitle": "Manage general process settings",
-        "auto_advance": "Automatic stage advance",
-        "auto_advance_help": "Stages advance automatically when completed",
-        "require_approval": "Require approval for changes",
-        "require_approval_help": "Important changes require approval before applying",
-        "default_assignee": "Default assignee",
-        "default_assignee_placeholder": "User or team",
-        "notification_delay": "Notification delay (hours)",
-        "notification_delay_help": "Time before sending reminders",
-        "save": "Save configuration"
       },
       "zoho_section": {
         "title": "Zoho configuration",
