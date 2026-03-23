@@ -361,15 +361,12 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => {
-              // Redirigir según el tipo de usuario
-              return import('../features/panel/layout/panel-layout/panel-layout.component').then(m => {
-                // La lógica de redirección se manejará en el componente
-                return m.PanelLayoutComponent;
-              });
-            }
-          }
-        ]
+            loadComponent: () =>
+              import('../features/panel/pages/panel-home-redirect/panel-home-redirect.component').then(
+                (m) => m.PanelHomeRedirectComponent,
+              ),
+          },
+        ],
       },
       // Rutas de autenticación con layout de auth
       {
@@ -415,7 +412,7 @@ export const routes: Routes = [
       // Rutas del panel con layout principal (requieren autenticación)
       {
         path: 'dashboard',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
@@ -432,7 +429,7 @@ export const routes: Routes = [
       },
       {
         path: 'requests',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
@@ -470,7 +467,7 @@ export const routes: Routes = [
       },
       {
         path: 'partners',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
@@ -658,9 +655,8 @@ export const routes: Routes = [
       },
       {
         path: 'zoho-sync',
-        canActivate: [authGuard, roleGuard],
-        data: { 
-          roles: ['admin'],
+        canActivate: [authGuard, roleGuard(['admin'])],
+        data: {
           seo: {
             title: 'Sincronización Zoho - Panel Start Companies',
             description: 'Gestiona la sincronización de datos entre el panel y Zoho CRM'

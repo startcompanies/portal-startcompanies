@@ -41,7 +41,7 @@ export class PanelLayoutComponent implements OnInit {
     priority: true
   };
 
-  menuItems: { label: string; route: string; icon: string; roles?: ('client' | 'partner' | 'admin')[] }[] = [];
+  menuItems: { label: string; route: string; icon: string; roles?: ('client' | 'partner' | 'admin' | 'user')[] }[] = [];
 
   constructor(
     private authService: AuthService,
@@ -75,6 +75,13 @@ export class PanelLayoutComponent implements OnInit {
         { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['admin'] },
         { label: 'PANEL.menu.partner_reports', route: '/panel/partner-reports', icon: 'bi-graph-up', roles: ['admin'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['admin'] },
+      ];
+    } else if (user?.type === 'user') {
+      this.menuItems = [
+        { label: 'PANEL.menu.dashboard', route: '/panel/dashboard', icon: 'bi-speedometer2', roles: ['user'] },
+        { label: 'PANEL.menu.requests', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['user'] },
+        { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['user'] },
+        { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['user'] },
       ];
     } else if (user?.type === 'partner') {
       this.menuItems = [

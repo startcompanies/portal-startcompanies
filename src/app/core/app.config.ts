@@ -59,13 +59,10 @@ export const appConfig: ApplicationConfig = {
       deps: [LanguageService],
       multi: true,
     },
-    // Cargar usuario en segundo plano (no bloquea el arranque)
+    // Cargar sesión antes de la primera navegación (evita carrera con authGuard → flash login)
     {
       provide: APP_INITIALIZER,
-      useFactory: (auth: AuthService) => () => {
-        auth.loadUser();
-        return Promise.resolve();
-      },
+      useFactory: (auth: AuthService) => () => auth.loadUser(),
       deps: [AuthService],
       multi: true,
     },

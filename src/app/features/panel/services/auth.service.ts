@@ -21,7 +21,7 @@ export interface User {
   username: string;
   email: string;
   status: boolean;
-  type: 'client' | 'partner' | 'admin';
+  type: 'client' | 'partner' | 'admin' | 'user';
   first_name?: string;
   last_name?: string;
   phone?: string;
@@ -244,13 +244,18 @@ export class AuthService {
     return this.refreshInFlight$;
   }
 
-  hasRole(role: 'client' | 'partner' | 'admin'): boolean {
+  hasRole(role: 'client' | 'partner' | 'admin' | 'user'): boolean {
     const user = this.getCurrentUser();
     return user?.type === role;
   }
 
   isAdmin(): boolean {
     return this.hasRole('admin');
+  }
+
+  /** Staff operativo: solicitudes/partners sin configuración Zoho completa. */
+  isStaffUser(): boolean {
+    return this.hasRole('user');
   }
 
   isPartner(): boolean {

@@ -219,6 +219,29 @@
   color: var(--color-fondo-claro);
 }
 
+/* Nombre de usuario en el botón panel (nombres largos) */
+.sc-btn-login.sc-user-name {
+  max-width: min(220px, 28vw);
+  min-width: 0;
+}
+
+.sc-btn-login.sc-user-name .sc-user-name-text {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sc-nav-user-name .sc-user-name-text {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
 /* Estilo del botón "Agendar llamada" */
 .sc-btn-accent {
   background-color: var(--color-secundario-tecnico);

@@ -5,7 +5,8 @@
     "blog": "Blog",
     "contact": "Contact us",
     "call": "Schedule a call",
-    "login": "Sign in"
+    "login": "Sign in",
+    "go_panel": "Go to panel: {{name}}"
   },
   "SEO": {
     "home": {
@@ -1390,6 +1391,7 @@
     "layout": {
       "back_to_site": "Back to site",
       "admin_panel": "Admin Panel",
+      "user_panel": "Operations Panel",
       "partner_panel": "Partner Panel",
       "my_panel": "My Panel",
       "settings": "Settings",
@@ -1410,6 +1412,37 @@
       "reset_password": "Reset password",
       "set_password": "Set password",
       "back_to_login": "Back to login"
+    },
+    "dashboard": {
+      "subtitle_client": "Overview of your processes",
+      "subtitle_partner": "Overview of requests you manage for your clients",
+      "welcome": "Hello, {{name}}",
+      "welcome_partner_suffix": "Partner",
+      "load_error": "Could not load data. Please try again.",
+      "retry": "Retry",
+      "stats_total": "Total",
+      "stats_in_progress": "In progress",
+      "stats_completed": "Completed",
+      "stats_pending": "Pending",
+      "recent_title": "Recent requests",
+      "view_all": "View all",
+      "empty_recent": "You have no recent requests",
+      "new_request": "Create new request",
+      "current_stage": "Current stage",
+      "client_label": "Client",
+      "view_detail": "View details",
+      "process_type": {
+        "apertura-llc": "LLC formation",
+        "renovacion-llc": "LLC renewal",
+        "cuenta-bancaria": "Bank account"
+      },
+      "status": {
+        "pendiente": "Draft",
+        "solicitud_recibida": "Request received",
+        "en_proceso": "In progress",
+        "completada": "Completed",
+        "rechazada": "Rejected"
+      }
     },
     "settings_page": {
       "title": "Settings",

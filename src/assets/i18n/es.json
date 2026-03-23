@@ -5,7 +5,8 @@
     "blog": "Blog",
     "contact": "Contacto",
     "call": "Agendar llamada",
-    "login": "Iniciar sesión"
+    "login": "Iniciar sesión",
+    "go_panel": "Ir al panel: {{name}}"
   },
   "SEO": {
     "home": {
@@ -1406,6 +1407,7 @@
     "layout": {
       "back_to_site": "Volver al sitio",
       "admin_panel": "Panel Administrativo",
+      "user_panel": "Panel Operaciones",
       "partner_panel": "Panel Partner",
       "my_panel": "Mi Panel",
       "settings": "Configuración",
@@ -1426,6 +1428,37 @@
       "reset_password": "Restablecer contraseña",
       "set_password": "Establecer contraseña",
       "back_to_login": "Volver al inicio de sesión"
+    },
+    "dashboard": {
+      "subtitle_client": "Resumen de tus procesos",
+      "subtitle_partner": "Resumen de las solicitudes que gestionas para tus clientes",
+      "welcome": "Hola, {{name}}",
+      "welcome_partner_suffix": "Partner",
+      "load_error": "No se pudieron cargar los datos. Intenta de nuevo.",
+      "retry": "Reintentar",
+      "stats_total": "Total",
+      "stats_in_progress": "En proceso",
+      "stats_completed": "Completadas",
+      "stats_pending": "Pendientes",
+      "recent_title": "Solicitudes recientes",
+      "view_all": "Ver todas",
+      "empty_recent": "No tienes solicitudes recientes",
+      "new_request": "Crear nueva solicitud",
+      "current_stage": "Etapa actual",
+      "client_label": "Cliente",
+      "view_detail": "Ver detalles",
+      "process_type": {
+        "apertura-llc": "Apertura LLC",
+        "renovacion-llc": "Renovación LLC",
+        "cuenta-bancaria": "Cuenta bancaria"
+      },
+      "status": {
+        "pendiente": "Pendiente",
+        "solicitud_recibida": "Solicitud recibida",
+        "en_proceso": "En proceso",
+        "completada": "Completada",
+        "rechazada": "Rechazada"
+      }
     },
     "settings_page": {
       "title": "Configuración",

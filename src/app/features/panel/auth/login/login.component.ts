@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'];
         if (returnUrl) {
           this.router.navigateByUrl(returnUrl);
-        } else if (user?.type === 'admin') {
+        } else if (user?.type === 'admin' || user?.type === 'user') {
           this.router.navigate(['/panel/dashboard']);
         } else {
           this.router.navigate(['/panel/client-dashboard']);
@@ -82,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           
           // Redirigir según el tipo de usuario
           const user = this.authService.getCurrentUser();
-          if (user?.type === 'admin') {
+          if (user?.type === 'admin' || user?.type === 'user') {
             this.router.navigate(['/panel/dashboard']);
           } else if (user?.type === 'partner') {
             this.router.navigate(['/panel/client-dashboard']);
