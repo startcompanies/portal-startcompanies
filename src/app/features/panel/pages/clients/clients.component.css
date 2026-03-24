@@ -3,8 +3,8 @@
 
 .clients-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: flex-end;
+  align-items: center;
   margin-bottom: 2rem;
 }
 
@@ -30,6 +30,11 @@
   margin-bottom: 0.5rem;
 }
 
+/* Misma franja vertical que .form-control / .form-select (evita que el resumen quede “colgado” abajo) */
+.filters-section .clients-filters-summary {
+  min-height: 38px;
+}
+
 /* Clientes */
 .clients-section {
   background: var(--color-fondo-claro);
@@ -50,6 +55,8 @@
   border: 2px solid transparent;
   padding: 1.5rem;
   transition: all 0.2s;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .client-card:hover {
@@ -65,6 +72,7 @@
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #e9ecef;
+  min-width: 0;
 }
 
 .client-avatar {
@@ -80,11 +88,32 @@
   flex-shrink: 0;
 }
 
+.client-info {
+  flex: 1;
+  min-width: 0;
+}
+
 .client-info h4 {
   margin: 0 0 0.25rem 0;
   color: var(--color-texto-oscuro);
   font-size: 1.1rem;
   font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.client-info .text-muted {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+}
+
+.client-info .badge {
+  margin-top: 0.35rem;
+  max-width: 100%;
+  white-space: normal;
+  text-align: left;
 }
 
 .client-body {
@@ -101,9 +130,17 @@
 
 .detail-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   color: #6c757d;
   font-size: 0.9rem;
+  min-width: 0;
+  gap: 0.25rem;
+}
+
+.detail-item span {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .detail-item i {
@@ -142,6 +179,15 @@
   align-items: center;
   padding-top: 1rem;
   border-top: 2px solid #e9ecef;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.client-footer small {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+  flex: 1;
 }
 
 .client-actions {

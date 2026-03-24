@@ -1,10 +1,6 @@
 <div class="clients-container">
-  <!-- Header -->
+  <!-- Barra de acciones -->
   <div class="clients-header">
-    <div>
-      <h2>Clientes</h2>
-      <p class="text-muted">Gestión de clientes del sistema</p>
-    </div>
     <button class="btn btn-primary" (click)="openNewClientModal()">
       <i class="bi bi-plus-circle me-2"></i>
       Nuevo Cliente
@@ -40,9 +36,12 @@
         </select>
       </div>
       <div class="col-md-3">
-        <label class="form-label">&nbsp;</label>
-        <div class="d-flex align-items-end h-100">
-          <span class="badge bg-primary">{{ filteredClients.length }} clientes</span>
+        <label class="form-label text-body-secondary">Resumen</label>
+        <div class="d-flex align-items-center flex-wrap gap-2 clients-filters-summary">
+          <span class="badge bg-primary">{{ totalClients }} clientes</span>
+          <span *ngIf="totalClients > 0" class="text-muted small mb-0">
+            Página {{ currentPage }} de {{ totalPages }}
+          </span>
         </div>
       </div>
     </div>
@@ -50,21 +49,21 @@
 
   <!-- Lista de Clientes -->
   <div class="clients-section">
-    <div *ngIf="filteredClients.length === 0 && !isLoading && !loadError" class="empty-state">
+    <div *ngIf="clients.length === 0 && !isLoading && !loadError" class="empty-state">
       <i class="bi bi-people" style="font-size: 4rem; color: #ccc;"></i>
       <h3>No hay clientes</h3>
       <p class="text-muted">No se encontraron clientes con los filtros aplicados</p>
     </div>
 
-    <div *ngIf="filteredClients.length > 0" class="clients-grid">
-      <div *ngFor="let client of filteredClients" class="client-card">
+    <div *ngIf="clients.length > 0" class="clients-grid">
+      <div *ngFor="let client of clients" class="client-card">
         <div class="client-header">
           <div class="client-avatar">
             <i class="bi bi-person-circle"></i>
           </div>
           <div class="client-info">
             <h4>{{ client.full_name }}</h4>
-            <p class="text-muted mb-0">{{ client.email }}</p>
+            <p *ngIf="client.email && client.email.trim() !== (client.full_name || '').trim()" class="text-muted mb-0">{{ client.email }}</p>
             <span [class]="getStatusClass(client.status)">
               {{ getStatusLabel(client.status) }}
             </span>
@@ -108,6 +107,23 @@
               Creado: {{ client.createdAt | date:'short' }}
             </small>
             <div class="client-actions">
+              <a
+                *ngIf="client.requestClientId != null"
+                class="btn btn-sm btn-outline-info me-2"
+                [routerLink]="['/panel/requests']"
+                [queryParams]="{ clientId: client.requestClientId }"
+                title="Ver solicitudes"
+              >
+                <i class="bi bi-file-earmark-text"></i>
+              </a>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-warning me-2"
+                (click)="openConvertPartnerModal(client)"
+                title="Convertir en partner"
+              >
+                <i class="bi bi-person-badge"></i>
+              </button>
               <button 
                 class="btn btn-sm btn-outline-primary me-2"
                 (click)="openEditClientModal(client)"
@@ -127,6 +143,33 @@
         </div>
       </div>
     </div>
+
+    <nav *ngIf="totalPages > 1 && !isLoading" class="mt-4" aria-label="Paginación de clientes">
+      <ul class="pagination justify-content-center flex-wrap mb-0">
+        <li class="page-item" [class.disabled]="currentPage <= 1">
+          <button type="button" class="page-link" (click)="goToPage(currentPage - 1)" [disabled]="currentPage <= 1">
+            Anterior
+          </button>
+        </li>
+        <li
+          *ngFor="let p of pageNumbers"
+          class="page-item"
+          [class.active]="p === currentPage"
+        >
+          <button type="button" class="page-link" (click)="goToPage(p)">{{ p }}</button>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage >= totalPages">
+          <button
+            type="button"
+            class="page-link"
+            (click)="goToPage(currentPage + 1)"
+            [disabled]="currentPage >= totalPages"
+          >
+            Siguiente
+          </button>
+        </li>
+      </ul>
+    </nav>
   </div>
 
   <!-- Modal Nuevo Cliente -->
@@ -155,8 +198,12 @@
               <input type="email" class="form-control" [(ngModel)]="newClient.email" name="email" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" class="form-control" [(ngModel)]="newClient.phone" name="phone">
+              <label class="form-label" for="newClientPhone">Teléfono (opcional)</label>
+              <app-intl-tel-input
+                id="newClientPhone"
+                name="newClientPhone"
+                [(ngModel)]="newClient.phone"
+              ></app-intl-tel-input>
             </div>
             <div class="mb-3">
               <label class="form-label">Empresa</label>
@@ -198,8 +245,12 @@
               <small class="text-muted">El email no se puede modificar</small>
             </div>
             <div class="mb-3">
-              <label class="form-label">Teléfono</label>
-              <input type="tel" class="form-control" [(ngModel)]="editClient.phone" name="editPhone">
+              <label class="form-label" for="editClientPhone">Teléfono</label>
+              <app-intl-tel-input
+                id="editClientPhone"
+                name="editClientPhone"
+                [(ngModel)]="editClient.phone"
+              ></app-intl-tel-input>
             </div>
             <div class="mb-3">
               <label class="form-label">Empresa</label>
@@ -212,6 +263,42 @@
           <button type="button" class="btn btn-primary" (click)="updateClient()" [disabled]="isUpdating || !editClient.name || !editClient.email">
             <span *ngIf="isUpdating" class="spinner-border spinner-border-sm me-2"></span>
             Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal convertir a partner -->
+  <div *ngIf="showConvertPartnerModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Convertir en partner</h5>
+          <button type="button" class="btn-close" (click)="closeConvertPartnerModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="convertPartnerError" class="alert alert-danger">{{ convertPartnerError }}</div>
+          <p class="text-muted small">
+            El usuario pasará a rol <strong>partner</strong>. Deberá cerrar sesión e iniciar sesión de nuevo para ver el panel de partner.
+          </p>
+          <div class="mb-3">
+            <label class="form-label">Teléfono (E.164) <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="convertPartnerPhone"
+              name="convertPartnerPhone"
+              placeholder="+34600111222"
+              autocomplete="tel"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeConvertPartnerModal()" [disabled]="isConverting">Cancelar</button>
+          <button type="button" class="btn btn-warning" (click)="submitConvertPartner()" [disabled]="isConverting">
+            <span *ngIf="isConverting" class="spinner-border spinner-border-sm me-2"></span>
+            Confirmar
           </button>
         </div>
       </div>

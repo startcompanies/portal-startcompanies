@@ -1402,7 +1402,8 @@
       "partner_reports": "Reportes Partners",
       "settings": "Configuración",
       "my_requests": "Mis Solicitudes",
-      "my_clients": "Mis Clientes"
+      "my_clients": "Mis Clientes",
+      "service_history": "Historial de servicios"
     },
     "layout": {
       "back_to_site": "Volver al sitio",
@@ -1412,6 +1413,43 @@
       "my_panel": "Mi Panel",
       "settings": "Configuración",
       "logout": "Cerrar Sesión"
+    },
+    "route_meta": {
+      "admin_requests": {
+        "title": "Gestión de solicitudes",
+        "subtitle": "Administra todas las solicitudes del sistema"
+      },
+      "clients": {
+        "title": "Clientes",
+        "subtitle": "Gestión de clientes del sistema"
+      },
+      "partners": {
+        "title": "Gestión de partners",
+        "subtitle": "Administra los partners y sus clientes"
+      },
+      "partner_detail": {
+        "title": "Detalle del partner",
+        "subtitle": "Clientes y solicitudes asociados a este partner"
+      },
+      "request_detail": {
+        "title": "Detalle de solicitud",
+        "subtitle": "Seguimiento y datos del proceso"
+      },
+      "zoho_sync": {
+        "title": "Sincronización con Zoho CRM",
+        "subtitle": "Gestiona la sincronización de datos entre el panel y Zoho CRM"
+      },
+      "notifications": {
+        "title": "Notificaciones",
+        "subtitle": "Mantente al día con las actualizaciones de tus procesos"
+      },
+      "select_service": {
+        "title": "Nuevo proceso",
+        "subtitle": "Elige el tipo de servicio para continuar"
+      },
+      "new_request_draft": {
+        "subtitle": "Continúa completando la solicitud"
+      }
     },
     "language_modal": {
       "title": "Elige tu idioma",
@@ -1483,6 +1521,7 @@
     "admin_dashboard": {
       "title": "Dashboard administrativo",
       "subtitle": "Resumen general del sistema",
+      "error_load": "No se pudo cargar el resumen. Comprueba la conexión o inténtalo de nuevo.",
       "loading": "Cargando...",
       "recent_requests": "Solicitudes recientes",
       "view_all": "Ver todas",
@@ -1524,6 +1563,19 @@
       "cancel": "Cancelar",
       "delete": "Eliminar",
       "delete_draft_title": "Eliminar borrador"
+    },
+    "service_history_page": {
+      "title": "Historial de servicios",
+      "subtitle": "Servicios registrados en Zoho (apertura, renovación, cuenta bancaria). Sincroniza desde el panel admin si no ves datos.",
+      "loading": "Cargando...",
+      "retry": "Reintentar",
+      "error_load": "Error al cargar el historial. Intenta de nuevo.",
+      "empty": "No hay servicios en tu historial todavía, o aún no se ha sincronizado con Zoho.",
+      "filter_client": "Filtrar por cliente",
+      "all_clients": "Todos los clientes",
+      "unnamed": "Servicio sin nombre",
+      "llc": "LLC",
+      "llc_principal": "LLC principal (renovación)"
     },
     "dashboard": {
       "subtitle_client": "Resumen de tus procesos",

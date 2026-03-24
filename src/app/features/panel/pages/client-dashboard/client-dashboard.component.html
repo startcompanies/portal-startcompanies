@@ -1,8 +1,6 @@
 <div class="client-dashboard-container">
   <div class="dashboard-header">
     <h2>{{ 'PANEL.dashboard.welcome' | transloco: { name: welcomeName() } }}</h2>
-    <p class="text-muted" *ngIf="!isPartner">{{ 'PANEL.dashboard.subtitle_client' | transloco }}</p>
-    <p class="text-muted" *ngIf="isPartner">{{ 'PANEL.dashboard.subtitle_partner' | transloco }}</p>
   </div>
 
   <div *ngIf="isLoading" class="text-center py-5">

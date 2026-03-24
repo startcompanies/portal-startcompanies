@@ -47,12 +47,12 @@
         <button class="mobile-menu-toggle" (click)="toggleSidebar()" type="button">
           <i class="bi-list"></i>
         </button>
-        <h1 class="page-title">
-          <span *ngIf="currentUser?.type === 'admin'">{{ 'PANEL.layout.admin_panel' | transloco }}</span>
-          <span *ngIf="currentUser?.type === 'user'">{{ 'PANEL.layout.user_panel' | transloco }}</span>
-          <span *ngIf="currentUser?.type === 'partner'">{{ 'PANEL.layout.partner_panel' | transloco }}</span>
-          <span *ngIf="currentUser?.type === 'client'">{{ 'PANEL.layout.my_panel' | transloco }}</span>
-        </h1>
+        <div class="header-titles" *ngIf="!hideLayoutHeader">
+          <h1 class="page-title">{{ effectiveTitleKey | transloco }}</h1>
+          <p class="page-subtitle text-muted mb-0" *ngIf="panelSubtitleKey">
+            {{ panelSubtitleKey | transloco }}
+          </p>
+        </div>
       </div>
       <div class="header-right">
         <app-notifications></app-notifications>

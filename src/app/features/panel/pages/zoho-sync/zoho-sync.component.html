@@ -1,9 +1,4 @@
 <div class="zoho-sync-container" *ngIf="isAdmin">
-  <div class="header">
-    <h1>Sincronización con Zoho CRM</h1>
-    <p class="subtitle">Gestiona la sincronización de datos entre el panel y Zoho CRM</p>
-  </div>
-
   <!-- Mensajes -->
   <div class="messages" *ngIf="error || successMessage">
     <div class="alert alert-error" *ngIf="error">
@@ -72,11 +67,27 @@
       <button 
         class="btn btn-primary" 
         (click)="importAccounts()" 
-        [disabled]="isLoading"
+        [disabled]="panelBusy"
       >
-        <span *ngIf="!isLoading">Importar Accounts</span>
-        <span *ngIf="isLoading">Importando...</span>
+        <span *ngIf="!importAccountsBusy">Importar Accounts</span>
+        <span *ngIf="importAccountsBusy">Importando...</span>
       </button>
+
+      <div class="sync-progress" *ngIf="importAccountsProgress" aria-live="polite">
+        <div class="progress">
+          <div
+            class="progress-bar"
+            [class.progress-bar-striped]="importAccountsProgress.percent == null"
+            [class.progress-bar-animated]="importAccountsProgress.percent == null"
+            role="progressbar"
+            [attr.aria-valuenow]="importAccountsProgress.percent ?? undefined"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [style.width.%]="importAccountsProgress.percent ?? 100"
+          ></div>
+        </div>
+        <p class="sync-progress-message">{{ importAccountsProgress.message }}</p>
+      </div>
 
       <!-- Resultados de Accounts -->
       <div class="results" *ngIf="accountsResult">
@@ -131,11 +142,65 @@
       <button 
         class="btn btn-primary" 
         (click)="importAccountById()" 
-        [disabled]="isLoading || !accountId"
+        [disabled]="panelBusy || !accountId"
       >
         <span *ngIf="!isLoading">Importar Account</span>
         <span *ngIf="isLoading">Importando...</span>
       </button>
+    </div>
+
+    <div class="card">
+      <h3>Historial de servicios (portal cliente/partner)</h3>
+      <p class="description">
+        Importa Deals (Apertura, Renovación, Cuenta Bancaria) a la base de datos local para la vista
+        <strong>/panel/service-history</strong>. No modifica el estado de las solicitudes del panel.
+      </p>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="timelineLimit">Registros por página (COQL):</label>
+          <input
+            type="number"
+            id="timelineLimit"
+            [(ngModel)]="timelineLimit"
+            min="1"
+            max="200"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group">
+          <label for="timelineMaxPages">Máximo de páginas (vacío = todas):</label>
+          <input
+            type="number"
+            id="timelineMaxPages"
+            [(ngModel)]="timelineMaxPages"
+            min="1"
+            class="form-control"
+            placeholder="Opcional"
+          />
+        </div>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="importDealTimeline()"
+        [disabled]="panelBusy"
+      >
+        <span *ngIf="!isLoading">Importar historial de Deals</span>
+        <span *ngIf="isLoading">Importando...</span>
+      </button>
+      <div class="results" *ngIf="timelineResult">
+        <h4>Resultado</h4>
+        <div class="stats">
+          <div class="stat">
+            <span class="label">Upsert:</span>
+            <span class="value success">{{ timelineResult.upserted }}</span>
+          </div>
+          <div class="stat">
+            <span class="label">Errores:</span>
+            <span class="value error">{{ timelineResult.errors.length }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Nota: Los Deals se procesan automáticamente al importar Accounts -->
@@ -157,11 +222,27 @@
       <button 
         class="btn btn-primary btn-large" 
         (click)="fullSync()" 
-        [disabled]="isLoading"
+        [disabled]="panelBusy"
       >
-        <span *ngIf="!isLoading">🔄 Ejecutar Sincronización Completa</span>
-        <span *ngIf="isLoading">Sincronizando...</span>
+        <span *ngIf="!fullSyncBusy">🔄 Ejecutar Sincronización Completa</span>
+        <span *ngIf="fullSyncBusy">Sincronizando...</span>
       </button>
+
+      <div class="sync-progress" *ngIf="fullSyncProgress" aria-live="polite">
+        <div class="progress">
+          <div
+            class="progress-bar"
+            [class.progress-bar-striped]="fullSyncProgress.percent == null"
+            [class.progress-bar-animated]="fullSyncProgress.percent == null"
+            role="progressbar"
+            [attr.aria-valuenow]="fullSyncProgress.percent ?? undefined"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [style.width.%]="fullSyncProgress.percent ?? 100"
+          ></div>
+        </div>
+        <p class="sync-progress-message">{{ fullSyncProgress.message }}</p>
+      </div>
 
       <!-- Resultados de Sincronización Completa -->
       <div class="results" *ngIf="fullSyncResult">
@@ -222,7 +303,7 @@
       <button 
         class="btn btn-secondary" 
         (click)="syncRequest()" 
-        [disabled]="isLoading || !requestId"
+        [disabled]="panelBusy || !requestId"
       >
         <span *ngIf="!isLoading">Sincronizar Solicitud</span>
         <span *ngIf="isLoading">Sincronizando...</span>
