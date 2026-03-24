@@ -1,39 +1,44 @@
 <div class="client-dashboard-container">
   <div class="dashboard-header">
-    <h2>Bienvenido{{ isPartner ? ', Partner' : '' }}</h2>
-    <p class="text-muted">Resumen de tus procesos</p>
+    <h2>{{ 'PANEL.dashboard.welcome' | transloco: { name: welcomeName() } }}</h2>
   </div>
 
   <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
+      <span class="visually-hidden">{{ 'PANEL.admin_dashboard.loading' | transloco }}</span>
     </div>
   </div>
 
-  <div *ngIf="!isLoading">
-    <!-- Resumen de Procesos -->
+  <div *ngIf="error" class="alert alert-danger d-flex align-items-center justify-content-between" role="alert">
+    <span>{{ error | transloco }}</span>
+    <button type="button" class="btn btn-sm btn-outline-danger" (click)="loadDashboardData()">
+      {{ 'PANEL.dashboard.retry' | transloco }}
+    </button>
+  </div>
+
+  <div *ngIf="!isLoading && !error">
     <div class="process-summary-grid">
       <div class="summary-card" *ngFor="let summary of processSummary">
         <div class="summary-icon" [class]="'bg-' + summary.type">
           <i [class]="getProcessTypeIcon(summary.type)"></i>
         </div>
         <div class="summary-content">
-          <h3>{{ getProcessTypeLabel(summary.type) }}</h3>
+          <h3>{{ getProcessTypeLabel(summary.type) | transloco }}</h3>
           <div class="summary-stats">
             <div class="stat-item">
-              <span class="stat-label">Total:</span>
+              <span class="stat-label">{{ 'PANEL.dashboard.stats_total' | transloco }}:</span>
               <span class="stat-value">{{ summary.total }}</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">En Proceso:</span>
+              <span class="stat-label">{{ 'PANEL.dashboard.stats_in_progress' | transloco }}:</span>
               <span class="stat-value text-info">{{ summary.inProgress }}</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">Completadas:</span>
+              <span class="stat-label">{{ 'PANEL.dashboard.stats_completed' | transloco }}:</span>
               <span class="stat-value text-success">{{ summary.completed }}</span>
             </div>
             <div class="stat-item">
-              <span class="stat-label">Pendientes:</span>
+              <span class="stat-label">{{ 'PANEL.dashboard.stats_pending' | transloco }}:</span>
               <span class="stat-value text-warning">{{ summary.pending }}</span>
             </div>
           </div>
@@ -41,20 +46,19 @@
       </div>
     </div>
 
-    <!-- Solicitudes Recientes -->
     <div class="recent-requests-section">
       <div class="section-header">
-        <h3>Solicitudes Recientes</h3>
+        <h3>{{ 'PANEL.dashboard.recent_title' | transloco }}</h3>
         <a routerLink="/panel/my-requests" class="btn btn-sm btn-outline-primary">
-          Ver Todas
+          {{ 'PANEL.dashboard.view_all' | transloco }}
         </a>
       </div>
 
       <div *ngIf="recentRequests.length === 0" class="empty-state-small">
-        <p class="text-muted">No tienes solicitudes recientes</p>
+        <p class="text-muted">{{ 'PANEL.dashboard.empty_recent' | transloco }}</p>
         <a *ngIf="isPartner" routerLink="/panel/new-request" class="btn btn-primary mt-2">
           <i class="bi bi-plus-circle me-2"></i>
-          Crear Nueva Solicitud
+          {{ 'PANEL.dashboard.new_request' | transloco }}
         </a>
       </div>
 
@@ -62,9 +66,9 @@
         <div class="request-item" *ngFor="let request of recentRequests">
           <div class="request-item-header">
             <div class="request-item-info">
-              <h4>{{ getProcessTypeLabel(request.type) }}</h4>
+              <h4>{{ getProcessTypeLabel(request.type) | transloco }}</h4>
               <span [class]="getStatusClass(request.status)">
-                {{ getStatusLabel(request.status) }}
+                {{ getStatusLabel(request.status) | transloco }}
               </span>
             </div>
             <small class="text-muted">
@@ -74,53 +78,20 @@
           <div class="request-item-body">
             <p class="mb-0">
               <i class="bi bi-arrow-right-circle me-2"></i>
-              <strong>Etapa actual:</strong> {{ request.currentStep }}
+              <strong>{{ 'PANEL.dashboard.current_stage' | transloco }}:</strong> {{ request.currentStep }}
             </p>
             <p *ngIf="isPartner && request.clientName" class="text-muted mb-0 mt-1">
               <i class="bi bi-person me-2"></i>
-              Cliente: {{ request.clientName }}
+              {{ 'PANEL.dashboard.client_label' | transloco }}: {{ request.clientName }}
             </p>
           </div>
           <div class="request-item-footer">
             <a [routerLink]="['/panel/my-requests', request.id]" class="btn btn-sm btn-outline-primary">
-              Ver Detalles
+              {{ 'PANEL.dashboard.view_detail' | transloco }}
             </a>
           </div>
         </div>
       </div>
     </div>
-
-    <!-- Acciones Rápidas -->
-    <div class="quick-actions-section">
-      <h3>Acciones Rápidas</h3>
-      <div class="quick-actions">
-        <a routerLink="/panel/my-requests" class="action-card">
-          <i class="bi bi-file-earmark-text"></i>
-          <span>Ver Mis Solicitudes</span>
-        </a>
-        <a *ngIf="isPartner" routerLink="/panel/new-request" class="action-card">
-          <i class="bi bi-plus-circle"></i>
-          <span>Nueva Solicitud</span>
-        </a>
-        <a routerLink="/panel/my-requests" class="action-card">
-          <i class="bi bi-folder"></i>
-          <span>Mis Documentos</span>
-        </a>
-        <a routerLink="/panel/settings" class="action-card">
-          <i class="bi bi-person"></i>
-          <span>Mi Perfil</span>
-        </a>
-      </div>
-    </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-

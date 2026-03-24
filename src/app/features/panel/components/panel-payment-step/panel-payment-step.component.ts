@@ -8,6 +8,7 @@ import { RequestsService } from '../../services/requests.service';
 import { StripePaymentFormComponent, StripePaymentResult } from '../stripe-payment-form/stripe-payment-form.component';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente de pago para el flujo del panel
@@ -16,7 +17,7 @@ import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-panel-payment-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, StripePaymentFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, StripePaymentFormComponent, TranslocoPipe],
   templateUrl: './panel-payment-step.component.html',
   styleUrls: ['./panel-payment-step.component.css']
 })
@@ -55,8 +56,8 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
   private formSubscription?: Subscription;
   
   paymentMethods = [
-    { value: 'stripe', label: 'Tarjeta de Crédito/Débito (Stripe)', icon: 'bi-credit-card' },
-    { value: 'transferencia', label: 'Transferencia Bancaria', icon: 'bi-bank' }
+    { value: 'stripe', labelKey: 'PANEL.payment_step.stripe_label', icon: 'bi-credit-card' },
+    { value: 'transferencia', labelKey: 'PANEL.payment_step.transfer_label', icon: 'bi-bank' }
   ];
   
   constructor(

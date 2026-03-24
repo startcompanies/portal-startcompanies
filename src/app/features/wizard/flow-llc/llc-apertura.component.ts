@@ -240,7 +240,10 @@ export class LLCAperturaComponent implements OnInit {
     if (this.currentStep === 4 && this.wizardStateService.hasRequest()) {
       // Si estamos en la sección 3 (última sección), guardar antes de avanzar al siguiente paso del wizard
       if (this.llcInfoCurrentSection === 3 && this.llcInformationStep) {
-        await this.llcInformationStep.saveToApi();
+        const ok = await this.llcInformationStep.saveToApi();
+        if (!ok) {
+          return;
+        }
       } else {
         // Si no estamos en la última sección, actualizar normalmente
         await this.updateRequestData();
@@ -442,10 +445,15 @@ export class LLCAperturaComponent implements OnInit {
 
     try {
       let signatureUrl: string | null = null;
-      
-      // Si hay firma, subirla como archivo
+
       if (event?.signature) {
         signatureUrl = await this.uploadSignature(event.signature, requestId);
+        if (!signatureUrl) {
+          this.errorMessage =
+            'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
+          this.isLoading = false;
+          return;
+        }
       }
 
       // Leer datos del wizard para obtener el plan seleccionado en el paso de Estado/Plan
@@ -482,14 +490,15 @@ export class LLCAperturaComponent implements OnInit {
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
       this.isLoading = false;
-
-      // Limpiar estado del wizard y tokens
-      this.wizardStateService.clear();
-      this.wizardApiService.clearToken();
-
     } catch (error: any) {
       console.error('[LLCAperturaComponent] Error al finalizar solicitud:', error);
-      this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      const status = error?.status ?? error?.error?.statusCode;
+      if (status === 401) {
+        this.errorMessage =
+          'Tu sesión del asistente expiró o no es válida. Vuelve a iniciar el flujo y verifica tu correo para obtener un nuevo acceso.';
+      } else {
+        this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
+      }
       this.isLoading = false;
     }
   }
@@ -532,6 +541,7 @@ export class LLCAperturaComponent implements OnInit {
    * Navega al panel del usuario
    */
   onGoToPanel(): void {
+    this.clearWizardSessionAfterExit();
     this.router.navigate(['/panel']);
   }
 
@@ -539,15 +549,21 @@ export class LLCAperturaComponent implements OnInit {
    * Navega al home
    */
   onGoToHome(): void {
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
   }
 
   onCancel(): void {
-    this.wizardStateService.clear();
+    this.clearWizardSessionAfterExit();
     this.currentLang === 'es'
       ? this.router.navigate(['/'])
       : this.router.navigate(['/en']);
+  }
+
+  private clearWizardSessionAfterExit(): void {
+    this.wizardStateService.clear();
+    this.wizardApiService.clearToken();
   }
 }

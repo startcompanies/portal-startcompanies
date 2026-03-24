@@ -2,13 +2,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { filter, take, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -39,7 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'];
         if (returnUrl) {
           this.router.navigateByUrl(returnUrl);
-        } else if (user?.type === 'admin') {
+        } else if (user?.type === 'admin' || user?.type === 'user') {
           this.router.navigate(['/panel/dashboard']);
         } else {
           this.router.navigate(['/panel/client-dashboard']);
@@ -82,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           
           // Redirigir según el tipo de usuario
           const user = this.authService.getCurrentUser();
-          if (user?.type === 'admin') {
+          if (user?.type === 'admin' || user?.type === 'user') {
             this.router.navigate(['/panel/dashboard']);
           } else if (user?.type === 'partner') {
             this.router.navigate(['/panel/client-dashboard']);

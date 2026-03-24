@@ -7,6 +7,7 @@ import { PartnerClientsService } from '../../services/partner-clients.service';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { GeolocationService } from '../../../../shared/services/geolocation.service';
 import { firstValueFrom } from 'rxjs';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
  * Componente para seleccionar o crear un cliente del partner
@@ -15,7 +16,7 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-partner-client-selection-step',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent, TranslocoPipe],
   templateUrl: './partner-client-selection-step.component.html',
   styleUrls: ['./partner-client-selection-step.component.css']
 })

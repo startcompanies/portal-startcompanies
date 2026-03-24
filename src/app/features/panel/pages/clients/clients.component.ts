@@ -2,8 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
+import {
+  PartnerClientsService,
+  PartnerClient,
+  CreatePartnerClientDto,
+} from '../../services/partner-clients.service';
+import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { firstValueFrom } from 'rxjs';
+
+/** Mismo criterio E.164 relajado que partners / IntlTelInputComponent */
+const E164_PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
 
 interface Client extends PartnerClient {
   totalRequests?: number;
@@ -16,16 +24,19 @@ interface Client extends PartnerClient {
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css'
 })
 export class ClientsComponent implements OnInit {
   isLoading = true;
   clients: Client[] = [];
-  filteredClients: Client[] = [];
   loadError: string | null = null;
-  
+  totalClients = 0;
+  currentPage = 1;
+  readonly pageSize = 12;
+  private searchDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+
   // Filtros
   searchTerm: string = '';
   selectedStatus: string = 'all';
@@ -51,6 +62,12 @@ export class ClientsComponent implements OnInit {
   createError: string | null = null;
   updateError: string | null = null;
 
+  showConvertPartnerModal = false;
+  convertPartnerClient: Client | null = null;
+  convertPartnerPhone = '';
+  convertPartnerError: string | null = null;
+  isConverting = false;
+
   statusOptions = [
     { value: 'all', label: 'Todos' },
     { value: 'active', label: 'Activos' },
@@ -66,42 +83,67 @@ export class ClientsComponent implements OnInit {
     this.loadClients();
   }
 
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.totalClients / this.pageSize));
+  }
+
+  get pageNumbers(): number[] {
+    const total = this.totalPages;
+    const cur = this.currentPage;
+    const window = 2;
+    const start = Math.max(1, cur - window);
+    const end = Math.min(total, cur + window);
+    const pages: number[] = [];
+    for (let p = start; p <= end; p++) {
+      pages.push(p);
+    }
+    return pages;
+  }
+
   async loadClients(): Promise<void> {
     this.isLoading = true;
     this.loadError = null;
-    
+
     try {
-      // Admin solo ve sus propios clientes (sin partner)
-      const clients = await firstValueFrom(this.partnerClientsService.getAdminClients());
-      
-      console.log('Clientes recibidos del backend:', clients);
-      
-      if (!clients || clients.length === 0) {
-        console.log('No se encontraron clientes');
+      const res = await firstValueFrom(
+        this.partnerClientsService.getAdminClients({
+          page: this.currentPage,
+          limit: this.pageSize,
+          q: this.searchTerm.trim() || undefined,
+          status: this.selectedStatus as 'all' | 'active' | 'inactive',
+        }),
+      );
+
+      this.totalClients = res.total;
+      const limit = res.limit || this.pageSize;
+      const maxPage = Math.max(1, Math.ceil(this.totalClients / limit) || 1);
+      if (this.currentPage > maxPage && this.totalClients > 0) {
+        this.currentPage = maxPage;
+        await this.loadClients();
+        return;
+      }
+
+      const pageClients = res.data || [];
+      if (pageClients.length === 0) {
         this.clients = [];
-        this.filteredClients = [];
         this.isLoading = false;
         return;
       }
 
-      // Cargar estadísticas para cada cliente
-      const clientsWithStats = clients.map(client => ({
+      const clientsWithStats = pageClients.map((client) => ({
         ...client,
         totalRequests: 0,
         activeRequests: 0,
         completedRequests: 0,
         createdAt: client.createdAt || new Date().toISOString(),
-        lastActivity: client.updatedAt || undefined
+        lastActivity: client.updatedAt || undefined,
       }));
 
-      // Cargar estadísticas en paralelo
       try {
-        const statsPromises = clientsWithStats.map(client => 
-          firstValueFrom(this.partnerClientsService.getClientStats(client.id)).catch(() => null)
+        const statsPromises = clientsWithStats.map((client) =>
+          firstValueFrom(this.partnerClientsService.getClientStats(client.id)).catch(() => null),
         );
-
         const statsArray = await Promise.all(statsPromises);
-        
         statsArray.forEach((stats, index) => {
           if (stats) {
             clientsWithStats[index].totalRequests = stats.totalRequests;
@@ -111,45 +153,41 @@ export class ClientsComponent implements OnInit {
         });
       } catch (statsError) {
         console.warn('Error al cargar estadísticas, continuando sin stats:', statsError);
-        // Continuar sin estadísticas si falla
       }
 
       this.clients = clientsWithStats;
-      this.applyFilters();
-      console.log('Clientes procesados:', this.clients);
-      console.log('Clientes filtrados:', this.filteredClients);
     } catch (error: any) {
       console.error('Error al cargar clientes:', error);
       this.loadError = error?.error?.message || 'Error al cargar los clientes. Intenta nuevamente.';
       this.clients = [];
-      this.filteredClients = [];
+      this.totalClients = 0;
     } finally {
       this.isLoading = false;
     }
   }
 
-
-  applyFilters(): void {
-    this.filteredClients = this.clients.filter(client => {
-      const matchesSearch = !this.searchTerm || 
-        client.full_name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        client.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        (client.company && client.company.toLowerCase().includes(this.searchTerm.toLowerCase()));
-      
-      const clientStatus = client.status ? 'active' : 'inactive';
-      const matchesStatus = this.selectedStatus === 'all' || clientStatus === this.selectedStatus;
-      
-      // Admin solo ve clientes sin partner, no necesita filtro de partner
-      return matchesSearch && matchesStatus;
-    });
-  }
-
   onSearchChange(): void {
-    this.applyFilters();
+    if (this.searchDebounceTimer) {
+      clearTimeout(this.searchDebounceTimer);
+    }
+    this.searchDebounceTimer = setTimeout(() => {
+      this.searchDebounceTimer = null;
+      this.currentPage = 1;
+      void this.loadClients();
+    }, 350);
   }
 
   onStatusChange(): void {
-    this.applyFilters();
+    this.currentPage = 1;
+    void this.loadClients();
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) {
+      return;
+    }
+    this.currentPage = page;
+    void this.loadClients();
   }
 
 
@@ -171,13 +209,20 @@ export class ClientsComponent implements OnInit {
       return;
     }
 
+    const phone = (this.newClient.phone || '').trim();
+    if (phone && !E164_PHONE_REGEX.test(phone)) {
+      this.createError =
+        'Introduce un teléfono válido con código de país (formato internacional).';
+      return;
+    }
+
     this.isCreating = true;
     this.createError = null;
 
     const createClientDto: CreatePartnerClientDto = {
       full_name: this.newClient.name,
       email: this.newClient.email,
-      phone: this.newClient.phone || undefined,
+      phone: phone || undefined,
       company: this.newClient.company || undefined,
       // Admin crea clientes sin partner asignado
       partnerId: undefined
@@ -192,8 +237,8 @@ export class ClientsComponent implements OnInit {
           completedRequests: 0,
           createdAt: client.createdAt || new Date().toISOString()
         };
-        this.clients.push(newClient);
-        this.applyFilters();
+        this.currentPage = 1;
+        void this.loadClients();
         this.isCreating = false;
         this.closeNewClientModal();
       },
@@ -208,11 +253,7 @@ export class ClientsComponent implements OnInit {
   toggleClientStatus(client: Client): void {
     this.partnerClientsService.toggleClientStatus(client.id).subscribe({
       next: (updatedClient) => {
-        const index = this.clients.findIndex(c => c.id === client.id);
-        if (index !== -1) {
-          this.clients[index] = { ...this.clients[index], status: updatedClient.status };
-          this.applyFilters();
-        }
+        void this.loadClients();
       },
       error: (error) => {
         console.error('Error al cambiar estado del cliente:', error);
@@ -256,22 +297,25 @@ export class ClientsComponent implements OnInit {
       return;
     }
 
+    const phone = (this.editClient.phone || '').trim();
+    if (phone && !E164_PHONE_REGEX.test(phone)) {
+      this.updateError =
+        'Introduce un teléfono válido con código de país (formato internacional).';
+      return;
+    }
+
     this.isUpdating = true;
     this.updateError = null;
 
     const updateData = {
       full_name: this.editClient.name,
-      phone: this.editClient.phone || undefined,
+      phone: phone || undefined,
       company: this.editClient.company || undefined
     };
 
     this.partnerClientsService.updateClient(this.editingClient.id, updateData).subscribe({
       next: (updatedClient) => {
-        const index = this.clients.findIndex(c => c.id === this.editingClient!.id);
-        if (index !== -1) {
-          this.clients[index] = { ...this.clients[index], ...updatedClient };
-          this.applyFilters();
-        }
+        void this.loadClients();
         this.isUpdating = false;
         this.closeEditClientModal();
       },
@@ -281,6 +325,54 @@ export class ClientsComponent implements OnInit {
         this.isUpdating = false;
       }
     });
+  }
+
+  openConvertPartnerModal(client: Client): void {
+    this.convertPartnerClient = client;
+    this.convertPartnerPhone = (client.phone || '').trim();
+    this.convertPartnerError = null;
+    this.showConvertPartnerModal = true;
+  }
+
+  closeConvertPartnerModal(): void {
+    this.showConvertPartnerModal = false;
+    this.convertPartnerClient = null;
+    this.convertPartnerPhone = '';
+    this.convertPartnerError = null;
+    this.isConverting = false;
+  }
+
+  submitConvertPartner(): void {
+    const c = this.convertPartnerClient;
+    if (!c) {
+      return;
+    }
+    const phone = this.convertPartnerPhone.trim();
+    if (!E164_PHONE_REGEX.test(phone)) {
+      this.convertPartnerError =
+        'Introduce un teléfono válido con código de país (formato internacional E.164, ej. +34600111222).';
+      return;
+    }
+    this.isConverting = true;
+    this.convertPartnerError = null;
+    this.partnerClientsService
+      .convertClientToPartner(c.id, {
+        phone,
+        listItemUserOnly: c.requestClientId == null,
+      })
+      .subscribe({
+        next: () => {
+          this.isConverting = false;
+          this.closeConvertPartnerModal();
+          void this.loadClients();
+        },
+        error: (error) => {
+          console.error('Error al convertir a partner:', error);
+          this.convertPartnerError =
+            error.error?.message || 'No se pudo convertir el usuario a partner.';
+          this.isConverting = false;
+        },
+      });
   }
 }
 

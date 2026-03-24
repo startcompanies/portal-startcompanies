@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { PanelDashboardService } from '../../services/panel-dashboard.service';
 
 interface Stat {
-  label: string;
+  labelKey: string;
   value: string | number;
   icon: string;
   color: string;
-  change?: string;
-  changeType?: 'positive' | 'negative' | 'neutral';
 }
 
 interface RecentRequest {
   id: number;
-  type: string;
+  type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   clientName: string;
   status: string;
   createdAt: Date;
@@ -22,81 +22,95 @@ interface RecentRequest {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, TranslocoPipe],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
   isLoading = true;
-  
+  loadError: string | null = null;
+
   stats: Stat[] = [
-    { label: 'Total Solicitudes', value: 0, icon: 'bi-file-earmark-text', color: 'primary' },
-    { label: 'En Proceso', value: 0, icon: 'bi-clock-history', color: 'info' },
-    { label: 'Pendientes', value: 0, icon: 'bi-hourglass-split', color: 'warning' },
-    { label: 'Completadas', value: 0, icon: 'bi-check-circle', color: 'success' },
-    { label: 'Total Clientes', value: 0, icon: 'bi-people', color: 'primary' },
-    { label: 'Total Partners', value: 0, icon: 'bi-handshake', color: 'info' }
+    { labelKey: 'PANEL.admin_dashboard.stats_total_requests', value: 0, icon: 'bi-file-earmark-text', color: 'primary' },
+    { labelKey: 'PANEL.admin_dashboard.stats_in_process', value: 0, icon: 'bi-clock-history', color: 'info' },
+    { labelKey: 'PANEL.admin_dashboard.stats_pending', value: 0, icon: 'bi-hourglass-split', color: 'warning' },
+    { labelKey: 'PANEL.admin_dashboard.stats_completed', value: 0, icon: 'bi-check-circle', color: 'success' },
+    { labelKey: 'PANEL.admin_dashboard.stats_total_clients', value: 0, icon: 'bi-people', color: 'primary' },
+    { labelKey: 'PANEL.admin_dashboard.stats_total_partners', value: 0, icon: 'bi-handshake', color: 'info' },
   ];
 
-  requestsByType = [
-    { type: 'Apertura LLC', count: 0, percentage: 0 },
-    { type: 'Renovación LLC', count: 0, percentage: 0 },
-    { type: 'Cuenta Bancaria', count: 0, percentage: 0 }
+  requestsByType: { typeKey: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria'; count: number; percentage: number }[] = [
+    { typeKey: 'apertura-llc', count: 0, percentage: 0 },
+    { typeKey: 'renovacion-llc', count: 0, percentage: 0 },
+    { typeKey: 'cuenta-bancaria', count: 0, percentage: 0 },
   ];
 
   recentRequests: RecentRequest[] = [];
+
+  constructor(private panelDashboardService: PanelDashboardService) {}
 
   ngOnInit(): void {
     this.loadDashboardData();
   }
 
-  loadDashboardData(): void {
+  async loadDashboardData(): Promise<void> {
     this.isLoading = true;
-    // TODO: Cargar datos desde el backend
-    setTimeout(() => {
-      // Datos mockup para maquetación
+    this.loadError = null;
+
+    try {
+      const s = await this.panelDashboardService.getSummary();
+
       this.stats = [
-        { label: 'Total Solicitudes', value: 45, icon: 'bi-file-earmark-text', color: 'primary' },
-        { label: 'En Proceso', value: 12, icon: 'bi-clock-history', color: 'info' },
-        { label: 'Pendientes', value: 8, icon: 'bi-hourglass-split', color: 'warning' },
-        { label: 'Completadas', value: 25, icon: 'bi-check-circle', color: 'success' },
-        { label: 'Total Clientes', value: 38, icon: 'bi-people', color: 'primary' },
-        { label: 'Total Partners', value: 7, icon: 'bi-handshake', color: 'info' }
+        { labelKey: 'PANEL.admin_dashboard.stats_total_requests', value: s.totalRequests, icon: 'bi-file-earmark-text', color: 'primary' },
+        { labelKey: 'PANEL.admin_dashboard.stats_in_process', value: s.enProceso, icon: 'bi-clock-history', color: 'info' },
+        { labelKey: 'PANEL.admin_dashboard.stats_pending', value: s.pendientes, icon: 'bi-hourglass-split', color: 'warning' },
+        { labelKey: 'PANEL.admin_dashboard.stats_completed', value: s.completadas, icon: 'bi-check-circle', color: 'success' },
+        { labelKey: 'PANEL.admin_dashboard.stats_total_clients', value: s.totalClients, icon: 'bi-people', color: 'primary' },
+        { labelKey: 'PANEL.admin_dashboard.stats_total_partners', value: s.totalPartners, icon: 'bi-handshake', color: 'info' },
       ];
 
-      this.requestsByType = [
-        { type: 'Apertura LLC', count: 20, percentage: 44 },
-        { type: 'Renovación LLC', count: 15, percentage: 33 },
-        { type: 'Cuenta Bancaria', count: 10, percentage: 23 }
-      ];
+      const total = s.totalRequests > 0 ? s.totalRequests : 1;
+      this.requestsByType = s.byType.map((row) => ({
+        typeKey: row.type,
+        count: row.count,
+        percentage: Math.round((row.count / total) * 100),
+      }));
 
-      this.recentRequests = [
-        { id: 1, type: 'Apertura LLC', clientName: 'Juan Pérez', status: 'en-proceso', createdAt: new Date() },
-        { id: 2, type: 'Renovación LLC', clientName: 'María García', status: 'pendiente', createdAt: new Date() },
-        { id: 3, type: 'Cuenta Bancaria', clientName: 'Carlos López', status: 'completada', createdAt: new Date() }
-      ];
-
+      this.recentRequests = s.recentRequests.map((r) => ({
+        id: r.id,
+        type: r.type,
+        clientName: r.clientName,
+        status: r.status,
+        createdAt: new Date(r.createdAt),
+      }));
+    } catch {
+      this.loadError = 'PANEL.admin_dashboard.error_load';
+      this.recentRequests = [];
+    } finally {
       this.isLoading = false;
-    }, 1000);
+    }
   }
 
   getStatusClass(status: string): string {
     const classes: { [key: string]: string } = {
-      'pendiente': 'badge bg-warning',
+      pendiente: 'badge bg-warning',
+      'solicitud-recibida': 'badge bg-secondary',
       'en-proceso': 'badge bg-info',
-      'completada': 'badge bg-success',
-      'rechazada': 'badge bg-danger'
+      completada: 'badge bg-success',
+      rechazada: 'badge bg-danger',
     };
     return classes[status] || 'badge bg-secondary';
   }
 
-  getStatusLabel(status: string): string {
-    const labels: { [key: string]: string } = {
-      'pendiente': 'Pendiente',
-      'en-proceso': 'En Proceso',
-      'completada': 'Completada',
-      'rechazada': 'Rechazada'
+  statusTranslocoKey(status: string): string {
+    const map: Record<string, string> = {
+      pendiente: 'pendiente',
+      'solicitud-recibida': 'solicitud_recibida',
+      'en-proceso': 'en_proceso',
+      completada: 'completada',
+      rechazada: 'rechazada',
     };
-    return labels[status] || status;
+    const k = map[status] || status.replace(/-/g, '_');
+    return `PANEL.dashboard.status.${k}`;
   }
 }

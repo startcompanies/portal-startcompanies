@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { RequestsService, Request } from '../../services/requests.service';
 
 interface RequestDisplay {
@@ -23,11 +24,14 @@ interface RequestDisplay {
   templateUrl: './admin-requests.component.html',
   styleUrl: './admin-requests.component.css'
 })
-export class AdminRequestsComponent implements OnInit {
+export class AdminRequestsComponent implements OnInit, OnDestroy {
   isLoading = true;
   requests: RequestDisplay[] = [];
   filteredRequests: RequestDisplay[] = [];
   errorMessage: string | null = null;
+  /** Filtro desde URL ?clientId= (id tabla clients) */
+  filterClientId?: number;
+  private querySub?: Subscription;
   
   // Filtros
   selectedStatus: string = 'all';
@@ -56,10 +60,32 @@ export class AdminRequestsComponent implements OnInit {
     { value: 'cuenta-bancaria', label: 'Cuenta Bancaria' }
   ];
 
-  constructor(private requestsService: RequestsService) {}
+  constructor(
+    private requestsService: RequestsService,
+    private route: ActivatedRoute,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
-    this.loadRequests();
+    this.querySub = this.route.queryParamMap.subscribe(() => {
+      const c = this.route.snapshot.queryParamMap.get('clientId');
+      if (c !== null && c !== '') {
+        const n = parseInt(c, 10);
+        this.filterClientId = Number.isFinite(n) ? n : undefined;
+      } else {
+        this.filterClientId = undefined;
+      }
+      this.currentPage = 1;
+      void this.loadRequests();
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.querySub?.unsubscribe();
+  }
+
+  clearClientFilter(): void {
+    void this.router.navigate(['/panel/requests'], { queryParams: {} });
   }
 
   async loadRequests(): Promise<void> {
@@ -80,6 +106,9 @@ export class AdminRequestsComponent implements OnInit {
       }
       if (this.searchTerm && this.searchTerm.trim().length > 0) {
         filters.search = this.searchTerm.trim();
+      }
+      if (this.filterClientId != null) {
+        filters.clientId = this.filterClientId;
       }
 
       // Obtener requests desde la API con paginación y filtros

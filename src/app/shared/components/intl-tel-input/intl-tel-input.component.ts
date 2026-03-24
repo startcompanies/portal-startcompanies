@@ -26,10 +26,16 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   @Input() preferredCountries: string[] = ['us', 'mx', 'co', 'ar', 'cl', 'pe'];
   @Input() initialCountry: string | undefined = 'us';
   @Input() allowDropdown: boolean = true;
-  @Input() formatOnDisplay: boolean = true;
-  @Input() separateDialCode: boolean = false;
+  /** Sin formateo agresivo por país (estilo WhatsApp: prefijo + dígitos). */
+  @Input() formatOnDisplay: boolean = false;
+  /** Prefijo (+52, etc.) aparte del campo numérico. */
+  @Input() separateDialCode: boolean = true;
+  /** Si es false, no se muestra el mensaje bajo el input (el padre puede usar solo el FormControl). */
+  @Input() showInlineErrors: boolean = true;
 
   private iti: any = null;
+  /** Evita blur/onTouched espurios al montar el plugin o al cambiar país por IP. */
+  private userHasFocusedInput = false;
   private onChange = (value: string) => {};
   private onTouched = () => {};
   private inputTimeout: any = null;
@@ -50,8 +56,8 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
         allowDropdown: this.allowDropdown,
         formatOnDisplay: this.formatOnDisplay,
         separateDialCode: this.separateDialCode,
-        autoPlaceholder: 'polite', // Mostrar placeholder con formato del país
-        utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/js/utils.js'
+        autoPlaceholder: 'off',
+        // Sin utils.js: evita warnings en consola y no usamos isValidNumber() del plugin
       };
       
       if (this.initialCountry) {
@@ -59,6 +65,10 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
       }
       
       this.iti = intlTelInput(this.telInput.nativeElement, options);
+
+      this.telInput.nativeElement.addEventListener('focus', () => {
+        this.userHasFocusedInput = true;
+      });
 
       // Listen for changes
       this.telInput.nativeElement.addEventListener('countrychange', () => {
@@ -80,20 +90,22 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
       });
 
       this.telInput.nativeElement.addEventListener('blur', () => {
-        this.onTouched();
-        
-        // Primero actualizar el valor para construir el número completo
         this.updateValue();
-        
-        // Luego validar el número completo
-        this.showError = true;
-        this.validateNumber();
+        if (!this.userHasFocusedInput) {
+          this.applyValidationState(false);
+          return;
+        }
+        this.onTouched();
+        this.applyValidationState(true);
       });
 
       // Set initial value if exists
       if (this.value) {
-        this.telInput.nativeElement.value = this.value;
-        this.iti.setNumber(this.value);
+        try {
+          this.iti.setNumber(this.value);
+        } catch {
+          this.telInput.nativeElement.value = this.value;
+        }
       }
     }
   }
@@ -106,8 +118,8 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
     if (this.iti && countryCode) {
       try {
         this.iti.setCountry(countryCode.toLowerCase());
-      } catch (error) {
-        console.warn('Error al establecer el país:', error);
+      } catch {
+        /* país desconocido para el plugin */
       }
     }
   }
@@ -153,38 +165,10 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   /**
-   * Obtiene el formato esperado del teléfono según el país seleccionado
+   * E.164 relajado: +, código país (empieza en 1-9), 6–14 dígitos más (total hasta 15 dígitos sin el +).
    */
-  private getExpectedFormat(): string {
-    if (!this.iti) {
-      return '';
-    }
-
-    const countryData = this.iti.getSelectedCountryData();
-    if (!countryData) {
-      return '';
-    }
-
-    const dialCode = countryData.dialCode || '';
-    
-    // Ejemplos de formato estándar (código de país + número completo, sin espacios)
-    const formatExamples: { [key: string]: string } = {
-      'us': `+1XXXXXXXXXX (ej: +15551234567) - El código +1 se agrega automáticamente`,
-      'mx': `+52XXXXXXXXXX (ej: +52553879345) - El código +52 se agrega automáticamente`,
-      'co': `+57XXXXXXXXXX (ej: +573001234567) - El código +57 se agrega automáticamente`,
-      'ar': `+54XXXXXXXXXX (ej: +541112345678) - El código +54 se agrega automáticamente`,
-      'cl': `+56XXXXXXXXXX (ej: +56912345678) - El código +56 se agrega automáticamente`,
-      'pe': `+51XXXXXXXXXX (ej: +51987654321) - El código +51 se agrega automáticamente`,
-      'es': `+34XXXXXXXXXX (ej: +34612345678) - El código +34 se agrega automáticamente`,
-    };
-
-    const countryCode = countryData.iso2?.toLowerCase() || '';
-    if (formatExamples[countryCode]) {
-      return formatExamples[countryCode];
-    }
-
-    // Formato genérico: código de país + número completo
-    return `+${dialCode}XXXXXXXXXX (formato: +código+número completo) - El código +${dialCode} se agrega automáticamente`;
+  private isE164Simple(full: string): boolean {
+    return /^\+[1-9]\d{6,14}$/.test(full);
   }
 
   /**
@@ -228,157 +212,97 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   }
 
   /**
-   * Valida el número de teléfono y actualiza el estado de error
-   * Valida usando el número completo con código de país (el que se guardará)
+   * Sincroniza valor hacia el FormControl sin mostrar errores en UI (p. ej. canProceed en cada CD).
    */
-  private validateNumber(): void {
+  syncToFormControl(): void {
+    this.updateValue();
+    this.applyValidationState(false);
+  }
+
+  /**
+   * @param showUi si false, solo actualiza isValid/errorMessage interno; no muestra bloque bajo el input ni is-invalid.
+   */
+  private applyValidationState(showUi: boolean): void {
     if (!this.iti || !this.telInput?.nativeElement) {
       return;
     }
 
     const inputValue = this.telInput.nativeElement.value.trim();
-    
-    // Si está vacío y es requerido, mostrar error
+    const expose = showUi && this.showInlineErrors;
+
     if (this.required && !inputValue) {
       this.isValid = false;
       this.errorMessage = 'El teléfono es requerido';
-      this.showError = true;
-      // IMPORTANTE: sincronizar el FormControl con el input real.
-      // Si no hacemos esto, el FormControl puede conservar un valor anterior
-      // y el wizard avanzará aunque el campo esté vacío.
+      this.showError = expose;
       this.value = '';
       this.onChange('');
       return;
     }
 
-    // Si está vacío y no es requerido, es válido
     if (!inputValue) {
       this.isValid = true;
       this.errorMessage = '';
       this.showError = false;
-      // Limpia el FormControl para reflejar el input real.
       this.value = '';
       this.onChange('');
       return;
     }
 
-    // Construir el número completo con código de país
     const fullNumber = this.buildFullNumber(inputValue);
-    
+
     if (!fullNumber || fullNumber === '') {
       this.isValid = false;
-      // Sincronizar FormControl para que los validadores required fallen
       this.value = '';
       this.onChange('');
-      this.showError = true;
       this.errorMessage = 'El teléfono es requerido';
-      this.showError = true;
+      this.showError = expose;
       return;
     }
-    
-    // Validar el número completo
-    // Hacer una validación híbrida: usar intl-tel-input si es posible, sino validación básica
-    let isValid = false;
-    let validationError = null;
-    
-    // Validación básica: el número completo debe tener al menos código de país + 7 dígitos
-    const minLength = 8; // +1 (código) + 7 (mínimo de dígitos del número local)
-    const maxLength = 16; // Longitud máxima razonable para un número internacional
-    
-    if (fullNumber.length < minLength) {
-      isValid = false;
-      validationError = 0; // TOO_SHORT
-    } else if (fullNumber.length > maxLength) {
-      isValid = false;
-      validationError = 1; // TOO_LONG
-    } else if (!/^\+[1-9]\d{7,14}$/.test(fullNumber)) {
-      // Validar formato básico: debe empezar con + seguido de código de país (1-9) y luego 7-14 dígitos
-      isValid = false;
-      validationError = 4; // NOT_A_NUMBER
-    } else {
-      // Si pasa la validación básica, intentar validar con intl-tel-input
-      try {
-        // Guardar el estado actual del input
-        const currentInputValue = this.telInput.nativeElement.value;
-        const currentCountry = this.iti.getSelectedCountryData()?.iso2;
-        
-        // Establecer el número completo en intl-tel-input para validarlo
-        this.iti.setNumber(fullNumber);
-        
-        // Validar el número completo
-        isValid = this.iti.isValidNumber();
-        validationError = this.iti.getValidationError();
-        
-        // Si intl-tel-input dice que es inválido pero pasó nuestra validación básica,
-        // considerar válido (puede ser un número válido que intl-tel-input no reconoce)
-        if (!isValid && validationError !== null) {
-          // Si el error es solo de formato pero el número tiene longitud válida, considerarlo válido
-          if (fullNumber.length >= minLength && fullNumber.length <= maxLength) {
-            isValid = true;
-            validationError = null;
-          }
-        }
-        
-        // Restaurar el input visual al formato local
-        this.telInput.nativeElement.value = currentInputValue;
-        if (currentCountry) {
-          this.iti.setCountry(currentCountry);
-        }
-        if (currentInputValue) {
-          this.iti.setNumber(currentInputValue);
-        }
-      } catch (error) {
-        // Si hay error con intl-tel-input, usar la validación básica
-        isValid = fullNumber.length >= minLength && fullNumber.length <= maxLength && /^\+[1-9]\d{7,14}$/.test(fullNumber);
-        validationError = isValid ? null : -1;
+
+    const ok = this.isE164Simple(fullNumber);
+    let validationError: number | null = null;
+    if (!ok) {
+      if (fullNumber.length < 8) {
+        validationError = 0;
+      } else if (fullNumber.length > 16) {
+        validationError = 1;
+      } else {
+        validationError = 4;
       }
     }
-    
-    // Actualizar el estado de validación
-    this.updateValidationState(isValid, validationError, fullNumber);
+
+    this.updateValidationState(ok, validationError, fullNumber, expose);
   }
 
-  /**
-   * Actualiza el estado de validación y el FormControl
-   */
-  private updateValidationState(isValid: boolean, validationError: number | null, fullNumber: string): void {
-    // Asegurar que el valor en el FormControl se actualice con el número completo
-    // Esto es importante porque el número completo es el que se guardará
+  private updateValidationState(
+    isValid: boolean,
+    validationError: number | null,
+    fullNumber: string,
+    exposeUi: boolean
+  ): void {
     if (fullNumber && fullNumber !== this.value) {
       this.value = fullNumber;
       this.onChange(fullNumber);
     }
-    
+
     if (isValid) {
       this.isValid = true;
       this.errorMessage = '';
       this.showError = false;
     } else {
       this.isValid = false;
-      this.showError = true;
-      
-      // Obtener el formato esperado
-      const expectedFormat = this.getExpectedFormat();
-      
-      // Mensajes de error más amigables según el tipo de error
+      this.showError = exposeUi;
+      const hint =
+        'Elige el país en el selector e introduce solo el número (como en WhatsApp). Se guardará con prefijo internacional (+…).';
       switch (validationError) {
-        case 0: // TOO_SHORT
-          this.errorMessage = `El número de teléfono es demasiado corto. ${expectedFormat}`;
+        case 0:
+          this.errorMessage = `El número es demasiado corto. ${hint}`;
           break;
-        case 1: // TOO_LONG
-          this.errorMessage = `El número de teléfono es demasiado largo. ${expectedFormat}`;
-          break;
-        case 2: // INVALID_COUNTRY_CODE
-          this.errorMessage = `Código de país inválido. ${expectedFormat}`;
-          break;
-        case 3: // INVALID_LENGTH
-          this.errorMessage = `Longitud de número inválida. ${expectedFormat}`;
-          break;
-        case 4: // NOT_A_NUMBER
-          this.errorMessage = `No es un número válido. ${expectedFormat}`;
+        case 1:
+          this.errorMessage = `El número es demasiado largo. ${hint}`;
           break;
         default:
-          this.errorMessage = `Formato de teléfono inválido. ${expectedFormat}`;
+          this.errorMessage = `Introduce un número válido con el prefijo elegido. ${hint}`;
       }
     }
   }
@@ -423,12 +347,14 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
     }
   }
 
-  // Public method to get the full number with country code
   getFullNumber(): string {
-    if (this.iti) {
-      return this.iti.getNumber() || '';
+    if (this.iti && this.telInput?.nativeElement) {
+      const raw = this.telInput.nativeElement.value.trim();
+      if (raw) {
+        return this.buildFullNumber(raw);
+      }
     }
-    return '';
+    return this.value || '';
   }
 
   // Public method to get the country code
@@ -439,20 +365,17 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
     return '';
   }
 
-  // Public method to check if the number is valid
   isValidNumber(): boolean {
-    if (this.iti) {
-      return this.iti.isValidNumber();
-    }
-    return false;
+    const full = this.getFullNumber();
+    return !full ? !this.required : this.isE164Simple(full);
   }
 
   /**
    * Fuerza la validación del número (útil para validación del formulario)
    */
   validate(): void {
-    this.showError = true;
-    this.validateNumber();
+    this.userHasFocusedInput = true;
+    this.applyValidationState(true);
   }
 
   /**

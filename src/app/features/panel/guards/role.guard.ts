@@ -2,7 +2,9 @@ import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-export const roleGuard = (allowedRoles: ('client' | 'partner' | 'admin')[]): CanActivateFn => {
+export type PanelRole = 'client' | 'partner' | 'admin' | 'user';
+
+export const roleGuard = (allowedRoles: PanelRole[]): CanActivateFn => {
   return (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
@@ -13,12 +15,11 @@ export const roleGuard = (allowedRoles: ('client' | 'partner' | 'admin')[]): Can
     }
 
     const user = authService.getCurrentUser();
-    if (user && allowedRoles.includes(user.type)) {
+    if (user && allowedRoles.includes(user.type as PanelRole)) {
       return true;
     }
 
-    // Redirigir según el tipo de usuario
-    if (user?.type === 'admin') {
+    if (user?.type === 'admin' || user?.type === 'user') {
       router.navigate(['/panel/dashboard']);
     } else if (user?.type === 'partner') {
       router.navigate(['/panel/my-requests']);
@@ -29,13 +30,3 @@ export const roleGuard = (allowedRoles: ('client' | 'partner' | 'admin')[]): Can
     return false;
   };
 };
-
-
-
-
-
-
-
-
-
-

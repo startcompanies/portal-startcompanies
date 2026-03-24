@@ -7,6 +7,7 @@ import {
   ChangeDetectorRef,
   ElementRef,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { SharedModule } from '../../shared/shared.module';
 import { ScrollService } from '../../../shared/services/scroll.service';
@@ -19,6 +20,7 @@ import { filter } from 'rxjs/operators';
 import { LanguageService } from '../../../shared/services/language.service';
 import { LangRouterLinkDirective } from '../../../shared/directives/lang-router-link.directive';
 import { environment } from '../../../../environments/environment';
+import { AuthService, User } from '../../../features/panel/services/auth.service';
 
 @Component({
   selector: 'app-sc-header',
@@ -28,11 +30,31 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './sc-header.component.css',
 })
 export class ScHeaderComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly authService = inject(AuthService);
+
+  /** Sesión panel (misma referencia que AuthService) para plantilla con async */
+  readonly currentUser$ = this.authService.currentUser$;
+
   @Input() hideLogin = false;
 
   /** Mostrar botón de login solo si wizard/panel están habilitados y el padre no lo oculta */
   get showLoginButton(): boolean {
     return environment.wizardAndPanelEnabled && !this.hideLogin;
+  }
+
+  displayName(user: User): string {
+    const fn = user.first_name?.trim();
+    const ln = user.last_name?.trim();
+    if (fn && ln) return `${fn} ${ln}`;
+    if (fn) return fn;
+    const un = user.username?.trim();
+    if (un) return un;
+    const email = user.email?.trim();
+    if (email) {
+      const at = email.indexOf('@');
+      return at > 0 ? email.slice(0, at) : email;
+    }
+    return '';
   }
 
   @ViewChild('navbar', { static: false }) navbar?: ElementRef<HTMLElement>;

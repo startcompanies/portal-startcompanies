@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpEventType } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { DocumentsService } from '../../services/documents.service';
 import { NotificationsService } from '../../services/notifications.service';
 import { RequestsService, Request as ApiRequest } from '../../services/requests.service';
@@ -13,6 +14,7 @@ import { StripePaymentFormComponent } from '../../components/stripe-payment-form
 import { WizardApiService } from '../../../wizard/services/wizard-api.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
 interface ProcessStep {
   id: number;
@@ -49,7 +51,7 @@ interface RequestDisplay {
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent],
+  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent, TranslocoPipe],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.css'
 })
@@ -62,6 +64,8 @@ export class RequestDetailComponent implements OnInit {
   currentUser: any = null;
   isPartner = false;
   isAdmin = false;
+  /** Staff operativo (rol `user`): puede ver enlace a registro Zoho junto con admin. */
+  isStaffUser = false;
   loadError: string | null = null;
   successMessage: string | null = null;
   errorMessage: string | null = null;
@@ -72,7 +76,6 @@ export class RequestDetailComponent implements OnInit {
   // Gestión de procesos (solo admin)
   showEditStepModal = false;
   selectedStep: ProcessStep | null = null;
-  availableAssignees: string[] = ['Equipo Legal', 'Equipo Contable', 'Equipo Administrativo', 'Sistema'];
 
   // WorkDrive: propiedades cacheadas para evitar evaluaciones en cada ciclo de CD
   safeWorkDriveUrl: SafeResourceUrl | null = null;
@@ -100,10 +103,10 @@ export class RequestDetailComponent implements OnInit {
   uploadError: string | null = null;
 
   documentTypes = [
-    { value: 'certificate', label: 'Certificado' },
-    { value: 'document', label: 'Documento' },
-    { value: 'form', label: 'Formulario' },
-    { value: 'other', label: 'Otro' }
+    { value: 'certificate', labelKey: 'PANEL.request_detail.doc_type_certificate' },
+    { value: 'document', labelKey: 'PANEL.request_detail.doc_type_document' },
+    { value: 'form', labelKey: 'PANEL.request_detail.doc_type_form' },
+    { value: 'other', labelKey: 'PANEL.request_detail.doc_type_other' }
   ];
 
   constructor(
@@ -115,12 +118,32 @@ export class RequestDetailComponent implements OnInit {
     private requestsService: RequestsService,
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
-    private wizardApiService: WizardApiService
+    private wizardApiService: WizardApiService,
+    private panelSnackBar: PanelSnackBarService,
+    private transloco: TranslocoService
   ) {
     // Inicializar en constructor después de la inyección
     this.currentUser = this.authService.getCurrentUser();
     this.isPartner = this.authService.isPartner();
     this.isAdmin = this.authService.isAdmin();
+    this.isStaffUser = this.authService.isStaffUser();
+  }
+
+  yesNoBoolean(v: boolean | null | undefined): string {
+    if (v === true) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    if (v === false) {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.no');
+    }
+    return '—';
+  }
+
+  yesNoSiString(v: string | boolean | null | undefined): string {
+    if (v === true || v === 'si' || v === 'yes') {
+      return this.transloco.translate('PANEL.forms_renovacion_llc.yes');
+    }
+    return this.transloco.translate('PANEL.forms_renovacion_llc.no');
   }
 
   // Año relevante para el formulario de renovación (año fiscal que se está renovando)
@@ -194,9 +217,22 @@ export class RequestDetailComponent implements OnInit {
       // Generar steps basados en el estado y tipo de solicitud
       const steps: ProcessStep[] = [];
       
-      // SIEMPRE agregar "Solicitud Recibida" como primera etapa
+      // Primera etapa / timeline según tipo
       if (apiRequest.status === 'solicitud-recibida') {
-        // Si está en "solicitud-recibida", esta es la etapa actual
+        if (apiRequest.type === 'apertura-llc') {
+          // Una sola fila por etiqueta cliente (alias fusionados, como renovación)
+          const labels = this.getAperturaClientTimelineLabels();
+          labels.forEach((label, index) => {
+            steps.push({
+              id: index + 1,
+              name: label,
+              description: `Etapa del proceso: ${label}`,
+              status: index === 0 ? 'current' : 'pending',
+              date: index === 0 ? new Date(apiRequest.createdAt) : undefined,
+              completedBy: undefined
+            });
+          });
+        } else {
         steps.push({
           id: 1,
           name: 'Solicitud Recibida',
@@ -205,22 +241,8 @@ export class RequestDetailComponent implements OnInit {
           date: new Date(apiRequest.createdAt),
           completedBy: undefined
         });
-        
-        // Agregar todos los pasos siguientes del flujo como 'pending'
-        // Para apertura-llc, usar las etapas del blueprint
-        if (apiRequest.type === 'apertura-llc') {
-          const blueprintStages = this.getBlueprintStages();
-          blueprintStages.forEach((stageName: string, index: number) => {
-            steps.push({
-              id: index + 2, // +2 porque la primera es "Solicitud Recibida"
-              name: stageName,
-              description: `Etapa del proceso: ${stageName}`,
-              status: 'pending',
-              date: undefined,
-              completedBy: undefined
-            });
-          });
-        } else if (apiRequest.type === 'cuenta-bancaria') {
+
+        if (apiRequest.type === 'cuenta-bancaria') {
           // Para cuenta-bancaria, usar las etapas del blueprint
           const blueprintStages = this.getCuentaBancariaBlueprintStages();
           blueprintStages.forEach((stageName: string, index: number) => {
@@ -261,8 +283,63 @@ export class RequestDetailComponent implements OnInit {
             });
           });
         }
+        }
       } else {
-        // Si ya pasó de "solicitud-recibida", esta etapa está completada
+        // Apertura LLC: timeline único (sin duplicar "Solicitud Recibida" / "Confirmación pago")
+        if (apiRequest.type === 'apertura-llc') {
+          const labels = this.getAperturaClientTimelineLabels();
+          const rawStage = (apiRequest.stage || 'Apertura Confirmada').trim();
+          const perdida = rawStage === 'Apertura Perdida';
+          const timelineIdx = perdida
+            ? -2
+            : this.mapAperturaInternalStageToTimelineIndex(apiRequest.stage);
+
+          const allComplete =
+            apiRequest.status === 'completada' ||
+            (apiRequest.status === 'en-proceso' && perdida);
+
+          labels.forEach((label, index) => {
+            let status: 'completed' | 'current' | 'pending' = 'pending';
+            if (allComplete && !perdida) {
+              status = 'completed';
+            } else if (perdida) {
+              status = 'completed';
+            } else if (timelineIdx >= 0) {
+              if (index < timelineIdx) {
+                status = 'completed';
+              } else if (index === timelineIdx) {
+                status = 'current';
+              }
+            } else if (timelineIdx < 0 && index === 0) {
+              status = 'current';
+            }
+
+            steps.push({
+              id: index + 1,
+              name: label,
+              description: `Etapa del proceso: ${label}`,
+              status,
+              date:
+                status === 'completed' || status === 'current'
+                  ? new Date(apiRequest.updatedAt || apiRequest.createdAt)
+                  : undefined,
+              completedBy:
+                status === 'completed' || status === 'current' ? 'Sistema' : undefined
+            });
+          });
+
+          if (perdida) {
+            steps.push({
+              id: steps.length + 1,
+              name: 'Apertura Perdida',
+              description: 'Etapa del proceso: Apertura Perdida',
+              status: 'current',
+              date: new Date(apiRequest.updatedAt || apiRequest.createdAt),
+              completedBy: 'Sistema'
+            });
+          }
+        } else {
+        // Si ya pasó de "solicitud-recibida", primera etapa completada (resto de tipos)
         steps.push({
           id: 1,
           name: 'Solicitud Recibida',
@@ -271,102 +348,8 @@ export class RequestDetailComponent implements OnInit {
           date: new Date(apiRequest.createdAt),
           completedBy: 'Sistema'
         });
-        
-        // Si está en proceso y es apertura-llc, agregar las etapas del blueprint
-        if (apiRequest.status === 'en-proceso' && apiRequest.type === 'apertura-llc') {
-          const blueprintStages = this.getBlueprintStages();
-          const specialStages = this.getSpecialBlueprintStages();
-          // Si no tiene stage configurado, usar la primera etapa como default
-          const currentStage = apiRequest.stage || blueprintStages[0];
-          const currentStageIndex = blueprintStages.findIndex(s => s === currentStage);
-          const isSpecialStage = specialStages.includes(currentStage);
-          
-          console.log('Blueprint stages:', blueprintStages);
-          console.log('Current stage from API:', apiRequest.stage);
-          console.log('Current stage index:', currentStageIndex);
-          console.log('Is special stage:', isSpecialStage);
-          
-          // Agregar las etapas regulares del blueprint
-          blueprintStages.forEach((stageName: string, index: number) => {
-            let status: 'completed' | 'current' | 'pending' = 'pending';
-            
-            if (currentStageIndex >= 0) {
-              // Todas las etapas anteriores a la actual están completadas
-              if (index < currentStageIndex) {
-                status = 'completed';
-              } else if (index === currentStageIndex) {
-                status = 'current';
-              }
-            } else if (!isSpecialStage) {
-              // Si no se encuentra el stage y no es especial, marcar la primera como current
-              if (index === 0) {
-                status = 'current';
-              }
-            }
-            
-            steps.push({
-              id: index + 2, // +2 porque la primera es "Solicitud Recibida"
-              name: stageName,
-              description: `Etapa del proceso: ${stageName}`,
-              status,
-              date: status === 'completed' || status === 'current' ? new Date() : undefined,
-              completedBy: status === 'completed' || status === 'current' ? 'Sistema' : undefined
-            });
-          });
-          
-          // Lógica para etapas especiales:
-          // 1. Si el stage actual es "Apertura Activa", mostrar "Apertura Cuenta Bancaria"
-          // 2. Si el stage actual es "Apertura Perdida", mostrar solo "Apertura Perdida" (y ahí se queda)
-          // 3. Si el stage actual es "Apertura Cuenta Bancaria", mostrarla como current
-          
-          if (currentStage === 'Apertura Activa') {
-            // Mostrar "Apertura Activa" como completada y "Apertura Cuenta Bancaria" como current
-            steps.push({
-              id: steps.length + 1,
-              name: 'Apertura Activa',
-              description: 'Etapa del proceso: Apertura Activa',
-              status: 'completed',
-              date: new Date(),
-              completedBy: 'Sistema'
-            });
-            steps.push({
-              id: steps.length + 1,
-              name: 'Apertura Cuenta Bancaria',
-              description: 'Etapa del proceso: Apertura Cuenta Bancaria',
-              status: 'current',
-              date: new Date(),
-              completedBy: 'Sistema'
-            });
-          } else if (currentStage === 'Apertura Perdida') {
-            // Mostrar "Apertura Perdida" como current y ahí se queda (no mostrar más etapas)
-            steps.push({
-              id: steps.length + 1,
-              name: 'Apertura Perdida',
-              description: 'Etapa del proceso: Apertura Perdida',
-              status: 'current',
-              date: new Date(),
-              completedBy: 'Sistema'
-            });
-          } else if (currentStage === 'Apertura Cuenta Bancaria') {
-            // Si ya está en "Apertura Cuenta Bancaria", mostrar "Apertura Activa" como completada
-            steps.push({
-              id: steps.length + 1,
-              name: 'Apertura Activa',
-              description: 'Etapa del proceso: Apertura Activa',
-              status: 'completed',
-              date: new Date(),
-              completedBy: 'Sistema'
-            });
-            steps.push({
-              id: steps.length + 1,
-              name: 'Apertura Cuenta Bancaria',
-              description: 'Etapa del proceso: Apertura Cuenta Bancaria',
-              status: 'current',
-              date: new Date(),
-              completedBy: 'Sistema'
-            });
-          }
-        } else if (apiRequest.status === 'en-proceso' && apiRequest.type === 'cuenta-bancaria') {
+
+        if (apiRequest.status === 'en-proceso' && apiRequest.type === 'cuenta-bancaria') {
           // Si está en proceso y es cuenta-bancaria, agregar las etapas del blueprint
           const blueprintStages = this.getCuentaBancariaBlueprintStages();
           const specialStages = this.getCuentaBancariaSpecialStages();
@@ -505,7 +488,8 @@ export class RequestDetailComponent implements OnInit {
             const isNM = this.isNewMexicoRenovacion(apiRequest);
             const blueprintStages = this.getRenovacionBlueprintStages(isNM);
             const specialStages = this.getRenovacionSpecialBlueprintStages();
-            const currentStage = apiRequest.stage || blueprintStages[0];
+            const currentStage =
+              this.mapRenovacionStageFromApi(apiRequest.stage) || blueprintStages[0];
             const currentStageIndex = blueprintStages.findIndex(s => s === currentStage);
             const isSpecialStage = specialStages.includes(currentStage);
 
@@ -567,13 +551,17 @@ export class RequestDetailComponent implements OnInit {
             });
           }
         }
+        }
       }
 
       this.request = {
         id: apiRequest.id,
         type: apiRequest.type,
         status: apiRequest.status,
-        stage: apiRequest.stage,
+        stage:
+          apiRequest.type === 'renovacion-llc'
+            ? this.mapRenovacionStageFromApi(apiRequest.stage) ?? apiRequest.stage
+            : apiRequest.stage,
         workDriveUrlExternal: apiRequest.workDriveUrlExternal,
         clientName,
         createdAt: new Date(apiRequest.createdAt),
@@ -637,7 +625,7 @@ export class RequestDetailComponent implements OnInit {
       const jsonString = this.getFullDataAsJson();
       if (win.navigator.clipboard) {
         await win.navigator.clipboard.writeText(jsonString);
-        alert('JSON copiado al portapapeles');
+        this.panelSnackBar.info('JSON copiado al portapapeles');
       } else {
         throw new Error('Clipboard API not available');
       }
@@ -650,7 +638,7 @@ export class RequestDetailComponent implements OnInit {
       textarea.select();
       doc.execCommand('copy');
       doc.body.removeChild(textarea);
-      alert('JSON copiado al portapapeles');
+      this.panelSnackBar.info('JSON copiado al portapapeles');
     }
   }
 
@@ -837,9 +825,51 @@ export class RequestDetailComponent implements OnInit {
   }
 
   /**
-   * Obtiene las etapas del blueprint para Apertura LLC
-   * Nota: "Apertura Activa", "Apertura Perdida" y "Apertura Cuenta Bancaria" 
-   * son etapas especiales que se muestran condicionalmente
+   * Etiquetas únicas del timeline de Apertura LLC (un alias = un solo paso; varios stages internos comparten fila).
+   * Orden alineado con getBlueprintStages() / Zoho.
+   */
+  getAperturaClientTimelineLabels(): string[] {
+    return [
+      'Solicitud Recibida',
+      'Documentación completada',
+      'Apertura Cuenta Bancaria',
+      'Confirmación pago',
+      'Apertura Activa',
+    ];
+  }
+
+  /**
+   * Índice en getAperturaClientTimelineLabels para el stage interno guardado en API.
+   * Apertura Confirmada + Filing Iniciado → 0; Cuenta Bancaria Confirmada + Confirmación pago → 3.
+   */
+  private mapAperturaInternalStageToTimelineIndex(
+    internalStage: string | undefined | null
+  ): number {
+    if (internalStage == null || !String(internalStage).trim()) {
+      return 0;
+    }
+    const t = String(internalStage).trim();
+    if (t === 'Apertura Confirmada' || t === 'Filing Iniciado') {
+      return 0;
+    }
+    if (t === 'Documentación completada') {
+      return 1;
+    }
+    if (t === 'Apertura Cuenta Bancaria') {
+      return 2;
+    }
+    if (t === 'Cuenta Bancaria Confirmada' || t === 'Confirmación pago') {
+      return 3;
+    }
+    if (t === 'Apertura Activa') {
+      return 4;
+    }
+    return 0;
+  }
+
+  /**
+   * Pipeline interno (Zoho/API) para Apertura LLC. El timeline usa getAperturaClientTimelineLabels().
+   * "Apertura Perdida" se trata aparte (no forma parte de esta lista).
    */
   getBlueprintStages(): string[] {
     return [
@@ -849,20 +879,15 @@ export class RequestDetailComponent implements OnInit {
       'Apertura Cuenta Bancaria',
       'Cuenta Bancaria Confirmada',
       'Confirmación pago',
-      // Las siguientes etapas son especiales y se muestran condicionalmente:
-      // 'Apertura Activa',  - Solo se muestra si es el stage actual
-      // 'Apertura Perdida', - Solo se muestra si es el stage actual (y ahí se queda)
+      'Apertura Activa',
     ];
   }
 
   /**
-   * Obtiene las etapas especiales del blueprint (Apertura Activa, Apertura Perdida, Apertura Cuenta Bancaria)
+   * Etapas especiales fuera del pipeline principal (solo manejo condicional en timeline).
    */
   getSpecialBlueprintStages(): string[] {
-    return [
-      'Apertura Activa',
-      'Apertura Perdida',
-    ];
+    return ['Apertura Perdida'];
   }
 
   /**
@@ -874,18 +899,37 @@ export class RequestDetailComponent implements OnInit {
   }
 
   /**
-   * Obtiene las etapas del blueprint para Renovación LLC
-   * "Estatal en proceso" solo se incluye si el estado es New Mexico
+   * Etapas visibles para el cliente (no reflejan todo el pipeline interno de Zoho).
+   * Debe coincidir con los alias aplicados en backend al sincronizar request.stage.
+   */
+  private mapRenovacionStageFromApi(stage: string | undefined | null): string | undefined {
+    if (stage == null || !String(stage).trim()) {
+      return undefined;
+    }
+    const t = String(stage).trim();
+    const aliases: Record<string, string> = {
+      'Federal enviada a Tax Preparer': 'Renovación Confirmada',
+      'Aprobación cliente': 'Federal - En revisión interna',
+      'RA completado': 'RA en Proceso',
+      'Estatal en proceso': 'Presentación estatal',
+    };
+    return aliases[t] ?? t;
+  }
+
+  /**
+   * Blueprint de Renovación LLC: solo etapas que el cliente debe ver (orden).
+   * New Mexico: incluye paso estatal/presentación.
    */
   getRenovacionBlueprintStages(isNewMexico: boolean = false): string[] {
     const stages = [
+      'Renovación Abierta',
       'Renovación Confirmada',
-      'Aprobación cliente',
+      'Federal - En revisión interna',
       'Federal completada',
-      'RA completado',
+      'RA en Proceso',
     ];
     if (isNewMexico) {
-      stages.push('Estatal en proceso');
+      stages.push('Presentación estatal');
     }
     stages.push('Renovación completa');
     return stages;
@@ -925,10 +969,10 @@ export class RequestDetailComponent implements OnInit {
   getStepDefinitions(type: string, status?: string, stage?: string): Array<{ name: string; description: string }> {
     // Si está en proceso y tiene stage, usar las etapas del blueprint
     if (status === 'en-proceso' && type === 'apertura-llc' && stage) {
-      const blueprintStages = this.getBlueprintStages();
-      return blueprintStages.map(stageName => ({
-        name: stageName,
-        description: `Etapa: ${stageName}`
+      const labels = this.getAperturaClientTimelineLabels();
+      return labels.map((label) => ({
+        name: label,
+        description: `Etapa: ${label}`
       }));
     }
 
@@ -1081,7 +1125,7 @@ export class RequestDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al eliminar documento:', error);
-        alert('Error al eliminar el documento');
+        this.panelSnackBar.error('Error al eliminar el documento');
       }
     });
   }
@@ -1108,14 +1152,18 @@ export class RequestDetailComponent implements OnInit {
         this.request.steps[stepIndex].date = new Date();
         this.request.steps[stepIndex].completedBy = this.currentUser?.username || 'Administrador';
         
-        // Crear notificación para el cliente/partner
-        this.notificationsService.createNotification({
-          type: 'success',
-          title: 'Proceso Actualizado',
-          message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
-          link: `/panel/my-requests/${this.request.id}`,
-          requestId: this.request.id
-        });
+        const data = this.fullRequestData;
+        const targetUserId = data?.client?.userId ?? data?.partner?.id;
+        if (targetUserId) {
+          this.notificationsService.createNotificationRemote({
+            userId: targetUserId,
+            type: 'success',
+            title: 'Proceso Actualizado',
+            message: `Tu solicitud #${this.request.id} ha avanzado: ${step.name} completado`,
+            link: `/panel/my-requests/${this.request.id}`,
+            requestId: this.request.id,
+          });
+        }
       }
       
       // Si se completa un paso, el siguiente pasa a ser "current"
@@ -1130,18 +1178,6 @@ export class RequestDetailComponent implements OnInit {
 
     // TODO: Enviar actualización al backend
     console.log('Actualizar paso:', step, 'a estado:', newStatus);
-  }
-
-  assignStepResponsible(step: ProcessStep, responsible: string): void {
-    if (!this.request) return;
-
-    const stepIndex = this.request.steps.findIndex(s => s.id === step.id);
-    if (stepIndex !== -1) {
-      this.request.steps[stepIndex].completedBy = responsible;
-    }
-
-    // TODO: Enviar asignación al backend
-    console.log('Asignar responsable:', responsible, 'al paso:', step.name);
   }
 
   /**
@@ -1167,11 +1203,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud aprobada correctamente');
+      this.panelSnackBar.success('Solicitud aprobada correctamente');
     } catch (error: any) {
       console.error('Error al aprobar solicitud:', error);
-      alert(error?.error?.message || 'Error al aprobar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al aprobar la solicitud'
+      );
     }
   }
 
@@ -1193,11 +1230,12 @@ export class RequestDetailComponent implements OnInit {
       // Recargar la solicitud
       await this.loadRequest();
       
-      // Mostrar notificación de éxito
-      alert('Solicitud rechazada correctamente');
+      this.panelSnackBar.success('Solicitud rechazada correctamente');
     } catch (error: any) {
       console.error('Error al rechazar solicitud:', error);
-      alert(error?.error?.message || 'Error al rechazar la solicitud');
+      this.panelSnackBar.error(
+        error?.error?.message || 'Error al rechazar la solicitud'
+      );
     }
   }
 
@@ -1206,22 +1244,6 @@ export class RequestDetailComponent implements OnInit {
    */
   isSolicitudRecibida(): boolean {
     return this.request?.status === 'solicitud-recibida';
-  }
-
-  /**
-   * Verifica si una etapa es parte del blueprint (para Apertura LLC o Cuenta Bancaria)
-   */
-  isBlueprintStage(stageName: string): boolean {
-    if (this.request?.type === 'apertura-llc') {
-      const blueprintStages = this.getBlueprintStages();
-      const specialStages = this.getSpecialBlueprintStages();
-      return blueprintStages.includes(stageName) || specialStages.includes(stageName);
-    } else if (this.request?.type === 'cuenta-bancaria') {
-      const blueprintStages = this.getCuentaBancariaBlueprintStages();
-      const specialStages = this.getCuentaBancariaSpecialStages();
-      return blueprintStages.includes(stageName) || specialStages.includes(stageName);
-    }
-    return false;
   }
 
   /**

@@ -1,21 +1,15 @@
 <div class="my-clients-container">
-  <!-- Header -->
   <div class="clients-header">
-    <div>
-      <h2>Mis Clientes</h2>
-      <p class="text-muted">Gestiona los clientes asociados a tu cuenta</p>
-    </div>
-    <button 
+    <button
       *ngIf="clients.length > 0"
-      class="btn btn-primary" 
+      class="btn btn-primary"
       (click)="openNewClientModal()"
     >
       <i class="bi bi-plus-circle me-2"></i>
-      Nuevo Cliente
+      {{ 'PANEL.my_clients.new_client' | transloco }}
     </button>
   </div>
 
-  <!-- Métricas Rápidas -->
   <div class="metrics-section">
     <div class="row g-3">
       <div class="col-md-4">
@@ -25,8 +19,8 @@
           </div>
           <div class="metric-content">
             <h3>{{ totalClients }}</h3>
-            <p>Total Clientes</p>
-            <small class="text-muted">{{ activeClients }} activos</small>
+            <p>{{ 'PANEL.my_clients.metric_total' | transloco }}</p>
+            <small class="text-muted">{{ 'PANEL.my_clients.metric_active_count' | transloco: { count: activeClients } }}</small>
           </div>
         </div>
       </div>
@@ -37,8 +31,8 @@
           </div>
           <div class="metric-content">
             <h3>{{ activeClients }}</h3>
-            <p>Clientes Activos</p>
-            <small class="text-muted">Con actividad reciente</small>
+            <p>{{ 'PANEL.my_clients.metric_active_title' | transloco }}</p>
+            <small class="text-muted">{{ 'PANEL.my_clients.metric_active_sub' | transloco }}</small>
           </div>
         </div>
       </div>
@@ -49,47 +43,45 @@
           </div>
           <div class="metric-content">
             <h3>{{ totalRequests }}</h3>
-            <p>Total Solicitudes</p>
-            <small class="text-muted">De todos tus clientes</small>
+            <p>{{ 'PANEL.my_clients.metric_requests' | transloco }}</p>
+            <small class="text-muted">{{ 'PANEL.my_clients.metric_requests_sub' | transloco }}</small>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Filtros -->
   <div class="filters-section">
     <div class="row g-3">
       <div class="col-md-8">
-        <label class="form-label">Buscar</label>
-        <input 
-          type="text" 
-          class="form-control" 
-          placeholder="Nombre, email, empresa..."
+        <label class="form-label">{{ 'PANEL.my_clients.search_label' | transloco }}</label>
+        <input
+          type="text"
+          class="form-control"
+          [attr.placeholder]="'PANEL.my_clients.search_placeholder' | transloco"
           [(ngModel)]="searchTerm"
           (input)="onSearchChange()"
         >
       </div>
       <div class="col-md-4">
-        <label class="form-label">Estado</label>
+        <label class="form-label">{{ 'PANEL.my_clients.status_label' | transloco }}</label>
         <select class="form-select" [(ngModel)]="selectedStatus" (change)="onStatusChange()">
           <option *ngFor="let option of statusOptions" [value]="option.value">
-            {{ option.label }}
+            {{ option.labelKey | transloco }}
           </option>
         </select>
       </div>
     </div>
   </div>
 
-  <!-- Lista de Clientes -->
   <div class="clients-section">
     <div *ngIf="filteredClients.length === 0 && !isLoading" class="empty-state">
       <i class="bi bi-people" style="font-size: 4rem; color: #ccc;"></i>
-      <h3>No hay clientes</h3>
-      <p class="text-muted">No tienes clientes registrados aún</p>
+      <h3>{{ 'PANEL.my_clients.empty_title' | transloco }}</h3>
+      <p class="text-muted">{{ 'PANEL.my_clients.empty_subtitle' | transloco }}</p>
       <button class="btn btn-primary mt-3" (click)="openNewClientModal()">
         <i class="bi bi-plus-circle me-2"></i>
-        Agregar Primer Cliente
+        {{ 'PANEL.my_clients.add_first' | transloco }}
       </button>
     </div>
 
@@ -120,43 +112,43 @@
             </div>
             <div *ngIf="client.lastRequestDate" class="detail-item">
               <i class="bi bi-clock-history me-2"></i>
-              <span *ngIf="client.lastRequestDate">Última solicitud: {{ client.lastRequestDate | date:'short' }}</span>
+              <span *ngIf="client.lastRequestDate">{{ 'PANEL.my_clients.last_request' | transloco }} {{ client.lastRequestDate | date:'short' }}</span>
             </div>
           </div>
 
           <div class="client-stats">
             <div class="stat-item">
               <div class="stat-value">{{ client.totalRequests }}</div>
-              <div class="stat-label">Total Solicitudes</div>
+              <div class="stat-label">{{ 'PANEL.my_clients.stat_total_req' | transloco }}</div>
             </div>
             <div class="stat-item">
               <div class="stat-value text-info">{{ client.activeRequests }}</div>
-              <div class="stat-label">Activas</div>
+              <div class="stat-label">{{ 'PANEL.my_clients.stat_active' | transloco }}</div>
             </div>
             <div class="stat-item">
               <div class="stat-value text-success">{{ client.completedRequests }}</div>
-              <div class="stat-label">Completadas</div>
+              <div class="stat-label">{{ 'PANEL.my_clients.stat_completed' | transloco }}</div>
             </div>
           </div>
 
           <div class="client-footer">
             <small class="text-muted">
               <i class="bi bi-calendar3 me-1"></i>
-              Creado: {{ client.createdAt | date:'short' }}
+              {{ 'PANEL.my_clients.created' | transloco }} {{ client.createdAt | date:'short' }}
             </small>
             <div class="client-actions">
-              <button 
+              <button
                 (click)="navigateToNewRequest(client.uuid)"
                 class="btn btn-sm btn-primary"
-                title="Nueva Solicitud"
+                [attr.title]="'PANEL.my_clients.btn_new_request' | transloco"
               >
                 <i class="bi bi-plus-circle me-1"></i>
-                Nueva Solicitud
+                {{ 'PANEL.my_clients.btn_new_request' | transloco }}
               </button>
-              <button 
+              <button
                 class="btn btn-sm btn-outline-secondary"
                 (click)="toggleClientStatus(client)"
-                [title]="client.status ? 'Desactivar' : 'Activar'"
+                [attr.title]="getToggleTitle(client)"
               >
                 <i [class]="client.status ? 'bi bi-pause-circle' : 'bi bi-play-circle'"></i>
               </button>
@@ -167,12 +159,11 @@
     </div>
   </div>
 
-  <!-- Modal Nuevo Cliente -->
   <div *ngIf="showNewClientModal" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5);">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Nuevo Cliente</h5>
+          <h5 class="modal-title">{{ 'PANEL.my_clients.modal_title' | transloco }}</h5>
           <button type="button" class="btn-close" (click)="closeNewClientModal()"></button>
         </div>
         <div class="modal-body">
@@ -181,49 +172,37 @@
           </div>
           <form>
             <div class="mb-3">
-              <label class="form-label">Nombre <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'PANEL.my_clients.field_name' | transloco }} <span class="text-danger">*</span></label>
               <input type="text" class="form-control" [(ngModel)]="newClient.name" name="name" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Email <span class="text-danger">*</span></label>
+              <label class="form-label">{{ 'PANEL.my_clients.field_email' | transloco }} <span class="text-danger">*</span></label>
               <input type="email" class="form-control" [(ngModel)]="newClient.email" name="email" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Teléfono</label>
+              <label class="form-label">{{ 'PANEL.my_clients.field_phone' | transloco }}</label>
               <input type="tel" class="form-control" [(ngModel)]="newClient.phone" name="phone">
             </div>
             <div class="mb-3">
-              <label class="form-label">Empresa</label>
+              <label class="form-label">{{ 'PANEL.my_clients.field_company' | transloco }}</label>
               <input type="text" class="form-control" [(ngModel)]="newClient.company" name="company">
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeNewClientModal()">Cancelar</button>
+          <button type="button" class="btn btn-secondary" (click)="closeNewClientModal()">{{ 'PANEL.request_detail.cancel' | transloco }}</button>
           <button type="button" class="btn btn-primary" (click)="createClient()" [disabled]="isCreating">
             <span *ngIf="isCreating" class="spinner-border spinner-border-sm me-2"></span>
-            Crear Cliente
+            {{ 'PANEL.my_clients.create' | transloco }}
           </button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Loading State -->
   <div *ngIf="isLoading" class="loading-overlay">
     <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
+      <span class="visually-hidden">{{ 'PANEL.my_clients.loading' | transloco }}</span>
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-

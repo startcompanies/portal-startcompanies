@@ -1,11 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  RouterOutlet,
+  RouterLink,
+  RouterLinkActive,
+  Router,
+  NavigationEnd,
+  ActivatedRoute,
+} from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from '../../pages/dashboard/dashboard.component';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { AuthService, User } from '../../services/auth.service';
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { PanelLanguageService } from '../../services/panel-language.service';
+import { PanelPreferencesService } from '../../services/panel-preferences.service';
 import { ChooseLanguageModalComponent } from '../../components/choose-language-modal/choose-language-modal.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -17,7 +26,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
     RouterLink,
     RouterLinkActive,
     CommonModule,
-    DashboardComponent,
     ResponsiveImageComponent,
     NotificationsComponent,
     ChooseLanguageModalComponent,
@@ -26,10 +34,18 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './panel-layout.component.html',
   styleUrl: './panel-layout.component.css'
 })
-export class PanelLayoutComponent implements OnInit {
+export class PanelLayoutComponent implements OnInit, OnDestroy {
   isSidebarOpen = true;
   currentUser: User | null = null;
   showLanguageModal = false;
+
+  /** Título/subtítulo del módulo actual (ruta hoja); si no hay, se usa el fallback por rol */
+  panelTitleKey: string | null = null;
+  panelSubtitleKey: string | null = null;
+  /** Oculta el bloque de título del header (p. ej. client-dashboard con bienvenida propia) */
+  hideLayoutHeader = false;
+
+  private routeEventsSub?: Subscription;
 
   logoImages = {
     // Logo blanco (negativo) para sidebar con fondo azul
@@ -41,22 +57,71 @@ export class PanelLayoutComponent implements OnInit {
     priority: true
   };
 
-  menuItems: { label: string; route: string; icon: string; roles?: ('client' | 'partner' | 'admin')[] }[] = [];
+  menuItems: { label: string; route: string; icon: string; roles?: ('client' | 'partner' | 'admin' | 'user')[] }[] = [];
 
   constructor(
     private authService: AuthService,
     private router: Router,
-    private panelLanguage: PanelLanguageService
+    private route: ActivatedRoute,
+    private panelLanguage: PanelLanguageService,
+    private panelPreferences: PanelPreferencesService,
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
     this.panelLanguage.applyStoredLanguage();
+    const localPrefs = this.panelPreferences.readLocalFallback();
+    if (localPrefs?.theme) {
+      this.panelPreferences.applyTheme(localPrefs.theme);
+    }
     this.setupMenuItems();
-    // Cargar preferencias desde la API (idioma puede venir de otro dispositivo) y luego decidir si mostrar modal
+    this.routeEventsSub = this.router.events
+      .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
+      .subscribe(() => this.updateHeaderFromRoute());
+    queueMicrotask(() => this.updateHeaderFromRoute());
+    // Cargar preferencias desde la API (idioma, tema, etc.) y luego decidir si mostrar modal
     this.panelLanguage.loadPreferencesFromApi().then(() => {
       this.showLanguageModal = this.panelLanguage.shouldShowLanguageModal();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.routeEventsSub?.unsubscribe();
+  }
+
+  /** Clave i18n del título mostrado en el header (módulo o fallback por rol) */
+  get effectiveTitleKey(): string {
+    if (this.hideLayoutHeader) {
+      return '';
+    }
+    return this.panelTitleKey ?? this.fallbackTitleKeyByRole();
+  }
+
+  private fallbackTitleKeyByRole(): string {
+    const t = this.currentUser?.type;
+    if (t === 'admin') return 'PANEL.layout.admin_panel';
+    if (t === 'user') return 'PANEL.layout.user_panel';
+    if (t === 'partner') return 'PANEL.layout.partner_panel';
+    return 'PANEL.layout.my_panel';
+  }
+
+  private updateHeaderFromRoute(): void {
+    let r: ActivatedRoute | null = this.route;
+    while (r.firstChild) {
+      r = r.firstChild;
+    }
+    const data = (r?.snapshot.data ?? {}) as Record<string, unknown>;
+    if (data['hideLayoutHeader'] === true) {
+      this.hideLayoutHeader = true;
+      this.panelTitleKey = null;
+      this.panelSubtitleKey = null;
+      return;
+    }
+    this.hideLayoutHeader = false;
+    const title = data['panelTitleKey'];
+    const sub = data['panelSubtitleKey'];
+    this.panelTitleKey = typeof title === 'string' ? title : null;
+    this.panelSubtitleKey = typeof sub === 'string' ? sub : null;
   }
 
   onLanguageModalClosed(): void {
@@ -73,13 +138,20 @@ export class PanelLayoutComponent implements OnInit {
         { label: 'PANEL.menu.requests', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['admin'] },
         { label: 'PANEL.menu.clients', route: '/panel/clients', icon: 'bi-people', roles: ['admin'] },
         { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['admin'] },
-        { label: 'PANEL.menu.partner_reports', route: '/panel/partner-reports', icon: 'bi-graph-up', roles: ['admin'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['admin'] },
+      ];
+    } else if (user?.type === 'user') {
+      this.menuItems = [
+        { label: 'PANEL.menu.dashboard', route: '/panel/dashboard', icon: 'bi-speedometer2', roles: ['user'] },
+        { label: 'PANEL.menu.requests', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['user'] },
+        { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['user'] },
+        { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['user'] },
       ];
     } else if (user?.type === 'partner') {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
+        { label: 'PANEL.menu.service_history', route: '/panel/service-history', icon: 'bi-clock-history', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_clients', route: '/panel/my-clients', icon: 'bi-people', roles: ['partner'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['partner'] },
       ];
@@ -88,6 +160,7 @@ export class PanelLayoutComponent implements OnInit {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
+        { label: 'PANEL.menu.service_history', route: '/panel/service-history', icon: 'bi-clock-history', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['client'] },
       ];
     }

@@ -381,15 +381,12 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => {
-              // Redirigir según el tipo de usuario
-              return import('../features/panel/layout/panel-layout/panel-layout.component').then(m => {
-                // La lógica de redirección se manejará en el componente
-                return m.PanelLayoutComponent;
-              });
-            }
-          }
-        ]
+            loadComponent: () =>
+              import('../features/panel/pages/panel-home-redirect/panel-home-redirect.component').then(
+                (m) => m.PanelHomeRedirectComponent,
+              ),
+          },
+        ],
       },
       // Rutas de autenticación con layout de auth
       {
@@ -435,12 +432,16 @@ export const routes: Routes = [
       // Rutas del panel con layout principal (requieren autenticación)
       {
         path: 'dashboard',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/dashboard/dashboard.component').then(m => m.DashboardComponent)
+            loadComponent: () => import('../features/panel/pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+            data: {
+              panelTitleKey: 'PANEL.admin_dashboard.title',
+              panelSubtitleKey: 'PANEL.admin_dashboard.subtitle',
+            },
           }
         ],
         data: {
@@ -452,16 +453,24 @@ export const routes: Routes = [
       },
       {
         path: 'requests',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/admin-requests/admin-requests.component').then(m => m.AdminRequestsComponent)
+            loadComponent: () => import('../features/panel/pages/admin-requests/admin-requests.component').then(m => m.AdminRequestsComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.admin_requests.title',
+              panelSubtitleKey: 'PANEL.route_meta.admin_requests.subtitle',
+            },
           },
           {
             path: ':id',
-            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent)
+            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.request_detail.title',
+              panelSubtitleKey: 'PANEL.route_meta.request_detail.subtitle',
+            },
           }
         ],
         data: {
@@ -478,7 +487,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/clients/clients.component').then(m => m.ClientsComponent)
+            loadComponent: () => import('../features/panel/pages/clients/clients.component').then(m => m.ClientsComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.clients.title',
+              panelSubtitleKey: 'PANEL.route_meta.clients.subtitle',
+            },
           }
         ],
         data: {
@@ -489,17 +502,26 @@ export const routes: Routes = [
         }
       },
       {
+        // Partners (lista + detalle): admin y staff user. /panel/clients sigue siendo solo admin.
         path: 'partners',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, roleGuard(['admin', 'user'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/partners/partners.component').then(m => m.PartnersComponent)
+            loadComponent: () => import('../features/panel/pages/partners/partners.component').then(m => m.PartnersComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.partners.title',
+              panelSubtitleKey: 'PANEL.route_meta.partners.subtitle',
+            },
           },
           {
             path: ':id',
-            loadComponent: () => import('../features/panel/pages/partner-detail/partner-detail.component').then(m => m.PartnerDetailComponent)
+            loadComponent: () => import('../features/panel/pages/partner-detail/partner-detail.component').then(m => m.PartnerDetailComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.partner_detail.title',
+              panelSubtitleKey: 'PANEL.route_meta.partner_detail.subtitle',
+            },
           }
         ],
         data: {
@@ -516,11 +538,19 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/my-requests/my-requests.component').then(m => m.MyRequestsComponent)
+            loadComponent: () => import('../features/panel/pages/my-requests/my-requests.component').then(m => m.MyRequestsComponent),
+            data: {
+              panelTitleKey: 'PANEL.my_requests_page.title',
+              panelSubtitleKey: 'PANEL.my_requests_page.subtitle',
+            },
           },
           {
             path: ':id',
-            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent)
+            loadComponent: () => import('../features/panel/pages/request-detail/request-detail.component').then(m => m.RequestDetailComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.request_detail.title',
+              panelSubtitleKey: 'PANEL.route_meta.request_detail.subtitle',
+            },
           }
         ],
         data: {
@@ -531,13 +561,40 @@ export const routes: Routes = [
         }
       },
       {
+        path: 'service-history',
+        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/service-history/service-history.component').then(
+                (m) => m.ServiceHistoryComponent,
+              ),
+            data: {
+              panelTitleKey: 'PANEL.service_history_page.title',
+              panelSubtitleKey: 'PANEL.service_history_page.subtitle',
+            },
+          },
+        ],
+        data: {
+          seo: {
+            title: 'Historial de servicios - Panel Start Companies',
+            description: 'Historial de servicios sincronizados desde Zoho',
+          },
+        },
+      },
+      {
         path: 'client-dashboard',
         canActivate: [authGuard, roleGuard(['client', 'partner'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/client-dashboard/client-dashboard.component').then(m => m.ClientDashboardComponent)
+            loadComponent: () => import('../features/panel/pages/client-dashboard/client-dashboard.component').then(m => m.ClientDashboardComponent),
+            data: {
+              hideLayoutHeader: true,
+            },
           }
         ],
         data: {
@@ -559,7 +616,9 @@ export const routes: Routes = [
               seo: {
                 title: 'Nueva Solicitud - Panel Start Companies',
                 description: 'Crea una nueva solicitud para un cliente'
-              }
+              },
+              panelTitleKey: 'PANEL.new_request.title',
+              panelSubtitleKey: 'PANEL.new_request.subtitle',
             }
           },
           {
@@ -570,7 +629,9 @@ export const routes: Routes = [
               seo: {
                 title: 'Continuar Solicitud - Panel Start Companies',
                 description: 'Continúa completando tu solicitud'
-              }
+              },
+              panelTitleKey: 'PANEL.new_request.title',
+              panelSubtitleKey: 'PANEL.route_meta.new_request_draft.subtitle',
             }
           }
         ]
@@ -589,6 +650,10 @@ export const routes: Routes = [
               import('../features/panel/pages/request-flow/select-service-type-page.component').then(
                 (m) => m.SelectServiceTypePageComponent
               ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.select_service.title',
+              panelSubtitleKey: 'PANEL.route_meta.select_service.subtitle',
+            },
           },
           {
             path: 'client/:serviceType',
@@ -615,7 +680,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/my-clients/my-clients.component').then(m => m.MyClientsComponent)
+            loadComponent: () => import('../features/panel/pages/my-clients/my-clients.component').then(m => m.MyClientsComponent),
+            data: {
+              panelTitleKey: 'PANEL.my_clients.title',
+              panelSubtitleKey: 'PANEL.my_clients.subtitle',
+            },
           }
         ],
         data: {
@@ -632,7 +701,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/notifications/notifications-page.component').then(m => m.NotificationsPageComponent)
+            loadComponent: () => import('../features/panel/pages/notifications/notifications-page.component').then(m => m.NotificationsPageComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.notifications.title',
+              panelSubtitleKey: 'PANEL.route_meta.notifications.subtitle',
+            },
           }
         ],
         data: {
@@ -642,22 +715,11 @@ export const routes: Routes = [
           }
         }
       },
+      // Reportes de partners oculto temporalmente (volver a cargar PartnerReportsComponent y entrada en menú admin)
       {
         path: 'partner-reports',
-        canActivate: [authGuard, roleGuard(['admin'])],
-        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
-        children: [
-          {
-            path: '',
-            loadComponent: () => import('../features/panel/pages/partner-reports/partner-reports.component').then(m => m.PartnerReportsComponent)
-          }
-        ],
-        data: {
-          seo: {
-            title: 'Reportes de Partners - Panel Start Companies',
-            description: 'Análisis y métricas de rendimiento de partners'
-          }
-        }
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
       },
       {
         path: 'settings',
@@ -666,7 +728,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/settings/settings.component').then(m => m.SettingsComponent)
+            loadComponent: () => import('../features/panel/pages/settings/settings.component').then(m => m.SettingsComponent),
+            data: {
+              panelTitleKey: 'PANEL.settings_page.title',
+              panelSubtitleKey: 'PANEL.settings_page.subtitle',
+            },
           }
         ],
         data: {
@@ -678,9 +744,8 @@ export const routes: Routes = [
       },
       {
         path: 'zoho-sync',
-        canActivate: [authGuard, roleGuard],
-        data: { 
-          roles: ['admin'],
+        canActivate: [authGuard, roleGuard(['admin'])],
+        data: {
           seo: {
             title: 'Sincronización Zoho - Panel Start Companies',
             description: 'Gestiona la sincronización de datos entre el panel y Zoho CRM'
@@ -690,7 +755,11 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () => import('../features/panel/pages/zoho-sync/zoho-sync.component').then(m => m.ZohoSyncComponent)
+            loadComponent: () => import('../features/panel/pages/zoho-sync/zoho-sync.component').then(m => m.ZohoSyncComponent),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.zoho_sync.title',
+              panelSubtitleKey: 'PANEL.route_meta.zoho_sync.subtitle',
+            },
           }
         ]
       }

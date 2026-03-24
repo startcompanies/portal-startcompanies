@@ -9,6 +9,7 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../../environments/environment';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { LoggerService } from '../../../../../shared/services/logger.service';
+import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -445,6 +446,14 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       if (!ownersArray || ownersArray.length < minOwners) {
         return false;
       }
+
+      const isMulti =
+        isMultiMember === 'yes' || isMultiMember === true || String(isMultiMember) === 'true';
+      if (isMulti) {
+        if (!isMultiMemberParticipationTotal100(ownersArray, 'participationPercentage')) {
+          return false;
+        }
+      }
       
       // Validar que todos los owners tengan los campos requeridos
       return ownersArray.controls.every(owner => owner.valid);
@@ -534,17 +543,21 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       const isMultiMemberValue = this.serviceDataForm.get('isMultiMember')?.value;
       if (isMultiMemberValue === 'no') {
         // Guardar datos en la API antes de terminar
-        await this.saveToApi();
-        // Avanzar al siguiente paso del wizard
-        this.nextStepRequested.emit();
+        const ok = await this.saveToApi();
+        if (ok) {
+          this.nextStepRequested.emit();
+        }
         return;
       }
     }
     
     if (this.currentSection < this.totalSections) {
       // Guardar datos en la API antes de avanzar
-      await this.saveToApi();
-      
+      const ok = await this.saveToApi();
+      if (!ok) {
+        return;
+      }
+
       this.currentSection++;
       
       // Si se navega a la sección 6 (propietarios), inicializar propietarios según el tipo
@@ -564,7 +577,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
   /**
    * Guarda los datos en la API
    */
-  async saveToApi(): Promise<void> {
+  async saveToApi(): Promise<boolean> {
+    this.saveError = null;
+
     let requestId = this.wizardStateService.getRequestId();
     
     // Si no hay requestId, intentar crear el request (para flujo sin pago)
@@ -575,7 +590,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       if (!this.wizardApiService.isAuthenticated()) {
         this.logger.log('[WizardCuentaBancariaInformationStep] Usuario no autenticado, no se puede crear request');
         this.saveError = 'Por favor, verifica tu email primero.';
-        return;
+        return false;
       }
       
       // Crear el request sin pago
@@ -586,7 +601,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
         
         if (!user) {
           this.saveError = 'Error de autenticación.';
-          return;
+          return false;
         }
         
         const requestData = {
@@ -617,23 +632,25 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
           this.logger.log('[WizardCuentaBancariaInformationStep] Request creado:', response.id);
         } else {
           this.saveError = 'Error al crear la solicitud.';
-          return;
+          return false;
         }
       } catch (error: any) {
         this.logger.error('[WizardCuentaBancariaInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud.';
-        return;
+        return false;
       }
     }
     
     if (!requestId) {
       this.logger.log('[WizardCuentaBancariaInformationStep] No se pudo obtener requestId');
-      return;
+      if (!this.saveError) {
+        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+      }
+      return false;
     }
     
     this.isSaving = true;
-    this.saveError = null;
-    
+
     try {
       const formData = this.serviceDataForm.value;
       
@@ -685,10 +702,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       this.logger.log('[WizardCuentaBancariaInformationStep] Guardando datos en API:', updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardCuentaBancariaInformationStep] Datos guardados exitosamente');
-      
+      return true;
     } catch (error: any) {
       this.logger.error('[WizardCuentaBancariaInformationStep] Error al guardar:', error);
       this.saveError = error?.error?.message || 'Error al guardar los datos';
+      return false;
     } finally {
       this.isSaving = false;
     }
