@@ -110,6 +110,20 @@ export class UsersService {
     return this.http.patch<User>(`${this.apiUrl}/me`, userData);
   }
 
+  /**
+   * Solicitar cambio de correo electrónico (envía email de verificación al nuevo correo)
+   */
+  requestEmailChange(newEmail: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/me/request-email-change`, { email: newEmail });
+  }
+
+  /**
+   * Confirmar cambio de correo electrónico con el token recibido por email
+   */
+  confirmEmailChange(token: string): Observable<{ message: string; email: string }> {
+    return this.http.post<{ message: string; email: string }>(`${this.apiUrl}/me/confirm-email-change`, { token });
+  }
+
   getPartnerStats(partnerId: number): Observable<{ totalClients: number; totalRequests: number }> {
     return this.http.get<{ totalClients: number; totalRequests: number }>(`${this.apiUrl}/partners/${partnerId}/stats`);
   }

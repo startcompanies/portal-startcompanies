@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -19,7 +19,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
-export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
+export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChanges {
   @Input() stepNumber: number = 5;
   @Input() previousSteps: number[] = [1, 2, 3, 4];
   @Input() serviceType: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria' = 'apertura-llc';
@@ -28,6 +28,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   @Input() isSubmitted: boolean = false;
   @Input() isSubmitting: boolean = false;
   @Input() submitError: string | null = null;
+  @Input() submitFailed: boolean = false;
   
   // Eventos para comunicar con el componente padre
   @Output() submitRequest = new EventEmitter<{ signature: string | null }>();
@@ -101,6 +102,12 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy {
   navigateToHome(): void {
     this.goToHome.emit();
     this.router.navigate(['/']);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['submitFailed'] && changes['submitFailed'].currentValue === true) {
+      this.submittingLocal = false;
+    }
   }
 
   ngOnInit(): void {

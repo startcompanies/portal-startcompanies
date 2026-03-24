@@ -70,6 +70,7 @@ export class LLCAperturaComponent implements OnInit {
   
   // Control de envío exitoso
   isSubmitted = false;
+  submitFailed = false;
 
   stepTitles: { [key: number]: string } = {};
   
@@ -440,6 +441,7 @@ export class LLCAperturaComponent implements OnInit {
     }
 
     this.isLoading = true;
+    this.submitFailed = false;
     this.errorMessage = null;
     this.successMessage = null;
 
@@ -452,6 +454,7 @@ export class LLCAperturaComponent implements OnInit {
           this.errorMessage =
             'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
           this.isLoading = false;
+          this.submitFailed = true;
           return;
         }
       }
@@ -500,6 +503,7 @@ export class LLCAperturaComponent implements OnInit {
         this.errorMessage = error?.error?.message || 'Error al enviar la solicitud. Por favor, intenta nuevamente.';
       }
       this.isLoading = false;
+      this.submitFailed = true;
     }
   }
 
