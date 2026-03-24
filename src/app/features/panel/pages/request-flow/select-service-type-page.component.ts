@@ -15,12 +15,6 @@ import { ServiceType } from '../../../../shared/models/request-flow-context';
   imports: [CommonModule, RouterLink, TranslocoPipe],
   template: `
     <div class="select-service-type-page">
-      <!-- Header -->
-      <div class="request-header">
-        <h2>{{ 'PANEL.new_request.title' | transloco }}</h2>
-        <p class="text-muted">{{ 'PANEL.new_request.subtitle' | transloco }}</p>
-      </div>
-
       <!-- Progress Steps (sin paso cliente si ya viene en la URL desde Mis clientes) -->
       <div class="steps-indicator" *ngIf="!hasClientPrefilled">
         <div class="step-item active">

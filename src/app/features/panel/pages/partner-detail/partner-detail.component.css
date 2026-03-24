@@ -131,11 +131,12 @@
   font-weight: 600;
 }
 
-.tab-content {
+.tab-content.partner-detail-tab-content {
   padding: 1.5rem;
 }
 
-.tab-pane {
+.partner-detail-tab-pane {
+  display: block;
   animation: fadeIn 0.3s;
 }
 

@@ -1386,7 +1386,8 @@
       "partner_reports": "Partner Reports",
       "settings": "Settings",
       "my_requests": "My Requests",
-      "my_clients": "My Clients"
+      "my_clients": "My Clients",
+      "service_history": "Service history"
     },
     "layout": {
       "back_to_site": "Back to site",
@@ -1396,6 +1397,43 @@
       "my_panel": "My Panel",
       "settings": "Settings",
       "logout": "Log out"
+    },
+    "route_meta": {
+      "admin_requests": {
+        "title": "Request management",
+        "subtitle": "Manage all requests in the system"
+      },
+      "clients": {
+        "title": "Clients",
+        "subtitle": "System client management"
+      },
+      "partners": {
+        "title": "Partner management",
+        "subtitle": "Manage partners and their clients"
+      },
+      "partner_detail": {
+        "title": "Partner details",
+        "subtitle": "Clients and requests linked to this partner"
+      },
+      "request_detail": {
+        "title": "Request details",
+        "subtitle": "Process tracking and data"
+      },
+      "zoho_sync": {
+        "title": "Zoho CRM sync",
+        "subtitle": "Manage data sync between the panel and Zoho CRM"
+      },
+      "notifications": {
+        "title": "Notifications",
+        "subtitle": "Stay up to date with your process updates"
+      },
+      "select_service": {
+        "title": "New process",
+        "subtitle": "Choose a service type to continue"
+      },
+      "new_request_draft": {
+        "subtitle": "Continue completing the request"
+      }
     },
     "language_modal": {
       "title": "Choose your language",
@@ -1467,6 +1505,7 @@
     "admin_dashboard": {
       "title": "Admin dashboard",
       "subtitle": "System overview",
+      "error_load": "Could not load the dashboard summary. Check your connection and try again.",
       "loading": "Loading...",
       "recent_requests": "Recent requests",
       "view_all": "View all",
@@ -1509,6 +1548,19 @@
       "delete": "Delete",
       "delete_draft_title": "Delete draft"
     },
+    "service_history_page": {
+      "title": "Service history",
+      "subtitle": "Services recorded in Zoho (formation, renewal, bank account). Ask an admin to sync if you see no data.",
+      "loading": "Loading...",
+      "retry": "Retry",
+      "error_load": "Could not load history. Please try again.",
+      "empty": "No services in your history yet, or data has not been synced from Zoho.",
+      "filter_client": "Filter by client",
+      "all_clients": "All clients",
+      "unnamed": "Unnamed service",
+      "llc": "LLC",
+      "llc_principal": "Primary LLC (renewal)"
+    },
     "dashboard": {
       "subtitle_client": "Overview of your processes",
       "subtitle_partner": "Overview of requests you manage for your clients",
@@ -1549,7 +1601,6 @@
       "tabs": {
         "profile": "Profile",
         "security": "Security",
-        "processes": "Processes",
         "zoho": "Zoho CRM"
       },
       "alerts": {
@@ -1598,19 +1649,6 @@
         "save": "Change password",
         "success": "Password updated successfully",
         "mismatch": "Passwords do not match"
-      },
-      "processes_section": {
-        "title": "Process configuration",
-        "subtitle": "Manage general process settings",
-        "auto_advance": "Automatic stage advance",
-        "auto_advance_help": "Stages advance automatically when completed",
-        "require_approval": "Require approval for changes",
-        "require_approval_help": "Important changes require approval before applying",
-        "default_assignee": "Default assignee",
-        "default_assignee_placeholder": "User or team",
-        "notification_delay": "Notification delay (hours)",
-        "notification_delay_help": "Time before sending reminders",
-        "save": "Save configuration"
       },
       "zoho_section": {
         "title": "Zoho configuration",

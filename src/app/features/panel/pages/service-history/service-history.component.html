@@ -1,0 +1,80 @@
+<div class="service-history-container">
+  <div *ngIf="isPartner && partnerClients.length > 0" class="mb-4 filter-row">
+    <label class="form-label" for="clientFilter">{{
+      'PANEL.service_history_page.filter_client' | transloco
+    }}</label>
+    <select
+      id="clientFilter"
+      class="form-select"
+      [(ngModel)]="selectedClientId"
+      (ngModelChange)="onClientFilterChange()"
+    >
+      <option [ngValue]="null">
+        {{ 'PANEL.service_history_page.all_clients' | transloco }}
+      </option>
+      <option *ngFor="let c of partnerClients" [ngValue]="c.id">
+        {{ c.full_name }} ({{ c.email }})
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">{{
+        'PANEL.service_history_page.loading' | transloco
+      }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ error }}
+    <button type="button" class="btn btn-sm btn-outline-danger ms-2" (click)="loadHistory()">
+      {{ 'PANEL.service_history_page.retry' | transloco }}
+    </button>
+  </div>
+
+  <div
+    *ngIf="!isLoading && !error && items.length === 0"
+    class="alert alert-info"
+  >
+    {{ 'PANEL.service_history_page.empty' | transloco }}
+  </div>
+
+  <div *ngIf="!isLoading && !error && items.length > 0" class="timeline-list">
+    <div class="history-card" *ngFor="let row of items">
+      <div class="history-card-header">
+        <div>
+          <h3 class="history-title">
+            {{ row.dealName || ('PANEL.service_history_page.unnamed' | transloco) }}
+          </h3>
+          <span class="badge bg-secondary me-1" *ngIf="row.dealType">{{
+            row.dealType
+          }}</span>
+          <span class="badge bg-info text-dark" *ngIf="row.stage">{{
+            row.stage
+          }}</span>
+        </div>
+        <small class="text-muted">{{
+          displayDate(row.modifiedTimeZoho || row.closingDate)
+        }}</small>
+      </div>
+      <div class="history-card-body">
+        <p *ngIf="row.accountName" class="mb-1">
+          <i class="bi bi-building me-2"></i>
+          <strong>{{ 'PANEL.service_history_page.llc' | transloco }}:</strong>
+          {{ row.accountName }}
+        </p>
+        <p *ngIf="row.llcPrincipalName" class="mb-1 text-muted">
+          <i class="bi bi-link-45deg me-2"></i>
+          {{ 'PANEL.service_history_page.llc_principal' | transloco }}:
+          {{ row.llcPrincipalName }}
+        </p>
+        <p *ngIf="row.amount != null" class="mb-0">
+          <i class="bi bi-currency-dollar me-2"></i>
+          {{ row.amount | number : '1.2-2' }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -110,6 +110,24 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
+/** Respuesta de GET /panel/requests/service-history */
+export interface ServiceHistoryItem {
+  id: number;
+  zohoDealId: string;
+  dealName?: string;
+  dealType?: string;
+  stage?: string;
+  status?: string;
+  accountName?: string;
+  llcPrincipalName?: string;
+  closingDate?: string;
+  modifiedTimeZoho?: string;
+  createdTimeZoho?: string;
+  contactEmail?: string;
+  partnerPicklist?: string;
+  amount?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -168,6 +186,21 @@ export class RequestsService {
 
     return firstValueFrom(
       this.http.get<Request[]>(`${this.apiUrl}/me`, { params })
+    );
+  }
+
+  /**
+   * Historial de servicios (Deals Zoho) para cliente o partner.
+   */
+  getServiceHistory(clientId?: number): Promise<ServiceHistoryItem[]> {
+    let params = new HttpParams();
+    if (clientId != null) {
+      params = params.set('clientId', String(clientId));
+    }
+    return firstValueFrom(
+      this.http.get<ServiceHistoryItem[]>(`${this.apiUrl}/service-history`, {
+        params,
+      }),
     );
   }
 

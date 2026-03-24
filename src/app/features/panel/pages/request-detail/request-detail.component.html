@@ -218,7 +218,6 @@
             <div class="step-header">
               <h4 class="step-title">{{ step.name }}</h4>
             </div>
-            <p class="step-description">{{ step.description }}</p>
             <div class="step-meta" *ngIf="step.date">
               <small class="text-muted">
                 <i class="bi bi-calendar3 me-1"></i>
@@ -228,20 +227,6 @@
                   {{ step.completedBy }}
                 </span>
               </small>
-            </div>
-            <!-- Ocultar asignación para etapas del blueprint (solo mostrar para etapas genéricas) -->
-            <div *ngIf="isAdmin && step.status !== 'pending' && step.name !== 'Solicitud Recibida' && !isBlueprintStage(step.name)" class="step-assign">
-              <label class="form-label-sm">{{ 'PANEL.request_detail.assign_to' | transloco }}</label>
-              <select
-                class="form-select form-select-sm"
-                [value]="step.completedBy || ''"
-                (change)="assignStepResponsible(step, $any($event.target).value)"
-              >
-                <option value="">{{ 'PANEL.request_detail.select_placeholder' | transloco }}</option>
-                <option *ngFor="let assignee of availableAssignees" [value]="assignee">
-                  {{ assignee }}
-                </option>
-              </select>
             </div>
           </div>
         </div>
@@ -1795,7 +1780,7 @@
                       </span>
                     </div>
                   </div>
-                  <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId">
+                  <div class="col-md-12" *ngIf="fullRequestData.zohoAccountId && (isAdmin || isStaffUser)">
                     <div class="detail-item">
                       <label class="detail-label">{{ 'PANEL.request_detail.fd_zoho_record' | transloco }}</label>
                       <a

@@ -1,16 +1,15 @@
 <div class="dashboard-container">
-  <div class="dashboard-header">
-    <h2>{{ 'PANEL.admin_dashboard.title' | transloco }}</h2>
-    <p class="text-muted">{{ 'PANEL.admin_dashboard.subtitle' | transloco }}</p>
-  </div>
-
   <div *ngIf="isLoading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">{{ 'PANEL.admin_dashboard.loading' | transloco }}</span>
     </div>
   </div>
 
-  <div *ngIf="!isLoading">
+  <div *ngIf="!isLoading && loadError" class="alert alert-danger" role="alert">
+    {{ loadError | transloco }}
+  </div>
+
+  <div *ngIf="!isLoading && !loadError">
     <div class="stats-grid">
       <div class="stat-card" *ngFor="let stat of stats">
         <div class="stat-icon" [class]="'bg-' + stat.color">

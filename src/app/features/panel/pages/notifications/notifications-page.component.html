@@ -1,14 +1,6 @@
 <div class="notifications-page-container">
-  <div class="notifications-header">
-    <div>
-      <h2>Notificaciones</h2>
-      <p class="text-muted">Mantente al día con las actualizaciones de tus procesos</p>
-    </div>
-    <button 
-      *ngIf="unreadCount > 0"
-      class="btn btn-outline-primary"
-      (click)="markAllAsRead()"
-    >
+  <div class="notifications-header" *ngIf="unreadCount > 0">
+    <button type="button" class="btn btn-outline-primary" (click)="markAllAsRead()">
       <i class="bi bi-check-all me-2"></i>
       Marcar Todas como Leídas
     </button>

@@ -113,6 +113,11 @@ export class UsersService {
   getPartnerStats(partnerId: number): Observable<{ totalClients: number; totalRequests: number }> {
     return this.http.get<{ totalClients: number; totalRequests: number }>(`${this.apiUrl}/partners/${partnerId}/stats`);
   }
+
+  /** Partner por ID (solo type partner). Admin y staff. */
+  getPartnerById(partnerId: number): Observable<User> {
+    return this.http.get<User>(`${this.apiUrl}/partners/${partnerId}`);
+  }
 }
 
 
