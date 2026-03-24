@@ -28,7 +28,7 @@ export interface RenewalPricingResult {
 export class WizardPlansService {
   /**
    * Reglas por plan (Apertura LLC):
-   * - Emprendedor: estado siempre New Mexico; estructura siempre Single Member.
+   * - Emprendedor: estado siempre New Mexico; estructura societaria seleccionable (single/multi).
    * - Elite: estado según selección del usuario; estructura societaria seleccionable (single/multi).
    * - Premium: estado solo NM o Wyoming; estructura siempre Single Member.
    */
@@ -40,7 +40,7 @@ export class WizardPlansService {
       states: ['New Mexico'],
       recommended: true,
       description: 'Ideal para freelancers y startups sin presencia en EE.UU.',
-      subtitle: 'LLC en Nuevo México (Single Member)',
+      subtitle: 'LLC en Nuevo México (Single o Multi Member)',
       features: [
         'Documentación completa: Artículos de organización, Operating Agreement, EIN.',
         'Consulta gratuita de planificación fiscal.',

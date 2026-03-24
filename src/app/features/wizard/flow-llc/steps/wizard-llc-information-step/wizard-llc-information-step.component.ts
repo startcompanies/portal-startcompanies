@@ -64,7 +64,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     
     // Regla de negocio:
     // - Pack Premium: solo Single Member (New Mexico o Wyoming)
-    // - Pack Emprendedor: solo Single Member (New Mexico)
+    // - Pack Emprendedor: el usuario puede elegir Single o Multi (estado fijo NM en otro bloque)
     this.forceSingleMember = this.isSingleMemberOnlyPlan(normalizedPlanCode);
     
     // Cargar datos guardados
@@ -129,7 +129,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.logger.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
     }
 
-    // Si forceSingleMember está activo (Emprendedor o Premium), forzar y bloquear estructura societaria
+    // Si forceSingleMember está activo (solo Pack Premium), forzar y bloquear estructura societaria
     if (this.forceSingleMember) {
       const llcTypeControl = this.serviceDataForm.get('llcType');
       if (llcTypeControl?.value !== 'single') {
@@ -142,7 +142,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         this.onLlcTypeChanged('single');
       }
       
-      this.logger.log('[WizardLlcInformationStep] Pack Emprendedor/Premium - Single Member forzado');
+      this.logger.log('[WizardLlcInformationStep] Pack Premium - Single Member forzado');
     } else {
       // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
       const llcType = this.serviceDataForm.get('llcType')?.value;
@@ -240,13 +240,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Indica si el plan es de tipo \"solo Single Member\" (Emprendedor / Premium).
+   * Indica si el plan exige solo Single Member (actualmente solo Pack Premium).
    */
   private isSingleMemberOnlyPlan(planCode: string | null | undefined): boolean {
     if (!planCode) {
       return false;
     }
-    return planCode === 'Entrepreneur' || planCode === 'Premium';
+    return planCode === 'Premium';
   }
 
   /**

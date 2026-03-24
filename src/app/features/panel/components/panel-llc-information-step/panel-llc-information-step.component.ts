@@ -170,7 +170,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     }
 
     // Verificar restricción de plan (usar effectivePlan para que funcione al recargar con request.plan)
-    if (effectivePlan === 'Premium' || effectivePlan === 'Entrepreneur') {
+    if (effectivePlan === 'Premium') {
       this.forceSingleMember = true;
       const llcTypeControl = this.serviceDataForm.get('llcType');
       if (llcTypeControl && llcTypeControl.value !== 'single') {
