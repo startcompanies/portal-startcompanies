@@ -239,8 +239,24 @@
         <h3 class="section-title">{{ 'PANEL.request_detail.documents_delivered' | transloco }}</h3>
       </div>
 
-      <!-- Enlace directo a WorkDrive (el iframe de zohoexternal.com no permite embed desde dominios externos) -->
-      <div *ngIf="canShowWorkDrive" class="workdrive-container">
+      <!-- Mostrar iframe con WorkDrive embed solo si está disponible y el proceso está avanzado (no en solicitud-recibida) -->
+      <div *ngIf="canShowWorkDrive && safeWorkDriveUrl" class="workdrive-container">
+        <div class="workdrive-iframe-wrapper">
+          <iframe
+            [src]="safeWorkDriveUrl"
+            class="workdrive-iframe"
+            frameborder="0"
+            allowfullscreen
+            allow="autoplay; encrypted-media; fullscreen"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
+            [attr.title]="'PANEL.request_detail.workdrive_iframe_title' | transloco"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- Fallback: enlace si no se puede generar la URL de embed y el proceso está avanzado -->
+      <div *ngIf="canShowWorkDrive && !safeWorkDriveUrl" class="workdrive-container">
         <div class="workdrive-link-container">
           <div class="workdrive-info">
             <i class="bi bi-folder-fill me-2"></i>
