@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UsersService, User, CreateUserDto } from '../../services/users.service';
+import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
+
+/** Mismo criterio E.164 relajado que IntlTelInputComponent */
+const E164_PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
 
 interface Partner extends User {
   totalClients?: number;
@@ -13,7 +17,7 @@ interface Partner extends User {
 @Component({
   selector: 'app-partners',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent],
   templateUrl: './partners.component.html',
   styleUrl: './partners.component.css'
 })
@@ -33,6 +37,7 @@ export class PartnersComponent implements OnInit {
   newPartner = {
     name: '',
     email: '',
+    phone: '',
     company: ''
   };
   editPartner = {
@@ -56,6 +61,19 @@ export class PartnersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPartners();
+  }
+
+  /**
+   * Username del API: 4–20 caracteres alfanuméricos/_. La parte local del email puede ser corta.
+   */
+  private buildUsernameFromEmail(email: string): string {
+    const local = email.split('@')[0]?.replace(/[^a-zA-Z0-9_]/g, '') || 'user';
+    let u = local.length >= 4 ? local : `${local}part`;
+    u = u.slice(0, 20);
+    if (u.length < 4) {
+      u = 'partner';
+    }
+    return u;
   }
 
   loadPartners(): void {
@@ -127,19 +145,36 @@ export class PartnersComponent implements OnInit {
 
   openNewPartnerModal(): void {
     this.showNewPartnerModal = true;
-    this.newPartner = { name: '', email: '', company: '' };
+    this.newPartner = { name: '', email: '', phone: '', company: '' };
     this.createError = null;
   }
 
   closeNewPartnerModal(): void {
     this.showNewPartnerModal = false;
-    this.newPartner = { name: '', email: '', company: '' };
+    this.newPartner = { name: '', email: '', phone: '', company: '' };
     this.createError = null;
   }
 
+  /** Habilita el botón crear cuando hay datos mínimos y teléfono en formato E.164 */
+  get canSubmitNewPartner(): boolean {
+    const phone = (this.newPartner.phone || '').trim();
+    return (
+      !!this.newPartner.name?.trim() &&
+      !!this.newPartner.email?.trim() &&
+      E164_PHONE_REGEX.test(phone)
+    );
+  }
+
   createPartner(): void {
-    if (!this.newPartner.name || !this.newPartner.email) {
+    if (!this.newPartner.name?.trim() || !this.newPartner.email?.trim()) {
       this.createError = 'Por favor completa todos los campos requeridos';
+      return;
+    }
+
+    const phone = (this.newPartner.phone || '').trim();
+    if (!E164_PHONE_REGEX.test(phone)) {
+      this.createError =
+        'Introduce un teléfono válido con código de país (formato internacional).';
       return;
     }
 
@@ -149,12 +184,13 @@ export class PartnersComponent implements OnInit {
     const nameParts = this.newPartner.name.split(' ');
     // No enviar password - se generará automáticamente y se enviará por email
     const createUserDto: CreateUserDto = {
-      username: this.newPartner.email.split('@')[0],
-      email: this.newPartner.email,
+      username: this.buildUsernameFromEmail(this.newPartner.email.trim()),
+      email: this.newPartner.email.trim(),
       password: '', // Se generará automáticamente en el backend
       first_name: nameParts[0] || '',
       last_name: nameParts.slice(1).join(' ') || '',
       type: 'partner',
+      phone,
       company: this.newPartner.company || undefined
     };
 

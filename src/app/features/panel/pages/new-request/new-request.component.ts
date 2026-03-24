@@ -26,12 +26,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   ],
   template: `
     <div class="new-request-container">
-      <!-- Header -->
-      <div class="new-request-header" *ngIf="!isLoading && !errorMessage && (partnerFlowConfig || clientFlowConfig)">
-        <h2 class="new-request-title">{{ 'PANEL.new_request.title' | transloco }}</h2>
-        <p class="new-request-subtitle">{{ 'PANEL.new_request.subtitle' | transloco }}</p>
-      </div>
-
       <!-- Área del flujo (panel) - aislada para que los estilos no choquen con el resto del sitio -->
       <div class="panel-request-flow-area">
         <!-- Partner Flow -->
@@ -71,20 +65,6 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
   styles: [`
     .new-request-container {
       min-height: 60vh;
-    }
-    .new-request-header {
-      margin-bottom: 2rem;
-    }
-    .new-request-title {
-      color: var(--color-texto-oscuro, #212529);
-      font-size: 2rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-    .new-request-subtitle {
-      color: #6c757d;
-      font-size: 1rem;
-      margin: 0;
     }
     /* Contenedor del flujo en panel: estilos solo para esta área */
     .panel-request-flow-area {

@@ -8,20 +8,9 @@
 
 .my-requests-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: flex-end;
+  align-items: center;
   margin-bottom: 2rem;
-}
-
-.my-requests-header h2 {
-  margin-bottom: 0.5rem;
-}
-
-.my-requests-header h2 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--color-texto-oscuro);
-  margin-bottom: 0.5rem;
 }
 
 .empty-state {

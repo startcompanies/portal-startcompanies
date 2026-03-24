@@ -1,10 +1,9 @@
 <div class="my-requests-container">
-  <div class="my-requests-header">
-    <div>
-      <h2>{{ 'PANEL.my_requests_page.title' | transloco }}</h2>
-      <p class="text-muted">{{ 'PANEL.my_requests_page.subtitle' | transloco }}</p>
-    </div>
-    <a *ngIf="isPartner && (pendingRequests.length > 0 || completedRequests.length > 0)" routerLink="/panel/new-request" class="btn btn-primary">
+  <div
+    class="my-requests-header"
+    *ngIf="isPartner && (pendingRequests.length > 0 || completedRequests.length > 0)"
+  >
+    <a routerLink="/panel/new-request" class="btn btn-primary">
       <i class="bi bi-plus-circle me-2"></i>
       {{ 'PANEL.my_requests_page.new_request' | transloco }}
     </a>

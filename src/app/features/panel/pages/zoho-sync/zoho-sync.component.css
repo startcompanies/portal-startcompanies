@@ -18,6 +18,19 @@
   font-size: 1rem;
 }
 
+.sync-progress {
+  margin-top: 1rem;
+  max-width: 100%;
+}
+
+.sync-progress-message {
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: #444;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
 /* Mensajes */
 .messages {
   margin-bottom: 2rem;

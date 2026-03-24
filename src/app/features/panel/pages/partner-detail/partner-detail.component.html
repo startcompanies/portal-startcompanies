@@ -5,6 +5,10 @@
     </div>
   </div>
 
+  <div *ngIf="!isLoading && loadError" class="alert alert-danger" role="alert">
+    {{ loadError }}
+  </div>
+
   <div *ngIf="!isLoading && partner">
     <!-- Header -->
     <div class="partner-header">
@@ -90,9 +94,9 @@
         </li>
       </ul>
 
-      <div class="tab-content">
-        <!-- Tab: Clientes -->
-        <div *ngIf="activeTab === 'clients'" class="tab-pane">
+      <div class="tab-content partner-detail-tab-content">
+        <!-- Tab: Clientes (no usar clase Bootstrap "tab-pane" sola: oculta con display:none sin .active/.show) -->
+        <div *ngIf="activeTab === 'clients'" class="partner-detail-tab-pane">
           <div class="clients-list">
             <div *ngIf="partner.clients.length === 0" class="empty-state-small">
               <p class="text-muted">Este partner no tiene clientes registrados</p>
@@ -156,12 +160,17 @@
         </div>
 
         <!-- Tab: Estadísticas -->
-        <div *ngIf="activeTab === 'stats'" class="tab-pane">
+        <div *ngIf="activeTab === 'stats'" class="partner-detail-tab-pane">
           <div class="stats-content">
-            <div class="alert alert-info">
-              <i class="bi bi-info-circle me-2"></i>
-              Las estadísticas detalladas estarán disponibles próximamente
-            </div>
+            <p class="text-muted mb-2">
+              Resumen del partner según datos del panel.
+            </p>
+            <ul class="list-unstyled">
+              <li><strong>Clientes asociados:</strong> {{ partner.totalClients }}</li>
+              <li><strong>Solicitudes (todas):</strong> {{ partner.totalRequests }}</li>
+              <li><strong>Clientes en listado:</strong> {{ partner.clients.length }}</li>
+              <li><strong>Solicitudes recientes mostradas:</strong> {{ partner.recentRequests.length }}</li>
+            </ul>
           </div>
         </div>
       </div>

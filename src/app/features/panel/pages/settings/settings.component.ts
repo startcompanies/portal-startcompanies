@@ -25,13 +25,12 @@ import {
 export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
-  activeTab: 'profile' | 'preferences' | 'security' | 'processes' | 'zoho' = 'profile';
+  activeTab: 'profile' | 'preferences' | 'security' | 'zoho' = 'profile';
   showPreferences = true;
 
   profileForm: FormGroup;
   preferencesForm: FormGroup;
   passwordForm: FormGroup;
-  processConfigForm: FormGroup;
   zohoConfigForm: FormGroup;
 
   zohoConfigs: ZohoConfig[] = [];
@@ -92,13 +91,6 @@ export class SettingsComponent implements OnInit {
       { validators: this.passwordMatchValidator },
     );
 
-    this.processConfigForm = this.fb.group({
-      autoAdvanceSteps: [false],
-      requireApproval: [true],
-      defaultAssignee: [''],
-      notificationDelay: [24],
-    });
-
     this.zohoConfigForm = this.fb.group({
       org: ['startcompanies', Validators.required],
       service: ['crm', Validators.required],
@@ -127,7 +119,6 @@ export class SettingsComponent implements OnInit {
     this.loadUserData();
     void this.loadPreferences();
     if (this.isAdmin) {
-      this.loadProcessConfig();
       this.loadZohoConfigs();
       this.setupOAuthListener();
     }
@@ -195,19 +186,7 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  loadProcessConfig(): void {
-    const savedConfig = localStorage.getItem('process_config');
-    if (savedConfig) {
-      try {
-        const config = JSON.parse(savedConfig);
-        this.processConfigForm.patchValue(config);
-      } catch {
-        /* ignore */
-      }
-    }
-  }
-
-  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'processes' | 'zoho'): void {
+  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'zoho'): void {
     this.activeTab = tab;
     this.saveSuccess = false;
     this.saveError = null;
@@ -320,21 +299,6 @@ export class SettingsComponent implements OnInit {
           this.isLoading = false;
         },
       });
-  }
-
-  saveProcessConfig(): void {
-    if (this.processConfigForm.invalid) {
-      this.markFormGroupTouched(this.processConfigForm);
-      return;
-    }
-    this.isLoading = true;
-    this.saveError = null;
-    localStorage.setItem('process_config', JSON.stringify(this.processConfigForm.value));
-    setTimeout(() => {
-      this.isLoading = false;
-      this.saveSuccess = true;
-      setTimeout(() => (this.saveSuccess = false), 3000);
-    }, 500);
   }
 
   passwordMatchValidator(form: FormGroup) {
