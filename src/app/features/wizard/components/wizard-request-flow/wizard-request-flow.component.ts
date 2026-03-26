@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
@@ -16,6 +16,7 @@ import { WizardFlowFinalizeService } from '../../services/wizard-flow-finalize.s
     <app-base-request-flow
       [context]="RequestFlowContext.WIZARD"
       [serviceType]="serviceType"
+      [flowSource]="flowSource"
       [hideStepsIndicator]="hideStepsIndicator"
       (flowCompleted)="onFlowCompleted($event)"
       (flowCancelled)="onFlowCancelled()"
@@ -25,6 +26,7 @@ import { WizardFlowFinalizeService } from '../../services/wizard-flow-finalize.s
 })
 export class WizardRequestFlowComponent implements OnInit {
   @Input() serviceType!: ServiceType;
+  @Input() flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
   /** Oculta el indicador de pasos superior (cuando la página usa layout con sidebar) */
   @Input() hideStepsIndicator = false;
   @Output() flowCompleted = new EventEmitter<any>();
@@ -33,6 +35,7 @@ export class WizardRequestFlowComponent implements OnInit {
   
   RequestFlowContext = RequestFlowContext;
   private isFinalizing = false;
+  @ViewChild(BaseRequestFlowComponent) baseFlow?: BaseRequestFlowComponent;
   
   constructor(
     private router: Router,
@@ -55,7 +58,9 @@ export class WizardRequestFlowComponent implements OnInit {
       try {
         const signature = data?.submit?.signature || null;
         await this.finalizeService.finalize(this.serviceType, signature);
-        this.finalizeService.clearWizardSession();
+        // Mostrar pantalla de éxito en el paso de confirmación y no redirigir automáticamente.
+        this.baseFlow?.markCurrentStepAsSubmitted();
+        return;
       } catch (e) {
         console.error('[WizardRequestFlowComponent] Error al finalizar wizard:', e);
         return;
@@ -63,8 +68,6 @@ export class WizardRequestFlowComponent implements OnInit {
         this.isFinalizing = false;
       }
     }
-
-    this.router.navigate(['/panel']);
   }
   
   onFlowCancelled(): void {

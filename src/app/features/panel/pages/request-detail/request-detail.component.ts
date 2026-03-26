@@ -1308,7 +1308,7 @@ export class RequestDetailComponent implements OnInit {
    * ha movido el stage a 'Confirmación pago'. No aplica a renovacion-llc ni cuenta-bancaria.
    */
   get hasPendingPayment(): boolean {
-    if (!this.request || this.isAdmin) return false;
+    if (!this.request || this.isAdmin || this.isPartner) return false;
     if (this.request.type !== 'apertura-llc') return false;
     const paymentStages = ['Confirmación pago', 'Cuenta Bancaria Confirmada'];
     if (this.request.status !== 'en-proceso' || !paymentStages.includes(this.request.stage ?? '')) return false;

@@ -56,7 +56,7 @@ export class LLCAperturaComponent implements OnInit {
   @ViewChild(WizardLlcInformationStepComponent) llcInformationStep?: WizardLlcInformationStepComponent;
   
   currentStep = 1;
-  totalSteps = 5; // Registro, Estado/Plan, Pago, Info LLC, Revisión
+  totalSteps = 5; // Registro, Estado/Plan, Info LLC, Pago, Revisión
   currentLang = 'es';
   
   // Estado del registro
@@ -146,15 +146,15 @@ export class LLCAperturaComponent implements OnInit {
       this.transloco.selectTranslate('WIZARD.steps.register'),
       this.transloco.selectTranslate('WIZARD.steps.verify_email'),
       this.transloco.selectTranslate('WIZARD.steps.state_plan'),
-      this.transloco.selectTranslate('WIZARD.steps.payment'),
       this.transloco.selectTranslate('WIZARD.steps.llc_info'),
+      this.transloco.selectTranslate('WIZARD.steps.payment'),
       this.transloco.selectTranslate('WIZARD.steps.review'),
-    ]).subscribe(([register, verifyEmail, statePlan, payment, llcInfo, review]) => {
+    ]).subscribe(([register, verifyEmail, statePlan, llcInfo, payment, review]) => {
       this.stepTitles = {
         1: register || 'Registro',
         2: statePlan || 'Estado y Plan',
-        3: payment || 'Pago',
-        4: llcInfo || 'Información de la LLC',
+        3: llcInfo || 'Información de la LLC',
+        4: payment || 'Pago',
         5: review || 'Revisión Final',
       };
     });
@@ -203,7 +203,14 @@ export class LLCAperturaComponent implements OnInit {
           return;
         }
 
-        await this.registerStep.registerUser();
+        const registrationCompleted = await this.registerStep.registerUser();
+
+        if (registrationCompleted) {
+          this.showEmailVerification = false;
+          this.currentStep = 2;
+          this.wizardStateService.setCurrentStep(this.currentStep);
+          return;
+        }
 
         // Solo mostrar verificación si el registro realmente dejó el flujo esperando código
         if (this.registerStep.waitingEmailVerification && this.registerStep.registeredEmail) {
@@ -230,27 +237,11 @@ export class LLCAperturaComponent implements OnInit {
       return;
     }
 
-    // Si estamos en paso 3 (pago), verificar que el pago esté procesado
-    if (this.currentStep === 3 && !this.paymentProcessed) {
-      // No permitir avanzar si el pago no está procesado
-      // El pago se procesa con el botón "Pagar" dentro del componente payment-step
+    // Si estamos en paso 4 (pago), verificar que el pago esté procesado
+    if (this.currentStep === 4 && !this.paymentProcessed) {
       return;
     }
-    
-    // Si estamos en paso 4 (Información LLC) y ya hay un request, guardar los datos antes de avanzar
-    if (this.currentStep === 4 && this.wizardStateService.hasRequest()) {
-      // Si estamos en la sección 3 (última sección), guardar antes de avanzar al siguiente paso del wizard
-      if (this.llcInfoCurrentSection === 3 && this.llcInformationStep) {
-        const ok = await this.llcInformationStep.saveToApi();
-        if (!ok) {
-          return;
-        }
-      } else {
-        // Si no estamos en la última sección, actualizar normalmente
-        await this.updateRequestData();
-      }
-    }
-    
+
     // Si estamos en paso 5+ y ya hay un request, actualizar los datos
     if (this.currentStep > 4 && this.wizardStateService.hasRequest()) {
       await this.updateRequestData();
@@ -273,20 +264,20 @@ export class LLCAperturaComponent implements OnInit {
     
     try {
       const allData = this.wizardStateService.getAllData();
-      const step4Data = allData.step4 || {};
+      const step3Data = allData.step3 || {};
       
       // IMPORTANTE:
       // En el panel, `currentStepNumber` significa "sección dentro de Datos del Servicio".
       // En wizard, `currentStep` es el paso del flujo (1..5). NO debemos sobreescribir `currentStepNumber`
       // con el orden del wizard porque rompe la precarga al continuar en el panel.
-      // Si estamos en el paso 4 (Información LLC), usar la sección actual como currentStepNumber
-      const currentStepNumber = this.currentStep === 4 ? this.llcInfoCurrentSection : undefined;
+      // Si estamos en el paso 3 (Información LLC), usar la sección actual como currentStepNumber
+      const currentStepNumber = this.currentStep === 3 ? this.llcInfoCurrentSection : undefined;
       
       const updateData: any = {
         type: 'apertura-llc',
         aperturaLlcData: {
-          ...step4Data,
-          members: step4Data.members || [],
+          ...step3Data,
+          members: step3Data.members || [],
         },
       };
       

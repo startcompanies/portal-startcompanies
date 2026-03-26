@@ -52,6 +52,7 @@
     <app-wizard-request-flow
       class="wizard-main"
       [serviceType]="serviceType"
+      [flowSource]="flowSource"
       [hideStepsIndicator]="true"
       (stepIndexChange)="currentStepIndex = $event"
     ></app-wizard-request-flow>

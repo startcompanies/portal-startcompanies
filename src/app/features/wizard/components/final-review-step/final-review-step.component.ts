@@ -93,7 +93,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
    */
   navigateToPanel(): void {
     this.goToPanel.emit();
-    this.router.navigate(['/panel']);
+    const isPanelContext = this.router.url.startsWith('/panel');
+    this.router.navigate([isPanelContext ? '/panel/my-requests' : '/panel/login']);
   }
 
   /**
@@ -101,7 +102,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
    */
   navigateToHome(): void {
     this.goToHome.emit();
-    this.router.navigate(['/']);
+    const isPanelContext = this.router.url.startsWith('/panel');
+    this.router.navigate([isPanelContext ? '/panel/my-requests' : '/']);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

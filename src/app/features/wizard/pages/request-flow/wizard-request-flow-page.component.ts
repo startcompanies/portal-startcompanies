@@ -6,6 +6,7 @@ import { WizardRequestFlowComponent } from '../../components/wizard-request-flow
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
 import { RequestFlowConfigService } from '../../../../shared/services/request-flow-config.service';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
+import { WizardStateService } from '../../services/wizard-state.service';
 
 @Component({
   selector: 'app-wizard-request-flow-page',
@@ -16,6 +17,7 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 })
 export class WizardRequestFlowPageComponent implements OnInit {
   serviceType: ServiceType | null = null;
+  flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
 
@@ -33,6 +35,7 @@ export class WizardRequestFlowPageComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private flowConfig: RequestFlowConfigService,
+    private wizardStateService: WizardStateService,
   ) {}
 
   /** Clave de traducción para el título del servicio (sidebar). */
@@ -60,18 +63,22 @@ export class WizardRequestFlowPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const sourceFromData = this.route.snapshot.data['source'] as 'wizard' | 'crm-lead' | 'panel' | undefined;
+    this.flowSource = sourceFromData || 'wizard';
+    this.wizardStateService.setFlowSource(this.flowSource);
+
     const fromData = this.route.snapshot.data['serviceType'] as string | undefined;
     const fromParam = this.route.snapshot.paramMap.get('serviceType');
     const raw = fromData ?? fromParam;
 
     if (raw === 'apertura-llc' || raw === 'renovacion-llc' || raw === 'cuenta-bancaria') {
       this.serviceType = raw;
-      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, raw, false);
+      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, raw, false, false, this.flowSource);
       return;
     }
     if (raw === 'renovar-llc') {
       this.serviceType = 'renovacion-llc';
-      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, 'renovacion-llc', false);
+      this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, 'renovacion-llc', false, false, this.flowSource);
       return;
     }
 

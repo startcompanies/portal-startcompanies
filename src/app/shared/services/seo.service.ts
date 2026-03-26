@@ -19,6 +19,7 @@ export interface SeoData {
   twitterDescription?: string;
   twitterImage?: string;
   twitterSite?: string;
+  noIndex?: boolean;
 }
 
 @Injectable({
@@ -46,7 +47,7 @@ export class SeoService {
     this.meta.updateTag({ name: 'keywords', content: data.keywords });
     this.meta.updateTag({
       name: 'robots',
-      content: environment.noIndex ? 'noindex, nofollow' : 'index, follow',
+      content: this.getRobotsContent(data),
     });
 
     // Open Graph tags
@@ -177,5 +178,39 @@ export class SeoService {
   private removeCanonicalLink(): void {
     const canonicalLink = this.document.querySelector('link[rel="canonical"]');
     canonicalLink?.parentNode?.removeChild(canonicalLink);
+  }
+
+  private getRobotsContent(data: SeoData): string {
+    if (environment.noIndex || data.noIndex || this.isSensitiveRoute()) {
+      return 'noindex, nofollow';
+    }
+    return 'index, follow';
+  }
+
+  private isSensitiveRoute(): boolean {
+    const win = this.browser.window;
+    if (!win) {
+      return false;
+    }
+
+    const pathname = win.location.pathname.toLowerCase();
+    if (pathname.startsWith('/panel/') || pathname.startsWith('/wizard/') || pathname.startsWith('/en/wizard/')) {
+      return true;
+    }
+
+    const sensitiveExactRoutes = new Set([
+      '/panel',
+      '/apertura/lead',
+      '/apertura-llc',
+      '/renovar-llc',
+      '/form-apertura-relay',
+      '/fixcal',
+      '/abotax',
+      '/en/llc-opening',
+      '/en/llc-renewal',
+      '/en/relay-opening-form',
+    ]);
+
+    return sensitiveExactRoutes.has(pathname);
   }
 }

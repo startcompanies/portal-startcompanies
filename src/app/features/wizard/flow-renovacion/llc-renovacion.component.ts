@@ -185,8 +185,8 @@ export class LLCRenovacionComponent implements OnInit {
       this.stepTitles = {
         1: register,
         2: state,
-        3: payment,
-        4: llcInfo,
+        3: llcInfo,
+        4: payment,
         5: review,
       };
     });
@@ -194,15 +194,15 @@ export class LLCRenovacionComponent implements OnInit {
 
   async onStepChanged(index: number): Promise<void> {
     // Releer localStorage por si el pago quedó en otra clave de paso
-    if (this.currentStepIndex === 2 && index > 2) {
+    if (this.currentStepIndex === 3 && index > 3) {
       this.syncPaymentProcessedFromWizardState();
       if (!this.paymentProcessed) {
         return;
       }
     }
 
-    // Si estamos saliendo del paso 4 (Información Renovación) hacia revisión, guardar antes de avanzar
-    if (this.currentStepIndex === 3 && index === 4 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
+    // Si estamos saliendo del paso 3 (Información Renovación) hacia pago, guardar antes de avanzar
+    if (this.currentStepIndex === 2 && index === 3 && this.renovacionInfoCurrentSection === 5 && this.wizardStateService.hasRequest()) {
       if (this.renovacionInformationStep) {
         const ok = await this.renovacionInformationStep.saveToApi();
         if (!ok) {
@@ -255,20 +255,20 @@ export class LLCRenovacionComponent implements OnInit {
     return false;
   }
 
-  /** Avanza del paso de pago (índice 2) al de información LLC (índice 3). */
-  private advanceFromPaymentToInfo(): void {
-    this.currentStepIndex = 3;
-    this.wizardStateService.setCurrentStep(4);
+  /** Avanza del paso de pago (índice 3) al de revisión (índice 4). */
+  private advanceFromPaymentToReview(): void {
+    this.currentStepIndex = 4;
+    this.wizardStateService.setCurrentStep(5);
   }
 
   async continueFromPaymentStep(): Promise<void> {
     this.errorMessage = null;
-    if (this.currentStepIndex !== 2) {
+    if (this.currentStepIndex !== 3) {
       return;
     }
     this.syncPaymentProcessedFromWizardState();
     if (this.paymentProcessed) {
-      this.advanceFromPaymentToInfo();
+      this.advanceFromPaymentToReview();
       return;
     }
     const p = this.wizardStateService.findPersistedPaymentData();
@@ -280,7 +280,7 @@ export class LLCRenovacionComponent implements OnInit {
         }
         this.syncPaymentProcessedFromWizardState();
         if (this.paymentProcessed) {
-          this.advanceFromPaymentToInfo();
+          this.advanceFromPaymentToReview();
         } else {
           this.errorMessage =
             this.errorMessage || 'Completa la transferencia: sube el comprobante y confirma la creación de la solicitud.';
@@ -295,11 +295,11 @@ export class LLCRenovacionComponent implements OnInit {
 
   /** Llamado cuando el paso de información emite nextStepRequested (última sección guardada OK). */
   onRenovacionInfoNext(): void {
-    if (this.currentStepIndex !== 3) {
+    if (this.currentStepIndex !== 2) {
       return;
     }
-    this.currentStepIndex = 4;
-    this.wizardStateService.setCurrentStep(5);
+    this.currentStepIndex = 3;
+    this.wizardStateService.setCurrentStep(4);
   }
 
   /**
@@ -343,7 +343,14 @@ export class LLCRenovacionComponent implements OnInit {
           return;
         }
 
-        await this.registerStep.registerUser();
+        const registrationCompleted = await this.registerStep.registerUser();
+
+        if (registrationCompleted) {
+          this.showEmailVerification = false;
+          this.currentStepIndex = 1;
+          this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
+          return;
+        }
 
         if (this.registerStep.waitingEmailVerification && this.registerStep.registeredEmail) {
           this.registeredEmail = this.registerStep.registeredEmail;
@@ -367,16 +374,16 @@ export class LLCRenovacionComponent implements OnInit {
       return;
     }
 
-    // Paso 3 (index 2): pago debe estar procesado (releer por si quedó en otra clave de paso)
-    if (this.currentStepIndex === 2) {
+    // Paso 4 (index 3): pago debe estar procesado (releer por si quedó en otra clave de paso)
+    if (this.currentStepIndex === 3) {
       this.syncPaymentProcessedFromWizardState();
       if (!this.paymentProcessed) {
         return;
       }
     }
 
-    // Si estamos en paso 4 (Información Renovación) y ya hay un request, guardar los datos antes de avanzar
-    if (this.currentStepIndex === 3 && this.wizardStateService.hasRequest()) {
+    // Si estamos en paso 3 (Información Renovación) y ya hay un request, guardar los datos antes de avanzar
+    if (this.currentStepIndex === 2 && this.wizardStateService.hasRequest()) {
       // Si estamos en la sección 5 (última sección), guardar antes de avanzar al siguiente paso del wizard
       if (this.renovacionInfoCurrentSection === 5 && this.renovacionInformationStep) {
         const ok = await this.renovacionInformationStep.saveToApi();
@@ -617,7 +624,7 @@ export class LLCRenovacionComponent implements OnInit {
       const members = this.mapOwnersToMembers(owners || []);
       
       // Si estamos en el paso 4 (Información Renovación), usar la sección actual como currentStepNumber
-      const currentStepNumber = this.currentStepIndex === 3 ? this.renovacionInfoCurrentSection : undefined;
+      const currentStepNumber = this.currentStepIndex === 2 ? this.renovacionInfoCurrentSection : undefined;
       
       const updateData: any = {
         type: 'renovacion-llc',
