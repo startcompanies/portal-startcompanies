@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
@@ -11,7 +11,7 @@ import { WizardStateService } from '../../services/wizard-state.service';
 @Component({
   selector: 'app-wizard-request-flow-page',
   standalone: true,
-  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent],
+  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent, RouterLink],
   templateUrl: './wizard-request-flow-page.component.html',
   styleUrls: ['./wizard-request-flow-page.component.css'],
 })
