@@ -30,12 +30,12 @@
       <div class="wizard-progress__item" [class.is-active]="currentStep === 3" [class.is-completed]="currentStep > 3">
         <span class="wizard-progress__num">3</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[3] || ('WIZARD.steps.llc_info' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStep === 4" [class.is-completed]="currentStep > 4">
         <span class="wizard-progress__num">4</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[4] || ('WIZARD.steps.payment' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStep === 5" [class.is-completed]="currentStep > 5">
         <span class="wizard-progress__num">5</span>
@@ -113,33 +113,33 @@
           </div>
         </div>
 
-        <!-- Paso 3: Pago -->
+        <!-- Paso 3: Información de la LLC -->
         <div *ngIf="currentStep === 3" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</h2>
-          <app-wizard-payment-step
-            #paymentStep
+          <app-wizard-llc-information-step
+            #llcInformationStep
             [stepNumber]="3"
             [previousStepNumber]="2"
+            (sectionChanged)="onLlcInfoSectionChanged($event)"
+          ></app-wizard-llc-information-step>
+          <div class="step-actions" *ngIf="llcInfoCurrentSection === 3">
+            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
+            <button type="button" class="btn btn-primary" (click)="nextStep()">{{ 'WIZARD.next' | transloco }}</button>
+          </div>
+        </div>
+
+        <!-- Paso 4: Pago -->
+        <div *ngIf="currentStep === 4" class="form-step">
+          <h2 class="form-step__title">{{ stepTitles[4] || ('WIZARD.steps.payment' | transloco) }}</h2>
+          <app-wizard-payment-step
+            #paymentStep
+            [stepNumber]="4"
+            [previousStepNumber]="3"
             (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
             (paymentError)="onPaymentError($event)"
           ></app-wizard-payment-step>
           <div class="step-actions mt-4">
             <button type="button" class="btn btn-outline-secondary" (click)="previousStep()" [disabled]="paymentProcessed">{{ 'WIZARD.previous' | transloco }}</button>
             <button type="button" class="btn btn-primary" (click)="nextStep()" [disabled]="!paymentProcessed">{{ 'WIZARD.flow.continue' | transloco }}</button>
-          </div>
-        </div>
-
-        <!-- Paso 4: Información de la LLC -->
-        <div *ngIf="currentStep === 4" class="form-step">
-          <app-wizard-llc-information-step
-            #llcInformationStep
-            [stepNumber]="4"
-            [previousStepNumber]="3"
-            (sectionChanged)="onLlcInfoSectionChanged($event)"
-          ></app-wizard-llc-information-step>
-          <div class="step-actions" *ngIf="llcInfoCurrentSection === 3">
-            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
-            <button type="button" class="btn btn-primary" (click)="nextStep()">{{ 'WIZARD.next' | transloco }}</button>
           </div>
         </div>
 
@@ -152,6 +152,7 @@
             [isSubmitted]="isSubmitted"
             [isSubmitting]="isLoading"
             [submitError]="errorMessage"
+            [submitFailed]="submitFailed"
             (submitRequest)="onFinish($event)"
             (goToPanel)="onGoToPanel()"
             (goToHome)="onGoToHome()"

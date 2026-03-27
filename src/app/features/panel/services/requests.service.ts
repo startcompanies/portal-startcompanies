@@ -16,6 +16,7 @@ export interface Request {
   currentStep?: number; // Paso principal del wizard (1, 2, 3, 4)
   stage?: string; // Etapa actual del blueprint
   workDriveUrlExternal?: string; // URL externa de Zoho WorkDrive
+  workDriveId?: string; // ID del recurso en Zoho WorkDrive
   client?: {
     id: number;
     userId?: number; // id del User vinculado al cliente (para validar acceso)

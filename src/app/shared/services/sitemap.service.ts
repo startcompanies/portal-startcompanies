@@ -117,6 +117,18 @@ Sitemap: ${this.baseUrl}/sitemap-images.xml
 # Disallow admin areas
 Disallow: /admin/
 Disallow: /api/
+Disallow: /panel/
+Disallow: /wizard/
+Disallow: /en/wizard/
+Disallow: /apertura/lead
+Disallow: /apertura-llc
+Disallow: /renovar-llc
+Disallow: /form-apertura-relay
+Disallow: /fixcal
+Disallow: /abotax
+Disallow: /en/llc-opening
+Disallow: /en/llc-renewal
+Disallow: /en/relay-opening-form
 
 # Allow blog
 Allow: /blog/

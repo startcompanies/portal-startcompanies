@@ -24,6 +24,7 @@ import { GeolocationService } from '../../../../shared/services/geolocation.serv
 })
 export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 1;
+  @Input() requireEmailVerification: boolean = false;
   @Output() userCreated = new EventEmitter<{ userId: number; email: string }>();
   @Output() registrationCompleted = new EventEmitter<void>();
   @ViewChild(IntlTelInputComponent) phoneInput?: IntlTelInputComponent;
@@ -307,7 +308,8 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         lastName,
         email,
         phone: phone || undefined,
-        password
+        password,
+        source: this.wizardStateService.getFlowSource(),
       };
 
       console.log('[WizardBasicRegisterStep] Registrando usuario con wizard API:', email);
@@ -316,6 +318,22 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       this.registeredUserId = response.id;
       this.registeredEmail = email;
       console.log('[WizardBasicRegisterStep] Usuario registrado o código reenviado:', response);
+
+      // Si el flujo no requiere verificación y ya tenemos sesión wizard, completar registro inmediatamente.
+      if (!this.requireEmailVerification && this.wizardApiService.isAuthenticated()) {
+        this.wizardStateService.setStepData(this.stepNumber, {
+          ...formValue,
+          userId: response.id,
+          email,
+          firstName,
+          lastName,
+          waitingVerification: false
+        });
+        this.waitingEmailVerification = false;
+        this.registrationCompleted.emit();
+        this.isLoading = false;
+        return true;
+      }
 
       // Guardar datos en el estado del wizard
       this.wizardStateService.setStepData(this.stepNumber, {
@@ -415,7 +433,8 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         lastName,
         email,
         phone: phone || undefined,
-        password
+        password,
+        source: this.wizardStateService.getFlowSource(),
       }));
       
       this.successMessage = 'Código de verificación reenviado. Por favor, revisa tu bandeja de entrada.';

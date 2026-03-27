@@ -58,6 +58,18 @@
     <button type="button" class="btn-close" (click)="saveError = null" [attr.aria-label]="'PANEL.settings_page.alerts.dismiss' | transloco"></button>
   </div>
 
+  <div *ngIf="emailChangeRequested" class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-envelope-check me-2"></i>
+    Revisa tu bandeja de entrada para confirmar el nuevo correo electrónico.
+    <button type="button" class="btn-close" (click)="emailChangeRequested = false" aria-label="Cerrar"></button>
+  </div>
+
+  <div *ngIf="emailChangeError" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    {{ emailChangeError }}
+    <button type="button" class="btn-close" (click)="emailChangeError = null" aria-label="Cerrar"></button>
+  </div>
+
   <div *ngIf="activeTab === 'profile'" class="tab-content">
     <div class="settings-card">
       <h4>{{ 'PANEL.settings_page.profile.title' | transloco }}</h4>
@@ -80,8 +92,21 @@
           </div>
           <div class="col-md-6">
             <label class="form-label"> {{ 'PANEL.settings_page.profile.email' | transloco }} <span class="text-danger">*</span> </label>
-            <input type="email" class="form-control" formControlName="email" [disabled]="true" />
-            <small class="form-text text-muted">{{ 'PANEL.settings_page.profile.email_readonly' | transloco }}</small>
+            <div class="input-group">
+              <input
+                type="email"
+                class="form-control"
+                [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+                formControlName="email"
+              />
+              <span *ngIf="emailChangePending" class="input-group-text">
+                <span class="spinner-border spinner-border-sm"></span>
+              </span>
+            </div>
+            <div class="invalid-feedback">
+              {{ getFieldError(profileForm, 'email') }}
+            </div>
+            <small class="form-text text-muted">Si cambias el correo, recibirás un email de verificación en la nueva dirección.</small>
           </div>
           <div class="col-md-6">
             <label class="form-label">{{ 'PANEL.settings_page.profile.phone' | transloco }}</label>

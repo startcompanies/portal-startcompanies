@@ -10,7 +10,6 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../../../services/wizard-plans.service';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
-import { environment } from '../../../../../../environments/environment';
 import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 
 /**
@@ -64,7 +63,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     
     // Regla de negocio:
     // - Pack Premium: solo Single Member (New Mexico o Wyoming)
-    // - Pack Emprendedor: solo Single Member (New Mexico)
+    // - Pack Emprendedor: el usuario puede elegir Single o Multi (estado fijo NM en otro bloque)
     this.forceSingleMember = this.isSingleMemberOnlyPlan(normalizedPlanCode);
     
     // Cargar datos guardados
@@ -129,7 +128,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.logger.log('[WizardLlcInformationStep] Estado establecido desde paso anterior:', stateValue);
     }
 
-    // Si forceSingleMember está activo (Emprendedor o Premium), forzar y bloquear estructura societaria
+    // Si forceSingleMember está activo (solo Pack Premium), forzar y bloquear estructura societaria
     if (this.forceSingleMember) {
       const llcTypeControl = this.serviceDataForm.get('llcType');
       if (llcTypeControl?.value !== 'single') {
@@ -142,7 +141,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         this.onLlcTypeChanged('single');
       }
       
-      this.logger.log('[WizardLlcInformationStep] Pack Emprendedor/Premium - Single Member forzado');
+      this.logger.log('[WizardLlcInformationStep] Pack Premium - Single Member forzado');
     } else {
       // Si no hay forceSingleMember, verificar si hay un llcType guardado y inicializar miembros si es necesario
       const llcType = this.serviceDataForm.get('llcType')?.value;
@@ -240,13 +239,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Indica si el plan es de tipo \"solo Single Member\" (Emprendedor / Premium).
+   * Indica si el plan exige solo Single Member (actualmente solo Pack Premium).
    */
   private isSingleMemberOnlyPlan(planCode: string | null | undefined): boolean {
     if (!planCode) {
       return false;
     }
-    return planCode === 'Entrepreneur' || planCode === 'Premium';
+    return planCode === 'Premium';
   }
 
   /**
@@ -551,66 +550,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   
   /**
    * Guarda los datos en la API.
-   * Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado (primer "Siguiente Sección").
+   * Requiere requestId existente (el request se crea en el paso de pago).
    */
   async saveToApi(): Promise<boolean> {
     this.saveError = null;
 
     let requestId = this.wizardStateService.getRequestId();
-
-    if (!requestId && !environment.paymentEnabled) {
-      // Crear request en el primer guardado del paso de Información (status pendiente; finalize pondrá solicitud-recibida).
-      try {
-        const user = this.wizardApiService.getUser();
-        if (!user) {
-          this.logger.log('[WizardLlcInformationStep] No hay usuario, saltando creación de request');
-          this.saveError = 'No se pudo obtener el usuario. Inicia sesión de nuevo.';
-          return false;
-        }
-        const allData = this.wizardStateService.getAllData();
-        const step1 = allData?.step1 || {};
-        const step2 = allData?.step2 || {};
-        const step4 = this.serviceDataForm.getRawValue();
-
-        const plan = step2.plan ?? '';
-        const amount = Number(step2?.amount) || 0;
-        const requestData: any = {
-          type: 'apertura-llc',
-          status: 'pendiente',
-          paymentMethod: null,
-          paymentAmount: amount,
-          currentStepNumber: this.currentSection,
-          plan,
-          clientData: {
-            firstName: step1.firstName ?? user.firstName ?? '',
-            lastName: step1.lastName ?? user.lastName ?? '',
-            email: step1.email ?? user.email ?? '',
-            phone: step1.phone ?? user.phone ?? '',
-            password: step1.password ?? '',
-          },
-          aperturaLlcData: {
-            incorporationState: step2.state ?? step2.incorporationState ?? '',
-            plan,
-            ...step4,
-            members: step4.members || [],
-          },
-        };
-
-        this.logger.log('[WizardLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
-        const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
-        if (!response?.id) {
-          this.logger.error('[WizardLlcInformationStep] createRequest no devolvió id');
-          this.saveError = 'No se pudo crear la solicitud. Intenta de nuevo.';
-          return false;
-        }
-        this.wizardStateService.setRequestId(response.id);
-        requestId = response.id;
-      } catch (error: any) {
-        this.logger.error('[WizardLlcInformationStep] Error al crear request:', error);
-        this.saveError = error?.error?.message || 'Error al crear la solicitud';
-        return false;
-      }
-    }
 
     if (!requestId) {
       this.logger.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');

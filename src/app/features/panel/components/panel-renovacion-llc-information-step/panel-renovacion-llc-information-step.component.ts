@@ -7,13 +7,13 @@ import { RequestFlowStep } from '../../../../shared/models/request-flow-context'
 import { RenovacionLlcFormComponent } from '../../../../shared/components/service-forms/renovacion-llc-form/renovacion-llc-form.component';
 import { RequestsService } from '../../services/requests.service';
 import { Subscription, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { environment } from '../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar renovacion-llc-form en el panel.
@@ -55,7 +55,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   isSaving = false;
   saveError: string | null = null;
 
-  /** Request creado en este paso cuando paymentEnabled es false y no venía requestId. */
+  /** Request creado en este paso cuando no venía requestId. */
   private _createdRequestId?: number;
 
   get effectiveRequestId(): number | undefined {
@@ -320,7 +320,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
 
     const idExisting = this.effectiveRequestId;
 
-    if (!idExisting && !environment.paymentEnabled) {
+    if (!idExisting) {
       try {
         const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
         const clientAssociation = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION) || {};
@@ -368,7 +368,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
           };
         }
 
-        this.logger.log('[PanelRenovacionLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
+        this.logger.log('[PanelRenovacionLlcInformationStep] Creando request previo al pago');
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelRenovacionLlcInformationStep] createRequest no devolvió id');

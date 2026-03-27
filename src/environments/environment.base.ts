@@ -9,8 +9,8 @@ const DOMAIN = {
   production: 'https://startcompanies.io',
   staging: 'https://staging.startcompanies.io',
   api: {
-    production: 'https://api-web.startcompanies.us',
-    staging: 'https://api-web.startcompanies.io',
+    production: 'https://api.startcompanies.io',
+    staging: 'https://api-staging.startcompanies.io',
   },
   /** Nombre del dominio (sin protocolo) por entorno, para environment.domain */
   domainName: {

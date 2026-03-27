@@ -3,11 +3,10 @@ import { firstValueFrom } from 'rxjs';
 import { WizardApiService } from './wizard-api.service';
 import { WizardStateService } from './wizard-state.service';
 import { ServiceType } from '../../../shared/models/request-flow-context';
-import { environment } from '../../../../environments/environment';
 
 /**
  * Finalización unificada del wizard:
- * - Si paymentEnabled=false y no existe requestId, crea el request con todos los datos recogidos
+ * - Si no existe requestId, crea el request con todos los datos recogidos
  * - Sube firma (opcional) vía apiUrl
  * - Actualiza estado a "solicitud-recibida"
  * - No limpia estado ni token aquí: el contenedor debe llamar a clear tras salir de la pantalla de éxito o al navegar.
@@ -22,13 +21,9 @@ export class WizardFlowFinalizeService {
   async finalize(serviceType: ServiceType, signatureDataUrl?: string | null): Promise<void> {
     let requestId = this.wizardStateService.getRequestId();
 
-    // Cuando paymentEnabled=false el request no se creó en el paso de pago → crearlo ahora
+    // Si no se creó request en pasos previos, crearlo ahora.
     if (!requestId) {
-      if (!environment.paymentEnabled) {
-        requestId = await this.createRequestWithoutPayment(serviceType);
-      } else {
-        throw new Error('No se encontró la solicitud. Completa el pago primero.');
-      }
+      requestId = await this.createRequestWithoutPayment(serviceType);
     }
 
     let signatureUrl: string | null = null;
@@ -74,7 +69,7 @@ export class WizardFlowFinalizeService {
   }
 
   /**
-   * Crea el request en la API sin pago (cuando paymentEnabled=false).
+   * Crea el request en la API sin pago.
    * Recoge todos los datos del wizard (estado, plan, formulario de servicio)
    * y los envía en un único POST con status: 'solicitud-recibida' y sin stripeToken.
    */
@@ -89,9 +84,10 @@ export class WizardFlowFinalizeService {
     const step2 = allData?.step2 || {};   // estado/plan (sincronizado por syncToWizardStateService)
     const step4 = allData?.step4 || {};   // formulario de servicio (sincronizado por syncToWizardStateService)
 
-    // Con paymentEnabled=false guardamos plan y amount para saber cuánto cobrar después
+    // Guardamos plan y amount para mantener trazabilidad de cobro posterior cuando aplique.
     const amount = Number(step2?.amount) || 0;
     const requestData: any = {
+      source: this.wizardStateService.getFlowSource(),
       type: serviceType,
       status: 'solicitud-recibida',
       paymentMethod: null,
