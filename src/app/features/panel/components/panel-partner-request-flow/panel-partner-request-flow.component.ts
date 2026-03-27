@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
@@ -33,6 +33,7 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
   
   RequestFlowContext = RequestFlowContext;
   private isFinalizing = false;
+  @ViewChild(BaseRequestFlowComponent) baseFlow?: BaseRequestFlowComponent;
   
   constructor(
     private router: Router,
@@ -70,9 +71,8 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
           serviceType,
           data.submit?.signature ?? null
         );
-        this.clearFlowState();
-        this.flowCompleted.emit(data);
-        this.router.navigate(['/panel/my-requests']);
+        this.baseFlow?.markCurrentStepAsSubmitted();
+        return;
       } catch (e) {
         console.error('[PanelPartnerRequestFlowComponent] Error al guardar firma y actualizar estado:', e);
       } finally {

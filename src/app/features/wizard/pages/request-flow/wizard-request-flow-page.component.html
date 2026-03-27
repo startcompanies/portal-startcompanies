@@ -3,12 +3,14 @@
   <aside class="wizard-panel wizard-panel--left">
     <div class="wizard-panel__head">
       <div class="wizard-panel__logo pb-3">
-        <app-responsive-image
-          [images]="logoImages"
-          context="logo"
-          loading="eager"
-          cssClass="logo wizard-sidebar-logo">
-        </app-responsive-image>
+        <a routerLink="/" aria-label="Ir al inicio">
+          <app-responsive-image
+            [images]="logoImages"
+            context="logo"
+            loading="eager"
+            cssClass="logo wizard-sidebar-logo">
+          </app-responsive-image>
+        </a>
       </div>
       <span class="wizard-panel__service">{{ serviceTitleKey | transloco }}</span>
       <p class="wizard-panel__tagline">{{ serviceTaglineKey | transloco }}</p>
@@ -52,6 +54,7 @@
     <app-wizard-request-flow
       class="wizard-main"
       [serviceType]="serviceType"
+      [flowSource]="flowSource"
       [hideStepsIndicator]="true"
       (stepIndexChange)="currentStepIndex = $event"
     ></app-wizard-request-flow>

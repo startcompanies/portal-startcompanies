@@ -30,12 +30,12 @@
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 2" [class.is-completed]="currentStepIndex > 2">
         <span class="wizard-progress__num">3</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[3] || ('WIZARD.steps.llc_info' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 3" [class.is-completed]="currentStepIndex > 3">
         <span class="wizard-progress__num">4</span>
         <span class="wizard-progress__line"></span>
-        <span class="wizard-progress__label">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</span>
+        <span class="wizard-progress__label">{{ stepTitles[4] || ('WIZARD.steps.payment' | transloco) }}</span>
       </div>
       <div class="wizard-progress__item" [class.is-active]="currentStepIndex === 4" [class.is-completed]="currentStepIndex > 4">
         <span class="wizard-progress__num">5</span>
@@ -111,13 +111,25 @@
           </div>
         </div>
 
-        <!-- Paso 3: Pago -->
+        <!-- Paso 3: Información de la LLC -->
         <div *ngIf="currentStepIndex === 2" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[3] || ('WIZARD.steps.payment' | transloco) }}</h2>
+          <h2 class="form-step__title">{{ stepTitles[3] || ('WIZARD.steps.llc_info' | transloco) }}</h2>
+          <app-wizard-renovacion-llc-information-step
+            #renovacionInformationStep
+            [stepNumber]="3"
+            [previousStepNumber]="2"
+            (sectionChanged)="onRenovacionInfoSectionChanged($event)"
+            (nextStepRequested)="onRenovacionInfoNext()"
+          ></app-wizard-renovacion-llc-information-step>
+        </div>
+
+        <!-- Paso 4: Pago -->
+        <div *ngIf="currentStepIndex === 3" class="form-step">
+          <h2 class="form-step__title">{{ stepTitles[4] || ('WIZARD.steps.payment' | transloco) }}</h2>
           <app-wizard-payment-step
             #paymentStep
-            [stepNumber]="renovacionLayout.paymentStep"
-            [previousStepNumber]="renovacionLayout.stateStep"
+            [stepNumber]="4"
+            [previousStepNumber]="2"
             (paymentAndRequestCreated)="onPaymentAndRequestCreated($event)"
             (paymentError)="onPaymentError($event)"
           ></app-wizard-payment-step>
@@ -135,18 +147,6 @@
           </div>
         </div>
 
-        <!-- Paso 4: Información de la LLC -->
-        <div *ngIf="currentStepIndex === 3" class="form-step">
-          <h2 class="form-step__title">{{ stepTitles[4] || ('WIZARD.steps.llc_info' | transloco) }}</h2>
-          <app-wizard-renovacion-llc-information-step
-            #renovacionInformationStep
-            [stepNumber]="renovacionLayout.infoStep"
-            [previousStepNumber]="renovacionLayout.paymentStep"
-            (sectionChanged)="onRenovacionInfoSectionChanged($event)"
-            (nextStepRequested)="onRenovacionInfoNext()"
-          ></app-wizard-renovacion-llc-information-step>
-        </div>
-
         <!-- Paso 5: Revisión Final -->
         <div *ngIf="currentStepIndex === 4" class="form-step">
           <app-wizard-final-review-step
@@ -156,6 +156,7 @@
             [isSubmitted]="isSubmitted"
             [isSubmitting]="isLoading"
             [submitError]="errorMessage"
+            [submitFailed]="submitFailed"
             (submitRequest)="onFinish($event)"
             (goToPanel)="onGoToPanel()"
             (goToHome)="onGoToHome()"

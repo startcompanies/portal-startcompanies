@@ -177,7 +177,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
 
     // Verificar que el usuario esté autenticado
     if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Error: Debes verificar tu email antes de procesar el pago';
+      this.errorMessage = 'Error: Debes completar el registro para continuar';
       this.paymentError.emit(this.errorMessage);
       return false;
     }
@@ -225,6 +225,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       // 3. Construir el payload según el tipo de servicio.
       // currentStep: paso siguiente al pago (ya se completó el pago), para que al recargar/panel se abra en el formulario de info.
       const requestData: any = {
+        source: this.wizardStateService.getFlowSource(),
         type: serviceType,
         currentStepNumber: 1,
         currentStep: this.stepNumber + 1,
@@ -245,10 +246,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       // Agregar datos específicos del servicio (plan se envía al crear para apertura-llc)
       if (serviceType === 'apertura-llc') {
         const plan = step2Data.plan || '';
+        const step3Data = allData.step3 || {};
         requestData.plan = plan;
         requestData.aperturaLlcData = {
+          ...step3Data,
           incorporationState: step2Data.state || '',
-          plan
+          plan,
+          members: step3Data.members || [],
         };
       } else if (serviceType === 'renovacion-llc') {
         requestData.renovacionLlcData = this.getRenovacionLlcPayload();
@@ -415,7 +419,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       return;
     }
     if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Debes verificar tu email antes de continuar.';
+      this.errorMessage = 'Debes completar el registro para continuar.';
       this.paymentError.emit(this.errorMessage);
       return;
     }
@@ -435,6 +439,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     }
     // currentStep: paso siguiente al pago (ya se completó), para que al recargar/panel se abra en el formulario de info.
     const requestData: any = {
+      source: this.wizardStateService.getFlowSource(),
       type: serviceType,
       currentStepNumber: 1,
       currentStep: this.stepNumber + 1,
@@ -454,8 +459,14 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     };
     if (serviceType === 'apertura-llc') {
       const plan = step2Data.plan || '';
+      const step3Data = allData.step3 || {};
       requestData.plan = plan;
-      requestData.aperturaLlcData = { incorporationState: step2Data.state || '', plan };
+      requestData.aperturaLlcData = {
+        ...step3Data,
+        incorporationState: step2Data.state || '',
+        plan,
+        members: step3Data.members || [],
+      };
     } else if (serviceType === 'renovacion-llc') {
       requestData.renovacionLlcData = this.getRenovacionLlcPayload();
     } else if (serviceType === 'cuenta-bancaria') {

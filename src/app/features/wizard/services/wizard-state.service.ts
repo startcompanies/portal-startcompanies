@@ -33,6 +33,7 @@ export class WizardStateService {
   
   // Tipo de servicio del wizard
   private serviceType: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria' | null = null;
+  private flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
   
   // Paso actual del wizard (para persistencia)
   private currentStep: number = 1;
@@ -63,6 +64,7 @@ export class WizardStateService {
         this.registeredUserId = data.registeredUserId || null;
         this.registeredEmail = data.registeredEmail || null;
         this.serviceType = data.serviceType || null;
+        this.flowSource = data.flowSource || 'wizard';
         this.currentStep = data.currentStep || 1;
         this.currentStepNumber = data.currentStepNumber || 1;
         
@@ -94,6 +96,7 @@ export class WizardStateService {
         registeredUserId: this.registeredUserId,
         registeredEmail: this.registeredEmail,
         serviceType: this.serviceType,
+        flowSource: this.flowSource,
         currentStep: this.currentStep,
         currentStepNumber: this.currentStepNumber
       };
@@ -229,6 +232,7 @@ export class WizardStateService {
     this.registeredUserId = null;
     this.registeredEmail = null;
     this.serviceType = null;
+    this.flowSource = 'wizard';
     this.currentStep = 1;
     this.currentStepNumber = 1;
     localStorage.removeItem(WIZARD_STATE_KEY);
@@ -292,6 +296,15 @@ export class WizardStateService {
    */
   getServiceType(): 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria' | null {
     return this.serviceType;
+  }
+
+  setFlowSource(source: 'wizard' | 'crm-lead' | 'panel'): void {
+    this.flowSource = source;
+    this.saveToStorage();
+  }
+
+  getFlowSource(): 'wizard' | 'crm-lead' | 'panel' {
+    return this.flowSource || 'wizard';
   }
 
   /**

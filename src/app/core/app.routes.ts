@@ -304,6 +304,17 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'apertura/lead',
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
+        data: {
+          serviceType: 'apertura-llc',
+          source: 'crm-lead',
+        },
+      },
+      {
         path: 'renovar-llc',
         loadComponent: environment.wizardAndPanelEnabled
           ? () =>
