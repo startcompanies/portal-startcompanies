@@ -21,6 +21,8 @@ interface ProcessStep {
   name: string;
   description: string;
   status: 'completed' | 'current' | 'pending';
+  /** Primera etapa pendiente inmediatamente después de la actual (mismo icono que pendiente, resaltado leve) */
+  isNext?: boolean;
   date?: Date;
   completedBy?: string;
 }
@@ -232,6 +234,7 @@ export class RequestDetailComponent implements OnInit {
               completedBy: undefined
             });
           });
+          this.markNextPendingStep(steps);
         } else {
         steps.push({
           id: 1,
@@ -258,7 +261,12 @@ export class RequestDetailComponent implements OnInit {
         } else if (apiRequest.type === 'renovacion-llc') {
           const isNM = this.isNewMexicoRenovacion(apiRequest);
           const blueprintStages = this.getRenovacionBlueprintStages(isNM);
-          blueprintStages.forEach((stageName: string, index: number) => {
+          // La primera fila ya es "Solicitud Recibida" (portal); omitir el mismo alias CRM para no duplicar título
+          const tailStages =
+            blueprintStages[0] === 'Solicitud Recibida'
+              ? blueprintStages.slice(1)
+              : blueprintStages;
+          tailStages.forEach((stageName: string, index: number) => {
             steps.push({
               id: index + 2,
               name: stageName,
@@ -268,6 +276,7 @@ export class RequestDetailComponent implements OnInit {
               completedBy: undefined
             });
           });
+          this.markNextPendingStep(steps);
         } else {
           // Para otros tipos, usar las definiciones genéricas
           const stepDefinitions = this.getStepDefinitions(apiRequest.type);
@@ -288,11 +297,11 @@ export class RequestDetailComponent implements OnInit {
         // Apertura LLC: timeline único (sin duplicar "Solicitud Recibida" / "Confirmación pago")
         if (apiRequest.type === 'apertura-llc') {
           const labels = this.getAperturaClientTimelineLabels();
-          const rawStage = (apiRequest.stage || 'Apertura Confirmada').trim();
+          const rawStage = (apiRequest.stage || '').trim();
           const perdida = rawStage === 'Apertura Perdida';
           const timelineIdx = perdida
             ? -2
-            : this.mapAperturaInternalStageToTimelineIndex(apiRequest.stage);
+            : this.mapAperturaStageToTimelineIndex(rawStage, labels);
 
           const allComplete =
             apiRequest.status === 'completada' ||
@@ -338,8 +347,11 @@ export class RequestDetailComponent implements OnInit {
               completedBy: 'Sistema'
             });
           }
+          this.markNextPendingStep(steps);
         } else {
-        // Si ya pasó de "solicitud-recibida", primera etapa completada (resto de tipos)
+        // Si ya pasó de "solicitud-recibida", primera etapa completada (resto de tipos).
+        // Renovación LLC: el timeline CRM empieza en "Solicitud Recibida" (alias de Renovación Abierta); no duplicar fila.
+        if (apiRequest.type !== 'renovacion-llc') {
         steps.push({
           id: 1,
           name: 'Solicitud Recibida',
@@ -348,6 +360,7 @@ export class RequestDetailComponent implements OnInit {
           date: new Date(apiRequest.createdAt),
           completedBy: 'Sistema'
         });
+        }
 
         if (apiRequest.status === 'en-proceso' && apiRequest.type === 'cuenta-bancaria') {
           // Si está en proceso y es cuenta-bancaria, agregar las etapas del blueprint
@@ -504,7 +517,7 @@ export class RequestDetailComponent implements OnInit {
                 status = 'current';
               }
               steps.push({
-                id: index + 2,
+                id: index + 1,
                 name: stageName,
                 description: `Etapa del proceso: ${stageName}`,
                 status,
@@ -523,6 +536,7 @@ export class RequestDetailComponent implements OnInit {
                 completedBy: 'Sistema'
               });
             }
+            this.markNextPendingStep(steps);
           } else {
             // Para otros tipos, usar las definiciones genéricas
             const stepDefinitions = this.getStepDefinitions(apiRequest.type);
@@ -679,12 +693,23 @@ export class RequestDetailComponent implements OnInit {
   }
 
   getStepIconClass(step: ProcessStep): string {
-    if (step.status === 'completed') {
+    if (step.status === 'completed' || step.status === 'current') {
       return 'bi-check-circle-fill text-success';
-    } else if (step.status === 'current') {
+    }
+    // Siguiente etapa pendiente: reloj + fondo azul (mismo criterio visual que el antiguo "current")
+    if (step.isNext) {
       return 'bi-clock-history text-primary';
-    } else {
-      return 'bi-circle text-muted';
+    }
+    return 'bi-circle text-muted';
+  }
+
+  /** Marca la primera fila pending después de la actual (visual "siguiente paso") */
+  private markNextPendingStep(steps: ProcessStep[]): void {
+    const currentIdx = steps.findIndex((s) => s.status === 'current');
+    if (currentIdx < 0) return;
+    const next = steps[currentIdx + 1];
+    if (next?.status === 'pending') {
+      next.isNext = true;
     }
   }
 
@@ -831,16 +856,17 @@ export class RequestDetailComponent implements OnInit {
   getAperturaClientTimelineLabels(): string[] {
     return [
       'Solicitud Recibida',
+      'Apertura Confirmada',
       'Documentación completada',
       'Apertura Cuenta Bancaria',
+      'Cuenta Bancaria Confirmada',
       'Confirmación pago',
       'Apertura Activa',
     ];
   }
 
   /**
-   * Índice en getAperturaClientTimelineLabels para el stage interno guardado en API.
-   * Apertura Confirmada + Filing Iniciado → 0; Cuenta Bancaria Confirmada + Confirmación pago → 3.
+   * Índice en getAperturaClientTimelineLabels para stage guardado en API (alias cliente o Zoho legacy).
    */
   private mapAperturaInternalStageToTimelineIndex(
     internalStage: string | undefined | null
@@ -849,22 +875,41 @@ export class RequestDetailComponent implements OnInit {
       return 0;
     }
     const t = String(internalStage).trim();
-    if (t === 'Apertura Confirmada' || t === 'Filing Iniciado') {
-      return 0;
-    }
-    if (t === 'Documentación completada') {
-      return 1;
-    }
-    if (t === 'Apertura Cuenta Bancaria') {
+    const labels = this.getAperturaClientTimelineLabels();
+    const direct = labels.indexOf(t);
+    if (direct >= 0) return direct;
+
+    if (t === 'Filing Iniciado') return 1;
+    if (
+      t === 'Documentación completada' ||
+      t === 'EIN Solicitado' ||
+      t === 'Operating Agreement' ||
+      t === 'BOI Enviado' ||
+      /documentaci/i.test(t) ||
+      /\bein\b/i.test(t) ||
+      /operating/i.test(t) ||
+      /\bboi\b/i.test(t)
+    ) {
       return 2;
     }
-    if (t === 'Cuenta Bancaria Confirmada' || t === 'Confirmación pago') {
-      return 3;
-    }
-    if (t === 'Apertura Activa') {
-      return 4;
-    }
+    if (t === 'Apertura Cuenta Bancaria') return 3;
+    if (t === 'Cuenta Bancaria Confirmada') return 4;
+    if (t === 'Confirmación pago' || t === 'Confirmacion pago') return 5;
+    if (t === 'Apertura Activa') return 6;
+    if (t === 'Apertura Confirmada') return 1;
+    if (t.includes('Cuenta Bancaria')) return 3;
     return 0;
+  }
+
+  private mapAperturaStageToTimelineIndex(
+    stage: string,
+    labels: string[],
+  ): number {
+    if (!stage) return 0;
+    const idx = labels.indexOf(stage);
+    if (idx >= 0) return idx;
+    // Fallback para registros históricos donde aún se guardó stage interno de Zoho.
+    return this.mapAperturaInternalStageToTimelineIndex(stage);
   }
 
   /**
@@ -880,6 +925,7 @@ export class RequestDetailComponent implements OnInit {
       'Cuenta Bancaria Confirmada',
       'Confirmación pago',
       'Apertura Activa',
+      'Apertura Perdida',
     ];
   }
 
@@ -908,10 +954,15 @@ export class RequestDetailComponent implements OnInit {
     }
     const t = String(stage).trim();
     const aliases: Record<string, string> = {
-      'Federal enviada a Tax Preparer': 'Renovación Confirmada',
-      'Aprobación cliente': 'Federal - En revisión interna',
-      'RA completado': 'RA en Proceso',
-      'Estatal en proceso': 'Presentación estatal',
+      'Renovación Abierta': 'Solicitud Recibida',
+      'Federal enviada a Tax Preparer': 'Presentación Federal en Proceso',
+      'Federal - En revisión interna': 'Presentación Federal en Proceso',
+      'Aprobación cliente': 'Presentación Federal en Proceso',
+      'Federal completada': 'Federal completada',
+      'RA en Proceso': 'Register Agreement en Proceso',
+      'RA completado': 'Register Agreement completado',
+      'Presentación estatal': 'Estatal Completada',
+      'Estatal en proceso': 'Estatal en proceso',
     };
     return aliases[t] ?? t;
   }
@@ -922,14 +973,17 @@ export class RequestDetailComponent implements OnInit {
    */
   getRenovacionBlueprintStages(isNewMexico: boolean = false): string[] {
     const stages = [
-      'Renovación Abierta',
+      'Solicitud Recibida',
       'Renovación Confirmada',
-      'Federal - En revisión interna',
+      'Presentación Federal en Proceso',
       'Federal completada',
-      'RA en Proceso',
+      'Register Agreement en Proceso',
+      'Register Agreement completado',
     ];
     if (isNewMexico) {
-      stages.push('Presentación estatal');
+      stages.push('Estatal Completada');
+    } else {
+      stages.push('Estatal en proceso');
     }
     stages.push('Renovación completa');
     return stages;
@@ -1192,7 +1246,7 @@ export class RequestDetailComponent implements OnInit {
       if (this.request.type === 'cuenta-bancaria') {
         initialStage = 'Cuenta Bancaria Confirmada';
       } else if (this.request.type === 'renovacion-llc') {
-        initialStage = 'Renovación Confirmada';
+        initialStage = 'Solicitud Recibida';
       }
       
       if (!this.requestNumericId) {
@@ -1304,13 +1358,14 @@ export class RequestDetailComponent implements OnInit {
   // ── Pago post-envío ──────────────────────────────────────────────────────────
 
   /**
-   * Muestra la sección de pago solo para apertura-llc cuando el admin
-   * ha movido el stage a 'Confirmación pago'. No aplica a renovacion-llc ni cuenta-bancaria.
+   * Pago pendiente (apertura-llc): en 'Cuenta Bancaria Confirmada' (formulario) o 'Confirmación pago'
+   * hasta que el pago quede registrado en la solicitud.
    */
   get hasPendingPayment(): boolean {
-    if (!this.request || this.isAdmin) return false;
+    if (!this.request || this.isAdmin || this.isPartner) return false;
     if (this.request.type !== 'apertura-llc') return false;
-    if (this.request.status !== 'en-proceso' || this.request.stage !== 'Confirmación pago') return false;
+    const paymentStages = ['Confirmación pago', 'Cuenta Bancaria Confirmada'];
+    if (this.request.status !== 'en-proceso' || !paymentStages.includes(this.request.stage ?? '')) return false;
     const paymentDone = this.fullRequestData?.paymentStatus === 'succeeded' ||
                         this.fullRequestData?.paymentMethod === 'free';
     return !paymentDone && !this.paymentSuccess;

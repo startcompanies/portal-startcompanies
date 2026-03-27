@@ -11,10 +11,10 @@ import { RequestsService } from '../../services/requests.service';
 import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { Subscription, firstValueFrom } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { environment } from '../../../../../environments/environment';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el panel
@@ -49,7 +49,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   usStates = US_STATES;
 
   private formSubscription?: Subscription;
-  /** ID del request creado en este paso cuando paymentEnabled es false (panel no tiene paso de pago). */
+  /** ID del request creado en este paso cuando aún no existe request asociado. */
   private _createdRequestId?: number;
   
   isSaving = false;
@@ -170,7 +170,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     }
 
     // Verificar restricción de plan (usar effectivePlan para que funcione al recargar con request.plan)
-    if (effectivePlan === 'Premium' || effectivePlan === 'Entrepreneur') {
+    if (effectivePlan === 'Premium') {
       this.forceSingleMember = true;
       const llcTypeControl = this.serviceDataForm.get('llcType');
       if (llcTypeControl && llcTypeControl.value !== 'single') {
@@ -569,14 +569,14 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Guarda los datos en la API. Si paymentEnabled es false y no hay requestId, crea el request en el primer guardado.
+   * Guarda los datos en la API. Si no hay requestId, crea el request en el primer guardado.
    */
   async saveToApi(): Promise<boolean> {
     this.saveError = null;
 
     const effectiveId = this._createdRequestId ?? this.requestId;
 
-    if (!effectiveId && !this.requestId && !environment.paymentEnabled) {
+    if (!effectiveId && !this.requestId) {
       // Crear request en el primer guardado del paso de Información (panel sin paso de pago).
       try {
         this.ensurePlanStateFromWizard();
@@ -633,7 +633,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
           members: formData.members || [],
         };
 
-        this.logger.log('[PanelLlcInformationStep] Creando request sin pago (paymentEnabled=false)');
+        this.logger.log('[PanelLlcInformationStep] Creando request sin pago inicial');
         const response = await this.requestsService.createRequest(requestData);
         if (!response?.id) {
           this.logger.error('[PanelLlcInformationStep] createRequest no devolvió id');

@@ -94,6 +94,7 @@ import { firstValueFrom } from 'rxjs';
 export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   @Input() context!: RequestFlowContext;
   @Input() serviceType: ServiceType | null = null; // Ahora opcional
+  @Input() flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
   /** Cuando true, no se muestra el indicador de pasos (ej. layout wizard con sidebar) */
   @Input() hideStepsIndicator = false;
 
@@ -127,6 +128,24 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private draftRequestId: number | null = null;
   private autosaveInterval: any = null;
   private autosaveEnabled = false;
+
+  /** Permite al contenedor marcar visualmente éxito en el paso actual (si el componente lo soporta). */
+  public markCurrentStepAsSubmitted(): void {
+    if (!this.stepComponentRef?.instance) return;
+    const instance = this.stepComponentRef.instance as any;
+    if ('isSubmitted' in instance) {
+      instance.isSubmitted = true;
+    }
+    if ('isSubmitting' in instance) {
+      instance.isSubmitting = false;
+    }
+    if ('submitFailed' in instance) {
+      instance.submitFailed = false;
+    }
+    if ('submitError' in instance) {
+      instance.submitError = null;
+    }
+  }
   
   constructor(
     protected flowConfigService: RequestFlowConfigService,
@@ -146,7 +165,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       this.context,
       tempServiceType,
       this.serviceType === null,
-      this.shouldSkipPartnerClientSelection()
+      this.shouldSkipPartnerClientSelection(),
+      this.flowSource
     );
     
     // Cargar borrador si hay UUID
@@ -671,6 +691,13 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     const extra: any = {};
     
     // Verificación de email (wizard): necesita email y password del registro
+    if (stepConfig.step === RequestFlowStep.REGISTER && this.context === RequestFlowContext.WIZARD) {
+      extra.requireEmailVerification = this.flowSteps.some(
+        (s) => s.step === RequestFlowStep.EMAIL_VERIFICATION,
+      );
+    }
+
+    // Verificación de email (wizard): necesita email y password del registro
     if (stepConfig.step === RequestFlowStep.EMAIL_VERIFICATION && this.context === RequestFlowContext.WIZARD && this.wizardStateService) {
       const step1 = this.wizardStateService.getStepData(1) || {};
       extra.email = step1.email || '';
@@ -1020,7 +1047,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
           this.context,
           serviceType,
           false,
-          this.shouldSkipPartnerClientSelection()
+          this.shouldSkipPartnerClientSelection(),
+          this.flowSource
         );
         
         // Encontrar el índice del paso actual (SERVICE_TYPE_SELECTION)

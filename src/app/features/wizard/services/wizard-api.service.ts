@@ -10,12 +10,17 @@ export interface WizardRegisterData {
   email: string;
   phone?: string;
   password: string;
+  source?: 'wizard' | 'crm-lead' | 'panel';
 }
 
 export interface WizardRegisterResponse {
   message: string;
   email: string;
   id: number;
+  requiresEmailVerification?: boolean;
+  accessToken?: string;
+  refreshToken?: string;
+  user?: WizardConfirmEmailResponse['user'];
 }
 
 export interface WizardConfirmEmailData {
@@ -47,6 +52,7 @@ export interface WizardClientData {
 }
 
 export interface WizardCreateRequestData {
+  source?: 'wizard' | 'crm-lead' | 'panel';
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
   currentStepNumber: number;
   currentStep?: number;
@@ -215,7 +221,15 @@ export class WizardApiService {
    */
   register(data: WizardRegisterData): Observable<WizardRegisterResponse> {
     console.log('[WizardApiService] Registrando usuario:', data.email);
-    return this.http.post<WizardRegisterResponse>(`${this.apiUrl}/register`, data);
+    return this.http.post<WizardRegisterResponse>(`${this.apiUrl}/register`, data).pipe(
+      tap(response => {
+        if (response.accessToken && response.refreshToken && response.user) {
+          this.accessTokenSubject.next(response.accessToken);
+          this.userDataSubject.next(response.user);
+          this.storeToken(response.accessToken, response.refreshToken, response.user);
+        }
+      })
+    );
   }
 
   /**

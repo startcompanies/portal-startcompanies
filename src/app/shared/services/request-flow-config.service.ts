@@ -1,6 +1,5 @@
 import { Injectable, Type } from '@angular/core';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../models/request-flow-context';
-import { environment } from '../../../environments/environment';
 
 // Importaciones de componentes del wizard
 import { WizardBasicRegisterStepComponent } from '../../features/wizard/components/basic-register-step/basic-register-step.component';
@@ -39,7 +38,8 @@ export class RequestFlowConfigService {
     context: RequestFlowContext,
     serviceType: ServiceType,
     includeServiceTypeSelection: boolean = false,
-    skipClientSelection: boolean = false
+    skipClientSelection: boolean = false,
+    source: 'wizard' | 'crm-lead' | 'panel' = 'wizard'
   ): FlowStepConfig[] {
     const configs: FlowStepConfig[] = [];
     
@@ -57,6 +57,8 @@ export class RequestFlowConfigService {
     
     switch (context) {
       case RequestFlowContext.WIZARD:
+        const isCrmLead = source === 'crm-lead' && serviceType === 'apertura-llc';
+        const requiresEmailVerificationStep = isCrmLead;
         configs.push(
           { 
             step: RequestFlowStep.REGISTER, 
@@ -65,16 +67,19 @@ export class RequestFlowConfigService {
             order: 1,
             label: 'WIZARD.steps.step_register',
             icon: 'bi-person-plus'
-          },
-          { 
-            step: RequestFlowStep.EMAIL_VERIFICATION, 
-            required: true, 
-            component: WizardEmailVerificationComponent, 
+          }
+        );
+
+        if (requiresEmailVerificationStep) {
+          configs.push({
+            step: RequestFlowStep.EMAIL_VERIFICATION,
+            required: true,
+            component: WizardEmailVerificationComponent,
             order: 2,
             label: 'WIZARD.steps.step_verify_email',
             icon: 'bi-envelope-check'
-          }
-        );
+          });
+        }
         
         // Agregar selección de estado/plan solo para LLC types
         if (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') {
@@ -82,28 +87,20 @@ export class RequestFlowConfigService {
             step: this.getStateSelectionStep(serviceType),
             required: true,
             component: this.getPlanStateComponent(serviceType),
-            order: 3,
+            order: requiresEmailVerificationStep ? 3 : 2,
             label: serviceType === 'renovacion-llc' ? 'WIZARD.steps.step_state' : 'WIZARD.steps.step_state_plan',
             icon: 'bi-geo-alt'
           });
         }
-        
-        // Pago: apertura-llc controlado por paymentEnabled, renovacion-llc siempre, cuenta-bancaria nunca
-        if ((environment.paymentEnabled && serviceType === 'apertura-llc') || serviceType === 'renovacion-llc') {
-          configs.push({
-            step: RequestFlowStep.PAYMENT,
-            required: true,
-            component: WizardPaymentStepComponent,
-            order: 4,
-            label: 'WIZARD.steps.payment',
-            icon: 'bi-credit-card'
-          });
-        }
 
-        // Órdenes: apertura+pago=5/6, apertura/renovacion sin pago=4/5, cuenta-bancaria=3/4
-        const wizardPaymentAdded = (environment.paymentEnabled && serviceType === 'apertura-llc') || serviceType === 'renovacion-llc';
-        const wizardServiceFormOrder = serviceType === 'cuenta-bancaria' ? 3 : (wizardPaymentAdded ? 5 : 4);
-        const wizardConfirmOrder    = serviceType === 'cuenta-bancaria' ? 4 : (wizardPaymentAdded ? 6 : 5);
+        // Nuevo orden wizard:
+        // - Apertura/Renovación: Registro -> Estado/Plan -> Información -> Pago -> Confirmación
+        // - Cuenta bancaria: Registro -> Información -> Confirmación
+        const wizardPaymentAdded =
+          serviceType === 'renovacion-llc' || (serviceType === 'apertura-llc' && !isCrmLead);
+        const orderShift = requiresEmailVerificationStep ? 1 : 0;
+        const wizardServiceFormOrder = serviceType === 'cuenta-bancaria' ? 2 : 3 + orderShift;
+        const wizardConfirmOrder = serviceType === 'cuenta-bancaria' ? 3 : 5 + orderShift;
 
         configs.push(
           {
@@ -113,7 +110,21 @@ export class RequestFlowConfigService {
             order: wizardServiceFormOrder,
             label: 'WIZARD.steps.step_service_info',
             icon: 'bi-file-text'
-          },
+          }
+        );
+
+        if (wizardPaymentAdded) {
+          configs.push({
+            step: RequestFlowStep.PAYMENT,
+            required: true,
+            component: WizardPaymentStepComponent,
+            order: 4 + orderShift,
+            label: 'WIZARD.steps.payment',
+            icon: 'bi-credit-card'
+          });
+        }
+
+        configs.push(
           {
             step: RequestFlowStep.CONFIRMATION,
             required: true,
@@ -152,8 +163,8 @@ export class RequestFlowConfigService {
           });
         }
         
-        // Pago: apertura-llc controlado por paymentEnabled, renovacion-llc siempre, cuenta-bancaria nunca
-        if ((environment.paymentEnabled && serviceType === 'apertura-llc') || serviceType === 'renovacion-llc') {
+        // Pago: solo renovación (apertura cliente paga después en /panel/my-requests/:uuid).
+        if (serviceType === 'renovacion-llc') {
           configs.push({
             step: RequestFlowStep.PAYMENT,
             required: true,
@@ -164,8 +175,8 @@ export class RequestFlowConfigService {
           });
         }
 
-        // Órdenes: cuenta-bancaria sin estado/pago=+1/+2; apertura+pago=+3/+4; apertura/renovacion sin pago=+2/+3
-        const panelPaymentAdded      = (environment.paymentEnabled && serviceType === 'apertura-llc') || serviceType === 'renovacion-llc';
+        // Órdenes: cuenta-bancaria sin estado/pago=+1/+2; renovación con pago=+3/+4; apertura sin pago inicial=+2/+3
+        const panelPaymentAdded      = serviceType === 'renovacion-llc';
         const panelServiceFormOffset = serviceType === 'cuenta-bancaria' ? 1 : (panelPaymentAdded ? 3 : 2);
         const panelConfirmOffset     = serviceType === 'cuenta-bancaria' ? 2 : (panelPaymentAdded ? 4 : 3);
 

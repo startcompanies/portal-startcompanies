@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { UsersService, User } from '../../services/users.service';
@@ -42,6 +43,10 @@ export class SettingsComponent implements OnInit {
   saveSuccess = false;
   saveError: string | null = null;
 
+  emailChangeRequested = false;
+  emailChangePending = false;
+  emailChangeError: string | null = null;
+
   readonly timezoneOptions: { value: string; labelKey: string }[] = [
     { value: 'America/Mexico_City', labelKey: 'PANEL.settings_page.timezones.america_mexico_city' },
     { value: 'America/New_York', labelKey: 'PANEL.settings_page.timezones.america_new_york' },
@@ -62,6 +67,7 @@ export class SettingsComponent implements OnInit {
     private panelPreferences: PanelPreferencesService,
     private transloco: TranslocoService,
     private http: HttpClient,
+    private route: ActivatedRoute,
   ) {
     this.profileForm = this.fb.group({
       full_name: ['', Validators.required],
@@ -121,6 +127,11 @@ export class SettingsComponent implements OnInit {
     if (this.isAdmin) {
       this.loadZohoConfigs();
       this.setupOAuthListener();
+    }
+
+    const token = this.route.snapshot.queryParamMap.get('confirmEmailToken');
+    if (token) {
+      this.handleConfirmEmailToken(token);
     }
   }
 
@@ -202,6 +213,7 @@ export class SettingsComponent implements OnInit {
     }
     this.isLoading = true;
     this.saveError = null;
+    this.emailChangeError = null;
     const fullName = this.profileForm.value.full_name.trim();
     const nameParts = fullName.split(' ');
     const first_name = nameParts[0] || '';
@@ -212,6 +224,11 @@ export class SettingsComponent implements OnInit {
       phone: this.profileForm.value.phone || undefined,
       company: this.profileForm.value.company || undefined,
     };
+
+    const newEmail = (this.profileForm.value.email || '').trim();
+    const currentEmail = this.currentUser?.email || '';
+    const emailChanged = newEmail && newEmail !== currentEmail;
+
     this.usersService.updateCurrentUser(updateData).subscribe({
       next: (updatedUser) => {
         this.currentUser = {
@@ -228,11 +245,53 @@ export class SettingsComponent implements OnInit {
         this.isLoading = false;
         this.saveSuccess = true;
         setTimeout(() => (this.saveSuccess = false), 3000);
+
+        if (emailChanged) {
+          this.requestEmailChange(newEmail);
+        }
       },
       error: (error) => {
         this.saveError =
           error.error?.message || this.transloco.translate('PANEL.settings_page.errors.generic_save');
         this.isLoading = false;
+      },
+    });
+  }
+
+  requestEmailChange(newEmail: string): void {
+    this.emailChangePending = true;
+    this.emailChangeRequested = false;
+    this.emailChangeError = null;
+    this.usersService.requestEmailChange(newEmail).subscribe({
+      next: () => {
+        this.emailChangePending = false;
+        this.emailChangeRequested = true;
+      },
+      error: (error) => {
+        this.emailChangePending = false;
+        this.emailChangeError =
+          error.error?.message || 'No se pudo enviar el email de verificación.';
+      },
+    });
+  }
+
+  handleConfirmEmailToken(token: string): void {
+    this.isLoading = true;
+    this.usersService.confirmEmailChange(token).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.saveSuccess = true;
+        if (this.currentUser) {
+          this.currentUser = { ...this.currentUser, email: res.email };
+          this.profileForm.patchValue({ email: res.email });
+        }
+        this.emailChangeRequested = false;
+        setTimeout(() => (this.saveSuccess = false), 5000);
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.saveError =
+          error.error?.message || 'El enlace de verificación es inválido o ha expirado.';
       },
     });
   }
