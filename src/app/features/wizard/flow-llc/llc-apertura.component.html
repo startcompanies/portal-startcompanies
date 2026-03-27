@@ -120,6 +120,7 @@
             [stepNumber]="3"
             [previousStepNumber]="2"
             (sectionChanged)="onLlcInfoSectionChanged($event)"
+            (nextStepRequested)="nextStep()"
           ></app-wizard-llc-information-step>
           <div class="step-actions" *ngIf="llcInfoCurrentSection === 3">
             <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
@@ -157,9 +158,6 @@
             (goToPanel)="onGoToPanel()"
             (goToHome)="onGoToHome()"
           ></app-wizard-final-review-step>
-          <div class="step-actions" *ngIf="!isSubmitted">
-            <button type="button" class="btn btn-outline-secondary" (click)="previousStep()">{{ 'WIZARD.previous' | transloco }}</button>
-          </div>
           <div *ngIf="successMessage && !isSubmitted" class="alert alert-success mt-3">{{ successMessage }}</div>
           <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
         </div>

@@ -242,10 +242,11 @@ export class RequestsService {
   async finalizeRequest(
     requestId: number,
     serviceType: ServiceType,
-    signatureDataUrl?: string | null
+    signatureDataUrl?: string | null,
+    preUploadedSignatureUrl?: string | null
   ): Promise<Request> {
-    let signatureUrl: string | null = null;
-    if (signatureDataUrl) {
+    let signatureUrl: string | null = preUploadedSignatureUrl ?? null;
+    if (!signatureUrl && signatureDataUrl) {
       signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
     }
     const updateData: any = { status: 'solicitud-recibida' as const };

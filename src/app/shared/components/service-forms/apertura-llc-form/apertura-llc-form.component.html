@@ -138,52 +138,6 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPassportScanned' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.passport_scan' | transloco }} <span class="text-danger">*</span></label>
-                  <!-- Solo mostrar input de file si NO hay URL guardada -->
-                  <div *ngIf="!member.get('scannedPassportUrl')?.value">
-                    <input
-                      type="file"
-                      [id]="'memberPassportScanned' + i"
-                      class="form-control"
-                      (change)="onMemberFileSelected($event, i, 'scannedPassportUrl', 'memberPassport' + i)"
-                      accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                      [disabled]="getFileUploadState('memberPassport' + i).uploading"
-                    />
-                    <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.file_formats_member' | transloco }}</small>
-                    
-                    <div *ngIf="getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="selected-file-info mt-2">
-                      <div class="alert alert-info d-flex justify-content-between align-items-center">
-                        <span>
-                          <i class="bi bi-file-earmark me-2"></i>
-                          {{ getFileUploadState('memberPassport' + i).file?.name }} ({{ ((getFileUploadState('memberPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)
-                        </span>
-                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)">
-                          <i class="bi bi-x-circle"></i>
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <div *ngIf="getFileUploadState('memberPassport' + i).uploading" class="upload-progress mt-2">
-                      <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('memberPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('memberPassport' + i).progress" aria-valuemin="0" aria-valuemax="100">
-                          {{ getFileUploadState('memberPassport' + i).progress }}%
-                        </div>
-                      </div>
-                      <small class="text-muted">{{ 'PANEL.forms_renovacion_llc.uploading_file' | transloco }}</small>
-                    </div>
-                  </div>
-                  <!-- Mostrar archivo existente si hay URL guardada -->
-                  <div *ngIf="member.get('scannedPassportUrl')?.value && !getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="uploaded-file-info mt-2">
-                    <div class="alert alert-success">
-                      <i class="bi bi-check-circle me-2"></i><strong>{{ 'PANEL.forms_renovacion_llc.file_uploaded_ok' | transloco }}</strong><br>
-                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" class="text-decoration-none"><i class="bi bi-box-arrow-up-right me-1"></i>{{ 'PANEL.forms_renovacion_llc.view_file' | transloco }}</a>
-                      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)"><i class="bi bi-x-circle me-1"></i>{{ 'PANEL.forms_renovacion_llc.change_file_doc' | transloco }}</button>
-                    </div>
-                  </div>
-                  
-                  <input type="hidden" formControlName="scannedPassportUrl">
-                </div>
-                <div class="col-md-6">
                   <label [for]="'memberNationality' + i" class="form-label">{{ 'PANEL.forms_renovacion_llc.nationality' | transloco }} <span class="text-danger">*</span></label>
                   <select [id]="'memberNationality' + i" class="form-select" formControlName="nationality"
                     [class.is-invalid]="member.get('nationality')?.invalid && member.get('nationality')?.touched">

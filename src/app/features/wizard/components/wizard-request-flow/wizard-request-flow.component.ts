@@ -57,9 +57,11 @@ export class WizardRequestFlowComponent implements OnInit {
       this.isFinalizing = true;
       try {
         const signature = data?.submit?.signature || null;
-        await this.finalizeService.finalize(this.serviceType, signature);
+        const signatureUrl = data?.submit?.signatureUrl || null;
+        await this.finalizeService.finalize(this.serviceType, signature, signatureUrl);
         // Mostrar pantalla de éxito en el paso de confirmación y no redirigir automáticamente.
         this.baseFlow?.markCurrentStepAsSubmitted();
+        this.finalizeService.clearWizardSession();
         return;
       } catch (e) {
         console.error('[WizardRequestFlowComponent] Error al finalizar wizard:', e);

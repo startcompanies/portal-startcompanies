@@ -474,9 +474,11 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
 
     const requestId = this.wizardStateService.getRequestId();
     if (!requestId) {
-      this.logger.log('[WizardRenovacionLlcInformationStep] No hay requestId, saltando guardado en API');
-      this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
-      return false;
+      // En este flujo, la información puede capturarse antes de crear el request en pago.
+      // Permitir avanzar secciones y guardar en estado local sin bloquear al usuario.
+      this.logger.log('[WizardRenovacionLlcInformationStep] No hay requestId, omitiendo guardado en API por ahora');
+      this.saveError = null;
+      return true;
     }
 
     this.isSaving = true;

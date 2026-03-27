@@ -211,6 +211,14 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
     this.emitSignature();
   }
 
+  /**
+   * Escribe el contenido actual del canvas en el FormControl (CVA).
+   * Llamar antes de enviar el formulario: el último trazo podría no haberse propagado aún.
+   */
+  flushToFormControl(): void {
+    this.emitSignature();
+  }
+
   getSignatureData(): string | null {
     // Verificar que el canvas y el contexto estén inicializados
     if (!this.canvas || !this.ctx) {
@@ -233,13 +241,40 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
     return this.canvas.toDataURL('image/png');
   }
 
-  loadSignature(dataUrl: string): void {
-    const img = new Image();
-    img.onload = () => {
+  loadSignature(dataUrlOrHttp: string): void {
+    const drawImg = (img: HTMLImageElement) => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+      this.emitSignature();
     };
-    img.src = dataUrl;
+
+    if (dataUrlOrHttp.startsWith('data:')) {
+      const img = new Image();
+      img.onload = () => drawImg(img);
+      img.src = dataUrlOrHttp;
+      return;
+    }
+
+    if (dataUrlOrHttp.startsWith('http://') || dataUrlOrHttp.startsWith('https://')) {
+      fetch(dataUrlOrHttp, { mode: 'cors', credentials: 'omit' })
+        .then((r) => r.blob())
+        .then((blob) => {
+          const objectUrl = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = () => {
+            drawImg(img);
+            URL.revokeObjectURL(objectUrl);
+          };
+          img.onerror = () => URL.revokeObjectURL(objectUrl);
+          img.src = objectUrl;
+        })
+        .catch(() => {});
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => drawImg(img);
+    img.src = dataUrlOrHttp;
   }
 
   hasSignature(): boolean {

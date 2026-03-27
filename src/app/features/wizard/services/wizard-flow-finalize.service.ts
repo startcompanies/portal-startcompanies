@@ -2,23 +2,31 @@ import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { WizardApiService } from './wizard-api.service';
 import { WizardStateService } from './wizard-state.service';
-import { ServiceType } from '../../../shared/models/request-flow-context';
+import { RequestFlowStep, ServiceType } from '../../../shared/models/request-flow-context';
+import { RequestFlowStateService } from '../../../shared/services/request-flow-state.service';
+import { GeolocationService } from '../../../shared/services/geolocation.service';
 
 /**
  * Finalización unificada del wizard:
  * - Si no existe requestId, crea el request con todos los datos recogidos
  * - Sube firma (opcional) vía apiUrl
  * - Actualiza estado a "solicitud-recibida"
- * - No limpia estado ni token aquí: el contenedor debe llamar a clear tras salir de la pantalla de éxito o al navegar.
+ * - Tras éxito, el contenedor debe llamar a clearWizardSession para no dejar datos en localStorage ni estado en memoria.
  */
 @Injectable({ providedIn: 'root' })
 export class WizardFlowFinalizeService {
   constructor(
     private wizardApiService: WizardApiService,
-    private wizardStateService: WizardStateService
+    private wizardStateService: WizardStateService,
+    private requestFlowState: RequestFlowStateService,
+    private geolocationService: GeolocationService
   ) {}
 
-  async finalize(serviceType: ServiceType, signatureDataUrl?: string | null): Promise<void> {
+  async finalize(
+    serviceType: ServiceType,
+    signatureDataUrl?: string | null,
+    preUploadedSignatureUrl?: string | null
+  ): Promise<void> {
     let requestId = this.wizardStateService.getRequestId();
 
     // Si no se creó request en pasos previos, crearlo ahora.
@@ -26,8 +34,8 @@ export class WizardFlowFinalizeService {
       requestId = await this.createRequestWithoutPayment(serviceType);
     }
 
-    let signatureUrl: string | null = null;
-    if (signatureDataUrl) {
+    let signatureUrl: string | null = preUploadedSignatureUrl ?? null;
+    if (!signatureUrl && signatureDataUrl) {
       signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
       if (!signatureUrl) {
         throw new Error(
@@ -35,11 +43,6 @@ export class WizardFlowFinalizeService {
         );
       }
     }
-
-    // Leer datos del wizard para información adicional del flujo
-    const allData = this.wizardStateService.getAllData();
-    const step2 = allData?.step2 || {};
-    const plan = step2?.plan;
 
     const updateData: any = {
       type: serviceType,
@@ -50,22 +53,30 @@ export class WizardFlowFinalizeService {
       updateData.signatureUrl = signatureUrl;
     }
 
-    // Para apertura-llc, propagar el plan en la actualización final
-    if (serviceType === 'apertura-llc' && plan) {
-      updateData.plan = plan;
-      updateData.aperturaLlcData = {
-        ...(updateData.aperturaLlcData || {}),
-        plan,
-      };
+    // Para apertura-llc, propagar el plan (p. ej. /apertura/lead: el paso 2 del wizard puede ser email, no estado/plan)
+    if (serviceType === 'apertura-llc') {
+      const plan = this.resolveAperturaPlanCode();
+      if (plan) {
+        updateData.plan = plan;
+        updateData.aperturaLlcData = {
+          ...(updateData.aperturaLlcData || {}),
+          plan,
+        };
+      }
     }
 
     await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
   }
 
-  /** Llamar al salir del wizard (panel, inicio o cancelar) para borrar localStorage y token wizard. */
+  /**
+   * Borra estado del wizard (localStorage), token de sesión wizard, estado del flujo de solicitud (singleton)
+   * y caché de país por IP para un trámite nuevo sin datos residuales.
+   */
   clearWizardSession(): void {
     this.wizardStateService.clear();
     this.wizardApiService.clearToken();
+    this.requestFlowState.clear();
+    this.geolocationService.clearCache();
   }
 
   /**
@@ -80,12 +91,21 @@ export class WizardFlowFinalizeService {
     }
 
     const allData = this.wizardStateService.getAllData();
-    const step1 = allData?.step1 || {};   // datos del registro
-    const step2 = allData?.step2 || {};   // estado/plan (sincronizado por syncToWizardStateService)
-    const step4 = allData?.step4 || {};   // formulario de servicio (sincronizado por syncToWizardStateService)
+    const step1 = allData?.step1 || {};
+    const step2 = allData?.step2 || {};
+    const step3 = allData?.step3 || {};
+    const step4 = allData?.step4 || {};
 
-    // Guardamos plan y amount para mantener trazabilidad de cobro posterior cuando aplique.
-    const amount = Number(step2?.amount) || 0;
+    const flowPlanState = this.requestFlowState.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const flowStateOnly = this.requestFlowState.getStepData(RequestFlowStep.STATE_SELECTION);
+    const flowServiceForm = this.requestFlowState.getStepData(RequestFlowStep.SERVICE_FORM);
+
+    const planStateMerged = { ...flowStateOnly, ...flowPlanState };
+    const serviceFormMerged = { ...step3, ...step4, ...flowServiceForm };
+
+    const amount =
+      Number(planStateMerged.amount ?? step2.amount ?? serviceFormMerged.amount) || 0;
+
     const requestData: any = {
       source: this.wizardStateService.getFlowSource(),
       type: serviceType,
@@ -101,23 +121,42 @@ export class WizardFlowFinalizeService {
       },
     };
 
-    // Datos específicos del servicio con datos del formulario incluidos (plan se envía al crear)
     if (serviceType === 'apertura-llc') {
-      const plan = step2.plan || '';
+      const plan =
+        planStateMerged.plan ||
+        (serviceFormMerged as any).plan ||
+        step2.plan ||
+        '';
+      const incorporationState =
+        planStateMerged.state ||
+        (serviceFormMerged as any).incorporationState ||
+        step2.state ||
+        '';
+
       requestData.plan = plan;
       requestData.aperturaLlcData = {
-        incorporationState: step2.state || '',
+        ...serviceFormMerged,
+        incorporationState,
         plan,
-        ...step4,
       };
     } else if (serviceType === 'renovacion-llc') {
+      const state =
+        planStateMerged.state ||
+        (serviceFormMerged as any).state ||
+        step2.state ||
+        '';
+      const llcType =
+        planStateMerged.llcType ||
+        (serviceFormMerged as any).llcType ||
+        step2.llcType ||
+        '';
       requestData.renovacionLlcData = {
-        state: step2.state || '',
-        llcType: step2.llcType || '',
-        ...step4,
+        ...serviceFormMerged,
+        state,
+        llcType,
       };
     } else if (serviceType === 'cuenta-bancaria') {
-      requestData.cuentaBancariaData = { ...step4 };
+      requestData.cuentaBancariaData = { ...serviceFormMerged };
     }
 
     console.log('[WizardFlowFinalizeService] Creando request sin pago:', requestData);
@@ -132,25 +171,29 @@ export class WizardFlowFinalizeService {
     return response.id;
   }
 
+  /**
+   * Resuelve el código de plan (Entrepreneur / Elite / Premium) para apertura-llc
+   * cuando el paso 2 del WizardState no es estado/plan (p. ej. lead con email en paso 2).
+   */
+  private resolveAperturaPlanCode(): string {
+    const allData = this.wizardStateService.getAllData();
+    const step2 = allData?.step2 || {};
+    const step3 = allData?.step3 || {};
+    const step4 = allData?.step4 || {};
+    const flowPlan = this.requestFlowState.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const flowSt = this.requestFlowState.getStepData(RequestFlowStep.STATE_SELECTION);
+    const flowSvc = this.requestFlowState.getStepData(RequestFlowStep.SERVICE_FORM);
+    const mergedPlanState = { ...flowSt, ...flowPlan };
+    const mergedService = { ...step3, ...step4, ...flowSvc };
+    return (
+      mergedPlanState.plan ||
+      (mergedService as any).plan ||
+      step2.plan ||
+      ''
+    );
+  }
+
   private async uploadSignature(signatureDataUrl: string, requestId: number, serviceType: ServiceType): Promise<string | null> {
-    try {
-      const resp = await fetch(signatureDataUrl);
-      const blob = await resp.blob();
-      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
-
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('servicio', serviceType);
-      formData.append('requestUuid', requestId.toString());
-
-      const uploadResponse = await firstValueFrom(
-        this.wizardApiService.uploadFile(formData)
-      );
-
-      return uploadResponse?.url || null;
-    } catch (e) {
-      console.error('[WizardFlowFinalizeService] Error al subir firma:', e);
-      return null;
-    }
+    return this.wizardApiService.uploadSignaturePngFromDataUrl(signatureDataUrl, requestId, serviceType);
   }
 }
