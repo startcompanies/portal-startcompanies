@@ -53,16 +53,18 @@ export class WizardFlowFinalizeService {
       updateData.signatureUrl = signatureUrl;
     }
 
-    // Para apertura-llc, propagar el plan (p. ej. /apertura/lead: el paso 2 del wizard puede ser email, no estado/plan)
+    // Apertura LLC: mismo merge que createRequestWithoutPayment para no enviar solo { plan } en el PATCH de cierre.
     if (serviceType === 'apertura-llc') {
-      const plan = this.resolveAperturaPlanCode();
+      const { plan, incorporationState, mergedServiceForm } =
+        this.buildAperturaLlcMergedFromWizard();
       if (plan) {
         updateData.plan = plan;
-        updateData.aperturaLlcData = {
-          ...(updateData.aperturaLlcData || {}),
-          plan,
-        };
       }
+      updateData.aperturaLlcData = {
+        ...mergedServiceForm,
+        incorporationState,
+        plan,
+      };
     }
 
     await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
@@ -103,8 +105,12 @@ export class WizardFlowFinalizeService {
     const planStateMerged = { ...flowStateOnly, ...flowPlanState };
     const serviceFormMerged = { ...step3, ...step4, ...flowServiceForm };
 
+    const aperturaMerged =
+      serviceType === 'apertura-llc' ? this.buildAperturaLlcMergedFromWizard() : null;
+    const mergedForAmount = aperturaMerged?.mergedServiceForm ?? serviceFormMerged;
+
     const amount =
-      Number(planStateMerged.amount ?? step2.amount ?? serviceFormMerged.amount) || 0;
+      Number(planStateMerged.amount ?? step2.amount ?? mergedForAmount.amount) || 0;
 
     const requestData: any = {
       source: this.wizardStateService.getFlowSource(),
@@ -121,23 +127,12 @@ export class WizardFlowFinalizeService {
       },
     };
 
-    if (serviceType === 'apertura-llc') {
-      const plan =
-        planStateMerged.plan ||
-        (serviceFormMerged as any).plan ||
-        step2.plan ||
-        '';
-      const incorporationState =
-        planStateMerged.state ||
-        (serviceFormMerged as any).incorporationState ||
-        step2.state ||
-        '';
-
-      requestData.plan = plan;
+    if (serviceType === 'apertura-llc' && aperturaMerged) {
+      requestData.plan = aperturaMerged.plan;
       requestData.aperturaLlcData = {
-        ...serviceFormMerged,
-        incorporationState,
-        plan,
+        ...aperturaMerged.mergedServiceForm,
+        incorporationState: aperturaMerged.incorporationState,
+        plan: aperturaMerged.plan,
       };
     } else if (serviceType === 'renovacion-llc') {
       const state =
@@ -172,25 +167,38 @@ export class WizardFlowFinalizeService {
   }
 
   /**
-   * Resuelve el código de plan (Entrepreneur / Elite / Premium) para apertura-llc
-   * cuando el paso 2 del WizardState no es estado/plan (p. ej. lead con email en paso 2).
+   * Mismo merge que usa el POST de creación: plan/estado + formulario de servicio (wizard + RequestFlow).
+   * Reutilizado en finalize (PATCH) para no depender de un aperturaLlcData mínimo.
    */
-  private resolveAperturaPlanCode(): string {
+  private buildAperturaLlcMergedFromWizard(): {
+    plan: string;
+    incorporationState: string;
+    mergedServiceForm: Record<string, unknown>;
+  } {
     const allData = this.wizardStateService.getAllData();
     const step2 = allData?.step2 || {};
     const step3 = allData?.step3 || {};
     const step4 = allData?.step4 || {};
-    const flowPlan = this.requestFlowState.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
-    const flowSt = this.requestFlowState.getStepData(RequestFlowStep.STATE_SELECTION);
-    const flowSvc = this.requestFlowState.getStepData(RequestFlowStep.SERVICE_FORM);
-    const mergedPlanState = { ...flowSt, ...flowPlan };
-    const mergedService = { ...step3, ...step4, ...flowSvc };
-    return (
-      mergedPlanState.plan ||
-      (mergedService as any).plan ||
-      step2.plan ||
-      ''
-    );
+
+    const flowPlanState = this.requestFlowState.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const flowStateOnly = this.requestFlowState.getStepData(RequestFlowStep.STATE_SELECTION);
+    const flowServiceForm = this.requestFlowState.getStepData(RequestFlowStep.SERVICE_FORM);
+
+    const planStateMerged = { ...flowStateOnly, ...flowPlanState };
+    const mergedServiceForm = { ...step3, ...step4, ...flowServiceForm };
+
+    const plan =
+      (planStateMerged as { plan?: string }).plan ||
+      (mergedServiceForm as { plan?: string }).plan ||
+      (step2 as { plan?: string }).plan ||
+      '';
+    const incorporationState =
+      (planStateMerged as { state?: string }).state ||
+      (mergedServiceForm as { incorporationState?: string }).incorporationState ||
+      (step2 as { state?: string }).state ||
+      '';
+
+    return { plan, incorporationState, mergedServiceForm };
   }
 
   private async uploadSignature(signatureDataUrl: string, requestId: number, serviceType: ServiceType): Promise<string | null> {

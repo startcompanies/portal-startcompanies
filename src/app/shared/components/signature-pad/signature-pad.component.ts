@@ -34,6 +34,8 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
   private onChange = (value: string | null) => {};
   private onTouched = () => {};
   disabled = false;
+  /** Evita eco CVA: writeValue no debe llamar loadSignature cuando el valor viene del propio canvas. */
+  private updatingFromCanvas = false;
 
   ngAfterViewInit(): void {
     if (!this.canvasRef) {
@@ -196,9 +198,16 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
   private emitSignature(): void {
     const signatureData = this.getSignatureData();
     this.signatureChange.emit(signatureData);
-    this.onChange(signatureData);
-    if (this.formControl) {
-      this.formControl.setValue(signatureData, { emitEvent: false });
+    this.updatingFromCanvas = true;
+    try {
+      this.onChange(signatureData);
+      if (this.formControl) {
+        this.formControl.setValue(signatureData, { emitEvent: false });
+      }
+    } finally {
+      Promise.resolve().then(() => {
+        this.updatingFromCanvas = false;
+      });
     }
   }
 
@@ -286,7 +295,17 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
 
   // ControlValueAccessor implementation
   writeValue(value: string | null): void {
-    if (value && this.canvas && this.ctx) {
+    if (this.updatingFromCanvas) {
+      return;
+    }
+    if (!value) {
+      if (this.canvas && this.ctx) {
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+      return;
+    }
+    if (this.canvas && this.ctx) {
       this.loadSignature(value);
     }
   }

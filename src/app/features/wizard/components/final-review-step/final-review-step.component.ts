@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
 import { WizardApiService } from '../../services/wizard-api.service';
-import { Subscription } from 'rxjs';
+import { merge, Subscription } from 'rxjs';
 import { SignaturePadComponent } from '../../../../shared/components/signature-pad/signature-pad.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -203,9 +203,14 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
       });
     }
 
-    this.formSubscription = this.form.valueChanges.subscribe(() => {
-      this.saveStepData();
-    });
+    const confirmCtrl = this.form.get('confirm');
+    const signatureUrlCtrl = this.form.get('signatureUrl');
+    if (confirmCtrl && signatureUrlCtrl) {
+      this.formSubscription = merge(
+        confirmCtrl.valueChanges,
+        signatureUrlCtrl.valueChanges
+      ).subscribe(() => this.saveStepData());
+    }
   }
 
   ngOnDestroy(): void {

@@ -35,6 +35,8 @@ export class WizardRequestFlowComponent implements OnInit {
   
   RequestFlowContext = RequestFlowContext;
   private isFinalizing = false;
+  /** Evita segunda finalize tras clearWizardSession si flowCompleted se emite dos veces con submit. */
+  private finalizeSucceeded = false;
   @ViewChild(BaseRequestFlowComponent) baseFlow?: BaseRequestFlowComponent;
   
   constructor(
@@ -49,9 +51,12 @@ export class WizardRequestFlowComponent implements OnInit {
   }
   
   async onFlowCompleted(data: any): Promise<void> {
+    if (data?.submit && this.finalizeSucceeded) {
+      return;
+    }
     console.log('[WizardRequestFlowComponent] Flujo completado:', data);
     this.flowCompleted.emit(data);
-    
+
     // Si viene del submit del paso final, finalizar (status + firma)
     if (data?.submit && !this.isFinalizing) {
       this.isFinalizing = true;
@@ -59,6 +64,7 @@ export class WizardRequestFlowComponent implements OnInit {
         const signature = data?.submit?.signature || null;
         const signatureUrl = data?.submit?.signatureUrl || null;
         await this.finalizeService.finalize(this.serviceType, signature, signatureUrl);
+        this.finalizeSucceeded = true;
         // Mostrar pantalla de éxito en el paso de confirmación y no redirigir automáticamente.
         this.baseFlow?.markCurrentStepAsSubmitted();
         this.finalizeService.clearWizardSession();
