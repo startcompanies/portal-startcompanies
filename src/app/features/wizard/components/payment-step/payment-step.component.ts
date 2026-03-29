@@ -76,6 +76,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    const serviceType = this.wizardStateService.getServiceType();
+
     // Si hay un monto fijo, usarlo directamente (para flujos como cuenta bancaria)
     if (this.fixedAmount !== null && this.fixedAmount > 0) {
       this.totalAmount = this.fixedAmount;
@@ -101,6 +103,24 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         }
       }
 
+      // Apertura LLC: en el nuevo orden del flujo el paso previo puede ser "Información del Servicio"
+      // (sin state/plan). Resolver estado/plan/monto desde el paso de selección (step 2).
+      if (serviceType === 'apertura-llc') {
+        const aperturaSelection = this.getAperturaSelectionPayload();
+        if (aperturaSelection.state) {
+          this.state = aperturaSelection.state;
+        }
+        if (aperturaSelection.planRaw) {
+          this.packId = this.wizardPlansService.getPlanDisplayLabel(aperturaSelection.planRaw);
+        }
+        if (aperturaSelection.amount > 0) {
+          this.totalAmount = aperturaSelection.amount;
+        } else if (aperturaSelection.planRaw) {
+          // Fallback: si el amount no fue persistido en step2, calcular por plan.
+          this.totalAmount = this.wizardPlansService.calculateAmount(aperturaSelection.planRaw);
+        }
+      }
+
       // Renovación: estado/monto pueden estar en step 3 u otro índice si hubo solapamiento en localStorage
       if (this.wizardStateService.getServiceType() === 'renovacion-llc') {
         const { state: mergedState } = this.getRenovacionLlcPayload();
@@ -119,7 +139,6 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       }
     }
 
-    const serviceType = this.wizardStateService.getServiceType();
     // Fallback de etiqueta de "Plan" para flujos sin plan (renovación/cuenta bancaria)
     if (!this.packId) {
       this.packId = this.wizardPlansService.getServiceLabel(serviceType);
@@ -175,9 +194,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    // Verificar que el usuario esté autenticado
+    // Asegurar sesión leída desde sessionStorage (misma pestaña tras registro/confirmación)
+    this.wizardApiService.ensureSessionFromStorage();
+
+    // Verificar que el usuario esté autenticado (JWT en WizardApiService)
     if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Error: Debes completar el registro para continuar';
+      this.errorMessage =
+        'Debes verificar tu correo e iniciar sesión en el flujo antes de pagar. Si ya confirmaste el email, vuelve al paso anterior y asegúrate de completar el registro.';
       this.paymentError.emit(this.errorMessage);
       return false;
     }
@@ -354,6 +377,52 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Obtiene estado/plan/monto para apertura LLC desde el paso de selección.
+   * Toma step2 como fuente principal y usa fallback buscando en pasos previos.
+   */
+  private getAperturaSelectionPayload(): { state: string; planRaw: string; amount: number } {
+    const allData = this.wizardStateService.getAllData() as Record<string, any>;
+    const blocks: any[] = [];
+
+    if (allData['step2']) {
+      blocks.push(allData['step2']);
+    }
+
+    for (let n = 2; n <= this.stepNumber; n++) {
+      const block = allData[`step${n}`];
+      if (block && !blocks.includes(block)) {
+        blocks.push(block);
+      }
+    }
+
+    const pickString = (field: 'state' | 'plan'): string => {
+      for (const b of blocks) {
+        const v = b?.[field];
+        if (v != null && String(v).trim() !== '') {
+          return String(v).trim();
+        }
+      }
+      return '';
+    };
+
+    const pickAmount = (): number => {
+      for (const b of blocks) {
+        const v = Number(b?.amount);
+        if (!isNaN(v) && v > 0) {
+          return v;
+        }
+      }
+      return 0;
+    };
+
+    return {
+      state: pickString('state'),
+      planRaw: pickString('plan'),
+      amount: pickAmount(),
+    };
+  }
+
+  /**
    * Guarda los datos del paso incluyendo estado del pago
    */
   private saveStepData(): void {
@@ -418,8 +487,10 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Sube el comprobante de transferencia antes de continuar.';
       return;
     }
+    this.wizardApiService.ensureSessionFromStorage();
     if (!this.wizardApiService.isAuthenticated()) {
-      this.errorMessage = 'Debes completar el registro para continuar.';
+      this.errorMessage =
+        'Debes verificar tu correo antes de continuar. Si ya lo confirmaste, vuelve al paso de registro o recarga la página.';
       this.paymentError.emit(this.errorMessage);
       return;
     }

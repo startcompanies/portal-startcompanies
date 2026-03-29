@@ -114,21 +114,21 @@ Disallow: /
 
 # ===== SITEMAPS =====
 # Sitemap principal (index)
-Sitemap: https://startcompanies.us/sitemap-index.xml
+Sitemap: https://startcompanies.io/sitemap-index.xml
 
 # Sitemap de páginas principales
-Sitemap: https://startcompanies.us/sitemap.xml
+Sitemap: https://startcompanies.io/sitemap.xml
 
 # Sitemap de imágenes
-Sitemap: https://startcompanies.us/sitemap-images.xml
+Sitemap: https://startcompanies.io/sitemap-images.xml
 
 # Sitemaps futuros (comentados para implementación posterior)
-# Sitemap: https://startcompanies.us/sitemap-blog.xml
-# Sitemap: https://startcompanies.us/sitemap-services.xml
-# Sitemap: https://startcompanies.us/sitemap-pages.xml
+# Sitemap: https://startcompanies.io/sitemap-blog.xml
+# Sitemap: https://startcompanies.io/sitemap-services.xml
+# Sitemap: https://startcompanies.io/sitemap-pages.xml
 
 # Información de contacto para webmasters
-# Contact: https://startcompanies.us/contacto
+# Contact: https://startcompanies.io/contacto
 
 # Tiempo de espera recomendado entre requests (en segundos)
 Crawl-delay: 1

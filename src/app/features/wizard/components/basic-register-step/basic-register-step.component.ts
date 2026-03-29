@@ -8,7 +8,6 @@ import { Subscription } from 'rxjs';
 import { firstValueFrom, of, timer } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
-import { GeolocationService } from '../../../../shared/services/geolocation.service';
 
 /**
  * Componente reutilizable para el paso de registro básico
@@ -37,7 +36,6 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   registeredEmail: string | null = null;
   waitingEmailVerification = false;
   successMessage: string | null = null;
-  detectedCountryCode: string = 'us';
   
   // Control de visibilidad de contraseña
   showPassword = false;
@@ -50,7 +48,6 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
-    private geolocationService: GeolocationService,
     private transloco: TranslocoService
   ) {
     // Cargar datos guardados si existen
@@ -223,17 +220,6 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Obtener país por IP y establecerlo en el input de teléfono
-    this.geolocationService.getCountryCodeByIP().subscribe(countryCode => {
-      this.detectedCountryCode = countryCode;
-      // Actualizar el país en el input después de que se inicialice
-      setTimeout(() => {
-        if (this.phoneInput) {
-          this.phoneInput.setCountry(countryCode);
-        }
-      }, 500);
-    });
-
     // Guardar datos cuando el formulario cambia
     this.formSubscription = this.form.valueChanges.subscribe(() => {
       this.saveStepData();
@@ -319,8 +305,8 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       this.registeredEmail = email;
       console.log('[WizardBasicRegisterStep] Usuario registrado o código reenviado:', response);
 
-      // Si el flujo no requiere verificación y ya tenemos sesión wizard, completar registro inmediatamente.
-      if (!this.requireEmailVerification && this.wizardApiService.isAuthenticated()) {
+      // Si el backend devolvió JWT (p. ej. email ya verificado), completar aunque el flujo tenga paso de verificación.
+      if (this.wizardApiService.isAuthenticated()) {
         this.wizardStateService.setStepData(this.stepNumber, {
           ...formValue,
           userId: response.id,

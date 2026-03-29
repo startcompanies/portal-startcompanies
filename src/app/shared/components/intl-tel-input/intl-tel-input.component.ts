@@ -2,6 +2,8 @@ import { Component, Input, forwardRef, OnInit, OnDestroy, ElementRef, ViewChild,
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import intlTelInput from 'intl-tel-input';
+import { take } from 'rxjs/operators';
+import { GeolocationService } from '../../services/geolocation.service';
 
 @Component({
   selector: 'app-intl-tel-input',
@@ -32,13 +34,19 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   @Input() separateDialCode: boolean = true;
   /** Si es false, no se muestra el mensaje bajo el input (el padre puede usar solo el FormControl). */
   @Input() showInlineErrors: boolean = true;
+  /** Si es true, ajusta el país al detectado por IP cuando el campo arranca vacío (no sobrescribe valor E.164 existente). */
+  @Input() useGeoIpCountry: boolean = true;
 
   private iti: any = null;
   /** Evita blur/onTouched espurios al montar el plugin o al cambiar país por IP. */
   private userHasFocusedInput = false;
+  /** true si el FormControl ya trae número (evita pisar país al aplicar geo por IP). */
+  private skipGeoIpApply = false;
   private onChange = (value: string) => {};
   private onTouched = () => {};
   private inputTimeout: any = null;
+
+  constructor(private geolocationService: GeolocationService) {}
 
   value: string = '';
   isValid: boolean = true;
@@ -101,13 +109,39 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
 
       // Set initial value if exists
       if (this.value) {
+        this.skipGeoIpApply = true;
         try {
           this.iti.setNumber(this.value);
         } catch {
           this.telInput.nativeElement.value = this.value;
         }
       }
+
+      this.applyGeoIpCountryIfEligible();
     }
+  }
+
+  /**
+   * País por IP solo si el campo está vacío y no hay valor precargado desde el FormControl.
+   */
+  private applyGeoIpCountryIfEligible(): void {
+    if (!this.useGeoIpCountry || this.skipGeoIpApply || !this.iti) {
+      return;
+    }
+    this.geolocationService
+      .getCountryCodeByIP()
+      .pipe(take(1))
+      .subscribe((code) => {
+        if (!this.iti || !this.useGeoIpCountry || this.skipGeoIpApply) {
+          return;
+        }
+        const raw = (this.telInput?.nativeElement?.value || '').trim();
+        const stored = (this.value || '').trim();
+        if (raw || stored) {
+          return;
+        }
+        this.setCountry(code);
+      });
   }
 
   /**
@@ -310,6 +344,9 @@ export class IntlTelInputComponent implements ControlValueAccessor, OnInit, Afte
   // ControlValueAccessor implementation
   writeValue(value: string): void {
     this.value = value || '';
+    if (value) {
+      this.skipGeoIpApply = true;
+    }
     if (this.iti && this.telInput?.nativeElement) {
       if (value) {
         try {

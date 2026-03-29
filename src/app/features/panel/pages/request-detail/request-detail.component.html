@@ -70,11 +70,11 @@
       <div class="request-meta">
         <div class="meta-item">
           <i class="bi bi-calendar3 me-2"></i>
-          <span>{{ 'PANEL.request_detail.created_at' | transloco }} {{ request.createdAt | date:'short' }}</span>
+          <span>{{ 'PANEL.request_detail.created_at' | transloco }} {{ request.createdAt | safeDate:'short' }}</span>
         </div>
         <div class="meta-item">
           <i class="bi bi-clock-history me-2"></i>
-          <span>{{ 'PANEL.request_detail.updated_at' | transloco }} {{ request.updatedAt | date:'short' }}</span>
+          <span>{{ 'PANEL.request_detail.updated_at' | transloco }} {{ request.updatedAt | safeDate:'short' }}</span>
         </div>
         <p *ngIf="isPartner && request.clientName" class="meta-item mb-0">
           <i class="bi bi-person me-2"></i>
@@ -221,7 +221,7 @@
             <div class="step-meta" *ngIf="step.date">
               <small class="text-muted">
                 <i class="bi bi-calendar3 me-1"></i>
-                {{ step.date | date:'short' }}
+                {{ step.date | safeDate:'short' }}
                 <span *ngIf="step.completedBy" class="ms-2">
                   <i class="bi bi-person me-1"></i>
                   {{ step.completedBy }}
@@ -736,7 +736,7 @@
                     <div class="col-md-6" *ngIf="member.dateOfBirth">
                       <div class="detail-item">
                         <label class="detail-label">{{ 'PANEL.request_detail.fd_date_birth' | transloco }}</label>
-                        <span class="detail-value">{{ member.dateOfBirth | date:'short' }}</span>
+                        <span class="detail-value">{{ member.dateOfBirth | safeDate:'short' }}</span>
                       </div>
                     </div>
                     <div class="col-md-6" *ngIf="member.passportNumber">
@@ -838,7 +838,7 @@
                     <div class="col-md-6" *ngIf="member.dateOfBirth">
                       <div class="detail-item">
                         <label class="detail-label">{{ 'PANEL.request_detail.fd_date_birth' | transloco }}</label>
-                        <span class="detail-value">{{ member.dateOfBirth | date:'short' }}</span>
+                        <span class="detail-value">{{ member.dateOfBirth | safeDate:'short' }}</span>
                       </div>
                     </div>
                     <div class="col-md-6" *ngIf="member.passportNumber">
@@ -981,7 +981,7 @@
                     <div class="col-md-6" *ngIf="fullRequestData.renovacionLlcRequest.llcCreationDate">
                       <div class="detail-item">
                         <label class="detail-label">{{ 'PANEL.request_detail.fd_renov_llc_created' | transloco }}</label>
-                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcCreationDate | date:'dd-MMM-yyyy' }}</span>
+                        <span class="detail-value">{{ fullRequestData.renovacionLlcRequest.llcCreationDate | safeDate:'dd-MMM-yyyy' }}</span>
                       </div>
                     </div>
                     <div class="col-md-12" *ngIf="fullRequestData.renovacionLlcRequest.countriesWhereLLCDoesBusiness && fullRequestData.renovacionLlcRequest.countriesWhereLLCDoesBusiness.length > 0">
@@ -1190,7 +1190,7 @@
                       <div class="col-md-6" *ngIf="owner.dateOfBirth">
                         <div class="detail-item">
                           <label class="detail-label">{{ 'PANEL.request_detail.fd_date_birth' | transloco }}</label>
-                          <span class="detail-value">{{ owner.dateOfBirth | date:'dd-MMM-yyyy' }}</span>
+                          <span class="detail-value">{{ owner.dateOfBirth | safeDate:'dd-MMM-yyyy' }}</span>
                         </div>
                       </div>
                       <div class="col-md-6" *ngIf="owner.email">
@@ -1797,13 +1797,13 @@
                   <div class="col-md-6">
                     <div class="detail-item">
                       <label class="detail-label">{{ 'PANEL.request_detail.fd_created_date' | transloco }}</label>
-                      <span class="detail-value">{{ fullRequestData.createdAt | date:'medium' }}</span>
+                      <span class="detail-value">{{ fullRequestData.createdAt | safeDate:'medium' }}</span>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="detail-item">
                       <label class="detail-label">{{ 'PANEL.request_detail.fd_updated_date' | transloco }}</label>
-                      <span class="detail-value">{{ fullRequestData.updatedAt | date:'medium' }}</span>
+                      <span class="detail-value">{{ fullRequestData.updatedAt | safeDate:'medium' }}</span>
                     </div>
                   </div>
                 </div>

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
 import { RequestsService } from '../../services/requests.service';
-import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
+import { WizardFlowFinalizeService } from '../../../wizard/services/wizard-flow-finalize.service';
 
 /**
  * Componente específico para el flujo del panel-cliente (cliente autenticado)
@@ -36,7 +36,7 @@ export class PanelClientRequestFlowComponent implements OnInit {
   constructor(
     private router: Router,
     private requestsService: RequestsService,
-    private requestFlowState: RequestFlowStateService
+    private wizardFlowFinalize: WizardFlowFinalizeService
   ) {}
   
   ngOnInit(): void {
@@ -67,9 +67,11 @@ export class PanelClientRequestFlowComponent implements OnInit {
         await this.requestsService.finalizeRequest(
           requestId,
           serviceType,
-          data.submit?.signature ?? null
+          data.submit?.signature ?? null,
+          data.submit?.signatureUrl ?? null
         );
         this.baseFlow?.markCurrentStepAsSubmitted();
+        this.wizardFlowFinalize.clearWizardSession();
         return;
       } catch (e) {
         console.error('[PanelClientRequestFlowComponent] Error al guardar firma y actualizar estado:', e);
@@ -93,6 +95,6 @@ export class PanelClientRequestFlowComponent implements OnInit {
 
   /** Evita que una nueva visita a new-request rehidrate datos del flujo anterior (singleton). */
   private clearFlowState(): void {
-    this.requestFlowState.clear();
+    this.wizardFlowFinalize.clearWizardSession();
   }
 }

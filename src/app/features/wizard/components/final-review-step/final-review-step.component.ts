@@ -1,9 +1,22 @@
-import { Component, OnInit, OnDestroy, OnChanges, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  AfterViewInit,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WizardStateService } from '../../services/wizard-state.service';
-import { Subscription } from 'rxjs';
+import { WizardApiService } from '../../services/wizard-api.service';
+import { merge, Subscription } from 'rxjs';
 import { SignaturePadComponent } from '../../../../shared/components/signature-pad/signature-pad.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 
@@ -19,7 +32,9 @@ import { TranslocoPipe } from '@jsverse/transloco';
   templateUrl: './final-review-step.component.html',
   styleUrls: ['./final-review-step.component.css']
 })
-export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChanges {
+export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
+  @ViewChild(SignaturePadComponent) private signaturePad?: SignaturePadComponent;
+
   @Input() stepNumber: number = 5;
   @Input() previousSteps: number[] = [1, 2, 3, 4];
   @Input() serviceType: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria' = 'apertura-llc';
@@ -31,7 +46,10 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
   @Input() submitFailed: boolean = false;
   
   // Eventos para comunicar con el componente padre
-  @Output() submitRequest = new EventEmitter<{ signature: string | null }>();
+  @Output() submitRequest = new EventEmitter<{
+    signature?: string | null;
+    signatureUrl?: string | null;
+  }>();
   @Output() goToPanel = new EventEmitter<void>();
   @Output() goToHome = new EventEmitter<void>();
   
@@ -39,6 +57,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
   private formSubscription?: Subscription;
   /** Estado local al hacer clic en Enviar para mostrar "Enviando..." de inmediato */
   submittingLocal = false;
+  /** Error al subir la firma cuando ya existe solicitud (evita depender solo del padre) */
+  signatureUploadError: string | null = null;
 
   // Datos organizados para mostrar
   registrationData: any = {};
@@ -49,25 +69,76 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
 
   constructor(
     private wizardStateService: WizardStateService,
-    private router: Router
+    private wizardApiService: WizardApiService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {
     this.form = new FormGroup({
       confirm: new FormControl(false, [Validators.requiredTrue]),
-      signature: new FormControl(null, [Validators.required]),
+      /** Valor data URL solo en memoria; no se persiste en wizard state (ver saveStepData). */
+      signature: new FormControl<string | null>(null),
+      signatureUrl: new FormControl<string | null>(null),
     });
   }
 
+  /** Botón enviar: checkbox + trazo o imagen ya cargada en el pad */
+  get canSubmitFinal(): boolean {
+    return !!this.form.get('confirm')?.value && (this.signaturePad?.hasSignature() ?? false);
+  }
+
+  onSignatureCanvasChange(): void {
+    this.cdr.markForCheck();
+  }
+
   /**
-   * Emite el evento para enviar la solicitud
+   * Emite el evento para enviar la solicitud.
+   * Si ya hay requestId, sube el PNG a almacenamiento y emite solo la URL (no base64 en estado).
    */
-  onSubmit(): void {
-    // Marcar todos los campos como touched para mostrar errores de validación
-    this.form.markAllAsTouched();
-    
-    if (this.form.valid) {
-      this.submittingLocal = true; // Feedback visual inmediato: "Enviando..."
-      const signature = this.form.get('signature')?.value || null;
-      this.submitRequest.emit({ signature });
+  async onSubmit(): Promise<void> {
+    this.signaturePad?.flushToFormControl();
+    this.form.get('confirm')?.markAsTouched();
+
+    if (!this.form.get('confirm')?.valid) {
+      return;
+    }
+
+    if (!this.signaturePad?.hasSignature()) {
+      return;
+    }
+
+    const dataUrl = this.signaturePad?.getSignatureData() ?? this.form.get('signature')?.value;
+    if (!dataUrl || !String(dataUrl).startsWith('data:image')) {
+      return;
+    }
+
+    this.submittingLocal = true;
+    this.signatureUploadError = null;
+
+    try {
+      const requestId = this.wizardStateService.getRequestId();
+      let signatureUrl: string | null = null;
+
+      if (requestId) {
+        signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
+          dataUrl,
+          requestId,
+          this.serviceType
+        );
+        if (!signatureUrl) {
+          this.signatureUploadError =
+            'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
+          return;
+        }
+        this.form.patchValue({ signatureUrl }, { emitEvent: true });
+        this.saveStepData();
+      }
+
+      this.submitRequest.emit({
+        signature: signatureUrl ? null : dataUrl,
+        signatureUrl: signatureUrl ?? null,
+      });
+    } finally {
+      this.submittingLocal = false;
     }
   }
 
@@ -81,10 +152,10 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
   /**
    * Obtiene los datos del formulario incluyendo la firma
    */
-  getFormData(): { confirm: boolean; signature: string | null } {
+  getFormData(): { confirm: boolean; signatureUrl?: string | null } {
     return {
       confirm: this.form.get('confirm')?.value || false,
-      signature: this.form.get('signature')?.value || null
+      signatureUrl: this.form.get('signatureUrl')?.value || null,
     };
   }
 
@@ -125,17 +196,33 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
 
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     if (savedData && Object.keys(savedData).length > 0) {
-      this.form.patchValue(savedData);
+      this.form.patchValue({
+        confirm: !!savedData.confirm,
+        signatureUrl: typeof savedData.signatureUrl === 'string' ? savedData.signatureUrl : null,
+        signature: null,
+      });
     }
 
-    this.formSubscription = this.form.valueChanges.subscribe(() => {
-      this.saveStepData();
-    });
+    const confirmCtrl = this.form.get('confirm');
+    const signatureUrlCtrl = this.form.get('signatureUrl');
+    if (confirmCtrl && signatureUrlCtrl) {
+      this.formSubscription = merge(
+        confirmCtrl.valueChanges,
+        signatureUrlCtrl.valueChanges
+      ).subscribe(() => this.saveStepData());
+    }
   }
 
   ngOnDestroy(): void {
     this.formSubscription?.unsubscribe();
     this.saveStepData();
+  }
+
+  ngAfterViewInit(): void {
+    const url = this.form.get('signatureUrl')?.value;
+    if (url && typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://'))) {
+      setTimeout(() => this.signaturePad?.loadSignature(url), 0);
+    }
   }
 
   /**
@@ -283,7 +370,12 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
    * Guarda los datos del paso
    */
   private saveStepData(): void {
-    this.wizardStateService.setStepData(this.stepNumber, this.form.value);
+    const confirm = this.form.get('confirm')?.value;
+    const signatureUrl = this.form.get('signatureUrl')?.value;
+    this.wizardStateService.setStepData(this.stepNumber, {
+      confirm: !!confirm,
+      ...(signatureUrl ? { signatureUrl } : {}),
+    });
   }
 
   /**
