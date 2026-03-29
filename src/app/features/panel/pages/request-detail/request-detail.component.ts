@@ -15,6 +15,7 @@ import { WizardApiService } from '../../../wizard/services/wizard-api.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 interface ProcessStep {
   id: number;
@@ -53,7 +54,14 @@ interface RequestDisplay {
 @Component({
   selector: 'app-request-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, StripePaymentFormComponent, TranslocoPipe],
+  imports: [
+    CommonModule,
+    RouterLink,
+    FormsModule,
+    StripePaymentFormComponent,
+    TranslocoPipe,
+    SafeDatePipe,
+  ],
   templateUrl: './request-detail.component.html',
   styleUrl: './request-detail.component.css'
 })

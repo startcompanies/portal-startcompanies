@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
+import { WizardFlowFinalizeService } from '../services/wizard-flow-finalize.service';
 import { WizardConfigService, WizardFlowType } from '../services/wizard-config.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../services/wizard-plans.service';
@@ -100,6 +101,7 @@ export class CuentaBancariaComponent implements OnInit {
     private wizardConfigService: WizardConfigService,
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
+    private wizardFlowFinalize: WizardFlowFinalizeService,
     private wizardPlansService: WizardPlansService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
@@ -581,7 +583,7 @@ export class CuentaBancariaComponent implements OnInit {
    * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
    * Los datos ya fueron guardados previamente en cada sección
    */
-  async onFinish(event?: { signature: string | null }): Promise<void> {
+  async onFinish(event?: { signature?: string | null; signatureUrl?: string | null }): Promise<void> {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
@@ -605,10 +607,14 @@ export class CuentaBancariaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      let signatureUrl: string | null = null;
+      let signatureUrl: string | null = event?.signatureUrl ?? null;
 
-      if (event?.signature) {
-        signatureUrl = await this.uploadSignature(event.signature, finalRequestId);
+      if (!signatureUrl && event?.signature) {
+        signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
+          event.signature,
+          finalRequestId,
+          'cuenta-bancaria'
+        );
         if (!signatureUrl) {
           this.errorMessage =
             'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
@@ -638,6 +644,7 @@ export class CuentaBancariaComponent implements OnInit {
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
       this.isLoading = false;
+      this.clearWizardSessionAfterExit();
     } catch (error: any) {
       console.error('[CuentaBancariaComponent] Error al finalizar solicitud:', error);
       const status = error?.status ?? error?.error?.statusCode;
@@ -649,38 +656,6 @@ export class CuentaBancariaComponent implements OnInit {
       }
       this.isLoading = false;
       this.submitFailed = true;
-    }
-  }
-
-  /**
-   * Convierte una firma base64 a File y la sube al servidor
-   */
-  private async uploadSignature(signatureDataUrl: string, requestId: number): Promise<string | null> {
-    try {
-      // Convertir base64 a Blob
-      const response = await fetch(signatureDataUrl);
-      const blob = await response.blob();
-      
-      // Crear File desde Blob
-      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
-      
-      // Subir archivo
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('servicio', 'cuenta-bancaria');
-      formData.append('requestUuid', requestId.toString());
-      
-      const uploadResponse = await firstValueFrom(this.wizardApiService.uploadFile(formData));
-      
-      if (uploadResponse && uploadResponse.url) {
-        console.log('[CuentaBancariaComponent] Firma subida exitosamente:', uploadResponse.url);
-        return uploadResponse.url;
-      }
-      
-      return null;
-    } catch (error: any) {
-      console.error('[CuentaBancariaComponent] Error al subir firma:', error);
-      return null;
     }
   }
 
@@ -710,8 +685,7 @@ export class CuentaBancariaComponent implements OnInit {
   }
 
   private clearWizardSessionAfterExit(): void {
-    this.wizardStateService.clear();
-    this.wizardApiService.clearToken();
+    this.wizardFlowFinalize.clearWizardSession();
   }
 
   /**

@@ -807,11 +807,11 @@
     },
     "PRIVACY": {
       "title": "Aviso de Privacidad",
-      "intro": "En <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\", \"nosotros\"), respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporcionas. Este Aviso de Privacidad explica qué datos recopilamos, con qué finalidad, durante cuánto tiempo los conservamos, con quién los compartimos y cuáles son tus derechos. Aplica a todo el sitio web <strong>startcompanies.us</strong>, a nuestras páginas de destino y a los formularios asociados a nuestros servicios para la apertura y gestión de <strong>LLC</strong> y <strong>cuentas bancarias</strong> en Estados Unidos.",
+      "intro": "En <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\", \"nosotros\"), respetamos tu privacidad y nos comprometemos a proteger los datos personales que nos proporcionas. Este Aviso de Privacidad explica qué datos recopilamos, con qué finalidad, durante cuánto tiempo los conservamos, con quién los compartimos y cuáles son tus derechos. Aplica a todo el sitio web <strong>startcompanies.io</strong>, a nuestras páginas de destino y a los formularios asociados a nuestros servicios para la apertura y gestión de <strong>LLC</strong> y <strong>cuentas bancarias</strong> en Estados Unidos.",
       "sections": {
         "controller": {
           "title": "1. Responsable del tratamiento",
-          "body": "Ebizboost LLC (nombre legal), operando comercialmente como Start Companies. Sitio: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. Si tienes consultas sobre privacidad, utiliza los canales de contacto publicados en el sitio."
+          "body": "Ebizboost LLC (nombre legal), operando comercialmente como Start Companies. Sitio: <a href=\"https://startcompanies.io\" target=\"_blank\">startcompanies.io</a>. Si tienes consultas sobre privacidad, utiliza los canales de contacto publicados en el sitio."
         },
         "data": {
           "title": "2. Datos que recopilamos",
@@ -876,7 +876,7 @@
         },
         "updates": {
           "title": "12. Actualizaciones de este Aviso",
-          "body": "Podremos actualizar este Aviso para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+          "body": "Podremos actualizar este Aviso para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.io e indicará la fecha de última actualización."
         },
         "contact": {
           "title": "13. Contacto",
@@ -927,7 +927,7 @@
     },
     "TERMS": {
       "title": "Términos y Condiciones",
-      "intro": "Estos Términos y Condiciones (\"Términos\") regulan el acceso y uso del sitio <strong>startcompanies.us</strong> y de los servicios ofrecidos por <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\"). Al utilizar el sitio o contratar nuestros servicios, aceptas estos Términos.",
+      "intro": "Estos Términos y Condiciones (\"Términos\") regulan el acceso y uso del sitio <strong>startcompanies.io</strong> y de los servicios ofrecidos por <strong>Ebizboost LLC</strong> (nombre legal), operando comercialmente como <strong>Start Companies</strong> (\"Start Companies\"). Al utilizar el sitio o contratar nuestros servicios, aceptas estos Términos.",
       "sections": {
         "services": {
           "title": "1. Servicios",
@@ -967,7 +967,7 @@
         },
         "modifications": {
           "title": "8. Modificaciones",
-          "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+          "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.io e indicará la fecha de última actualización."
         },
         "law": {
           "title": "9. Ley aplicable",
@@ -1143,7 +1143,7 @@
     },
     "modifications": {
       "title": "8. Modificaciones",
-      "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.us e indicará la fecha de última actualización."
+      "body": "Podemos actualizar estos Términos para reflejar cambios legales, técnicos u operativos. La versión vigente se publicará en startcompanies.io e indicará la fecha de última actualización."
     },
     "law": {
       "title": "9. Ley aplicable",

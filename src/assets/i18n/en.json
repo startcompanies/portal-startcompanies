@@ -811,11 +811,11 @@
     },
     "PRIVACY": {
       "title": "Privacy Policy",
-      "intro": "At <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\", \"we\"), we respect your privacy and are committed to protecting the personal data you provide to us. This Privacy Policy explains what data we collect, for what purpose, for how long we keep it, with whom we share it and what your rights are. It applies to the entire website <strong>startcompanies.us</strong>, our landing pages and the forms associated with our services for <strong>LLC</strong> formation and <strong>bank account opening</strong> in the United States.",
+      "intro": "At <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\", \"we\"), we respect your privacy and are committed to protecting the personal data you provide to us. This Privacy Policy explains what data we collect, for what purpose, for how long we keep it, with whom we share it and what your rights are. It applies to the entire website <strong>startcompanies.io</strong>, our landing pages and the forms associated with our services for <strong>LLC</strong> formation and <strong>bank account opening</strong> in the United States.",
       "sections": {
         "controller": {
           "title": "1. Data controller",
-          "body": "Ebizboost LLC (legal name), commercially operating as Start Companies. Website: <a href=\"https://startcompanies.us\" target=\"_blank\">startcompanies.us</a>. If you have privacy questions, please use the contact channels published on the site."
+          "body": "Ebizboost LLC (legal name), commercially operating as Start Companies. Website: <a href=\"https://startcompanies.io\" target=\"_blank\">startcompanies.io</a>. If you have privacy questions, please use the contact channels published on the site."
         },
         "data": {
           "title": "2. Data we collect",
@@ -880,7 +880,7 @@
         },
         "updates": {
           "title": "12. Updates to this Policy",
-          "body": "We may update this Policy to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+          "body": "We may update this Policy to reflect legal, technical or operational changes. The current version will be published on startcompanies.io and will indicate the last update date."
         },
         "contact": {
           "title": "13. Contact",
@@ -931,7 +931,7 @@
     },
     "TERMS": {
       "title": "Terms and Conditions",
-      "intro": "These Terms and Conditions (\"Terms\") govern access to and use of the <strong>startcompanies.us</strong> website and the services offered by <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\"). By using the site or contracting our services, you accept these Terms.",
+      "intro": "These Terms and Conditions (\"Terms\") govern access to and use of the <strong>startcompanies.io</strong> website and the services offered by <strong>Ebizboost LLC</strong> (legal name), commercially operating as <strong>Start Companies</strong> (\"Start Companies\"). By using the site or contracting our services, you accept these Terms.",
       "sections": {
         "services": {
           "title": "1. Services",
@@ -971,7 +971,7 @@
         },
         "modifications": {
           "title": "8. Modifications",
-          "body": "We may update these Terms to reflect legal, technical or operational changes. The current version will be published on startcompanies.us and will indicate the last update date."
+          "body": "We may update these Terms to reflect legal, technical or operational changes. The current version will be published on startcompanies.io and will indicate the last update date."
         },
         "law": {
           "title": "9. Governing law",

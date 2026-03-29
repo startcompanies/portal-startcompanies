@@ -34,6 +34,8 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
   private onChange = (value: string | null) => {};
   private onTouched = () => {};
   disabled = false;
+  /** Evita eco CVA: writeValue no debe llamar loadSignature cuando el valor viene del propio canvas. */
+  private updatingFromCanvas = false;
 
   ngAfterViewInit(): void {
     if (!this.canvasRef) {
@@ -196,9 +198,16 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
   private emitSignature(): void {
     const signatureData = this.getSignatureData();
     this.signatureChange.emit(signatureData);
-    this.onChange(signatureData);
-    if (this.formControl) {
-      this.formControl.setValue(signatureData, { emitEvent: false });
+    this.updatingFromCanvas = true;
+    try {
+      this.onChange(signatureData);
+      if (this.formControl) {
+        this.formControl.setValue(signatureData, { emitEvent: false });
+      }
+    } finally {
+      Promise.resolve().then(() => {
+        this.updatingFromCanvas = false;
+      });
     }
   }
 
@@ -208,6 +217,14 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
     }
     this.ctx.fillStyle = '#ffffff';
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.emitSignature();
+  }
+
+  /**
+   * Escribe el contenido actual del canvas en el FormControl (CVA).
+   * Llamar antes de enviar el formulario: el último trazo podría no haberse propagado aún.
+   */
+  flushToFormControl(): void {
     this.emitSignature();
   }
 
@@ -233,13 +250,40 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
     return this.canvas.toDataURL('image/png');
   }
 
-  loadSignature(dataUrl: string): void {
-    const img = new Image();
-    img.onload = () => {
+  loadSignature(dataUrlOrHttp: string): void {
+    const drawImg = (img: HTMLImageElement) => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+      this.emitSignature();
     };
-    img.src = dataUrl;
+
+    if (dataUrlOrHttp.startsWith('data:')) {
+      const img = new Image();
+      img.onload = () => drawImg(img);
+      img.src = dataUrlOrHttp;
+      return;
+    }
+
+    if (dataUrlOrHttp.startsWith('http://') || dataUrlOrHttp.startsWith('https://')) {
+      fetch(dataUrlOrHttp, { mode: 'cors', credentials: 'omit' })
+        .then((r) => r.blob())
+        .then((blob) => {
+          const objectUrl = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = () => {
+            drawImg(img);
+            URL.revokeObjectURL(objectUrl);
+          };
+          img.onerror = () => URL.revokeObjectURL(objectUrl);
+          img.src = objectUrl;
+        })
+        .catch(() => {});
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => drawImg(img);
+    img.src = dataUrlOrHttp;
   }
 
   hasSignature(): boolean {
@@ -251,7 +295,17 @@ export class SignaturePadComponent implements AfterViewInit, OnDestroy, ControlV
 
   // ControlValueAccessor implementation
   writeValue(value: string | null): void {
-    if (value && this.canvas && this.ctx) {
+    if (this.updatingFromCanvas) {
+      return;
+    }
+    if (!value) {
+      if (this.canvas && this.ctx) {
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      }
+      return;
+    }
+    if (this.canvas && this.ctx) {
       this.loadSignature(value);
     }
   }

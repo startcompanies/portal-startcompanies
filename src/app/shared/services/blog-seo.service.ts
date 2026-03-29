@@ -1,6 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
+import { environment } from '../../../environments/environment';
 import { Post } from '../models/post.model';
 import { SeoData } from './seo.service';
 import { BrowserService } from './browser.service';
@@ -10,7 +11,7 @@ import { BrowserService } from './browser.service';
 })
 export class BlogSeoService {
 
-  private readonly baseUrl = 'https://startcompanies.us';
+  private readonly baseUrl = environment.baseUrl.replace(/\/$/, '');
   private readonly siteName = 'Start Companies';
   private readonly defaultImage = '/assets/logo-dark.webp';
 

@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
+import { WizardFlowFinalizeService } from '../services/wizard-flow-finalize.service';
 import { combineLatest, firstValueFrom } from 'rxjs';
 
 // Componentes de paso
@@ -22,9 +23,9 @@ import { WizardFinalReviewStepComponent } from '../components/final-review-step/
  * FLUJO:
  * 1. Registro → verificación email
  * 2. Selección estado/plan
- * 3. Pago → SE CREA EL REQUEST EN BD
- * 4. Información LLC → SE ACTUALIZA EL REQUEST
- * 5. Revisión final → SE ACTUALIZA EL REQUEST (estado final)
+ * 3. Información LLC (sin requestId aún: no hay PATCH hasta existir solicitud)
+ * 4. Pago → SE CREA EL REQUEST EN BD
+ * 5. Revisión final → se sincroniza LLC y estado
  * 
  * Endpoints del wizard:
  * - POST /wizard/requests/register
@@ -83,6 +84,7 @@ export class LLCAperturaComponent implements OnInit {
   constructor(
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
+    private wizardFlowFinalize: WizardFlowFinalizeService,
     private transloco: TranslocoService,
     private languageService: LanguageService,
     private router: Router
@@ -172,8 +174,8 @@ export class LLCAperturaComponent implements OnInit {
    * Navega al siguiente paso
    * - Paso 1: Registra al usuario si no está autenticado
    * - Paso 2: Valida selección de estado y plan
-   * - Paso 3: Procesa el pago y crea el request
-   * - Paso 4+: Actualiza el request existente
+   * - Paso 4: Pago y creación del request; luego se sincroniza el paso 3 con PATCH
+   * - Paso 5: Revisión y cierre
    */
   async nextStep(): Promise<void> {
     this.errorMessage = null;
@@ -242,11 +244,12 @@ export class LLCAperturaComponent implements OnInit {
       return;
     }
 
-    // Si estamos en paso 5+ y ya hay un request, actualizar los datos
-    if (this.currentStep > 4 && this.wizardStateService.hasRequest()) {
-      await this.updateRequestData();
+    // Al salir del paso de pago hacia revisión: volver a enviar el formulario LLC completo
+    // (el usuario pudo volver al paso 3 tras pagar, o el POST inicial no reflejó todas las columnas).
+    if (this.currentStep === 4 && this.paymentProcessed && this.wizardStateService.hasRequest()) {
+      await this.syncAperturaLlcFormToApi();
     }
-    
+
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
       this.showEmailVerification = false;
@@ -256,42 +259,40 @@ export class LLCAperturaComponent implements OnInit {
   }
   
   /**
-   * Actualiza los datos del request en el backend
+   * Envía a la API el formulario LLC del paso 3 (localStorage) una vez existe `requestId`.
+   * Necesario en /apertura-llc porque el paso 3 va antes del pago y `saveToApi` del hijo no puede hacer PATCH.
    */
-  private async updateRequestData(): Promise<void> {
+  private async syncAperturaLlcFormToApi(): Promise<void> {
     const requestId = this.wizardStateService.getRequestId();
     if (!requestId) return;
-    
+
     try {
       const allData = this.wizardStateService.getAllData();
       const step3Data = allData.step3 || {};
-      
-      // IMPORTANTE:
-      // En el panel, `currentStepNumber` significa "sección dentro de Datos del Servicio".
-      // En wizard, `currentStep` es el paso del flujo (1..5). NO debemos sobreescribir `currentStepNumber`
-      // con el orden del wizard porque rompe la precarga al continuar en el panel.
-      // Si estamos en el paso 3 (Información LLC), usar la sección actual como currentStepNumber
-      const currentStepNumber = this.currentStep === 3 ? this.llcInfoCurrentSection : undefined;
-      
+
+      // Sección del formulario LLC (1–3); si el estado quedó en 1 sin actualizar, asumir 3 tras completar el paso.
+      const sectionNumber =
+        this.llcInfoCurrentSection ||
+        this.wizardStateService.getCurrentStepNumber() ||
+        3;
+
       const updateData: any = {
         type: 'apertura-llc',
+        currentStepNumber: sectionNumber,
         aperturaLlcData: {
           ...step3Data,
           members: step3Data.members || [],
+          // La API usa también aperturaLlcData.currentSection para no descartar la sección bancaria
+          // cuando current_step_number en BD sigue en 1 tras el POST de pago.
+          currentSection: sectionNumber,
         },
       };
-      
-      // Incluir currentStepNumber si estamos en el paso 4
-      if (currentStepNumber !== undefined) {
-        updateData.currentStepNumber = currentStepNumber;
-      }
-      
-      console.log('[LLCAperturaComponent] Actualizando request:', requestId, updateData);
+
+      console.log('[LLCAperturaComponent] Sincronizando LLC con API:', requestId, updateData);
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
-      console.log('[LLCAperturaComponent] Request actualizado exitosamente');
+      console.log('[LLCAperturaComponent] LLC sincronizado correctamente');
     } catch (error: any) {
-      console.error('[LLCAperturaComponent] Error al actualizar request:', error);
-      // No bloquear la navegación por errores de actualización
+      console.error('[LLCAperturaComponent] Error al sincronizar LLC:', error);
     }
   }
 
@@ -394,10 +395,11 @@ export class LLCAperturaComponent implements OnInit {
   /**
    * Maneja el evento cuando el pago y la creación del request son exitosos
    */
-  onPaymentAndRequestCreated(event: { requestId: number; paymentInfo: any }): void {
+  async onPaymentAndRequestCreated(event: { requestId: number; paymentInfo: any }): Promise<void> {
     console.log('[LLCAperturaComponent] Pago procesado y request creado:', event);
     this.paymentProcessed = true;
     this.successMessage = '¡Pago procesado exitosamente!';
+    await this.syncAperturaLlcFormToApi();
   }
   
   /**
@@ -420,7 +422,7 @@ export class LLCAperturaComponent implements OnInit {
    * Finaliza el wizard actualizando solo el estado a "solicitud-recibida"
    * Los datos ya fueron guardados previamente en cada paso
    */
-  async onFinish(event?: { signature: string | null }): Promise<void> {
+  async onFinish(event?: { signature?: string | null; signatureUrl?: string | null }): Promise<void> {
     if (this.isLoading) return;
 
     const requestId = this.wizardStateService.getRequestId();
@@ -437,10 +439,16 @@ export class LLCAperturaComponent implements OnInit {
     this.successMessage = null;
 
     try {
-      let signatureUrl: string | null = null;
+      await this.syncAperturaLlcFormToApi();
 
-      if (event?.signature) {
-        signatureUrl = await this.uploadSignature(event.signature, requestId);
+      let signatureUrl: string | null = event?.signatureUrl ?? null;
+
+      if (!signatureUrl && event?.signature) {
+        signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
+          event.signature,
+          requestId,
+          'apertura-llc'
+        );
         if (!signatureUrl) {
           this.errorMessage =
             'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).';
@@ -484,6 +492,7 @@ export class LLCAperturaComponent implements OnInit {
       this.successMessage = '¡Solicitud enviada exitosamente!';
       this.isSubmitted = true;
       this.isLoading = false;
+      this.clearWizardSessionAfterExit();
     } catch (error: any) {
       console.error('[LLCAperturaComponent] Error al finalizar solicitud:', error);
       const status = error?.status ?? error?.error?.statusCode;
@@ -495,40 +504,6 @@ export class LLCAperturaComponent implements OnInit {
       }
       this.isLoading = false;
       this.submitFailed = true;
-    }
-  }
-
-  /**
-   * Convierte una firma base64 a File y la sube al servidor
-   */
-  private async uploadSignature(signatureDataUrl: string, requestId: number): Promise<string | null> {
-    try {
-      // Convertir base64 a Blob
-      const response = await fetch(signatureDataUrl);
-      const blob = await response.blob();
-      
-      // Crear File desde Blob
-      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
-      
-      // Subir archivo
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('servicio', 'apertura-llc');
-      formData.append('requestUuid', requestId.toString());
-      
-      const uploadResponse = await firstValueFrom(
-        this.wizardApiService.uploadFile(formData)
-      );
-      
-      if (uploadResponse && uploadResponse.url) {
-        console.log('[LLCAperturaComponent] Firma subida exitosamente:', uploadResponse.url);
-        return uploadResponse.url;
-      }
-      
-      return null;
-    } catch (error: any) {
-      console.error('[LLCAperturaComponent] Error al subir firma:', error);
-      return null;
     }
   }
 
@@ -558,7 +533,6 @@ export class LLCAperturaComponent implements OnInit {
   }
 
   private clearWizardSessionAfterExit(): void {
-    this.wizardStateService.clear();
-    this.wizardApiService.clearToken();
+    this.wizardFlowFinalize.clearWizardSession();
   }
 }
