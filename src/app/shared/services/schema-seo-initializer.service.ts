@@ -48,7 +48,7 @@ export class SchemaSeoInitializerService {
         'https://www.instagram.com/startcompanies/',
         'https://www.youtube.com/@AdministracionStartCompanies',
         'https://www.tiktok.com/@startcompanies',
-        'https://es.trustpilot.com/review/www.startcompanies.us',
+        'https://es.trustpilot.com/review/startcompanies.io',
       ],
       address: {
         '@type': 'PostalAddress',
