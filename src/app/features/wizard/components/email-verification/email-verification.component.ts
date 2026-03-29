@@ -61,21 +61,12 @@ import { firstValueFrom } from 'rxjs';
           {{ successMessage }}
         </div>
 
-        <div class="d-grid gap-2">
-          <button
-            class="btn btn-primary"
-            (click)="verifyCode()"
-            [disabled]="isVerifying || !isCodeComplete()"
-          >
-            <span *ngIf="!isVerifying">
-              <i class="bi bi-check-lg me-2"></i>
-              Verificar código
-            </span>
-            <span *ngIf="isVerifying">
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              Verificando...
-            </span>
-          </button>
+        <p *ngIf="!isVerifying" class="text-muted small text-center mb-2">
+          El código se verifica automáticamente al ingresar o pegar los 6 dígitos.
+        </p>
+        <div *ngIf="isVerifying" class="text-center py-2 mb-2">
+          <span class="spinner-border spinner-border-sm text-primary me-2" role="status" aria-live="polite"></span>
+          <span class="text-muted small">Verificando código…</span>
         </div>
 
         <div class="text-center mt-3">
@@ -191,7 +182,32 @@ export class WizardEmailVerificationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Enfocar el primer input
+    void this.maybeSkipIfEmailAlreadyVerified();
+  }
+
+  /**
+   * crm-lead puede tener token sin email verificado; no se salta el paso en base.
+   * Si el backend ya tiene el email como verificado (p. ej. usuario que vuelve), avanzar sin pedir código.
+   */
+  private async maybeSkipIfEmailAlreadyVerified(): Promise<void> {
+    const email = (this.email || this.wizardStateService.getStepData(1)?.email || '').trim();
+    if (!email || !this.wizardApiService.isAuthenticated()) {
+      this.focusFirstDigit();
+      return;
+    }
+    try {
+      const res = await firstValueFrom(this.wizardApiService.checkEmailAvailability(email));
+      if (res.emailVerified === true) {
+        this.verificationSuccess.emit();
+        return;
+      }
+    } catch {
+      // Continuar con verificación manual
+    }
+    this.focusFirstDigit();
+  }
+
+  private focusFirstDigit(): void {
     setTimeout(() => {
       const firstInput = document.getElementById('digit-0');
       if (firstInput) {
@@ -402,6 +418,9 @@ export class WizardEmailVerificationComponent implements OnInit {
    * Verifica el código de confirmación
    */
   async verifyCode(): Promise<void> {
+    if (this.isVerifying) {
+      return;
+    }
     if (!this.isCodeComplete()) {
       this.errorMessage = 'Por favor, ingresa el código completo de 6 dígitos.';
       return;

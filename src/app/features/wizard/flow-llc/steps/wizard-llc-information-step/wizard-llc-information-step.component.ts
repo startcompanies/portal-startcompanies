@@ -558,11 +558,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     let requestId = this.wizardStateService.getRequestId();
 
     if (!requestId) {
-      this.logger.log('[WizardLlcInformationStep] No hay requestId, saltando guardado en API');
-      if (!this.saveError) {
-        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
-      }
-      return false;
+      // En los flujos donde "Información de la LLC" ocurre antes del pago
+      // (o creación diferida al finalizar), no existe request todavía.
+      // No debemos bloquear la navegación entre secciones.
+      this.logger.log('[WizardLlcInformationStep] No hay requestId, omitiendo guardado en API por ahora');
+      this.saveError = null;
+      return true;
     }
 
     this.isSaving = true;

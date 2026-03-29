@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import { ServiceType } from '../../../shared/models/request-flow-context';
 
 export interface WizardRegisterData {
   firstName: string;
@@ -117,6 +118,11 @@ export class WizardApiService {
 
   constructor(private http: HttpClient) {
     // Intentar recuperar token guardado
+    this.loadStoredToken();
+  }
+
+  /** Relee sessionStorage (p. ej. antes de pagar) por si el subject quedó desincronizado. */
+  ensureSessionFromStorage(): void {
     this.loadStoredToken();
   }
 
@@ -284,5 +290,30 @@ export class WizardApiService {
       formData,
       { headers }
     );
+  }
+
+  /**
+   * Convierte un PNG en data URL a archivo y lo sube (R2 vía backend).
+   * Usar cuando ya existe requestId; si no, el finalizador sube tras crear la solicitud.
+   */
+  async uploadSignaturePngFromDataUrl(
+    dataUrl: string,
+    requestId: number,
+    serviceType: ServiceType
+  ): Promise<string | null> {
+    try {
+      const resp = await fetch(dataUrl);
+      const blob = await resp.blob();
+      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('servicio', serviceType);
+      formData.append('requestUuid', requestId.toString());
+      const uploadResponse = await firstValueFrom(this.uploadFile(formData));
+      return uploadResponse?.url || null;
+    } catch (e) {
+      console.error('[WizardApiService] Error al subir firma:', e);
+      return null;
+    }
   }
 }

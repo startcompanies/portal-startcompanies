@@ -286,7 +286,9 @@ export const routes: Routes = [
         path: 'agendar',
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
-      // Wizard unificado en URLs de formularios (apertura-llc, renovar-llc)
+      // Wizard unificado: misma página (`WizardRequestFlowPageComponent`), perfiles distintos en `RequestFlowConfigService`.
+      // - /apertura-llc + source wizard: registro con JWT, pago, confirmación; sin paso de código de email (enlace al cierre vía API).
+      // - /apertura/lead + crm-lead: verificación por código, sin pago, finalize sin cobro.
       // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'apertura-llc',
@@ -300,7 +302,10 @@ export const routes: Routes = [
                 (m) => m.AperturaLlcComponent
               ),
         data: {
-          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
+          ...(environment.wizardAndPanelEnabled && {
+            serviceType: 'apertura-llc',
+            source: 'wizard',
+          }),
         },
       },
       {
@@ -1130,7 +1135,10 @@ export const routes: Routes = [
                 (m) => m.AperturaLlcComponent
               ),
         data: {
-          ...(environment.wizardAndPanelEnabled && { serviceType: 'apertura-llc' }),
+          ...(environment.wizardAndPanelEnabled && {
+            serviceType: 'apertura-llc',
+            source: 'wizard',
+          }),
           seo: {
             title: 'LLC Opening in the United States - Start Companies',
             description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',

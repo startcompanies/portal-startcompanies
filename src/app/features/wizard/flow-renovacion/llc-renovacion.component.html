@@ -161,9 +161,6 @@
             (goToPanel)="onGoToPanel()"
             (goToHome)="onGoToHome()"
           ></app-wizard-final-review-step>
-          <div class="step-actions" *ngIf="!isSubmitted">
-            <button type="button" class="btn btn-outline-secondary" (click)="onStepChanged(3)">{{ 'WIZARD.previous' | transloco }}</button>
-          </div>
         </div>
       </div>
     </div>

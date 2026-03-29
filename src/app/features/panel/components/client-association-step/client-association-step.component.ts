@@ -4,8 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
 import { RequestFlowStep } from '../../../../shared/models/request-flow-context';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
-import { GeolocationService } from '../../../../shared/services/geolocation.service';
-import { firstValueFrom } from 'rxjs';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 /**
@@ -29,12 +27,10 @@ export class ClientAssociationStepComponent implements OnInit {
   form!: FormGroup;
   isLoading = false;
   errorMessage: string | null = null;
-  detectedCountryCode: string = 'us';
   
   constructor(
     private fb: FormBuilder,
-    private flowStateService: RequestFlowStateService,
-    private geolocationService: GeolocationService
+    private flowStateService: RequestFlowStateService
   ) {
     // Cargar datos guardados si existen
     const savedData = this.flowStateService.getStepData(RequestFlowStep.CLIENT_ASSOCIATION);
@@ -49,15 +45,6 @@ export class ClientAssociationStepComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    // Detectar país por IP
-    firstValueFrom(this.geolocationService.getCountryCodeByIP())
-      .then((code: string) => {
-        this.detectedCountryCode = code || 'us';
-      })
-      .catch(() => {
-        this.detectedCountryCode = 'us';
-      });
-    
     // Guardar cambios en el estado
     this.form.valueChanges.subscribe(() => {
       this.flowStateService.setStepData(RequestFlowStep.CLIENT_ASSOCIATION, this.form.value);

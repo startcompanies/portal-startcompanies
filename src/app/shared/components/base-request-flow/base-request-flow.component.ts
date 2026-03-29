@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ComponentRef, EnvironmentInjector, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ComponentRef, EnvironmentInjector, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
@@ -39,7 +39,7 @@ import { firstValueFrom } from 'rxjs';
       </div>
       
       <!-- Botones de navegación -->
-      <div class="flow-actions">
+      <div class="flow-actions" *ngIf="!shouldHideGlobalActions()">
         <!-- Botón Cancelar (solo en primer paso de selección de tipo de servicio en panel) -->
         <a 
           *ngIf="!canGoBack() && isServiceTypeSelectionStep() && (this.context === 'panel-client' || this.context === 'panel-partner')"
@@ -129,6 +129,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private autosaveInterval: any = null;
   private autosaveEnabled = false;
 
+  private cdr = inject(ChangeDetectorRef);
+
   /** Permite al contenedor marcar visualmente éxito en el paso actual (si el componente lo soporta). */
   public markCurrentStepAsSubmitted(): void {
     if (!this.stepComponentRef?.instance) return;
@@ -145,6 +147,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     if ('submitError' in instance) {
       instance.submitError = null;
     }
+    this.cdr.markForCheck();
   }
   
   constructor(
@@ -542,12 +545,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Validaciones básicas según el tipo de paso
     switch (step.step) {
       case RequestFlowStep.REGISTER:
-        // En wizard: permitir avanzar SOLO cuando el registro quedó en estado de verificación
-        // (o si ya está autenticado).
+        // En wizard: con "esperando código" solo se puede avanzar si existe el paso
+        // EMAIL_VERIFICATION; si no, quedaríamos sin token y el pago fallaría.
         if (this.context === RequestFlowContext.WIZARD) {
           const instance: any = this.stepComponentRef?.instance;
+          const hasEmailVerificationStep = this.flowSteps.some(
+            (s) => s.step === RequestFlowStep.EMAIL_VERIFICATION,
+          );
           if (instance?.waitingEmailVerification === true) {
-            return true;
+            return hasEmailVerificationStep;
           }
           return !!this.wizardApiService?.isAuthenticated?.();
         }
@@ -595,8 +601,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Sincronizar con WizardStateService si estamos en contexto wizard
     if (this.context === RequestFlowContext.WIZARD && this.wizardStateService) {
       if (stepData && Object.keys(stepData).length > 0) {
-        // Guardar en wizard state service usando el número de orden del paso
-        this.wizardStateService.setStepData(step.order, stepData);
+        // Fusionar con datos ya guardados en el wizard (p. ej. contraseña en paso 1 tras registro).
+        // flowState solo recibe userId/email desde userCreated y no debe pisar el bloque completo del registro.
+        const existing = this.wizardStateService.getStepData(step.order) || {};
+        this.wizardStateService.setStepData(step.order, { ...existing, ...stepData });
         this.wizardStateService.setCurrentStep(this.currentStepIndex + 1);
       }
     }
@@ -657,7 +665,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         lastName,
         email,
         phone: phone || undefined,
-        password
+        password,
+        source: this.wizardStateService.getFlowSource(),
       }));
 
       stepInstance.notifyResendResult(true, this.transloco.translate('PANEL.request_flow.code_resent'));
@@ -837,6 +846,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
+  /**
+   * Oculta la barra inferior (Anterior / Siguiente / Finalizar) en el paso de confirmación:
+   * el envío real va con «Enviar solicitud» dentro del paso; no duplicar acciones abajo.
+   */
+  shouldHideGlobalActions(): boolean {
+    return this.getCurrentStep()?.step === RequestFlowStep.CONFIRMATION;
+  }
   
   /**
    * Finaliza el flujo
@@ -880,11 +897,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     const stepConfig = this.flowSteps[this.currentStepIndex];
     if (!stepConfig) return;
 
-    // Wizard: si el paso es verificación de email y el usuario ya está autenticado (email verificado), saltar esta pantalla
+    // Wizard: si el paso es verificación de email y hay sesión, en flujos normales se puede saltar
+    // (el token suele existir solo tras confirmar email).
+    // En crm-lead (/apertura/lead) el registro puede devolver token ANTES de verificar el correo;
+    // no saltar aquí: el usuario debe verificar (o el componente avanza si el API ya marca email verificado).
     if (
       stepConfig.step === RequestFlowStep.EMAIL_VERIFICATION &&
       this.context === RequestFlowContext.WIZARD &&
-      this.wizardApiService?.isAuthenticated?.()
+      this.wizardApiService?.isAuthenticated?.() &&
+      this.flowSource !== 'crm-lead'
     ) {
       if (this.currentStepIndex < this.flowSteps.length - 1) {
         this.currentStepIndex++;
@@ -1028,7 +1049,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     });
     subscribeIfEmitter('paymentError', (err: any) => {
       this.currentStepValid = false;
-      this.errorMessage = err || this.transloco.translate('PANEL.request_flow.err_payment');
+      // Wizard: el paso de pago ya muestra el mensaje; evitar duplicarlo en el banner inferior.
+      if (this.context !== RequestFlowContext.WIZARD) {
+        this.errorMessage = err || this.transloco.translate('PANEL.request_flow.err_payment');
+      }
     });
 
     // Panel partner/client: validez del paso
