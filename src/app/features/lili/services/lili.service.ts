@@ -17,7 +17,7 @@ export interface LiliApplicationResponse {
 
 @Injectable({ providedIn: 'root' })
 export class LiliService {
-  private readonly apiUrl = `${environment.apiUrl}/lili/create-application`;
+  private readonly apiUrl = 'https://lili-api.startcompanies.io/lili/create-application';
 
   constructor(private http: HttpClient) {}
 
