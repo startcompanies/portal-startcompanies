@@ -90,6 +90,8 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private refreshInFlight$: Observable<void> | null = null;
   private router = inject(Router);
+  /** Promesa única de /auth/me (APP_INITIALIZER + guards) para evitar carrera guard vs sesión. */
+  private loadUserPromise: Promise<void> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -102,12 +104,16 @@ export class AuthService {
 
   /**
    * Carga el usuario en segundo plano (solo en browser). Timeout 8s para no colgar.
+   * Idempotente: varias llamadas comparten la misma promesa (evita flash login en F5 si el guard corre en paralelo).
    */
   loadUser(): Promise<void> {
     if (!this.browser.isBrowser) {
       return Promise.resolve();
     }
-    return firstValueFrom(
+    if (this.loadUserPromise) {
+      return this.loadUserPromise;
+    }
+    this.loadUserPromise = firstValueFrom(
       this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
         timeout(8000),
         catchError(() => of(null)),
@@ -118,7 +124,11 @@ export class AuthService {
       })
       .catch(() => {
         this.currentUserSubject.next(null);
+      })
+      .finally(() => {
+        /* mantener promesa resuelta para await en guard */
       });
+    return this.loadUserPromise;
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
@@ -207,6 +217,7 @@ export class AuthService {
 
   logout(): void {
     this.refreshInFlight$ = null;
+    this.loadUserPromise = null;
     if (this.browser.isBrowser) {
       this.http
         .post(`${AUTH_BASE}/logout`, {}, { withCredentials: true })

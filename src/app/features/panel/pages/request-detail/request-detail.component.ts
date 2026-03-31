@@ -231,7 +231,7 @@ export class RequestDetailComponent implements OnInit {
       if (apiRequest.status === 'solicitud-recibida') {
         if (apiRequest.type === 'apertura-llc') {
           // Una sola fila por etiqueta cliente (alias fusionados, como renovación)
-          const labels = this.getAperturaClientTimelineLabels();
+          const labels = this.getAperturaDisplayTimelineLabels(apiRequest);
           labels.forEach((label, index) => {
             steps.push({
               id: index + 1,
@@ -304,12 +304,18 @@ export class RequestDetailComponent implements OnInit {
       } else {
         // Apertura LLC: timeline único (sin duplicar "Solicitud Recibida" / "Confirmación pago")
         if (apiRequest.type === 'apertura-llc') {
-          const labels = this.getAperturaClientTimelineLabels();
+          const fullLabels = this.getAperturaClientTimelineLabels();
+          const labels = this.getAperturaDisplayTimelineLabels(apiRequest);
+          const hideConfirmacionPago = this.shouldHideConfirmacionPagoTimeline(apiRequest);
           const rawStage = (apiRequest.stage || '').trim();
           const perdida = rawStage === 'Apertura Perdida';
-          const timelineIdx = perdida
+          const rawTimelineIdx = perdida
             ? -2
-            : this.mapAperturaStageToTimelineIndex(rawStage, labels);
+            : this.mapAperturaStageToTimelineIndex(rawStage, fullLabels);
+          const timelineIdx =
+            perdida || !hideConfirmacionPago
+              ? rawTimelineIdx
+              : this.projectAperturaTimelineIndexForDisplay(rawTimelineIdx);
 
           const allComplete =
             apiRequest.status === 'completada' ||
@@ -873,6 +879,52 @@ export class RequestDetailComponent implements OnInit {
     ];
   }
 
+  private static readonly CONFIRMACION_PAGO_LABEL = 'Confirmación pago';
+
+  private parsePaymentAmount(v: unknown): number | null {
+    if (v == null || v === '') return null;
+    const n = typeof v === 'string' ? parseFloat(v) : Number(v);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  /**
+   * Ocultar el paso "Confirmación pago" solo en wizard con flujo con cobro (/apertura-llc),
+   * no en /apertura/lead (sin pago inicial: not_required, free, etc.).
+   * Si el caso es ambiguo, no ocultar (mostrar el paso).
+   */
+  private shouldHideConfirmacionPagoTimeline(api: ApiRequest): boolean {
+    if (api.type !== 'apertura-llc' || api.createdFrom !== 'wizard') {
+      return false;
+    }
+    const ps = String(api.paymentStatus ?? '').toLowerCase();
+    if (ps === 'not_required') return false;
+    if (api.paymentMethod === 'free') return false;
+    if (api.stripeChargeId) return true;
+    if (api.paymentMethod === 'stripe' || api.paymentMethod === 'transferencia') {
+      return true;
+    }
+    const amt = this.parsePaymentAmount(api.paymentAmount);
+    if (amt != null && amt > 0) return true;
+    return false;
+  }
+
+  /** Etiquetas del timeline según si se oculta "Confirmación pago". */
+  private getAperturaDisplayTimelineLabels(api: ApiRequest): string[] {
+    const full = this.getAperturaClientTimelineLabels();
+    if (!this.shouldHideConfirmacionPagoTimeline(api)) {
+      return full;
+    }
+    return full.filter((l) => l !== RequestDetailComponent.CONFIRMACION_PAGO_LABEL);
+  }
+
+  /**
+   * Con timeline sin "Confirmación pago", proyecta índice canónico (0–6) al índice 0–5 mostrado.
+   */
+  private projectAperturaTimelineIndexForDisplay(rawIdx: number): number {
+    if (rawIdx <= 4) return rawIdx;
+    return 5;
+  }
+
   /**
    * Índice en getAperturaClientTimelineLabels para stage guardado en API (alias cliente o Zoho legacy).
    */
@@ -1028,10 +1080,17 @@ export class RequestDetailComponent implements OnInit {
     ];
   }
 
-  getStepDefinitions(type: string, status?: string, stage?: string): Array<{ name: string; description: string }> {
+  getStepDefinitions(
+    type: string,
+    status?: string,
+    stage?: string,
+    apiRequest?: ApiRequest,
+  ): Array<{ name: string; description: string }> {
     // Si está en proceso y tiene stage, usar las etapas del blueprint
     if (status === 'en-proceso' && type === 'apertura-llc' && stage) {
-      const labels = this.getAperturaClientTimelineLabels();
+      const labels = apiRequest
+        ? this.getAperturaDisplayTimelineLabels(apiRequest)
+        : this.getAperturaClientTimelineLabels();
       return labels.map((label) => ({
         name: label,
         description: `Etapa: ${label}`
