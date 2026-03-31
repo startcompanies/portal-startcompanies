@@ -46,7 +46,11 @@ export class MyRequestsComponent implements OnInit {
   loadRequests(): void {
     this.isLoading = true;
     this.error = null;
-    
+
+    // Releer rol tras auth (no confiar solo en el constructor: puede ir desfasado)
+    this.currentUser = this.authService.getCurrentUser();
+    this.isPartner = this.authService.isPartner();
+
     // Determinar el role: si es partner, usar 'partner', sino 'client'
     const role: 'client' | 'partner' = this.isPartner ? 'partner' : 'client';
     
