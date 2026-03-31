@@ -4,6 +4,8 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { UsersService, User, CreateUserDto } from '../../services/users.service';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
+import { parseCreatedAtIso } from '../../../../shared/utils/date.util';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 /** Mismo criterio E.164 relajado que IntlTelInputComponent */
 const E164_PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
@@ -17,7 +19,7 @@ interface Partner extends User {
 @Component({
   selector: 'app-partners',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent],
+  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent, SafeDatePipe],
   templateUrl: './partners.component.html',
   styleUrl: './partners.component.css'
 })
@@ -85,7 +87,7 @@ export class PartnersComponent implements OnInit {
           ...user,
           totalClients: 0,
           totalRequests: 0,
-          createdAt: user.createdAt || new Date().toISOString(),
+          createdAt: parseCreatedAtIso(user.createdAt) ?? new Date().toISOString(),
           lastActivity: user.updatedAt || undefined
         } as Partner));
 
@@ -200,7 +202,7 @@ export class PartnersComponent implements OnInit {
           ...user,
           totalClients: 0,
           totalRequests: 0,
-          createdAt: user.createdAt || new Date().toISOString()
+          createdAt: parseCreatedAtIso(user.createdAt) ?? new Date().toISOString()
         };
         this.partners.push(newPartner);
         this.applyFilters();

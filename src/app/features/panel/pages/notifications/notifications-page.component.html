@@ -73,7 +73,7 @@
           <div class="notification-footer">
             <small class="notification-time">
               <i class="bi bi-calendar3 me-1"></i>
-              {{ notification.createdAt | date:'short' }}
+              {{ notification.createdAt | safeDate }}
             </small>
             <span *ngIf="!notification.read" class="badge bg-primary">Nueva</span>
           </div>

@@ -5,11 +5,12 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 import { RequestsService, Request } from '../../services/requests.service';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 @Component({
   selector: 'app-my-requests',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslocoPipe],
+  imports: [CommonModule, RouterLink, TranslocoPipe, SafeDatePipe],
   templateUrl: './my-requests.component.html',
   styleUrl: './my-requests.component.css'
 })

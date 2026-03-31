@@ -72,7 +72,7 @@
               </span>
             </div>
             <small class="text-muted">
-              {{ request.createdAt | date:'short' }}
+              {{ request.createdAt | safeDate }}
             </small>
           </div>
           <div class="request-item-body">

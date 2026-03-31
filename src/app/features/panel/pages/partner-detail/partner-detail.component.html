@@ -28,11 +28,11 @@
       <div class="partner-meta">
         <div class="meta-item">
           <i class="bi bi-calendar3 me-2"></i>
-          <span>Registrado: {{ partner.createdAt | date:'short' }}</span>
+          <span>Registrado: {{ partner.createdAt | safeDate }}</span>
         </div>
         <div class="meta-item" *ngIf="partner.lastActivity">
           <i class="bi bi-clock-history me-2"></i>
-          <span>Última actividad: {{ partner.lastActivity | date:'short' }}</span>
+          <span>Última actividad: {{ partner.lastActivity | safeDate }}</span>
         </div>
       </div>
     </div>
@@ -118,10 +118,10 @@
               </div>
               <div class="client-meta">
                 <small class="text-muted">
-                  Cliente desde: {{ client.createdAt | date:'short' }}
+                  Cliente desde: {{ client.createdAt | safeDate }}
                 </small>
                 <small *ngIf="client.lastRequestDate" class="text-muted">
-                  Última solicitud: {{ client.lastRequestDate | date:'short' }}
+                  Última solicitud: {{ client.lastRequestDate | safeDate }}
                 </small>
               </div>
               <div class="client-actions">

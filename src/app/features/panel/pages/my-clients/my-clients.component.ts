@@ -5,6 +5,8 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { PartnerClientsService, PartnerClient, CreatePartnerClientDto, ClientStats } from '../../services/partner-clients.service';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { parseCreatedAtIso } from '../../../../shared/utils/date.util';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 interface Client extends PartnerClient {
   totalRequests?: number;
@@ -17,7 +19,7 @@ interface Client extends PartnerClient {
 @Component({
   selector: 'app-my-clients',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, TranslocoPipe],
+  imports: [CommonModule, RouterLink, FormsModule, TranslocoPipe, SafeDatePipe],
   templateUrl: './my-clients.component.html',
   styleUrl: './my-clients.component.css'
 })
@@ -68,7 +70,7 @@ export class MyClientsComponent implements OnInit {
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
-          createdAt: client.createdAt || new Date().toISOString(),
+          createdAt: parseCreatedAtIso(client.createdAt) ?? new Date().toISOString(),
           lastActivity: client.updatedAt || undefined,
         }));
 
@@ -160,7 +162,7 @@ export class MyClientsComponent implements OnInit {
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
-          createdAt: client.createdAt || new Date().toISOString()
+          createdAt: parseCreatedAtIso(client.createdAt) ?? new Date().toISOString()
         };
         this.clients.push(newClient);
         this.applyFilters();

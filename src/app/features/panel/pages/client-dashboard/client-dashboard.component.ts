@@ -5,6 +5,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService, User } from '../../services/auth.service';
 import { RequestsService, Request } from '../../services/requests.service';
 import { getClientNameFromRequest, getRequestStageLabel } from '../../utils/request-display.utils';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
+import { parseCreatedAtIso } from '../../../../shared/utils/date.util';
 
 interface ProcessSummary {
   type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria';
@@ -26,7 +28,7 @@ export interface RecentRequestVm {
 @Component({
   selector: 'app-client-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink, TranslocoPipe],
+  imports: [CommonModule, RouterLink, TranslocoPipe, SafeDatePipe],
   templateUrl: './client-dashboard.component.html',
   styleUrl: './client-dashboard.component.css',
 })
@@ -99,11 +101,11 @@ export class ClientDashboardComponent implements OnInit {
   }
 
   private buildRecentRequests(requests: Request[]): RecentRequestVm[] {
-    const sorted = [...requests].sort((a, b) => {
-      const ta = new Date(a.updatedAt || a.createdAt).getTime();
-      const tb = new Date(b.updatedAt || b.createdAt).getTime();
-      return tb - ta;
-    });
+    const ts = (r: Request) => {
+      const iso = parseCreatedAtIso(r.updatedAt || r.createdAt);
+      return iso ? new Date(iso).getTime() : 0;
+    };
+    const sorted = [...requests].sort((a, b) => ts(b) - ts(a));
     return sorted.slice(0, 5).map((r) => {
       const name = getClientNameFromRequest(r);
       return {

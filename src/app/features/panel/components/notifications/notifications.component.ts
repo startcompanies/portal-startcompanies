@@ -2,11 +2,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { NotificationsService, Notification } from '../../services/notifications.service';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 @Component({
   selector: 'app-notifications',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SafeDatePipe],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css'
 })

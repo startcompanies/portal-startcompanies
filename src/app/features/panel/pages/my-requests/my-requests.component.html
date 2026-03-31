@@ -45,7 +45,7 @@
           </div>
           <div class="request-meta">
             <small class="text-muted">
-              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | date:'short' }}
+              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | safeDate }}
             </small>
           </div>
         </div>
@@ -128,7 +128,7 @@
           </div>
           <div class="request-meta">
             <small class="text-muted">
-              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | date:'short' }}
+              {{ 'PANEL.my_requests_page.created' | transloco }}: {{ request.createdAt | safeDate }}
             </small>
           </div>
         </div>
