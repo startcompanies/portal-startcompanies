@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import {
   Observable,
   BehaviorSubject,
@@ -56,7 +56,14 @@ function normalizePanelUser(raw: unknown): User | null {
     return null;
   }
   const r = raw as Record<string, unknown>;
-  if (typeof r['id'] !== 'number') {
+  const rawId = r['id'];
+  const idNum =
+    typeof rawId === 'number'
+      ? rawId
+      : typeof rawId === 'string'
+        ? parseInt(rawId, 10)
+        : NaN;
+  if (!Number.isFinite(idNum)) {
     return null;
   }
   const email = r['email'];
@@ -67,9 +74,11 @@ function normalizePanelUser(raw: unknown): User | null {
   const username = typeof usernameSrc === 'string' ? usernameSrc : email;
   const tr = r['type'];
   const type: User['type'] =
-    tr === 'admin' || tr === 'partner' || tr === 'client' ? tr : 'client';
+    tr === 'admin' || tr === 'partner' || tr === 'client' || tr === 'user'
+      ? tr
+      : 'client';
   return {
-    id: r['id'] as number,
+    id: idNum,
     username,
     email,
     status: Boolean(r['status']),
@@ -90,6 +99,8 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private refreshInFlight$: Observable<void> | null = null;
   private router = inject(Router);
+  /** Promesa única de /auth/me (APP_INITIALIZER + guards) para evitar carrera guard vs sesión. */
+  private loadUserPromise: Promise<void> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -101,24 +112,49 @@ export class AuthService {
   }
 
   /**
+   * GET /auth/me con reintento tras refresh si el access expiró (401).
+   * El interceptor no aplica refresh a /auth/me; sin esto el guard puede mandar a login con sesión válida.
+   */
+  private fetchMeObservable(): Observable<unknown> {
+    return this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
+      timeout(8000),
+      catchError((err: unknown) => {
+        const status = err instanceof HttpErrorResponse ? err.status : 0;
+        if (status === 401) {
+          return this.refresh().pipe(
+            switchMap(() =>
+              this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
+                timeout(8000),
+                catchError(() => of(null)),
+              ),
+            ),
+            catchError(() => of(null)),
+          );
+        }
+        return of(null);
+      }),
+    );
+  }
+
+  /**
    * Carga el usuario en segundo plano (solo en browser). Timeout 8s para no colgar.
+   * Idempotente: varias llamadas comparten la misma promesa (evita flash login en F5 si el guard corre en paralelo).
    */
   loadUser(): Promise<void> {
     if (!this.browser.isBrowser) {
       return Promise.resolve();
     }
-    return firstValueFrom(
-      this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
-        timeout(8000),
-        catchError(() => of(null)),
-      ),
-    )
+    if (this.loadUserPromise) {
+      return this.loadUserPromise;
+    }
+    this.loadUserPromise = firstValueFrom(this.fetchMeObservable())
       .then((raw) => {
         this.currentUserSubject.next(normalizePanelUser(raw));
       })
       .catch(() => {
         this.currentUserSubject.next(null);
       });
+    return this.loadUserPromise;
   }
 
   login(credentials: LoginCredentials): Observable<AuthResponse> {
@@ -207,6 +243,7 @@ export class AuthService {
 
   logout(): void {
     this.refreshInFlight$ = null;
+    this.loadUserPromise = null;
     if (this.browser.isBrowser) {
       this.http
         .post(`${AUTH_BASE}/logout`, {}, { withCredentials: true })

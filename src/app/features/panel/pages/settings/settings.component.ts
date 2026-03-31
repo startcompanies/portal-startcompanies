@@ -15,11 +15,12 @@ import {
   PanelPreferencesService,
   PanelUserPreferences,
 } from '../../services/panel-preferences.service';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 @Component({
   selector: 'app-settings',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslocoPipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TranslocoPipe, SafeDatePipe],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css',
 })

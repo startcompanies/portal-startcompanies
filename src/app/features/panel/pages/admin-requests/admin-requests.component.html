@@ -121,7 +121,7 @@
                   </span>
                 </td>
                 <td>{{ request.currentStep }}</td>
-                <td>{{ request.createdAt | date:'short' }}</td>
+                <td>{{ request.createdAt | safeDate }}</td>
                 <td>
                   <a [routerLink]="['/panel/requests', request.id]" class="btn btn-sm btn-outline-primary">
                     <i class="bi bi-eye me-1"></i>

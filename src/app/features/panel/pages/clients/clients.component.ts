@@ -9,6 +9,8 @@ import {
 } from '../../services/partner-clients.service';
 import { IntlTelInputComponent } from '../../../../shared/components/intl-tel-input/intl-tel-input.component';
 import { firstValueFrom } from 'rxjs';
+import { parseCreatedAtIso } from '../../../../shared/utils/date.util';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 /** Mismo criterio E.164 relajado que partners / IntlTelInputComponent */
 const E164_PHONE_REGEX = /^\+[1-9]\d{6,14}$/;
@@ -24,7 +26,7 @@ interface Client extends PartnerClient {
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent],
+  imports: [CommonModule, RouterLink, FormsModule, IntlTelInputComponent, SafeDatePipe],
   templateUrl: './clients.component.html',
   styleUrl: './clients.component.css'
 })
@@ -135,7 +137,7 @@ export class ClientsComponent implements OnInit {
         totalRequests: 0,
         activeRequests: 0,
         completedRequests: 0,
-        createdAt: client.createdAt || new Date().toISOString(),
+        createdAt: parseCreatedAtIso(client.createdAt) ?? new Date().toISOString(),
         lastActivity: client.updatedAt || undefined,
       }));
 
@@ -235,7 +237,7 @@ export class ClientsComponent implements OnInit {
           totalRequests: 0,
           activeRequests: 0,
           completedRequests: 0,
-          createdAt: client.createdAt || new Date().toISOString()
+          createdAt: parseCreatedAtIso(client.createdAt) ?? new Date().toISOString()
         };
         this.currentPage = 1;
         void this.loadClients();

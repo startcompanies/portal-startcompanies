@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UsersService, User } from '../../services/users.service';
 import { PartnerClientsService } from '../../services/partner-clients.service';
 import { RequestsService, Request } from '../../services/requests.service';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 interface PartnerClient {
   id: number;
@@ -43,7 +44,7 @@ interface Partner {
 @Component({
   selector: 'app-partner-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, SafeDatePipe],
   templateUrl: './partner-detail.component.html',
   styleUrl: './partner-detail.component.css',
 })

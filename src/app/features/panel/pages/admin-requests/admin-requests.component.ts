@@ -4,6 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { RequestsService, Request } from '../../services/requests.service';
+import { parseCreatedAtIso } from '../../../../shared/utils/date.util';
+import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 
 interface RequestDisplay {
   id: number;
@@ -12,15 +14,15 @@ interface RequestDisplay {
   clientName: string;
   clientEmail: string;
   partnerName?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | null;
+  updatedAt: Date | null;
   currentStep: string;
 }
 
 @Component({
   selector: 'app-admin-requests',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, SafeDatePipe],
   templateUrl: './admin-requests.component.html',
   styleUrl: './admin-requests.component.css'
 })
@@ -167,6 +169,9 @@ export class AdminRequestsComponent implements OnInit, OnDestroy {
       }
     }
 
+    const createdIso = parseCreatedAtIso(request.createdAt);
+    const updatedIso = parseCreatedAtIso(request.updatedAt);
+
     return {
       id: request.id,
       type: request.type,
@@ -174,8 +179,8 @@ export class AdminRequestsComponent implements OnInit, OnDestroy {
       clientName,
       clientEmail,
       partnerName,
-      createdAt: new Date(request.createdAt),
-      updatedAt: new Date(request.updatedAt),
+      createdAt: createdIso ? new Date(createdIso) : null,
+      updatedAt: updatedIso ? new Date(updatedIso) : null,
       currentStep
     };
   }

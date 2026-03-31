@@ -88,11 +88,11 @@
           <div class="partner-meta">
             <small class="text-muted">
               <i class="bi bi-calendar3 me-1"></i>
-              Creado: {{ partner.createdAt | date:'short' }}
+              Creado: {{ partner.createdAt | safeDate }}
             </small>
             <small *ngIf="partner.lastActivity" class="text-muted">
               <i class="bi bi-clock-history me-1"></i>
-              Última actividad: {{ partner.lastActivity | date:'short' }}
+              Última actividad: {{ partner.lastActivity | safeDate }}
             </small>
           </div>
 

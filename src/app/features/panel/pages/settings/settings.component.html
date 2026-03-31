@@ -292,7 +292,7 @@
                 <span *ngIf="!config.refresh_token" class="text-warning">
                   <i class="bi bi-exclamation-triangle"></i> {{ 'PANEL.settings_page.zoho_section.token_missing' | transloco }}
                 </span>
-                | {{ 'PANEL.settings_page.zoho_section.created' | transloco }}: {{ config.createdAt | date:'short' }}
+                | {{ 'PANEL.settings_page.zoho_section.created' | transloco }}: {{ config.createdAt | safeDate }}
               </small>
             </div>
             <button

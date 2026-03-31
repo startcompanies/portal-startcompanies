@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../services/auth.service';
+import { environment } from '../../../../environments/environment';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
@@ -13,7 +14,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     req.url.includes('/auth/refresh') ||
     req.url.includes('/auth/me');
 
-  const cloned = req.clone({ withCredentials: true });
+  const isPrimaryApiRequest =
+    req.url.startsWith(environment.apiUrl) ||
+    req.url.startsWith('/');
+
+  const cloned = isPrimaryApiRequest
+    ? req.clone({ withCredentials: true })
+    : req;
 
   if (req.url.includes('/panel/requests')) {
     console.log('[AuthInterceptor] Request URL:', req.url);
