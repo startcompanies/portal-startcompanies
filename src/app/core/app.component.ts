@@ -1,12 +1,13 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, combineLatest, map, startWith } from 'rxjs';
 import { ImagePreloaderComponent } from '../shared/components/image-preloader/image-preloader.component';
 import { WhatsappFloatComponent } from '../shared/components/whatsapp-float/whatsapp-float.component';
 import { LanguageService } from '../shared/services/language.service';
 import { CarouselSwipeService } from '../shared/services/carousel-swipe.service';
 import { FacebookPixelService } from '../shared/services/facebook-pixel.service';
+import { AuthService } from '../features/panel/services/auth.service';
 
 /** Rutas que son Landing Pages (LP): el pixel lo gestiona cada LP, no el flujo global. */
 const LANDING_PATHS = new Set([
@@ -41,12 +42,21 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'portal-startcompanies';
   private routerSubscription: Subscription | null = null;
 
-  constructor(
-    private readonly languageService: LanguageService,
-    private readonly carouselSwipeService: CarouselSwipeService,
-    private readonly router: Router,
-    private readonly facebookPixelService: FacebookPixelService
-  ) {}
+  private readonly languageService = inject(LanguageService);
+  private readonly carouselSwipeService = inject(CarouselSwipeService);
+  private readonly router = inject(Router);
+  private readonly facebookPixelService = inject(FacebookPixelService);
+  private readonly authService = inject(AuthService);
+
+  /** Pantalla completa en /panel hasta resolver la primera /auth/me (evita flash login en F5). */
+  readonly panelAuthSplash$ = combineLatest([
+    this.authService.authReady$,
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => isPanelUrl(e.urlAfterRedirects?.split('?')[0] ?? '')),
+      startWith(isPanelUrl(this.router.url.split('?')[0] ?? '')),
+    ),
+  ]).pipe(map(([ready, panel]) => panel && !ready));
 
   get initialTranslationsReady$() {
     return this.languageService.initialTranslationsReady$;

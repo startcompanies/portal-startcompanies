@@ -109,3 +109,13 @@
 .input-group .form-control:focus + .btn-outline-secondary {
   border-color: var(--color-secundario-tecnico);
 }
+
+.letter-spacing-otp {
+  letter-spacing: 0.35em;
+}
+
+.alert-info {
+  background-color: #e7f3ff;
+  border: 1px solid #b6d9ff;
+  color: #084298;
+}

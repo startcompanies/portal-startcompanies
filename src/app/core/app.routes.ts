@@ -287,8 +287,8 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
       },
       // Wizard unificado: misma página (`WizardRequestFlowPageComponent`), perfiles distintos en `RequestFlowConfigService`.
-      // - /apertura-llc + source wizard: registro con JWT, pago, confirmación; sin paso de código de email (enlace al cierre vía API).
-      // - /apertura/lead + crm-lead: verificación por código, sin pago, finalize sin cobro.
+      // - /apertura-llc + source wizard: registro con JWT, pago, confirmación; verificación de correo en login del panel (2FA).
+      // - /apertura/lead + crm-lead: sin pago, finalize sin cobro; sin paso de código en el wizard.
       // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'apertura-llc',

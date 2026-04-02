@@ -252,11 +252,6 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       return true;
     }
 
-    // Si ya se registró y está esperando verificación, no volver a registrar
-    if (this.waitingEmailVerification && this.registeredUserId) {
-      return false; // Necesita verificar el email primero
-    }
-
     // Forzar que el input de teléfono actualice su valor para que la validación del FormControl sea correcta
     if (!this.phoneInput) {
       this.errorMessage = 'Por favor completa el teléfono.';
@@ -303,46 +298,23 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
       
       this.registeredUserId = response.id;
       this.registeredEmail = email;
-      console.log('[WizardBasicRegisterStep] Usuario registrado o código reenviado:', response);
+      console.log('[WizardBasicRegisterStep] Usuario registrado:', response);
 
-      // Si el backend devolvió JWT (p. ej. email ya verificado), completar aunque el flujo tenga paso de verificación.
-      if (this.wizardApiService.isAuthenticated()) {
-        this.wizardStateService.setStepData(this.stepNumber, {
-          ...formValue,
-          userId: response.id,
-          email,
-          firstName,
-          lastName,
-          waitingVerification: false
-        });
-        this.waitingEmailVerification = false;
-        this.registrationCompleted.emit();
-        this.isLoading = false;
-        return true;
-      }
-
-      // Guardar datos en el estado del wizard
       this.wizardStateService.setStepData(this.stepNumber, {
         ...formValue,
         userId: response.id,
-        email: email,
+        email,
         firstName,
         lastName,
-        waitingVerification: true
+        waitingVerification: false,
       });
-
-      // Marcar que está esperando verificación
-      this.waitingEmailVerification = true;
-      // El mensaje puede indicar que se reenvió el código o que se registró nuevo usuario
-      this.successMessage = response.message || 'Código de verificación enviado. Por favor, revisa tu correo para confirmar tu cuenta.';
-      this.errorMessage = null; // Limpiar cualquier error previo
+      this.waitingEmailVerification = false;
+      this.successMessage = response.message || null;
+      this.errorMessage = null;
       this.isLoading = false;
-      
-      // Emitir evento de usuario creado
       this.userCreated.emit({ userId: response.id, email });
-      
-      // Retornar false para indicar que necesita verificación
-      return false;
+      this.registrationCompleted.emit();
+      return true;
 
     } catch (error: any) {
       console.error('[WizardBasicRegisterStep] Error al registrar usuario:', error);
@@ -360,10 +332,6 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
    * Retorna true si el formulario está completo (incluyendo los campos obligatorios).
    */
   canProceed(): boolean {
-    // Si está esperando verificación, no puede avanzar
-    if (this.waitingEmailVerification) {
-      return false;
-    }
     // Forzar que el input de teléfono actualice su valor
     // Si el componente de teléfono aún no está disponible, no permitir avanzar
     if (!this.phoneInput) {

@@ -38,6 +38,13 @@ export interface AuthResponse {
 export interface LoginCredentials {
   email: string;
   password: string;
+  rememberMe?: boolean;
+}
+
+export interface SignInSecondFactorResponse {
+  step: 'second_factor';
+  challengeId: string;
+  message?: string;
 }
 
 export interface RegisterData {
@@ -91,6 +98,16 @@ function normalizePanelUser(raw: unknown): User | null {
   };
 }
 
+function isSecondFactorResponse(
+  body: unknown,
+): body is SignInSecondFactorResponse {
+  if (body == null || typeof body !== 'object') {
+    return false;
+  }
+  const o = body as Record<string, unknown>;
+  return o['step'] === 'second_factor' && typeof o['challengeId'] === 'string';
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -99,6 +116,9 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private refreshInFlight$: Observable<void> | null = null;
   private router = inject(Router);
+  /** Primera resolución de sesión (/auth/me) terminada; evita flash login en F5. */
+  private authReadySubject = new BehaviorSubject(false);
+  public authReady$ = this.authReadySubject.asObservable();
   /** Promesa única de /auth/me (APP_INITIALIZER + guards) para evitar carrera guard vs sesión. */
   private loadUserPromise: Promise<void> | null = null;
 
@@ -109,6 +129,11 @@ export class AuthService {
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  /** True si ya se completó la primera carga de sesión en esta instancia del servicio. */
+  isAuthReady(): boolean {
+    return this.authReadySubject.value;
   }
 
   /**
@@ -142,6 +167,7 @@ export class AuthService {
    */
   loadUser(): Promise<void> {
     if (!this.browser.isBrowser) {
+      this.authReadySubject.next(true);
       return Promise.resolve();
     }
     if (this.loadUserPromise) {
@@ -153,21 +179,47 @@ export class AuthService {
       })
       .catch(() => {
         this.currentUserSubject.next(null);
+      })
+      .finally(() => {
+        this.authReadySubject.next(true);
       });
     return this.loadUserPromise;
   }
 
-  login(credentials: LoginCredentials): Observable<AuthResponse> {
+  /**
+   * Paso 1: credenciales. Puede devolver segundo factor sin `user`.
+   */
+  login(
+    credentials: LoginCredentials,
+  ): Observable<AuthResponse | SignInSecondFactorResponse> {
+    const body = {
+      email: credentials.email,
+      password: credentials.password,
+      rememberMe: Boolean(credentials.rememberMe),
+    };
     return this.http
-      .post<AuthResponse>(`${AUTH_BASE}/signin`, credentials, {
+      .post<unknown>(`${AUTH_BASE}/signin`, body, {
         withCredentials: true,
       })
       .pipe(
         switchMap((response) => {
-          const user = response?.user ?? null;
+          if (isSecondFactorResponse(response)) {
+            return of(response);
+          }
+          if (
+            response &&
+            typeof response === 'object' &&
+            'message' in response &&
+            !('user' in response && (response as AuthResponse).user)
+          ) {
+            const r = response as Record<string, unknown>;
+            const backendMessage =
+              (typeof r['message'] === 'string' ? r['message'] : null) ??
+              'Credenciales inválidas';
+            return throwError(() => new Error(backendMessage));
+          }
+          const user = (response as AuthResponse)?.user ?? null;
           if (!user) {
-            // El backend puede responder con un body de error (sin `user`) pero con `message`.
-            // En ese caso, mostramos el mensaje real en vez del genérico.
             const backendMessage =
               (response as any)?.message ??
               (response as any)?.error?.message ??
@@ -178,7 +230,7 @@ export class AuthService {
           if (normalized) {
             this.currentUserSubject.next(normalized);
           }
-          return of(response);
+          return of(response as AuthResponse);
         }),
         catchError((err) => {
           const message =
@@ -186,6 +238,44 @@ export class AuthService {
           return throwError(() => new Error(message));
         }),
       );
+  }
+
+  /** Paso 2: OTP por correo; emite cookies HttpOnly y actualiza usuario en memoria. */
+  verifyLoginOtp(challengeId: string, code: string): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(
+        `${AUTH_BASE}/signin/verify`,
+        { challengeId, code },
+        { withCredentials: true },
+      )
+      .pipe(
+        switchMap((response) => {
+          const user = response?.user ?? null;
+          if (!user) {
+            const backendMessage =
+              (response as any)?.message ?? 'No se pudo completar el acceso';
+            return throwError(() => new Error(backendMessage));
+          }
+          const normalized = normalizePanelUser(user);
+          if (normalized) {
+            this.currentUserSubject.next(normalized);
+          }
+          return of(response);
+        }),
+        catchError((err) => {
+          const message =
+            err?.error?.message ?? err?.message ?? 'Código inválido o expirado';
+          return throwError(() => new Error(message));
+        }),
+      );
+  }
+
+  resendLoginOtp(challengeId: string): Observable<{ ok?: boolean; message?: string }> {
+    return this.http.post<{ ok?: boolean; message?: string }>(
+      `${AUTH_BASE}/signin/resend-otp`,
+      { challengeId },
+      { withCredentials: true },
+    );
   }
 
   register(data: RegisterData): Observable<User> {
