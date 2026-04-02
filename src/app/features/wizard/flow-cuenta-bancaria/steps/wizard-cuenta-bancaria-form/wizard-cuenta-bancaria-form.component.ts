@@ -2,11 +2,13 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { patchControlWithNormalizedPublicUrl } from '../../../../../shared/validators/web-url.validator';
 
 @Component({
   selector: 'app-wizard-cuenta-bancaria-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent, TranslocoPipe],
   templateUrl: './wizard-cuenta-bancaria-form.component.html',
   styleUrl: './wizard-cuenta-bancaria-form.component.css'
 })
@@ -157,6 +159,10 @@ export class WizardCuentaBancariaFormComponent implements OnInit, OnChanges {
 
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
+  }
+
+  onBlurNormalizePublicUrl(controlName: string): void {
+    patchControlWithNormalizedPublicUrl(this.serviceDataForm?.get(controlName));
   }
 }
 

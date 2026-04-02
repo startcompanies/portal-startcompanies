@@ -4,6 +4,7 @@ import { FormGroup, FormArray, ReactiveFormsModule } from '@angular/forms';
 import { IntlTelInputComponent } from '../../../components/intl-tel-input/intl-tel-input.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { COUNTRY_NAMES } from '../../../constants/countries';
+import { patchControlWithNormalizedPublicUrl } from '../../../validators/web-url.validator';
 
 /**
  * Formulario compartido para Apertura LLC
@@ -131,5 +132,9 @@ export class AperturaLlcFormComponent implements OnInit, OnChanges {
       return `${state.label} (${state.abbreviation})`;
     }
     return stateValue;
+  }
+
+  onBlurNormalizePublicUrl(controlName: string): void {
+    patchControlWithNormalizedPublicUrl(this.serviceDataForm?.get(controlName));
   }
 }

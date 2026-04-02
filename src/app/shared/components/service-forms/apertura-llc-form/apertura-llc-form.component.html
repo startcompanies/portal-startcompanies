@@ -88,7 +88,19 @@
             </div>
             <div class="col-md-6">
               <label for="linkedin" class="form-label">{{ 'PANEL.forms_apertura_llc.linkedin_optional' | transloco }}</label>
-              <input type="url" id="linkedin" class="form-control" formControlName="linkedin" [attr.placeholder]="'PANEL.forms_apertura_llc.linkedin_ph' | transloco">
+              <input
+                type="text"
+                id="linkedin"
+                class="form-control"
+                [class.is-invalid]="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched"
+                formControlName="linkedin"
+                (blur)="onBlurNormalizePublicUrl('linkedin')"
+                [attr.placeholder]="'PANEL.forms_apertura_llc.linkedin_ph' | transloco"
+                autocomplete="url"
+              />
+              <div *ngIf="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched" class="invalid-feedback d-block">
+                {{ 'PANEL.validation.public_web_url' | transloco }}
+              </div>
             </div>
           </div>
           
@@ -375,7 +387,19 @@
             
             <div class="col-md-12">
               <label for="projectOrCompanyUrl" class="form-label">{{ 'PANEL.forms_apertura_llc.project_url' | transloco }}</label>
-              <input type="url" id="projectOrCompanyUrl" class="form-control" formControlName="projectOrCompanyUrl" [attr.placeholder]="'PANEL.forms_apertura_llc.project_url_ph' | transloco">
+              <input
+                type="text"
+                id="projectOrCompanyUrl"
+                class="form-control"
+                [class.is-invalid]="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched"
+                formControlName="projectOrCompanyUrl"
+                (blur)="onBlurNormalizePublicUrl('projectOrCompanyUrl')"
+                [attr.placeholder]="'PANEL.forms_apertura_llc.project_url_ph' | transloco"
+                autocomplete="url"
+              />
+              <div *ngIf="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched" class="invalid-feedback d-block">
+                {{ 'PANEL.validation.public_web_url' | transloco }}
+              </div>
             </div>
           </div>
           

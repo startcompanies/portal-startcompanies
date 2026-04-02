@@ -4,6 +4,7 @@ import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder } from '@angular
 import { IntlTelInputComponent } from '../../../components/intl-tel-input/intl-tel-input.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { COUNTRY_NAMES } from '../../../constants/countries';
+import { patchControlWithNormalizedPublicUrl } from '../../../validators/web-url.validator';
 
 @Component({
   selector: 'app-cuenta-bancaria-form',
@@ -130,6 +131,10 @@ export class CuentaBancariaFormComponent implements OnInit, OnChanges {
 
   removeOwner(index: number): void {
     this.removeOwnerRequested.emit(index);
+  }
+
+  onBlurNormalizePublicUrl(controlName: string): void {
+    patchControlWithNormalizedPublicUrl(this.serviceDataForm?.get(controlName));
   }
 }
 

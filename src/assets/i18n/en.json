@@ -1389,6 +1389,9 @@
       "my_clients": "My Clients",
       "service_history": "Service history"
     },
+    "validation": {
+      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
+    },
     "layout": {
       "back_to_site": "Back to site",
       "admin_panel": "Admin Panel",
@@ -2288,6 +2291,7 @@
       "brief_desc": "Brief description",
       "brief_desc_help": "The description must be clear and concise. Do not exceed 300 characters and include only relevant information about the company.",
       "website_social": "Website or social media",
+      "website_social_ph": "https://yoursite.com or https://instagram.com/...",
       "ein_letter_attach": "Attach EIN letter",
       "ein_letter_hint": "The EIN document is in the client's Google Drive folder, under 'EIN Letter' in the 'Main Documents' subfolder. Formats: PDF, PNG, JPG, JPEG or DOCX (max. 10MB)",
       "ein_required": "You must attach the EIN letter.",

@@ -1405,6 +1405,9 @@
       "my_clients": "Mis Clientes",
       "service_history": "Historial de servicios"
     },
+    "validation": {
+      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://)."
+    },
     "layout": {
       "back_to_site": "Volver al sitio",
       "admin_panel": "Panel Administrativo",
@@ -2304,6 +2307,7 @@
       "brief_desc": "Descripción breve",
       "brief_desc_help": "La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.",
       "website_social": "Sitio web o red social",
+      "website_social_ph": "https://tusitio.com o https://instagram.com/...",
       "ein_letter_attach": "Adjuntar EIN Letter",
       "ein_letter_hint": "El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)",
       "ein_required": "Debes adjuntar el EIN Letter.",

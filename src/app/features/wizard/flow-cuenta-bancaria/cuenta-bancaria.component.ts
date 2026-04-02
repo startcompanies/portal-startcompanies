@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { optionalPublicWebUrlValidator } from '../../../shared/validators/web-url.validator';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
@@ -698,7 +699,10 @@ export class CuentaBancariaComponent implements OnInit {
     group.addControl('industry', this.fb.control(''));
     group.addControl('numberOfEmployees', this.fb.control(''));
     group.addControl('briefDescription', this.fb.control(''));
-    group.addControl('websiteOrSocialMedia', this.fb.control(''));
+    group.addControl(
+      'websiteOrSocialMedia',
+      this.fb.control('', optionalPublicWebUrlValidator()),
+    );
     group.addControl('einLetterUrl', this.fb.control(''));
     group.addControl('einNumber', this.fb.control(''));
     group.addControl('articlesOrCertificateUrl', this.fb.control(''));
