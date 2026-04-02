@@ -278,6 +278,18 @@ export class AuthService {
     );
   }
 
+  /**
+   * Tras login con OTP: registra el navegador para omitir el código hasta 180 días (cookie HttpOnly).
+   * Requiere sesión válida (cookies ya emitidas por verify).
+   */
+  registerTrustedDevice(): Observable<{ ok: boolean }> {
+    return this.http.post<{ ok: boolean }>(
+      `${AUTH_BASE}/trust-device`,
+      {},
+      { withCredentials: true },
+    );
+  }
+
   register(data: RegisterData): Observable<User> {
     return this.http.post<User>(`${AUTH_BASE}/signup`, data);
   }

@@ -17,13 +17,13 @@ export interface LiliApplicationResponse {
 
 @Injectable({ providedIn: 'root' })
 export class LiliService {
-  private readonly apiUrl = 'https://lili-api.startcompanies.io/lili/create-application';
+  private readonly apiUrl = environment.liliCreateApplicationUrl;
 
   constructor(private http: HttpClient) {}
 
   createApplication(data: LiliApplicationPayload): Promise<LiliApplicationResponse> {
     return firstValueFrom(
-      this.http.post<LiliApplicationResponse>(this.apiUrl, data)
+      this.http.post<LiliApplicationResponse>(this.apiUrl, data),
     );
   }
 }

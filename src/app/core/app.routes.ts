@@ -601,6 +601,30 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'lili-request',
+        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/lili-request/lili-request.component').then(
+                (m) => m.LiliRequestComponent,
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.lili_request.title',
+              panelSubtitleKey: 'PANEL.route_meta.lili_request.subtitle',
+            },
+          },
+        ],
+        data: {
+          seo: {
+            title: 'Solicitar cuenta Lili - Panel Start Companies',
+            description: 'Completa la solicitud de cuenta bancaria Lili desde tu panel',
+          },
+        },
+      },
+      {
         path: 'client-dashboard',
         canActivate: [authGuard, roleGuard(['client', 'partner'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),

@@ -127,4 +127,42 @@
       {{ 'PANEL.auth.back_credentials' | transloco }}
     </button>
   </form>
+
+  <div
+    *ngIf="showTrustBrowserModal"
+    class="trust-browser-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="trust-browser-title"
+  >
+    <div class="trust-browser-modal card shadow">
+      <div class="card-body">
+        <h3 id="trust-browser-title" class="h5">{{ 'PANEL.auth.trust_browser_title' | transloco }}</h3>
+        <p class="text-muted small mb-0">{{ 'PANEL.auth.trust_browser_body' | transloco }}</p>
+        <p class="text-danger small mt-2 mb-0" *ngIf="trustBrowserError">{{ trustBrowserError | transloco }}</p>
+        <div class="d-flex gap-2 flex-wrap mt-3">
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="confirmTrustBrowser()"
+            [disabled]="trustBrowserSaving"
+          >
+            <span *ngIf="!trustBrowserSaving">{{ 'PANEL.auth.trust_browser_yes' | transloco }}</span>
+            <span *ngIf="trustBrowserSaving">
+              <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+              {{ 'PANEL.auth.trust_browser_saving' | transloco }}
+            </span>
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="dismissTrustBrowserRemember()"
+            [disabled]="trustBrowserSaving"
+          >
+            {{ 'PANEL.auth.trust_browser_no' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

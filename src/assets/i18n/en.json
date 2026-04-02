@@ -1387,7 +1387,8 @@
       "settings": "Settings",
       "my_requests": "My Requests",
       "my_clients": "My Clients",
-      "service_history": "Service history"
+      "service_history": "Service history",
+      "lili_request": "Request Lili account"
     },
     "validation": {
       "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
@@ -1436,6 +1437,10 @@
       },
       "new_request_draft": {
         "subtitle": "Continue completing the request"
+      },
+      "lili_request": {
+        "title": "Request Lili account",
+        "subtitle": "Complete the banking flow using your profile details"
       }
     },
     "language_modal": {
@@ -1511,7 +1516,13 @@
       "reset_error_expired": "Could not reset the password. The link may have expired.",
       "set_password_success_redirect": "Password set successfully. Redirecting to login...",
       "set_password_error_expired": "Could not set the password. The link may have expired.",
-      "invalid_invite_token": "Invalid or missing invitation link."
+      "invalid_invite_token": "Invalid or missing invitation link.",
+      "trust_browser_title": "Trust this browser?",
+      "trust_browser_body": "We will not ask for the email code on this device for 180 days. This is revoked when you change your password.",
+      "trust_browser_yes": "Yes, remember",
+      "trust_browser_no": "No, thanks",
+      "trust_browser_saving": "Saving…",
+      "trust_browser_error": "Could not save this preference. You can continue anyway."
     },
     "admin_dashboard": {
       "title": "Admin dashboard",
@@ -1532,6 +1543,11 @@
       "type_llc_open": "LLC formation",
       "type_llc_renew": "LLC renewal",
       "type_bank": "Bank account"
+    },
+    "lili_request_page": {
+      "loading": "Preparing the form…",
+      "error": "Could not load the form. Try again or contact support.",
+      "missing_email": "Your account has no email on file. Update it in settings to continue."
     },
     "my_requests_page": {
       "title": "My requests",

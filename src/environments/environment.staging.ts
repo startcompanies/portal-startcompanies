@@ -1,4 +1,4 @@
-import { DOMAIN } from './environment.base';
+import { DOMAIN, LILI } from './environment.base';
 
 export const environment = {
   production: true,
@@ -21,4 +21,5 @@ export const environment = {
       'pk_test_51RxouuE99FVBtLePDq9TO4CeTnbeDLwYbVtCI9WoygjwdSvtxQ4Gzgif8nty1tQPB0MhmesI77JdoCEFaIc2qD9V00vbVxj5P4',
   },
   liliEnv: 'Sandbox' as const,
+  liliCreateApplicationUrl: LILI.createApplicationUrl,
 };

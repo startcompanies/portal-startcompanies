@@ -1,0 +1,74 @@
+/* Ocupa el alto útil bajo el header del panel (cadena flex en panel-layout). */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.lili-panel-shell {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: min(70vh, calc(100dvh - 11rem));
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.lili-panel-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, 0.92);
+  border-radius: 0.5rem;
+}
+
+.lili-panel-loading-inner {
+  text-align: center;
+  padding: 1rem;
+}
+
+.lili-panel-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  text-align: center;
+  padding: 1rem;
+}
+
+.lili-panel-state-error {
+  color: #dc3545;
+}
+
+.lili-panel-embed {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+  padding: 0.5rem 0 1rem;
+  box-sizing: border-box;
+}
+
+.lili-panel-embed-hidden {
+  display: none;
+}
+
+/*
+ * Lili inserta #lili_iframe con estilos inline (100% height); el padre a veces no
+ * tiene altura resuelta → ::ng-deep + altura en dvh para llenar el viewport bajo el header.
+ */
+:host ::ng-deep .lili-panel-embed > #lili_iframe {
+  display: block;
+  width: 100% !important;
+  min-height: calc(100dvh - 12rem) !important;
+  height: calc(100dvh - 12rem) !important;
+  max-height: none !important;
+  border: none;
+}

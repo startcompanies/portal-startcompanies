@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
-import { filter, take, Subscription } from 'rxjs';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +13,7 @@ import { filter, take, Subscription } from 'rxjs';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   otpForm: FormGroup;
   isLoading = false;
@@ -22,7 +22,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   showPassword = false;
   loginStep: 'credentials' | 'otp' = 'credentials';
   challengeId: string | null = null;
-  private userSub?: Subscription;
+  showTrustBrowserModal = false;
+  trustBrowserSaving = false;
+  trustBrowserError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -41,16 +43,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.userSub = this.authService.currentUser$
-      .pipe(filter((user) => !!user), take(1))
-      .subscribe((user) => {
-        this.navigateAfterLogin(user);
-      });
+    this.authService.authReady$.pipe(take(1)).subscribe(() => {
+      const u = this.authService.getCurrentUser();
+      if (u) {
+        this.navigateAfterLogin(u);
+      }
+    });
   }
 
-  ngOnDestroy(): void {
-    this.userSub?.unsubscribe();
-  }
 
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
@@ -120,7 +120,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.authService.verifyLoginOtp(this.challengeId, code).subscribe({
       next: () => {
         this.isLoading = false;
-        this.navigateAfterLogin(this.authService.getCurrentUser());
+        this.showTrustBrowserModal = true;
+        this.trustBrowserError = null;
       },
       error: (error) => {
         this.isLoading = false;
@@ -145,6 +146,27 @@ export class LoginComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.errorMessage =
           error?.error?.message ?? error?.message ?? 'No se pudo reenviar el código.';
+      },
+    });
+  }
+
+  dismissTrustBrowserRemember(): void {
+    this.showTrustBrowserModal = false;
+    this.navigateAfterLogin(this.authService.getCurrentUser());
+  }
+
+  confirmTrustBrowser(): void {
+    this.trustBrowserSaving = true;
+    this.trustBrowserError = null;
+    this.authService.registerTrustedDevice().subscribe({
+      next: () => {
+        this.trustBrowserSaving = false;
+        this.showTrustBrowserModal = false;
+        this.navigateAfterLogin(this.authService.getCurrentUser());
+      },
+      error: () => {
+        this.trustBrowserSaving = false;
+        this.trustBrowserError = 'PANEL.auth.trust_browser_error';
       },
     });
   }
