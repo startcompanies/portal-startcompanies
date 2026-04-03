@@ -1,10 +1,8 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { filter, Subscription, combineLatest, map, startWith } from 'rxjs';
+import { filter, Subscription, take } from 'rxjs';
 import { ImagePreloaderComponent } from '../shared/components/image-preloader/image-preloader.component';
 import { WhatsappFloatComponent } from '../shared/components/whatsapp-float/whatsapp-float.component';
-import { LanguageService } from '../shared/services/language.service';
 import { CarouselSwipeService } from '../shared/services/carousel-swipe.service';
 import { FacebookPixelService } from '../shared/services/facebook-pixel.service';
 import { AuthService } from '../features/panel/services/auth.service';
@@ -35,7 +33,7 @@ function isPanelUrl(url: string): boolean {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ImagePreloaderComponent, WhatsappFloatComponent, AsyncPipe],
+  imports: [RouterOutlet, ImagePreloaderComponent, WhatsappFloatComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -43,44 +41,32 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'portal-startcompanies';
   private routerSubscription: Subscription | null = null;
 
-  private readonly languageService = inject(LanguageService);
   private readonly carouselSwipeService = inject(CarouselSwipeService);
   private readonly router = inject(Router);
   private readonly facebookPixelService = inject(FacebookPixelService);
   private readonly authService = inject(AuthService);
   private readonly browser = inject(BrowserService);
 
-  /**
-   * Primer valor "¿estamos en /panel?" antes del primer NavigationEnd.
-   * En F5, `router.url` a veces aún no coincide con la URL real; usamos `location.pathname` en browser.
-   */
-  private initialIsPanelPath(): boolean {
-    const win = this.browser.window;
-    if (win?.location?.pathname) {
-      const path = win.location.pathname.split('?')[0] || '';
-      if (path && path !== '/') {
-        return isPanelUrl(path);
-      }
-    }
-    return isPanelUrl(this.router.url.split('?')[0] ?? '');
-  }
-
-  /** Overlay sobre el outlet: /panel y aún no hay authReady (primera /auth/me). */
-  readonly panelAuthSplash$ = combineLatest([
-    this.authService.authReady$,
-    this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
-      map((e) => isPanelUrl(e.urlAfterRedirects?.split('?')[0] ?? '')),
-      startWith(this.initialIsPanelPath()),
-    ),
-  ]).pipe(map(([ready, panel]) => panel && !ready));
-
-  get initialTranslationsReady$() {
-    return this.languageService.initialTranslationsReady$;
-  }
-
   ngOnInit(): void {
     this.carouselSwipeService.init();
+
+    /**
+     * Elimina el #app-boot-splash del index.html cuando /auth/me resuelve.
+     * El splash solo está visible en rutas /panel (el script inline del index.html
+     * lo activa condicionalmente según location.pathname al parsear el HTML).
+     */
+    this.authService.authReady$.pipe(
+      filter(Boolean),
+      take(1),
+    ).subscribe(() => {
+      const el = this.browser.window?.document?.getElementById('app-boot-splash');
+      if (el) {
+        el.style.transition = 'opacity .2s ease';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 220);
+      }
+    });
+
     this.routerSubscription = this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd)
     ).subscribe((e: NavigationEnd) => {
