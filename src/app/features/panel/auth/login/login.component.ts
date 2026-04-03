@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { take } from 'rxjs';
 
@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
+    private transloco: TranslocoService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -189,5 +190,14 @@ export class LoginComponent implements OnInit {
 
   get otpCode() {
     return this.otpForm.get('code');
+  }
+
+  /** Textos del modal "confiar navegador" vía servicio (evita claves crudas si el pipe no resuelve dentro del modal). */
+  authTrust(key: 'trust_browser_title' | 'trust_browser_body' | 'trust_browser_yes' | 'trust_browser_no' | 'trust_browser_saving'): string {
+    return this.transloco.translate(`PANEL.auth.${key}`);
+  }
+
+  get trustBrowserErrorTranslated(): string {
+    return this.trustBrowserError ? this.transloco.translate(this.trustBrowserError) : '';
   }
 }

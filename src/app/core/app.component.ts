@@ -8,6 +8,7 @@ import { LanguageService } from '../shared/services/language.service';
 import { CarouselSwipeService } from '../shared/services/carousel-swipe.service';
 import { FacebookPixelService } from '../shared/services/facebook-pixel.service';
 import { AuthService } from '../features/panel/services/auth.service';
+import { BrowserService } from '../shared/services/browser.service';
 
 /** Rutas que son Landing Pages (LP): el pixel lo gestiona cada LP, no el flujo global. */
 const LANDING_PATHS = new Set([
@@ -47,14 +48,30 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly facebookPixelService = inject(FacebookPixelService);
   private readonly authService = inject(AuthService);
+  private readonly browser = inject(BrowserService);
 
-  /** Pantalla completa en /panel hasta resolver la primera /auth/me (evita flash login en F5). */
+  /**
+   * Primer valor "¿estamos en /panel?" antes del primer NavigationEnd.
+   * En F5, `router.url` a veces aún no coincide con la URL real; usamos `location.pathname` en browser.
+   */
+  private initialIsPanelPath(): boolean {
+    const win = this.browser.window;
+    if (win?.location?.pathname) {
+      const path = win.location.pathname.split('?')[0] || '';
+      if (path && path !== '/') {
+        return isPanelUrl(path);
+      }
+    }
+    return isPanelUrl(this.router.url.split('?')[0] ?? '');
+  }
+
+  /** Overlay sobre el outlet: /panel y aún no hay authReady (primera /auth/me). */
   readonly panelAuthSplash$ = combineLatest([
     this.authService.authReady$,
     this.router.events.pipe(
       filter((e): e is NavigationEnd => e instanceof NavigationEnd),
       map((e) => isPanelUrl(e.urlAfterRedirects?.split('?')[0] ?? '')),
-      startWith(isPanelUrl(this.router.url.split('?')[0] ?? '')),
+      startWith(this.initialIsPanelPath()),
     ),
   ]).pipe(map(([ready, panel]) => panel && !ready));
 

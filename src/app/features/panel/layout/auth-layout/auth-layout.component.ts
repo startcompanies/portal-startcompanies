@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { firstValueFrom } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { TranslocoService } from '@jsverse/transloco';
 import { LoginComponent } from '../../auth/login/login.component';
 import { RegisterComponent } from '../../auth/register/register.component';
 import { ResetPasswordComponent } from '../../auth/reset-password/reset-password.component';
@@ -31,7 +34,8 @@ export class AuthLayoutComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private panelLanguage: PanelLanguageService
+    private panelLanguage: PanelLanguageService,
+    private transloco: TranslocoService,
   ) {
     this.router.events.subscribe(() => {
       this.currentRoute = this.router.url;
@@ -40,7 +44,9 @@ export class AuthLayoutComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const lang = this.panelLanguage.getPreferredLang();
     this.panelLanguage.applyStoredLanguage();
+    void firstValueFrom(this.transloco.load(lang).pipe(take(1))).catch(() => {});
   }
 
   get isLogin() {

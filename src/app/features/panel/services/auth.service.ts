@@ -181,7 +181,13 @@ export class AuthService {
         this.currentUserSubject.next(null);
       })
       .finally(() => {
-        this.authReadySubject.next(true);
+        /** Un frame después de resolver sesión: el splash puede pintarse antes de ocultarse (F5 en /panel). */
+        const w = this.browser.window;
+        if (w) {
+          w.requestAnimationFrame(() => this.authReadySubject.next(true));
+        } else {
+          this.authReadySubject.next(true);
+        }
       });
     return this.loadUserPromise;
   }
