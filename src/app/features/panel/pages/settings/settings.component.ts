@@ -6,7 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth.service';
 import { UsersService, User } from '../../services/users.service';
-import { ZohoConfigService, ZohoConfig } from '../../services/zoho-config.service';
+import {
+  ZohoConfigService,
+  ZohoConfig,
+  ZohoConfigDto,
+  UpdateZohoConfigDto,
+} from '../../services/zoho-config.service';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { BrowserService } from '../../../../shared/services/browser.service';
@@ -118,6 +123,48 @@ export class SettingsComponent implements OnInit {
         });
       }
     });
+
+    this.applyZohoCredentialValidators();
+  }
+
+  private applyZohoCredentialValidators(): void {
+    const cid = this.zohoConfigForm.get('client_id');
+    const csec = this.zohoConfigForm.get('client_secret');
+    cid?.setValidators([Validators.required]);
+    if (!this.selectedConfig || !this.selectedConfig.zohoOAuthClientSecretConfigured) {
+      csec?.setValidators([Validators.required]);
+    } else {
+      csec?.setValidators([]);
+    }
+    cid?.updateValueAndValidity({ emitEvent: false });
+    csec?.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private buildZohoUpdatePayload(): UpdateZohoConfigDto {
+    const v = this.zohoConfigForm.getRawValue();
+    const payload: UpdateZohoConfigDto = {
+      org: v.org,
+      service: v.service,
+      region: v.region,
+      scopes: v.scopes,
+      client_id: v.client_id,
+    };
+    if (v.client_secret?.trim()) {
+      payload.client_secret = v.client_secret.trim();
+    }
+    return payload;
+  }
+
+  private buildZohoCreatePayload(): ZohoConfigDto {
+    const v = this.zohoConfigForm.getRawValue();
+    return {
+      org: v.org,
+      service: v.service,
+      region: v.region,
+      scopes: v.scopes,
+      client_id: v.client_id,
+      client_secret: (v.client_secret || '').trim(),
+    };
   }
 
   ngOnInit(): void {
@@ -427,9 +474,10 @@ export class SettingsComponent implements OnInit {
       service: config.service,
       region: config.region,
       scopes: config.scopes,
-      client_id: config.client_id,
-      client_secret: config.client_secret,
+      client_id: config.zohoOAuthClientId,
+      client_secret: '',
     });
+    this.applyZohoCredentialValidators();
   }
 
   async authorizeZoho(): Promise<void> {
@@ -438,25 +486,34 @@ export class SettingsComponent implements OnInit {
       return;
     }
     const formValue = this.zohoConfigForm.value;
+    const secretTrim = (formValue.client_secret || '').trim();
     const needsSave =
       !this.selectedConfig ||
       this.selectedConfig.org !== formValue.org ||
       this.selectedConfig.service !== formValue.service ||
       this.selectedConfig.region !== formValue.region ||
-      this.selectedConfig.client_id !== formValue.client_id ||
-      this.selectedConfig.client_secret !== formValue.client_secret ||
-      this.selectedConfig.scopes !== formValue.scopes;
+      this.selectedConfig.zohoOAuthClientId !== formValue.client_id ||
+      this.selectedConfig.scopes !== formValue.scopes ||
+      secretTrim !== '';
 
     if (needsSave) {
       this.isLoading = true;
       try {
         if (this.selectedConfig) {
-          await firstValueFrom(this.zohoConfigService.updateConfig(this.selectedConfig.id, formValue));
+          const updated = await firstValueFrom(
+            this.zohoConfigService.updateConfig(this.selectedConfig.id, this.buildZohoUpdatePayload()),
+          );
+          this.selectedConfig = updated;
+          this.zohoConfigs = this.zohoConfigs.map((c) => (c.id === updated.id ? updated : c));
         } else {
-          const created = await firstValueFrom(this.zohoConfigService.createConfig(formValue));
+          const created = await firstValueFrom(
+            this.zohoConfigService.createConfig(this.buildZohoCreatePayload()),
+          );
           this.selectedConfig = created;
           this.zohoConfigs.push(created);
         }
+        this.zohoConfigForm.patchValue({ client_secret: '' });
+        this.applyZohoCredentialValidators();
         this.isLoading = false;
       } catch (error: any) {
         this.isLoading = false;
@@ -477,7 +534,7 @@ export class SettingsComponent implements OnInit {
           formValue.service,
           formValue.region,
           formValue.client_id,
-          formValue.client_secret,
+          secretTrim || undefined,
           formValue.scopes,
         ),
       );
@@ -535,12 +592,14 @@ export class SettingsComponent implements OnInit {
     }
     this.isLoading = true;
     this.saveError = null;
-    const formValue = this.zohoConfigForm.value;
 
     if (this.selectedConfig) {
-      this.zohoConfigService.updateConfig(this.selectedConfig.id, formValue).subscribe({
+      this.zohoConfigService.updateConfig(this.selectedConfig.id, this.buildZohoUpdatePayload()).subscribe({
         next: (updated) => {
           this.selectedConfig = updated;
+          this.zohoConfigs = this.zohoConfigs.map((c) => (c.id === updated.id ? updated : c));
+          this.zohoConfigForm.patchValue({ client_secret: '' });
+          this.applyZohoCredentialValidators();
           this.isLoading = false;
           this.saveSuccess = true;
           setTimeout(() => (this.saveSuccess = false), 3000);
@@ -552,10 +611,12 @@ export class SettingsComponent implements OnInit {
         },
       });
     } else {
-      this.zohoConfigService.createConfig(formValue).subscribe({
+      this.zohoConfigService.createConfig(this.buildZohoCreatePayload()).subscribe({
         next: (created) => {
           this.selectedConfig = created;
           this.zohoConfigs.push(created);
+          this.zohoConfigForm.patchValue({ client_secret: '' });
+          this.applyZohoCredentialValidators();
           this.isLoading = false;
           this.saveSuccess = true;
           setTimeout(() => (this.saveSuccess = false), 3000);
@@ -592,6 +653,7 @@ export class SettingsComponent implements OnInit {
             client_id: '',
             client_secret: '',
           });
+          this.applyZohoCredentialValidators();
         }
         this.isLoading = false;
         this.saveSuccess = true;
@@ -615,5 +677,6 @@ export class SettingsComponent implements OnInit {
       client_id: '',
       client_secret: '',
     });
+    this.applyZohoCredentialValidators();
   }
 }
