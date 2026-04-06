@@ -159,6 +159,11 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     };
   }
 
+  /** True cuando el flujo corre bajo rutas /panel/* (no mostrar "Ir al Panel" en la vista de éxito). */
+  isInsidePanelShell(): boolean {
+    return this.router.url.startsWith('/panel');
+  }
+
   /**
    * Navega al panel del usuario
    */

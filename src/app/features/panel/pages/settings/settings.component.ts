@@ -53,14 +53,6 @@ export class SettingsComponent implements OnInit {
   emailChangePending = false;
   emailChangeError: string | null = null;
 
-  readonly timezoneOptions: { value: string; labelKey: string }[] = [
-    { value: 'America/Mexico_City', labelKey: 'PANEL.settings_page.timezones.america_mexico_city' },
-    { value: 'America/New_York', labelKey: 'PANEL.settings_page.timezones.america_new_york' },
-    { value: 'America/Los_Angeles', labelKey: 'PANEL.settings_page.timezones.america_los_angeles' },
-    { value: 'America/Chicago', labelKey: 'PANEL.settings_page.timezones.america_chicago' },
-    { value: 'UTC', labelKey: 'PANEL.settings_page.timezones.utc' },
-  ];
-
   private readonly authChangePasswordUrl = `${environment.apiUrl || 'http://localhost:3000'}/auth/change-password`;
 
   constructor(

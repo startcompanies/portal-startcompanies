@@ -576,33 +576,15 @@ export const routes: Routes = [
           }
         }
       },
+      // Historial de servicios oculto temporalmente: redirige al dashboard (componente conservado por si se reactiva).
       {
         path: 'service-history',
-        canActivate: [authGuard, roleGuard(['client', 'partner'])],
-        loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
-        children: [
-          {
-            path: '',
-            loadComponent: () =>
-              import('../features/panel/pages/service-history/service-history.component').then(
-                (m) => m.ServiceHistoryComponent,
-              ),
-            data: {
-              panelTitleKey: 'PANEL.service_history_page.title',
-              panelSubtitleKey: 'PANEL.service_history_page.subtitle',
-            },
-          },
-        ],
-        data: {
-          seo: {
-            title: 'Historial de servicios - Panel Start Companies',
-            description: 'Historial de servicios sincronizados desde Zoho',
-          },
-        },
+        pathMatch: 'full',
+        redirectTo: 'client-dashboard',
       },
       {
         path: 'lili-request',
-        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        canActivate: [authGuard, roleGuard(['client'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {

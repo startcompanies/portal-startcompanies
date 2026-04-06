@@ -136,27 +136,11 @@
 
       <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
         <div class="row g-3">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <label class="form-label">{{ 'PANEL.settings_page.language' | transloco }}</label>
             <select class="form-select" formControlName="language">
               <option value="es">{{ 'PANEL.language_modal.spanish' | transloco }}</option>
               <option value="en">{{ 'PANEL.language_modal.english' | transloco }}</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.theme' | transloco }}</label>
-            <select class="form-select" formControlName="theme">
-              <option value="light">{{ 'PANEL.settings_page.preferences_section.theme_light' | transloco }}</option>
-              <option value="dark">{{ 'PANEL.settings_page.preferences_section.theme_dark' | transloco }}</option>
-              <option value="auto">{{ 'PANEL.settings_page.preferences_section.theme_auto' | transloco }}</option>
-            </select>
-          </div>
-          <div class="col-md-12">
-            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.timezone' | transloco }}</label>
-            <select class="form-select" formControlName="timezone">
-              <option *ngFor="let tz of timezoneOptions" [value]="tz.value">
-                {{ tz.labelKey | transloco }}
-              </option>
             </select>
           </div>
         </div>
@@ -178,22 +162,6 @@
               <input class="form-check-input" type="checkbox" formControlName="push" id="notifPush" />
               <label class="form-check-label" for="notifPush">
                 {{ 'PANEL.settings_page.preferences_section.notif_push' | transloco }}
-              </label>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requestUpdates" id="notifRequest" />
-              <label class="form-check-label" for="notifRequest">
-                {{ 'PANEL.settings_page.preferences_section.notif_request_updates' | transloco }}
-              </label>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="documentUploads" id="notifDocs" />
-              <label class="form-check-label" for="notifDocs">
-                {{ 'PANEL.settings_page.preferences_section.notif_doc_uploads' | transloco }}
               </label>
             </div>
           </div>

@@ -37,16 +37,18 @@ export class PartnersComponent implements OnInit {
   showEditPartnerModal = false;
   editingPartner: Partner | null = null;
   newPartner = {
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     phone: '',
-    company: ''
+    company: '',
   };
   editPartner = {
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     company: '',
-    phone: ''
+    phone: '',
   };
   isCreating = false;
   isUpdating = false;
@@ -147,13 +149,13 @@ export class PartnersComponent implements OnInit {
 
   openNewPartnerModal(): void {
     this.showNewPartnerModal = true;
-    this.newPartner = { name: '', email: '', phone: '', company: '' };
+    this.newPartner = { firstName: '', lastName: '', email: '', phone: '', company: '' };
     this.createError = null;
   }
 
   closeNewPartnerModal(): void {
     this.showNewPartnerModal = false;
-    this.newPartner = { name: '', email: '', phone: '', company: '' };
+    this.newPartner = { firstName: '', lastName: '', email: '', phone: '', company: '' };
     this.createError = null;
   }
 
@@ -161,15 +163,18 @@ export class PartnersComponent implements OnInit {
   get canSubmitNewPartner(): boolean {
     const phone = (this.newPartner.phone || '').trim();
     return (
-      !!this.newPartner.name?.trim() &&
+      !!this.newPartner.firstName?.trim() &&
+      !!this.newPartner.lastName?.trim() &&
       !!this.newPartner.email?.trim() &&
       E164_PHONE_REGEX.test(phone)
     );
   }
 
   createPartner(): void {
-    if (!this.newPartner.name?.trim() || !this.newPartner.email?.trim()) {
-      this.createError = 'Por favor completa todos los campos requeridos';
+    const firstName = this.newPartner.firstName?.trim() ?? '';
+    const lastName = this.newPartner.lastName?.trim() ?? '';
+    if (!firstName || !lastName || !this.newPartner.email?.trim()) {
+      this.createError = 'Por favor completa nombre, apellido y correo.';
       return;
     }
 
@@ -183,14 +188,13 @@ export class PartnersComponent implements OnInit {
     this.isCreating = true;
     this.createError = null;
 
-    const nameParts = this.newPartner.name.split(' ');
     // No enviar password - se generará automáticamente y se enviará por email
     const createUserDto: CreateUserDto = {
       username: this.buildUsernameFromEmail(this.newPartner.email.trim()),
       email: this.newPartner.email.trim(),
       password: '', // Se generará automáticamente en el backend
-      first_name: nameParts[0] || '',
-      last_name: nameParts.slice(1).join(' ') || '',
+      first_name: firstName,
+      last_name: lastName,
       type: 'partner',
       phone,
       company: this.newPartner.company || undefined
@@ -253,10 +257,11 @@ export class PartnersComponent implements OnInit {
   openEditPartnerModal(partner: Partner): void {
     this.editingPartner = partner;
     this.editPartner = {
-      name: `${partner.first_name || ''} ${partner.last_name || ''}`.trim() || partner.username,
+      firstName: partner.first_name || '',
+      lastName: partner.last_name || '',
       email: partner.email,
       company: partner.company || '',
-      phone: partner.phone || ''
+      phone: partner.phone || '',
     };
     this.showEditPartnerModal = true;
     this.updateError = null;
@@ -265,23 +270,32 @@ export class PartnersComponent implements OnInit {
   closeEditPartnerModal(): void {
     this.showEditPartnerModal = false;
     this.editingPartner = null;
-    this.editPartner = { name: '', email: '', company: '', phone: '' };
+    this.editPartner = { firstName: '', lastName: '', email: '', company: '', phone: '' };
     this.updateError = null;
   }
 
+  get canSubmitEditPartner(): boolean {
+    return (
+      !!this.editPartner.firstName?.trim() &&
+      !!this.editPartner.lastName?.trim() &&
+      !!this.editPartner.email?.trim()
+    );
+  }
+
   updatePartner(): void {
-    if (!this.editingPartner || !this.editPartner.name || !this.editPartner.email) {
-      this.updateError = 'Por favor completa todos los campos requeridos';
+    if (!this.editingPartner || !this.canSubmitEditPartner) {
+      this.updateError = 'Por favor completa nombre, apellido y correo.';
       return;
     }
 
     this.isUpdating = true;
     this.updateError = null;
 
-    const nameParts = this.editPartner.name.split(' ');
+    const firstName = this.editPartner.firstName.trim();
+    const lastName = this.editPartner.lastName.trim();
     const updateData = {
-      first_name: nameParts[0] || '',
-      last_name: nameParts.slice(1).join(' ') || '',
+      first_name: firstName,
+      last_name: lastName,
       phone: this.editPartner.phone || undefined,
       company: this.editPartner.company || undefined
     };
