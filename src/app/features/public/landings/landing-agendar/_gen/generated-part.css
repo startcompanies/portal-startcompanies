@@ -23,11 +23,14 @@ app-landing-agendar {
   background: var(--dark) !important;
 }
 
-/* Headings LP: solo márgenes (evitar font-size unset !important que pisa títulos con estilos propios) */
+/* Reset Bootstrap headings: restaurar valores del HTML original */
 .lp-campaign h1, .lp-campaign h2, .lp-campaign h3,
 .lp-campaign h4, .lp-campaign h5, .lp-campaign h6 {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  font-size: unset !important;
+  font-weight: unset !important;
+  line-height: unset !important;
 }
 
 /* Reset Bootstrap .navbar */
@@ -191,85 +194,44 @@ app-landing-agendar {
     .lp-campaign .tp-info { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); white-space: nowrap; }
     .lp-campaign .tp-info strong { color: #fff; }
 
-    /* Gold CTA — borde eléctrico (mismos gpulse/gspin que landing-presentacion / META) */
+    /* Gold CTA — fixed size, never stretches */
     .lp-campaign .btn-gold-wrap {
       position: relative;
       display: inline-flex;
       flex-shrink: 0;
-      border-radius: 14px;
-      padding: 2px;
-      overflow: hidden;
-      animation: gpulse 2.2s ease-in-out infinite;
+      border-radius: 10px; padding: 2px; overflow: hidden;
+      animation: gold-pulse 2.2s ease-in-out infinite;
     }
-    @keyframes gpulse {
-      0%, 100% {
-        box-shadow: 0 0 10px rgba(255, 215, 0, 0.45), 0 0 22px rgba(255, 165, 0, 0.2);
-      }
-      50% {
-        box-shadow: 0 0 22px rgba(255, 215, 0, 0.85), 0 0 44px rgba(255, 165, 0, 0.4);
-      }
+    @keyframes gold-pulse {
+      0%,100% { box-shadow: 0 0 10px rgba(255,215,0,0.4), 0 0 24px rgba(255,165,0,0.2); }
+      50%      { box-shadow: 0 0 22px rgba(255,215,0,0.8), 0 0 44px rgba(255,165,0,0.4); }
     }
     .lp-campaign .btn-gold-wrap::before {
-      content: '';
-      position: absolute;
-      aspect-ratio: 1/1;
-      width: 260%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(0deg);
+      content: ''; position: absolute; aspect-ratio: 1; width: 260%;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%) rotate(0deg);
       background: conic-gradient(
         from 0deg,
-        transparent 0deg,
-        #b8860b 20deg,
-        #ffd700 55deg,
-        #fffacd 80deg,
-        #ffd700 105deg,
-        #ffa500 135deg,
-        transparent 165deg,
-        transparent 195deg,
-        #b8860b 215deg,
-        #ffd700 250deg,
-        #fffacd 275deg,
-        #ffd700 300deg,
-        #ffa500 330deg,
-        transparent 355deg
+        transparent 0deg, #B8860B 20deg, #FFD700 55deg, #FFFACD 80deg,
+        #FFD700 105deg, #FFA500 135deg, transparent 165deg,
+        transparent 195deg, #B8860B 215deg, #FFD700 250deg, #FFFACD 275deg,
+        #FFD700 300deg, #FFA500 330deg, transparent 355deg
       );
-      animation: gspin 2s linear infinite;
-      z-index: 0;
+      animation: gold-spin 2s linear infinite; z-index: 0;
     }
-    @keyframes gspin {
-      to {
-        transform: translate(-50%, -50%) rotate(360deg);
-      }
-    }
+    @keyframes gold-spin { to { transform: translate(-50%,-50%) rotate(360deg); } }
     .lp-campaign .btn-gold {
-      position: relative;
-      z-index: 1;
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--dark);
-      color: var(--gold);
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 9px 18px;
-      border: none;
-      border-radius: 12px;
-      text-decoration: none;
-      white-space: nowrap;
+      position: relative; z-index: 1;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--dark); color: var(--gold);
+      font-size: 12.5px; font-weight: 700;
+      padding: 9px 18px; border-radius: 8px;
+      text-decoration: none; white-space: nowrap;
       letter-spacing: 0.02em;
-      transition: background 0.2s, transform 0.2s;
+      transition: background 0.2s;
     }
-    .lp-campaign .btn-gold:hover {
-      background: var(--dark3);
-      transform: translateY(-1px);
-    }
-    .lp-campaign .btn-gold svg {
-      flex-shrink: 0;
-      width: 16px;
-      height: 16px;
-      stroke: currentColor;
-    }
+    .lp-campaign .btn-gold:hover { background: var(--dark3); }
+    .lp-campaign .btn-gold svg { flex-shrink: 0; width: 13px; height: 13px; }
 
     /* ─────────────────────────────────────────
        HERO
@@ -860,7 +822,7 @@ app-landing-agendar {
       color: var(--gold) !important;
       font-size: 15px !important;
       padding: 14px 32px !important;
-      border-radius: 12px !important;
+      border-radius: 10px !important;
       letter-spacing: 0.02em;
       box-shadow: 0 4px 24px rgba(0,106,254,0.5);
     }

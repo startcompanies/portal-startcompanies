@@ -65,7 +65,6 @@ app-landing-agendar {
 .lp-campaign .nav-logo svg { flex-shrink:0; }
 .lp-campaign .nav-logo-txt { font-size:14px; font-weight:700; color:var(--white); letter-spacing:-0.01em; }
 .lp-campaign .nav-logo-txt span { color:var(--cyan); }
-/* Navbar: CTA compacto azul (no es el CTA principal dorado del hero) */
 .lp-campaign .nav-cta { background:linear-gradient(135deg,var(--blue),#0052cc); color:var(--white); border:none; border-radius:8px; padding:9px 16px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:none; font-family:inherit; letter-spacing:0.01em; transition:opacity 0.2s; }
 .lp-campaign .nav-cta:hover { opacity:0.9; }
 
@@ -108,7 +107,7 @@ app-landing-agendar {
 }
 .lp-campaign .vsl-label { font-size:11px; font-weight:600; color:var(--muted); text-align:center; margin-top:12px; letter-spacing:0.06em; }
 
-/* ═══ GOLD BUTTON — borde eléctrico (igual que presentacion-new-META.html) ═══ */
+/* ═══ GOLD BUTTON — borde eléctrico (igual landing-presentacion / META) ═══ */
 .lp-campaign .gold-wrap {
   position: relative;
   display: flex;
@@ -224,7 +223,7 @@ app-landing-agendar {
 .lp-campaign details[open] .faq-chevron { transform:rotate(180deg); background:rgba(0,106,254,0.2); }
 .lp-campaign .faq-ans { font-size:13px; color:rgba(255,255,255,0.52); line-height:1.7; padding:0 0 22px; }
 .lp-campaign .faq-garantia summary.faq-q { color:#fff; }
-.lp-campaign .garantia-card { display:flex; gap:14px; align-items:flex-start; background:linear-gradient(135deg,rgba(0,106,254,0.1),rgba(0,22,39,0.5)); border:1px solid rgba(0,106,254,0.28); border-radius:12px; padding:16px; margin-bottom:8px; }
+.lp-campaign .garantia-card { display:flex; gap:14px; align-items:flex-start; background:linear-gradient(135deg,rgba(0,106,254,0.1),rgba(0,22,39,0.5)); border:1px solid rgba(0,106,254,0.28); border-radius:12px; padding:16px; margin-bottom:12px; }
 .lp-campaign .garantia-icon { font-size:26px; flex-shrink:0; line-height:1; margin-top:2px; }
 .lp-campaign .garantia-body { flex:1; min-width:0; }
 .lp-campaign .garantia-title { display:block; font-size:14px; font-weight:700; color:#fff; margin-bottom:6px; }

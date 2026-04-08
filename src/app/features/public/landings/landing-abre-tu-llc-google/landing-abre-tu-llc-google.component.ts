@@ -12,13 +12,13 @@ import { LandingStaticLpBootstrapService } from '../../../../shared/services/lan
 import { BrowserService } from '../../../../shared/services/browser.service';
 
 @Component({
-  selector: 'app-landing-asesoria-llc',
+  selector: 'app-landing-abre-tu-llc-google',
   standalone: true,
-  templateUrl: './landing-asesoria-llc.component.html',
-  styleUrl: './landing-asesoria-llc.component.css',
+  templateUrl: './landing-abre-tu-llc-google.component.html',
+  styleUrl: './landing-abre-tu-llc-google.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class LandingAsesoriaLlcComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LandingAbreTuLlcGoogleComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('root', { static: false }) rootRef!: ElementRef<HTMLElement>;
 
   constructor(
@@ -32,7 +32,7 @@ export class LandingAsesoriaLlcComponent implements OnInit, AfterViewInit, OnDes
       document.body.classList.add('lp-campaign-page');
     }
     this.facebookPixelService.initializePixel('llc');
-    this.facebookPixelService.trackViewContent('Asesoría LLC', 'LLC Services');
+    this.facebookPixelService.trackViewContent('Abre tu LLC Google', 'LLC Services');
   }
 
   ngOnDestroy(): void {
