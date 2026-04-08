@@ -5,10 +5,17 @@ import { BrowserService } from './browser.service';
  * Carga Wistia web components, embeds y scripts de interacción para landings estáticas (HTML portado).
  * Evita duplicar player.js / embeds al navegar en SPA.
  */
+type CalGlobalFn = (...args: unknown[]) => void;
+
+/** Cal global tras cargar embed.js (index.html): stub + opcionalmente `ns` por namespace. */
+type CalWithNs = CalGlobalFn & { ns?: Record<string, CalGlobalFn> };
+
 @Injectable({ providedIn: 'root' })
 export class LandingStaticLpBootstrapService {
   private wistiaPlayerPromise: Promise<void> | null = null;
   private readonly embedScriptsLoaded = new Set<string>();
+  /** Evita registrar dos veces el mismo listener de Cal si `setupCampaignLp` se repite sobre el mismo host. */
+  private readonly calDataLinkWiredHosts = new WeakSet<HTMLElement>();
 
   constructor(private browser: BrowserService) {}
 
@@ -24,24 +31,81 @@ export class LandingStaticLpBootstrapService {
       this.loadWistiaEmbedsIn(host);
     });
 
-    this.injectCalCampaignBootstrap();
+    /**
+     * Cal.com en esta app (coherente con HTML estático y con otras vistas):
+     * - `index.html`: carga `embed.js` + `Cal("init", "agenda-organica", …)` + `Cal("init", { origin })` (blog, etc.).
+     * - `initAgendaCalEmbed()`: embed inline en contenedor (p. ej. landing-agendar).
+     * - Aquí: popup en LPs campaña; el DOM de la ruta Angular se monta después del embed, así que enlazamos
+     *   clics a `modal` (y namespace si aplica, como en `blog-post-hero`).
+     */
+    this.wireCalDataLinkClicks(host);
 
     this.attachCampaignInteractions(host);
   }
 
-  /** Cal.com como en el HTML estático (data-cal-link en CTAs). */
-  private injectCalCampaignBootstrap(): void {
-    const doc = this.browser.document;
-    if (!doc || doc.getElementById('cal-campaign-bootstrap')) {
+  private wireCalDataLinkClicks(host: HTMLElement): void {
+    const win = this.browser.window;
+    if (!win) {
       return;
     }
-    const s = doc.createElement('script');
-    s.id = 'cal-campaign-bootstrap';
-    s.type = 'text/javascript';
-    s.text =
-      '(function(C,A,L){let p=function(a,ar){a.q.push(ar)};let d=C.document;C.Cal=C.Cal||function(){let cal=C.Cal;let ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];d.head.appendChild(d.createElement("script")).src=A;cal.loaded=true}if(ar[0]===L){const api=function(){p(api,arguments)};const namespace=ar[1];api.q=[];if(typeof namespace==="string"){cal.ns[namespace]=api;p(cal,["initNamespace",namespace])}else p(cal,ar);return}p(cal,ar)}})(window,"https://app.cal.com/embed/embed.js","init");\n' +
-      'Cal("init",{origin:"https://cal.com"});';
-    doc.head.appendChild(s);
+    if (this.calDataLinkWiredHosts.has(host)) {
+      return;
+    }
+    this.calDataLinkWiredHosts.add(host);
+
+    /**
+     * El embed registra `document.addEventListener("click", …)` en fase **bubble** y abre modal al
+     * detectar `data-cal-link`. Nosotros también llamamos a `Cal('modal')` → dos modales apilados.
+     * Listener en **capture** en el host + `stopPropagation`: el evento no llega al bubble de
+     * `document`, Cal no duplica; solo queda nuestro modal.
+     */
+    host.addEventListener(
+      'click',
+      (ev: MouseEvent) => {
+        const t = ev.target;
+        if (!(t instanceof Element)) {
+          return;
+        }
+        const trigger = t.closest('[data-cal-link]');
+        if (!trigger || !host.contains(trigger)) {
+          return;
+        }
+        ev.preventDefault();
+        ev.stopPropagation();
+
+        const calLink = trigger.getAttribute('data-cal-link');
+        if (!calLink) {
+          return;
+        }
+        let calOrigin =
+          trigger.getAttribute('data-cal-origin')?.trim() || 'https://app.cal.com';
+        if (calOrigin === 'https://cal.com') {
+          calOrigin = 'https://app.cal.com';
+        }
+        let config: Record<string, unknown> = { layout: 'month_view', theme: 'light' };
+        const rawConfig = trigger.getAttribute('data-cal-config');
+        if (rawConfig) {
+          try {
+            config = { ...config, ...JSON.parse(rawConfig) };
+          } catch {
+            /* ignore invalid JSON */
+          }
+        }
+
+        const modalPayload = { calLink, calOrigin, config };
+        const CalRoot = (win as unknown as { Cal?: CalWithNs }).Cal;
+        if (typeof CalRoot !== 'function') {
+          return;
+        }
+        const ns = trigger.getAttribute('data-cal-namespace')?.trim();
+        if (ns && CalRoot.ns?.[ns]) {
+          CalRoot.ns[ns]('modal', modalPayload);
+        } else {
+          CalRoot('modal', modalPayload);
+        }
+      },
+      true
+    );
   }
 
   private ensureWistiaPlayerJs(): Promise<void> {

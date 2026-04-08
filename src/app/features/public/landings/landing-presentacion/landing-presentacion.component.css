@@ -83,15 +83,6 @@ app-landing-agendar {
 
 .lp-campaign h1 { font-size:clamp(1.75rem, 5.5vw, 2.8rem); font-weight:800; line-height:1.08; letter-spacing:-0.03em; margin-bottom:12px; }
 .lp-campaign h1 .hl { background:linear-gradient(135deg, #00E5FF, #0088FF); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.lp-campaign h1.hero-title-tax { line-height:1.15; text-align:center; max-width:100%; padding:0 8px; margin-left:auto; margin-right:auto; margin-bottom:14px; }
-.lp-campaign h1.hero-title-tax .hl {
-  color: #ffd700;
-  background: none;
-  -webkit-background-clip: unset;
-  -webkit-text-fill-color: #ffd700;
-  background-clip: unset;
-  text-shadow: 0 0 28px rgba(255,215,0,0.4), 0 0 48px rgba(255,200,0,0.15);
-}
 .lp-campaign .hero-sub { font-size:15px; color:var(--muted); line-height:1.65; max-width:420px; margin:0 auto 18px; }
 
 /* Hero layout — video + CTA in fold */
@@ -390,7 +381,6 @@ app-landing-agendar {
   /* Hero más compacto en mobile */
   .lp-campaign .hero { padding:74px 16px 32px; }
   .lp-campaign h1 { font-size:clamp(1.55rem,8vw,2.2rem); line-height:1.1; }
-  .lp-campaign h1.hero-title-tax { line-height:1.18; }
   .lp-campaign .hero-sub { font-size:14px; }
 
   /* Reviews section head apilada */
