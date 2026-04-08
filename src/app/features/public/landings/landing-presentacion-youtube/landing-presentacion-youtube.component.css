@@ -60,16 +60,17 @@ app-landing-evaluar-caso, app-landing-agendar {
 .lp-campaign { font-family: 'DM Sans', system-ui, sans-serif; background: var(--dark); color: var(--white); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 
 /* ═══ NAVBAR ═══ */
-.lp-campaign .navbar { position:fixed; top:0; left:0; right:0; z-index:100; padding:8px 16px; display:flex; align-items:center; justify-content:space-between; background:rgba(0,22,39,0.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(0,106,254,0.12); }
-.lp-campaign .nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; }
+.lp-campaign .navbar { position:fixed; top:0; left:0; right:0; z-index:100; padding:12px clamp(18px, 4vw, 36px); display:flex; align-items:center; justify-content:space-between; gap:clamp(16px, 4vw, 36px); min-height:56px; box-sizing:border-box; background:rgba(0,22,39,0.92); backdrop-filter:blur(14px); border-bottom:1px solid rgba(0,106,254,0.12); }
+.lp-campaign .nav-logo { display:flex; align-items:center; gap:9px; text-decoration:none; flex-shrink:0; min-width:0; }
+.lp-campaign .nav-logo img { height:36px !important; width:auto !important; display:block; }
 .lp-campaign .nav-logo svg { flex-shrink:0; }
 .lp-campaign .nav-logo-txt { font-size:14px; font-weight:700; color:var(--white); letter-spacing:-0.01em; }
 .lp-campaign .nav-logo-txt span { color:var(--cyan); }
-.lp-campaign .nav-cta { background:linear-gradient(135deg,var(--blue),#0052cc); color:var(--white); border:none; border-radius:8px; padding:9px 16px; font-size:12px; font-weight:700; cursor:pointer; text-decoration:none; font-family:inherit; letter-spacing:0.01em; transition:opacity 0.2s; }
+.lp-campaign .nav-cta { background:linear-gradient(135deg,var(--blue),#0052cc); color:var(--white); border:none; border-radius:10px; padding:11px 20px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; font-family:inherit; letter-spacing:0.01em; transition:opacity 0.2s; flex-shrink:0; white-space:nowrap; }
 .lp-campaign .nav-cta:hover { opacity:0.9; }
 
 /* ═══ HERO ═══ */
-.lp-campaign .hero { padding:36px 20px 20px; text-align:center; position:relative; overflow:hidden; }
+.lp-campaign .hero { padding:44px 20px 20px; text-align:center; position:relative; overflow:hidden; }
 .lp-campaign .hero::before { content:''; position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:600px; height:500px; background:radial-gradient(ellipse, rgba(0,106,254,0.28) 0%, transparent 70%); pointer-events:none; }
 
 /* Trustpilot badge — brochure style */
@@ -378,7 +379,7 @@ app-landing-evaluar-caso, app-landing-agendar {
 /* ═══ MOBILE PREMIUM ═══ */
 @media (max-width:520px) {
   /* Hero más compacto en mobile */
-  .lp-campaign .hero { padding:74px 16px 32px; }
+  .lp-campaign .hero { padding:82px 16px 32px; }
   .lp-campaign h1 { font-size:clamp(1.55rem,8vw,2.2rem); line-height:1.1; }
   .lp-campaign .hero-sub { font-size:14px; }
 

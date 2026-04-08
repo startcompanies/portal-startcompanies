@@ -1,6 +1,6 @@
 /* Hero sin VSL: más compacto (alineado a campaña Meta / evaluar-caso) */
 .lp-campaign.evaluar-caso-lp .hero {
-  padding: 32px 20px 24px;
+  padding: 40px 20px 24px;
 }
 
 .lp-campaign.evaluar-caso-lp .hero-sub {
@@ -13,6 +13,6 @@
 
 @media (min-width: 769px) {
   .lp-campaign.evaluar-caso-lp .hero {
-    padding: 64px 16px 28px;
+    padding: 72px 16px 28px;
   }
 }
