@@ -250,7 +250,7 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-abre-tu-llc/landing-abre-tu-llc.component').then(m => m.LandingAbreTuLlcComponent)
       },
       {
-        path: 'abre-tu-llc-google',
+        path: 'abrir-llc-estados-unidos',
         loadComponent: () => import('../features/public/landings/landing-abre-tu-llc-google/landing-abre-tu-llc-google.component').then(m => m.LandingAbreTuLlcGoogleComponent)
       },
       {
@@ -258,7 +258,7 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
       },
       {
-        path: 'presentacion-youtube',
+        path: 'crear-llc-usa',
         loadComponent: () => import('../features/public/landings/landing-presentacion-youtube/landing-presentacion-youtube.component').then(m => m.LandingPresentacionYoutubeComponent)
       },
       // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay

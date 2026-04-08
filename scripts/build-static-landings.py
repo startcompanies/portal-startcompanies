@@ -206,12 +206,10 @@ app-landing-agendar {
   margin-bottom: 0 !important;
 }
 
-/* Reset Bootstrap .navbar */
+/* Reset Bootstrap .navbar — sin padding/background !important (los define el bloque NAVBAR) */
 .lp-campaign .navbar {
-  padding: 0 !important;
   flex-wrap: nowrap !important;
   border: none !important;
-  background: transparent !important;
 }
 
 /* Reset Bootstrap links (excluir CTAs con estilos propios) */
