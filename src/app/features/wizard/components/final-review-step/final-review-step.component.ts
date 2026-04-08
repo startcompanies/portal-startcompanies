@@ -19,6 +19,12 @@ import { WizardApiService } from '../../services/wizard-api.service';
 import { merge, Subscription } from 'rxjs';
 import { SignaturePadComponent } from '../../../../shared/components/signature-pad/signature-pad.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import {
+  APERTURA_LLC_REVIEW_KEYS,
+  CUENTA_BANCARIA_REVIEW_KEYS,
+  pickServiceDataForReview,
+  RENOVACION_LLC_REVIEW_KEYS,
+} from '../../../../shared/constants/service-form-review-keys';
 
 /**
  * Componente reutilizable para el paso de revisión final
@@ -260,41 +266,53 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
       this.serviceData = allData[`step${rl.infoStep}`] || allData.step4 || {};
       this.members = this.serviceData.owners || [];
     } else if (this.serviceType === 'cuenta-bancaria') {
+      // No usar step2 como estado/plan LLC (en flujo con pago suele ser el paso de pago con `state`).
+      this.statePlanData = {};
+
       // Para cuenta bancaria, los datos pueden estar en step2 o step3 dependiendo del flujo
       // El stepNumber del componente de información es: withPayment ? 3 : 2
       // Primero intentar obtener desde el formulario registrado (step 2 o 3)
       let formData: any = null;
-      
+
       // Intentar primero en step 2 y 3 (los más comunes)
       for (const stepNum of [2, 3]) {
         const form = this.wizardStateService.getForm(stepNum);
         if (form) {
-          const formValue = form.value;
+          const formValue = form.getRawValue();
           // Verificar si este formulario tiene datos de cuenta bancaria
-          if (formValue.businessType || formValue.legalBusinessName || formValue.validatorFirstName || formValue.owners || 
-              formValue.registeredAgentStreet || formValue.ownerPersonalStreet) {
+          if (
+            formValue.businessType ||
+            formValue.legalBusinessName ||
+            formValue.validatorFirstName ||
+            formValue.owners ||
+            formValue.registeredAgentStreet ||
+            formValue.ownerPersonalStreet
+          ) {
             formData = formValue;
-            console.log(`[FinalReviewStep] Datos encontrados en formulario step${stepNum}`);
             break;
           }
         }
       }
-      
+
       // Si no encontramos en step 2 o 3, buscar en otros pasos
       if (!formData) {
         for (let i = 4; i <= 7; i++) {
           const form = this.wizardStateService.getForm(i);
           if (form) {
-            const formValue = form.value;
-            if (formValue.businessType || formValue.legalBusinessName || formValue.validatorFirstName || formValue.owners) {
+            const formValue = form.getRawValue();
+            if (
+              formValue.businessType ||
+              formValue.legalBusinessName ||
+              formValue.validatorFirstName ||
+              formValue.owners
+            ) {
               formData = formValue;
-              console.log(`[FinalReviewStep] Datos encontrados en formulario step${i}`);
               break;
             }
           }
         }
       }
-      
+
       // Si encontramos datos en un formulario, usarlos
       if (formData && Object.keys(formData).length > 0) {
         this.serviceData = formData;
@@ -302,37 +320,27 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
         // Si no, buscar en los datos guardados (stepData)
         // Priorizar step2 y step3
         this.serviceData = allData.step2 || allData.step3 || allData.step4 || {};
-        
+
         // Si aún no encontramos datos, buscar en todos los pasos
         if (!this.serviceData || Object.keys(this.serviceData).length === 0) {
           for (let i = 2; i <= 7; i++) {
             const stepData = allData[`step${i}`] || {};
             // Verificar si este paso tiene datos de cuenta bancaria
-            if (stepData.businessType || stepData.legalBusinessName || stepData.validatorFirstName || 
-                stepData.owners || stepData.registeredAgentStreet || stepData.ownerPersonalStreet) {
+            if (
+              stepData.businessType ||
+              stepData.legalBusinessName ||
+              stepData.validatorFirstName ||
+              stepData.owners ||
+              stepData.registeredAgentStreet ||
+              stepData.ownerPersonalStreet
+            ) {
               this.serviceData = stepData;
-              console.log(`[FinalReviewStep] Datos encontrados en stepData step${i}`);
               break;
             }
           }
         }
       }
-      
-      // Debug: Log para verificar qué datos se están cargando
-      console.log('[FinalReviewStep] Cuenta Bancaria - Resumen de carga:', {
-        allDataKeys: Object.keys(allData),
-        step2Data: allData.step2 ? Object.keys(allData.step2) : 'vacío',
-        step3Data: allData.step3 ? Object.keys(allData.step3) : 'vacío',
-        serviceDataKeys: this.serviceData ? Object.keys(this.serviceData) : 'vacío',
-        serviceDataSample: this.serviceData ? {
-          businessType: this.serviceData.businessType,
-          legalBusinessName: this.serviceData.legalBusinessName,
-          hasOwners: !!this.serviceData.owners,
-          ownersCount: this.serviceData.owners?.length || 0
-        } : null,
-        hasData: this.serviceData && Object.keys(this.serviceData).length > 0
-      });
-      
+
       // Para cuenta bancaria, construir los propietarios
       // El propietario 1 siempre es el verificador (datos de sección 3 y 4)
       // Solo si es multi-member se agregan propietarios adicionales (sección 6)
@@ -357,8 +365,6 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
           // Single member: solo el verificador
           this.members = [validatorAsFirstMember];
         }
-        
-        console.log('[FinalReviewStep] Propietario 1 construido desde datos del verificador:', validatorAsFirstMember);
       } else if (this.serviceData.owners && this.serviceData.owners.length > 0) {
         // No hay datos del verificador pero hay owners, usarlos directamente
         // Filtrar owners vacíos
@@ -463,13 +469,40 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     return parts.join(', ');
   }
 
+  /** Estado/plan LLC: solo apertura y renovación (evita confundir con `state` del paso de pago en banco). */
+  showStatePlanSection(): boolean {
+    if (this.serviceType !== 'apertura-llc' && this.serviceType !== 'renovacion-llc') {
+      return false;
+    }
+    const sp = this.statePlanData;
+    return !!(sp && (sp.state || sp.plan));
+  }
+
+  /** Renovación: no listar cadenas vacías ni arrays vacíos como respuesta. */
+  private renovacionScalarMeaningful(v: unknown): boolean {
+    if (v === null || v === undefined) return false;
+    if (typeof v === 'string' && v.trim() === '') return false;
+    if (Array.isArray(v) && v.length === 0) return false;
+    return true;
+  }
+
+  private renovacionMoneyMeaningful(v: unknown): boolean {
+    if (v === null || v === undefined) return false;
+    if (typeof v === 'string' && v.trim() === '') return false;
+    if (typeof v === 'number' && Number.isNaN(v)) return false;
+    return true;
+  }
+
   /**
    * Obtiene todos los campos del formulario de Apertura LLC para el resumen de confirmación
    */
   getAperturaLlcFields(): { label: string; value: any }[] {
     const fields: { label: string; value: any }[] = [];
-    const data = this.serviceData;
-    if (!data) return fields;
+    const data: any = pickServiceDataForReview(
+      this.serviceData as Record<string, unknown>,
+      APERTURA_LLC_REVIEW_KEYS,
+    );
+    if (!data || Object.keys(data).length === 0) return fields;
 
     // Sección 1: Información de la LLC
     if (data.llcName) fields.push({ label: 'Nombre de la LLC (Opción 1)', value: data.llcName });
@@ -483,7 +516,9 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.llcEmail) fields.push({ label: 'Email de la LLC', value: data.llcEmail });
     if (data.linkedin) fields.push({ label: 'LinkedIn', value: data.linkedin });
     if (data.incorporationDate) fields.push({ label: 'Fecha de incorporación', value: this.formatDate(data.incorporationDate) });
-    if (data.hasEin !== undefined && data.hasEin !== null) fields.push({ label: '¿Tiene EIN?', value: this.formatBoolean(data.hasEin) });
+    if (data.hasEin === true) {
+      fields.push({ label: '¿Tiene EIN?', value: this.formatBoolean(data.hasEin) });
+    }
     if (data.einNumber) fields.push({ label: 'Número de EIN', value: data.einNumber });
     if (data.einDocumentUrl) fields.push({ label: 'Documento EIN', value: 'Archivo subido ✓' });
     if (data.noEinReason) fields.push({ label: 'Motivo sin EIN', value: data.noEinReason });
@@ -500,8 +535,10 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.registeredAgentPhone) fields.push({ label: 'Teléfono del Registered Agent', value: data.registeredAgentPhone });
     if (data.registeredAgentType) fields.push({ label: 'Tipo de Registered Agent', value: data.registeredAgentType });
 
-    // Información bancaria / apertura bancaria
-    if (data.needsBankVerificationHelp !== undefined) fields.push({ label: '¿Necesita ayuda con verificación bancaria?', value: this.formatBoolean(data.needsBankVerificationHelp) });
+    // Información bancaria / apertura bancaria (solo si marcó que sí; evita "No" por defecto)
+    if (data.needsBankVerificationHelp === true) {
+      fields.push({ label: '¿Necesita ayuda con verificación bancaria?', value: this.formatBoolean(data.needsBankVerificationHelp) });
+    }
     if (data.bankAccountType) fields.push({ label: 'Tipo de cuenta bancaria', value: data.bankAccountType });
     if (data.bankName) fields.push({ label: 'Banco', value: data.bankName });
     if (data.bankAccountNumber) fields.push({ label: 'Número de cuenta', value: data.bankAccountNumber });
@@ -523,16 +560,34 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.ownerPhoneNumber) fields.push({ label: 'Teléfono del propietario', value: data.ownerPhoneNumber });
     if (data.ownerEmail) fields.push({ label: 'Email del propietario', value: data.ownerEmail });
 
-    // Preguntas sí/no
-    if (data.almacenaProductosDepositoUSA !== undefined) fields.push({ label: '¿Almacena productos en depósito en EE.UU.?', value: this.formatBoolean(data.almacenaProductosDepositoUSA) });
-    if (data.declaroImpuestosAntes !== undefined) fields.push({ label: '¿Declaró impuestos antes?', value: this.formatBoolean(data.declaroImpuestosAntes) });
-    if (data.llcConStartCompanies !== undefined) fields.push({ label: '¿LLC con Start Companies?', value: this.formatBoolean(data.llcConStartCompanies) });
-    if (data.ingresosMayor250k !== undefined) fields.push({ label: '¿Ingresos mayores a 250k?', value: this.formatBoolean(data.ingresosMayor250k) });
-    if (data.activosEnUSA !== undefined) fields.push({ label: '¿Activos en EE.UU.?', value: this.formatBoolean(data.activosEnUSA) });
-    if (data.ingresosPeriodicos10k !== undefined) fields.push({ label: '¿Ingresos periódicos 10k?', value: this.formatBoolean(data.ingresosPeriodicos10k) });
-    if (data.contrataServiciosUSA !== undefined) fields.push({ label: '¿Contrata servicios en EE.UU.?', value: this.formatBoolean(data.contrataServiciosUSA) });
-    if (data.propiedadEnUSA !== undefined) fields.push({ label: '¿Propiedad en EE.UU.?', value: this.formatBoolean(data.propiedadEnUSA) });
-    if (data.tieneCuentasBancarias !== undefined) fields.push({ label: '¿Tiene cuentas bancarias?', value: this.formatBoolean(data.tieneCuentasBancarias) });
+    // Preguntas sí/no (defaults false en el form: solo mostrar si el usuario marcó Sí)
+    if (data.almacenaProductosDepositoUSA === true) {
+      fields.push({ label: '¿Almacena productos en depósito en EE.UU.?', value: this.formatBoolean(data.almacenaProductosDepositoUSA) });
+    }
+    if (data.declaroImpuestosAntes === true) {
+      fields.push({ label: '¿Declaró impuestos antes?', value: this.formatBoolean(data.declaroImpuestosAntes) });
+    }
+    if (data.llcConStartCompanies === true) {
+      fields.push({ label: '¿LLC con Start Companies?', value: this.formatBoolean(data.llcConStartCompanies) });
+    }
+    if (data.ingresosMayor250k === true) {
+      fields.push({ label: '¿Ingresos mayores a 250k?', value: this.formatBoolean(data.ingresosMayor250k) });
+    }
+    if (data.activosEnUSA === true) {
+      fields.push({ label: '¿Activos en EE.UU.?', value: this.formatBoolean(data.activosEnUSA) });
+    }
+    if (data.ingresosPeriodicos10k === true) {
+      fields.push({ label: '¿Ingresos periódicos 10k?', value: this.formatBoolean(data.ingresosPeriodicos10k) });
+    }
+    if (data.contrataServiciosUSA === true) {
+      fields.push({ label: '¿Contrata servicios en EE.UU.?', value: this.formatBoolean(data.contrataServiciosUSA) });
+    }
+    if (data.propiedadEnUSA === true) {
+      fields.push({ label: '¿Propiedad en EE.UU.?', value: this.formatBoolean(data.propiedadEnUSA) });
+    }
+    if (data.tieneCuentasBancarias === true) {
+      fields.push({ label: '¿Tiene cuentas bancarias?', value: this.formatBoolean(data.tieneCuentasBancarias) });
+    }
 
     return fields;
   }
@@ -543,17 +598,41 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
    */
   getRenovacionLlcFields(): { label: string; value: any }[] {
     const fields: { label: string; value: any }[] = [];
-    const data = this.serviceData;
-    
+    const data: any = pickServiceDataForReview(
+      this.serviceData as Record<string, unknown>,
+      RENOVACION_LLC_REVIEW_KEYS,
+    );
+    if (!data || Object.keys(data).length === 0) return fields;
+
     // Sección 1: Información de la LLC
     if (data.llcName) fields.push({ label: 'Nombre de la LLC', value: data.llcName });
     if (data.state) fields.push({ label: 'Estado de Registro de la LLC', value: data.state });
     if (data.llcType) fields.push({ label: 'Estructura Societaria', value: data.llcType === 'single' ? 'Single Member' : 'Multi Member' });
     if (data.mainActivity) fields.push({ label: 'Actividad Principal de la LLC', value: data.mainActivity });
-    if (data.hasPropertyInUSA !== undefined) fields.push({ label: '¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?', value: this.formatBoolean(data.hasPropertyInUSA) });
-    if (data.almacenaProductosDepositoUSA !== undefined) fields.push({ label: '¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?', value: this.formatBoolean(data.almacenaProductosDepositoUSA) });
-    if (data.contrataServiciosUSA !== undefined) fields.push({ label: '¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente?', value: this.formatBoolean(data.contrataServiciosUSA) });
-    if (data.tieneCuentasBancarias !== undefined) fields.push({ label: '¿Tu LLC tiene cuentas bancarias a su nombre?', value: this.formatBoolean(data.tieneCuentasBancarias) });
+    if (this.renovacionScalarMeaningful(data.hasPropertyInUSA)) {
+      fields.push({
+        label: '¿Tu empresa posee o renta alguna propiedad inmobiliaria en Estados Unidos?',
+        value: this.formatBoolean(data.hasPropertyInUSA),
+      });
+    }
+    if (this.renovacionScalarMeaningful(data.almacenaProductosDepositoUSA)) {
+      fields.push({
+        label: '¿Tu empresa almacena productos físicos en un depósito en Estados Unidos?',
+        value: this.formatBoolean(data.almacenaProductosDepositoUSA),
+      });
+    }
+    if (this.renovacionScalarMeaningful(data.contrataServiciosUSA)) {
+      fields.push({
+        label: '¿Tu empresa contrata servicios de personas o empresas de Estados Unidos regularmente?',
+        value: this.formatBoolean(data.contrataServiciosUSA),
+      });
+    }
+    if (this.renovacionScalarMeaningful(data.tieneCuentasBancarias)) {
+      fields.push({
+        label: '¿Tu LLC tiene cuentas bancarias a su nombre?',
+        value: this.formatBoolean(data.tieneCuentasBancarias),
+      });
+    }
     if (data.einNumber) fields.push({ label: 'Número de EIN', value: data.einNumber });
     if (data.llcCreationDate) fields.push({ label: 'Fecha de creación de la LLC', value: this.formatDate(data.llcCreationDate) });
     if (data.countriesWhereLLCDoesBusiness && Array.isArray(data.countriesWhereLLCDoesBusiness) && data.countriesWhereLLCDoesBusiness.length > 0) {
@@ -574,39 +653,63 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     }
     
     // Sección 3: Información Contable de la LLC
-    if (data.llcOpeningCost !== null && data.llcOpeningCost !== undefined) {
+    if (this.renovacionMoneyMeaningful(data.llcOpeningCost)) {
       fields.push({ label: '¿Cuánto costó abrir la LLC en Estados Unidos?', value: this.formatMoney(data.llcOpeningCost) });
     }
-    if (data.paidToFamilyMembers !== null && data.paidToFamilyMembers !== undefined) {
-      fields.push({ label: '¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?', value: this.formatMoney(data.paidToFamilyMembers) });
+    if (this.renovacionMoneyMeaningful(data.paidToFamilyMembers)) {
+      fields.push({
+        label: '¿Cuánto pagó la LLC a familiares del dueño por trabajos o servicios?',
+        value: this.formatMoney(data.paidToFamilyMembers),
+      });
     }
-    if (data.paidToLocalCompanies !== null && data.paidToLocalCompanies !== undefined) {
-      fields.push({ label: '¿Cuánto pagó la LLC a empresas locales del dueño por bienes o servicios?', value: this.formatMoney(data.paidToLocalCompanies) });
+    if (this.renovacionMoneyMeaningful(data.paidToLocalCompanies)) {
+      fields.push({
+        label: '¿Cuánto pagó la LLC a empresas locales del dueño por bienes o servicios?',
+        value: this.formatMoney(data.paidToLocalCompanies),
+      });
     }
-    if (data.paidForLLCFormation !== null && data.paidForLLCFormation !== undefined) {
-      fields.push({ label: '¿Cuánto se pagó por la formación de la LLC (Incorporation/State fees)?', value: this.formatMoney(data.paidForLLCFormation) });
+    if (this.renovacionMoneyMeaningful(data.paidForLLCFormation)) {
+      fields.push({
+        label: '¿Cuánto se pagó por la formación de la LLC (Incorporation/State fees)?',
+        value: this.formatMoney(data.paidForLLCFormation),
+      });
     }
-    if (data.paidForLLCDissolution !== null && data.paidForLLCDissolution !== undefined) {
-      fields.push({ label: '¿Cuánto se pagó por la disolución de la LLC (si aplica)?', value: this.formatMoney(data.paidForLLCDissolution) });
+    if (this.renovacionMoneyMeaningful(data.paidForLLCDissolution)) {
+      fields.push({
+        label: '¿Cuánto se pagó por la disolución de la LLC (si aplica)?',
+        value: this.formatMoney(data.paidForLLCDissolution),
+      });
     }
-    if (data.bankAccountBalanceEndOfYear !== null && data.bankAccountBalanceEndOfYear !== undefined) {
-      fields.push({ label: 'Saldo Al fin de año de las cuentas bancarias de la LLC', value: this.formatMoney(data.bankAccountBalanceEndOfYear) });
+    if (this.renovacionMoneyMeaningful(data.bankAccountBalanceEndOfYear)) {
+      fields.push({
+        label: 'Saldo Al fin de año de las cuentas bancarias de la LLC',
+        value: this.formatMoney(data.bankAccountBalanceEndOfYear),
+      });
     }
-    
+
     // Sección 4: Movimientos Financieros
-    if (data.totalRevenue2025 !== null && data.totalRevenue2025 !== undefined) {
+    if (this.renovacionMoneyMeaningful(data.totalRevenue2025)) {
       fields.push({ label: 'Facturación total de la LLC en 2025', value: this.formatMoney(data.totalRevenue2025) });
     }
-    
+
     // Sección 5: Información Adicional
-    if (data.hasFinancialInvestmentsInUSA !== undefined) {
-      fields.push({ label: '¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?', value: this.formatBoolean(data.hasFinancialInvestmentsInUSA) });
+    if (this.renovacionScalarMeaningful(data.hasFinancialInvestmentsInUSA)) {
+      fields.push({
+        label: '¿Posee la LLC inversiones financieras o activos dentro de Estados Unidos?',
+        value: this.formatBoolean(data.hasFinancialInvestmentsInUSA),
+      });
     }
-    if (data.hasFiledTaxesBefore !== undefined) {
-      fields.push({ label: '¿La LLC declaró impuestos anteriormente?', value: this.formatBoolean(data.hasFiledTaxesBefore) });
+    if (this.renovacionScalarMeaningful(data.hasFiledTaxesBefore)) {
+      fields.push({
+        label: '¿La LLC declaró impuestos anteriormente?',
+        value: this.formatBoolean(data.hasFiledTaxesBefore),
+      });
     }
-    if (data.wasConstitutedWithStartCompanies !== undefined) {
-      fields.push({ label: '¿La LLC se constituyó con Start Companies?', value: this.formatBoolean(data.wasConstitutedWithStartCompanies) });
+    if (this.renovacionScalarMeaningful(data.wasConstitutedWithStartCompanies)) {
+      fields.push({
+        label: '¿La LLC se constituyó con Start Companies?',
+        value: this.formatBoolean(data.wasConstitutedWithStartCompanies),
+      });
     }
     
     // Archivos (solo si se respondió "No" a Start Companies)
@@ -628,8 +731,12 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
    */
   getCuentaBancariaFields(): { label: string; value: any }[] {
     const fields: { label: string; value: any }[] = [];
-    const data = this.serviceData;
-    
+    const data: any = pickServiceDataForReview(
+      this.serviceData as Record<string, unknown>,
+      CUENTA_BANCARIA_REVIEW_KEYS,
+    );
+    if (!data || Object.keys(data).length === 0) return fields;
+
     // Sección 1: Información de la LLC
     if (data.businessType) fields.push({ label: 'Tipo de negocio', value: data.businessType });
     if (data.legalBusinessName) fields.push({ label: 'Nombre legal del negocio', value: data.legalBusinessName });
@@ -672,8 +779,12 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.validatorPassportUrl) fields.push({ label: 'Copia escaneada del pasaporte del Verificador', value: 'Archivo subido ✓' });
     if (data.validatorWorkEmail) fields.push({ label: 'Email laboral del Verificador', value: data.validatorWorkEmail });
     if (data.validatorPhone) fields.push({ label: 'Teléfono del Verificador', value: data.validatorPhone });
-    if (data.canReceiveSMS !== undefined) fields.push({ label: '¿Puede recibir SMS?', value: this.formatBoolean(data.canReceiveSMS) });
-    if (data.isUSResident) fields.push({ label: '¿Es residente en EE.UU.?', value: data.isUSResident === 'yes' ? 'Sí' : 'No' });
+    if (data.canReceiveSMS === true) {
+      fields.push({ label: '¿Puede recibir SMS?', value: this.formatBoolean(data.canReceiveSMS) });
+    }
+    if (data.isUSResident === 'yes' || data.isUSResident === 'no') {
+      fields.push({ label: '¿Es residente en EE.UU.?', value: data.isUSResident === 'yes' ? 'Sí' : 'No' });
+    }
     if (data.validatorTitle) fields.push({ label: 'Cargo / Título / Ocupación del Verificador', value: data.validatorTitle });
     if (data.validatorIncomeSource) fields.push({ label: 'Fuente de ingreso personal del Verificador', value: data.validatorIncomeSource });
     if (data.validatorAnnualIncome !== null && data.validatorAnnualIncome !== undefined) {
@@ -697,7 +808,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.serviceBillUrl) fields.push({ label: 'Adjuntar factura de servicio', value: 'Archivo subido ✓' });
     
     // Sección 5: Tipo de LLC
-    if (data.isMultiMember !== undefined) {
+    if (data.isMultiMember === 'yes' || data.isMultiMember === 'no') {
       fields.push({ label: '¿Tu LLC es Multi-Member?', value: data.isMultiMember === 'yes' ? 'Sí' : 'No' });
     }
     
