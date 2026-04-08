@@ -1,4 +1,4 @@
-<div class="lp-campaign" #root>
+<div class="lp-campaign lp-agendar-scale" #root>
 <!-- AMBIENT BG -->
 <div class="bg-ambient">
   <div class="bg-orb bg-orb-1"></div>
@@ -90,7 +90,7 @@
   <!-- CTA ÚNICO -->
   <div class="hero-cta-row fu4">
     <div class="btn-gold-wrap">
-      <a href="#calendly-container" class="btn-gold btn-gold-blue">
+      <a href="#" class="btn-gold btn-gold-blue" (click)="scrollToCalendarEmbed($event)">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Agendar consulta gratuita
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -135,7 +135,7 @@
         <p class="slots-cta-text">↑ <strong>4 lugares disponibles</strong> — se actualizan cada semana</p>
       </div>
       <!-- CTA urgency -->
-      <a href="#calendly-container" class="btn-urgency-cta" onclick="this.closest('.scard').style.outline='2px solid rgba(0,106,254,0.5)'">
+      <a href="#" class="btn-urgency-cta" (click)="scrollToCalendarEmbed($event, true)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         Agendar llamada ya
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -279,7 +279,7 @@
             <div class="faq-chevron"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
           </summary>
           <p class="faq-ans">Depende del estado. En promedio entre 7 y 15 días hábiles. New Mexico y Wyoming son los más rápidos del mercado.</p>
-          <a href="#calendly-container" class="faq-cta-btn">Agendar llamada →</a>
+          <a href="#" class="faq-cta-btn" (click)="scrollToCalendarEmbed($event)">Agendar llamada →</a>
         </details>
 
         <details class="faq-item">
@@ -287,7 +287,7 @@
             <div class="faq-chevron"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
           </summary>
           <p class="faq-ans">Te asesoramos con opciones 100% legales: Lili Bank, Mercury, Relay, Wise, Payoneer. Todo de forma remota desde cualquier país de Latinoamérica.</p>
-          <a href="#calendly-container" class="faq-cta-btn">Agendar llamada →</a>
+          <a href="#" class="faq-cta-btn" (click)="scrollToCalendarEmbed($event)">Agendar llamada →</a>
         </details>
 
         <details class="faq-item">
@@ -295,7 +295,7 @@
             <div class="faq-chevron"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
           </summary>
           <p class="faq-ans">Solo necesitás pasaporte o documento vigente, un email y un método de pago. No se requiere ser ciudadano ni residente americano.</p>
-          <a href="#calendly-container" class="faq-cta-btn">Agendar llamada →</a>
+          <a href="#" class="faq-cta-btn" (click)="scrollToCalendarEmbed($event)">Agendar llamada →</a>
         </details>
 
         <details class="faq-item">
@@ -303,7 +303,7 @@
             <div class="faq-chevron"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
           </summary>
           <p class="faq-ans">Si tu LLC de un solo miembro no genera ECI (Effectively Connected Income), generalmente no estás sujeto a impuestos federales en EE.UU. En la llamada analizamos tu situación específica.</p>
-          <a href="#calendly-container" class="faq-cta-btn">Agendar llamada →</a>
+          <a href="#" class="faq-cta-btn" (click)="scrollToCalendarEmbed($event)">Agendar llamada →</a>
         </details>
 
       </div>

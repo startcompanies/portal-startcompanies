@@ -1029,4 +1029,8 @@ app-landing-evaluar-caso, app-landing-agendar {
   .lp-campaign .page-body { max-width: 1540px; }
   .lp-campaign .hero-counters { max-width: 952px; }
 }
-   
+
+/* ~10% más grande (feedback UX) — /agendar, /quiero-mi-llc, /agenda */
+.lp-campaign.lp-agendar-scale {
+  zoom: 1.1;
+}

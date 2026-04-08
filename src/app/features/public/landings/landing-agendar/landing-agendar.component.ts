@@ -64,6 +64,26 @@ export class LandingAgendarComponent implements OnInit, AfterViewInit, OnDestroy
     }
   }
 
+  /**
+   * Scroll al embed de Cal (evita `href="#id"` con `<base href="/">`, que navega a `/#id` = home).
+   */
+  scrollToCalendarEmbed(event: Event, highlightUrgencyCard = false): void {
+    event.preventDefault();
+    if (highlightUrgencyCard) {
+      const t = event.currentTarget as HTMLElement | null;
+      const scard = t?.closest('.scard');
+      if (scard instanceof HTMLElement) {
+        scard.style.outline = '2px solid rgba(0,106,254,0.5)';
+      }
+    }
+    const doc = this.browser.document;
+    if (!doc) {
+      return;
+    }
+    const el = doc.getElementById('calendly-container');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   ngAfterViewInit(): void {
     if (!this.browser.isBrowser) {
       return;
