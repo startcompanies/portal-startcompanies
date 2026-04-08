@@ -175,7 +175,12 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    * Guarda los datos del paso
    */
   private saveStepData(): void {
-    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.value);
+    this.wizardStateService.setStepData(this.stepNumber, this.serviceDataForm.getRawValue());
+  }
+
+  /** Para fusión al paso de confirmación (incluye controles deshabilitados, igual que apertura LLC). */
+  getFormData(): Record<string, unknown> {
+    return { ...this.serviceDataForm.getRawValue(), currentSection: this.currentSection };
   }
 
 
@@ -652,7 +657,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     this.isSaving = true;
 
     try {
-      const formData = this.serviceDataForm.value;
+      const formData = this.serviceDataForm.getRawValue();
       
       // Convertir el verificador (sección 3) y dirección personal (sección 4) en el primer member
       const validatorAsFirstMember = {

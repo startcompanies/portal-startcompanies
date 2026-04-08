@@ -85,8 +85,8 @@
     </div>
   </div>
 
-  <!-- Estado y Plan (solo para apertura y renovación) -->
-  <div class="review-section mb-4" *ngIf="statePlanData && (statePlanData.state || statePlanData.plan)">
+  <!-- Estado y Plan (solo para apertura y renovación; no usar datos del paso de pago en cuenta bancaria) -->
+  <div class="review-section mb-4" *ngIf="showStatePlanSection()">
     <div class="section-header">
       <h5 class="mb-0">
         <i class="bi bi-geo-alt me-2 text-primary"></i>
