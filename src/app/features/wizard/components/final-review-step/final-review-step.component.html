@@ -13,7 +13,12 @@
       {{ 'WIZARD.review.success_info' | transloco }}
     </div>
     <div class="d-flex justify-content-center gap-3 mt-4">
-      <button type="button" class="btn btn-primary btn-lg" (click)="navigateToPanel()">
+      <button
+        *ngIf="!isInsidePanelShell()"
+        type="button"
+        class="btn btn-primary btn-lg"
+        (click)="navigateToPanel()"
+      >
         <i class="bi bi-grid-1x2 me-2"></i>
         {{ 'WIZARD.review.go_to_panel' | transloco }}
       </button>

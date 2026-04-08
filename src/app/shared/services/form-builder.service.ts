@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { optionalPublicWebUrlValidator } from '../validators/web-url.validator';
 
 /**
  * Servicio centralizado para construir los FormGroups de los tres servicios.
@@ -19,7 +20,7 @@ export class ServiceFormBuilderService {
       llcPhoneNumber: [''],
       website: [''],
       llcEmail: ['', [Validators.email]],
-      linkedin: [''],
+      linkedin: ['', optionalPublicWebUrlValidator()],
       incorporationState: ['', Validators.required],
       incorporationDate: [''],
       hasEin: [false],
@@ -53,7 +54,7 @@ export class ServiceFormBuilderService {
       periodicIncome10k: ['', Validators.required],
       bankAccountLinkedEmail: ['', [Validators.required, Validators.email]],
       bankAccountLinkedPhone: ['', Validators.required],
-      projectOrCompanyUrl: [''],
+      projectOrCompanyUrl: ['', optionalPublicWebUrlValidator()],
       veracityConfirmation: [''],
       ownerNationality: [''],
       ownerCountryOfResidence: [''],
@@ -127,7 +128,10 @@ export class ServiceFormBuilderService {
     g.addControl('industry', this.fb.control('', Validators.required));
     g.addControl('numberOfEmployees', this.fb.control('', Validators.required));
     g.addControl('briefDescription', this.fb.control('', Validators.required));
-    g.addControl('websiteOrSocialMedia', this.fb.control(''));
+    g.addControl(
+      'websiteOrSocialMedia',
+      this.fb.control('', optionalPublicWebUrlValidator()),
+    );
     g.addControl('einLetterUrl', this.fb.control('', Validators.required));
     g.addControl('einNumber', this.fb.control('', Validators.required));
     g.addControl('articlesOrCertificateUrl', this.fb.control('', Validators.required));

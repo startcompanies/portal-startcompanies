@@ -136,27 +136,11 @@
 
       <form [formGroup]="preferencesForm" (ngSubmit)="savePreferences()">
         <div class="row g-3">
-          <div class="col-md-6">
+          <div class="col-md-12">
             <label class="form-label">{{ 'PANEL.settings_page.language' | transloco }}</label>
             <select class="form-select" formControlName="language">
               <option value="es">{{ 'PANEL.language_modal.spanish' | transloco }}</option>
               <option value="en">{{ 'PANEL.language_modal.english' | transloco }}</option>
-            </select>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.theme' | transloco }}</label>
-            <select class="form-select" formControlName="theme">
-              <option value="light">{{ 'PANEL.settings_page.preferences_section.theme_light' | transloco }}</option>
-              <option value="dark">{{ 'PANEL.settings_page.preferences_section.theme_dark' | transloco }}</option>
-              <option value="auto">{{ 'PANEL.settings_page.preferences_section.theme_auto' | transloco }}</option>
-            </select>
-          </div>
-          <div class="col-md-12">
-            <label class="form-label">{{ 'PANEL.settings_page.preferences_section.timezone' | transloco }}</label>
-            <select class="form-select" formControlName="timezone">
-              <option *ngFor="let tz of timezoneOptions" [value]="tz.value">
-                {{ tz.labelKey | transloco }}
-              </option>
             </select>
           </div>
         </div>
@@ -178,22 +162,6 @@
               <input class="form-check-input" type="checkbox" formControlName="push" id="notifPush" />
               <label class="form-check-label" for="notifPush">
                 {{ 'PANEL.settings_page.preferences_section.notif_push' | transloco }}
-              </label>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requestUpdates" id="notifRequest" />
-              <label class="form-check-label" for="notifRequest">
-                {{ 'PANEL.settings_page.preferences_section.notif_request_updates' | transloco }}
-              </label>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="documentUploads" id="notifDocs" />
-              <label class="form-check-label" for="notifDocs">
-                {{ 'PANEL.settings_page.preferences_section.notif_doc_uploads' | transloco }}
               </label>
             </div>
           </div>
@@ -286,10 +254,10 @@
               <strong>{{ config.org }}</strong> - {{ config.service }} ({{ config.region }})
               <br />
               <small class="text-muted">
-                <span *ngIf="config.refresh_token" class="text-success">
+                <span *ngIf="config.hasRefreshToken" class="text-success">
                   <i class="bi bi-check-circle"></i> {{ 'PANEL.settings_page.zoho_section.token_ok' | transloco }}
                 </span>
-                <span *ngIf="!config.refresh_token" class="text-warning">
+                <span *ngIf="!config.hasRefreshToken" class="text-warning">
                   <i class="bi bi-exclamation-triangle"></i> {{ 'PANEL.settings_page.zoho_section.token_missing' | transloco }}
                 </span>
                 | {{ 'PANEL.settings_page.zoho_section.created' | transloco }}: {{ config.createdAt | safeDate }}
@@ -367,14 +335,7 @@
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'scopes') }}
             </div>
-            <small class="form-text text-muted">
-              {{ 'PANEL.settings_page.zoho_section.scopes_hint' | transloco }}<br />
-              <strong>{{ 'PANEL.settings_page.zoho_section.scopes_crm' | transloco }}</strong>
-              <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code><br />
-              <strong>{{ 'PANEL.settings_page.zoho_section.scopes_workdrive' | transloco }}</strong>
-              <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code><br />
-              <span class="text-warning">⚠️ {{ 'PANEL.settings_page.zoho_section.scopes_warning' | transloco }}</span>
-            </small>
+            <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.scopes_hint' | transloco }}</small>
           </div>
           <div class="col-md-6">
             <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.client_id' | transloco }} <span class="text-danger">*</span> </label>
@@ -391,18 +352,35 @@
             <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.client_id_hint' | transloco }}</small>
           </div>
           <div class="col-md-6">
-            <label class="form-label"> {{ 'PANEL.settings_page.zoho_section.client_secret' | transloco }} <span class="text-danger">*</span> </label>
+            <label class="form-label">
+              {{ 'PANEL.settings_page.zoho_section.client_secret' | transloco }}
+              <span
+                *ngIf="!selectedConfig || !selectedConfig.zohoOAuthClientSecretConfigured"
+                class="text-danger"
+              >
+                *
+              </span>
+            </label>
             <input
               type="password"
               class="form-control"
               [class.is-invalid]="zohoConfigForm.get('client_secret')?.invalid && zohoConfigForm.get('client_secret')?.touched"
               formControlName="client_secret"
-              [placeholder]="'PANEL.settings_page.zoho_section.client_secret_placeholder' | transloco"
+              [placeholder]="
+                selectedConfig?.zohoOAuthClientSecretConfigured
+                  ? ('PANEL.settings_page.zoho_section.client_secret_placeholder_keep' | transloco)
+                  : ('PANEL.settings_page.zoho_section.client_secret_placeholder' | transloco)
+              "
             />
             <div class="invalid-feedback">
               {{ getFieldError(zohoConfigForm, 'client_secret') }}
             </div>
-            <small class="form-text text-muted">{{ 'PANEL.settings_page.zoho_section.client_secret_hint' | transloco }}</small>
+            <small class="form-text text-muted">
+              <ng-container *ngIf="selectedConfig?.zohoOAuthClientSecretConfigured; else secretHintNew">
+                {{ 'PANEL.settings_page.zoho_section.client_secret_hint_keep' | transloco }}
+              </ng-container>
+              <ng-template #secretHintNew>{{ 'PANEL.settings_page.zoho_section.client_secret_hint' | transloco }}</ng-template>
+            </small>
           </div>
         </div>
 
@@ -422,8 +400,8 @@
           >
             <span *ngIf="isOAuthInProgress" class="spinner-border spinner-border-sm me-2"></span>
             <i *ngIf="!isOAuthInProgress" class="bi bi-key me-2"></i>
-            <ng-container *ngIf="selectedConfig?.refresh_token">{{ 'PANEL.settings_page.zoho_section.reauthorize' | transloco }}</ng-container>
-            <ng-container *ngIf="!selectedConfig?.refresh_token">{{ 'PANEL.settings_page.zoho_section.authorize' | transloco }}</ng-container>
+            <ng-container *ngIf="selectedConfig?.hasRefreshToken">{{ 'PANEL.settings_page.zoho_section.reauthorize' | transloco }}</ng-container>
+            <ng-container *ngIf="!selectedConfig?.hasRefreshToken">{{ 'PANEL.settings_page.zoho_section.authorize' | transloco }}</ng-container>
           </button>
 
           <button type="button" class="btn btn-secondary" (click)="createNewConfig()" [disabled]="isLoading">
@@ -432,20 +410,25 @@
           </button>
         </div>
 
-        <div *ngIf="selectedConfig?.refresh_token" class="mt-3 alert alert-success">
+        <div *ngIf="selectedConfig?.hasRefreshToken" class="mt-3 alert alert-success">
           <i class="bi bi-check-circle me-2"></i>
           {{ 'PANEL.settings_page.zoho_section.token_banner_ok' | transloco }}
         </div>
 
         <div
-          *ngIf="selectedConfig?.refresh_token && selectedConfig?.scopes && !selectedConfig?.scopes?.includes('ZohoCRM.settings.ALL')"
+          *ngIf="
+            selectedConfig?.hasRefreshToken &&
+            selectedConfig?.service === 'crm' &&
+            selectedConfig?.scopes &&
+            !selectedConfig?.scopes?.includes('ZohoCRM.settings.ALL')
+          "
           class="mt-3 alert alert-warning"
         >
           <i class="bi bi-exclamation-triangle me-2"></i>
           {{ 'PANEL.settings_page.zoho_section.scopes_insufficient' | transloco }}
         </div>
 
-        <div *ngIf="selectedConfig && !selectedConfig.refresh_token" class="mt-3 alert alert-warning">
+        <div *ngIf="selectedConfig && !selectedConfig.hasRefreshToken" class="mt-3 alert alert-warning">
           <i class="bi bi-exclamation-triangle me-2"></i>
           {{ 'PANEL.settings_page.zoho_section.no_token_banner' | transloco }}
         </div>
@@ -466,14 +449,7 @@
                 {{ 'PANEL.settings_page.zoho_section.oauth_info_4' | transloco }}
                 <code>{{ environment.apiUrl || 'http://localhost:3000' }}/orgTk/callback</code> {{ 'PANEL.settings_page.zoho_section.oauth_info_5_no_api' | transloco }}
               </li>
-              <li>
-                <strong>{{ 'PANEL.settings_page.zoho_section.oauth_crm_scopes' | transloco }}</strong>
-                <code>ZohoCRM.modules.ALL,ZohoCRM.settings.ALL</code>
-              </li>
-              <li>
-                <strong>{{ 'PANEL.settings_page.zoho_section.oauth_workdrive_scopes' | transloco }}</strong>
-                <code>WorkDrive.files.sharing.CREATE,WorkDrive.files.ALL</code>
-              </li>
+              <li>{{ 'PANEL.settings_page.zoho_section.oauth_info_scopes' | transloco }}</li>
             </ul>
           </div>
         </div>

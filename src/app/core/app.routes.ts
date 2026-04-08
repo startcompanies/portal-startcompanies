@@ -250,8 +250,16 @@ export const routes: Routes = [
         loadComponent: () => import('../features/public/landings/landing-abre-tu-llc/landing-abre-tu-llc.component').then(m => m.LandingAbreTuLlcComponent)
       },
       {
+        path: 'abre-tu-llc-google',
+        loadComponent: () => import('../features/public/landings/landing-abre-tu-llc-google/landing-abre-tu-llc-google.component').then(m => m.LandingAbreTuLlcGoogleComponent)
+      },
+      {
         path: 'presentacion',
         loadComponent: () => import('../features/public/landings/landing-presentacion/landing-presentacion.component').then(m => m.LandingPresentacionComponent)
+      },
+      {
+        path: 'presentacion-youtube',
+        loadComponent: () => import('../features/public/landings/landing-presentacion-youtube/landing-presentacion-youtube.component').then(m => m.LandingPresentacionYoutubeComponent)
       },
       // Controlado por environment.wizardAndPanelEnabled: true → wizard cuenta bancaria, false → landing relay
       {
@@ -280,15 +288,40 @@ export const routes: Routes = [
       },
       {
         path: 'agenda',
-        loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
+        loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent),
+        data: {
+          agendaCal: {
+            containerId: 'my-cal-inline-agendaorganica',
+            namespace: 'agendaorganica',
+            calLink: 'startcompanies-businessenusa/agenda-organica',
+          },
+        },
       },
       {
         path: 'agendar',
-        loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent)
+        loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent),
+        data: {
+          agendaCal: {
+            containerId: 'my-cal-inline-agendaorganica',
+            namespace: 'agendaorganica',
+            calLink: 'startcompanies-businessenusa/agenda-organica',
+          },
+        },
+      },
+      {
+        path: 'quiero-mi-llc',
+        loadComponent: () => import('../features/public/landings/landing-agendar/landing-agendar.component').then(m => m.LandingAgendarComponent),
+        data: {
+          agendaCal: {
+            containerId: 'my-cal-inline-agendaformmeta',
+            namespace: 'agendaformmeta',
+            calLink: 'startcompanies-businessenusa/agendaformmeta',
+          },
+        },
       },
       // Wizard unificado: misma página (`WizardRequestFlowPageComponent`), perfiles distintos en `RequestFlowConfigService`.
-      // - /apertura-llc + source wizard: registro con JWT, pago, confirmación; sin paso de código de email (enlace al cierre vía API).
-      // - /apertura/lead + crm-lead: verificación por código, sin pago, finalize sin cobro.
+      // - /apertura-llc + source wizard: registro con JWT, pago, confirmación; verificación de correo en login del panel (2FA).
+      // - /apertura/lead + crm-lead: sin pago, finalize sin cobro; sin paso de código en el wizard.
       // Controlado por environment.wizardAndPanelEnabled: true → wizard, false → formulario público
       {
         path: 'apertura-llc',
@@ -576,27 +609,33 @@ export const routes: Routes = [
           }
         }
       },
+      // Historial de servicios oculto temporalmente: redirige al dashboard (componente conservado por si se reactiva).
       {
         path: 'service-history',
-        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        pathMatch: 'full',
+        redirectTo: 'client-dashboard',
+      },
+      {
+        path: 'lili-request',
+        canActivate: [authGuard, roleGuard(['client'])],
         loadComponent: () => import('../features/panel/layout/panel-layout/panel-layout.component').then(m => m.PanelLayoutComponent),
         children: [
           {
             path: '',
             loadComponent: () =>
-              import('../features/panel/pages/service-history/service-history.component').then(
-                (m) => m.ServiceHistoryComponent,
+              import('../features/panel/pages/lili-request/lili-request.component').then(
+                (m) => m.LiliRequestComponent,
               ),
             data: {
-              panelTitleKey: 'PANEL.service_history_page.title',
-              panelSubtitleKey: 'PANEL.service_history_page.subtitle',
+              panelTitleKey: 'PANEL.route_meta.lili_request.title',
+              panelSubtitleKey: 'PANEL.route_meta.lili_request.subtitle',
             },
           },
         ],
         data: {
           seo: {
-            title: 'Historial de servicios - Panel Start Companies',
-            description: 'Historial de servicios sincronizados desde Zoho',
+            title: 'Solicitar cuenta Lili - Panel Start Companies',
+            description: 'Completa la solicitud de cuenta bancaria Lili desde tu panel',
           },
         },
       },
@@ -1002,6 +1041,25 @@ export const routes: Routes = [
         },
       },
       {
+        path: 'llc-formation-google',
+        loadComponent: () =>
+          import(
+            '../features/public/landings/landing-abre-tu-llc-google/landing-abre-tu-llc-google.component'
+          ).then((m) => m.LandingAbreTuLlcGoogleComponent),
+        data: {
+          seo: {
+            title: 'Open your LLC in the United States (Google) - Start Companies',
+            description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
+            keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
+            ogTitle: 'Open your LLC in the United States - Start Companies',
+            ogDescription: 'We open your LLC in the United States quickly and safely.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/llc-formation-google'),
+          },
+        },
+      },
+      {
         path: 'presentation',
         loadComponent: () =>
           import(
@@ -1017,6 +1075,25 @@ export const routes: Routes = [
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
             canonical: getCanonicalUrl('/en/presentation'),
+          },
+        },
+      },
+      {
+        path: 'presentation-youtube',
+        loadComponent: () =>
+          import(
+            '../features/public/landings/landing-presentacion-youtube/landing-presentacion-youtube.component'
+          ).then((m) => m.LandingPresentacionYoutubeComponent),
+        data: {
+          seo: {
+            title: 'LLC Services Presentation (YouTube) - Start Companies',
+            description: 'Discover our LLC services in the United States.',
+            keywords: 'LLC services presentation United States, LLC USA services, Start Companies',
+            ogTitle: 'LLC Services Presentation - Start Companies',
+            ogDescription: 'Discover our LLC services in the United States.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/presentation-youtube'),
           },
         },
       },
@@ -1109,6 +1186,11 @@ export const routes: Routes = [
             (m) => m.LandingAgendarComponent
           ),
         data: {
+          agendaCal: {
+            containerId: 'my-cal-inline-agendaorganica',
+            namespace: 'agendaorganica',
+            calLink: 'startcompanies-businessenusa/agenda-organica',
+          },
           seo: {
             title: 'Schedule - Start Companies',
             description: 'Schedule a consultation with our experts.',
@@ -1118,6 +1200,30 @@ export const routes: Routes = [
             ogImage: getImageUrl('/assets/logo.png'),
             twitterSite: '@startcompaniess',
             canonical: getCanonicalUrl('/en/schedule'),
+          },
+        },
+      },
+      {
+        path: 'want-my-llc',
+        loadComponent: () =>
+          import('../features/public/landings/landing-agendar/landing-agendar.component').then(
+            (m) => m.LandingAgendarComponent
+          ),
+        data: {
+          agendaCal: {
+            containerId: 'my-cal-inline-agendaformmeta',
+            namespace: 'agendaformmeta',
+            calLink: 'startcompanies-businessenusa/agendaformmeta',
+          },
+          seo: {
+            title: 'Want my LLC - Schedule - Start Companies',
+            description: 'Schedule a consultation with our experts.',
+            keywords: 'schedule consultation, LLC, Start Companies',
+            ogTitle: 'Want my LLC - Start Companies',
+            ogDescription: 'Schedule a consultation with our experts.',
+            ogImage: getImageUrl('/assets/logo.png'),
+            twitterSite: '@startcompaniess',
+            canonical: getCanonicalUrl('/en/want-my-llc'),
           },
         },
       },

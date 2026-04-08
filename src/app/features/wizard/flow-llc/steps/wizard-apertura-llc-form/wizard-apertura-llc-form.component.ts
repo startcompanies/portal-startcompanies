@@ -2,11 +2,13 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormArray, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { IntlTelInputComponent } from '../../../../../shared/components/intl-tel-input/intl-tel-input.component';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { patchControlWithNormalizedPublicUrl } from '../../../../../shared/validators/web-url.validator';
 
 @Component({
   selector: 'app-wizard-apertura-llc-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent],
+  imports: [CommonModule, ReactiveFormsModule, IntlTelInputComponent, TranslocoPipe],
   templateUrl: './wizard-apertura-llc-form.component.html',
   styleUrl: './wizard-apertura-llc-form.component.css'
 })
@@ -155,5 +157,8 @@ export class WizardAperturaLlcFormComponent implements OnInit, OnChanges {
     return stateValue;
   }
 
+  onBlurNormalizePublicUrl(controlName: string): void {
+    patchControlWithNormalizedPublicUrl(this.serviceDataForm?.get(controlName));
+  }
 }
 

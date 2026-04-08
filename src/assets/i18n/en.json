@@ -1387,7 +1387,11 @@
       "settings": "Settings",
       "my_requests": "My Requests",
       "my_clients": "My Clients",
-      "service_history": "Service history"
+      "service_history": "Service history",
+      "lili_request": "Request Lili account"
+    },
+    "validation": {
+      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
     },
     "layout": {
       "back_to_site": "Back to site",
@@ -1433,6 +1437,10 @@
       },
       "new_request_draft": {
         "subtitle": "Continue completing the request"
+      },
+      "lili_request": {
+        "title": "Request Lili account",
+        "subtitle": "Complete the banking flow using your profile details"
       }
     },
     "language_modal": {
@@ -1478,6 +1486,14 @@
       "login_subtitle": "Enter your credentials to access the panel",
       "email_required": "Email is required",
       "remember_me": "Remember me",
+      "continue_login": "Continue",
+      "login_otp_subtitle": "Enter the 6-digit code we sent to your email.",
+      "otp_label": "Verification code",
+      "otp_invalid": "Enter 6 digits",
+      "verify_code": "Verify and sign in",
+      "verifying": "Verifying…",
+      "resend_code": "Resend code",
+      "back_credentials": "Back to sign in",
       "logging_in": "Signing in...",
       "register_title": "Create account",
       "full_name": "Full name",
@@ -1500,7 +1516,13 @@
       "reset_error_expired": "Could not reset the password. The link may have expired.",
       "set_password_success_redirect": "Password set successfully. Redirecting to login...",
       "set_password_error_expired": "Could not set the password. The link may have expired.",
-      "invalid_invite_token": "Invalid or missing invitation link."
+      "invalid_invite_token": "Invalid or missing invitation link.",
+      "trust_browser_title": "Trust this browser?",
+      "trust_browser_body": "We will not ask for the email code on this device for 180 days. This is revoked when you change your password.",
+      "trust_browser_yes": "Yes, remember",
+      "trust_browser_no": "No, thanks",
+      "trust_browser_saving": "Saving…",
+      "trust_browser_error": "Could not save this preference. You can continue anyway."
     },
     "admin_dashboard": {
       "title": "Admin dashboard",
@@ -1521,6 +1543,11 @@
       "type_llc_open": "LLC formation",
       "type_llc_renew": "LLC renewal",
       "type_bank": "Bank account"
+    },
+    "lili_request_page": {
+      "loading": "Preparing the form…",
+      "error": "Could not load the form. Try again or contact support.",
+      "missing_email": "Your account has no email on file. Update it in settings to continue."
     },
     "my_requests_page": {
       "title": "My requests",
@@ -1663,15 +1690,16 @@
         "service": "Service",
         "region": "Region",
         "scopes": "Scopes",
-        "scopes_hint": "Requested permissions.",
+        "scopes_hint": "OAuth permissions. Changing the service above fills typical values; adjust if your Zoho app requires different scopes.",
         "scopes_crm": "For CRM:",
         "scopes_workdrive": "For WorkDrive:",
-        "scopes_warning": "If you already have a configuration, re-authorize with the new scopes.",
         "client_id": "Client ID",
         "client_id_hint": "Client ID from your Zoho app",
         "client_secret": "Client Secret",
         "client_secret_hint": "Client secret from your Zoho app",
+        "client_secret_hint_keep": "Leave empty to keep the stored secret; fill only if you want to rotate it.",
         "client_secret_placeholder": "Your client secret",
+        "client_secret_placeholder_keep": "Unchanged (leave empty)",
         "save": "Save configuration",
         "update": "Update",
         "authorize": "Authorize with Zoho",
@@ -1686,6 +1714,7 @@
         "oauth_info_3": "The refresh token is saved automatically after authorization",
         "oauth_info_4": "Ensure the redirect URL in Zoho is:",
         "oauth_info_5_no_api": "(without /api)",
+        "oauth_info_scopes": "Recommended scopes are applied when you pick CRM or WorkDrive in the form.",
         "oauth_crm_scopes": "Required CRM scopes:",
         "oauth_workdrive_scopes": "Required WorkDrive scopes:",
         "confirm_delete": "Delete configuration for {{org}} - {{service}}?",
@@ -2288,6 +2317,7 @@
       "brief_desc": "Brief description",
       "brief_desc_help": "The description must be clear and concise. Do not exceed 300 characters and include only relevant information about the company.",
       "website_social": "Website or social media",
+      "website_social_ph": "https://yoursite.com or https://instagram.com/...",
       "ein_letter_attach": "Attach EIN letter",
       "ein_letter_hint": "The EIN document is in the client's Google Drive folder, under 'EIN Letter' in the 'Main Documents' subfolder. Formats: PDF, PNG, JPG, JPEG or DOCX (max. 10MB)",
       "ein_required": "You must attach the EIN letter.",

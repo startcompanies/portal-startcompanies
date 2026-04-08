@@ -496,8 +496,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       const instance = this.stepComponentRef.instance as any;
       if (typeof instance.registerUser === 'function') {
         const registered = await instance.registerUser();
-        // Si retorna false = usuario creado pero debe verificar email → igual avanzamos al paso EMAIL_VERIFICATION
-        // saveStepState ya guardará los datos que el componente haya puesto en el estado
+        if (registered === false) {
+          return;
+        }
       }
     }
 
@@ -545,16 +546,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Validaciones básicas según el tipo de paso
     switch (step.step) {
       case RequestFlowStep.REGISTER:
-        // En wizard: con "esperando código" solo se puede avanzar si existe el paso
-        // EMAIL_VERIFICATION; si no, quedaríamos sin token y el pago fallaría.
         if (this.context === RequestFlowContext.WIZARD) {
-          const instance: any = this.stepComponentRef?.instance;
-          const hasEmailVerificationStep = this.flowSteps.some(
-            (s) => s.step === RequestFlowStep.EMAIL_VERIFICATION,
-          );
-          if (instance?.waitingEmailVerification === true) {
-            return hasEmailVerificationStep;
-          }
           return !!this.wizardApiService?.isAuthenticated?.();
         }
         return true;

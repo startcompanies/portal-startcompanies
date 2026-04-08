@@ -1,39 +1,5 @@
-@if (initialTranslationsReady$ | async) {
-  <div class="app-layout">
-    <app-image-preloader></app-image-preloader>
-    <router-outlet />
-    <app-whatsapp-float></app-whatsapp-float>
-  </div>
-} @else {
-  <div class="skeleton-loader" aria-hidden="true">
-    <div class="skeleton-header">
-      <div class="skeleton-logo"></div>
-      <div class="skeleton-nav">
-        <span class="skeleton-line skeleton-nav-item"></span>
-        <span class="skeleton-line skeleton-nav-item"></span>
-        <span class="skeleton-line skeleton-nav-item"></span>
-      </div>
-    </div>
-    <div class="skeleton-content">
-      <div class="skeleton-hero">
-        <div class="skeleton-line skeleton-title"></div>
-        <div class="skeleton-line skeleton-subtitle"></div>
-      </div>
-      <div class="skeleton-blocks">
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line skeleton-line-short"></div>
-        <div class="skeleton-line skeleton-line-mid"></div>
-        <div class="skeleton-line skeleton-line-short"></div>
-      </div>
-      <div class="skeleton-blocks">
-        <div class="skeleton-line skeleton-line-mid"></div>
-        <div class="skeleton-line"></div>
-        <div class="skeleton-line skeleton-line-short"></div>
-      </div>
-    </div>
-    <div class="skeleton-footer">
-      <div class="skeleton-line skeleton-footer-line"></div>
-      <div class="skeleton-line skeleton-footer-line skeleton-line-short"></div>
-    </div>
-  </div>
-}
+<div class="app-layout">
+  <app-image-preloader></app-image-preloader>
+  <router-outlet />
+  <app-whatsapp-float></app-whatsapp-float>
+</div>

@@ -9,9 +9,10 @@ export interface ZohoConfig {
   service: string;
   region: string;
   scopes: string;
-  client_id: string;
-  client_secret: string;
-  refresh_token?: string;
+  /** Client ID (la API lo expone así para no chocar con el sanitizer de respuestas). */
+  zohoOAuthClientId: string;
+  zohoOAuthClientSecretConfigured: boolean;
+  hasRefreshToken: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -101,17 +102,19 @@ export class ZohoConfigService {
     service: string,
     region: string,
     client_id: string,
-    client_secret: string,
+    client_secret: string | undefined,
     scopes: string
   ): Observable<AuthorizationUrlResponse> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('org', org)
       .set('service', service)
       .set('region', region)
       .set('client_id', client_id)
-      .set('client_secret', client_secret)
       .set('scopes', scopes);
-    
+    const secret = client_secret?.trim();
+    if (secret) {
+      params = params.set('client_secret', secret);
+    }
     return this.http.get<AuthorizationUrlResponse>(`${this.apiUrl}/redirect`, { params });
   }
 }

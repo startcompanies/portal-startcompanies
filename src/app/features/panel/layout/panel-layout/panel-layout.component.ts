@@ -151,7 +151,6 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
-        { label: 'PANEL.menu.service_history', route: '/panel/service-history', icon: 'bi-clock-history', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_clients', route: '/panel/my-clients', icon: 'bi-people', roles: ['partner'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['partner'] },
       ];
@@ -160,7 +159,7 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
-        { label: 'PANEL.menu.service_history', route: '/panel/service-history', icon: 'bi-clock-history', roles: ['partner', 'client'] },
+        { label: 'PANEL.menu.lili_request', route: '/panel/lili-request', icon: 'bi-bank', roles: ['client'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['client'] },
       ];
     }

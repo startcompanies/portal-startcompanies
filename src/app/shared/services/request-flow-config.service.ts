@@ -3,7 +3,6 @@ import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from
 
 // Importaciones de componentes del wizard
 import { WizardBasicRegisterStepComponent } from '../../features/wizard/components/basic-register-step/basic-register-step.component';
-import { WizardEmailVerificationComponent } from '../../features/wizard/components/email-verification/email-verification.component';
 import { WizardStatePlanSelectionStepComponent } from '../../features/wizard/flow-llc/steps/state-plan-selection-step/state-plan-selection-step.component';
 import { WizardStateSelectionStepComponent } from '../../features/wizard/components/state-selection-step/state-selection-step.component';
 import { WizardPaymentStepComponent } from '../../features/wizard/components/payment-step/payment-step.component';
@@ -248,12 +247,11 @@ export class RequestFlowConfigService {
   }
 
   /**
-   * Apertura LLC (wizard): `/apertura-llc` — sesión tras registro, sin paso intermedio de verificación por código;
-   * el enlace de verificación va al cierre (backend). Lead `/apertura/lead` (crm-lead): verificación con código + sin pago.
+   * Apertura LLC (wizard): registro y JWT; la verificación del correo ocurre al iniciar sesión en el panel (2FA).
+   * Lead crm-lead: sin pago; sin paso de código en el wizard.
    */
   private buildWizardAperturaLlcSteps(source: 'wizard' | 'crm-lead' | 'panel'): FlowStepConfig[] {
     const isCrmLead = source === 'crm-lead';
-    const orderShift = isCrmLead ? 1 : 0;
     const steps: FlowStepConfig[] = [
       {
         step: RequestFlowStep.REGISTER,
@@ -263,23 +261,11 @@ export class RequestFlowConfigService {
         label: 'WIZARD.steps.step_register',
         icon: 'bi-person-plus',
       },
-    ];
-    if (isCrmLead) {
-      steps.push({
-        step: RequestFlowStep.EMAIL_VERIFICATION,
-        required: true,
-        component: WizardEmailVerificationComponent,
-        order: 2,
-        label: 'WIZARD.steps.step_verify_email',
-        icon: 'bi-envelope-check',
-      });
-    }
-    steps.push(
       {
         step: RequestFlowStep.PLAN_STATE_SELECTION,
         required: true,
         component: WizardStatePlanSelectionStepComponent,
-        order: 2 + orderShift,
+        order: 2,
         label: 'WIZARD.steps.step_state_plan',
         icon: 'bi-geo-alt',
       },
@@ -287,17 +273,17 @@ export class RequestFlowConfigService {
         step: RequestFlowStep.SERVICE_FORM,
         required: true,
         component: WizardLlcInformationStepComponent,
-        order: 3 + orderShift,
+        order: 3,
         label: 'WIZARD.steps.step_service_info',
         icon: 'bi-file-text',
       },
-    );
+    ];
     if (!isCrmLead) {
       steps.push({
         step: RequestFlowStep.PAYMENT,
         required: true,
         component: WizardPaymentStepComponent,
-        order: 4 + orderShift,
+        order: 4,
         label: 'WIZARD.steps.payment',
         icon: 'bi-credit-card',
       });
@@ -306,7 +292,7 @@ export class RequestFlowConfigService {
       step: RequestFlowStep.CONFIRMATION,
       required: true,
       component: WizardFinalReviewStepComponent,
-      order: 5 + orderShift,
+      order: isCrmLead ? 4 : 5,
       label: 'WIZARD.steps.step_confirmation',
       icon: 'bi-check-circle',
     });
@@ -314,10 +300,9 @@ export class RequestFlowConfigService {
   }
 
   /**
-   * Renovación LLC (wizard): independiente de apertura; incluye verificación de email y pago.
+   * Renovación LLC (wizard): registro, estado, formulario, pago. Verificación de correo en login del panel (2FA).
    */
   private buildWizardRenovacionLlcSteps(): FlowStepConfig[] {
-    const orderShift = 1;
     return [
       {
         step: RequestFlowStep.REGISTER,
@@ -328,18 +313,10 @@ export class RequestFlowConfigService {
         icon: 'bi-person-plus',
       },
       {
-        step: RequestFlowStep.EMAIL_VERIFICATION,
-        required: true,
-        component: WizardEmailVerificationComponent,
-        order: 2,
-        label: 'WIZARD.steps.step_verify_email',
-        icon: 'bi-envelope-check',
-      },
-      {
         step: RequestFlowStep.STATE_SELECTION,
         required: true,
         component: WizardStateSelectionStepComponent,
-        order: 3,
+        order: 2,
         label: 'WIZARD.steps.step_state',
         icon: 'bi-geo-alt',
       },
@@ -347,7 +324,7 @@ export class RequestFlowConfigService {
         step: RequestFlowStep.SERVICE_FORM,
         required: true,
         component: WizardRenovacionLlcInformationStepComponent,
-        order: 3 + orderShift,
+        order: 3,
         label: 'WIZARD.steps.step_service_info',
         icon: 'bi-file-text',
       },
@@ -355,7 +332,7 @@ export class RequestFlowConfigService {
         step: RequestFlowStep.PAYMENT,
         required: true,
         component: WizardPaymentStepComponent,
-        order: 4 + orderShift,
+        order: 4,
         label: 'WIZARD.steps.payment',
         icon: 'bi-credit-card',
       },
@@ -363,7 +340,7 @@ export class RequestFlowConfigService {
         step: RequestFlowStep.CONFIRMATION,
         required: true,
         component: WizardFinalReviewStepComponent,
-        order: 5 + orderShift,
+        order: 5,
         label: 'WIZARD.steps.step_confirmation',
         icon: 'bi-check-circle',
       },

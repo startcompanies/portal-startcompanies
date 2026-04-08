@@ -80,7 +80,19 @@
             </div>
             <div class="col-12 col-lg-6">
               <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
-              <input type="url" id="linkedin" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/...">
+              <input
+                type="text"
+                id="linkedin"
+                class="form-control"
+                [class.is-invalid]="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched"
+                formControlName="linkedin"
+                (blur)="onBlurNormalizePublicUrl('linkedin')"
+                placeholder="https://linkedin.com/..."
+                autocomplete="url"
+              />
+              <div *ngIf="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched" class="invalid-feedback d-block">
+                {{ 'PANEL.validation.public_web_url' | transloco }}
+              </div>
             </div>
           </div>
           
@@ -406,7 +418,19 @@
             
             <div class="col-md-12">
               <label for="projectOrCompanyUrl" class="form-label">URL del Proyecto o Empresa (Opcional)</label>
-              <input type="url" id="projectOrCompanyUrl" class="form-control" formControlName="projectOrCompanyUrl" placeholder="https://...">
+              <input
+                type="text"
+                id="projectOrCompanyUrl"
+                class="form-control"
+                [class.is-invalid]="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched"
+                formControlName="projectOrCompanyUrl"
+                (blur)="onBlurNormalizePublicUrl('projectOrCompanyUrl')"
+                placeholder="https://..."
+                autocomplete="url"
+              />
+              <div *ngIf="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched" class="invalid-feedback d-block">
+                {{ 'PANEL.validation.public_web_url' | transloco }}
+              </div>
             </div>
           </div>
           

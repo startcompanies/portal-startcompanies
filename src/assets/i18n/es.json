@@ -1403,7 +1403,11 @@
       "settings": "Configuración",
       "my_requests": "Mis Solicitudes",
       "my_clients": "Mis Clientes",
-      "service_history": "Historial de servicios"
+      "service_history": "Historial de servicios",
+      "lili_request": "Solicitar cuenta Lili"
+    },
+    "validation": {
+      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://)."
     },
     "layout": {
       "back_to_site": "Volver al sitio",
@@ -1449,6 +1453,10 @@
       },
       "new_request_draft": {
         "subtitle": "Continúa completando la solicitud"
+      },
+      "lili_request": {
+        "title": "Solicitar cuenta Lili",
+        "subtitle": "Completa el proceso bancario con los datos de tu perfil"
       }
     },
     "language_modal": {
@@ -1494,6 +1502,14 @@
       "login_subtitle": "Ingresa tus credenciales para acceder al panel",
       "email_required": "El correo es requerido",
       "remember_me": "Recordarme",
+      "continue_login": "Continuar",
+      "login_otp_subtitle": "Introduce el código de 6 dígitos que enviamos a tu correo.",
+      "otp_label": "Código de verificación",
+      "otp_invalid": "Introduce 6 dígitos",
+      "verify_code": "Verificar y entrar",
+      "verifying": "Verificando…",
+      "resend_code": "Reenviar código",
+      "back_credentials": "Volver al inicio de sesión",
       "logging_in": "Iniciando...",
       "register_title": "Crear cuenta",
       "full_name": "Nombre completo",
@@ -1516,7 +1532,13 @@
       "reset_error_expired": "Error al restablecer la contraseña. El token puede haber expirado.",
       "set_password_success_redirect": "Contraseña establecida exitosamente. Redirigiendo al login...",
       "set_password_error_expired": "Error al establecer la contraseña. El token puede haber expirado.",
-      "invalid_invite_token": "Token de invitación no válido o faltante."
+      "invalid_invite_token": "Token de invitación no válido o faltante.",
+      "trust_browser_title": "¿Recordar este navegador?",
+      "trust_browser_body": "No te pediremos el código por correo en este equipo durante 180 días. Puedes revocarlo al cambiar tu contraseña.",
+      "trust_browser_yes": "Sí, recordar",
+      "trust_browser_no": "No, gracias",
+      "trust_browser_saving": "Guardando…",
+      "trust_browser_error": "No se pudo guardar la preferencia. Puedes continuar igualmente."
     },
     "admin_dashboard": {
       "title": "Dashboard administrativo",
@@ -1537,6 +1559,11 @@
       "type_llc_open": "Apertura LLC",
       "type_llc_renew": "Renovación LLC",
       "type_bank": "Cuenta bancaria"
+    },
+    "lili_request_page": {
+      "loading": "Preparando el formulario…",
+      "error": "No se pudo cargar el formulario. Inténtalo de nuevo o contacta a soporte.",
+      "missing_email": "Tu cuenta no tiene correo en el perfil. Actualízalo en configuración para continuar."
     },
     "my_requests_page": {
       "title": "Mis solicitudes",
@@ -1679,15 +1706,16 @@
         "service": "Servicio",
         "region": "Región",
         "scopes": "Scopes",
-        "scopes_hint": "Permisos solicitados.",
+        "scopes_hint": "Permisos OAuth. Al cambiar el servicio arriba se rellenan valores habituales; ajústalos si tu app de Zoho lo requiere.",
         "scopes_crm": "Para CRM:",
         "scopes_workdrive": "Para WorkDrive:",
-        "scopes_warning": "Si ya tienes una configuración, necesitas re-autorizar con los nuevos scopes.",
         "client_id": "Client ID",
         "client_id_hint": "Client ID de tu aplicación Zoho",
         "client_secret": "Client Secret",
         "client_secret_hint": "Client Secret de tu aplicación Zoho",
+        "client_secret_hint_keep": "Déjalo vacío para conservar el secret ya guardado; rellénalo solo si quieres cambiarlo.",
         "client_secret_placeholder": "Tu client secret",
+        "client_secret_placeholder_keep": "Sin cambios (vacío)",
         "save": "Guardar configuración",
         "update": "Actualizar",
         "authorize": "Autorizar con Zoho",
@@ -1702,6 +1730,7 @@
         "oauth_info_3": "El refresh token se guardará automáticamente después de la autorización",
         "oauth_info_4": "Asegúrate de que la URL de redirección en Zoho sea:",
         "oauth_info_5_no_api": "(sin /api)",
+        "oauth_info_scopes": "Los scopes recomendados se aplican al elegir CRM o WorkDrive en el formulario.",
         "oauth_crm_scopes": "Scopes requeridos para CRM:",
         "oauth_workdrive_scopes": "Scopes requeridos para WorkDrive:",
         "confirm_delete": "¿Eliminar la configuración de {{org}} - {{service}}?",
@@ -2304,6 +2333,7 @@
       "brief_desc": "Descripción breve",
       "brief_desc_help": "La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.",
       "website_social": "Sitio web o red social",
+      "website_social_ph": "https://tusitio.com o https://instagram.com/...",
       "ein_letter_attach": "Adjuntar EIN Letter",
       "ein_letter_hint": "El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)",
       "ein_required": "Debes adjuntar el EIN Letter.",

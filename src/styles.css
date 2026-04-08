@@ -277,3 +277,17 @@ h2.note-heading {
 .mat-mdc-snack-bar-container.panel-snackbar-info {
   --mdc-snackbar-container-color: var(--color-primario, #0068bd);
 }
+
+/* ═══ LP CAMPAÑA: solo quitar Poppins del body y ocultar WhatsApp float ═══
+   El resto del aislamiento lo maneja el CSS del propio componente LP,
+   que se inyecta después de este archivo y tiene prioridad por orden de cascade. */
+body.lp-campaign-page {
+  font-family: unset !important;
+  background: unset !important;
+  max-width: unset !important;
+}
+
+/* Ocultar WhatsApp float global en LPs (tienen el suyo propio) */
+body.lp-campaign-page app-whatsapp-float {
+  display: none !important;
+}

@@ -109,3 +109,31 @@
 .input-group .form-control:focus + .btn-outline-secondary {
   border-color: var(--color-secundario-tecnico);
 }
+
+.letter-spacing-otp {
+  letter-spacing: 0.35em;
+}
+
+.alert-info {
+  background-color: #e7f3ff;
+  border: 1px solid #b6d9ff;
+  color: #084298;
+}
+
+.trust-browser-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.trust-browser-modal {
+  max-width: 420px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+}

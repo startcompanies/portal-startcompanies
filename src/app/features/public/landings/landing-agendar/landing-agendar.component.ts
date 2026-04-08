@@ -1,212 +1,223 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
-import { ResponsiveImage } from '../../../../shared/services/responsive-image.service';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
-import { TestimonialsComponent } from '../../../../features/public/home/sections/testimonials/testimonials.component';
-import { FaqComponent } from '../../../../features/public/home/sections/faq/faq.component';
-import { ScrollService } from '../../../../shared/services/scroll.service';
-import { Subscription } from 'rxjs';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { LandingStaticLpBootstrapService } from '../../../../shared/services/landing-static-lp-bootstrap.service';
 import { BrowserService } from '../../../../shared/services/browser.service';
+
+export interface AgendaCalEmbedConfig {
+  containerId: string;
+  namespace: string;
+  calLink: string;
+}
 
 @Component({
   selector: 'app-landing-agendar',
   standalone: true,
-  imports: [
-    ResponsiveImageComponent,
-    TestimonialsComponent,
-    FaqComponent,
-    TranslocoPipe
-  ],
   templateUrl: './landing-agendar.component.html',
   styleUrl: './landing-agendar.component.css',
 })
-export class LandingAgendarComponent implements OnInit, AfterViewInit{
-  @ViewChild('calendly', { static: false })
-  calendlySection!: ElementRef<HTMLElement>;
+export class LandingAgendarComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChild('root', { static: false }) rootRef!: ElementRef<HTMLElement>;
 
-  private scrollSubscription!: Subscription;
-  showFloatingButton = false;
-  scrollDepth = 0;
-
-  // Parámetros de URL para Cal.com
-  crmId: string = '';
-  email: string = '';
-  firstName: string = '';
-  lastName: string = '';
-  fullName: string = '';
-
-  // Hero images
-  heroImages: ResponsiveImage = {
-    mobile: '/assets/hero-bg-mobile.webp',
-    tablet: '/assets/hero-bg-tablet.webp',
-    desktop: '/assets/hero-bg-desktop.webp',
-    fallback: '/assets/hero-bg.webp',
-    alt: 'Hero Background',
-    priority: true,
-  };
-
-  // Configuración de imágenes del logo para NgOptimizedImage
-  logoImages = {
-    mobile: '/assets/logo-mobile.webp',
-    tablet: '/assets/logo-tablet.webp',
-    desktop: '/assets/logo.webp',
-    fallback: '/assets/logo.png',
-    alt: 'Start Companies Logo',
-    priority: true,
-  };
+  readonly calEmbed: AgendaCalEmbedConfig;
 
   constructor(
     private facebookPixelService: FacebookPixelService,
-    private scrollService: ScrollService,
-    private route: ActivatedRoute,
-    private browser: BrowserService
-  ) {}
+    private bootstrap: LandingStaticLpBootstrapService,
+    private browser: BrowserService,
+    private route: ActivatedRoute
+  ) {
+    const fromRoute = this.route.snapshot.data['agendaCal'] as
+      | AgendaCalEmbedConfig
+      | undefined;
+    this.calEmbed =
+      fromRoute ?? {
+        containerId: 'my-cal-inline-agendaorganica',
+        namespace: 'agendaorganica',
+        calLink: 'startcompanies-businessenusa/agenda-organica',
+      };
+  }
 
   ngOnInit(): void {
-    // Capturar parámetros de URL para logging/debug
-    this.route.queryParams.subscribe(params => {
-      this.crmId = params['crm'] || '';
-      this.email = params['email'] || '';
-      this.firstName = params['firstname'] || '';
-      this.lastName = params['lastname'] || '';
-      this.fullName = `${this.firstName} ${this.lastName}`.trim();
-      
-      console.log('URL Parameters detected:', {
-        crmId: this.crmId,
-        email: this.email,
-        firstName: this.firstName,
-        lastName: this.lastName,
-        fullName: this.fullName
-      });
-      
-      // Actualizar la URL para que Cal.com pueda leer los parámetros correctamente (solo en navegador)
+    if (this.browser.isBrowser) {
+      document.body.classList.add('lp-campaign-page');
+    }
+    this.facebookPixelService.initializePixel('llc');
+    this.facebookPixelService.trackViewContent('Agendar consulta', 'LLC Services');
+    this.route.queryParams.subscribe(() => {
       if (this.browser.isBrowser) {
         this.updateUrlForCalCom();
       }
     });
   }
 
-  ngAfterViewInit(): void {
-      this.scrollSubscription = this.scrollService.scrollTarrget$.subscribe(
-        (sectionId) => {
-          this.scrollTargetSection(sectionId);
-        }
-      );
-      
-      // Inicializar Cal.com después de que la vista esté lista
-      if (this.browser.isBrowser) {
-        this.initializeCalCom();
-      }
-  }
-  
-  scrollTargetSection(sectionId: string) {
-    const element = this.calendlySection?.nativeElement;
-    if (element instanceof HTMLElement) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      console.warn('calendlySection no es un HTMLElement válido:', element);
+  ngOnDestroy(): void {
+    if (this.browser.isBrowser) {
+      document.body.classList.remove('lp-campaign-page');
     }
   }
 
-  navigateToCalendlySection() {
-    this.scrollService.scrollTo('calendlySection');
-  }
-
-  // Método para trackear clicks en calendario
-  onCalendlyClick(): void {
-    this.facebookPixelService.trackLead(
-      'Cal.com CTA - Abre tu LLC',
-      'LLC Services',
-      0.0
-    );
+  ngAfterViewInit(): void {
+    if (!this.browser.isBrowser) {
+      return;
+    }
+    setTimeout(() => {
+      this.bootstrap.initAgendaCalEmbed(
+        this.calEmbed.containerId,
+        this.calEmbed.calLink,
+        this.calEmbed.namespace
+      );
+      const host = this.rootRef?.nativeElement;
+      if (host) {
+        this.attachAgendarAnimations(host);
+      }
+    }, 0);
   }
 
   private updateUrlForCalCom(): void {
     const win = this.browser.window;
-    if (!win) return;
-    
-    if (this.fullName || this.email || this.crmId) {
-      const url = new URL(win.location.href);
-      
-      // Mapear parámetros a los nombres que espera Cal.com
-      if (this.fullName) {
-        url.searchParams.set('name', this.fullName);
-      }
-      if (this.email) {
-        url.searchParams.set('email', this.email);
-      }
-      if (this.crmId) {
-        url.searchParams.set('idcrm', this.crmId);
-      }
-      
-      // Actualizar la URL sin recargar la página
-      win.history.replaceState({}, '', url.toString());
-      
-      console.log('URL updated for Cal.com:', url.toString());
+    if (!win) {
+      return;
     }
+    const params = this.route.snapshot.queryParams;
+    const firstName = params['firstname'] ?? '';
+    const lastName = params['lastname'] ?? '';
+    const fullName = `${firstName} ${lastName}`.trim();
+    const email = params['email'] ?? '';
+    const crm = params['crm'] ?? '';
+    if (!fullName && !email && !crm) {
+      return;
+    }
+    const url = new URL(win.location.href);
+    if (fullName) {
+      url.searchParams.set('name', fullName);
+    }
+    if (email) {
+      url.searchParams.set('email', email);
+    }
+    if (crm) {
+      url.searchParams.set('idcrm', crm);
+    }
+    win.history.replaceState({}, '', url.toString());
   }
 
-  private initializeCalCom(): void {
-    const doc = this.browser.document;
+  private attachAgendarAnimations(host: HTMLElement): void {
     const win = this.browser.window;
-    if (!doc || !win) return;
-    
-    // Cargar el script de Cal.com con auto-forwarding de query parameters
-    const script = doc.createElement('script');
-    script.type = 'text/javascript';
-    script.innerHTML = `
-      (function (C, A, L) { 
-        let p = function (a, ar) { a.q.push(ar); }; 
-        let d = C.document; 
-        C.Cal = C.Cal || function () { 
-          let cal = C.Cal; 
-          let ar = arguments; 
-          if (!cal.loaded) { 
-            cal.ns = {}; 
-            cal.q = cal.q || []; 
-            d.head.appendChild(d.createElement("script")).src = A; 
-            cal.loaded = true; 
-          } 
-          if (ar[0] === L) { 
-            const api = function () { p(api, arguments); }; 
-            const namespace = ar[1]; 
-            api.q = api.q || []; 
-            if(typeof namespace === "string"){
-              cal.ns[namespace] = cal.ns[namespace] || api;
-              p(cal.ns[namespace], ar);
-              p(cal, ["initNamespace", namespace]);
-            } else p(cal, ar); 
-            return;
-          } 
-          p(cal, ar); 
-        }; 
-      })(window, "https://app.cal.com/embed/embed.js", "init");
-      
-      // Habilitar auto-forwarding de query parameters
-      Cal.config = Cal.config || {};
-      Cal.config.forwardQueryParams = true;
-      
-      Cal("init", "agendaformmeta", {origin:"https://app.cal.com"});
+    if (!win) {
+      return;
+    }
 
-      Cal.ns.agendaformmeta("inline", {
-        elementOrSelector:"#my-cal-inline-agendaformmeta",
-        config: {"layout":"month_view","theme":"light"},
-        calLink: "startcompanies-businessenusa/agendaformmeta"
-      });
+    const animateCounter = (
+      el: HTMLElement,
+      target: number,
+      duration: number,
+      decimals: boolean,
+      resetVal: string
+    ) => {
+      if ((el as unknown as { _animating?: boolean })._animating) {
+        return;
+      }
+      (el as unknown as { _animating: boolean })._animating = true;
+      const startTime = win.performance.now();
+      const update = (now: number) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = eased * target;
+        if (decimals) {
+          el.textContent = current.toFixed(1);
+        } else {
+          const rounded = Math.floor(current);
+          el.textContent = rounded >= 1000 ? '1,000' : String(rounded);
+        }
+        if (progress < 1) {
+          win.requestAnimationFrame(update);
+        } else {
+          el.textContent = decimals
+            ? target.toFixed(1)
+            : target >= 1000
+              ? '1,000'
+              : String(target);
+          (el as unknown as { _animating: boolean })._animating = false;
+        }
+      };
+      win.requestAnimationFrame(update);
+    };
 
-      Cal.ns.agendaformmeta("ui", {
-        "theme":"light",
-        "cssVarsPerTheme":{
-          "light":{"cal-brand":"#006AFE"},
-          "dark":{"cal-brand":"#fafafa"}
-        },
-        "hideEventTypeDetails":false,
-        "layout":"month_view"
+    const setupCounter = (
+      boxId: string,
+      elId: string,
+      target: number,
+      duration: number,
+      decimals: boolean,
+      resetVal: string
+    ) => {
+      const el = host.querySelector(`#${elId}`) as HTMLElement | null;
+      const box = host.querySelector(`#${boxId}`) as HTMLElement | null;
+      if (!el || !box) {
+        return;
+      }
+      win.setTimeout(() => animateCounter(el, target, duration, decimals, resetVal), 300);
+      box.addEventListener('mouseenter', () => {
+        el.textContent = resetVal;
+        (el as unknown as { _animating?: boolean })._animating = false;
+        animateCounter(el, target, duration, decimals, resetVal);
       });
-    `;
-    
-    doc.head.appendChild(script);
+      box.addEventListener('click', () => {
+        el.textContent = resetVal;
+        (el as unknown as { _animating?: boolean })._animating = false;
+        animateCounter(el, target, duration, decimals, resetVal);
+      });
+    };
+
+    setupCounter('llc-count-box', 'llc-counter', 1000, 2000, false, '0');
+    setupCounter('tp-count-box', 'tp-counter', 4.9, 1600, true, '0.0');
+    setupCounter('rev-count-box', 'rev-counter', 200, 1800, false, '0');
+    setupCounter('days-count-box', 'days-counter', 7, 1000, false, '1');
+    setupCounter('remote-count-box', 'remote-counter', 100, 1400, false, '0');
+
+    const bar = host.querySelector('#slots-bar-fill') as HTMLElement | null;
+    const label = host.querySelector('#slots-label-count') as HTMLElement | null;
+    const dots = host.querySelector('#slots-dots') as HTMLElement | null;
+    if (!bar || !label || !dots) {
+      return;
+    }
+    const TOTAL = 14;
+    const TAKEN = 10;
+    dots.innerHTML = '';
+    for (let i = 0; i < TOTAL; i++) {
+      const d = win.document.createElement('div');
+      d.className = 'slot-dot avail';
+      d.id = `sdot-${i}`;
+      dots.appendChild(d);
+    }
+    bar.style.transition = 'none';
+    bar.style.width = '0%';
+    label.textContent = `0 / ${TOTAL}`;
+    let filled = 0;
+    const step = () => {
+      if (filled >= TAKEN) {
+        return;
+      }
+      const dot = host.querySelector(`#sdot-${filled}`);
+      if (dot) {
+        dot.classList.remove('avail');
+        dot.classList.add('taken');
+      }
+      filled++;
+      const pct = Math.round((filled / TOTAL) * 100);
+      bar.style.transition = 'width 0.1s ease';
+      bar.style.width = `${pct}%`;
+      label.textContent = `${filled} / ${TOTAL}`;
+      win.setTimeout(step, 130);
+    };
+    win.setTimeout(step, 700);
   }
 }

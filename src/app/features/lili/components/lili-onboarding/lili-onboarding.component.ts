@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { LiliService } from '../../services/lili.service';
-import { environment } from '../../../../../environments/environment';
+import { LiliEmbedService } from '../../services/lili-embed.service';
 import { parseLiliLinkToken } from '../../utils/lili-link-token.util';
 
 @Component({
@@ -18,12 +17,9 @@ export class LiliOnboardingComponent implements OnInit, OnDestroy {
   loading = true;
   error = false;
 
-  private scriptEl: HTMLScriptElement | null = null;
-
   constructor(
     private route: ActivatedRoute,
-    private liliService: LiliService,
-    @Inject(DOCUMENT) private document: Document
+    private liliEmbed: LiliEmbedService,
   ) {}
 
   async ngOnInit() {
@@ -42,10 +38,15 @@ export class LiliOnboardingComponent implements OnInit, OnDestroy {
         businessName: payload.businessName,
       };
 
-      const { token } = await this.liliService.createApplication(applicationData);
-
       this.loading = false;
-      setTimeout(() => this.injectLiliScript(token), 100);
+      setTimeout(async () => {
+        try {
+          await this.liliEmbed.mountEmbed(applicationData);
+        } catch (e) {
+          console.error('[Lili] Error al montar embed:', e);
+          this.error = true;
+        }
+      }, 100);
     } catch (err) {
       console.error('[Lili] Error al iniciar onboarding:', err);
       this.loading = false;
@@ -53,24 +54,7 @@ export class LiliOnboardingComponent implements OnInit, OnDestroy {
     }
   }
 
-  private injectLiliScript(token: string): void {
-    const existing = this.document.getElementById('lili-onboarding-iframe');
-    if (existing) existing.remove();
-
-    const script = this.document.createElement('script');
-    script.src = 'https://cdn.lili.co/connect.min.js';
-    script.id = 'lili-onboarding-iframe';
-    script.setAttribute('data-target-div', 'lili');
-    script.setAttribute('data-token', token);
-    script.setAttribute('data-env', environment.liliEnv);
-    this.document.body.appendChild(script);
-    this.scriptEl = script;
-  }
-
   ngOnDestroy(): void {
-    if (this.scriptEl) {
-      this.scriptEl.remove();
-      this.scriptEl = null;
-    }
+    this.liliEmbed.removeConnectScript();
   }
 }

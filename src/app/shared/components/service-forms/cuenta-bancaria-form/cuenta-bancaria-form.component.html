@@ -56,7 +56,19 @@
 
       <div class="col-md-6">
         <label for="websiteOrSocialMedia" class="form-label">{{ 'PANEL.forms_cuenta_bancaria.website_social' | transloco }}</label>
-        <input type="text" id="websiteOrSocialMedia" class="form-control" formControlName="websiteOrSocialMedia" placeholder="123">
+        <input
+          type="text"
+          id="websiteOrSocialMedia"
+          class="form-control"
+          [class.is-invalid]="serviceDataForm.get('websiteOrSocialMedia')?.invalid && serviceDataForm.get('websiteOrSocialMedia')?.touched"
+          formControlName="websiteOrSocialMedia"
+          (blur)="onBlurNormalizePublicUrl('websiteOrSocialMedia')"
+          [attr.placeholder]="'PANEL.forms_cuenta_bancaria.website_social_ph' | transloco"
+          autocomplete="url"
+        />
+        <div *ngIf="serviceDataForm.get('websiteOrSocialMedia')?.invalid && serviceDataForm.get('websiteOrSocialMedia')?.touched" class="invalid-feedback d-block">
+          {{ 'PANEL.validation.public_web_url' | transloco }}
+        </div>
       </div>
 
       <div class="col-md-6">

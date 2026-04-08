@@ -29,4 +29,9 @@ const CONTACT = {
   },
 } as const;
 
-export { DOMAIN, CONTACT };
+/** API propia que devuelve el token para el embed Lili (`connect.min.js`). */
+const LILI = {
+  createApplicationUrl: 'https://lili-api.startcompanies.io/lili/create-application',
+} as const;
+
+export { DOMAIN, CONTACT, LILI };
