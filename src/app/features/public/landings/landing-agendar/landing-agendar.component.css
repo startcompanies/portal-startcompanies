@@ -11,7 +11,7 @@
 /* Host: neutralizar flex del app-layout */
 app-landing-presentacion, app-landing-abre-tu-llc, app-landing-abre-tu-llc-google,
 app-landing-llc-7-dias, app-landing-asesoria-llc, app-landing-presentacion-youtube,
-app-landing-agendar {
+app-landing-evaluar-caso, app-landing-agendar {
   display: block !important;
   flex: unset !important;
   min-height: unset !important;
@@ -1021,4 +1021,12 @@ app-landing-agendar {
       .lp-campaign .footer { padding: 18px; }
       .lp-campaign .footer-links { display: none; }
     }
-  
+
+/* ═══ DESKTOP (≥768px): layout ~40% más ancho — landing-agendar; mobile igual ═══ */
+@media (min-width: 768px) {
+  .lp-campaign .hero-inner { max-width: 980px; }
+  .lp-campaign .hero-sub { max-width: 728px; }
+  .lp-campaign .page-body { max-width: 1540px; }
+  .lp-campaign .hero-counters { max-width: 952px; }
+}
+   
