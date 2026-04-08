@@ -15,7 +15,7 @@ export const environment = {
   },
   baseUrl: DOMAIN.production,
   domain: DOMAIN.domainName.production,
-  wizardAndPanelEnabled: false,
+  wizardAndPanelEnabled: true,
   stripe: {
     publishableKey: 'pk_live_51RxougCXN5dWfp7VoKSk5fllYIm8UFcj46VNTNUs8mFq3YsGaMWycVkcX2SQsyG4vYLW99yzypRoWmlw0F5vO8vi00ks79Ixbc',
   },
