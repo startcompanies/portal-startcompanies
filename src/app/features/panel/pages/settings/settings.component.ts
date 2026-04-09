@@ -21,6 +21,7 @@ import {
   PanelUserPreferences,
 } from '../../services/panel-preferences.service';
 import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
+import { normalizeAuthEmailInput } from '../../../../shared/utils/normalize-auth-email';
 
 @Component({
   selector: 'app-settings',
@@ -367,7 +368,9 @@ export class SettingsComponent implements OnInit {
       this.saveError = this.transloco.translate('PANEL.settings_page.security_section.mismatch');
       return;
     }
-    const email = this.currentUser?.email || this.profileForm.get('email')?.value;
+    const email = normalizeAuthEmailInput(
+      this.currentUser?.email || this.profileForm.get('email')?.value,
+    );
     if (!email) {
       this.saveError = this.transloco.translate('PANEL.settings_page.errors.password_change');
       return;

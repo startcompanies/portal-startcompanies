@@ -15,6 +15,7 @@ import {
 import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { BrowserService } from '../../../shared/services/browser.service';
+import { normalizeAuthEmailInput } from '../../../shared/utils/normalize-auth-email';
 
 export interface User {
   id: number;
@@ -199,7 +200,7 @@ export class AuthService {
     credentials: LoginCredentials,
   ): Observable<AuthResponse | SignInSecondFactorResponse> {
     const body = {
-      email: credentials.email,
+      email: normalizeAuthEmailInput(credentials.email),
       password: credentials.password,
       rememberMe: Boolean(credentials.rememberMe),
     };
@@ -297,11 +298,16 @@ export class AuthService {
   }
 
   register(data: RegisterData): Observable<User> {
-    return this.http.post<User>(`${AUTH_BASE}/signup`, data);
+    return this.http.post<User>(`${AUTH_BASE}/signup`, {
+      ...data,
+      email: normalizeAuthEmailInput(data.email),
+    });
   }
 
   forgotPassword(email: string): Observable<any> {
-    return this.http.post(`${AUTH_BASE}/forgot-password`, { email });
+    return this.http.post(`${AUTH_BASE}/forgot-password`, {
+      email: normalizeAuthEmailInput(email),
+    });
   }
 
   resetPassword(token: string, newPassword: string): Observable<any> {
@@ -312,7 +318,9 @@ export class AuthService {
   }
 
   sendVerificationEmail(email: string): Observable<any> {
-    return this.http.post(`${AUTH_BASE}/send-verification-email`, { email });
+    return this.http.post(`${AUTH_BASE}/send-verification-email`, {
+      email: normalizeAuthEmailInput(email),
+    });
   }
 
   verifyEmail(token: string): Observable<AuthResponse> {
