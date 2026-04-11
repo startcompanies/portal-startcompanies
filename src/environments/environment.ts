@@ -14,8 +14,8 @@ export const environment = {
     relayPixelId: '',
     debug: true,
   },
-  baseUrl: DOMAIN.production,
-  domain: DOMAIN.domainName.production,
+  baseUrl: 'http://localhost:4200',
+  domain: 'localhost:4200',
   wizardAndPanelEnabled: true,
   stripe: {
     publishableKey:

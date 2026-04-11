@@ -13,6 +13,10 @@ import { ServiceFormBuilderService } from '../../../../shared/services/form-buil
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
 import { TranslocoPipe } from '@jsverse/transloco';
+import {
+  isOptionalPublicWebUrlControlOk,
+  patchOptionalPublicUrlControlsByName,
+} from '../../../../shared/validators/web-url.validator';
 
 /**
  * Componente wrapper para usar cuenta-bancaria-form en el panel.
@@ -160,8 +164,13 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
     const f = this.serviceDataForm;
     switch (this.currentSection) {
       case 1:
-        return !!(f.get('legalBusinessName')?.valid && f.get('industry')?.valid &&
-                  f.get('numberOfEmployees')?.valid && f.get('briefDescription')?.valid);
+        return !!(
+          f.get('legalBusinessName')?.valid &&
+          f.get('industry')?.valid &&
+          f.get('numberOfEmployees')?.valid &&
+          f.get('briefDescription')?.valid &&
+          isOptionalPublicWebUrlControlOk(f.get('websiteOrSocialMedia'))
+        );
       case 2:
         return !!(f.get('registeredAgentStreet')?.valid && f.get('registeredAgentCity')?.valid &&
                   f.get('registeredAgentState')?.valid && f.get('registeredAgentZipCode')?.valid);
@@ -185,7 +194,10 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
             return false;
           }
         }
-        return ownersArray.controls.every(owner => owner.valid);
+        return (
+          ownersArray.controls.every((owner) => owner.valid) &&
+          isOptionalPublicWebUrlControlOk(f.get('websiteOrSocialMedia'))
+        );
       }
       default:
         return true;
@@ -196,8 +208,13 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
     const f = this.serviceDataForm;
     switch (this.currentSection) {
       case 1:
-        ['legalBusinessName', 'industry', 'numberOfEmployees', 'briefDescription']
-          .forEach(k => f.get(k)?.markAsTouched());
+        [
+          'legalBusinessName',
+          'industry',
+          'numberOfEmployees',
+          'briefDescription',
+          'websiteOrSocialMedia',
+        ].forEach(k => f.get(k)?.markAsTouched());
         break;
       case 2:
         ['registeredAgentStreet', 'registeredAgentCity', 'registeredAgentState', 'registeredAgentZipCode']
@@ -216,7 +233,10 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
         f.get('isMultiMember')?.markAsTouched();
         break;
       case 6:
-        (f.get('owners') as FormArray)?.controls.forEach(owner => (owner as FormGroup).markAllAsTouched());
+        (f.get('owners') as FormArray)?.controls.forEach(owner =>
+          (owner as FormGroup).markAllAsTouched(),
+        );
+        f.get('websiteOrSocialMedia')?.markAsTouched();
         break;
     }
   }
@@ -231,6 +251,11 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
   }
 
   async goToNextSection(): Promise<void> {
+    if (this.currentSection === 1 || this.currentSection === 6) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+        'websiteOrSocialMedia',
+      ]);
+    }
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;
@@ -259,6 +284,9 @@ export class PanelCuentaBancariaInformationStepComponent implements OnInit, OnDe
   }
 
   async onLastSectionNext(): Promise<void> {
+    patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+      'websiteOrSocialMedia',
+    ]);
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;

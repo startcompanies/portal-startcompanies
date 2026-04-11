@@ -60,7 +60,7 @@
       <div class="col-md-6">
         <label for="websiteOrSocialMedia" class="form-label">{{ 'PANEL.forms_cuenta_bancaria.website_social' | transloco }}</label>
         <input
-          type="text"
+          type="url"
           id="websiteOrSocialMedia"
           class="form-control"
           [class.is-invalid]="serviceDataForm.get('websiteOrSocialMedia')?.invalid && serviceDataForm.get('websiteOrSocialMedia')?.touched"

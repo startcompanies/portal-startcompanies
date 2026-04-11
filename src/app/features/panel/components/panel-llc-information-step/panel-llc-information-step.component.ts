@@ -12,6 +12,10 @@ import { WizardPlansService } from '../../../wizard/services/wizard-plans.servic
 import { WizardStateService } from '../../../wizard/services/wizard-state.service';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { isMultiMemberParticipationTotal100 } from '../../../../shared/utils/member-participation-total.util';
+import {
+  isOptionalPublicWebUrlControlOk,
+  patchOptionalPublicUrlControlsByName,
+} from '../../../../shared/validators/web-url.validator';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { environment } from '../../../../../environments/environment';
@@ -401,8 +405,13 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       const llcType = this.serviceDataForm.get('llcType');
       const llcName = this.serviceDataForm.get('llcName');
       const businessDescription = this.serviceDataForm.get('businessDescription');
-      
-      return !!(llcType?.valid && llcName?.valid && businessDescription?.valid);
+
+      return !!(
+        llcType?.valid &&
+        llcName?.valid &&
+        businessDescription?.valid &&
+        isOptionalPublicWebUrlControlOk(this.serviceDataForm.get('linkedin'))
+      );
     }
     
     if (this.currentSection === 2) {
@@ -432,7 +441,10 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         this.serviceDataForm.get('periodicIncome10k')?.valid &&
         this.serviceDataForm.get('bankAccountLinkedEmail')?.valid &&
         this.serviceDataForm.get('bankAccountLinkedPhone')?.valid &&
-        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid
+        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid &&
+        isOptionalPublicWebUrlControlOk(
+          this.serviceDataForm.get('projectOrCompanyUrl'),
+        )
       );
     }
 
@@ -455,6 +467,13 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
    * Navega a la siguiente sección (guarda en API antes de avanzar).
    */
   async goToNextSection(): Promise<void> {
+    if (this.currentSection === 1) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, ['linkedin']);
+    } else if (this.currentSection === 3) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+        'projectOrCompanyUrl',
+      ]);
+    }
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;
@@ -480,6 +499,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('llcType')?.markAsTouched();
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('businessDescription')?.markAsTouched();
+      this.serviceDataForm.get('linkedin')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -496,6 +516,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('bankAccountLinkedEmail')?.markAsTouched();
       this.serviceDataForm.get('bankAccountLinkedPhone')?.markAsTouched();
       this.serviceDataForm.get('actividadFinancieraEsperada')?.markAsTouched();
+      this.serviceDataForm.get('projectOrCompanyUrl')?.markAsTouched();
     }
   }
 
@@ -556,6 +577,10 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
    * Al pulsar "Siguiente" en la última sección: guardar en API, actualizar estado y emitir nextStepRequested.
    */
   async onLastSectionNext(): Promise<void> {
+    patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+      'linkedin',
+      'projectOrCompanyUrl',
+    ]);
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;

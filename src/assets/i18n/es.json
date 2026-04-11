@@ -2273,7 +2273,7 @@
       "single_member_locked": "Single Member LLC",
       "plan_single_only": "Este plan solo permite Single Member.",
       "linkedin_optional": "LinkedIn (opcional)",
-      "linkedin_ph": "https://linkedin.com/...",
+      "linkedin_ph": "https://linkedin.com/in/... o linkedin.com (dominio con punto)",
       "s2_title": "SECCIÓN: INFORMACIÓN DEL PROPIETARIO O SOCIOS",
       "s2_important": "Importante:",
       "s2_ensure_all": "Asegúrate de ingresar la información de todos los propietarios o socios.",
@@ -2315,7 +2315,7 @@
       "expected_activity": "Actividad financiera esperada",
       "expected_activity_ph": "Explique el uso esperado de la cuenta bancaria (Ejemplo: «Recibir pagos de clientes internacionales»).",
       "project_url": "URL del proyecto o empresa (opcional)",
-      "project_url_ph": "https://..."
+      "project_url_ph": "https://miempresa.com o miempresa.com (se normaliza a https)"
     },
     "forms_cuenta_bancaria": {
       "s1_heading": "SECCIÓN: INFORMACIÓN DE LA LLC",
@@ -2333,7 +2333,7 @@
       "brief_desc": "Descripción breve",
       "brief_desc_help": "La descripción debe ser clara y concisa. No excedas los 300 caracteres e incluye solo información relevante sobre la empresa.",
       "website_social": "Sitio web o red social",
-      "website_social_ph": "https://tusitio.com o https://instagram.com/...",
+      "website_social_ph": "https://tusitio.com o instagram.com (dominio con punto; se normaliza a https)",
       "ein_letter_attach": "Adjuntar EIN Letter",
       "ein_letter_hint": "El documento EIN se encuentra en la carpeta de Google Drive del cliente, bajo el nombre 'EIN Letter' en la subcarpeta 'Main Documents'. Formatos: PDF, PNG, JPG, JPEG o DOCX (máx. 10MB)",
       "ein_required": "Debes adjuntar el EIN Letter.",

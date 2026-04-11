@@ -2257,7 +2257,7 @@
       "single_member_locked": "Single Member LLC",
       "plan_single_only": "This plan only allows Single Member.",
       "linkedin_optional": "LinkedIn (optional)",
-      "linkedin_ph": "https://linkedin.com/...",
+      "linkedin_ph": "https://linkedin.com/in/... or linkedin.com (domain with a dot)",
       "s2_title": "SECTION: OWNER OR MEMBER INFORMATION",
       "s2_important": "Important:",
       "s2_ensure_all": "Make sure you enter information for all owners or members.",
@@ -2299,7 +2299,7 @@
       "expected_activity": "Expected financial activity",
       "expected_activity_ph": "Describe expected use of the bank account (e.g. receiving payments from international clients).",
       "project_url": "Project or company URL (optional)",
-      "project_url_ph": "https://..."
+      "project_url_ph": "https://example.com or example.com (normalized to https)"
     },
     "forms_cuenta_bancaria": {
       "s1_heading": "SECTION: LLC INFORMATION",
@@ -2317,7 +2317,7 @@
       "brief_desc": "Brief description",
       "brief_desc_help": "The description must be clear and concise. Do not exceed 300 characters and include only relevant information about the company.",
       "website_social": "Website or social media",
-      "website_social_ph": "https://yoursite.com or https://instagram.com/...",
+      "website_social_ph": "https://yoursite.com or instagram.com (domain with a dot; normalized to https)",
       "ein_letter_attach": "Attach EIN letter",
       "ein_letter_hint": "The EIN document is in the client's Google Drive folder, under 'EIN Letter' in the 'Main Documents' subfolder. Formats: PDF, PNG, JPG, JPEG or DOCX (max. 10MB)",
       "ein_required": "You must attach the EIN letter.",
