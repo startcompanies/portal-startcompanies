@@ -684,6 +684,55 @@ export class RequestDetailComponent implements OnInit {
     return parts.join(' ').trim();
   }
 
+  /** Resumen de pago en el modal de datos completos (admin). */
+  hasPaymentSummaryForModal(data: ApiRequest | null): boolean {
+    if (!data) return false;
+    const ps = String(data.paymentStatus ?? '').toLowerCase();
+    if (ps === 'succeeded' || ps === 'paid') return true;
+    if (data.paymentMethod === 'free') return true;
+    if (data.stripeChargeId && String(data.stripeChargeId).trim()) return true;
+    if (data.paymentProofUrl && String(data.paymentProofUrl).trim()) return true;
+    const amt = this.parsePaymentAmount(data.paymentAmount);
+    if (amt != null && amt > 0 && (data.paymentMethod || ps)) return true;
+    return false;
+  }
+
+  formatModalPaymentAmount(data: ApiRequest | null): string {
+    const na = this.transloco.translate('PANEL.request_detail.fd_payment_na');
+    if (!data) return na;
+    const n = this.parsePaymentAmount(data.paymentAmount);
+    if (n == null || n <= 0) return na;
+    const lang = this.transloco.getActiveLang() || 'es';
+    return new Intl.NumberFormat(lang, { style: 'currency', currency: 'USD' }).format(n);
+  }
+
+  async copyStripeChargeIdToClipboard(): Promise<void> {
+    const id = this.fullRequestData?.stripeChargeId?.trim();
+    if (!id) return;
+    const win = this.browser.window;
+    const doc = this.browser.document;
+    if (!win || !doc) return;
+    try {
+      if (win.navigator.clipboard) {
+        await win.navigator.clipboard.writeText(id);
+      } else {
+        const ta = doc.createElement('textarea');
+        ta.value = id;
+        doc.body.appendChild(ta);
+        ta.select();
+        doc.execCommand('copy');
+        doc.body.removeChild(ta);
+      }
+      this.panelSnackBar.info(
+        this.transloco.translate('PANEL.request_detail.fd_payment_charge_copied'),
+      );
+    } catch {
+      this.panelSnackBar.info(
+        this.transloco.translate('PANEL.request_detail.fd_payment_charge_copy_failed'),
+      );
+    }
+  }
+
   getStatusLabel(status: string): string {
     const statuses: { [key: string]: string } = {
       'solicitud-recibida': 'Solicitud Recibida',

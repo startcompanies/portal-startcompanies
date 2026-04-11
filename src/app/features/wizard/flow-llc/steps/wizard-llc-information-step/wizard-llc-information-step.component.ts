@@ -11,6 +11,10 @@ import { Subscription, firstValueFrom } from 'rxjs';
 import { WizardPlansService } from '../../../services/wizard-plans.service';
 import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
+import {
+  isOptionalPublicWebUrlControlOk,
+  patchOptionalPublicUrlControlsByName,
+} from '../../../../../shared/validators/web-url.validator';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -446,7 +450,8 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         isValidOrDisabled(llcType) &&
         isValidOrDisabled(llcName) &&
         isValidOrDisabled(businessDescription) &&
-        isValidOrDisabled(incorporationState)
+        isValidOrDisabled(incorporationState) &&
+        isOptionalPublicWebUrlControlOk(this.serviceDataForm.get('linkedin'))
       );
     }
     
@@ -481,7 +486,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         this.serviceDataForm.get('periodicIncome10k')?.valid &&
         this.serviceDataForm.get('bankAccountLinkedEmail')?.valid &&
         this.serviceDataForm.get('bankAccountLinkedPhone')?.valid &&
-        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid
+        this.serviceDataForm.get('actividadFinancieraEsperada')?.valid &&
+        isOptionalPublicWebUrlControlOk(
+          this.serviceDataForm.get('projectOrCompanyUrl'),
+        )
       );
     }
 
@@ -497,6 +505,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('llcName')?.markAsTouched();
       this.serviceDataForm.get('businessDescription')?.markAsTouched();
       this.serviceDataForm.get('incorporationState')?.markAsTouched();
+      this.serviceDataForm.get('linkedin')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -513,6 +522,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       this.serviceDataForm.get('bankAccountLinkedEmail')?.markAsTouched();
       this.serviceDataForm.get('bankAccountLinkedPhone')?.markAsTouched();
       this.serviceDataForm.get('actividadFinancieraEsperada')?.markAsTouched();
+      this.serviceDataForm.get('projectOrCompanyUrl')?.markAsTouched();
     }
   }
 
@@ -530,6 +540,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    * Navega a la siguiente sección y guarda los datos en la API
    */
   async goToNextSection(): Promise<void> {
+    if (this.currentSection === 1) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, ['linkedin']);
+    } else if (this.currentSection === 3) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+        'projectOrCompanyUrl',
+      ]);
+    }
     // Validar sección actual antes de avanzar
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
@@ -604,6 +621,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
    * Al pulsar "Siguiente" en la última sección: guardar estado, persistir en API y luego emitir nextStepRequested.
    */
   async onLastSectionNext(): Promise<void> {
+    patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+      'linkedin',
+      'projectOrCompanyUrl',
+    ]);
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();
       return;

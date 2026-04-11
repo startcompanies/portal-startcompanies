@@ -1,6 +1,11 @@
-import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import {
+  AbstractControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
 
-/** Coincide con la lógica de `public-web-url.util.ts` en la API. */
+/** Coincide con `public-web-url.util.ts` en la API (incl. FQDN con punto en hostname). */
 export const PUBLIC_WEB_URL_ERROR_KEY = 'publicWebUrl';
 
 function isAcceptablePublicWebHostname(hostname: string): boolean {
@@ -21,6 +26,16 @@ function isAcceptablePublicWebHostname(hostname: string): boolean {
   }
 
   return true;
+}
+
+/**
+ * Hostname con al menos un punto (FQDN mínimo; evita `https://hello`).
+ * Casos tipo IPv6 sin punto quedan fuera del uso previsto (sitio / red social).
+ */
+export function looksLikePublicFqdnHostname(hostname: string): boolean {
+  const h = (hostname || '').trim().toLowerCase();
+  if (!h) return false;
+  return h.includes('.');
 }
 
 /**
@@ -58,6 +73,7 @@ export function normalizePublicHttpsWebUrlClient(
     const parsed = new URL(ustr);
     if (parsed.protocol !== 'https:') return '';
     if (!parsed.hostname) return '';
+    if (!looksLikePublicFqdnHostname(parsed.hostname)) return '';
     if (!isAcceptablePublicWebHostname(parsed.hostname)) return '';
     return parsed.href;
   } catch {
@@ -95,5 +111,31 @@ export function patchControlWithNormalizedPublicUrl(
   const n = normalizePublicHttpsWebUrlClient(trimmed);
   if (n && n !== control.value) {
     control.setValue(n, { emitEvent: true });
+  }
+}
+
+/** Campo URL opcional: vacío es OK; con texto debe estar `valid` según validadores del control. */
+export function isOptionalPublicWebUrlControlOk(
+  control: AbstractControl | null | undefined,
+): boolean {
+  if (!control) return true;
+  if (control.disabled) return true;
+  const v = control.value;
+  if (v == null || typeof v !== 'string' || !v.trim()) return true;
+  return !!control.valid;
+}
+
+/**
+ * Antes de validar avance de sección: normaliza URLs públicas opcionales y refresca validez.
+ */
+export function patchOptionalPublicUrlControlsByName(
+  form: FormGroup | null | undefined,
+  controlNames: readonly string[],
+): void {
+  if (!form) return;
+  for (const name of controlNames) {
+    const c = form.get(name);
+    patchControlWithNormalizedPublicUrl(c);
+    c?.updateValueAndValidity({ emitEvent: false });
   }
 }

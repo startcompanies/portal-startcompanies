@@ -12,6 +12,10 @@ import { LoggerService } from '../../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
 import { TranslocoPipe } from '@jsverse/transloco';
+import {
+  isOptionalPublicWebUrlControlOk,
+  patchOptionalPublicUrlControlsByName,
+} from '../../../../../shared/validators/web-url.validator';
 
 /**
  * Componente wrapper para usar wizard-cuenta-bancaria-form en el wizard
@@ -387,8 +391,19 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       const einNumber = this.serviceDataForm.get('einNumber');
       const articlesOrCertificateUrl = this.serviceDataForm.get('articlesOrCertificateUrl');
 
-      return !!(businessType?.valid && legalBusinessName?.valid && industry?.valid && numberOfEmployees?.valid &&
-                briefDescription?.valid && einLetterUrl?.valid && einNumber?.valid && articlesOrCertificateUrl?.valid);
+      return !!(
+        businessType?.valid &&
+        legalBusinessName?.valid &&
+        industry?.valid &&
+        numberOfEmployees?.valid &&
+        briefDescription?.valid &&
+        einLetterUrl?.valid &&
+        einNumber?.valid &&
+        articlesOrCertificateUrl?.valid &&
+        isOptionalPublicWebUrlControlOk(
+          this.serviceDataForm.get('websiteOrSocialMedia'),
+        )
+      );
     }
     
     if (this.currentSection === 2) {
@@ -461,7 +476,12 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       }
       
       // Validar que todos los owners tengan los campos requeridos
-      return ownersArray.controls.every(owner => owner.valid);
+      return (
+        ownersArray.controls.every((owner) => owner.valid) &&
+        isOptionalPublicWebUrlControlOk(
+          this.serviceDataForm.get('websiteOrSocialMedia'),
+        )
+      );
     }
     
     return true;
@@ -480,6 +500,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       this.serviceDataForm.get('einLetterUrl')?.markAsTouched();
       this.serviceDataForm.get('einNumber')?.markAsTouched();
       this.serviceDataForm.get('articlesOrCertificateUrl')?.markAsTouched();
+      this.serviceDataForm.get('websiteOrSocialMedia')?.markAsTouched();
     }
     
     if (this.currentSection === 2) {
@@ -520,6 +541,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       ownersArray?.controls.forEach(owner => {
         (owner as FormGroup).markAllAsTouched();
       });
+      this.serviceDataForm.get('websiteOrSocialMedia')?.markAsTouched();
     }
   }
 
@@ -537,6 +559,11 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
    * Navega a la siguiente sección y guarda los datos en la API
    */
   async goToNextSection(): Promise<void> {
+    if (this.currentSection === 1 || this.currentSection === 6) {
+      patchOptionalPublicUrlControlsByName(this.serviceDataForm, [
+        'websiteOrSocialMedia',
+      ]);
+    }
     // Validar sección actual antes de avanzar
     if (!this.isSectionValid()) {
       this.markSectionAsTouched();

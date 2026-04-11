@@ -81,13 +81,13 @@
             <div class="col-12 col-lg-6">
               <label for="linkedin" class="form-label">LinkedIn (Opcional)</label>
               <input
-                type="text"
+                type="url"
                 id="linkedin"
                 class="form-control"
                 [class.is-invalid]="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched"
                 formControlName="linkedin"
                 (blur)="onBlurNormalizePublicUrl('linkedin')"
-                placeholder="https://linkedin.com/..."
+                [attr.placeholder]="'PANEL.forms_apertura_llc.linkedin_ph' | transloco"
                 autocomplete="url"
               />
               <div *ngIf="serviceDataForm.get('linkedin')?.invalid && serviceDataForm.get('linkedin')?.touched" class="invalid-feedback d-block">
@@ -419,13 +419,13 @@
             <div class="col-md-12">
               <label for="projectOrCompanyUrl" class="form-label">URL del Proyecto o Empresa (Opcional)</label>
               <input
-                type="text"
+                type="url"
                 id="projectOrCompanyUrl"
                 class="form-control"
                 [class.is-invalid]="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched"
                 formControlName="projectOrCompanyUrl"
                 (blur)="onBlurNormalizePublicUrl('projectOrCompanyUrl')"
-                placeholder="https://..."
+                [attr.placeholder]="'PANEL.forms_apertura_llc.project_url_ph' | transloco"
                 autocomplete="url"
               />
               <div *ngIf="serviceDataForm.get('projectOrCompanyUrl')?.invalid && serviceDataForm.get('projectOrCompanyUrl')?.touched" class="invalid-feedback d-block">
