@@ -392,6 +392,64 @@
         <div class="modal-body">
           <div *ngIf="fullRequestData" class="data-viewer">
 
+            <!-- Pago (si existe información) -->
+            <div class="card mb-4 shadow-sm" *ngIf="hasPaymentSummaryForModal(fullRequestData)">
+              <div class="card-header card-header-soft-info">
+                <h6 class="mb-0">
+                  <i class="bi bi-credit-card me-2"></i>
+                  {{ 'PANEL.request_detail.fd_payment_section' | transloco }}
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <div class="col-md-6" *ngIf="fullRequestData.paymentMethod">
+                    <div class="detail-item">
+                      <label class="detail-label">{{ 'PANEL.request_detail.fd_payment_method' | transloco }}</label>
+                      <span class="detail-value" [ngSwitch]="fullRequestData.paymentMethod">
+                        <ng-container *ngSwitchCase="'stripe'">{{ 'PANEL.request_detail.fd_payment_method_stripe' | transloco }}</ng-container>
+                        <ng-container *ngSwitchCase="'transferencia'">{{ 'PANEL.request_detail.fd_payment_method_transfer' | transloco }}</ng-container>
+                        <ng-container *ngSwitchCase="'free'">{{ 'PANEL.request_detail.fd_payment_method_free' | transloco }}</ng-container>
+                        <ng-container *ngSwitchDefault>{{ fullRequestData.paymentMethod }}</ng-container>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.paymentStatus">
+                    <div class="detail-item">
+                      <label class="detail-label">{{ 'PANEL.request_detail.fd_payment_status' | transloco }}</label>
+                      <span class="detail-value">{{ fullRequestData.paymentStatus }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="detail-item">
+                      <label class="detail-label">{{ 'PANEL.request_detail.fd_payment_amount' | transloco }}</label>
+                      <span class="detail-value">{{ formatModalPaymentAmount(fullRequestData) }}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6" *ngIf="fullRequestData.stripeChargeId">
+                    <div class="detail-item">
+                      <label class="detail-label">{{ 'PANEL.request_detail.fd_payment_stripe_charge' | transloco }}</label>
+                      <div class="d-flex flex-wrap align-items-center gap-2">
+                        <code class="detail-value mb-0">{{ fullRequestData.stripeChargeId }}</code>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="copyStripeChargeIdToClipboard()">
+                          {{ 'PANEL.request_detail.fd_payment_copy_charge' | transloco }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-12" *ngIf="fullRequestData.paymentProofUrl">
+                    <div class="detail-item">
+                      <label class="detail-label">{{ 'PANEL.request_detail.fd_payment_proof' | transloco }}</label>
+                      <div>
+                        <a [href]="fullRequestData.paymentProofUrl" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">
+                          {{ 'PANEL.request_detail.fd_payment_view_proof' | transloco }}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Información del Partner -->
             <div class="card mb-4 shadow-sm" *ngIf="fullRequestData.partner">
               <div class="card-header card-header-soft-success">

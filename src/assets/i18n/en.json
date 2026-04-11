@@ -1049,7 +1049,8 @@
       "select_method": "Select method",
       "card": "Credit card / debit",
       "paypal": "PayPal",
-      "required_method": "Select payment method."
+      "required_method": "Select payment method.",
+      "pay_button": "Pay ${{amount}}"
     },
     "client": {
       "title": "Additional Client Information",
@@ -1335,9 +1336,6 @@
         "texas": "Texas"
       }
     },
-    "checkout": {
-      "pay_button": "Pay ${{amount}}"
-    },
     "flow": {
       "step_of": "Step {{ current }} of {{ total }}",
       "llc_title": "LLC Formation",
@@ -1389,9 +1387,6 @@
       "my_clients": "My Clients",
       "service_history": "Service history",
       "lili_request": "Request Lili account"
-    },
-    "validation": {
-      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
     },
     "layout": {
       "back_to_site": "Back to site",
@@ -1752,7 +1747,8 @@
       "required": "This field is required",
       "required_short": "Required.",
       "email_invalid": "Enter a valid email address.",
-      "participation_range": "Required (0–100)."
+      "participation_range": "Required (0–100).",
+      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
     },
     "new_request": {
       "title": "New request",
@@ -2115,6 +2111,20 @@
       "fd_open_zoho_crm": "Open in Zoho CRM ({{id}})",
       "fd_created_date": "Created:",
       "fd_updated_date": "Last updated:",
+      "fd_payment_section": "Payment",
+      "fd_payment_method": "Method:",
+      "fd_payment_status": "Status:",
+      "fd_payment_amount": "Amount:",
+      "fd_payment_stripe_charge": "Stripe charge ID:",
+      "fd_payment_proof": "Proof:",
+      "fd_payment_view_proof": "View proof",
+      "fd_payment_copy_charge": "Copy ID",
+      "fd_payment_method_stripe": "Card (Stripe)",
+      "fd_payment_method_transfer": "Bank transfer",
+      "fd_payment_method_free": "Free",
+      "fd_payment_na": "—",
+      "fd_payment_charge_copied": "ID copied to clipboard",
+      "fd_payment_charge_copy_failed": "Could not copy ID",
       "fd_no_data_modal": "No data available",
       "fd_close": "Close",
       "fd_cb_attach_passport_valid": "Attach valid passport"
