@@ -1434,6 +1434,12 @@ export class RequestDetailComponent implements OnInit {
     return this.request?.status === 'solicitud-recibida';
   }
 
+  /** Admin: mostrar Aprobar / Rechazar en borrador pendiente o ya recibida. */
+  canShowAdminApproveReject(): boolean {
+    const s = this.request?.status;
+    return s === 'pendiente' || s === 'solicitud-recibida';
+  }
+
   /**
    * Indica si se debe mostrar el iframe/enlace de WorkDrive (cuando hay URL y el proceso ya no está en solicitud-recibida).
    */
