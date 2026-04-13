@@ -24,12 +24,8 @@ import { US_STATES } from '../../../shared/constants/us-states.constant';
 /**
  * Componente principal para el flujo de renovación de LLC
  * 
- * FLUJO:
- * 1. Registro → verificación email
- * 2. Selección de estado
- * 3. Pago → SE CREA EL REQUEST EN BD
- * 4. Información de renovación → SE ACTUALIZA EL REQUEST
- * 5. Revisión final
+ * FLUJO (legacy / componente standalone): ver `wizard-request-flow-page` para el flujo unificado actual.
+ * Flujo unificado renovación: Registro → Estado (POST request sin pago) → Información (PATCH) → Pago (PATCH cobro) → Confirmación.
  */
 @Component({
   selector: 'app-llc-renovacion',

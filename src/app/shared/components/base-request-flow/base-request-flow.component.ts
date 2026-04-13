@@ -9,7 +9,7 @@ import { RequestFlowConfigService } from '../../services/request-flow-config.ser
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-indicator.component';
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
-import { WizardApiService } from '../../../features/wizard/services/wizard-api.service';
+import { WizardApiService, WizardCreateRequestData } from '../../../features/wizard/services/wizard-api.service';
 import { DraftRequestService } from '../../services/draft-request.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -509,12 +509,102 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     
     // Guardar estado del paso
     await this.saveStepState(currentStep);
-    
+
+    // Renovación LLC (wizard): crear solicitud en BD al salir de selección de estado
+    // para que «Información del Servicio» pueda persistir con PATCH (requestId).
+    if (
+      currentStep?.step === RequestFlowStep.STATE_SELECTION &&
+      this.context === RequestFlowContext.WIZARD &&
+      this.serviceType === 'renovacion-llc' &&
+      this.wizardApiService &&
+      this.wizardStateService
+    ) {
+      const ok = await this.ensureRenovacionWizardRequestAfterStateSelection();
+      if (!ok) {
+        return;
+      }
+    }
+
     // Avanzar
     if (this.currentStepIndex < this.flowSteps.length - 1) {
       this.currentStepIndex++;
       this.onStepChanged();
       this.renderCurrentStep();
+    }
+  }
+
+  /**
+   * POST /wizard/requests sin cobro (renovación) tras paso de estado, si aún no hay requestId.
+   */
+  private async ensureRenovacionWizardRequestAfterStateSelection(): Promise<boolean> {
+    if (!this.wizardApiService || !this.wizardStateService) {
+      return true;
+    }
+    if (this.wizardStateService.hasRequest()) {
+      return true;
+    }
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    const stateBlock =
+      this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) ||
+      this.wizardStateService.getStepData(2) ||
+      {};
+    const state = String((stateBlock as any).state || '').trim();
+    const llcType = String((stateBlock as any).llcType || '').trim();
+    if (!state || !llcType) {
+      this.errorMessage = 'Selecciona estado y tipo de LLC.';
+      return false;
+    }
+    const step1 = this.wizardStateService.getStepData(1) || {};
+    const user = this.wizardApiService.getUser();
+    if (!user?.email) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    try {
+      const payload: WizardCreateRequestData = {
+        source: this.wizardStateService.getFlowSource(),
+        type: 'renovacion-llc',
+        currentStepNumber: 1,
+        currentStep: 3,
+        status: 'pendiente',
+        notes: '',
+        paymentAmount: 0,
+        clientData: {
+          firstName: step1.firstName || user.firstName || '',
+          lastName: step1.lastName || user.lastName || '',
+          email: step1.email || user.email,
+          phone: step1.phone || user.phone || '',
+          password: (step1 as any).password || 'wizard-deferred',
+        },
+        renovacionLlcData: { state, llcType },
+      };
+      const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
+      if (response?.id) {
+        this.wizardStateService.setRequestId(response.id);
+        const paymentStepCfg = this.flowSteps.find((s) => s.step === RequestFlowStep.PAYMENT);
+        const payOrder = paymentStepCfg?.order ?? 4;
+        this.wizardStateService.setStepData(payOrder, {
+          ...this.wizardStateService.getStepData(payOrder),
+          requestId: response.id,
+        });
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+          ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
+          requestId: response.id,
+          paymentProcessed: false,
+        });
+      }
+      return true;
+    } catch (e: any) {
+      this.errorMessage =
+        e?.error?.message || this.transloco.translate('PANEL.request_flow.err_load_failed');
+      return false;
+    } finally {
+      this.isLoading = false;
     }
   }
   

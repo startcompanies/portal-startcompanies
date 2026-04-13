@@ -59,9 +59,11 @@ export interface WizardCreateRequestData {
   currentStep?: number;
   status?: string;
   notes?: string;
-  stripeToken: string;
+  /** Opcional si type=renovacion-llc y paymentAmount=0 (creación antes del cobro). */
+  stripeToken?: string;
   paymentAmount: number;
-  paymentMethod: 'stripe' | 'transferencia';
+  /** Opcional si type=renovacion-llc y paymentAmount=0. */
+  paymentMethod?: 'stripe' | 'transferencia';
   paymentProofUrl?: string;
   clientData: WizardClientData;
   aperturaLlcData?: any;

@@ -65,6 +65,11 @@ export class WizardFlowFinalizeService {
         incorporationState,
         plan,
       };
+    } else if (serviceType === 'renovacion-llc') {
+      const merged = this.buildRenovacionLlcMergedFromWizard();
+      if (merged && Object.keys(merged).length > 0) {
+        updateData.renovacionLlcData = merged;
+      }
     }
 
     await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
@@ -199,6 +204,35 @@ export class WizardFlowFinalizeService {
       '';
 
     return { plan, incorporationState, mergedServiceForm };
+  }
+
+  /**
+   * Merge de formulario renovación desde wizard + RequestFlow (cierre con firma).
+   */
+  private buildRenovacionLlcMergedFromWizard(): Record<string, unknown> {
+    const allData = this.wizardStateService.getAllData();
+    const step2 = allData?.step2 || {};
+    const step3 = allData?.step3 || {};
+    const step4 = allData?.step4 || {};
+    const flowStateOnly = this.requestFlowState.getStepData(RequestFlowStep.STATE_SELECTION);
+    const flowServiceForm = this.requestFlowState.getStepData(RequestFlowStep.SERVICE_FORM);
+    const planStateMerged = { ...flowStateOnly };
+    const merged = { ...step3, ...step4, ...flowServiceForm };
+    const state =
+      (planStateMerged as { state?: string }).state ||
+      (merged as { state?: string }).state ||
+      (step2 as { state?: string }).state ||
+      '';
+    const llcType =
+      (planStateMerged as { llcType?: string }).llcType ||
+      (merged as { llcType?: string }).llcType ||
+      (step2 as { llcType?: string }).llcType ||
+      '';
+    return {
+      ...merged,
+      ...(state ? { state } : {}),
+      ...(llcType ? { llcType } : {}),
+    };
   }
 
   private async uploadSignature(signatureDataUrl: string, requestId: number, serviceType: ServiceType): Promise<string | null> {
