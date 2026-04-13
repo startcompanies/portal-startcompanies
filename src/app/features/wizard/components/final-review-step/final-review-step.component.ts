@@ -44,6 +44,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
   @Input() stepNumber: number = 5;
   @Input() previousSteps: number[] = [1, 2, 3, 4];
   @Input() serviceType: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria' = 'apertura-llc';
+  /** Panel cliente edición staff: no pedir firma; solo confirmación y botón de actualizar. */
+  @Input() skipSignature = false;
   
   // Estado para mostrar vista de éxito
   @Input() isSubmitted: boolean = false;
@@ -87,9 +89,13 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     });
   }
 
-  /** Botón enviar: checkbox + trazo o imagen ya cargada en el pad */
+  /** Botón enviar: checkbox + trazo (o solo checkbox si skipSignature). */
   get canSubmitFinal(): boolean {
-    return !!this.form.get('confirm')?.value && (this.signaturePad?.hasSignature() ?? false);
+    const confirmed = !!this.form.get('confirm')?.value;
+    if (this.skipSignature) {
+      return confirmed;
+    }
+    return confirmed && (this.signaturePad?.hasSignature() ?? false);
   }
 
   onSignatureCanvasChange(): void {
@@ -105,6 +111,20 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     this.form.get('confirm')?.markAsTouched();
 
     if (!this.form.get('confirm')?.valid) {
+      return;
+    }
+
+    if (this.skipSignature) {
+      this.submittingLocal = true;
+      this.signatureUploadError = null;
+      try {
+        this.submitRequest.emit({
+          signature: null,
+          signatureUrl: null,
+        });
+      } finally {
+        this.submittingLocal = false;
+      }
       return;
     }
 

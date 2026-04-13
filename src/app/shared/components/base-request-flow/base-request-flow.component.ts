@@ -876,12 +876,23 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         }
       }
     }
-    
-    return {
+
+    const merged = {
       ...baseInputs,
       ...extra,
-      ...stepData
+      ...stepData,
     };
+
+    // Confirmación: edición staff (omitir pago) no exige firma (tras stepData para no pisarse)
+    if (
+      stepConfig.step === RequestFlowStep.CONFIRMATION &&
+      this.context === RequestFlowContext.PANEL_CLIENT &&
+      this.omitPaymentStep
+    ) {
+      merged.skipSignature = true;
+    }
+
+    return merged;
   }
   
   /**

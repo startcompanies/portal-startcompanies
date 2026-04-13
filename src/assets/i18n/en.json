@@ -1112,6 +1112,8 @@
       "confirm_check_label": "I have reviewed all the information and confirm that the data is correct.",
       "confirm_required": "You must confirm that you have reviewed the information",
       "submit_info": "By submitting this request, our team will review the information and contact you for the next steps.",
+      "submit_info_staff_update": "Form changes are saved automatically as you go. Check the box and tap the button to confirm your review and complete this step.",
+      "update_info_btn": "Update information",
       "submit_btn": "Submit Request",
       "submitting": "Submitting..."
     },
