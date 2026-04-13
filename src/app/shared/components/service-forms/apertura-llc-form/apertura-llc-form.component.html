@@ -150,6 +150,53 @@
                   </div>
                 </div>
                 <div class="col-md-6">
+                  <label [for]="'memberPassportScanned' + i" class="form-label">
+                    {{ 'PANEL.forms_apertura_llc.passport_scan' | transloco }}
+                    <span *ngIf="isPassportPhotoRequiredForRow(i)" class="text-danger">*</span>
+                    <span *ngIf="!isPassportPhotoRequiredForRow(i) && isMultiMember()" class="text-muted small ms-1">({{ 'PANEL.forms_apertura_llc.passport_photo_optional' | transloco }})</span>
+                  </label>
+                  <p class="small text-muted mb-2">{{ 'PANEL.forms_apertura_llc.passport_attach_label' | transloco }}</p>
+                  <div *ngIf="!member.get('scannedPassportUrl')?.value">
+                    <input
+                      type="file"
+                      [id]="'memberPassportScanned' + i"
+                      class="form-control"
+                      (change)="onMemberFileSelected($event, i, 'scannedPassportUrl', 'memberPassport' + i)"
+                      accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                      [disabled]="getFileUploadState('memberPassport' + i).uploading"
+                    />
+                    <small class="form-text text-muted">{{ 'PANEL.forms_apertura_llc.passport_formats' | transloco }}</small>
+                    <div *ngIf="getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="selected-file-info mt-2">
+                      <div class="alert alert-info d-flex justify-content-between align-items-center py-2 mb-0">
+                        <span class="small text-truncate me-2">
+                          <i class="bi bi-file-earmark me-2"></i>
+                          {{ getFileUploadState('memberPassport' + i).file?.name }} ({{ ((getFileUploadState('memberPassport' + i).file?.size || 0) / 1024 / 1024).toFixed(2) }} MB)
+                        </span>
+                        <button type="button" class="btn btn-sm btn-outline-danger flex-shrink-0" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)">
+                          <i class="bi bi-x-circle"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="getFileUploadState('memberPassport' + i).uploading" class="upload-progress mt-2">
+                      <div class="progress" style="height: 8px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [style.width.%]="getFileUploadState('memberPassport' + i).progress" [attr.aria-valuenow]="getFileUploadState('memberPassport' + i).progress" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                      <small class="text-muted">{{ 'PANEL.forms_apertura_llc.uploading_file' | transloco }}</small>
+                    </div>
+                  </div>
+                  <div *ngIf="member.get('scannedPassportUrl')?.value && !getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="uploaded-file-info mt-2">
+                    <div class="alert alert-success py-2 mb-0">
+                      <i class="bi bi-check-circle me-2"></i>
+                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" rel="noopener noreferrer" class="text-decoration-none">{{ 'PANEL.forms_apertura_llc.view_uploaded_file' | transloco }}</a>
+                      <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)">{{ 'PANEL.forms_apertura_llc.change_file' | transloco }}</button>
+                    </div>
+                  </div>
+                  <div *ngIf="isPassportPhotoRequiredForRow(i) && member.get('scannedPassportUrl')?.invalid && member.get('scannedPassportUrl')?.touched" class="invalid-feedback d-block">
+                    {{ 'PANEL.forms_apertura_llc.passport_copy_required' | transloco }}
+                  </div>
+                  <input type="hidden" formControlName="scannedPassportUrl" />
+                </div>
+                <div class="col-md-6">
                   <label [for]="'memberNationality' + i" class="form-label">{{ 'PANEL.forms_renovacion_llc.nationality' | transloco }} <span class="text-danger">*</span></label>
                   <select [id]="'memberNationality' + i" class="form-select" formControlName="nationality"
                     [class.is-invalid]="member.get('nationality')?.invalid && member.get('nationality')?.touched">

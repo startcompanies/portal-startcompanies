@@ -1764,7 +1764,8 @@
       "required_short": "Obligatorio.",
       "email_invalid": "Ingrese un email válido.",
       "participation_range": "Este campo es obligatorio (0-100).",
-      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://)."
+      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://).",
+      "passport_photo_only": "Solo se permiten fotos en formato JPG, PNG o WebP."
     },
     "new_request": {
       "title": "Nueva solicitud",
@@ -2305,6 +2306,13 @@
       "phone_label": "Teléfono",
       "phone_ph": "Teléfono",
       "participation_pct": "% de participación",
+      "passport_attach_label": "Adjunta una foto legible del pasaporte (solo imagen), asegurándote de que esté vigente.",
+      "passport_formats": "Solo imágenes: JPG, JPEG, PNG o WebP (máx. 10MB).",
+      "passport_copy_required": "Debes adjuntar la foto del pasaporte.",
+      "passport_photo_optional": "opcional",
+      "uploading_file": "Subiendo archivo...",
+      "view_uploaded_file": "Ver archivo",
+      "change_file": "Cambiar archivo",
       "member_address": "Dirección del miembro",
       "street_ph": "Calle",
       "unit_ph": "Unidad",

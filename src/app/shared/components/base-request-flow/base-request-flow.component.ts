@@ -547,12 +547,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
       return false;
     }
-    const stateBlock =
-      this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) ||
-      this.wizardStateService.getStepData(2) ||
-      {};
-    const state = String((stateBlock as any).state || '').trim();
-    const llcType = String((stateBlock as any).llcType || '').trim();
+    // flowState puede ser `{}` (truthy) sin state/llcType; el paso hijo guarda en wizard step 2.
+    const flowBlock =
+      (this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {}) as Record<
+        string,
+        unknown
+      >;
+    const wizBlock = (this.wizardStateService.getStepData(2) || {}) as Record<string, unknown>;
+    const state = String(flowBlock['state'] ?? wizBlock['state'] ?? '').trim();
+    const llcType = String(flowBlock['llcType'] ?? wizBlock['llcType'] ?? '').trim();
     if (!state || !llcType) {
       this.errorMessage = 'Selecciona estado y tipo de LLC.';
       return false;

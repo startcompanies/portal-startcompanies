@@ -17,8 +17,14 @@ import {
   patchOptionalPublicUrlControlsByName,
 } from '../../../../shared/validators/web-url.validator';
 import { US_STATES } from '../../../../shared/constants/us-states.constant';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { environment } from '../../../../../environments/environment';
+import {
+  isPassportPhotoFile,
+  isPassportPhotoRequired,
+  syncMemberPassportPhotoValidators,
+} from '../../../../shared/utils/passport-photo-file.util';
+import { PanelSnackBarService } from '../../services/panel-snackbar.service';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el panel
@@ -70,7 +76,9 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private http: HttpClient,
     private serviceFormBuilder: ServiceFormBuilderService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private snackBar: PanelSnackBarService,
+    private transloco: TranslocoService,
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
   }
@@ -127,12 +135,19 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         while (membersArray.length > 0) {
           membersArray.removeAt(0);
         }
-        members.forEach((memberData: any) => {
+        members.forEach((memberData: any, memberIndex: number) => {
+          const llcForPassport =
+            (dataToLoad as { llcType?: string })?.llcType ??
+            this.serviceDataForm.get('llcType')?.value;
+          const passportReq = isPassportPhotoRequired(llcForPassport, memberIndex);
           const memberGroup = this.fb.group({
             firstName: [memberData.firstName || '', Validators.required],
             lastName: [memberData.lastName || '', Validators.required],
             passportNumber: [memberData.passportNumber || '', Validators.required],
-            scannedPassportUrl: [memberData.scannedPassportUrl || ''],
+            scannedPassportUrl: [
+              memberData.scannedPassportUrl || '',
+              passportReq ? Validators.required : [],
+            ],
             nationality: [memberData.nationality || '', Validators.required],
             dateOfBirth: [memberData.dateOfBirth || '', Validators.required],
             email: [memberData.email || '', [Validators.required, Validators.email]],
@@ -151,6 +166,11 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
           });
           membersArray.push(memberGroup);
         });
+        syncMemberPassportPhotoValidators(
+          membersArray,
+          (dataToLoad as { llcType?: string })?.llcType ??
+            this.serviceDataForm.get('llcType')?.value,
+        );
       }
     }
 
@@ -196,6 +216,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     if (llcType) {
       this.onLlcTypeChanged(llcType);
     }
+
+    syncMemberPassportPhotoValidators(
+      this.serviceDataForm.get('members') as FormArray,
+      this.serviceDataForm.get('llcType')?.value,
+    );
+    this.updateStepValidity();
   }
 
   ngOnDestroy(): void {
@@ -241,6 +267,13 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    if (event.formControlPath === 'scannedPassportUrl' && !isPassportPhotoFile(file)) {
+      input.value = '';
+      this.snackBar.error(
+        this.transloco.translate('PANEL.validation.passport_photo_only'),
+      );
+      return;
+    }
     const fileKey = `member${event.memberIndex}_${event.fileKey}`;
     const fullPath = `members.${event.memberIndex}.${event.formControlPath}`;
     
@@ -360,12 +393,16 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   addMember(): void {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     const llcType = this.serviceDataForm.get('llcType')?.value;
+    const nextIndex = membersArray.length;
+    const passportPhotoValidators = isPassportPhotoRequired(llcType, nextIndex)
+      ? [Validators.required]
+      : [];
     const defaultParticipation = llcType === 'single' ? 100 : 0;
     const memberGroup = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       passportNumber: ['', Validators.required],
-      scannedPassportUrl: [''],
+      scannedPassportUrl: ['', passportPhotoValidators],
       nationality: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -393,6 +430,10 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     if (membersArray.length > 1) {
       membersArray.removeAt(index);
+      syncMemberPassportPhotoValidators(
+        membersArray,
+        this.serviceDataForm.get('llcType')?.value,
+      );
       this.updateStepValidity();
     }
   }
@@ -551,7 +592,12 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
         this.addMember();
       }
     }
-    
+
+    syncMemberPassportPhotoValidators(
+      membersArray,
+      this.serviceDataForm.get('llcType')?.value,
+    );
+
     this.updateStepValidity();
   }
 

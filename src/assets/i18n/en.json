@@ -1748,7 +1748,8 @@
       "required_short": "Required.",
       "email_invalid": "Enter a valid email address.",
       "participation_range": "Required (0–100).",
-      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
+      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://).",
+      "passport_photo_only": "Only JPG, PNG, or WebP images are allowed."
     },
     "new_request": {
       "title": "New request",
@@ -2289,6 +2290,13 @@
       "phone_label": "Phone",
       "phone_ph": "Phone",
       "participation_pct": "% ownership",
+      "passport_attach_label": "Attach a legible passport photo (image only), ensuring it is valid.",
+      "passport_formats": "Images only: JPG, JPEG, PNG, or WebP (max. 10MB).",
+      "passport_copy_required": "You must attach a passport photo.",
+      "passport_photo_optional": "optional",
+      "uploading_file": "Uploading file...",
+      "view_uploaded_file": "View file",
+      "change_file": "Change file",
       "member_address": "Member address",
       "street_ph": "Street",
       "unit_ph": "Unit",
