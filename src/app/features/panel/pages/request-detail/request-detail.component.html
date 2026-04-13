@@ -32,8 +32,8 @@
           <p class="text-muted mb-0">{{ 'PANEL.request_detail.request_number' | transloco: { id: request.id } }}</p>
         </div>
         <div class="text-end d-flex gap-2 align-items-center">
-          <!-- Botones de aprobar/rechazar solo para admin cuando está en solicitud-recibida -->
-          <div *ngIf="isAdmin && isSolicitudRecibida()" class="d-flex gap-2 me-2">
+          <!-- Botones de aprobar/rechazar solo para admin en pendiente o solicitud-recibida -->
+          <div *ngIf="isAdmin && canShowAdminApproveReject()" class="d-flex gap-2 me-2">
             <button
               type="button"
               class="btn btn-success btn-sm"
