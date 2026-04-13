@@ -1905,6 +1905,8 @@
       "reject": "Reject",
       "approve_title": "Approve request",
       "reject_title": "Reject request",
+      "edit_request_staff": "Edit request",
+      "edit_request_staff_title": "Edit form data (payment step skipped)",
       "view_full_json": "View full data",
       "payment_confirm_title": "Payment confirmation",
       "payment_confirm_subtitle": "Complete payment so your request can move to review",

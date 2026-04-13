@@ -43,6 +43,7 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
           *ngIf="!isPartner && clientFlowConfig"
           [serviceType]="clientFlowConfig.serviceType"
           [draftRequestUuid]="clientFlowConfig.draftRequestUuid"
+          [omitPaymentStep]="clientFlowConfig.omitPaymentStep"
           (flowCompleted)="onFlowCompleted()"
           (flowCancelled)="onFlowCancelled()">
         </app-panel-client-request-flow>
@@ -76,6 +77,11 @@ export class NewRequestComponent implements OnInit {
   isLoading = false;
   errorMessage: string | null = null;
   isPartner = false;
+  /**
+   * Solo staff (admin / user operativo) con `?omitPaymentStep=1` en la URL:
+   * carga borradores en solicitud-recibida y oculta el paso de pago en renovación.
+   */
+  private staffOmitPaymentDraftMode = false;
 
   // Configuraciones de flujo
   partnerFlowConfig: {
@@ -87,6 +93,7 @@ export class NewRequestComponent implements OnInit {
   clientFlowConfig: {
     serviceType: ServiceType | null;
     draftRequestUuid: string | null;
+    omitPaymentStep: boolean;
   } | null = null;
 
   constructor(
@@ -108,6 +115,15 @@ export class NewRequestComponent implements OnInit {
     try {
       const requestUuid = this.route.snapshot.params['uuid'];
       const queryParams = this.route.snapshot.queryParams;
+      const omitPayRaw = queryParams['omitPaymentStep'];
+      const omitPaymentQuery =
+        omitPayRaw === '1' ||
+        omitPayRaw === 'true' ||
+        String(omitPayRaw).toLowerCase() === 'yes';
+      this.staffOmitPaymentDraftMode =
+        omitPaymentQuery &&
+        (this.authService.isAdmin() || this.authService.isStaffUser());
+
       const serviceTypeParam = queryParams['serviceType'] as ServiceType | undefined;
       const clientUuid = queryParams['client'];
       const clientIdParam = queryParams['clientId'];
@@ -246,7 +262,8 @@ export class NewRequestComponent implements OnInit {
     } else {
       this.clientFlowConfig = {
         serviceType,
-        draftRequestUuid
+        draftRequestUuid,
+        omitPaymentStep: this.staffOmitPaymentDraftMode,
       };
     }
     if (!draftRequestUuid) {
@@ -264,6 +281,12 @@ export class NewRequestComponent implements OnInit {
   private hasAccessToRequest(request: any): boolean {
     if (this.isPartner) {
       return true; // TODO: Validar relación partner-cliente
+    }
+    if (
+      this.staffOmitPaymentDraftMode &&
+      (this.authService.isAdmin() || this.authService.isStaffUser())
+    ) {
+      return true;
     }
     const currentUser = this.authService.getCurrentUser();
     if (!currentUser?.id) return false;

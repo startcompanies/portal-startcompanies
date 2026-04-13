@@ -678,7 +678,7 @@ export const routes: Routes = [
           },
           {
             path: ':uuid',
-            canActivate: [authGuard, roleGuard(['partner', 'client'])],
+            canActivate: [authGuard, roleGuard(['partner', 'client', 'admin', 'user'])],
             loadComponent: () => import('../features/panel/pages/new-request/new-request.component').then(m => m.NewRequestComponent),
             data: {
               seo: {

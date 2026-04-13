@@ -166,6 +166,24 @@ export class RequestDetailComponent implements OnInit {
     return now.getFullYear() - 1;
   }
 
+  /** Admin / user operativo: abrir flujo de edición sin paso de pago (renovación panel-client). */
+  get canStaffEditRequest(): boolean {
+    const r = this.fullRequestData;
+    if (!r?.uuid || !r.type) return false;
+    if (!this.isAdmin && !this.isStaffUser) return false;
+    if (r.status !== 'pendiente' && r.status !== 'solicitud-recibida') return false;
+    if (r.zohoAccountId) return false;
+    return true;
+  }
+
+  navigateStaffEditRequest(): void {
+    const r = this.fullRequestData;
+    if (!r?.uuid || !r.type) return;
+    void this.router.navigate(['/panel/new-request', r.uuid], {
+      queryParams: { serviceType: r.type, omitPaymentStep: '1' },
+    });
+  }
+
   ngOnInit(): void {
     // Intentar obtener UUID primero, luego ID (para compatibilidad)
     this.requestId = this.route.snapshot.paramMap.get('uuid') || this.route.snapshot.paramMap.get('id');

@@ -5,7 +5,10 @@ import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
-import { RequestFlowConfigService } from '../../services/request-flow-config.service';
+import {
+  RequestFlowConfigService,
+  RequestFlowConfigOptions,
+} from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-indicator.component';
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
@@ -124,6 +127,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   // Propiedades para manejo de borradores
   @Input() draftRequestUuid: string | null = null;
   @Input() initialClientId: number | null = null;
+  /** Panel cliente renovación: edición staff sin paso de pago Stripe/transferencia. */
+  @Input() omitPaymentStep = false;
   
   private draftRequestId: number | null = null;
   private autosaveInterval: any = null;
@@ -169,12 +174,27 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       tempServiceType,
       this.serviceType === null,
       this.shouldSkipPartnerClientSelection(),
-      this.flowSource
+      this.flowSource,
+      this.getPanelClientFlowOptions(),
     );
     
     // Cargar borrador si hay UUID
     if (this.draftRequestUuid && this.draftRequestService) {
       await this.loadDraftRequest(this.draftRequestUuid);
+    }
+
+    if (
+      this.omitPaymentStep &&
+      this.draftRequestId &&
+      this.context !== RequestFlowContext.WIZARD
+    ) {
+      const prev = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
+      this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+        ...prev,
+        requestId: this.draftRequestId,
+        paymentProcessed: true,
+        skipRealPayment: true,
+      });
     }
     
     // Si hay cliente inicial, guardarlo en el estado
@@ -232,6 +252,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private shouldSkipPartnerClientSelection(): boolean {
     return this.context === RequestFlowContext.PANEL_PARTNER && this.initialClientId != null;
   }
+
+  /** Opciones de config del flujo (omitir pago en panel-client renovación). */
+  private getPanelClientFlowOptions(): RequestFlowConfigOptions | undefined {
+    if (this.context === RequestFlowContext.PANEL_CLIENT && this.omitPaymentStep) {
+      return { omitPaymentStep: true };
+    }
+    return undefined;
+  }
   
   /**
    * Carga un borrador por UUID y restaura el paso actual desde request.currentStep
@@ -244,7 +272,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     
     try {
-      const request = await this.draftRequestService.loadDraftByUuid(uuid);
+      const request = await this.draftRequestService.loadDraftByUuid(uuid, {
+        allowStaffEditableStatuses: this.omitPaymentStep,
+      });
       if (!request) {
         throw new Error(this.transloco.translate('PANEL.request_flow.err_load_failed'));
       }
@@ -289,6 +319,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
           const paymentStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.PAYMENT);
           if (paymentStepIndex >= 0) {
             this.currentStepIndex = paymentStepIndex;
+          } else {
+            const svcIdx = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
+            if (svcIdx >= 0) {
+              this.currentStepIndex = svcIdx;
+            }
           }
         } else if (clientSelection?.clientId) {
           const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
@@ -469,7 +504,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         }
       }
       
-      await this.draftRequestService.saveDraft(this.draftRequestId, draftData);
+      await this.draftRequestService.saveDraft(this.draftRequestId, draftData, {
+        preserveRequestStatus: this.omitPaymentStep,
+      });
       console.log('[BaseRequestFlowComponent] Autosave completado');
     } catch (error: any) {
       console.error('[BaseRequestFlowComponent] Error en autosave:', error);
@@ -1157,7 +1194,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
           serviceType,
           false,
           this.shouldSkipPartnerClientSelection(),
-          this.flowSource
+          this.flowSource,
+          this.getPanelClientFlowOptions(),
         );
         
         // Encontrar el índice del paso actual (SERVICE_TYPE_SELECTION)

@@ -1921,6 +1921,8 @@
       "reject": "Rechazar",
       "approve_title": "Aprobar solicitud",
       "reject_title": "Rechazar solicitud",
+      "edit_request_staff": "Editar solicitud",
+      "edit_request_staff_title": "Editar datos del formulario (sin paso de pago)",
       "view_full_json": "Ver datos completos",
       "payment_confirm_title": "Confirmación de pago",
       "payment_confirm_subtitle": "Completa el pago para que tu solicitud pase a revisión",
