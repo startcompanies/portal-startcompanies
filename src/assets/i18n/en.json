@@ -1112,6 +1112,8 @@
       "confirm_check_label": "I have reviewed all the information and confirm that the data is correct.",
       "confirm_required": "You must confirm that you have reviewed the information",
       "submit_info": "By submitting this request, our team will review the information and contact you for the next steps.",
+      "submit_info_staff_update": "Form changes are saved automatically as you go. Check the box and tap the button to confirm your review and complete this step.",
+      "update_info_btn": "Update information",
       "submit_btn": "Submit Request",
       "submitting": "Submitting..."
     },
@@ -1748,7 +1750,8 @@
       "required_short": "Required.",
       "email_invalid": "Enter a valid email address.",
       "participation_range": "Required (0–100).",
-      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://)."
+      "public_web_url": "Enter a full URL or a valid domain (it will be saved with https://).",
+      "passport_photo_only": "Only JPG, PNG, or WebP images are allowed."
     },
     "new_request": {
       "title": "New request",
@@ -1904,6 +1907,8 @@
       "reject": "Reject",
       "approve_title": "Approve request",
       "reject_title": "Reject request",
+      "edit_request_staff": "Edit request",
+      "edit_request_staff_title": "Edit form data (payment step skipped)",
       "view_full_json": "View full data",
       "payment_confirm_title": "Payment confirmation",
       "payment_confirm_subtitle": "Complete payment so your request can move to review",
@@ -2289,6 +2294,13 @@
       "phone_label": "Phone",
       "phone_ph": "Phone",
       "participation_pct": "% ownership",
+      "passport_attach_label": "Attach a legible passport photo (image only), ensuring it is valid.",
+      "passport_formats": "Images only: JPG, JPEG, PNG, or WebP (max. 10MB).",
+      "passport_copy_required": "You must attach a passport photo.",
+      "passport_photo_optional": "optional",
+      "uploading_file": "Uploading file...",
+      "view_uploaded_file": "View file",
+      "change_file": "Change file",
       "member_address": "Member address",
       "street_ph": "Street",
       "unit_ph": "Unit",

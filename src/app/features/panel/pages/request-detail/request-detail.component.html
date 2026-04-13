@@ -54,6 +54,16 @@
             </button>
           </div>
           <button
+            *ngIf="canStaffEditRequest"
+            type="button"
+            class="btn btn-outline-primary btn-sm"
+            (click)="navigateStaffEditRequest()"
+            [title]="'PANEL.request_detail.edit_request_staff_title' | transloco"
+          >
+            <i class="bi bi-pencil-square me-1"></i>
+            {{ 'PANEL.request_detail.edit_request_staff' | transloco }}
+          </button>
+          <button
             class="btn btn-outline-secondary btn-sm"
             (click)="openAllDataModal()"
             [title]="'PANEL.request_detail.view_full_json' | transloco"

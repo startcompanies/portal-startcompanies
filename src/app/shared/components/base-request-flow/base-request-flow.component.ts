@@ -5,11 +5,14 @@ import { ViewContainerRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../../models/request-flow-context';
-import { RequestFlowConfigService } from '../../services/request-flow-config.service';
+import {
+  RequestFlowConfigService,
+  RequestFlowConfigOptions,
+} from '../../services/request-flow-config.service';
 import { RequestFlowStateService } from '../../services/request-flow-state.service';
 import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-indicator.component';
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
-import { WizardApiService } from '../../../features/wizard/services/wizard-api.service';
+import { WizardApiService, WizardCreateRequestData } from '../../../features/wizard/services/wizard-api.service';
 import { DraftRequestService } from '../../services/draft-request.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -124,6 +127,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   // Propiedades para manejo de borradores
   @Input() draftRequestUuid: string | null = null;
   @Input() initialClientId: number | null = null;
+  /** Panel cliente renovación: edición staff sin paso de pago Stripe/transferencia. */
+  @Input() omitPaymentStep = false;
   
   private draftRequestId: number | null = null;
   private autosaveInterval: any = null;
@@ -169,12 +174,27 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       tempServiceType,
       this.serviceType === null,
       this.shouldSkipPartnerClientSelection(),
-      this.flowSource
+      this.flowSource,
+      this.getPanelClientFlowOptions(),
     );
     
     // Cargar borrador si hay UUID
     if (this.draftRequestUuid && this.draftRequestService) {
       await this.loadDraftRequest(this.draftRequestUuid);
+    }
+
+    if (
+      this.omitPaymentStep &&
+      this.draftRequestId &&
+      this.context !== RequestFlowContext.WIZARD
+    ) {
+      const prev = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
+      this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+        ...prev,
+        requestId: this.draftRequestId,
+        paymentProcessed: true,
+        skipRealPayment: true,
+      });
     }
     
     // Si hay cliente inicial, guardarlo en el estado
@@ -232,6 +252,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private shouldSkipPartnerClientSelection(): boolean {
     return this.context === RequestFlowContext.PANEL_PARTNER && this.initialClientId != null;
   }
+
+  /** Opciones de config del flujo (omitir pago en panel-client renovación). */
+  private getPanelClientFlowOptions(): RequestFlowConfigOptions | undefined {
+    if (this.context === RequestFlowContext.PANEL_CLIENT && this.omitPaymentStep) {
+      return { omitPaymentStep: true };
+    }
+    return undefined;
+  }
   
   /**
    * Carga un borrador por UUID y restaura el paso actual desde request.currentStep
@@ -244,7 +272,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     
     try {
-      const request = await this.draftRequestService.loadDraftByUuid(uuid);
+      const request = await this.draftRequestService.loadDraftByUuid(uuid, {
+        allowStaffEditableStatuses: this.omitPaymentStep,
+      });
       if (!request) {
         throw new Error(this.transloco.translate('PANEL.request_flow.err_load_failed'));
       }
@@ -289,6 +319,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
           const paymentStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.PAYMENT);
           if (paymentStepIndex >= 0) {
             this.currentStepIndex = paymentStepIndex;
+          } else {
+            const svcIdx = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
+            if (svcIdx >= 0) {
+              this.currentStepIndex = svcIdx;
+            }
           }
         } else if (clientSelection?.clientId) {
           const serviceStepIndex = this.flowSteps.findIndex(s => s.step === RequestFlowStep.SERVICE_FORM);
@@ -469,7 +504,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         }
       }
       
-      await this.draftRequestService.saveDraft(this.draftRequestId, draftData);
+      await this.draftRequestService.saveDraft(this.draftRequestId, draftData, {
+        preserveRequestStatus: this.omitPaymentStep,
+      });
       console.log('[BaseRequestFlowComponent] Autosave completado');
     } catch (error: any) {
       console.error('[BaseRequestFlowComponent] Error en autosave:', error);
@@ -509,12 +546,105 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     
     // Guardar estado del paso
     await this.saveStepState(currentStep);
-    
+
+    // Renovación LLC (wizard): crear solicitud en BD al salir de selección de estado
+    // para que «Información del Servicio» pueda persistir con PATCH (requestId).
+    if (
+      currentStep?.step === RequestFlowStep.STATE_SELECTION &&
+      this.context === RequestFlowContext.WIZARD &&
+      this.serviceType === 'renovacion-llc' &&
+      this.wizardApiService &&
+      this.wizardStateService
+    ) {
+      const ok = await this.ensureRenovacionWizardRequestAfterStateSelection();
+      if (!ok) {
+        return;
+      }
+    }
+
     // Avanzar
     if (this.currentStepIndex < this.flowSteps.length - 1) {
       this.currentStepIndex++;
       this.onStepChanged();
       this.renderCurrentStep();
+    }
+  }
+
+  /**
+   * POST /wizard/requests sin cobro (renovación) tras paso de estado, si aún no hay requestId.
+   */
+  private async ensureRenovacionWizardRequestAfterStateSelection(): Promise<boolean> {
+    if (!this.wizardApiService || !this.wizardStateService) {
+      return true;
+    }
+    if (this.wizardStateService.hasRequest()) {
+      return true;
+    }
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    // flowState puede ser `{}` (truthy) sin state/llcType; el paso hijo guarda en wizard step 2.
+    const flowBlock =
+      (this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION) || {}) as Record<
+        string,
+        unknown
+      >;
+    const wizBlock = (this.wizardStateService.getStepData(2) || {}) as Record<string, unknown>;
+    const state = String(flowBlock['state'] ?? wizBlock['state'] ?? '').trim();
+    const llcType = String(flowBlock['llcType'] ?? wizBlock['llcType'] ?? '').trim();
+    if (!state || !llcType) {
+      this.errorMessage = 'Selecciona estado y tipo de LLC.';
+      return false;
+    }
+    const step1 = this.wizardStateService.getStepData(1) || {};
+    const user = this.wizardApiService.getUser();
+    if (!user?.email) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    try {
+      const payload: WizardCreateRequestData = {
+        source: this.wizardStateService.getFlowSource(),
+        type: 'renovacion-llc',
+        currentStepNumber: 1,
+        currentStep: 3,
+        status: 'pendiente',
+        notes: '',
+        paymentAmount: 0,
+        clientData: {
+          firstName: step1.firstName || user.firstName || '',
+          lastName: step1.lastName || user.lastName || '',
+          email: step1.email || user.email,
+          phone: step1.phone || user.phone || '',
+          password: (step1 as any).password || 'wizard-deferred',
+        },
+        renovacionLlcData: { state, llcType },
+      };
+      const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
+      if (response?.id) {
+        this.wizardStateService.setRequestId(response.id);
+        const paymentStepCfg = this.flowSteps.find((s) => s.step === RequestFlowStep.PAYMENT);
+        const payOrder = paymentStepCfg?.order ?? 4;
+        this.wizardStateService.setStepData(payOrder, {
+          ...this.wizardStateService.getStepData(payOrder),
+          requestId: response.id,
+        });
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+          ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
+          requestId: response.id,
+          paymentProcessed: false,
+        });
+      }
+      return true;
+    } catch (e: any) {
+      this.errorMessage =
+        e?.error?.message || this.transloco.translate('PANEL.request_flow.err_load_failed');
+      return false;
+    } finally {
+      this.isLoading = false;
     }
   }
   
@@ -746,12 +876,23 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         }
       }
     }
-    
-    return {
+
+    const merged = {
       ...baseInputs,
       ...extra,
-      ...stepData
+      ...stepData,
     };
+
+    // Confirmación: edición staff (omitir pago) no exige firma (tras stepData para no pisarse)
+    if (
+      stepConfig.step === RequestFlowStep.CONFIRMATION &&
+      this.context === RequestFlowContext.PANEL_CLIENT &&
+      this.omitPaymentStep
+    ) {
+      merged.skipSignature = true;
+    }
+
+    return merged;
   }
   
   /**
@@ -1064,7 +1205,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
           serviceType,
           false,
           this.shouldSkipPartnerClientSelection(),
-          this.flowSource
+          this.flowSource,
+          this.getPanelClientFlowOptions(),
         );
         
         // Encontrar el índice del paso actual (SERVICE_TYPE_SELECTION)

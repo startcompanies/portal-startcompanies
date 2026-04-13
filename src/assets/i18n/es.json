@@ -1108,6 +1108,8 @@
       "confirm_check_label": "He revisado toda la información y confirmo que los datos son correctos.",
       "confirm_required": "Debes confirmar que has revisado la información",
       "submit_info": "Al enviar esta solicitud, nuestro equipo revisará la información y se pondrá en contacto contigo para los siguientes pasos.",
+      "submit_info_staff_update": "Los cambios del formulario se guardan automáticamente al avanzar. Marca la casilla y pulsa el botón para confirmar la revisión y cerrar este paso.",
+      "update_info_btn": "Actualizar información",
       "submit_btn": "Enviar Solicitud",
       "submitting": "Enviando..."
     },
@@ -1764,7 +1766,8 @@
       "required_short": "Obligatorio.",
       "email_invalid": "Ingrese un email válido.",
       "participation_range": "Este campo es obligatorio (0-100).",
-      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://)."
+      "public_web_url": "Introduce una URL completa o un dominio válido (se guardará con https://).",
+      "passport_photo_only": "Solo se permiten fotos en formato JPG, PNG o WebP."
     },
     "new_request": {
       "title": "Nueva solicitud",
@@ -1920,6 +1923,8 @@
       "reject": "Rechazar",
       "approve_title": "Aprobar solicitud",
       "reject_title": "Rechazar solicitud",
+      "edit_request_staff": "Editar solicitud",
+      "edit_request_staff_title": "Editar datos del formulario (sin paso de pago)",
       "view_full_json": "Ver datos completos",
       "payment_confirm_title": "Confirmación de pago",
       "payment_confirm_subtitle": "Completa el pago para que tu solicitud pase a revisión",
@@ -2305,6 +2310,13 @@
       "phone_label": "Teléfono",
       "phone_ph": "Teléfono",
       "participation_pct": "% de participación",
+      "passport_attach_label": "Adjunta una foto legible del pasaporte (solo imagen), asegurándote de que esté vigente.",
+      "passport_formats": "Solo imágenes: JPG, JPEG, PNG o WebP (máx. 10MB).",
+      "passport_copy_required": "Debes adjuntar la foto del pasaporte.",
+      "passport_photo_optional": "opcional",
+      "uploading_file": "Subiendo archivo...",
+      "view_uploaded_file": "Ver archivo",
+      "change_file": "Cambiar archivo",
       "member_address": "Dirección del miembro",
       "street_ph": "Calle",
       "unit_ph": "Unidad",

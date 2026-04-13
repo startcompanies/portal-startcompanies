@@ -233,6 +233,51 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         return false;
       }
 
+      // Renovación LLC: solicitud ya creada tras selección de estado — cobrar vía PATCH
+      const existingRenewalId = this.wizardStateService.getRequestId();
+      if (serviceType === 'renovacion-llc' && existingRenewalId) {
+        try {
+          const patchBody: Record<string, unknown> = {
+            stripeToken: this.stripePaymentToken,
+            paymentAmount: this.totalAmount,
+            paymentMethod: 'stripe',
+            currentStep: this.stepNumber + 1,
+          };
+          const updated = await firstValueFrom(
+            this.wizardApiService.updateRequest(existingRenewalId, patchBody),
+          );
+          if (updated && updated.id) {
+            this.wizardStateService.setRequestId(updated.id);
+          }
+          this.stripePaymentProcessed = true;
+          this.errorMessage = null;
+          this.saveStepData();
+          this.stripePaymentForm.disableCardElement();
+          this.successMessage = '¡Pago procesado exitosamente!';
+          this.stripeProcessing = false;
+          this.paymentAndRequestCreated.emit({
+            requestId: existingRenewalId,
+            paymentInfo: {
+              chargeId: updated?.stripeChargeId || '',
+              amount: this.totalAmount,
+              currency: 'usd',
+              status: updated?.paymentStatus || 'succeeded',
+              paid: true,
+              receiptUrl: '',
+            },
+          });
+          return true;
+        } catch (error: any) {
+          this.stripeProcessing = false;
+          this.stripePaymentProcessed = false;
+          this.stripePaymentToken = null;
+          this.saveStepData();
+          this.errorMessage = error?.error?.message || 'Error al procesar el pago';
+          this.paymentError.emit(this.errorMessage);
+          return false;
+        }
+      }
+
       const allData = this.wizardStateService.getAllData();
       const step1Data = allData.step1 || {};
       const step2Data = allData.step2 || {};
@@ -544,6 +589,29 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       requestData.cuentaBancariaData = {};
     }
     try {
+      const existingId = this.wizardStateService.getRequestId();
+      if (serviceType === 'renovacion-llc' && existingId) {
+        const patchBody: Record<string, unknown> = {
+          stripeToken: '',
+          paymentAmount: this.totalAmount,
+          paymentMethod: 'transferencia',
+          paymentProofUrl: proofUrl,
+          currentStep: this.stepNumber + 1,
+        };
+        const updated = await firstValueFrom(
+          this.wizardApiService.updateRequest(existingId, patchBody),
+        );
+        if (updated?.id) {
+          this.wizardStateService.setRequestId(updated.id);
+        }
+        this.transferenciaProcessed = true;
+        this.saveStepData();
+        this.paymentAndRequestCreated.emit({
+          requestId: existingId,
+          paymentInfo: { method: 'transferencia', amount: this.totalAmount },
+        });
+        return;
+      }
       const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
       if (response?.id) {
         this.wizardStateService.setRequestId(response.id);

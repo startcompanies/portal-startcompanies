@@ -18,12 +18,17 @@ export class DraftRequestService {
   /**
    * Carga un borrador por UUID y lo hidrata en el estado del flujo
    */
-  async loadDraftByUuid(uuid: string): Promise<PanelRequest | null> {
+  async loadDraftByUuid(
+    uuid: string,
+    options?: { allowStaffEditableStatuses?: boolean },
+  ): Promise<PanelRequest | null> {
     try {
       const request = await this.requestsService.getRequestByUuid(uuid);
-      
-      // Verificar que esté en estado pendiente
-      if (request.status !== 'pendiente') {
+
+      const allowedStatuses = options?.allowStaffEditableStatuses
+        ? ['pendiente', 'solicitud-recibida']
+        : ['pendiente'];
+      if (!allowedStatuses.includes(request.status)) {
         throw new Error('Esta solicitud ya fue enviada. No se puede editar.');
       }
 
@@ -150,12 +155,17 @@ export class DraftRequestService {
   /**
    * Guarda un borrador (autosave)
    */
-  async saveDraft(requestId: number, data: any): Promise<PanelRequest> {
+  async saveDraft(
+    requestId: number,
+    data: any,
+    options?: { preserveRequestStatus?: boolean },
+  ): Promise<PanelRequest> {
     try {
-      return await this.requestsService.updateRequest(requestId, {
-        ...data,
-        status: 'pendiente' // Asegurar que siga siendo borrador
-      });
+      const payload: any = { ...data };
+      if (!options?.preserveRequestStatus) {
+        payload.status = 'pendiente';
+      }
+      return await this.requestsService.updateRequest(requestId, payload);
     } catch (error: any) {
       console.error('[DraftRequestService] Error al guardar borrador:', error);
       throw error;

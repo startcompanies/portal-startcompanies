@@ -1,6 +1,11 @@
 import { Injectable, Type } from '@angular/core';
 import { RequestFlowContext, RequestFlowStep, FlowStepConfig, ServiceType } from '../models/request-flow-context';
 
+/** Opciones adicionales para `getFlowConfig` (p. ej. edición staff sin paso de pago). */
+export interface RequestFlowConfigOptions {
+  omitPaymentStep?: boolean;
+}
+
 // Importaciones de componentes del wizard
 import { WizardBasicRegisterStepComponent } from '../../features/wizard/components/basic-register-step/basic-register-step.component';
 import { WizardStatePlanSelectionStepComponent } from '../../features/wizard/flow-llc/steps/state-plan-selection-step/state-plan-selection-step.component';
@@ -38,7 +43,8 @@ export class RequestFlowConfigService {
     serviceType: ServiceType,
     includeServiceTypeSelection: boolean = false,
     skipClientSelection: boolean = false,
-    source: 'wizard' | 'crm-lead' | 'panel' = 'wizard'
+    source: 'wizard' | 'crm-lead' | 'panel' = 'wizard',
+    options?: RequestFlowConfigOptions,
   ): FlowStepConfig[] {
     const configs: FlowStepConfig[] = [];
     
@@ -95,7 +101,11 @@ export class RequestFlowConfigService {
         }
         
         // Pago: solo renovación (apertura cliente paga después en /panel/my-requests/:uuid).
-        if (serviceType === 'renovacion-llc') {
+        const omitPaymentStep =
+          context === RequestFlowContext.PANEL_CLIENT &&
+          serviceType === 'renovacion-llc' &&
+          options?.omitPaymentStep === true;
+        if (serviceType === 'renovacion-llc' && !omitPaymentStep) {
           configs.push({
             step: RequestFlowStep.PAYMENT,
             required: true,
@@ -107,7 +117,8 @@ export class RequestFlowConfigService {
         }
 
         // Órdenes: cuenta-bancaria sin estado/pago=+1/+2; renovación con pago=+3/+4; apertura sin pago inicial=+2/+3
-        const panelPaymentAdded      = serviceType === 'renovacion-llc';
+        const panelPaymentAdded =
+          serviceType === 'renovacion-llc' && !omitPaymentStep;
         const panelServiceFormOffset = serviceType === 'cuenta-bancaria' ? 1 : (panelPaymentAdded ? 3 : 2);
         const panelConfirmOffset     = serviceType === 'cuenta-bancaria' ? 2 : (panelPaymentAdded ? 4 : 3);
 
@@ -386,8 +397,16 @@ export class RequestFlowConfigService {
     includeServiceTypeSelection: boolean = false,
     skipClientSelection: boolean = false,
     source: 'wizard' | 'crm-lead' | 'panel' = 'wizard',
+    options?: RequestFlowConfigOptions,
   ): number {
-    return this.getFlowConfig(context, serviceType, includeServiceTypeSelection, skipClientSelection, source).length;
+    return this.getFlowConfig(
+      context,
+      serviceType,
+      includeServiceTypeSelection,
+      skipClientSelection,
+      source,
+      options,
+    ).length;
   }
   
   /**
@@ -400,10 +419,16 @@ export class RequestFlowConfigService {
     includeServiceTypeSelection: boolean = false,
     skipClientSelection: boolean = false,
     source: 'wizard' | 'crm-lead' | 'panel' = 'wizard',
+    options?: RequestFlowConfigOptions,
   ): boolean {
-    const config = this.getFlowConfig(context, serviceType, includeServiceTypeSelection, skipClientSelection, source).find(
-      c => c.step === step
-    );
+    const config = this.getFlowConfig(
+      context,
+      serviceType,
+      includeServiceTypeSelection,
+      skipClientSelection,
+      source,
+      options,
+    ).find(c => c.step === step);
     return config?.required ?? false;
   }
 }

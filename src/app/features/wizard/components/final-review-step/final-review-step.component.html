@@ -347,8 +347,8 @@
           </div>
         </div>
         
-        <!-- Campo de Firma -->
-        <div class="mt-4">
+        <!-- Campo de Firma (omitido en edición staff panel) -->
+        <div class="mt-4" *ngIf="!skipSignature">
           <app-signature-pad
             [formControl]="signatureControl"
             [required]="true"
@@ -360,7 +360,11 @@
         
         <div class="alert alert-info mt-3">
           <i class="bi bi-info-circle me-2"></i>
-          {{ 'WIZARD.review.submit_info' | transloco }}
+          {{
+            skipSignature
+              ? ('WIZARD.review.submit_info_staff_update' | transloco)
+              : ('WIZARD.review.submit_info' | transloco)
+          }}
         </div>
 
         <!-- Error de envío -->
@@ -369,7 +373,7 @@
           {{ submitError }}
         </div>
 
-        <div *ngIf="signatureUploadError" class="alert alert-danger mt-3">
+        <div *ngIf="!skipSignature && signatureUploadError" class="alert alert-danger mt-3">
           <i class="bi bi-exclamation-circle me-2"></i>
           {{ signatureUploadError }}
         </div>
@@ -384,7 +388,11 @@
           >
             <span *ngIf="!isSubmitting && !submittingLocal">
               <i class="bi bi-check-circle me-2"></i>
-              {{ 'WIZARD.review.submit_btn' | transloco }}
+              {{
+                skipSignature
+                  ? ('WIZARD.review.update_info_btn' | transloco)
+                  : ('WIZARD.review.submit_btn' | transloco)
+              }}
             </span>
             <span *ngIf="isSubmitting || submittingLocal">
               <span class="spinner-border spinner-border-sm me-2"></span>

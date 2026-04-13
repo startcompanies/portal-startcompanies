@@ -5,6 +5,7 @@ import { IntlTelInputComponent } from '../../../components/intl-tel-input/intl-t
 import { TranslocoPipe } from '@jsverse/transloco';
 import { COUNTRY_NAMES } from '../../../constants/countries';
 import { patchControlWithNormalizedPublicUrl } from '../../../validators/web-url.validator';
+import { isPassportPhotoRequired } from '../../../utils/passport-photo-file.util';
 
 /**
  * Formulario compartido para Apertura LLC
@@ -89,6 +90,11 @@ export class AperturaLlcFormComponent implements OnInit, OnChanges {
 
   isMultiMember(): boolean {
     return this.serviceDataForm?.get('llcType')?.value === 'multi';
+  }
+
+  isPassportPhotoRequiredForRow(memberIndex: number): boolean {
+    const llcType = this.serviceDataForm?.get('llcType')?.value;
+    return isPassportPhotoRequired(llcType, memberIndex);
   }
 
   getFileUploadState(key: string): { file: File | null; uploading: boolean; progress: number } {

@@ -18,6 +18,7 @@ import { WizardFlowFinalizeService } from '../../../wizard/services/wizard-flow-
       [context]="RequestFlowContext.PANEL_CLIENT"
       [serviceType]="serviceType"
       [draftRequestUuid]="draftRequestUuid"
+      [omitPaymentStep]="omitPaymentStep"
       (flowCompleted)="onFlowCompleted($event)"
       (flowCancelled)="onFlowCancelled()">
     </app-base-request-flow>
@@ -26,6 +27,8 @@ import { WizardFlowFinalizeService } from '../../../wizard/services/wizard-flow-
 export class PanelClientRequestFlowComponent implements OnInit {
   @Input() serviceType: ServiceType | null = null;
   @Input() draftRequestUuid: string | null = null;
+  /** Renovación panel: edición admin/user sin cobro en el flujo. */
+  @Input() omitPaymentStep = false;
   @Output() flowCompleted = new EventEmitter<any>();
   @Output() flowCancelled = new EventEmitter<void>();
   

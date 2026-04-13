@@ -15,6 +15,13 @@ import {
   isOptionalPublicWebUrlControlOk,
   patchOptionalPublicUrlControlsByName,
 } from '../../../../../shared/validators/web-url.validator';
+import {
+  isPassportPhotoFile,
+  isPassportPhotoRequired,
+  syncMemberPassportPhotoValidators,
+} from '../../../../../shared/utils/passport-photo-file.util';
+import { PanelSnackBarService } from '../../../../panel/services/panel-snackbar.service';
+import { TranslocoService } from '@jsverse/transloco';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -53,7 +60,9 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private wizardPlansService: WizardPlansService,
     private serviceFormBuilder: ServiceFormBuilderService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private snackBar: PanelSnackBarService,
+    private transloco: TranslocoService,
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
   }
@@ -87,12 +96,17 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
           membersArray.removeAt(0);
         }
         // Restaurar cada miembro
-        members.forEach((memberData: any) => {
+        members.forEach((memberData: any, memberIndex: number) => {
+          const llcForPassport = savedData.llcType ?? this.serviceDataForm.get('llcType')?.value;
+          const passportReq = isPassportPhotoRequired(llcForPassport, memberIndex);
           const memberGroup = this.fb.group({
             firstName: [memberData.firstName || '', Validators.required],
             lastName: [memberData.lastName || '', Validators.required],
             passportNumber: [memberData.passportNumber || '', Validators.required],
-            scannedPassportUrl: [memberData.scannedPassportUrl || ''],
+            scannedPassportUrl: [
+              memberData.scannedPassportUrl || '',
+              passportReq ? Validators.required : [],
+            ],
             nationality: [memberData.nationality || '', Validators.required],
             dateOfBirth: [memberData.dateOfBirth || '', Validators.required],
             email: [memberData.email || '', [Validators.required, Validators.email]],
@@ -111,6 +125,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
           });
           membersArray.push(memberGroup);
         });
+        syncMemberPassportPhotoValidators(
+          membersArray,
+          savedData.llcType ?? this.serviceDataForm.get('llcType')?.value,
+        );
         this.logger.log('[WizardLlcInformationStep] Miembros restaurados:', membersArray.length);
       }
       
@@ -162,6 +180,12 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     if (savedData && savedData.incorporationState) {
       this.serviceDataForm.get('incorporationState')?.setValue(savedData.incorporationState);
     }
+
+    const membersAfterInit = this.serviceDataForm.get('members') as FormArray;
+    syncMemberPassportPhotoValidators(
+      membersAfterInit,
+      this.serviceDataForm.get('llcType')?.value,
+    );
 
     // Guardar datos cuando el formulario cambia
                 this.formSubscription = this.serviceDataForm.valueChanges.subscribe(() => {
@@ -271,6 +295,13 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     if (!input.files || input.files.length === 0) return;
 
     const file = input.files[0];
+    if (event.formControlPath === 'scannedPassportUrl' && !isPassportPhotoFile(file)) {
+      input.value = '';
+      this.snackBar.error(
+        this.transloco.translate('PANEL.validation.passport_photo_only'),
+      );
+      return;
+    }
     const fileKey = `member${event.memberIndex}_${event.fileKey}`;
     const fullPath = `members.${event.memberIndex}.${event.formControlPath}`;
     
@@ -394,12 +425,16 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
   addMember(): void {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     const llcType = this.serviceDataForm.get('llcType')?.value;
+    const nextIndex = membersArray.length;
+    const passportPhotoValidators = isPassportPhotoRequired(llcType, nextIndex)
+      ? [Validators.required]
+      : [];
     const defaultParticipation = llcType === 'single' ? 100 : 0;
     const memberGroup = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       passportNumber: ['', Validators.required],
-      scannedPassportUrl: [''],
+      scannedPassportUrl: ['', passportPhotoValidators],
       nationality: ['', Validators.required],
       dateOfBirth: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -426,6 +461,10 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     const membersArray = this.serviceDataForm.get('members') as FormArray;
     if (membersArray.length > 1) {
       membersArray.removeAt(index);
+      syncMemberPassportPhotoValidators(
+        membersArray,
+        this.serviceDataForm.get('llcType')?.value,
+      );
     }
   }
 
@@ -669,6 +708,11 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
         this.addMember();
       }
     }
+
+    syncMemberPassportPhotoValidators(
+      membersArray,
+      this.serviceDataForm.get('llcType')?.value,
+    );
   }
 }
 
