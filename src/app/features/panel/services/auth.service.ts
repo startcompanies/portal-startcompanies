@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import {
   Observable,
   BehaviorSubject,
@@ -57,6 +57,13 @@ export interface RegisterData {
 }
 
 const AUTH_BASE = `${environment.apiUrl || 'http://localhost:3000'}/auth`;
+
+/** El API envía esto cuando hay refresh_token y conviene POST /auth/refresh (access ausente o caducado). */
+function wantsSessionRefresh(headers: { get(name: string): string | null }): boolean {
+  const v =
+    headers.get('X-Session-Refresh') ?? headers.get('x-session-refresh');
+  return v === '1';
+}
 
 /** Unifica respuesta de signIn y payload JWT de GET /auth/me (userName vs username). */
 function normalizePanelUser(raw: unknown): User | null {
@@ -138,12 +145,37 @@ export class AuthService {
   }
 
   /**
-   * GET /auth/me con reintento tras refresh si el access expiró (401).
-   * El interceptor no aplica refresh a /auth/me; sin esto el guard puede mandar a login con sesión válida.
+   * GET /auth/me con reintento tras refresh si el access expiró.
+   * El backend suele responder 200 + null si el JWT caducó (no 401); en ese caso hay que refrescar igual.
+   * Como máximo un refresh por ciclo de loadUser.
    */
   private fetchMeObservable(): Observable<unknown> {
-    return this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
-      timeout(8000),
+    const getMeResponse = () =>
+      this.http
+        .get<unknown>(`${AUTH_BASE}/me`, {
+          withCredentials: true,
+          observe: 'response',
+        })
+        .pipe(timeout(8000));
+
+    return getMeResponse().pipe(
+      switchMap((resp: HttpResponse<unknown>) => {
+        const raw = resp.body;
+        if (normalizePanelUser(raw) != null) {
+          return of(raw);
+        }
+        if (!wantsSessionRefresh(resp.headers)) {
+          return of(null);
+        }
+        return this.refresh().pipe(
+          switchMap(() =>
+            this.http
+              .get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true })
+              .pipe(timeout(8000), catchError(() => of(null))),
+          ),
+          catchError(() => of(null)),
+        );
+      }),
       catchError((err: unknown) => {
         const status = err instanceof HttpErrorResponse ? err.status : 0;
         if (status === 401) {

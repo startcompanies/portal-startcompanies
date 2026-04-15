@@ -155,7 +155,6 @@
                     <span *ngIf="isPassportPhotoRequiredForRow(i)" class="text-danger">*</span>
                     <span *ngIf="!isPassportPhotoRequiredForRow(i) && isMultiMember()" class="text-muted small ms-1">({{ 'PANEL.forms_apertura_llc.passport_photo_optional' | transloco }})</span>
                   </label>
-                  <p class="small text-muted mb-2">{{ 'PANEL.forms_apertura_llc.passport_attach_label' | transloco }}</p>
                   <div *ngIf="!member.get('scannedPassportUrl')?.value">
                     <input
                       type="file"
@@ -187,7 +186,7 @@
                   <div *ngIf="member.get('scannedPassportUrl')?.value && !getFileUploadState('memberPassport' + i).file && !getFileUploadState('memberPassport' + i).uploading" class="uploaded-file-info mt-2">
                     <div class="alert alert-success py-2 mb-0">
                       <i class="bi bi-check-circle me-2"></i>
-                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" rel="noopener noreferrer" class="text-decoration-none">{{ 'PANEL.forms_apertura_llc.view_uploaded_file' | transloco }}</a>
+                      <a [href]="member.get('scannedPassportUrl')?.value" target="_blank" rel="noopener noreferrer" class="text-decoration-none">{{ 'PANEL.forms_renovacion_llc.view_file' | transloco }}</a>
                       <button type="button" class="btn btn-sm btn-outline-secondary ms-2" (click)="clearMemberFile(i, 'scannedPassportUrl', 'memberPassport' + i, 'memberPassportScanned' + i)">{{ 'PANEL.forms_apertura_llc.change_file' | transloco }}</button>
                     </div>
                   </div>

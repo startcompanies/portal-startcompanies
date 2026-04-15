@@ -267,7 +267,40 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     const { password: _p, ...restStep1 } = step1 as { password?: string; [k: string]: unknown };
     this.registrationData = { ...restStep1 };
     const rd = this.registrationData as Record<string, unknown>;
-    rd['fullName'] = (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || (rd['email'] as string) || '';
+    // Si syncToWizardState pisó el paso 1 con solo userId/email, recuperar nombre y teléfono del JWT del wizard.
+    const wUser = this.wizardApiService.getUser();
+    let enrichedFromWizardUser = false;
+    if (wUser) {
+      if (!(rd['phone'] as string)?.trim() && (wUser.phone || '').trim()) {
+        rd['phone'] = wUser.phone;
+        enrichedFromWizardUser = true;
+      }
+      if (!(rd['firstName'] as string)?.trim() && (wUser.firstName || '').trim()) {
+        rd['firstName'] = wUser.firstName;
+        enrichedFromWizardUser = true;
+      }
+      if (!(rd['lastName'] as string)?.trim() && (wUser.lastName || '').trim()) {
+        rd['lastName'] = wUser.lastName;
+        enrichedFromWizardUser = true;
+      }
+      const fn = (rd['firstName'] as string) || '';
+      const ln = (rd['lastName'] as string) || '';
+      const fromParts = `${fn} ${ln}`.trim();
+      const usernameRaw = (wUser.username || '').trim();
+      const usernameOk = usernameRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameRaw);
+      if (!(rd['fullName'] as string)?.trim() && (fromParts || (usernameOk ? usernameRaw : ''))) {
+        rd['fullName'] = fromParts || (usernameOk ? usernameRaw : '');
+        enrichedFromWizardUser = true;
+      }
+    }
+    // No usar el email como nombre mostrado (evita duplicar correo en "Nombre completo").
+    rd['fullName'] =
+      (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || '';
+
+    if (enrichedFromWizardUser) {
+      const prev = this.wizardStateService.getStepData(1) || {};
+      this.wizardStateService.setStepData(1, { ...prev, ...rd });
+    }
 
     // Paso 2: Estado/Plan (para apertura y renovación)
     this.statePlanData = allData.step2 || {};
@@ -707,9 +740,13 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
       });
     }
 
-    // Sección 4: Movimientos Financieros
+    // Sección 4: Movimientos Financieros (año en curso alineado con el formulario)
+    const fy = new Date().getFullYear();
     if (this.renovacionMoneyMeaningful(data.totalRevenue2025)) {
-      fields.push({ label: 'Facturación total de la LLC en 2025', value: this.formatMoney(data.totalRevenue2025) });
+      fields.push({
+        label: `Facturación total de la LLC en ${fy}`,
+        value: this.formatMoney(data.totalRevenue2025),
+      });
     }
 
     // Sección 5: Información Adicional
@@ -796,7 +833,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.validatorNationality) fields.push({ label: 'Nacionalidad del Verificador', value: data.validatorNationality });
     if (data.validatorCitizenship) fields.push({ label: 'Ciudadanía del Verificador', value: data.validatorCitizenship });
     if (data.validatorPassportNumber) fields.push({ label: 'Número de pasaporte del Verificador', value: data.validatorPassportNumber });
-    if (data.validatorPassportUrl) fields.push({ label: 'Copia escaneada del pasaporte del Verificador', value: 'Archivo subido ✓' });
+    if (data.validatorPassportUrl) fields.push({ label: 'Foto del pasaporte del Verificador', value: 'Archivo subido ✓' });
     if (data.validatorWorkEmail) fields.push({ label: 'Email laboral del Verificador', value: data.validatorWorkEmail });
     if (data.validatorPhone) fields.push({ label: 'Teléfono del Verificador', value: data.validatorPhone });
     if (data.canReceiveSMS === true) {

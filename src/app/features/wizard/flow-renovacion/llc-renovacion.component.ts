@@ -2,7 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { RENOVACION_LLC_MONEY_FIELD_NAMES } from '../../../shared/services/form-builder.service';
 import { LanguageService } from '../../../shared/services/language.service';
 import { WizardStateService } from '../services/wizard-state.service';
 import { WizardApiService } from '../services/wizard-api.service';
@@ -782,16 +783,11 @@ export class LLCRenovacionComponent implements OnInit {
     const ownersArray = this.fb.array([]);
     group.addControl('owners', ownersArray);
     
-    // Paso 3: Información Contable de la LLC
-    group.addControl('llcOpeningCost', this.fb.control(''));
-    group.addControl('paidToFamilyMembers', this.fb.control(''));
-    group.addControl('paidToLocalCompanies', this.fb.control(''));
-    group.addControl('paidForLLCFormation', this.fb.control(''));
-    group.addControl('paidForLLCDissolution', this.fb.control(''));
-    group.addControl('bankAccountBalanceEndOfYear', this.fb.control(''));
-    
-    // Paso 4: Movimientos Financieros de la LLC en 2025
-    group.addControl('totalRevenue2025', this.fb.control(''));
+    // Paso 3–4: montos numéricos >= 0 (no null)
+    const moneyValidators = [Validators.required, Validators.min(0)];
+    for (const name of RENOVACION_LLC_MONEY_FIELD_NAMES) {
+      group.addControl(name, this.fb.control(0, moneyValidators));
+    }
     
     // Paso 5: Información Adicional de la LLC
     group.addControl('hasFinancialInvestmentsInUSA', this.fb.control(''));

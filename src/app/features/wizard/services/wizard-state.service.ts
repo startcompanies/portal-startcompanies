@@ -23,6 +23,12 @@ export class WizardStateService {
   private stepForms = new Map<number, FormGroup>();
   private showNextButtonSubject = new BehaviorSubject<boolean>(true);
   showNextButton$ = this.showNextButtonSubject.asObservable();
+
+  /**
+   * Tras `clear()` (wizard terminado o cancelado), bloquea escrituras a localStorage hasta un nuevo
+   * trámite (`setServiceType`), para que la UI que sigue montada no repueble `wizard_state` desde el flujo.
+   */
+  private suppressLocalPersistence = false;
   
   // ID del request creado después del pago
   private requestId: number | null = null;
@@ -84,6 +90,9 @@ export class WizardStateService {
    * Guarda el estado en localStorage
    */
   private saveToStorage(): void {
+    if (this.suppressLocalPersistence) {
+      return;
+    }
     try {
       const stepDataObj: { [key: number]: any } = {};
       this.stepData.forEach((value, key) => {
@@ -236,6 +245,7 @@ export class WizardStateService {
     this.currentStep = 1;
     this.currentStepNumber = 1;
     localStorage.removeItem(WIZARD_STATE_KEY);
+    this.suppressLocalPersistence = true;
   }
   
   /**
@@ -287,6 +297,7 @@ export class WizardStateService {
    * Establece el tipo de servicio
    */
   setServiceType(type: 'apertura-llc' | 'renovacion-llc' | 'cuenta-bancaria'): void {
+    this.suppressLocalPersistence = false;
     this.serviceType = type;
     this.saveToStorage();
   }
@@ -300,7 +311,9 @@ export class WizardStateService {
 
   setFlowSource(source: 'wizard' | 'crm-lead' | 'panel'): void {
     this.flowSource = source;
-    this.saveToStorage();
+    if (!this.suppressLocalPersistence) {
+      this.saveToStorage();
+    }
   }
 
   getFlowSource(): 'wizard' | 'crm-lead' | 'panel' {

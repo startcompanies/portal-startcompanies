@@ -10,6 +10,7 @@ import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
 import { LoggerService } from '../../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
+import { HttpErrorMapperService } from '../../../../../shared/services/http-error-mapper.service';
 
 /**
  * Componente wrapper para usar wizard-renovacion-llc-form en el wizard
@@ -61,7 +62,8 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
     private wizardApiService: WizardApiService,
     private fb: FormBuilder,
     private serviceFormBuilder: ServiceFormBuilderService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private httpErrorMapper: HttpErrorMapperService,
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createRenovacionLlcForm();
   }
@@ -88,6 +90,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
           ownersArray.push(ownerGroup);
         });
       }
+      this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     }
 
     // Estado y estructura societaria: prioridad sobre lo guardado en este paso (suelen ir vacíos en localStorage)
@@ -549,9 +552,9 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardRenovacionLlcInformationStep] Datos guardados exitosamente');
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.logger.error('[WizardRenovacionLlcInformationStep] Error al guardar:', error);
-      this.saveError = error?.error?.message || 'Error al guardar los datos';
+      this.saveError = this.httpErrorMapper.mapHttpError(error);
       return false;
     } finally {
       this.isSaving = false;
@@ -562,6 +565,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
    * Devuelve los datos del formulario para que el base los persista al avanzar.
    */
   getFormData(): Record<string, unknown> {
+    this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     return this.serviceDataForm.getRawValue() as Record<string, unknown>;
   }
 

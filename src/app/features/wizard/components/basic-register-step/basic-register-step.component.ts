@@ -200,22 +200,37 @@ export class WizardBasicRegisterStepComponent implements OnInit, OnDestroy {
         this.registeredUserId = user.id;
         this.registeredEmail = user.email;
         this.waitingEmailVerification = false;
-        // Poblar el formulario con datos del usuario autenticado para que la validación pase
-        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
-        if (!this.form.get('email')?.value) {
-          this.form.patchValue({ email: user.email || '', fullName });
-          // Si hay un usuario autenticado, también precargar teléfono para que
-          // el paso no permita avanzar con campos faltantes.
-          if (!this.form.get('phone')?.value) {
-            this.form.patchValue({ phone: user.phone || '' });
-          }
-          // La contraseña no se restaura por seguridad; usar un placeholder para satisfacer required
-          if (!this.form.get('password')?.value) {
-            this.form.get('password')?.clearValidators();
-            this.form.get('password')?.updateValueAndValidity();
-          }
+        const emailVal = (user.email || '').trim();
+        const fromNames = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+        const usernameRaw = (user.username || '').trim();
+        const usernameOk = usernameRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameRaw);
+        const fullNameFromUser =
+          fromNames || (usernameOk ? usernameRaw : '');
+
+        const currentFull = ((this.form.get('fullName')?.value as string) || '').trim();
+        const looksLikeEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentFull);
+        const sameAsEmail = currentFull.toLowerCase() === emailVal.toLowerCase();
+
+        const patch: { email?: string; fullName?: string } = {};
+        if (!((this.form.get('email')?.value as string) || '').trim()) {
+          patch['email'] = emailVal;
         }
-        // Emitir evento de registro completado
+        // No mostrar el correo como nombre completo: preferir nombre del JWT o username no-email.
+        if (fullNameFromUser && (!currentFull || looksLikeEmail || sameAsEmail)) {
+          patch['fullName'] = fullNameFromUser;
+        } else if ((looksLikeEmail || sameAsEmail) && !fullNameFromUser) {
+          patch['fullName'] = '';
+        }
+        if (Object.keys(patch).length > 0) {
+          this.form.patchValue(patch);
+        }
+        if (!((this.form.get('phone')?.value as string) || '').trim()) {
+          this.form.patchValue({ phone: user.phone || '' });
+        }
+        if (!this.form.get('password')?.value) {
+          this.form.get('password')?.clearValidators();
+          this.form.get('password')?.updateValueAndValidity();
+        }
         this.registrationCompleted.emit();
       }
     }

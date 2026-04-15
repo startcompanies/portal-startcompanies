@@ -90,7 +90,7 @@ cuenta-bancaria,¿Tu LLC es Multi-Member?,isMultiMember
 members,Nombres,firstName
 members,Apellidos,lastName
 members,Número Pasaporte Completo,passportNumber
-members,Pasaporte escaneado,scannedPassportUrl
+members,Foto pasaporte,scannedPassportUrl
 members,Nacionalidad,nationality
 members,Fecha de nacimiento,dateOfBirth
 members,Email,email
@@ -131,4 +131,4 @@ members,Número Pasaporte Completo (Propietario Cuenta Bancaria),passportNumber
 members,Número de SSN/ITIN (Propietario Cuenta Bancaria),ssnItin
 members,ID Fiscal Nacional (CUIT) (Propietario Cuenta Bancaria),cuit
 members,Porcentaje de participación (Propietario Cuenta Bancaria),participationPercentage
-members,Pasaporte escaneado (Propietario Cuenta Bancaria),passportFileUrl
+members,Foto pasaporte (propietario cuenta bancaria),passportFileUrl

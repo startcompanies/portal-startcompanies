@@ -8,6 +8,7 @@ import { StripeService } from '../../services/stripe.service';
 import { StripePaymentFormComponent, StripePaymentResult } from '../../../panel/components/stripe-payment-form/stripe-payment-form.component';
 import { WizardPlansService } from '../../services/wizard-plans.service';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { HttpErrorMapperService } from '../../../../shared/services/http-error-mapper.service';
 
 /**
  * Componente reutilizable para el paso de pago
@@ -66,7 +67,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
     private wizardStateService: WizardStateService,
     private wizardApiService: WizardApiService,
     private stripeService: StripeService,
-    private wizardPlansService: WizardPlansService
+    private wizardPlansService: WizardPlansService,
+    private httpErrorMapper: HttpErrorMapperService,
   ) {
     const savedData = this.wizardStateService.getStepData(this.stepNumber);
     this.form = new FormGroup({
@@ -267,12 +269,67 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
             },
           });
           return true;
-        } catch (error: any) {
+        } catch (error: unknown) {
           this.stripeProcessing = false;
           this.stripePaymentProcessed = false;
           this.stripePaymentToken = null;
           this.saveStepData();
-          this.errorMessage = error?.error?.message || 'Error al procesar el pago';
+          this.errorMessage = this.httpErrorMapper.mapHttpError(error, 'HTTP.payment');
+          this.paymentError.emit(this.errorMessage);
+          return false;
+        }
+      }
+
+      // Apertura LLC: solicitud ya creada tras Estado/Plan — cobrar vía PATCH
+      const existingAperturaId = this.wizardStateService.getRequestId();
+      if (serviceType === 'apertura-llc' && existingAperturaId) {
+        try {
+          const allDataOpening = this.wizardStateService.getAllData();
+          const step2Opening = allDataOpening.step2 || {};
+          const step3Opening = allDataOpening.step3 || {};
+          const patchBody: Record<string, unknown> = {
+            stripeToken: this.stripePaymentToken,
+            paymentAmount: this.totalAmount,
+            paymentMethod: 'stripe',
+            currentStep: this.stepNumber + 1,
+            plan: step2Opening.plan,
+            aperturaLlcData: {
+              ...step3Opening,
+              incorporationState: step2Opening.state || this.state,
+              plan: step2Opening.plan,
+              members: step3Opening.members || [],
+            },
+          };
+          const updatedOpening = await firstValueFrom(
+            this.wizardApiService.updateRequest(existingAperturaId, patchBody),
+          );
+          if (updatedOpening && updatedOpening.id) {
+            this.wizardStateService.setRequestId(updatedOpening.id);
+          }
+          this.stripePaymentProcessed = true;
+          this.errorMessage = null;
+          this.saveStepData();
+          this.stripePaymentForm.disableCardElement();
+          this.successMessage = '¡Pago procesado exitosamente!';
+          this.stripeProcessing = false;
+          this.paymentAndRequestCreated.emit({
+            requestId: existingAperturaId,
+            paymentInfo: {
+              chargeId: updatedOpening?.stripeChargeId || '',
+              amount: this.totalAmount,
+              currency: 'usd',
+              status: updatedOpening?.paymentStatus || 'succeeded',
+              paid: true,
+              receiptUrl: '',
+            },
+          });
+          return true;
+        } catch (error: unknown) {
+          this.stripeProcessing = false;
+          this.stripePaymentProcessed = false;
+          this.stripePaymentToken = null;
+          this.saveStepData();
+          this.errorMessage = this.httpErrorMapper.mapHttpError(error, 'HTTP.payment');
           this.paymentError.emit(this.errorMessage);
           return false;
         }
@@ -360,13 +417,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
 
       return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.stripeProcessing = false;
       this.stripePaymentProcessed = false; // Asegurar que no se marque como procesado
       // tok_ es de un solo uso: no persistir token tras fallo para forzar uno nuevo y evitar reintentos inválidos
       this.stripePaymentToken = null;
       this.saveStepData();
-      this.errorMessage = error?.error?.message || 'Error al procesar el pago';
+      this.errorMessage = this.httpErrorMapper.mapHttpError(error, 'HTTP.payment');
       console.error('Error al procesar pago:', error);
       this.paymentError.emit(this.errorMessage);
       return false;
@@ -517,8 +574,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         this.form.patchValue({ paymentProofUrl: response.url });
         this.selectedPaymentProofFile = null;
       }
-    } catch (error: any) {
-      this.errorMessage = error?.error?.message || 'Error al subir el comprobante';
+    } catch (error: unknown) {
+      this.errorMessage = this.httpErrorMapper.mapHttpError(error);
       this.paymentError.emit(this.errorMessage);
     } finally {
       this.isUploadingPaymentProof = false;
@@ -612,6 +669,36 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         });
         return;
       }
+      if (serviceType === 'apertura-llc' && existingId) {
+        const step3Data = allData.step3 || {};
+        const patchBody: Record<string, unknown> = {
+          stripeToken: '',
+          paymentAmount: this.totalAmount,
+          paymentMethod: 'transferencia',
+          paymentProofUrl: proofUrl,
+          currentStep: this.stepNumber + 1,
+          plan: step2Data.plan,
+          aperturaLlcData: {
+            ...step3Data,
+            incorporationState: step2Data.state || '',
+            plan: step2Data.plan,
+            members: step3Data.members || [],
+          },
+        };
+        const updatedTr = await firstValueFrom(
+          this.wizardApiService.updateRequest(existingId, patchBody),
+        );
+        if (updatedTr?.id) {
+          this.wizardStateService.setRequestId(updatedTr.id);
+        }
+        this.transferenciaProcessed = true;
+        this.saveStepData();
+        this.paymentAndRequestCreated.emit({
+          requestId: existingId,
+          paymentInfo: { method: 'transferencia', amount: this.totalAmount },
+        });
+        return;
+      }
       const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
       if (response?.id) {
         this.wizardStateService.setRequestId(response.id);
@@ -619,8 +706,8 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
         this.saveStepData();
         this.paymentAndRequestCreated.emit({ requestId: response.id, paymentInfo: { method: 'transferencia', amount: this.totalAmount } });
       }
-    } catch (error: any) {
-      this.errorMessage = error?.error?.message || 'Error al crear la solicitud';
+    } catch (error: unknown) {
+      this.errorMessage = this.httpErrorMapper.mapHttpError(error, 'HTTP.payment');
       this.paymentError.emit(this.errorMessage);
       this.transferenciaProcessed = false;
       this.saveStepData();

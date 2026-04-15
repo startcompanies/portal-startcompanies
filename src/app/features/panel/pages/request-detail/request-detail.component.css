@@ -36,6 +36,58 @@
   color: var(--color-secundario-tecnico);
 }
 
+/* Método de pago y estado: mismo apartado flex que fechas (creación / actualización) */
+.meta-item.meta-item-payment,
+.meta-item.meta-item-status {
+  align-items: center;
+}
+
+.meta-item-payment .meta-item-payment__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.meta-item-payment__row {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.meta-item-payment__label {
+  font-weight: 600;
+  color: var(--color-texto-oscuro, #212529);
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.meta-item-payment__badge {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.meta-item-payment__badge--stripe {
+  background-color: #198754;
+}
+
+.meta-item-payment__badge--transfer {
+  background-color: #0d9488;
+}
+
+.meta-item-payment__badge--pending {
+  background-color: #6c757d;
+}
+
+.meta-item-payment__hint {
+  max-width: 280px;
+  line-height: 1.35;
+}
+
 /* ── Pago Pendiente ─────────────────────────────────────────────────────────── */
 .payment-pending-section {
   background: var(--color-fondo-claro);
@@ -518,6 +570,10 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-overlay .modal-content.approve-confirm-modal {
+  max-width: 520px;
 }
 
 /* Modal de datos completos - más ancho y centrado usando clases específicas */

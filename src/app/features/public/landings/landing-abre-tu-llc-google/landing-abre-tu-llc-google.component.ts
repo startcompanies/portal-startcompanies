@@ -8,6 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FacebookPixelService } from '../../../../shared/services/facebook-pixel.service';
+import { LandingLpGtmService } from '../../../../shared/services/landing-lp-gtm.service';
 import { LandingStaticLpBootstrapService } from '../../../../shared/services/landing-static-lp-bootstrap.service';
 import { BrowserService } from '../../../../shared/services/browser.service';
 
@@ -23,6 +24,7 @@ export class LandingAbreTuLlcGoogleComponent implements OnInit, AfterViewInit, O
 
   constructor(
     private facebookPixelService: FacebookPixelService,
+    private landingLpGtm: LandingLpGtmService,
     private bootstrap: LandingStaticLpBootstrapService,
     private browser: BrowserService
   ) {}
@@ -30,6 +32,7 @@ export class LandingAbreTuLlcGoogleComponent implements OnInit, AfterViewInit, O
   ngOnInit(): void {
     if (this.browser.isBrowser) {
       document.body.classList.add('lp-campaign-page');
+      this.landingLpGtm.enable();
     }
     this.facebookPixelService.initializePixel('llc');
     this.facebookPixelService.trackViewContent('Abre tu LLC Google', 'LLC Services');
@@ -37,6 +40,7 @@ export class LandingAbreTuLlcGoogleComponent implements OnInit, AfterViewInit, O
 
   ngOnDestroy(): void {
     if (this.browser.isBrowser) {
+      this.landingLpGtm.disable();
       document.body.classList.remove('lp-campaign-page');
     }
   }

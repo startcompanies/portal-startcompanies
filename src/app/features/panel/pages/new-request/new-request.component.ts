@@ -8,6 +8,7 @@ import { PanelPartnerRequestFlowComponent } from '../../components/panel-partner
 import { PanelClientRequestFlowComponent } from '../../components/panel-client-request-flow/panel-client-request-flow.component';
 import { ServiceType } from '../../../../shared/models/request-flow-context';
 import { WizardStateService } from '../../../wizard/services/wizard-state.service';
+import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
 import { firstValueFrom } from 'rxjs';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
@@ -103,6 +104,7 @@ export class NewRequestComponent implements OnInit {
     private requestsService: RequestsService,
     private partnerClientsService: PartnerClientsService,
     private wizardStateService: WizardStateService,
+    private requestFlowStateService: RequestFlowStateService,
     private transloco: TranslocoService
   ) {
     this.isPartner = this.authService.isPartner();
@@ -268,6 +270,7 @@ export class NewRequestComponent implements OnInit {
     }
     if (!draftRequestUuid) {
       this.wizardStateService.clear();
+      this.requestFlowStateService.clearAllScopes();
     }
     this.isLoading = false;
   }

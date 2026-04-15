@@ -139,7 +139,7 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label [for]="'memberPassportScanned' + i" class="form-label">Pasaporte escaneado <span class="text-danger">*</span></label>
+                  <label [for]="'memberPassportScanned' + i" class="form-label">{{ 'PANEL.forms_apertura_llc.passport_scan' | transloco }} <span class="text-danger">*</span></label>
                   <!-- Solo mostrar input de file si NO hay URL guardada -->
                   <div *ngIf="!member.get('scannedPassportUrl')?.value">
                     <input

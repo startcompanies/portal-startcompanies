@@ -37,7 +37,7 @@
             <button
               type="button"
               class="btn btn-success btn-sm"
-              (click)="approveRequest()"
+              (click)="openApproveModal()"
               [title]="'PANEL.request_detail.approve_title' | transloco"
             >
               <i class="bi bi-check-circle me-1"></i>
@@ -71,9 +71,6 @@
             <i class="bi bi-code-square me-1"></i>
             {{ 'PANEL.request_detail.view_full_json' | transloco }}
           </button>
-          <span [class]="getStatusClass(request.status)">
-            {{ getStatusLabel(request.status) }}
-          </span>
         </div>
       </div>
 
@@ -85,6 +82,40 @@
         <div class="meta-item">
           <i class="bi bi-clock-history me-2"></i>
           <span>{{ 'PANEL.request_detail.updated_at' | transloco }} {{ request.updatedAt | safeDate:'short' }}</span>
+        </div>
+        <div class="meta-item meta-item-status">
+          <i class="bi bi-clipboard2-pulse me-2"></i>
+          <div class="meta-item-payment__stack">
+            <div class="meta-item-payment__row">
+              <span class="meta-item-payment__label">{{ 'PANEL.request_detail.meta_status_label' | transloco }}</span>
+              <span [class]="getStatusClass(request.status) + ' rounded-pill px-3 py-2'">{{ getStatusLabel(request.status) }}</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="fullRequestData" class="meta-item meta-item-payment">
+          <i class="bi bi-wallet2 me-2"></i>
+          <div class="meta-item-payment__stack">
+            <div class="meta-item-payment__row">
+              <span class="meta-item-payment__label">{{ 'PANEL.request_detail.approve_modal_payment_label' | transloco }}</span>
+              <span
+                class="badge rounded-pill px-3 py-2 meta-item-payment__badge"
+                [ngClass]="{
+                  'meta-item-payment__badge--stripe': getApproveModalPaymentKind() === 'stripe',
+                  'meta-item-payment__badge--transfer': getApproveModalPaymentKind() === 'transferencia',
+                  'meta-item-payment__badge--pending': getApproveModalPaymentKind() === 'pending'
+                }"
+              >
+                <ng-container [ngSwitch]="getApproveModalPaymentKind()">
+                  <ng-container *ngSwitchCase="'stripe'">{{ 'PANEL.request_detail.approve_modal_payment_stripe' | transloco }}</ng-container>
+                  <ng-container *ngSwitchCase="'transferencia'">{{ 'PANEL.request_detail.approve_modal_payment_transfer' | transloco }}</ng-container>
+                  <ng-container *ngSwitchDefault>{{ 'PANEL.request_detail.approve_modal_payment_pending' | transloco }}</ng-container>
+                </ng-container>
+              </span>
+            </div>
+            <span class="small text-muted meta-item-payment__hint" *ngIf="approveModalPaymentHintKey() as hintKey">
+              {{ hintKey | transloco }}
+            </span>
+          </div>
         </div>
         <p *ngIf="isPartner && request.clientName" class="meta-item mb-0">
           <i class="bi bi-person me-2"></i>
@@ -365,6 +396,48 @@
           >
             <i class="bi bi-upload me-2"></i>
             {{ 'PANEL.request_detail.upload_short' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Aprobar solicitud (admin — notas y resumen de pago para Zoho) -->
+    <div *ngIf="showApproveModal" class="modal-overlay" (click)="closeApproveModal()">
+      <div class="modal-content approve-confirm-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h4 class="mb-0">
+            <i class="bi bi-check2-circle me-2 text-success"></i>
+            {{ 'PANEL.request_detail.approve_modal_title' | transloco }}
+          </h4>
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeApproveModal()"
+            [disabled]="approveInProgress"
+            [attr.aria-label]="'PANEL.common.close_aria' | transloco"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-0">
+            <label for="approveNotesInput" class="form-label fw-semibold">{{ 'PANEL.request_detail.approve_modal_notes_label' | transloco }}</label>
+            <textarea
+              id="approveNotesInput"
+              class="form-control"
+              rows="4"
+              [(ngModel)]="approveNotes"
+              [disabled]="approveInProgress"
+              [attr.placeholder]="'PANEL.request_detail.approve_modal_notes_placeholder' | transloco"
+            ></textarea>
+            <small class="text-muted">{{ 'PANEL.request_detail.approve_modal_notes_hint' | transloco }}</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeApproveModal()" [disabled]="approveInProgress">
+            {{ 'PANEL.request_detail.approve_modal_cancel' | transloco }}
+          </button>
+          <button type="button" class="btn btn-success" (click)="confirmApproveFromModal()" [disabled]="approveInProgress">
+            <span *ngIf="approveInProgress" class="spinner-border spinner-border-sm me-2" role="status"></span>
+            {{ 'PANEL.request_detail.approve_modal_confirm' | transloco }}
           </button>
         </div>
       </div>

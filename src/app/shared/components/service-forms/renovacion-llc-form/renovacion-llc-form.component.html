@@ -434,7 +434,7 @@
       <div class="col-md-12">
         <label for="llcOpeningCost" class="form-label">{{ 'PANEL.forms_renovacion_llc.opening_cost' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="llcOpeningCost" class="form-control" formControlName="llcOpeningCost" step="0.01" min="0">
+          <input type="number" id="llcOpeningCost" class="form-control" formControlName="llcOpeningCost" step="0.01" min="0" (blur)="normalizeMoneyField('llcOpeningCost')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -442,7 +442,7 @@
       <div class="col-md-12">
         <label for="paidToFamilyMembers" class="form-label">{{ 'PANEL.forms_renovacion_llc.paid_family' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="paidToFamilyMembers" class="form-control" formControlName="paidToFamilyMembers" step="0.01" min="0">
+          <input type="number" id="paidToFamilyMembers" class="form-control" formControlName="paidToFamilyMembers" step="0.01" min="0" (blur)="normalizeMoneyField('paidToFamilyMembers')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -450,7 +450,7 @@
       <div class="col-md-12">
         <label for="paidToLocalCompanies" class="form-label">{{ 'PANEL.forms_renovacion_llc.paid_local' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="paidToLocalCompanies" class="form-control" formControlName="paidToLocalCompanies" step="0.01" min="0">
+          <input type="number" id="paidToLocalCompanies" class="form-control" formControlName="paidToLocalCompanies" step="0.01" min="0" (blur)="normalizeMoneyField('paidToLocalCompanies')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -458,7 +458,7 @@
       <div class="col-md-12">
         <label for="paidForLLCFormation" class="form-label">{{ 'PANEL.forms_renovacion_llc.paid_formation' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="paidForLLCFormation" class="form-control" formControlName="paidForLLCFormation" step="0.01" min="0">
+          <input type="number" id="paidForLLCFormation" class="form-control" formControlName="paidForLLCFormation" step="0.01" min="0" (blur)="normalizeMoneyField('paidForLLCFormation')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -466,7 +466,7 @@
       <div class="col-md-12">
         <label for="paidForLLCDissolution" class="form-label">{{ 'PANEL.forms_renovacion_llc.paid_dissolution' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="paidForLLCDissolution" class="form-control" formControlName="paidForLLCDissolution" step="0.01" min="0">
+          <input type="number" id="paidForLLCDissolution" class="form-control" formControlName="paidForLLCDissolution" step="0.01" min="0" (blur)="normalizeMoneyField('paidForLLCDissolution')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -474,7 +474,7 @@
       <div class="col-md-12">
         <label for="bankAccountBalanceEndOfYear" class="form-label">{{ 'PANEL.forms_renovacion_llc.bank_balance_eoy' | transloco }}</label>
         <div class="input-group">
-          <input type="number" id="bankAccountBalanceEndOfYear" class="form-control" formControlName="bankAccountBalanceEndOfYear" step="0.01" min="0">
+          <input type="number" id="bankAccountBalanceEndOfYear" class="form-control" formControlName="bankAccountBalanceEndOfYear" step="0.01" min="0" (blur)="normalizeMoneyField('bankAccountBalanceEndOfYear')">
           <span class="input-group-text">USD</span>
         </div>
       </div>
@@ -489,7 +489,7 @@
       <div class="col-md-12">
         <label for="totalRevenue2025" class="form-label">{{ 'PANEL.forms_renovacion_llc.total_revenue' | transloco: { year: currentYear } }}</label>
         <div class="input-group">
-          <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0">
+          <input type="number" id="totalRevenue2025" class="form-control" formControlName="totalRevenue2025" step="0.01" min="0" (blur)="normalizeMoneyField('totalRevenue2025')">
           <span class="input-group-text">USD</span>
         </div>
         <small class="form-text text-muted">{{ 'PANEL.forms_renovacion_llc.total_revenue_hint' | transloco: { year: currentYear } }}</small>

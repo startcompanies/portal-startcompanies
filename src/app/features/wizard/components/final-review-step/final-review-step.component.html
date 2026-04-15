@@ -222,7 +222,7 @@
           </div>
           <div class="col-md-4" *ngIf="serviceType === 'apertura-llc' && member.scannedPassportUrl">
             <div class="review-item">
-              <span class="review-label">Pasaporte escaneado</span>
+              <span class="review-label">{{ 'WIZARD.review.scanned_passport' | transloco }}</span>
               <span class="review-value">Archivo subido ✓</span>
             </div>
           </div>
@@ -316,10 +316,10 @@
             </div>
           </div>
           
-          <!-- Pasaporte escaneado -->
+          <!-- Foto del pasaporte -->
           <div class="col-md-4" *ngIf="serviceType === 'cuenta-bancaria' && (member.scannedPassportUrl || member.passportFileUrl)">
             <div class="review-item">
-              <span class="review-label">Pasaporte escaneado</span>
+              <span class="review-label">{{ 'WIZARD.review.scanned_passport' | transloco }}</span>
               <span class="review-value">Archivo subido ✓</span>
             </div>
           </div>
