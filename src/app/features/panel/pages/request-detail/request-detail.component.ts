@@ -82,6 +82,11 @@ export class RequestDetailComponent implements OnInit {
 
   // Modal para mostrar todos los datos
   showAllDataModal = false;
+
+  /** Modal de confirmación de aprobación (notas + resumen de pago para Zoho). */
+  showApproveModal = false;
+  approveNotes = '';
+  approveInProgress = false;
   
   // Gestión de procesos (solo admin)
   showEditStepModal = false;
@@ -1368,35 +1373,85 @@ export class RequestDetailComponent implements OnInit {
     console.log('Actualizar paso:', step, 'a estado:', newStatus);
   }
 
-  /**
-   * Aprobar solicitud (solo admin)
-   */
-  async approveRequest(): Promise<void> {
-    if (!this.requestId || !this.request) return;
+  openApproveModal(): void {
+    this.approveNotes = '';
+    this.showApproveModal = true;
+  }
 
+  closeApproveModal(): void {
+    if (this.approveInProgress) {
+      return;
+    }
+    this.showApproveModal = false;
+    this.approveNotes = '';
+  }
+
+  /**
+   * Resumen de método de pago para el modal de aprobación (admin).
+   * Alineado con los datos de la API, no con el flujo de pago pendiente del cliente.
+   */
+  getApproveModalPaymentKind(): 'stripe' | 'transferencia' | 'pending' {
+    const d = this.fullRequestData;
+    if (!d?.paymentMethod) {
+      return 'pending';
+    }
+    if (d.paymentMethod === 'stripe') {
+      return 'stripe';
+    }
+    if (d.paymentMethod === 'transferencia') {
+      return 'transferencia';
+    }
+    return 'pending';
+  }
+
+  /** Clave i18n opcional con aviso si el pago no está totalmente acreditado en la solicitud. */
+  approveModalPaymentHintKey(): string | null {
+    const d = this.fullRequestData;
+    const kind = this.getApproveModalPaymentKind();
+    if (kind === 'stripe' && d) {
+      const ok =
+        d.paymentStatus === 'succeeded' || !!(d.stripeChargeId && String(d.stripeChargeId).trim());
+      if (!ok) {
+        return 'PANEL.request_detail.approve_modal_hint_stripe_pending';
+      }
+    }
+    if (kind === 'transferencia' && d && !d.paymentProofUrl?.trim()) {
+      return 'PANEL.request_detail.approve_modal_hint_transfer_no_proof';
+    }
+    return null;
+  }
+
+  /**
+   * Confirmar aprobación desde el modal (notas opcionales → Zoho Note si no vacías).
+   */
+  async confirmApproveFromModal(): Promise<void> {
+    if (!this.requestId || !this.request || !this.requestNumericId) {
+      return;
+    }
+
+    let initialStage = 'Apertura Confirmada';
+    if (this.request.type === 'cuenta-bancaria') {
+      initialStage = 'Cuenta Bancaria Confirmada';
+    } else if (this.request.type === 'renovacion-llc') {
+      initialStage = 'Solicitud Recibida';
+    }
+
+    const notes = this.approveNotes.trim() || undefined;
+
+    this.approveInProgress = true;
     try {
-      // Determinar la etapa inicial según el tipo de solicitud
-      let initialStage = 'Apertura Confirmada'; // Default para apertura-llc
-      if (this.request.type === 'cuenta-bancaria') {
-        initialStage = 'Cuenta Bancaria Confirmada';
-      } else if (this.request.type === 'renovacion-llc') {
-        initialStage = 'Solicitud Recibida';
-      }
-      
-      if (!this.requestNumericId) {
-        throw new Error('No se pudo obtener el ID de la solicitud');
-      }
-      await this.requestsService.approveRequest(this.requestNumericId, initialStage);
-      
-      // Recargar la solicitud
+      await this.requestsService.approveRequest(this.requestNumericId, initialStage, notes);
+      this.showApproveModal = false;
+      this.approveNotes = '';
       await this.loadRequest();
-      
       this.panelSnackBar.success('Solicitud aprobada correctamente');
     } catch (error: any) {
       console.error('Error al aprobar solicitud:', error);
       this.panelSnackBar.error(
-        error?.error?.message || 'Error al aprobar la solicitud'
+        error?.error?.message || 'Error al aprobar la solicitud',
       );
+    } finally {
+      this.approveInProgress = false;
     }
   }
 
