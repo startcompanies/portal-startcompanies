@@ -267,9 +267,40 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     const { password: _p, ...restStep1 } = step1 as { password?: string; [k: string]: unknown };
     this.registrationData = { ...restStep1 };
     const rd = this.registrationData as Record<string, unknown>;
+    // Si syncToWizardState pisó el paso 1 con solo userId/email, recuperar nombre y teléfono del JWT del wizard.
+    const wUser = this.wizardApiService.getUser();
+    let enrichedFromWizardUser = false;
+    if (wUser) {
+      if (!(rd['phone'] as string)?.trim() && (wUser.phone || '').trim()) {
+        rd['phone'] = wUser.phone;
+        enrichedFromWizardUser = true;
+      }
+      if (!(rd['firstName'] as string)?.trim() && (wUser.firstName || '').trim()) {
+        rd['firstName'] = wUser.firstName;
+        enrichedFromWizardUser = true;
+      }
+      if (!(rd['lastName'] as string)?.trim() && (wUser.lastName || '').trim()) {
+        rd['lastName'] = wUser.lastName;
+        enrichedFromWizardUser = true;
+      }
+      const fn = (rd['firstName'] as string) || '';
+      const ln = (rd['lastName'] as string) || '';
+      const fromParts = `${fn} ${ln}`.trim();
+      const usernameRaw = (wUser.username || '').trim();
+      const usernameOk = usernameRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usernameRaw);
+      if (!(rd['fullName'] as string)?.trim() && (fromParts || (usernameOk ? usernameRaw : ''))) {
+        rd['fullName'] = fromParts || (usernameOk ? usernameRaw : '');
+        enrichedFromWizardUser = true;
+      }
+    }
     // No usar el email como nombre mostrado (evita duplicar correo en "Nombre completo").
     rd['fullName'] =
       (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || '';
+
+    if (enrichedFromWizardUser) {
+      const prev = this.wizardStateService.getStepData(1) || {};
+      this.wizardStateService.setStepData(1, { ...prev, ...rd });
+    }
 
     // Paso 2: Estado/Plan (para apertura y renovación)
     this.statePlanData = allData.step2 || {};

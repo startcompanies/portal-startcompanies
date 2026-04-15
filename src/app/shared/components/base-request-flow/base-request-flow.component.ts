@@ -458,7 +458,9 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     if (this.context === RequestFlowContext.WIZARD) {
       const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
       if (registerData && Object.keys(registerData).length > 0) {
-        this.wizardStateService.setStepData(1, registerData);
+        const existingStep1 = this.wizardStateService.getStepData(1) || {};
+        // flowState.REGISTER solo suele traer userId/email/waitingVerification; no pisar nombre/teléfono del paso 1.
+        this.wizardStateService.setStepData(1, { ...existingStep1, ...registerData });
       }
 
       const emailVerificationData = this.flowStateService.getStepData(RequestFlowStep.EMAIL_VERIFICATION);
@@ -476,7 +478,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     ) {
       const registerData = this.flowStateService.getStepData(RequestFlowStep.REGISTER);
       if (registerData && Object.keys(registerData).length > 0) {
-        this.wizardStateService.setStepData(1, registerData);
+        const existingStep1 = this.wizardStateService.getStepData(1) || {};
+        this.wizardStateService.setStepData(1, { ...existingStep1, ...registerData });
       }
 
       this.syncReviewDataFromFlowToWizardState();
