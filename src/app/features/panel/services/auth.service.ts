@@ -116,6 +116,26 @@ function isSecondFactorResponse(
   return o['step'] === 'second_factor' && typeof o['challengeId'] === 'string';
 }
 
+/** Cuerpo Nest: `message` string o array (ValidationPipe); 401/429 incluyen `message`. */
+function extractHttpApiMessage(err: unknown, fallback: string): string {
+  if (err instanceof HttpErrorResponse) {
+    const body = err.error;
+    if (body && typeof body === 'object' && body !== null) {
+      const m = (body as Record<string, unknown>)['message'];
+      if (typeof m === 'string' && m.trim()) {
+        return m;
+      }
+      if (Array.isArray(m) && m.length > 0 && typeof m[0] === 'string') {
+        return m[0];
+      }
+    }
+  }
+  if (err instanceof Error && typeof err.message === 'string') {
+    return err.message;
+  }
+  return fallback;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -272,8 +292,7 @@ export class AuthService {
           return of(response as AuthResponse);
         }),
         catchError((err) => {
-          const message =
-            err?.error?.message ?? err?.message ?? 'Error de autenticación';
+          const message = extractHttpApiMessage(err, 'Error de autenticación');
           return throwError(() => new Error(message));
         }),
       );
@@ -302,8 +321,7 @@ export class AuthService {
           return of(response);
         }),
         catchError((err) => {
-          const message =
-            err?.error?.message ?? err?.message ?? 'Código inválido o expirado';
+          const message = extractHttpApiMessage(err, 'Código inválido o expirado');
           return throwError(() => new Error(message));
         }),
       );
