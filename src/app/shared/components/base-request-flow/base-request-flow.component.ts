@@ -1476,7 +1476,10 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       if (serviceType) {
         this.serviceType = serviceType;
         this.serviceTypeChanged.emit(serviceType);
-        
+        if (this.context === RequestFlowContext.WIZARD && this.wizardStateService) {
+          this.wizardStateService.setServiceType(serviceType);
+        }
+
         // Recargar la configuración del flujo con el nuevo serviceType (sin paso de selección)
         const newFlowSteps = this.flowConfigService.getFlowConfig(
           this.context,

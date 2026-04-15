@@ -796,7 +796,7 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     if (data.validatorNationality) fields.push({ label: 'Nacionalidad del Verificador', value: data.validatorNationality });
     if (data.validatorCitizenship) fields.push({ label: 'Ciudadanía del Verificador', value: data.validatorCitizenship });
     if (data.validatorPassportNumber) fields.push({ label: 'Número de pasaporte del Verificador', value: data.validatorPassportNumber });
-    if (data.validatorPassportUrl) fields.push({ label: 'Copia escaneada del pasaporte del Verificador', value: 'Archivo subido ✓' });
+    if (data.validatorPassportUrl) fields.push({ label: 'Foto del pasaporte del Verificador', value: 'Archivo subido ✓' });
     if (data.validatorWorkEmail) fields.push({ label: 'Email laboral del Verificador', value: data.validatorWorkEmail });
     if (data.validatorPhone) fields.push({ label: 'Teléfono del Verificador', value: data.validatorPhone });
     if (data.canReceiveSMS === true) {
