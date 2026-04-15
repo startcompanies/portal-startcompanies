@@ -7,6 +7,8 @@ import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../sha
 import { RequestFlowConfigService } from '../../../../shared/services/request-flow-config.service';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { WizardStateService } from '../../services/wizard-state.service';
+import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
+import { buildFlowScopeKey } from '../../../../shared/utils/flow-scope-key.util';
 
 @Component({
   selector: 'app-wizard-request-flow-page',
@@ -36,6 +38,7 @@ export class WizardRequestFlowPageComponent implements OnInit {
     private router: Router,
     private flowConfig: RequestFlowConfigService,
     private wizardStateService: WizardStateService,
+    private requestFlowStateService: RequestFlowStateService,
   ) {}
 
   /** Clave de traducción para el título del servicio (sidebar). */
@@ -73,11 +76,25 @@ export class WizardRequestFlowPageComponent implements OnInit {
 
     if (raw === 'apertura-llc' || raw === 'renovacion-llc' || raw === 'cuenta-bancaria') {
       this.serviceType = raw;
+      this.requestFlowStateService.setActiveScope(
+        buildFlowScopeKey({
+          context: RequestFlowContext.WIZARD,
+          serviceType: raw,
+          flowSource: this.flowSource,
+        }),
+      );
       this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, raw, false, false, this.flowSource);
       return;
     }
     if (raw === 'renovar-llc') {
       this.serviceType = 'renovacion-llc';
+      this.requestFlowStateService.setActiveScope(
+        buildFlowScopeKey({
+          context: RequestFlowContext.WIZARD,
+          serviceType: 'renovacion-llc',
+          flowSource: this.flowSource,
+        }),
+      );
       this.flowSteps = this.flowConfig.getFlowConfig(RequestFlowContext.WIZARD, 'renovacion-llc', false, false, this.flowSource);
       return;
     }

@@ -5,6 +5,7 @@ import { WizardStateService } from './wizard-state.service';
 import { RequestFlowStep, ServiceType } from '../../../shared/models/request-flow-context';
 import { RequestFlowStateService } from '../../../shared/services/request-flow-state.service';
 import { GeolocationService } from '../../../shared/services/geolocation.service';
+import { WizardRequestPersistService } from './wizard-request-persist.service';
 
 /**
  * Finalización unificada del wizard:
@@ -19,7 +20,8 @@ export class WizardFlowFinalizeService {
     private wizardApiService: WizardApiService,
     private wizardStateService: WizardStateService,
     private requestFlowState: RequestFlowStateService,
-    private geolocationService: GeolocationService
+    private geolocationService: GeolocationService,
+    private wizardRequestPersist: WizardRequestPersistService,
   ) {}
 
   async finalize(
@@ -44,9 +46,12 @@ export class WizardFlowFinalizeService {
       }
     }
 
+    const maxSection = this.wizardRequestPersist.getMaxSectionForType(serviceType);
     const updateData: any = {
       type: serviceType,
       status: 'solicitud-recibida',
+      currentStepNumber: maxSection,
+      currentStep: this.wizardStateService.getCurrentStep(),
     };
 
     if (signatureUrl) {
@@ -82,7 +87,7 @@ export class WizardFlowFinalizeService {
   clearWizardSession(): void {
     this.wizardStateService.clear();
     this.wizardApiService.clearToken();
-    this.requestFlowState.clear();
+    this.requestFlowState.purgeScopesWhere((key) => key.startsWith('wizard|'));
     this.geolocationService.clearCache();
   }
 

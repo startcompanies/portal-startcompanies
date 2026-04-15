@@ -22,6 +22,7 @@ import {
 } from '../../../../../shared/utils/passport-photo-file.util';
 import { PanelSnackBarService } from '../../../../panel/services/panel-snackbar.service';
 import { TranslocoService } from '@jsverse/transloco';
+import { HttpErrorMapperService } from '../../../../../shared/services/http-error-mapper.service';
 
 /**
  * Componente wrapper para usar apertura-llc-form en el wizard
@@ -63,6 +64,7 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     private logger: LoggerService,
     private snackBar: PanelSnackBarService,
     private transloco: TranslocoService,
+    private httpErrorMapper: HttpErrorMapperService,
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createAperturaLlcForm();
   }
@@ -614,12 +616,8 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
     let requestId = this.wizardStateService.getRequestId();
 
     if (!requestId) {
-      // En los flujos donde "Información de la LLC" ocurre antes del pago
-      // (o creación diferida al finalizar), no existe request todavía.
-      // No debemos bloquear la navegación entre secciones.
-      this.logger.log('[WizardLlcInformationStep] No hay requestId, omitiendo guardado en API por ahora');
-      this.saveError = null;
-      return true;
+      this.saveError = this.transloco.translate('WIZARD.err_no_request_persist');
+      return false;
     }
 
     this.isSaving = true;
@@ -640,9 +638,9 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardLlcInformationStep] Datos guardados exitosamente');
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.logger.error('[WizardLlcInformationStep] Error al guardar:', error);
-      this.saveError = error?.error?.message || 'Error al guardar los datos';
+      this.saveError = this.httpErrorMapper.mapHttpError(error);
       return false;
     } finally {
       this.isSaving = false;

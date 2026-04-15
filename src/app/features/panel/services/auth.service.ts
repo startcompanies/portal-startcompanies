@@ -138,12 +138,24 @@ export class AuthService {
   }
 
   /**
-   * GET /auth/me con reintento tras refresh si el access expiró (401).
-   * El interceptor no aplica refresh a /auth/me; sin esto el guard puede mandar a login con sesión válida.
+   * GET /auth/me con reintento tras refresh si el access expiró.
+   * El backend suele responder 200 + null si el JWT caducó (no 401); en ese caso hay que refrescar igual.
+   * Como máximo un refresh por ciclo de loadUser.
    */
   private fetchMeObservable(): Observable<unknown> {
-    return this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(
-      timeout(8000),
+    const getMe = () =>
+      this.http.get<unknown>(`${AUTH_BASE}/me`, { withCredentials: true }).pipe(timeout(8000));
+
+    return getMe().pipe(
+      switchMap((raw) => {
+        if (normalizePanelUser(raw) != null) {
+          return of(raw);
+        }
+        return this.refresh().pipe(
+          switchMap(() => getMe().pipe(catchError(() => of(null)))),
+          catchError(() => of(null)),
+        );
+      }),
       catchError((err: unknown) => {
         const status = err instanceof HttpErrorResponse ? err.status : 0;
         if (status === 401) {

@@ -11,7 +11,8 @@ import { US_STATES } from '../../../../../shared/constants/us-states.constant';
 import { LoggerService } from '../../../../../shared/services/logger.service';
 import { isMultiMemberParticipationTotal100 } from '../../../../../shared/utils/member-participation-total.util';
 import { ServiceFormBuilderService } from '../../../../../shared/services/form-builder.service';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { HttpErrorMapperService } from '../../../../../shared/services/http-error-mapper.service';
 import {
   isOptionalPublicWebUrlControlOk,
   patchOptionalPublicUrlControlsByName,
@@ -69,7 +70,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     private fb: FormBuilder,
     private http: HttpClient,
     private serviceFormBuilder: ServiceFormBuilderService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private transloco: TranslocoService,
+    private httpErrorMapper: HttpErrorMapperService,
   ) {
     this.serviceDataForm = this.serviceFormBuilder.createCuentaBancariaForm();
   }
@@ -666,9 +669,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
           this.saveError = 'Error al crear la solicitud.';
           return false;
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         this.logger.error('[WizardCuentaBancariaInformationStep] Error al crear request:', error);
-        this.saveError = error?.error?.message || 'Error al crear la solicitud.';
+        this.saveError = this.httpErrorMapper.mapHttpError(error);
         return false;
       }
     }
@@ -676,7 +679,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
     if (!requestId) {
       this.logger.log('[WizardCuentaBancariaInformationStep] No se pudo obtener requestId');
       if (!this.saveError) {
-        this.saveError = 'No hay solicitud asociada. Completa los pasos anteriores.';
+        this.saveError = this.transloco.translate('WIZARD.err_no_request_persist');
       }
       return false;
     }
@@ -735,9 +738,9 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
       await firstValueFrom(this.wizardApiService.updateRequest(requestId, updateData));
       this.logger.log('[WizardCuentaBancariaInformationStep] Datos guardados exitosamente');
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       this.logger.error('[WizardCuentaBancariaInformationStep] Error al guardar:', error);
-      this.saveError = error?.error?.message || 'Error al guardar los datos';
+      this.saveError = this.httpErrorMapper.mapHttpError(error);
       return false;
     } finally {
       this.isSaving = false;

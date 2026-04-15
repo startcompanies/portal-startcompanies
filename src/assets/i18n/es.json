@@ -1,4 +1,15 @@
 {
+  "HTTP": {
+    "network": "No pudimos conectar. Revisa tu conexión e inténtalo de nuevo.",
+    "unknown": "Algo salió mal. Inténtalo de nuevo.",
+    "bad_request": "No se pudieron guardar los datos. Revisa el formulario o los archivos adjuntos.",
+    "unauthorized": "Tu sesión expiró. Vuelve a iniciar sesión o verifica tu correo.",
+    "forbidden": "No tienes permiso para realizar esta acción.",
+    "not_found": "No encontramos la solicitud. Actualiza la página o empieza de nuevo.",
+    "server": "El servidor no respondió. Inténtalo más tarde.",
+    "payment": "El pago no se completó. Revisa los datos o usa otro método.",
+    "autosave_failed": "No se pudo guardar el borrador automáticamente. Los cambios siguen en pantalla; pulsa Siguiente o reintenta."
+  },
   "NAVBAR": {
     "us": "Nosotros",
     "plans": "Planes y Precios",
@@ -985,6 +996,8 @@
     "previous": "Anterior",
     "cancel": "Cancelar",
     "finish": "Finalizar",
+    "err_plan_state_required": "Selecciona estado y plan para continuar.",
+    "err_no_request_persist": "No hay solicitud creada aún. Vuelve al paso anterior y completa Estado/Plan (o registro) antes de guardar.",
     "steps": {
       "state": "Estado de contratación",
       "register": "Registro básico",

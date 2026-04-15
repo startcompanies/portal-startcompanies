@@ -1,4 +1,18 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ViewChild, ComponentRef, EnvironmentInjector, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  OnChanges,
+  SimpleChanges,
+  Input,
+  Output,
+  EventEmitter,
+  ViewChild,
+  ComponentRef,
+  EnvironmentInjector,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ViewContainerRef } from '@angular/core';
@@ -14,7 +28,10 @@ import { FlowStepsIndicatorComponent } from '../flow-steps-indicator/flow-steps-
 import { WizardStateService } from '../../../features/wizard/services/wizard-state.service';
 import { WizardApiService, WizardCreateRequestData } from '../../../features/wizard/services/wizard-api.service';
 import { DraftRequestService } from '../../services/draft-request.service';
+import { HttpErrorMapperService } from '../../services/http-error-mapper.service';
+import { WizardRequestPersistService } from '../../../features/wizard/services/wizard-request-persist.service';
 import { firstValueFrom } from 'rxjs';
+import { buildFlowScopeKey } from '../../utils/flow-scope-key.util';
 
 /**
  * Componente base abstracto para manejar flujos de solicitud unificados
@@ -90,11 +107,15 @@ import { firstValueFrom } from 'rxjs';
         <i class="bi bi-check-circle me-2"></i>
         {{ successMessage }}
       </div>
+      <div *ngIf="autosaveWarningMessage" class="alert alert-warning mt-3">
+        <i class="bi bi-cloud-slash me-2"></i>
+        {{ autosaveWarningMessage }}
+      </div>
     </div>
   `,
   styleUrls: ['./base-request-flow.component.css']
 })
-export class BaseRequestFlowComponent implements OnInit, OnDestroy {
+export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
   @Input() context!: RequestFlowContext;
   @Input() serviceType: ServiceType | null = null; // Ahora opcional
   @Input() flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
@@ -112,6 +133,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  /** Autosave falló (no bloquea edición). */
+  autosaveWarningMessage: string | null = null;
   private currentStepValid = true;
 
   @ViewChild('stepHost', { read: ViewContainerRef, static: true }) stepHost!: ViewContainerRef;
@@ -123,6 +146,8 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
   private wizardApiService = inject(WizardApiService, { optional: true });
   private draftRequestService = inject(DraftRequestService, { optional: true });
   private transloco = inject(TranslocoService);
+  private httpErrorMapper = inject(HttpErrorMapperService);
+  private wizardRequestPersist = inject(WizardRequestPersistService);
 
   // Propiedades para manejo de borradores
   @Input() draftRequestUuid: string | null = null;
@@ -159,11 +184,39 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     protected flowConfigService: RequestFlowConfigService,
     protected flowStateService: RequestFlowStateService
   ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.context) {
+      return;
+    }
+    if (
+      changes['draftRequestUuid'] ||
+      changes['serviceType'] ||
+      changes['context'] ||
+      changes['flowSource']
+    ) {
+      this.syncActiveFlowScope();
+    }
+  }
+
+  /** Activa el bucket de RequestFlowStateService para este flujo (SPA misma pestaña). */
+  private syncActiveFlowScope(): void {
+    this.flowStateService.setActiveScope(
+      buildFlowScopeKey({
+        context: this.context,
+        serviceType: this.serviceType,
+        flowSource: this.flowSource,
+        draftRequestUuid: this.draftRequestUuid,
+      }),
+    );
+  }
   
   async ngOnInit(): Promise<void> {
     if (!this.context) {
       throw new Error('BaseRequestFlowComponent: context es requerido');
     }
+
+    this.syncActiveFlowScope();
     
     // Si no hay serviceType, el flujo debe incluir el paso de selección
     // Usamos 'apertura-llc' como default temporal solo para obtener la estructura base
@@ -234,8 +287,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     
     this.renderCurrentStep();
     
-    // Iniciar autosave si estamos en contexto panel y hay borrador
+    // Autosave: panel con borrador, o wizard con request ya creado (información persistible)
     if (this.context !== RequestFlowContext.WIZARD && this.draftRequestId) {
+      this.startAutosave();
+    } else if (
+      this.context === RequestFlowContext.WIZARD &&
+      this.wizardStateService?.hasRequest() &&
+      this.serviceType
+    ) {
       this.startAutosave();
     }
   }
@@ -428,13 +487,18 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    * Inicia el autosave periódico
    */
   private startAutosave(): void {
-    if (!this.draftRequestService || this.autosaveEnabled) return;
-    
+    if (this.autosaveEnabled) {
+      return;
+    }
+    const isPanelDraft = this.context !== RequestFlowContext.WIZARD && this.draftRequestId;
+    if (isPanelDraft && !this.draftRequestService) {
+      return;
+    }
+
     this.autosaveEnabled = true;
-    // Autosave cada 1 minuto (no tan seguido)
     this.autosaveInterval = setInterval(() => {
       this.performAutosave();
-    }, 60000);
+    }, 45000);
   }
   
   /**
@@ -452,10 +516,39 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
    * Realiza el autosave del estado actual
    */
   private async performAutosave(): Promise<void> {
-    if (!this.draftRequestService || !this.draftRequestId || this.isLoading) return;
-    
+    if (this.isLoading) {
+      return;
+    }
+
+    if (
+      this.context === RequestFlowContext.WIZARD &&
+      this.wizardStateService?.hasRequest() &&
+      this.serviceType
+    ) {
+      const serviceFormIdx = this.flowSteps.findIndex((s) => s.step === RequestFlowStep.SERVICE_FORM);
+      if (serviceFormIdx < 0 || this.currentStepIndex !== serviceFormIdx) {
+        return;
+      }
+      try {
+        await this.wizardRequestPersist.persistWizardServiceFormAutosave(this.serviceType);
+        this.autosaveWarningMessage = null;
+        console.log('[BaseRequestFlowComponent] Autosave wizard completado');
+      } catch (error: unknown) {
+        console.error('[BaseRequestFlowComponent] Error en autosave wizard:', error);
+        this.autosaveWarningMessage = this.httpErrorMapper.mapHttpError(
+          error,
+          'HTTP.autosave_failed',
+        );
+        this.cdr.markForCheck();
+      }
+      return;
+    }
+
+    if (!this.draftRequestService || !this.draftRequestId) {
+      return;
+    }
+
     try {
-      const allData = this.flowStateService.getState();
       const clientSelection = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION);
       const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
       const serviceData = this.flowStateService.getStepData(RequestFlowStep.SERVICE_FORM);
@@ -507,10 +600,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       await this.draftRequestService.saveDraft(this.draftRequestId, draftData, {
         preserveRequestStatus: this.omitPaymentStep,
       });
+      this.autosaveWarningMessage = null;
       console.log('[BaseRequestFlowComponent] Autosave completado');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('[BaseRequestFlowComponent] Error en autosave:', error);
-      // No mostrar error al usuario para no interrumpir el flujo
+      this.autosaveWarningMessage = this.httpErrorMapper.mapHttpError(
+        error,
+        'HTTP.autosave_failed',
+      );
+      this.cdr.markForCheck();
     }
   }
   
@@ -546,6 +644,34 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     
     // Guardar estado del paso
     await this.saveStepState(currentStep);
+
+    // Apertura LLC (wizard): crear solicitud al salir de Estado/Plan (pago diferido vía PATCH)
+    if (
+      currentStep?.step === RequestFlowStep.PLAN_STATE_SELECTION &&
+      this.context === RequestFlowContext.WIZARD &&
+      this.serviceType === 'apertura-llc' &&
+      this.wizardApiService &&
+      this.wizardStateService
+    ) {
+      const okOpening = await this.ensureAperturaWizardRequestAfterPlanStateSelection();
+      if (!okOpening) {
+        return;
+      }
+    }
+
+    // Cuenta bancaria (wizard): crear solicitud al salir del registro (antes del formulario de servicio)
+    if (
+      currentStep?.step === RequestFlowStep.REGISTER &&
+      this.context === RequestFlowContext.WIZARD &&
+      this.serviceType === 'cuenta-bancaria' &&
+      this.wizardApiService &&
+      this.wizardStateService
+    ) {
+      const okBank = await this.ensureCuentaBancariaWizardRequestAfterRegister();
+      if (!okBank) {
+        return;
+      }
+    }
 
     // Renovación LLC (wizard): crear solicitud en BD al salir de selección de estado
     // para que «Información del Servicio» pueda persistir con PATCH (requestId).
@@ -639,9 +765,152 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
         });
       }
       return true;
-    } catch (e: any) {
-      this.errorMessage =
-        e?.error?.message || this.transloco.translate('PANEL.request_flow.err_load_failed');
+    } catch (e: unknown) {
+      this.errorMessage = this.httpErrorMapper.mapHttpError(
+        e,
+        'PANEL.request_flow.err_load_failed',
+      );
+      return false;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * POST /wizard/requests sin cobro (apertura LLC) tras Estado/Plan, si aún no hay requestId.
+   */
+  private async ensureAperturaWizardRequestAfterPlanStateSelection(): Promise<boolean> {
+    if (!this.wizardApiService || !this.wizardStateService) {
+      return true;
+    }
+    if (this.wizardStateService.hasRequest()) {
+      return true;
+    }
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    const flowPlan = (this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
+      {}) as Record<string, unknown>;
+    const wiz2 = (this.wizardStateService.getStepData(2) || {}) as Record<string, unknown>;
+    const plan = String(flowPlan['plan'] ?? wiz2['plan'] ?? '').trim();
+    const state = String(flowPlan['state'] ?? wiz2['state'] ?? '').trim();
+    if (!plan || !state) {
+      this.errorMessage = this.transloco.translate('WIZARD.err_plan_state_required');
+      return false;
+    }
+    const step1 = this.wizardStateService.getStepData(1) || {};
+    const user = this.wizardApiService.getUser();
+    if (!user?.email) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    try {
+      const payload: WizardCreateRequestData = {
+        source: this.wizardStateService.getFlowSource(),
+        type: 'apertura-llc',
+        currentStepNumber: 1,
+        currentStep: 3,
+        status: 'pendiente',
+        notes: '',
+        paymentAmount: 0,
+        clientData: {
+          firstName: step1.firstName || user.firstName || '',
+          lastName: step1.lastName || user.lastName || '',
+          email: step1.email || user.email,
+          phone: step1.phone || user.phone || '',
+          password: (step1 as { password?: string }).password || 'wizard-deferred',
+        },
+        aperturaLlcData: {
+          plan,
+          incorporationState: state,
+          members: [],
+        },
+      };
+      const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
+      if (response?.id) {
+        this.wizardStateService.setRequestId(response.id);
+        const paymentStepCfg = this.flowSteps.find((s) => s.step === RequestFlowStep.PAYMENT);
+        const payOrder = paymentStepCfg?.order ?? 4;
+        this.wizardStateService.setStepData(payOrder, {
+          ...this.wizardStateService.getStepData(payOrder),
+          requestId: response.id,
+        });
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+          ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
+          requestId: response.id,
+          paymentProcessed: false,
+        });
+      }
+      return true;
+    } catch (e: unknown) {
+      this.errorMessage = this.httpErrorMapper.mapHttpError(
+        e,
+        'PANEL.request_flow.err_load_failed',
+      );
+      return false;
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  /**
+   * POST /wizard/requests sin cobro (cuenta bancaria) tras registro, si aún no hay requestId.
+   */
+  private async ensureCuentaBancariaWizardRequestAfterRegister(): Promise<boolean> {
+    if (!this.wizardApiService || !this.wizardStateService) {
+      return true;
+    }
+    if (this.wizardStateService.hasRequest()) {
+      return true;
+    }
+    if (!this.wizardApiService.isAuthenticated()) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    const step1 = this.wizardStateService.getStepData(1) || {};
+    const user = this.wizardApiService.getUser();
+    if (!user?.email) {
+      this.errorMessage = this.transloco.translate('PANEL.request_flow.err_credentials');
+      return false;
+    }
+    this.isLoading = true;
+    this.errorMessage = null;
+    try {
+      const payload: WizardCreateRequestData = {
+        source: this.wizardStateService.getFlowSource(),
+        type: 'cuenta-bancaria',
+        currentStepNumber: 1,
+        currentStep: 2,
+        status: 'pendiente',
+        notes: '',
+        paymentAmount: 0,
+        clientData: {
+          firstName: step1.firstName || user.firstName || '',
+          lastName: step1.lastName || user.lastName || '',
+          email: step1.email || user.email,
+          phone: step1.phone || user.phone || '',
+          password: (step1 as { password?: string }).password || 'wizard-deferred',
+        },
+        cuentaBancariaData: {},
+      };
+      const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
+      if (response?.id) {
+        this.wizardStateService.setRequestId(response.id);
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+          ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
+          requestId: response.id,
+          paymentProcessed: false,
+        });
+      }
+      return true;
+    } catch (e: unknown) {
+      this.errorMessage = this.httpErrorMapper.mapHttpError(
+        e,
+        'PANEL.request_flow.err_load_failed',
+      );
       return false;
     } finally {
       this.isLoading = false;
@@ -712,7 +981,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
       if (typeof instance.getFormData === 'function') {
         try {
           const formData = instance.getFormData();
-          stepData = { ...stepData, ...formData };
+          let cloned: Record<string, unknown> = formData;
+          if (formData && typeof formData === 'object') {
+            try {
+              cloned = JSON.parse(JSON.stringify(formData)) as Record<string, unknown>;
+            } catch {
+              cloned = { ...formData };
+            }
+          }
+          stepData = { ...stepData, ...cloned };
           this.flowStateService.setStepData(step.step, stepData);
         } catch (error) {
           console.warn(`[BaseRequestFlowComponent] Error al obtener datos del formulario del paso ${step.step}:`, error);
@@ -751,6 +1028,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Implementación por defecto - limpiar mensajes
     this.errorMessage = null;
     this.successMessage = null;
+    this.autosaveWarningMessage = null;
     const current = this.getCurrentStep();
     // EMAIL_VERIFICATION en wizard: el botón Next debe permanecer bloqueado
     // hasta que ocurra `verificationSuccess`.
@@ -1301,13 +1579,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy {
     // Confirmación: enviar
     subscribeIfEmitter('submitRequest', (evt: any) => {
       const state = this.flowStateService.getState();
+      const payment = state['payment'] as { requestId?: number } | undefined;
       // Incluir draftRequestId para que el panel pueda usarlo si payment.requestId no viene
       this.flowCompleted.emit({
         ...state,
         submit: evt,
         serviceType: this.serviceType,
         context: this.context,
-        draftRequestId: this.draftRequestId ?? state?.payment?.requestId ?? undefined,
+        draftRequestId: this.draftRequestId ?? payment?.requestId ?? undefined,
       });
     });
 

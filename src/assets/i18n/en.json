@@ -1,4 +1,15 @@
 {
+  "HTTP": {
+    "network": "We could not connect. Check your connection and try again.",
+    "unknown": "Something went wrong. Please try again.",
+    "bad_request": "We could not save your data. Check the form or uploaded files.",
+    "unauthorized": "Your session expired. Sign in again or verify your email.",
+    "forbidden": "You do not have permission to perform this action.",
+    "not_found": "We could not find the request. Refresh the page or start over.",
+    "server": "The server did not respond. Please try again later.",
+    "payment": "The payment did not go through. Check your details or try another method.",
+    "autosave_failed": "Auto-save failed. Your changes are still on screen; press Next or try again."
+  },
   "NAVBAR": {
     "us": "About us",
     "plans": "Plans and Prices",
@@ -989,6 +1000,8 @@
     "previous": "Previous",
     "cancel": "Cancel",
     "finish": "Finish",
+    "err_plan_state_required": "Please select state and plan to continue.",
+    "err_no_request_persist": "No request exists yet. Go back and complete State/Plan (or registration) before saving.",
     "steps": {
       "state": "Contracting State",
       "register": "Basic Registration",
