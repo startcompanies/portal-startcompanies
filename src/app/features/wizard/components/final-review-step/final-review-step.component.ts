@@ -267,7 +267,9 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
     const { password: _p, ...restStep1 } = step1 as { password?: string; [k: string]: unknown };
     this.registrationData = { ...restStep1 };
     const rd = this.registrationData as Record<string, unknown>;
-    rd['fullName'] = (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || (rd['email'] as string) || '';
+    // No usar el email como nombre mostrado (evita duplicar correo en "Nombre completo").
+    rd['fullName'] =
+      (rd['fullName'] as string) || [rd['firstName'], rd['lastName']].filter(Boolean).join(' ').trim() || '';
 
     // Paso 2: Estado/Plan (para apertura y renovación)
     this.statePlanData = allData.step2 || {};
@@ -707,9 +709,13 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
       });
     }
 
-    // Sección 4: Movimientos Financieros
+    // Sección 4: Movimientos Financieros (año en curso alineado con el formulario)
+    const fy = new Date().getFullYear();
     if (this.renovacionMoneyMeaningful(data.totalRevenue2025)) {
-      fields.push({ label: 'Facturación total de la LLC en 2025', value: this.formatMoney(data.totalRevenue2025) });
+      fields.push({
+        label: `Facturación total de la LLC en ${fy}`,
+        value: this.formatMoney(data.totalRevenue2025),
+      });
     }
 
     // Sección 5: Información Adicional

@@ -228,5 +228,18 @@ export class RenovacionLlcFormComponent implements OnInit, OnChanges, OnDestroy 
   trackByOwnerIndex(index: number, item: any): number {
     return index;
   }
+
+  /** Al salir del input: asegura número >= 0 para envío a API (no null ni cadena vacía). */
+  normalizeMoneyField(controlName: string): void {
+    const c = this.serviceDataForm?.get(controlName);
+    if (!c) return;
+    const v = c.value;
+    let n = 0;
+    if (v !== null && v !== undefined && v !== '') {
+      const parsed = Number(String(v).replace(',', '.'));
+      n = Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+    }
+    c.setValue(n);
+  }
 }
 

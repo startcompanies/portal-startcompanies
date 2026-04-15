@@ -90,6 +90,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
           ownersArray.push(ownerGroup);
         });
       }
+      this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     }
 
     // Estado y estructura societaria: prioridad sobre lo guardado en este paso (suelen ir vacíos en localStorage)
@@ -564,6 +565,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
    * Devuelve los datos del formulario para que el base los persista al avanzar.
    */
   getFormData(): Record<string, unknown> {
+    this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     return this.serviceDataForm.getRawValue() as Record<string, unknown>;
   }
 

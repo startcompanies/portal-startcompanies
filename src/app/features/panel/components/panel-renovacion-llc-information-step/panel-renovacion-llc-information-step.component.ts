@@ -93,6 +93,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
           ownersArray.push(ownerGroup);
         });
       }
+      this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     }
 
     // Pre-llenar estado desde paso anterior (STATE_SELECTION)
@@ -493,6 +494,7 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   }
 
   getFormData(): any {
+    this.serviceFormBuilder.normalizeRenovacionMoneyFields(this.serviceDataForm);
     return { ...this.serviceDataForm.getRawValue(), currentSection: this.currentSection };
   }
 }

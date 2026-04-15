@@ -1,5 +1,16 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+/** Controles monetarios renovación LLC: valor numérico >= 0 (no null ni vacío al persistir). */
+export const RENOVACION_LLC_MONEY_FIELD_NAMES = [
+  'llcOpeningCost',
+  'paidToFamilyMembers',
+  'paidToLocalCompanies',
+  'paidForLLCFormation',
+  'paidForLLCDissolution',
+  'bankAccountBalanceEndOfYear',
+  'totalRevenue2025',
+] as const;
 import { optionalPublicWebUrlValidator } from '../validators/web-url.validator';
 
 /**
@@ -102,13 +113,10 @@ export class ServiceFormBuilderService {
     g.addControl('agregarCambiarSocio', this.fb.control(false));
     g.addControl('declaracionCierre', this.fb.control(false));
     g.addControl('owners', this.fb.array([]));
-    g.addControl('llcOpeningCost', this.fb.control(''));
-    g.addControl('paidToFamilyMembers', this.fb.control(''));
-    g.addControl('paidToLocalCompanies', this.fb.control(''));
-    g.addControl('paidForLLCFormation', this.fb.control(''));
-    g.addControl('paidForLLCDissolution', this.fb.control(''));
-    g.addControl('bankAccountBalanceEndOfYear', this.fb.control(''));
-    g.addControl('totalRevenue2025', this.fb.control(''));
+    const moneyValidators = [Validators.required, Validators.min(0)];
+    for (const name of RENOVACION_LLC_MONEY_FIELD_NAMES) {
+      g.addControl(name, this.fb.control(0, moneyValidators));
+    }
     g.addControl('hasFinancialInvestmentsInUSA', this.fb.control(''));
     g.addControl('hasFiledTaxesBefore', this.fb.control(''));
     g.addControl('wasConstitutedWithStartCompanies', this.fb.control(''));
@@ -119,6 +127,23 @@ export class ServiceFormBuilderService {
     g.addControl('boiReportFileUrl', this.fb.control(''));
     g.addControl('bankStatementsFileUrl', this.fb.control(''));
     return g;
+  }
+
+  /**
+   * Fuerza montos renovación LLC a número >= 0 (evita null/'' tras PATCH o inputs vacíos).
+   */
+  normalizeRenovacionMoneyFields(group: FormGroup): void {
+    for (const name of RENOVACION_LLC_MONEY_FIELD_NAMES) {
+      const c = group.get(name);
+      if (!c) continue;
+      const v = c.value;
+      let n = 0;
+      if (v !== null && v !== undefined && v !== '') {
+        const parsed = Number(String(v).replace(',', '.'));
+        n = Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+      }
+      c.setValue(n, { emitEvent: false });
+    }
   }
 
   createCuentaBancariaForm(): FormGroup {
