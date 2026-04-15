@@ -446,8 +446,8 @@ export class LLCAperturaComponent implements OnInit {
       if (!signatureUrl && event?.signature) {
         signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
           event.signature,
-          requestId,
-          'apertura-llc'
+          'apertura-llc',
+          this.wizardStateService.getRequestUuid(),
         );
         if (!signatureUrl) {
           this.errorMessage =

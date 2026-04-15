@@ -542,7 +542,7 @@ export class CuentaBancariaComponent implements OnInit {
       const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
       
       if (response && response.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         console.log('[CuentaBancariaComponent] Request creado:', response.id);
       }
       
@@ -613,8 +613,8 @@ export class CuentaBancariaComponent implements OnInit {
       if (!signatureUrl && event?.signature) {
         signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
           event.signature,
-          finalRequestId,
-          'cuenta-bancaria'
+          'cuenta-bancaria',
+          this.wizardStateService.getRequestUuid(),
         );
         if (!signatureUrl) {
           this.errorMessage =

@@ -245,6 +245,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
         ...prev,
         requestId: this.draftRequestId,
+        ...(this.draftRequestUuid ? { requestUuid: this.draftRequestUuid } : {}),
         paymentProcessed: true,
         skipRealPayment: true,
       });
@@ -270,9 +271,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       // Si hay un requestId guardado, significa que el pago ya fue procesado
       if (this.wizardStateService.hasRequest()) {
         const requestId = this.wizardStateService.getRequestId();
+        const requestUuid = this.wizardStateService.getRequestUuid();
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
           paymentProcessed: true,
-          requestId: requestId
+          requestId: requestId,
+          ...(requestUuid ? { requestUuid } : {}),
         });
         this.currentStepValid = true;
       }
@@ -338,7 +341,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
         throw new Error(this.transloco.translate('PANEL.request_flow.err_load_failed'));
       }
       this.draftRequestId = request.id;
-      
+      const rq = (request as { uuid?: string }).uuid;
+      if (rq && this.wizardStateService) {
+        this.wizardStateService.setRequestId(request.id, rq);
+      }
+
       // Sincronizar con WizardStateService si estamos en contexto wizard
       if (this.context === RequestFlowContext.WIZARD && this.wizardStateService) {
         this.syncToWizardStateService();
@@ -423,7 +430,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     if (paymentData && Object.keys(paymentData).length > 0) {
       ws.setStepData(3, paymentData);
       if (paymentData.requestId) {
-        ws.setRequestId(paymentData.requestId);
+        ws.setRequestId(paymentData.requestId, paymentData.requestUuid);
       }
     }
 
@@ -754,16 +761,18 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       };
       const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
       if (response?.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         const paymentStepCfg = this.flowSteps.find((s) => s.step === RequestFlowStep.PAYMENT);
         const payOrder = paymentStepCfg?.order ?? 4;
         this.wizardStateService.setStepData(payOrder, {
           ...this.wizardStateService.getStepData(payOrder),
           requestId: response.id,
+          ...(response.uuid ? { requestUuid: response.uuid } : {}),
         });
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
           ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
           requestId: response.id,
+          ...(response.uuid ? { requestUuid: response.uuid } : {}),
           paymentProcessed: false,
         });
       }
@@ -834,16 +843,18 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       };
       const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
       if (response?.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         const paymentStepCfg = this.flowSteps.find((s) => s.step === RequestFlowStep.PAYMENT);
         const payOrder = paymentStepCfg?.order ?? 4;
         this.wizardStateService.setStepData(payOrder, {
           ...this.wizardStateService.getStepData(payOrder),
           requestId: response.id,
+          ...(response.uuid ? { requestUuid: response.uuid } : {}),
         });
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
           ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
           requestId: response.id,
+          ...(response.uuid ? { requestUuid: response.uuid } : {}),
           paymentProcessed: false,
         });
       }
@@ -901,10 +912,11 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       };
       const response = await firstValueFrom(this.wizardApiService.createRequest(payload));
       if (response?.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
           ...(this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {}),
           requestId: response.id,
+          ...(response.uuid ? { requestUuid: response.uuid } : {}),
           paymentProcessed: false,
         });
       }
@@ -1133,6 +1145,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
         // Panel: pasar serviceType y requestId si existe
         extra.serviceType = this.serviceType;
         const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
+        const clientSel = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
+        const folderUuid =
+          (paymentData as { requestUuid?: string }).requestUuid ||
+          (clientSel as { draftRequestUuid?: string }).draftRequestUuid ||
+          this.draftRequestUuid ||
+          undefined;
+        if (folderUuid) {
+          extra.requestUuid = folderUuid;
+        }
         if (paymentData.requestId) {
           extra.requestId = paymentData.requestId;
         }
@@ -1142,6 +1163,15 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     // Service form steps: pueden necesitar datos del pago, datos hidratados y paso del flujo (para enviar currentStep en PATCH)
     if (stepConfig.step === RequestFlowStep.SERVICE_FORM) {
       const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
+      const clientSel = this.flowStateService.getStepData(RequestFlowStep.CLIENT_SELECTION) || {};
+      const folderUuid =
+        (paymentData as { requestUuid?: string }).requestUuid ||
+        (clientSel as { draftRequestUuid?: string }).draftRequestUuid ||
+        this.draftRequestUuid ||
+        undefined;
+      if (folderUuid) {
+        extra.requestUuid = folderUuid;
+      }
       if (paymentData.requestId) {
         extra.requestId = paymentData.requestId;
       }
@@ -1440,6 +1470,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       const paymentData = {
         paymentProcessed: true,
         requestId: evt?.requestId,
+        ...(evt?.requestUuid ? { requestUuid: evt.requestUuid } : {}),
         paymentInfo: evt?.paymentInfo,
         stripeToken: evt?.paymentInfo?.chargeId || null,
         paymentAmount: evt?.paymentInfo?.amount || 0,
@@ -1451,7 +1482,7 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
       
       // Guardar en wizard state service (para compatibilidad con componentes existentes)
       if (this.wizardStateService && evt?.requestId) {
-        this.wizardStateService.setRequestId(evt.requestId);
+        this.wizardStateService.setRequestId(evt.requestId, evt.requestUuid);
         this.wizardStateService.setStepData(stepConfig.order, {
           ...this.wizardStateService.getStepData(stepConfig.order),
           ...paymentData
@@ -1571,10 +1602,14 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     });
 
     // Panel: cuando el paso de Información crea el request (paymentEnabled=false), guardar requestId en PAYMENT para el resto del flujo
-    subscribeIfEmitter('requestCreated', (evt: { requestId: number }) => {
+    subscribeIfEmitter('requestCreated', (evt: { requestId: number; uuid?: string }) => {
       if (evt?.requestId != null) {
         const paymentData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT) || {};
-        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, { ...paymentData, requestId: evt.requestId });
+        this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
+          ...paymentData,
+          requestId: evt.requestId,
+          ...(evt.uuid ? { requestUuid: evt.uuid } : {}),
+        });
         this.draftRequestId = evt.requestId;
         if (this.context !== RequestFlowContext.WIZARD) {
           this.startAutosave();
@@ -1585,14 +1620,16 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
     // Confirmación: enviar
     subscribeIfEmitter('submitRequest', (evt: any) => {
       const state = this.flowStateService.getState();
-      const payment = state['payment'] as { requestId?: number } | undefined;
-      // Incluir draftRequestId para que el panel pueda usarlo si payment.requestId no viene
+      const payment = state['payment'] as { requestId?: number; requestUuid?: string } | undefined;
+      // Incluir draftRequestId / draftRequestUuid para que el panel pueda finalizar sin GET extra
       this.flowCompleted.emit({
         ...state,
         submit: evt,
         serviceType: this.serviceType,
         context: this.context,
         draftRequestId: this.draftRequestId ?? payment?.requestId ?? undefined,
+        draftRequestUuid:
+          this.draftRequestUuid ?? payment?.requestUuid ?? undefined,
       });
     });
 

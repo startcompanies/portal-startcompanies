@@ -25,8 +25,14 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
   @Input() stepNumber: number = 1;
   @Input() serviceType: ServiceType = 'apertura-llc';
   @Input() requestId?: number; // ID del request si ya fue creado
+  /** UUID de la solicitud (`requests.uuid`) para subidas bajo `request/{servicio}/{uuid}/`. */
+  @Input() requestUuid?: string | null;
   
-  @Output() paymentAndRequestCreated = new EventEmitter<{ requestId: number; paymentInfo: any }>();
+  @Output() paymentAndRequestCreated = new EventEmitter<{
+    requestId: number;
+    requestUuid?: string;
+    paymentInfo: any;
+  }>();
   @Output() paymentError = new EventEmitter<string | null>();
   @Output() stepValid = new EventEmitter<boolean>();
   
@@ -255,8 +261,9 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
       formData.append('file', this.selectedPaymentProofFile);
       formData.append('servicio', this.serviceType);
       
-      if (this.requestId) {
-        formData.append('requestUuid', this.requestId.toString());
+      const folderUuid = (this.requestUuid || '').trim();
+      if (folderUuid) {
+        formData.append('requestUuid', folderUuid);
       }
       
       const response = await firstValueFrom(
@@ -365,11 +372,13 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
     
     if (response && response.id) {
       this.requestId = response.id;
+      const ru = (response.uuid || '').trim();
       
       // Guardar en el estado
       this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
         paymentProcessed: true,
         requestId: response.id,
+        ...(ru ? { requestUuid: ru } : {}),
         paymentMethod: method,
         paymentAmount: this.paymentAmount,
         paymentInfo: {
@@ -382,6 +391,7 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
       
       this.paymentAndRequestCreated.emit({
         requestId: response.id,
+        requestUuid: ru || undefined,
         paymentInfo: {
           method,
           amount: this.paymentAmount,
@@ -413,9 +423,11 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
     const response = await this.requestsService.updateRequest(this.requestId, updateData);
     
     if (response) {
+      const ru = (response.uuid || '').trim();
       this.flowStateService.setStepData(RequestFlowStep.PAYMENT, {
         paymentProcessed: true,
         requestId: response.id,
+        ...(ru ? { requestUuid: ru } : {}),
         paymentMethod: method,
         paymentAmount: this.paymentAmount,
         paymentInfo: {
@@ -428,6 +440,7 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
       
       this.paymentAndRequestCreated.emit({
         requestId: response.id,
+        requestUuid: ru || undefined,
         paymentInfo: {
           method,
           amount: this.paymentAmount,

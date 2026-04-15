@@ -674,8 +674,8 @@ export class LLCRenovacionComponent implements OnInit {
       if (!signatureUrl && event?.signature) {
         signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
           event.signature,
-          requestId,
-          'renovacion-llc'
+          'renovacion-llc',
+          this.wizardStateService.getRequestUuid(),
         );
         if (!signatureUrl) {
           this.errorMessage =

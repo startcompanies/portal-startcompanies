@@ -231,15 +231,15 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
 
     try {
       const serviceType = 'cuenta-bancaria';
-      const requestId = this.wizardStateService.getRequestId();
+      const requestFolderUuid = this.wizardStateService.getRequestUuid();
 
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', serviceType);
 
-      if (requestId) {
-        formData.append('requestUuid', requestId.toString());
-        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+      if (requestFolderUuid) {
+        formData.append('requestUuid', requestFolderUuid);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestFolderUuid}/`);
       } else {
         this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }
@@ -662,7 +662,7 @@ export class WizardCuentaBancariaInformationStepComponent implements OnInit, OnD
         const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
         
         if (response && response.id) {
-          this.wizardStateService.setRequestId(response.id);
+          this.wizardStateService.setRequestId(response.id, response.uuid);
           requestId = response.id;
           this.logger.log('[WizardCuentaBancariaInformationStep] Request creado:', response.id);
         } else {

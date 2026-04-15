@@ -147,8 +147,8 @@ export class WizardFinalReviewStepComponent implements OnInit, OnDestroy, OnChan
       if (requestId) {
         signatureUrl = await this.wizardApiService.uploadSignaturePngFromDataUrl(
           dataUrl,
-          requestId,
-          this.serviceType
+          this.serviceType,
+          this.wizardStateService.getRequestUuid(),
         );
         if (!signatureUrl) {
           this.signatureUploadError =

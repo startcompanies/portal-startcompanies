@@ -239,15 +239,30 @@ export class RequestsService {
    * Finalizar solicitud: subir firma (si existe) y actualizar estado a solicitud-recibida.
    * Usado al hacer "Enviar solicitud" en el paso de confirmación (panel y wizard).
    */
+  private static isRequestFolderUuid(value: string | null | undefined): boolean {
+    const v = (value || '').trim();
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+  }
+
   async finalizeRequest(
     requestId: number,
     serviceType: ServiceType,
     signatureDataUrl?: string | null,
-    preUploadedSignatureUrl?: string | null
+    preUploadedSignatureUrl?: string | null,
+    requestFolderUuid?: string | null,
   ): Promise<Request> {
+    let folderUuid = (requestFolderUuid || '').trim();
+    if (!RequestsService.isRequestFolderUuid(folderUuid)) {
+      const loaded = await firstValueFrom(this.http.get<Request>(`${this.apiUrl}/${requestId}`));
+      folderUuid = (loaded?.uuid || '').trim();
+    }
+    if (!RequestsService.isRequestFolderUuid(folderUuid)) {
+      throw new Error('No se pudo resolver el UUID de la solicitud para subir la firma.');
+    }
+
     let signatureUrl: string | null = preUploadedSignatureUrl ?? null;
     if (!signatureUrl && signatureDataUrl) {
-      signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
+      signatureUrl = await this.uploadSignature(signatureDataUrl, serviceType, folderUuid);
     }
     const updateData: any = { status: 'solicitud-recibida' as const };
     if (signatureUrl) {
@@ -258,17 +273,17 @@ export class RequestsService {
 
   private async uploadSignature(
     signatureDataUrl: string,
-    requestId: number,
-    serviceType: ServiceType
+    serviceType: ServiceType,
+    requestFolderUuid: string,
   ): Promise<string | null> {
     try {
       const resp = await fetch(signatureDataUrl);
       const blob = await resp.blob();
-      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      const file = new File([blob], `signature-${Date.now()}.png`, { type: 'image/png' });
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', serviceType);
-      formData.append('requestUuid', requestId.toString());
+      formData.append('requestUuid', requestFolderUuid);
       const uploadResponse = await firstValueFrom(
         this.http.post<{ url: string; key: string; message: string }>(
           `${environment.apiUrl}/upload-file`,

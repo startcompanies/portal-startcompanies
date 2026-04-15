@@ -39,7 +39,11 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
   @Input() currency: string = 'USD';
   
   // Evento emitido cuando el pago y la creación del request son exitosos
-  @Output() paymentAndRequestCreated = new EventEmitter<{ requestId: number; paymentInfo: any }>();
+  @Output() paymentAndRequestCreated = new EventEmitter<{
+    requestId: number;
+    requestUuid?: string;
+    paymentInfo: any;
+  }>();
   @Output() paymentError = new EventEmitter<string | null>();
   
   @ViewChild(StripePaymentFormComponent, { static: false }) stripePaymentForm!: StripePaymentFormComponent;
@@ -249,7 +253,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
             this.wizardApiService.updateRequest(existingRenewalId, patchBody),
           );
           if (updated && updated.id) {
-            this.wizardStateService.setRequestId(updated.id);
+            this.wizardStateService.setRequestId(updated.id, (updated as { uuid?: string }).uuid);
           }
           this.stripePaymentProcessed = true;
           this.errorMessage = null;
@@ -259,6 +263,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           this.stripeProcessing = false;
           this.paymentAndRequestCreated.emit({
             requestId: existingRenewalId,
+            requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
             paymentInfo: {
               chargeId: updated?.stripeChargeId || '',
               amount: this.totalAmount,
@@ -304,7 +309,10 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
             this.wizardApiService.updateRequest(existingAperturaId, patchBody),
           );
           if (updatedOpening && updatedOpening.id) {
-            this.wizardStateService.setRequestId(updatedOpening.id);
+            this.wizardStateService.setRequestId(
+              updatedOpening.id,
+              (updatedOpening as { uuid?: string }).uuid,
+            );
           }
           this.stripePaymentProcessed = true;
           this.errorMessage = null;
@@ -314,6 +322,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           this.stripeProcessing = false;
           this.paymentAndRequestCreated.emit({
             requestId: existingAperturaId,
+            requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
             paymentInfo: {
               chargeId: updatedOpening?.stripeChargeId || '',
               amount: this.totalAmount,
@@ -394,7 +403,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
 
       // 5. Guardar el requestId para actualizaciones posteriores
       if (response && response.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         console.log('[PaymentStep] RequestId guardado:', response.id);
       }
 
@@ -412,6 +421,7 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       // 8. Emitir evento de éxito
       this.paymentAndRequestCreated.emit({
         requestId: response.id,
+        requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
         paymentInfo: response.payment
       });
 
@@ -567,6 +577,10 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
       const formData = new FormData();
       formData.append('file', this.selectedPaymentProofFile);
       formData.append('servicio', serviceType);
+      const rq = this.wizardStateService.getRequestUuid();
+      if (rq) {
+        formData.append('requestUuid', rq);
+      }
       const response = await firstValueFrom(
         this.wizardApiService.uploadFile(formData)
       );
@@ -659,12 +673,13 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           this.wizardApiService.updateRequest(existingId, patchBody),
         );
         if (updated?.id) {
-          this.wizardStateService.setRequestId(updated.id);
+          this.wizardStateService.setRequestId(updated.id, (updated as { uuid?: string }).uuid);
         }
         this.transferenciaProcessed = true;
         this.saveStepData();
         this.paymentAndRequestCreated.emit({
           requestId: existingId,
+          requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
           paymentInfo: { method: 'transferencia', amount: this.totalAmount },
         });
         return;
@@ -689,22 +704,27 @@ export class WizardPaymentStepComponent implements OnInit, OnDestroy {
           this.wizardApiService.updateRequest(existingId, patchBody),
         );
         if (updatedTr?.id) {
-          this.wizardStateService.setRequestId(updatedTr.id);
+          this.wizardStateService.setRequestId(updatedTr.id, (updatedTr as { uuid?: string }).uuid);
         }
         this.transferenciaProcessed = true;
         this.saveStepData();
         this.paymentAndRequestCreated.emit({
           requestId: existingId,
+          requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
           paymentInfo: { method: 'transferencia', amount: this.totalAmount },
         });
         return;
       }
       const response = await firstValueFrom(this.wizardApiService.createRequest(requestData));
       if (response?.id) {
-        this.wizardStateService.setRequestId(response.id);
+        this.wizardStateService.setRequestId(response.id, response.uuid);
         this.transferenciaProcessed = true;
         this.saveStepData();
-        this.paymentAndRequestCreated.emit({ requestId: response.id, paymentInfo: { method: 'transferencia', amount: this.totalAmount } });
+        this.paymentAndRequestCreated.emit({
+          requestId: response.id,
+          requestUuid: this.wizardStateService.getRequestUuid() ?? undefined,
+          paymentInfo: { method: 'transferencia', amount: this.totalAmount },
+        });
       }
     } catch (error: unknown) {
       this.errorMessage = this.httpErrorMapper.mapHttpError(error, 'HTTP.payment');

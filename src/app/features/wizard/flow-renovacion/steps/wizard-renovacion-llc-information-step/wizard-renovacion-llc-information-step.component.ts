@@ -212,15 +212,15 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
 
     try {
       const serviceType = 'renovacion-llc';
-      const requestId = this.wizardStateService.getRequestId();
+      const requestFolderUuid = this.wizardStateService.getRequestUuid();
 
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', serviceType);
 
-      if (requestId) {
-        formData.append('requestUuid', requestId.toString());
-        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+      if (requestFolderUuid) {
+        formData.append('requestUuid', requestFolderUuid);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestFolderUuid}/`);
       } else {
         this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }

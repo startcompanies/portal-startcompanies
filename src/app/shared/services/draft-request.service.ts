@@ -55,7 +55,7 @@ export class DraftRequestService {
     });
 
     // Siempre guardar requestId en PAYMENT para borradores (permite actualizar el request al guardar desde el paso de información)
-    const paymentPayload: any = { requestId: request.id };
+    const paymentPayload: any = { requestId: request.id, requestUuid: request.uuid };
     if (request.paymentStatus === 'succeeded' || request.stripeChargeId) {
       paymentPayload.paymentProcessed = true;
       paymentPayload.paymentInfo = {

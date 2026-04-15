@@ -43,6 +43,8 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   @Input() serviceType: string = 'apertura-llc';
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number; // ID del request si ya fue creado (después del pago)
+  /** UUID de la solicitud para subidas a S3 (no usar el id numérico como carpeta). */
+  @Input() requestUuid?: string | null;
   @Input() initialData?: any; // Datos iniciales para hidratar el formulario
   /** Paso principal del flujo (1-based) para enviar currentStep en PATCH y mantener BD consistente */
   @Input() flowStepNumber?: number;
@@ -50,7 +52,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
   @Output() nextStepRequested = new EventEmitter<void>();
-  @Output() requestCreated = new EventEmitter<{ requestId: number }>();
+  @Output() requestCreated = new EventEmitter<{ requestId: number; uuid?: string }>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -61,6 +63,7 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
   private formSubscription?: Subscription;
   /** ID del request creado en este paso cuando aún no existe request asociado. */
   private _createdRequestId?: number;
+  private _createdRequestUuid?: string;
   
   isSaving = false;
   saveError: string | null = null;
@@ -300,9 +303,9 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
       formData.append('file', file);
       formData.append('servicio', serviceType);
 
-      const effectiveRequestId = this._createdRequestId ?? this.requestId;
-      if (effectiveRequestId) {
-        formData.append('requestUuid', effectiveRequestId.toString());
+      const folderUuid = (this._createdRequestUuid ?? this.requestUuid ?? '').trim();
+      if (folderUuid) {
+        formData.append('requestUuid', folderUuid);
       }
 
       const response = await firstValueFrom(
@@ -712,7 +715,11 @@ export class PanelLlcInformationStepComponent implements OnInit, OnDestroy {
           return false;
         }
         this._createdRequestId = response.id;
-        this.requestCreated.emit({ requestId: response.id });
+        const ru = (response.uuid || '').trim();
+        if (ru) {
+          this._createdRequestUuid = ru;
+        }
+        this.requestCreated.emit({ requestId: response.id, uuid: response.uuid });
         // Seguir con updateRequest para persistir el payload actual del paso.
       } catch (error: any) {
         this.logger.error('[PanelLlcInformationStep] Error al crear request:', error);
