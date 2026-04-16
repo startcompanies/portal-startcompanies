@@ -26,6 +26,9 @@ export class BlogService {
 
   constructor(private http: HttpClient) {}
 
+  /** Evita doble GET cuando varios componentes (p. ej. blog + blog-articles) piden la lista al mismo tiempo. */
+  private getAllPostsInFlight: Promise<any[]> | null = null;
+
   private joinUrl(base: string, path: string): string {
     const normalizedBase = (base || '').replace(/\/+$/, '');
     const normalizedPath = (path || '').startsWith('/') ? path : `/${path}`;
@@ -44,14 +47,20 @@ export class BlogService {
   }
 
   getAllPosts(): Promise<any[]> {
-    return firstValueFrom(
+    if (this.getAllPostsInFlight) {
+      return this.getAllPostsInFlight;
+    }
+    this.getAllPostsInFlight = firstValueFrom(
       this.http
         .get<any[]>(this.joinUrl(this.apiUrl, this.postsEndpoint))
         .pipe(
           map((res) => res ?? []),
-          catchError(() => of([]))
-        )
-    );
+          catchError(() => of([])),
+        ),
+    ).finally(() => {
+      this.getAllPostsInFlight = null;
+    });
+    return this.getAllPostsInFlight;
   }
 
   getPostsBySlug(slug: string): Promise<any> {
