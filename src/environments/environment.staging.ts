@@ -1,13 +1,12 @@
 import { DOMAIN, LILI } from './environment.base';
+import type { BlogPublicAudience } from './environment.types';
 
 export const environment = {
   production: true,
   staging: true,
   noIndex: true,
   apiUrl: DOMAIN.api.staging,
-  postsEndpoint: '/blog/posts/get-sandbox-posts',
-  categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',
-  sandboxPostsEndpoint: '/blog/posts/get-sandbox-posts/category',
+  blogPublicAudience: 'preview' satisfies BlogPublicAudience,
   facebookPixel: {
     llcPixelId: '',
     relayPixelId: '',

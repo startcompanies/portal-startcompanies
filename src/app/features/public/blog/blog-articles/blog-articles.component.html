@@ -21,6 +21,9 @@
               [placeholder]="'BLOG.search_placeholder' | transloco" aria-label="Buscar artículos" />
           </div>
         </div>
+        <!-- Barra de progreso fina que aparece sobre el contenido existente mientras carga -->
+        <div *ngIf="isLoading" class="blog-loading-bar" role="status" aria-label="Cargando artículos"></div>
+
         <div class="row">
           <div class="col-12 mb-4">
             <div *ngIf="!isLoading && filteredPosts.length === 0" class="empty-results">
@@ -28,14 +31,15 @@
             </div>
             <div *ngFor="let topArticle of topArticles; let ti = index" class="card article-card mb-4">
               <div class="row g-0">
-                <div class="col-md-5 d-flex align-items-center justify-content-center">
+                <div class="col-md-5 d-flex align-items-center justify-content-center article-card-img-wrap">
                   <img
                     src="{{ topArticle.image_url }}"
                     class="img-fluid"
                     [alt]="topArticle.title"
+                    width="480" height="270"
                     [attr.loading]="ti === 0 ? 'eager' : 'lazy'"
                     decoding="async"
-                    [attr.fetchpriority]="ti > 0 ? 'low' : null"
+                    [attr.fetchpriority]="ti === 0 ? 'high' : 'low'"
                   />
                 </div>
                 <div class="col-md-7 d-flex flex-column justify-content-center">
@@ -79,11 +83,12 @@
     <div *ngFor="let mainArticle of mainArticles" class="col-md-6 mb-4">
       <div class="card horizontal-card">
         <div class="row g-0">
-          <div class="col-4">
+          <div class="col-4 horizontal-card-img-wrap">
             <img
               src="{{ mainArticle.image_url }}"
               class="img-fluid rounded-start"
               [alt]="mainArticle.title"
+              width="200" height="150"
               loading="lazy"
               decoding="async"
               fetchpriority="low"
