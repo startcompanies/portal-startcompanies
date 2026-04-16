@@ -52,6 +52,10 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
       this.isFinalizing = true;
       try {
         const requestId = data?.payment?.requestId ?? data?.draftRequestId;
+        const requestFolderUuid =
+          (data?.payment as { requestUuid?: string } | undefined)?.requestUuid ??
+          data?.draftRequestUuid ??
+          null;
         const serviceType = (data?.serviceType || this.serviceType) as ServiceType;
         if (!requestId || !serviceType) {
           console.error('[PanelPartnerRequestFlowComponent] Falta requestId o serviceType para finalizar', {
@@ -70,7 +74,8 @@ export class PanelPartnerRequestFlowComponent implements OnInit {
           requestId,
           serviceType,
           data.submit?.signature ?? null,
-          data.submit?.signatureUrl ?? null
+          data.submit?.signatureUrl ?? null,
+          requestFolderUuid,
         );
         this.baseFlow?.markCurrentStepAsSubmitted();
         this.wizardFlowFinalize.clearWizardSession();

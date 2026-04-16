@@ -325,16 +325,15 @@ export class WizardLlcInformationStepComponent implements OnInit, OnDestroy {
 
     try {
       const serviceType = 'apertura-llc';
-      const requestId = this.wizardStateService.getRequestId();
+      const requestFolderUuid = this.wizardStateService.getRequestUuid();
 
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', serviceType);
 
-      // Si ya hay un request creado, incluir el UUID
-      if (requestId) {
-        formData.append('requestUuid', requestId.toString());
-        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestId}/`);
+      if (requestFolderUuid) {
+        formData.append('requestUuid', requestFolderUuid);
+        this.logger.log(`[WizardUpload] Subiendo archivo con estructura: request/${serviceType}/${requestFolderUuid}/`);
       } else {
         this.logger.log(`[WizardUpload] Subiendo archivo con estructura temporal: request/${serviceType}/`);
       }

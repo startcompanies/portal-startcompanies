@@ -32,13 +32,14 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
   @Input() serviceType: string = 'renovacion-llc';
   @Input() previousStepNumber: number = 0;
   @Input() requestId?: number;
+  @Input() requestUuid?: string | null;
   @Input() initialData?: any;
   @Input() flowStepNumber?: number;
 
   @Output() sectionChanged = new EventEmitter<number>();
   @Output() stepValid = new EventEmitter<boolean>();
   @Output() nextStepRequested = new EventEmitter<void>();
-  @Output() requestCreated = new EventEmitter<{ requestId: number }>();
+  @Output() requestCreated = new EventEmitter<{ requestId: number; uuid?: string }>();
 
   serviceDataForm!: FormGroup;
   currentSection = 1;
@@ -57,9 +58,15 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
 
   /** Request creado en este paso cuando no venía requestId. */
   private _createdRequestId?: number;
+  private _createdRequestUuid?: string;
 
   get effectiveRequestId(): number | undefined {
     return this._createdRequestId ?? this.requestId;
+  }
+
+  private get effectiveRequestFolderUuid(): string | undefined {
+    const u = (this._createdRequestUuid ?? this.requestUuid ?? '').trim();
+    return u || undefined;
   }
 
   constructor(
@@ -377,7 +384,11 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
           return false;
         }
         this._createdRequestId = response.id;
-        this.requestCreated.emit({ requestId: response.id });
+        const ru = (response.uuid || '').trim();
+        if (ru) {
+          this._createdRequestUuid = ru;
+        }
+        this.requestCreated.emit({ requestId: response.id, uuid: response.uuid });
       } catch (error: any) {
         this.logger.error('[PanelRenovacionLlcInformationStep] Error al crear request:', error);
         this.saveError = error?.error?.message || 'Error al crear la solicitud';
@@ -430,8 +441,9 @@ export class PanelRenovacionLlcInformationStepComponent implements OnInit, OnDes
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', 'renovacion-llc');
-      if (this.effectiveRequestId) {
-        formData.append('requestUuid', this.effectiveRequestId.toString());
+      const folderUuid = this.effectiveRequestFolderUuid;
+      if (folderUuid) {
+        formData.append('requestUuid', folderUuid);
       }
       const response = await firstValueFrom(
         this.http.post<{ url: string; key: string; message: string }>(`${environment.apiUrl}/upload-file`, formData)

@@ -368,7 +368,8 @@
     "search_no_results": "We couldn't find articles matching your search.",
     "all_posts": "All posts",
     "category": "Category",
-    "category_title_prefix": "Posts in"
+    "category_title_prefix": "Posts in",
+    "loading_posts": "Loading articles…"
   },
   "LLC": {
     "heroSection": {

@@ -19,6 +19,12 @@ const WIZARD_STATE_KEY = 'wizard_state';
   providedIn: 'root'
 })
 export class WizardStateService {
+  /** Mismo criterio que el backend: carpeta de request solo con UUID real. */
+  static isRequestFolderUuid(value: string | null | undefined): boolean {
+    const v = (value || '').trim();
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v);
+  }
+
   private stepData: Map<number, any> = new Map();
   private stepForms = new Map<number, FormGroup>();
   private showNextButtonSubject = new BehaviorSubject<boolean>(true);
@@ -32,6 +38,9 @@ export class WizardStateService {
   
   // ID del request creado después del pago
   private requestId: number | null = null;
+
+  /** UUID de la solicitud (`requests.uuid`) para rutas S3 bajo `request/{servicio}/{uuid}/`. */
+  private requestUuid: string | null = null;
   
   // Datos del usuario registrado (antes de verificación)
   private registeredUserId: number | null = null;
@@ -67,6 +76,10 @@ export class WizardStateService {
         
         // Restaurar otros estados
         this.requestId = data.requestId || null;
+        this.requestUuid =
+          data.requestUuid && WizardStateService.isRequestFolderUuid(data.requestUuid)
+            ? String(data.requestUuid).trim().toLowerCase()
+            : null;
         this.registeredUserId = data.registeredUserId || null;
         this.registeredEmail = data.registeredEmail || null;
         this.serviceType = data.serviceType || null;
@@ -102,6 +115,7 @@ export class WizardStateService {
       const data = {
         stepData: stepDataObj,
         requestId: this.requestId,
+        requestUuid: this.requestUuid,
         registeredUserId: this.registeredUserId,
         registeredEmail: this.registeredEmail,
         serviceType: this.serviceType,
@@ -238,6 +252,7 @@ export class WizardStateService {
   clear(): void {
     this.stepData.clear();
     this.requestId = null;
+    this.requestUuid = null;
     this.registeredUserId = null;
     this.registeredEmail = null;
     this.serviceType = null;
@@ -249,11 +264,21 @@ export class WizardStateService {
   }
   
   /**
-   * Establece el ID del request creado
+   * Establece el ID del request creado.
+   * @param uuid Opcional: UUID de la solicitud. Si se omite el segundo argumento, no se modifica `requestUuid`.
+   *             Pasar `null` limpia el UUID guardado.
    */
-  setRequestId(id: number): void {
+  setRequestId(id: number, uuid?: string | null): void {
     this.requestId = id;
+    if (uuid !== undefined) {
+      this.requestUuid =
+        uuid && WizardStateService.isRequestFolderUuid(uuid) ? uuid.trim().toLowerCase() : null;
+    }
     this.saveToStorage();
+  }
+
+  getRequestUuid(): string | null {
+    return this.requestUuid;
   }
   
   /**

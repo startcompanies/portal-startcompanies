@@ -16,9 +16,16 @@
               <div class="carousel-item" *ngFor="let slidePosts of desktopCarouselSlides; let i = index"
                 [class.active]="i === 0">
                 <div class="row g-4 justify-content-center">
-                  <div class="col-12 col-md-4 col-lg-4 d-flex" *ngFor="let post of slidePosts">
+                  <div class="col-12 col-md-4 col-lg-4 d-flex" *ngFor="let post of slidePosts; let j = index">
                     <article class="blog-card w-100">
-                      <img [src]="post.image_url" [alt]="post.title" class="blog-image img-fluid rounded-3" />
+                      <img
+                        [src]="post.image_url"
+                        [alt]="post.title"
+                        class="blog-image img-fluid rounded-3"
+                        loading="lazy"
+                        decoding="async"
+                        [attr.fetchpriority]="i === 0 && j === 0 ? null : 'low'"
+                      />
                       <div class="blog-card-content d-flex flex-column flex-grow-1">
                         <div class="blog-category">
                           {{ post.categories && post.categories.length > 0 ? post.categories[0].name : "Categoría" }}
@@ -78,8 +85,14 @@
                 <div class="row justify-content-center">
                   <div class="col-12 d-flex">
                     <article class="blog-card w-100">
-                      <img [src]="postSlide[0].image_url" [alt]="postSlide[0].title"
-                        class="blog-image img-fluid rounded-3" />
+                      <img
+                        [src]="postSlide[0].image_url"
+                        [alt]="postSlide[0].title"
+                        class="blog-image img-fluid rounded-3"
+                        loading="lazy"
+                        decoding="async"
+                        [attr.fetchpriority]="i === 0 ? null : 'low'"
+                      />
                       <div class="blog-card-content d-flex flex-column flex-grow-1">
                         <div class="blog-category">
                           {{ postSlide[0].categories && postSlide[0].categories.length > 0 ?

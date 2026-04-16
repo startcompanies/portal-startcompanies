@@ -366,7 +366,8 @@
     "search_no_results": "No encontramos artículos que coincidan con tu búsqueda.",
     "all_posts": "Todos los artículos",
     "category": "Categoría",
-    "category_title_prefix": "Artículos de"
+    "category_title_prefix": "Artículos de",
+    "loading_posts": "Cargando artículos…"
   },
   "LLC": {
     "heroSection": {

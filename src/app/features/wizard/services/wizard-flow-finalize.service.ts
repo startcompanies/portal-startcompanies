@@ -38,7 +38,7 @@ export class WizardFlowFinalizeService {
 
     let signatureUrl: string | null = preUploadedSignatureUrl ?? null;
     if (!signatureUrl && signatureDataUrl) {
-      signatureUrl = await this.uploadSignature(signatureDataUrl, requestId, serviceType);
+      signatureUrl = await this.uploadSignature(signatureDataUrl, serviceType);
       if (!signatureUrl) {
         throw new Error(
           'No se pudo subir la firma. Comprueba tu conexión e inténtalo de nuevo. Si el problema continúa, tu sesión puede haber expirado (vuelve a verificar tu email).'
@@ -172,7 +172,7 @@ export class WizardFlowFinalizeService {
       throw new Error('No se pudo crear la solicitud. Intenta de nuevo.');
     }
 
-    this.wizardStateService.setRequestId(response.id);
+    this.wizardStateService.setRequestId(response.id, response.uuid);
     return response.id;
   }
 
@@ -240,7 +240,11 @@ export class WizardFlowFinalizeService {
     };
   }
 
-  private async uploadSignature(signatureDataUrl: string, requestId: number, serviceType: ServiceType): Promise<string | null> {
-    return this.wizardApiService.uploadSignaturePngFromDataUrl(signatureDataUrl, requestId, serviceType);
+  private async uploadSignature(signatureDataUrl: string, serviceType: ServiceType): Promise<string | null> {
+    return this.wizardApiService.uploadSignaturePngFromDataUrl(
+      signatureDataUrl,
+      serviceType,
+      this.wizardStateService.getRequestUuid(),
+    );
   }
 }

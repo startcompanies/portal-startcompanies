@@ -73,6 +73,8 @@ export interface WizardCreateRequestData {
 
 export interface WizardRequestResponse {
   id: number;
+  /** UUID de la solicitud en BD (`requests.uuid`); requerido para subidas bajo `request/{servicio}/{uuid}/`. */
+  uuid?: string;
   type: string;
   status: string;
   payment: {
@@ -296,21 +298,23 @@ export class WizardApiService {
 
   /**
    * Convierte un PNG en data URL a archivo y lo sube (R2 vía backend).
-   * Usar cuando ya existe requestId; si no, el finalizador sube tras crear la solicitud.
+   * @param requestFolderUuid UUID de la solicitud, o null para subida temporal solo con `servicio`.
    */
   async uploadSignaturePngFromDataUrl(
     dataUrl: string,
-    requestId: number,
-    serviceType: ServiceType
+    serviceType: ServiceType,
+    requestFolderUuid: string | null
   ): Promise<string | null> {
     try {
       const resp = await fetch(dataUrl);
       const blob = await resp.blob();
-      const file = new File([blob], `signature-${requestId}-${Date.now()}.png`, { type: 'image/png' });
+      const file = new File([blob], `signature-${Date.now()}.png`, { type: 'image/png' });
       const formData = new FormData();
       formData.append('file', file);
       formData.append('servicio', serviceType);
-      formData.append('requestUuid', requestId.toString());
+      if (requestFolderUuid) {
+        formData.append('requestUuid', requestFolderUuid);
+      }
       const uploadResponse = await firstValueFrom(this.uploadFile(formData));
       return uploadResponse?.url || null;
     } catch (e) {

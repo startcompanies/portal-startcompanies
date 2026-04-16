@@ -57,9 +57,28 @@ export class LoginComponent implements OnInit {
     this.showPassword = !this.showPassword;
   }
 
+  /**
+   * Solo rutas relativas del mismo origen; evita open redirect (?returnUrl=https://evil.com).
+   */
+  private isSafeInternalReturnUrl(url: unknown): url is string {
+    if (typeof url !== 'string' || !url.trim()) {
+      return false;
+    }
+    const trimmed = url.trim();
+    if (!trimmed.startsWith('/') || trimmed.startsWith('//')) {
+      return false;
+    }
+    if (trimmed.startsWith('/login')) {
+      return false;
+    }
+    return true;
+  }
+
   private navigateAfterLogin(user: { type?: string } | null): void {
-    const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-    if (returnUrl) {
+    const fromRoute = this.route.snapshot.queryParams['returnUrl'];
+    const fromUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+    const returnUrl = (fromRoute || fromUrl || '') as string;
+    if (this.isSafeInternalReturnUrl(returnUrl)) {
       void this.router.navigateByUrl(returnUrl);
       return;
     }
@@ -93,8 +112,10 @@ export class LoginComponent implements OnInit {
           this.otpForm.reset();
           return;
         }
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'];
-        if (returnUrl) {
+        const rq = this.route.snapshot.queryParams['returnUrl'];
+        const uq = this.router.parseUrl(this.router.url).queryParams['returnUrl'];
+        const returnUrl = (rq || uq || '') as string;
+        if (this.isSafeInternalReturnUrl(returnUrl)) {
           void this.router.navigateByUrl(returnUrl);
           return;
         }

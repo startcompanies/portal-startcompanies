@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, OnInit } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { BlogService } from '../../../../shared/services/blog.service';
 import { BlogSeoService } from '../../../../shared/services/blog-seo.service';
 import { CommonModule } from '@angular/common';
@@ -6,7 +7,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { LangRouterLinkDirective } from '../../../../shared/directives/lang-router-link.directive';
-import { Subscription, combineLatest } from 'rxjs';
+import { EMPTY, combineLatest, from, of } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { BrowserService } from '../../../../shared/services/browser.service';
 import { FormsModule } from '@angular/forms';
 
@@ -17,7 +26,13 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './blog-articles.component.html',
   styleUrl: './blog-articles.component.css',
 })
-export class BlogArticlesComponent implements OnInit, OnDestroy {
+export class BlogArticlesComponent implements OnInit {
+  /**
+   * Lo debe inyectar el padre enrutado (`BlogHomeComponent`). Si se lee solo `ActivatedRoute`
+   * desde un hijo embebido en plantilla, el `slug` de `category/:slug` a veces no llega.
+   */
+  readonly categorySlug = input<string | null>(null);
+
   blogService = inject(BlogService);
   blogSeoService = inject(BlogSeoService);
   categories: any[] = [];
@@ -32,95 +47,115 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
   totalPages = 1;
   currentCategoryName?: string;
   currentSlug: string | null = null;
-  private lastSlug: string | null = null;
-  private hasLoaded = false;
+  /**
+   * Slug para el que `allPosts` ya refleja la respuesta del API (incl. lista vacía).
+   * Si coincide con la ruta actual, solo se aplica paginación/búsqueda sin nuevo GET.
+   */
+  private postsSourceKey: string | null | undefined = undefined;
   isLoading = false;
-  private routeSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer,
     private browser: BrowserService,
     private router: Router,
-  ) {}
+    private cdr: ChangeDetectorRef,
+  ) {
+    // Pre-poblar sincrónicamente si la caché ya está caliente:
+    // evita el ciclo vacío → async → posts que causa el parpadeo al navegar entre categorías.
+    const initSlug = this.route.snapshot.paramMap.get('slug');
+    const syncPosts = initSlug
+      ? this.blogService.getPostsByCategorySlugSync(initSlug)
+      : this.blogService.getAllPostsSync();
+    if (syncPosts !== null) {
+      this.postsSourceKey = initSlug;
+      this.currentSlug = initSlug;
+      this.setPosts(syncPosts);
+      // markForCheck notifica a BlogHomeComponent (OnPush) que revise la vista
+      this.cdr.markForCheck();
+    }
+
+    combineLatest([
+      toObservable(this.categorySlug).pipe(distinctUntilChanged()),
+      this.route.queryParamMap.pipe(
+        map((q) => Number(q.get('page')) || 1),
+        distinctUntilChanged(),
+      ),
+    ])
+      .pipe(
+        switchMap(([slug, page]) => {
+          this.currentPage = page > 0 ? page : 1;
+          this.currentSlug = slug;
+
+          if (this.postsSourceKey === slug) {
+            this.applyFiltersAndPagination();
+            this.cdr.markForCheck();
+            return EMPTY;
+          }
+
+          this.isLoading = true;
+          // No vaciar el DOM aún: los posts anteriores se mantienen visibles
+          // mientras llega la respuesta, evitando el flash de "Cargando artículos…"
+
+          const req$ = slug
+            ? this.blogService.getPostsByCategorySlug(slug)
+            : from(this.blogService.getAllPosts());
+
+          return req$.pipe(
+            tap((posts) => {
+              const arr = Array.isArray(posts) ? posts : [];
+              this.clearArticleLists();
+              this.setPosts(arr);
+              this.postsSourceKey = slug;
+              this.currentCategoryName = slug
+                ? this.getCategoryNameFromPosts(arr, slug)
+                : undefined;
+              if (
+                slug &&
+                arr.length > 0 &&
+                arr[0].categories?.length > 0
+              ) {
+                const c = arr[0].categories[0];
+                this.blogSeoService.setCategorySeo(
+                  c.name,
+                  c.slug,
+                  arr.length,
+                );
+              }
+              // Notifica a BlogHomeComponent (OnPush) que los datos cambiaron
+              this.cdr.markForCheck();
+              if (this.browser.isBrowser) {
+                setTimeout(() => this.scrollToArticles(), 0);
+              }
+            }),
+            catchError((err) => {
+              console.error('[BlogArticles] Error al cargar posts:', err);
+              this.setPosts([]);
+              this.postsSourceKey = slug;
+              this.cdr.markForCheck();
+              return of([]);
+            }),
+            finalize(() => {
+              this.isLoading = false;
+              this.cdr.markForCheck();
+            }),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
+  }
 
   ngOnInit(): void {
     this.setCategories();
-
-    // Suscribirse a cambios de ruta y query params (page)
-    this.routeSubscription = combineLatest([
-      this.route.paramMap,
-      this.route.queryParamMap,
-    ]).subscribe(([params, queryParams]) => {
-      const slug = params.get('slug');
-      const pageParam = Number(queryParams.get('page')) || 1;
-      this.currentPage = pageParam > 0 ? pageParam : 1;
-      this.currentSlug = slug;
-
-      if (!this.hasLoaded || this.lastSlug !== slug) {
-        this.lastSlug = slug;
-        this.hasLoaded = true;
-        this.loadPosts(slug);
-      } else {
-        this.applyFiltersAndPagination();
-      }
-
-      if (this.browser.isBrowser) {
-        setTimeout(() => this.scrollToArticles(), 0);
-      }
-    });
   }
 
-  ngOnDestroy(): void {
-    // Limpiar la suscripción para evitar memory leaks
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-  }
-
-  private loadPosts(slug: string | null): void {
-    this.isLoading = true;
-    if (slug) {
-      this.blogService.getPostsByCategorySlug(slug).subscribe(
-        (posts) => {
-          console.log('[BlogArticles] posts by category slug:', posts);
-          this.setPosts(posts);
-          this.currentCategoryName = this.getCategoryNameFromPosts(posts, slug);
-          this.isLoading = false;
-
-          // Configurar SEO para la categoría
-          if (
-            posts.length > 0 &&
-            posts[0].categories &&
-            posts[0].categories.length > 0
-          ) {
-            const category = posts[0].categories[0];
-            this.blogSeoService.setCategorySeo(
-              category.name,
-              category.slug,
-              posts.length,
-            );
-          }
-        },
-        (error) => {
-          console.error('Error fetching posts by slug:', error);
-          this.isLoading = false;
-        },
-      );
-    } else {
-      this.blogService
-        .getAllPosts()
-        .then((posts) => {
-          console.log('[BlogArticles] all posts:', posts);
-          this.setPosts(posts);
-          this.currentCategoryName = undefined;
-          this.isLoading = false;
-        })
-        .catch((error) => {
-          console.error('Error fetching all posts:', error);
-          this.isLoading = false;
-        });
-    }
+  private clearArticleLists(): void {
+    this.allPosts = [];
+    this.filteredPosts = [];
+    this.topArticles = [];
+    this.mainArticles = [];
+    this.totalPages = 1;
   }
 
   onSearchChange(value: string): void {
@@ -237,11 +272,11 @@ export class BlogArticlesComponent implements OnInit, OnDestroy {
     this.blogService
       .getCategories()
       .then((categories) => {
-        console.log('[BlogArticles] categories:', categories);
         this.categories = this.normalizeCategories(categories);
         if (this.categories.length === 0 && this.derivedCategories.length > 0) {
           this.categories = this.derivedCategories;
         }
+        this.cdr.markForCheck();
       })
       .catch((error) => {
         console.error('Error fetching categories:', error);

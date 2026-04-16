@@ -1,14 +1,13 @@
 import { DOMAIN, LILI } from './environment.base';
+import type { BlogPublicAudience } from './environment.types';
 
 export const environment = {
   production: false,
   staging: false,
   noIndex: true, // Desarrollo local: noindex y sin PageSense (usa index.staging.html)
   apiUrl: 'http://localhost:3000',
-  //apiUrl: DOMAIN.api.staging,
-  postsEndpoint: '/blog/posts/get-sandbox-posts',
-  categoriesEndpoint: '/blog/categories/whith-sandbox-posts-count',
-  sandboxPostsEndpoint: '/blog/posts/get-sandbox-posts/category',
+  /** Portal: `preview` = mismo criterio que sandbox en el API (`audience=preview`). */
+  blogPublicAudience: 'preview' satisfies BlogPublicAudience,
   facebookPixel: {
     llcPixelId: '',
     relayPixelId: '',

@@ -211,21 +211,22 @@ export function app(): express.Express {
       const baseUrl = getBaseUrl(req);
       const apiEndpoint = getApiUrl(req);
 
-      // Obtener posts desde la API (get-from-portal devuelve solo publicados)
+      // Listado público publicado: GET /blog/posts/public?audience=published
       let posts: any[] = [];
+      const postsPublicUrl = `${apiEndpoint}/blog/posts/public?audience=published`;
       try {
-        const response = await fetch(`${apiEndpoint}/blog/posts/get-from-portal`);
+        const response = await fetch(postsPublicUrl);
         if (response.ok) {
           posts = await response.json();
         } else {
-          console.warn(`[posts.xml] API no disponible (${response.status} ${response.statusText}), generando sitemap vacío. URL: ${apiEndpoint}/blog/posts/get-from-portal`);
+          console.warn(`[posts.xml] API no disponible (${response.status} ${response.statusText}), generando sitemap vacío. URL: ${postsPublicUrl}`);
         }
       } catch (fetchError: any) {
-        console.warn('[posts.xml] Error fetching posts from API:', fetchError?.message || fetchError, 'URL:', `${apiEndpoint}/blog/posts/get-from-portal`);
+        console.warn('[posts.xml] Error fetching posts from API:', fetchError?.message || fetchError, 'URL:', postsPublicUrl);
         // Continuar con array vacío si falla la API
       }
-      
-      // La API get-from-portal ya devuelve solo posts publicados (is_published: true)
+
+      // audience=published devuelve solo posts publicados para el portal
       const postsList = Array.isArray(posts) ? posts : [];
       const publishedPosts = postsList.filter(post => post && post.slug);
 

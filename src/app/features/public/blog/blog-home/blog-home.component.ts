@@ -1,4 +1,14 @@
-import { Component, Inject, inject, OnInit, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  Inject,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ScHeaderComponent } from '../../../../shared/components/header/sc-header.component';
 import { ScFooterComponent } from '../../../../shared/components/footer/sc-footer.component';
 import { BlogComponent } from '../../home/sections/blog/blog.component';
@@ -32,6 +42,14 @@ import { TranslocoPipe } from '@jsverse/transloco';
 export class BlogHomeComponent implements OnInit {
   isBrowser = false;
   blogSeoService = inject(BlogSeoService);
+
+  /** Slug de `blog/category/:slug`; null en `/blog` (lista completa). Lo usa `BlogArticlesComponent` embebido. */
+  private readonly route = inject(ActivatedRoute);
+  readonly blogCategorySlug = toSignal(
+    this.route.paramMap.pipe(map((p) => p.get('slug'))),
+    /** Evita un fotograma con slug null y doble petición en `/blog/category/...`. */
+    { initialValue: this.route.snapshot.paramMap.get('slug') },
+  );
 
   // Configuración de imágenes para NgOptimizedImage
   heroImages = {

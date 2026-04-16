@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Post } from '../models/post.model';
 
@@ -16,7 +16,11 @@ export class SitemapService {
    * Genera sitemap XML para todos los posts del blog
    */
   generateBlogSitemap(): Promise<string> {
-    return this.http.get<Post[]>(`${this.apiUrl.replace(/\/+$/, '')}/blog/posts/get-from-portal`)
+    const base = this.apiUrl.replace(/\/+$/, '');
+    const url = `${base}/blog/posts/public`;
+    const params = new HttpParams().set('audience', 'published');
+    return this.http
+      .get<Post[]>(url, { params })
       .toPromise()
       .then(posts => {
         if (!posts) return this.generateEmptySitemap();
