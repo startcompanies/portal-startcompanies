@@ -28,7 +28,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/intl-tel-input/build/css/intlTelInput.css"
@@ -78,8 +77,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "index": "src/index.staging.html"
+              "sourceMap": true
             },
             "staging": {
               "fileReplacements": [
@@ -150,7 +148,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],

@@ -3,17 +3,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(
-    circle at center,
-    var(--color-primario) 0%,
-    var(--color-secundario-tecnico) 100%
-  );
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 50%, var(--navy-mid) 100%);
   padding: 2rem;
+  position: relative;
+}
+
+.auth-layout::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 70% 40%, rgba(1,201,226,0.09) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .auth-container {
   width: 100%;
   max-width: 450px;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-header {
@@ -49,9 +56,9 @@
 }
 
 .auth-content {
-  background: var(--color-fondo-claro);
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(1,201,226,0.08);
   padding: 2.5rem;
 }
 
