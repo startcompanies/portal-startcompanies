@@ -114,7 +114,10 @@
               "extractLicenses": false,
               "namedChunks": false,
               "serviceWorker": "ngsw-config.json",
-              "index": "src/index.staging.html"
+              "index": {
+                "input": "src/index.staging.html",
+                "output": "index.html"
+              }
             }
           },
           "defaultConfiguration": "development"

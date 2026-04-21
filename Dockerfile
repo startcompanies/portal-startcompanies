@@ -33,8 +33,11 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=builder /app/dist/portal-startcompanies/browser /usr/share/nginx/html/
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
-# Verificar que los archivos se copiaron correctamente
-RUN ls -la /usr/share/nginx/html/ && test -f /usr/share/nginx/html/index.html
+# Renombrar index.staging.html → index.html si aplica (fallback)
+RUN if [ ! -f /usr/share/nginx/html/index.html ] && [ -f /usr/share/nginx/html/index.staging.html ]; then \
+        mv /usr/share/nginx/html/index.staging.html /usr/share/nginx/html/index.html; \
+    fi && \
+    test -f /usr/share/nginx/html/index.html
 
 EXPOSE 80
 
