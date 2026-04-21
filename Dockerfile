@@ -27,15 +27,17 @@ RUN echo "Build configuration: $BUILD_CONFIGURATION" && \
 ###############################################
 FROM nginx:alpine
 
+ARG BUILD_CONFIGURATION=production
+
 # Eliminar contenido por defecto de nginx
 RUN rm -rf /usr/share/nginx/html/*
 
 COPY --from=builder /app/dist/portal-startcompanies/browser /usr/share/nginx/html/
 COPY nginx.production.conf /etc/nginx/nginx.conf
 
-# Renombrar index.staging.html → index.html si aplica (fallback)
-RUN if [ ! -f /usr/share/nginx/html/index.html ] && [ -f /usr/share/nginx/html/index.staging.html ]; then \
-        mv /usr/share/nginx/html/index.staging.html /usr/share/nginx/html/index.html; \
+# En staging: marcar como noindex para evitar indexación por buscadores
+RUN if [ "$BUILD_CONFIGURATION" = "staging" ]; then \
+        sed -i 's/content="index, follow"/content="noindex, nofollow"/' /usr/share/nginx/html/index.html; \
     fi && \
     test -f /usr/share/nginx/html/index.html
 

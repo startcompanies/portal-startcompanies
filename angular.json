@@ -113,11 +113,7 @@
               "sourceMap": false,
               "extractLicenses": false,
               "namedChunks": false,
-              "serviceWorker": "ngsw-config.json",
-              "index": {
-                "input": "src/index.staging.html",
-                "output": "index.html"
-              }
+              "serviceWorker": "ngsw-config.json"
             }
           },
           "defaultConfiguration": "development"
