@@ -1141,6 +1141,17 @@ export class BaseRequestFlowComponent implements OnInit, OnDestroy, OnChanges {
         if (this.serviceType === 'cuenta-bancaria') {
           extra.fixedAmount = 99; // Monto fijo para cuenta bancaria
         }
+        // Para renovacion-llc: state y amount vienen de STATE_SELECTION (step 2), no de SERVICE_FORM (step 3)
+        if (this.serviceType === 'renovacion-llc') {
+          const stateSelData = this.wizardStateService.getStepData(2) || {};
+          if (stateSelData.state) {
+            extra.state = stateSelData.state;
+          }
+          const amt = Number(stateSelData.amount);
+          if (amt > 0) {
+            extra.fixedAmount = amt;
+          }
+        }
       } else {
         // Panel: pasar serviceType y requestId si existe
         extra.serviceType = this.serviceType;
