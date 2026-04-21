@@ -10,9 +10,10 @@ ENV NODE_ENV=development
 ENV NPM_CONFIG_PRODUCTION=false
 
 WORKDIR /app
-COPY . .
-
+COPY package*.json ./
 RUN npm install --legacy-peer-deps
+
+COPY . .
 
 RUN echo "Build configuration: $BUILD_CONFIGURATION" && \
     if [ "$BUILD_CONFIGURATION" = "staging" ]; then \
@@ -26,8 +27,14 @@ RUN echo "Build configuration: $BUILD_CONFIGURATION" && \
 ###############################################
 FROM nginx:alpine
 
-COPY --from=builder /app/dist/portal-startcompanies/browser /usr/share/nginx/html
+# Eliminar contenido por defecto de nginx
+RUN rm -rf /usr/share/nginx/html/*
+
+COPY --from=builder /app/dist/portal-startcompanies/browser /usr/share/nginx/html/
 COPY nginx.production.conf /etc/nginx/nginx.conf
+
+# Verificar que los archivos se copiaron correctamente
+RUN ls -la /usr/share/nginx/html/ && test -f /usr/share/nginx/html/index.html
 
 EXPOSE 80
 
