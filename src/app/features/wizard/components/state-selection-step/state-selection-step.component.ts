@@ -76,6 +76,10 @@ export class WizardStateSelectionStepComponent implements OnInit, OnDestroy {
     this.saveStepData();
   }
 
+  getFormData(): Record<string, unknown> {
+    return this.form.value;
+  }
+
   /**
    * Guarda los datos del paso
    */
