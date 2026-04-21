@@ -180,7 +180,7 @@
 }
 
 .wizard-sidebar .step-item.active .step-label {
-  color: var(--color-secundario-tecnico);
+  color: var(--cyan);
   font-weight: 600;
 }
 
@@ -191,15 +191,15 @@
 }
 
 .wizard-sidebar .step-item.active .step-number {
-  background: var(--color-secundario-tecnico);
+  background: var(--cyan);
   color: #fff;
-  border-color: var(--color-secundario-tecnico);
+  border-color: var(--cyan);
 }
 
 .wizard-sidebar .step-item.completed .step-number {
-  background: var(--color-primario);
+  background: var(--blue);
   color: #fff;
-  border-color: var(--color-primario);
+  border-color: var(--blue);
 }
 
 .wizard-sidebar .steps-indicator-vertical::before {
@@ -321,15 +321,17 @@
 }
 
 .step-item.active .step-number {
-  background: var(--color-secundario-tecnico);
+  background: var(--cyan);
   color: white;
-  box-shadow: 0 0 0 4px rgba(0, 106, 254, 0.18);
+  box-shadow: 0 0 0 4px rgba(1, 201, 226, 0.2);
+  border-color: var(--cyan);
 }
 
 .step-item.completed .step-number {
-  background: #28a745;
+  background: var(--blue);
   color: white;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 106, 254, 0.25);
+  border-color: var(--blue);
 }
 
 .step-item.completed .step-number::after {
@@ -405,8 +407,8 @@
 }
 
 .form-step .form-control:focus {
-  border-color: var(--color-secundario-tecnico);
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.12);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.12);
   outline: none;
 }
 
@@ -428,8 +430,8 @@
 }
 
 .form-step .basic-register-step .form-control:focus {
-  border-color: var(--color-secundario-tecnico);
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.12);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.12);
 }
 
 /* Step Actions - tono profesional, sin marketing */
@@ -449,58 +451,59 @@
   border-radius: 10px;
 }
 
-/* Primario: color de marca */
+/* Primario: gradiente cyan → blue */
 .step-actions .btn-primary,
 .step-actions .btn.btn-primary {
-  background-color: var(--color-secundario-tecnico);
-  border-color: var(--color-secundario-tecnico);
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+  border-color: transparent;
   color: #ffffff;
 }
 
 .step-actions .btn-primary:hover,
 .step-actions .btn.btn-primary:hover {
-  background-color: var(--color-primario);
-  border-color: var(--color-primario);
+  background: linear-gradient(135deg, #01B8D4 0%, #005AE0 100%);
+  border-color: transparent;
   color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 106, 254, 0.35);
 }
 
 .step-actions .btn-primary:focus,
 .step-actions .btn.btn-primary:focus {
-  background-color: var(--color-secundario-tecnico);
-  border-color: var(--color-secundario-tecnico);
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+  border-color: transparent;
   color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.2);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.25);
 }
 
 .step-actions .btn-primary:disabled,
 .step-actions .btn.btn-primary:disabled {
-  background-color: var(--color-secundario-tecnico);
-  border-color: var(--color-secundario-tecnico);
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+  border-color: transparent;
   opacity: 0.6;
   color: #ffffff;
 }
 
-/* Secundario: borde y texto marca */
+/* Secundario: borde sutil y texto blue */
 .step-actions .btn-outline-secondary,
 .step-actions .btn.btn-outline-secondary {
   background-color: #ffffff;
-  border-color: rgba(0, 106, 254, 0.4);
-  color: var(--color-secundario-tecnico);
+  border-color: #e2e8f0;
+  color: var(--blue);
 }
 
 .step-actions .btn-outline-secondary:hover,
 .step-actions .btn.btn-outline-secondary:hover {
   background-color: var(--color-fondo-gris);
-  border-color: var(--color-primario);
-  color: var(--color-primario);
+  border-color: var(--cyan);
+  color: var(--blue);
 }
 
 .step-actions .btn-outline-secondary:focus,
 .step-actions .btn.btn-outline-secondary:focus {
   background-color: #ffffff;
-  border-color: var(--color-secundario-tecnico);
-  color: var(--color-secundario-tecnico);
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.15);
+  border-color: var(--cyan);
+  color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.15);
 }
 
 .step-actions .btn-outline-secondary:disabled,
