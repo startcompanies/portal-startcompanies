@@ -3,6 +3,7 @@ import { RequestsService, Request as PanelRequest } from '../../features/panel/s
 import { RequestFlowStateService } from './request-flow-state.service';
 import { RequestFlowStep } from '../models/request-flow-context';
 import { firstValueFrom } from 'rxjs';
+import { WizardPlansService } from '../../features/wizard/services/wizard-plans.service';
 
 /**
  * Servicio para manejar borradores de solicitudes
@@ -12,7 +13,8 @@ import { firstValueFrom } from 'rxjs';
 export class DraftRequestService {
   constructor(
     private requestsService: RequestsService,
-    private flowStateService: RequestFlowStateService
+    private flowStateService: RequestFlowStateService,
+    private wizardPlansService: WizardPlansService
   ) {}
 
   /**
@@ -80,9 +82,14 @@ export class DraftRequestService {
       // Hidratar estado/plan para que pasos que lean PLAN_STATE_SELECTION (p. ej. panel-llc-information-step) apliquen forceSingleMember
       const incorporationState = request.aperturaLlcRequest?.incorporationState;
       if (plan || incorporationState) {
+        const calculatedAmount = plan
+          ? this.wizardPlansService.calculateAmount(plan)
+          : undefined;
+        const amountToUse = calculatedAmount ?? request.paymentAmount ?? undefined;
         this.flowStateService.setStepData(RequestFlowStep.PLAN_STATE_SELECTION, {
           state: incorporationState,
-          plan: plan ?? undefined
+          plan: plan ?? undefined,
+          ...(amountToUse != null ? { amount: amountToUse } : {})
         });
       }
     } else if (request.type === 'renovacion-llc' && request.renovacionLlcRequest) {
@@ -93,10 +100,13 @@ export class DraftRequestService {
       // Hidratar estado + tipo LLC para que al recargar se restauren reglas de renovación (estados permitidos, monto)
       const r: any = request.renovacionLlcRequest;
       if (r?.state || r?.llcType) {
+        const renewalResult = this.wizardPlansService.calculateRenewalAmount(r.state, r.llcType);
+        const renewalAmount = renewalResult.amount ?? request.paymentAmount ?? undefined;
         this.flowStateService.setStepData(RequestFlowStep.STATE_SELECTION, {
           state: r.state ?? '',
           llcType: r.llcType ?? '',
-          service: 'Renovación de LLC'
+          service: 'Renovación de LLC',
+          ...(renewalAmount != null ? { amount: renewalAmount } : {})
         });
       }
     } else if (request.type === 'cuenta-bancaria' && request.cuentaBancariaRequest) {
