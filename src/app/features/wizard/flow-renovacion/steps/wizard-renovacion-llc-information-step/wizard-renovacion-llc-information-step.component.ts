@@ -296,7 +296,7 @@ export class WizardRenovacionLlcInformationStepComponent implements OnInit, OnDe
       email: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       fullAddress: ['', Validators.required],
-      unit: ['', Validators.required],
+      unit: [''],
       city: ['', Validators.required],
       stateRegion: ['', Validators.required],
       postalCode: ['', Validators.required],
