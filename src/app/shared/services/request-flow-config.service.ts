@@ -105,41 +105,43 @@ export class RequestFlowConfigService {
           context === RequestFlowContext.PANEL_CLIENT &&
           serviceType === 'renovacion-llc' &&
           options?.omitPaymentStep === true;
+
+        // Órdenes (igual que wizard): estado → información → pago → confirmación
+        // cuenta-bancaria sin estado/pago=+1/+2; renovación: estado+2, info+3, pago+4; apertura sin pago inicial=+2/+3
+        const panelPaymentAdded =
+          serviceType === 'renovacion-llc' && !omitPaymentStep;
+        const panelServiceFormOffset = serviceType === 'cuenta-bancaria' ? 1 : 2;
+        const panelConfirmOffset     = serviceType === 'cuenta-bancaria' ? 2 : (panelPaymentAdded ? 4 : 3);
+
+        configs.push({
+          step: RequestFlowStep.SERVICE_FORM,
+          required: true,
+          component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_CLIENT),
+          order: clientBaseOrder + panelServiceFormOffset,
+          label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Información del Servicio',
+          icon: 'bi-file-text'
+        });
+
+        // Pago DESPUÉS de la información (igual que wizard)
         if (serviceType === 'renovacion-llc' && !omitPaymentStep) {
           configs.push({
             step: RequestFlowStep.PAYMENT,
             required: true,
             component: PanelPaymentStepComponent,
-            order: clientBaseOrder + 2,
+            order: clientBaseOrder + 3,
             label: 'Pago',
             icon: 'bi-credit-card'
           });
         }
 
-        // Órdenes: cuenta-bancaria sin estado/pago=+1/+2; renovación con pago=+3/+4; apertura sin pago inicial=+2/+3
-        const panelPaymentAdded =
-          serviceType === 'renovacion-llc' && !omitPaymentStep;
-        const panelServiceFormOffset = serviceType === 'cuenta-bancaria' ? 1 : (panelPaymentAdded ? 3 : 2);
-        const panelConfirmOffset     = serviceType === 'cuenta-bancaria' ? 2 : (panelPaymentAdded ? 4 : 3);
-
-        configs.push(
-          {
-            step: RequestFlowStep.SERVICE_FORM,
-            required: true,
-            component: this.getServiceFormComponent(serviceType, RequestFlowContext.PANEL_CLIENT),
-            order: clientBaseOrder + panelServiceFormOffset,
-            label: (serviceType === 'apertura-llc' || serviceType === 'renovacion-llc') ? 'Información de la LLC' : 'Información del Servicio',
-            icon: 'bi-file-text'
-          },
-          {
-            step: RequestFlowStep.CONFIRMATION,
-            required: true,
-            component: WizardFinalReviewStepComponent,
-            order: clientBaseOrder + panelConfirmOffset,
-            label: 'Confirmación',
-            icon: 'bi-check-circle'
-          }
-        );
+        configs.push({
+          step: RequestFlowStep.CONFIRMATION,
+          required: true,
+          component: WizardFinalReviewStepComponent,
+          order: clientBaseOrder + panelConfirmOffset,
+          label: 'Confirmación',
+          icon: 'bi-check-circle'
+        });
         break;
         
       case RequestFlowContext.PANEL_PARTNER: {

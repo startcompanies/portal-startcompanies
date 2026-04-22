@@ -9,6 +9,7 @@ import { StripePaymentFormComponent, StripePaymentResult } from '../stripe-payme
 import { Subscription, firstValueFrom } from 'rxjs';
 import { environment } from '../../../../../environments/environment';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { WizardPlansService } from '../../../wizard/services/wizard-plans.service';
 
 /**
  * Componente de pago para el flujo del panel
@@ -70,7 +71,8 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private flowStateService: RequestFlowStateService,
     private requestsService: RequestsService,
-    private http: HttpClient
+    private http: HttpClient,
+    private wizardPlansService: WizardPlansService
   ) {
     const savedData = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
     
@@ -125,30 +127,38 @@ export class PanelPaymentStepComponent implements OnInit, OnDestroy {
   }
   
   /**
-   * Calcula el monto del pago según el tipo de servicio
+   * Calcula el monto del pago según el tipo de servicio.
+   * Prioridad: (1) amount ya guardado en statePlanData, (2) recalculado desde state+llcType o plan,
+   * (3) paymentAmount guardado en PAYMENT (p. ej. al volver a cargar un borrador).
    */
   calculatePaymentAmount(): void {
-    // Obtener datos del estado/plan del paso anterior
-    const statePlanData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION) ||
-                         this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION);
-    
-    let amount = 0;
-    
     if (this.serviceType === 'cuenta-bancaria') {
-      // Cuenta bancaria puede ser gratuita (0) o tener un costo fijo
-      amount = 0; // Por defecto gratuito, se puede ajustar
-    } else if (statePlanData?.amount) {
-      amount = statePlanData.amount;
-    } else if (statePlanData?.plan) {
-      // Calcular según el plan (lógica simplificada)
-      const planPrices: { [key: string]: number } = {
-        'basic': 199,
-        'standard': 299,
-        'premium': 399
-      };
-      amount = planPrices[statePlanData.plan] || 0;
+      this.paymentAmount = 0;
+      this.form.patchValue({ paymentAmount: 0 }, { emitEvent: false });
+      return;
     }
-    
+
+    const planStateData = this.flowStateService.getStepData(RequestFlowStep.PLAN_STATE_SELECTION);
+    const stateData = this.flowStateService.getStepData(RequestFlowStep.STATE_SELECTION);
+    const statePlanData = planStateData || stateData;
+
+    let amount = 0;
+
+    if (statePlanData?.amount) {
+      amount = statePlanData.amount;
+    } else if (stateData?.state && stateData?.llcType) {
+      // Recalcular desde state + llcType (renovacion-llc)
+      const result = this.wizardPlansService.calculateRenewalAmount(stateData.state, stateData.llcType);
+      amount = result.amount ?? 0;
+    } else if (planStateData?.plan) {
+      // Recalcular desde plan (apertura-llc)
+      amount = this.wizardPlansService.calculateAmount(planStateData.plan);
+    } else {
+      // Fallback: usar paymentAmount ya guardado en el paso de pago (borrador sin statePlanData)
+      const savedPayment = this.flowStateService.getStepData(RequestFlowStep.PAYMENT);
+      amount = savedPayment?.paymentAmount ?? 0;
+    }
+
     this.paymentAmount = amount;
     this.form.patchValue({ paymentAmount: amount }, { emitEvent: false });
   }
