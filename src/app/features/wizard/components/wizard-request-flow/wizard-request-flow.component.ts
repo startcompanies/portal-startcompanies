@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
 import { BaseRequestFlowComponent } from '../../../../shared/components/base-request-flow/base-request-flow.component';
 import { RequestFlowContext, ServiceType } from '../../../../shared/models/request-flow-context';
 import { WizardFlowFinalizeService } from '../../services/wizard-flow-finalize.service';
+import { environment } from '../../../../../environments/environment';
 
 /**
  * Componente específico para el flujo del wizard (cliente final)
@@ -39,10 +39,7 @@ export class WizardRequestFlowComponent implements OnInit {
   private finalizeSucceeded = false;
   @ViewChild(BaseRequestFlowComponent) baseFlow?: BaseRequestFlowComponent;
   
-  constructor(
-    private router: Router,
-    private finalizeService: WizardFlowFinalizeService
-  ) {}
+  constructor(private finalizeService: WizardFlowFinalizeService) {}
   
   ngOnInit(): void {
     if (!this.serviceType) {
@@ -82,6 +79,6 @@ export class WizardRequestFlowComponent implements OnInit {
     console.log('[WizardRequestFlowComponent] Flujo cancelado');
     this.flowCancelled.emit();
     this.finalizeService.clearWizardSession();
-    this.router.navigate(['/']);
+    window.location.assign(`${environment.baseUrl}/`);
   }
 }

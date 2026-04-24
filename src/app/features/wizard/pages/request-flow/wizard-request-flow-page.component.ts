@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
@@ -9,6 +9,7 @@ import { ResponsiveImageComponent } from '../../../../shared/components/responsi
 import { WizardStateService } from '../../services/wizard-state.service';
 import { RequestFlowStateService } from '../../../../shared/services/request-flow-state.service';
 import { buildFlowScopeKey } from '../../../../shared/utils/flow-scope-key.util';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-wizard-request-flow-page',
@@ -35,7 +36,6 @@ export class WizardRequestFlowPageComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private flowConfig: RequestFlowConfigService,
     private wizardStateService: WizardStateService,
     private requestFlowStateService: RequestFlowStateService,
@@ -99,6 +99,6 @@ export class WizardRequestFlowPageComponent implements OnInit {
       return;
     }
 
-    this.router.navigate(['/']);
+    window.location.assign(`${environment.baseUrl}/`);
   }
 }

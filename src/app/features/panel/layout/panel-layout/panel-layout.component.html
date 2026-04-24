@@ -32,7 +32,7 @@
     </nav>
 
     <div class="sidebar-footer">
-      <a routerLink="/" class="nav-link">
+      <a (click)="goToPublicHome($event)" href="#" class="nav-link">
         <i class="bi-house"></i>
         <span *ngIf="isSidebarOpen">{{ 'PANEL.layout.back_to_site' | transloco }}</span>
       </a>
