@@ -259,6 +259,76 @@ export const routes: Routes = [
       ),
   },
 
+  // ===== ENGLISH ROUTES (minimal) =====
+  {
+    path: 'en',
+    children: [
+      {
+        path: 'llc-opening',
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/apertura-llc/apertura-llc.component').then(
+                (m) => m.AperturaLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && {
+            serviceType: 'apertura-llc',
+            source: 'wizard',
+          }),
+        },
+      },
+      {
+        path: 'llc-renewal',
+        loadComponent: environment.wizardAndPanelEnabled
+          ? () =>
+              import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+                (m) => m.WizardRequestFlowPageComponent
+              )
+          : () =>
+              import('../features/public/forms/renovar-llc/renovar-llc.component').then(
+                (m) => m.RenovarLlcComponent
+              ),
+        data: {
+          ...(environment.wizardAndPanelEnabled && { serviceType: 'renovacion-llc' }),
+        },
+      },
+      {
+        path: 'wizard/bank-account',
+        loadComponent: () =>
+          import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+            (m) => m.CuentaBancariaComponent
+          ),
+      },
+      {
+        path: 'wizard/bank-account-with-payment',
+        loadComponent: () =>
+          import('../features/wizard/flow-cuenta-bancaria/cuenta-bancaria.component').then(
+            (m) => m.CuentaBancariaComponent
+          ),
+        data: { withPayment: true },
+      },
+      {
+        path: 'wizard/flow/:serviceType',
+        loadComponent: () =>
+          import('../features/wizard/pages/request-flow/wizard-request-flow-page.component').then(
+            (m) => m.WizardRequestFlowPageComponent
+          ),
+      },
+      {
+        path: 'error-404',
+        loadComponent: () =>
+          import('../shared/error-404/error-404.component').then(
+            (m) => m.Error404Component
+          ),
+      },
+      { path: '**', redirectTo: 'error-404' },
+    ],
+  },
+
   // ===== PANEL =====
   {
     path: 'panel',
