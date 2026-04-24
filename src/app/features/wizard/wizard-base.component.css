@@ -216,16 +216,16 @@
 }
 
 .wizard-progress-step.active .wizard-progress-step-icon {
-  background: var(--color-primario, #0068BD);
-  border-color: var(--color-primario, #0068BD);
+  background: var(--cyan, #01C9E2);
+  border-color: var(--cyan, #01C9E2);
   color: #ffffff;
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 104, 189, 0.3);
+  box-shadow: 0 4px 12px rgba(1, 201, 226, 0.3);
 }
 
 .wizard-progress-step.completed .wizard-progress-step-icon {
-  background: var(--color-secundario-tecnico, #006AFE);
-  border-color: var(--color-secundario-tecnico, #006AFE);
+  background: var(--blue, #006AFE);
+  border-color: var(--blue, #006AFE);
   color: #ffffff;
 }
 
@@ -244,7 +244,7 @@
 }
 
 .wizard-progress-step.completed .wizard-progress-step-label {
-  color: var(--color-secundario-tecnico, #006AFE);
+  color: var(--blue, #006AFE);
 }
 
 /* Línea conectora entre pasos */
@@ -264,7 +264,7 @@
 }
 
 .wizard-progress-step.completed::after {
-  background: var(--color-secundario-tecnico, #006AFE);
+  background: var(--cyan, #01C9E2);
 }
 
 /* Botones de navegación personalizados - Diseño moderno y minimalista */
@@ -321,14 +321,14 @@
 }
 
 .wizard-nav-button-next {
-  background: var(--color-degradado, linear-gradient(135deg, var(--color-secundario-tecnico) 0%, #0068BD 100%));
+  background: linear-gradient(135deg, var(--cyan, #01C9E2) 0%, var(--blue, #006AFE) 100%);
   color: #ffffff;
   margin-left: auto;
 }
 
 .wizard-nav-button-next:hover:not(:disabled) {
-  background: linear-gradient(135deg, #01B8D4 0%, #005A9E 100%);
-  box-shadow: 0 4px 16px rgba(0, 104, 189, 0.4);
+  background: linear-gradient(135deg, #01B8D4 0%, #005AE0 100%);
+  box-shadow: 0 4px 16px rgba(0, 106, 254, 0.35);
 }
 
 /* Animaciones suaves */

@@ -312,19 +312,19 @@
 }
 
 .step-actions .btn-primary {
-  background: var(--color-secundario-tecnico);
-  border-color: var(--color-secundario-tecnico);
+  background: linear-gradient(135deg, var(--cyan, #01C9E2) 0%, var(--blue, #006AFE) 100%);
+  border-color: transparent;
   color: #fff;
 }
 
 .step-actions .btn-primary:hover:not(:disabled) {
-  background: var(--color-primario);
-  border-color: var(--color-primario);
-  color: #fff;
+  background: linear-gradient(135deg, #01B8D4 0%, #005AE0 100%);
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(0, 106, 254, 0.35);
 }
 
 .step-actions .btn-primary:focus {
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.2);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.25);
 }
 
 .step-actions .btn-primary:disabled {
@@ -333,18 +333,18 @@
 
 .step-actions .btn-outline-secondary {
   background: #fff;
-  border: 1px solid rgba(0, 106, 254, 0.45);
-  color: var(--color-secundario-tecnico);
+  border: 1.5px solid #e2e8f0;
+  color: var(--blue, #006AFE);
 }
 
 .step-actions .btn-outline-secondary:hover:not(:disabled) {
   background: var(--color-fondo-gris);
-  border-color: var(--color-primario);
-  color: var(--color-primario);
+  border-color: var(--cyan, #01C9E2);
+  color: var(--blue, #006AFE);
 }
 
 .step-actions .btn-outline-secondary:focus {
-  box-shadow: 0 0 0 3px rgba(0, 106, 254, 0.15);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.15);
 }
 
 /* ---- Responsive: tablet y móvil ---- */
