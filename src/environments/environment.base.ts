@@ -1,7 +1,6 @@
 /**
  * Configuración compartida (dominio y contacto).
  * Única fuente de verdad: edita aquí para cambiar URLs o datos de contacto en toda la app.
- * El server (SSR) usa domain para resolver baseUrl/apiUrl según el Host de la petición.
  */
 
 const DOMAIN = {

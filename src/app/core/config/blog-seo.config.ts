@@ -55,13 +55,6 @@ export const blogSeoConfig = {
     changefreq: 'monthly',
     priority: 0.8,
     staticPages: [
-      { url: '/blog', priority: 0.9, changefreq: 'weekly' },
-      { url: '/planes', priority: 0.9, changefreq: 'monthly' },
-      { url: '/contacto', priority: 0.8, changefreq: 'monthly' },
-      { url: '/nosotros', priority: 0.7, changefreq: 'monthly' },
-      { url: '/abre-tu-llc', priority: 0.9, changefreq: 'monthly' },
-      { url: '/apertura-banco-relay', priority: 0.9, changefreq: 'monthly' },
-      { url: '/agendar', priority: 0.8, changefreq: 'monthly' },
       { url: '/apertura-llc', priority: 0.8, changefreq: 'monthly' },
       { url: '/renovar-llc', priority: 0.8, changefreq: 'monthly' }
     ]

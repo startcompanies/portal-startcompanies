@@ -8,22 +8,23 @@ import { FacebookPixelService } from '../shared/services/facebook-pixel.service'
 import { AuthService } from '../features/panel/services/auth.service';
 import { BrowserService } from '../shared/services/browser.service';
 
-/** Rutas que son Landing Pages (LP): el pixel lo gestiona cada LP, no el flujo global. */
-const LANDING_PATHS = new Set([
-  'abre-tu-llc', 'presentacion', 'evaluar-caso', 'asesoria-llc', 'llc-7-dias',
-  'apertura-banco-relay', 'agenda', 'agendar', 'rescate-relay',
-  'llc-formation', 'presentation', 'evaluate-case', 'llc-consultation', 'llc-7-days',
-  'relay-account-opening', 'schedule'
+/** Rutas públicas activas de formularios/wizard: el pixel lo gestiona cada flujo de forma específica. */
+const PUBLIC_FLOW_PATHS = new Set([
+  'apertura-llc',
+  'renovar-llc',
+  'apertura',
+  'llc-opening',
+  'llc-renewal',
 ]);
 
-function isLandingPageUrl(url: string): boolean {
+function isPublicFlowUrl(url: string): boolean {
   const segments = url.replace(/^\//, '').split('/').filter(Boolean);
   if (segments.length === 0) return false;
   const first = segments[0];
   if (first === 'en' && segments.length > 1) {
-    return LANDING_PATHS.has(segments[1]);
+    return PUBLIC_FLOW_PATHS.has(segments[1]);
   }
-  return LANDING_PATHS.has(first);
+  return PUBLIC_FLOW_PATHS.has(first);
 }
 
 function isPanelUrl(url: string): boolean {
@@ -71,7 +72,7 @@ export class AppComponent implements OnInit, OnDestroy {
       filter((e): e is NavigationEnd => e instanceof NavigationEnd)
     ).subscribe((e: NavigationEnd) => {
       const url = e.urlAfterRedirects?.split('?')[0] ?? '';
-      if (isPanelUrl(url) || isLandingPageUrl(url)) {
+      if (isPanelUrl(url) || isPublicFlowUrl(url)) {
         return;
       }
       this.facebookPixelService.initializePixel('llc', { skipAutoPageView: true });

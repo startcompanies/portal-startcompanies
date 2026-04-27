@@ -17,6 +17,7 @@ import { PanelLanguageService } from '../../services/panel-language.service';
 import { PanelPreferencesService } from '../../services/panel-preferences.service';
 import { ChooseLanguageModalComponent } from '../../components/choose-language-modal/choose-language-modal.component';
 import { TranslocoPipe } from '@jsverse/transloco';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-panel-layout',
@@ -167,6 +168,11 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  goToPublicHome(event: Event): void {
+    event.preventDefault();
+    window.location.assign(`${environment.baseUrl}/`);
   }
 
   logout(): void {

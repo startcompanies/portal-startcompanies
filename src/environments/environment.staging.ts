@@ -1,12 +1,10 @@
 import { DOMAIN, LILI } from './environment.base';
-import type { BlogPublicAudience } from './environment.types';
 
 export const environment = {
   production: true,
   staging: true,
   noIndex: true,
   apiUrl: DOMAIN.api.staging,
-  blogPublicAudience: 'preview' satisfies BlogPublicAudience,
   facebookPixel: {
     llcPixelId: '',
     relayPixelId: '',

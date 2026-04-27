@@ -147,56 +147,57 @@
 }
 
 .success-view .btn-primary {
-  background-color: #006afe;
-  border-color: #006afe;
+  background: linear-gradient(135deg, var(--cyan, #01C9E2) 0%, var(--blue, #006AFE) 100%);
+  border-color: transparent;
   color: #ffffff;
   min-width: 150px;
 }
 
 .success-view .btn-primary:hover {
-  background-color: #02b8d0;
-  border-color: #02b8d0;
+  background: linear-gradient(135deg, #01B8D4 0%, #005AE0 100%);
+  border-color: transparent;
   color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 106, 254, 0.35);
 }
 
 .success-view .btn-primary:focus {
-  background-color: #006afe;
-  border-color: #006afe;
+  background: linear-gradient(135deg, var(--cyan, #01C9E2) 0%, var(--blue, #006AFE) 100%);
+  border-color: transparent;
   color: #ffffff;
-  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.25);
 }
 
 .success-view .btn-primary:disabled {
-  background-color: #006afe;
-  border-color: #006afe;
+  background: linear-gradient(135deg, var(--cyan, #01C9E2) 0%, var(--blue, #006AFE) 100%);
+  border-color: transparent;
   opacity: 0.6;
   color: #ffffff;
 }
 
 .success-view .btn-outline-secondary {
   background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
+  border-color: #e2e8f0;
+  color: var(--blue, #006AFE);
   min-width: 150px;
 }
 
 .success-view .btn-outline-secondary:hover {
-  background-color: #f8f9fa;
-  border-color: #02b8d0;
-  color: #02b8d0;
+  background-color: var(--color-fondo-gris, #f0f4f8);
+  border-color: var(--cyan, #01C9E2);
+  color: var(--blue, #006AFE);
 }
 
 .success-view .btn-outline-secondary:focus {
   background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
-  box-shadow: 0 0 0 0.2rem rgba(2, 202, 227, 0.25);
+  border-color: var(--cyan, #01C9E2);
+  color: var(--blue, #006AFE);
+  box-shadow: 0 0 0 3px rgba(1, 201, 226, 0.15);
 }
 
 .success-view .btn-outline-secondary:disabled {
   background-color: #ffffff;
-  border-color: #006afe;
-  color: #006afe;
+  border-color: #e2e8f0;
+  color: var(--blue, #006AFE);
   opacity: 0.6;
 }
 

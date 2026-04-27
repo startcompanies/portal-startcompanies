@@ -90,26 +90,14 @@ export class MultilingualSeoComponent implements OnInit, OnDestroy {
 
     // Mapear rutas a routeKeys
     const routeMapping: { [key: string]: string } = {
-      '': 'inicio', // Raíz mapea a 'inicio' como routeKey
-      'inicio': 'inicio',
-      'home': 'home',
-      'nosotros': 'nosotros',
-      'about-us': 'nosotros',
-      'contacto': 'contacto',
-      'contact': 'contacto',
-      'planes': 'planes',
-      'plans': 'planes',
-      'blog': 'blog',
       'apertura-llc': 'apertura-llc',
-      'llc-formation': 'apertura-llc',
       'renovar-llc': 'renovar-llc',
       'llc-renewal': 'renovar-llc',
-      'form-apertura-relay': 'form-apertura-relay',
-      'relay-account-opening': 'form-apertura-relay'
+      'llc-opening': 'apertura-llc',
     };
 
     const firstSegment = segments[0] || '';
-    return routeMapping[firstSegment] || (segments.length === 0 ? 'home' : null);
+    return routeMapping[firstSegment] || null;
   }
 
   /**

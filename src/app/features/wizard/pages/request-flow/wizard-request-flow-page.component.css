@@ -43,9 +43,19 @@
 :host .wizard-panel--left {
   width: 320px;
   flex-shrink: 0;
-  background: linear-gradient(180deg, var(--color-primario) 0%, var(--color-secundario-tecnico) 100%);
+  background: linear-gradient(180deg, var(--navy-dark) 0%, var(--navy) 60%, var(--navy-mid) 100%);
+  border-right: 1px solid rgba(1,201,226,0.08);
   color: #fff;
   padding: 2.5rem 1.75rem;
+  
+}
+
+:host .wizard-panel--left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 70% 30%, rgba(1,201,226,0.09) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 :host .wizard-panel__head {
@@ -120,16 +130,16 @@
 }
 
 :host .wizard-progress__item.is-active .wizard-progress__num {
-  background: var(--color-fondo-claro);
-  color: var(--color-secundario-tecnico);
-  border-color: var(--color-fondo-claro);
-  box-shadow: 0 0 0 2px var(--color-fondo-claro), 0 2px 8px rgba(0, 22, 39, 0.2);
+  background: var(--cyan);
+  color: #fff;
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(1,201,226,0.25);
 }
 
 :host .wizard-progress__item.is-completed .wizard-progress__num {
-  background: var(--color-fondo-claro);
-  color: var(--color-primario);
-  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(1,201,226,0.2);
+  color: var(--cyan);
+  border-color: rgba(1,201,226,0.4);
   font-size: 0;
 }
 
@@ -154,7 +164,7 @@
 }
 
 :host .wizard-progress__item.is-completed .wizard-progress__line {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(1,201,226,0.5);
 }
 
 :host .wizard-progress__label {
@@ -165,9 +175,8 @@
 }
 
 :host .wizard-progress__item.is-active .wizard-progress__label {
-  color: var(--color-fondo-claro);
+  color: #fff;
   font-weight: 600;
-  text-shadow: 0 1px 2px rgba(0, 22, 39, 0.3);
 }
 
 :host .wizard-progress__item.is-completed .wizard-progress__label {
@@ -208,7 +217,7 @@
   align-items: center;
   justify-content: flex-start;
   padding: 2rem 1.5rem 2rem;
-  background: #fff;
+  background: var(--color-fondo-gris);
 }
 
 /* Card del formulario: una sola tarjeta, ancho generoso para formularios de dos columnas */
@@ -255,15 +264,16 @@
 }
 
 :host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions .btn-primary {
-  background: var(--color-secundario-tecnico);
-  border-color: var(--color-secundario-tecnico);
+  background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 100%);
+  border-color: transparent;
+  color: #fff;
 }
 
 :host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions .btn-outline-secondary,
 :host .wizard-panel--right app-wizard-request-flow.wizard-main app-base-request-flow .flow-actions a.btn-outline-secondary {
   background: #fff;
-  border: 1px solid rgba(0, 106, 254, 0.45);
-  color: var(--color-secundario-tecnico);
+  border: 1.5px solid #e2e8f0;
+  color: var(--blue);
 }
 
 /* ---- Responsive ---- */

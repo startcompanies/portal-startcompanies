@@ -14,57 +14,6 @@ export const SEO_CONFIG: { [key: string]: SeoData } = {
     twitterDescription: 'Abrimos cuentas bancarias para LLC en Estados Unidos. Servicio 100% online y sin comisiones.'
   },
 
-  // Página de planes
-  'planes': {
-    title: 'Planes y Precios - Start Companies | Servicios para LLC en EE.UU.',
-    description: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos. Precios transparentes y servicios completos.',
-    keywords: 'planes LLC Estados Unidos, precios cuenta bancaria, servicios Start Companies, apertura LLC USA',
-    ogTitle: 'Planes y Precios - Start Companies',
-    ogDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.',
-    ogImage: '/assets/logo.png',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Planes y Precios - Start Companies',
-    twitterDescription: 'Conoce nuestros planes para apertura de LLC y cuentas bancarias en Estados Unidos.'
-  },
-
-  // Página de nosotros
-  'nosotros': {
-    title: 'Nosotros - Start Companies | Experiencia en Servicios Financieros',
-    description: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos. Más de 200 emprendedores confían en nosotros.',
-    keywords: 'Start Companies equipo, experiencia servicios financieros, sobre nosotros, confianza emprendedores',
-    ogTitle: 'Nosotros - Start Companies',
-    ogDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.',
-    ogImage: '/assets/logo.png',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Nosotros - Start Companies',
-    twitterDescription: 'Conoce nuestro equipo y experiencia en servicios financieros para LLC en Estados Unidos.'
-  },
-
-  // Página de blog
-  'blog': {
-    title: 'Blog - Start Companies | Noticias y Consejos para LLC en EE.UU.',
-    description: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos. Consejos y noticias del sector.',
-    keywords: 'blog LLC Estados Unidos, consejos cuenta bancaria, noticias financieras, Start Companies blog',
-    ogTitle: 'Blog - Start Companies',
-    ogDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.',
-    ogImage: '/assets/logo.png',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Blog - Start Companies',
-    twitterDescription: 'Mantente informado sobre LLC, cuentas bancarias y servicios financieros en Estados Unidos.'
-  },
-
-  // Página de contacto
-  'contacto': {
-    title: 'Contacto - Start Companies | Habla con Nuestros Expertos',
-    description: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos. Soporte personalizado y respuesta rápida.',
-    keywords: 'contacto Start Companies, soporte LLC, expertos servicios financieros, ayuda cuenta bancaria',
-    ogTitle: 'Contacto - Start Companies',
-    ogDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.',
-    ogImage: '/assets/logo.png',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Contacto - Start Companies',
-    twitterDescription: 'Contacta con nuestros expertos en servicios financieros para LLC en Estados Unidos.'
-  },
 
   // Página de apertura LLC
   'apertura-llc': {
@@ -90,19 +39,6 @@ export const SEO_CONFIG: { [key: string]: SeoData } = {
     twitterCard: 'summary_large_image',
     twitterTitle: 'Renovación de LLC en Estados Unidos - Start Companies',
     twitterDescription: 'Renovamos tu LLC en Estados Unidos antes de que expire.'
-  },
-
-  // Página de apertura Relay
-  'form-apertura-relay': {
-    title: 'Apertura de Cuenta Bancaria Relay - Start Companies',
-    description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
-    keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-    ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies',
-    ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-    ogImage: '/assets/logo.png',
-    twitterCard: 'summary_large_image',
-    twitterTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies',
-    twitterDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.'
   }
 };
 

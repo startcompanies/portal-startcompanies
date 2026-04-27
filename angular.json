@@ -28,7 +28,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/intl-tel-input/build/css/intlTelInput.css"
@@ -36,10 +35,9 @@
             "scripts": [
               "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
             ],
-            "server": "src/main.server.ts",
-            "ssr": {
-              "entry": "server.ts"
-            }
+            "allowedCommonJsDependencies": [
+              "intl-tel-input"
+            ]
           },
           "configurations": {
             "production": {
@@ -52,23 +50,21 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "800kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "30kB",
-                  "maximumError": "40kB"
+                  "maximumWarning": "35kB",
+                  "maximumError": "50kB"
                 }
               ],
               "outputHashing": "all",
-              "prerender": false,
-              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true,
+                  "inlineCritical": false,
                   "removeSpecialComments": true
                 },
                 "fonts": true
@@ -81,10 +77,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "prerender": false,
-              "ssr": false,
-              "index": "src/index.staging.html"
+              "sourceMap": true
             },
             "staging": {
               "fileReplacements": [
@@ -96,23 +89,21 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "800kB",
-                  "maximumError": "1.5MB"
+                  "maximumWarning": "1.5MB",
+                  "maximumError": "2.5MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "30kB",
-                  "maximumError": "40kB"
+                  "maximumWarning": "35kB",
+                  "maximumError": "50kB"
                 }
               ],
               "outputHashing": "all",
-              "prerender": false,
-              "ssr": false, 
               "optimization": {
                 "scripts": true,
                 "styles": {
                   "minify": true,
-                  "inlineCritical": true,
+                  "inlineCritical": false,
                   "removeSpecialComments": true
                 },
                 "fonts": true
@@ -120,34 +111,7 @@
               "sourceMap": false,
               "extractLicenses": false,
               "namedChunks": false,
-              "serviceWorker": "ngsw-config.json",
-              "index": "src/index.staging.html"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
-        "server": {
-          "builder": "@angular-devkit/build-angular:server",
-          "options": {
-            "outputPath": "dist/portal-startcompanies/server",
-            "main": "server.ts",
-            "tsConfig": "tsconfig.app.json"
-          },
-          "configurations": {
-            "production": {
-              "outputHashing": "media",
-              "sourceMap": false,
-              "optimization": true
-            },
-            "development": {
-              "outputHashing": "media",
-              "sourceMap": true,
-              "optimization": false
-            },
-            "staging": {
-              "outputHashing": "media",
-              "sourceMap": false,
-              "optimization": true
+              "serviceWorker": "ngsw-config.json"
             }
           },
           "defaultConfiguration": "development"
@@ -184,7 +148,6 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/assets/styles/blog/blog.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
