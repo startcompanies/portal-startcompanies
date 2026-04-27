@@ -203,12 +203,8 @@ export class SeoService {
       '/apertura/lead',
       '/apertura-llc',
       '/renovar-llc',
-      '/form-apertura-relay',
-      '/fixcal',
-      '/abotax',
       '/en/llc-opening',
       '/en/llc-renewal',
-      '/en/relay-opening-form',
     ]);
 
     return sensitiveExactRoutes.has(pathname);

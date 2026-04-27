@@ -314,60 +314,6 @@ export class MultilingualSeoService {
           canonical: `${this.baseUrl}/blog` // Redirigir al blog en español
         }
       },
-      'abre-tu-llc': {
-        'es': {
-          title: 'Abre tu LLC en Estados Unidos - Start Companies',
-          description: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura. Servicio completo con acompañamiento paso a paso.',
-          keywords: 'apertura LLC Estados Unidos, crear LLC USA, constitución empresa USA, Start Companies',
-          ogTitle: 'Abre tu LLC en Estados Unidos - Start Companies',
-          ogDescription: 'Abrimos tu LLC en Estados Unidos de forma rápida y segura.',
-          canonical: `${this.baseUrl}/abre-tu-llc`
-        },
-        'en': {
-          title: 'Open your LLC in the United States - Start Companies',
-          description: 'We open your LLC in the United States quickly and safely. Complete service with step-by-step support.',
-          keywords: 'LLC formation United States, create LLC USA, business formation USA, Start Companies',
-          ogTitle: 'Open your LLC in the United States - Start Companies',
-          ogDescription: 'We open your LLC in the United States quickly and safely.',
-          canonical: `${this.baseUrl}/en/llc-formation`
-        }
-      },
-      'apertura-banco-relay': {
-        'es': {
-          title: 'Apertura de Banco Relay - Start Companies',
-          description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Proceso simple y 100% online.',
-          keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-          ogTitle: 'Apertura de Banco Relay - Start Companies',
-          ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-          canonical: `${this.baseUrl}/apertura-banco-relay`
-        },
-        'en': {
-          title: 'Relay Bank Opening - Start Companies',
-          description: 'We open your Relay bank account for LLCs in the United States. Simple process and 100% online.',
-          keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
-          ogTitle: 'Relay Bank Opening - Start Companies',
-          ogDescription: 'We open your Relay bank account for LLCs in the United States.',
-          canonical: `${this.baseUrl}/en/relay-account-opening`
-        }
-      },
-      'agendar': {
-        'es': {
-          title: 'Agendar - Start Companies',
-          description: 'Agenda una consulta con nuestros expertos.',
-          keywords: 'agendar consulta, Start Companies, asesoría experta',
-          ogTitle: 'Agendar',
-          ogDescription: 'Agenda una consulta con nuestros expertos.',
-          canonical: `${this.baseUrl}/agendar`
-        },
-        'en': {
-          title: 'Schedule - Start Companies',
-          description: 'Schedule a consultation with our experts.',
-          keywords: 'schedule consultation, Start Companies, expert advice',
-          ogTitle: 'Schedule',
-          ogDescription: 'Schedule a consultation with our experts.',
-          canonical: `${this.baseUrl}/en/schedule`
-        }
-      },
       'apertura-llc': {
         'es': {
           title: 'Apertura de LLC en Estados Unidos - Start Companies',
@@ -402,24 +348,6 @@ export class MultilingualSeoService {
           ogTitle: 'LLC Renewal in the United States - Start Companies',
           ogDescription: 'We renew your LLC in the United States before it expires.',
           canonical: `${this.baseUrl}/en/llc-renewal`
-        }
-      },
-      'form-apertura-relay': {
-        'es': {
-          title: 'Apertura de Cuenta Bancaria Relay - Start Companies',
-          description: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos. Formulario simple y proceso 100% online.',
-          keywords: 'cuenta bancaria Relay, apertura cuenta Relay, banco Relay USA, Start Companies',
-          ogTitle: 'Apertura de Cuenta Bancaria Relay - Start Companies',
-          ogDescription: 'Abrimos tu cuenta bancaria Relay para LLC en Estados Unidos.',
-          canonical: `${this.baseUrl}/form-apertura-relay`
-        },
-        'en': {
-          title: 'Relay Bank Account Opening - Start Companies',
-          description: 'We open your Relay bank account for LLCs in the United States. Simple form and 100% online process.',
-          keywords: 'Relay bank account, Relay account opening, Relay bank USA, Start Companies',
-          ogTitle: 'Relay Bank Account Opening - Start Companies',
-          ogDescription: 'We open your Relay bank account for LLCs in the United States.',
-          canonical: `${this.baseUrl}/en/relay-opening-form`
         }
       }
     };
