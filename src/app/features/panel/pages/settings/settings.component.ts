@@ -22,6 +22,8 @@ import {
 } from '../../services/panel-preferences.service';
 import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 import { normalizeAuthEmailInput } from '../../../../shared/utils/normalize-auth-email';
+import { BillingAccessService } from '../../services/billing-access.service';
+import { BillingViewState } from '../../../../shared/models/billing-access.model';
 
 @Component({
   selector: 'app-settings',
@@ -33,8 +35,11 @@ import { normalizeAuthEmailInput } from '../../../../shared/utils/normalize-auth
 export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
-  activeTab: 'profile' | 'preferences' | 'security' | 'zoho' = 'profile';
+  activeTab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho' = 'profile';
   showPreferences = true;
+  billingState: BillingViewState | null = null;
+  isStartingCheckout = false;
+  isOpeningPortal = false;
 
   profileForm: FormGroup;
   preferencesForm: FormGroup;
@@ -67,6 +72,7 @@ export class SettingsComponent implements OnInit {
     private transloco: TranslocoService,
     private http: HttpClient,
     private route: ActivatedRoute,
+    private billingAccess: BillingAccessService,
   ) {
     this.profileForm = this.fb.group({
       full_name: ['', Validators.required],
@@ -174,6 +180,12 @@ export class SettingsComponent implements OnInit {
     if (token) {
       this.handleConfirmEmailToken(token);
     }
+    const tab = this.route.snapshot.queryParamMap.get('tab');
+    if (tab === 'subscription') {
+      this.activeTab = 'subscription';
+    }
+    this.billingState = this.billingAccess.getSnapshot();
+    void this.refreshBillingState();
   }
 
   loadUserData(): void {
@@ -238,12 +250,41 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'zoho'): void {
+  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho'): void {
     this.activeTab = tab;
     this.saveSuccess = false;
     this.saveError = null;
     if (tab === 'zoho' && this.isAdmin) {
       this.loadZohoConfigs();
+    }
+  }
+
+  async refreshBillingState(): Promise<void> {
+    await this.authService.loadUser();
+    this.billingState = await this.billingAccess.loadForUser(this.authService.getCurrentUser());
+  }
+
+  async startSubscriptionCheckout(): Promise<void> {
+    this.saveError = null;
+    this.isStartingCheckout = true;
+    try {
+      const checkoutUrl = await this.billingAccess.createSubscriptionCheckoutSession();
+      window.location.assign(checkoutUrl);
+    } catch {
+      this.saveError = 'No se pudo iniciar el checkout. Intenta de nuevo.';
+      this.isStartingCheckout = false;
+    }
+  }
+
+  async openCustomerPortal(): Promise<void> {
+    this.saveError = null;
+    this.isOpeningPortal = true;
+    try {
+      const portalUrl = await this.billingAccess.createCustomerPortalSession();
+      window.location.assign(portalUrl);
+    } catch {
+      this.saveError = 'No se pudo abrir el portal de suscripción. Intenta de nuevo.';
+      this.isOpeningPortal = false;
     }
   }
 

@@ -84,7 +84,7 @@
       <p class="mb-0">
         {{ 'PANEL.subscription.banner_trial' | transloco:{ days: billingState?.trialDaysLeft } }}
       </p>
-      <a routerLink="/panel/subscription" class="btn btn-sm btn-outline-primary">
+      <a routerLink="/panel/settings" [queryParams]="{ tab: 'subscription' }" class="btn btn-sm btn-outline-primary">
         {{ 'PANEL.subscription.manage' | transloco }}
       </a>
     </section>

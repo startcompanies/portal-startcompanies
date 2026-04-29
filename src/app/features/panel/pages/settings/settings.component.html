@@ -33,6 +33,17 @@
         {{ 'PANEL.settings_page.tabs.security' | transloco }}
       </button>
     </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'subscription'"
+        (click)="setActiveTab('subscription')"
+        type="button"
+      >
+        <i class="bi bi-credit-card me-2"></i>
+        {{ 'PANEL.settings_page.tabs.subscription' | transloco }}
+      </button>
+    </li>
     <li *ngIf="isAdmin" class="nav-item" role="presentation">
       <button
         class="nav-link"
@@ -232,6 +243,45 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div *ngIf="activeTab === 'subscription'" class="tab-content">
+    <div class="settings-card">
+      <h4>{{ 'PANEL.subscription.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.subscription.subtitle' | transloco }}</p>
+
+      <div class="state-chip">
+        {{ 'PANEL.subscription.status_label' | transloco }}:
+        <strong>{{ ('PANEL.subscription.status.' + (billingState?.accessState || 'no_subscription')) | transloco }}</strong>
+      </div>
+
+      <p *ngIf="(billingState?.trialDaysLeft || 0) > 0" class="trial-hint">
+        {{ 'PANEL.subscription.trial_days_left' | transloco:{ days: billingState?.trialDaysLeft } }}
+      </p>
+
+      <p class="price">
+        {{ 'PANEL.subscription.price' | transloco:{ amount: billingState?.monthlyPriceUsd || 25 } }}
+      </p>
+
+      <div class="d-flex gap-2 flex-wrap">
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="isStartingCheckout"
+          (click)="startSubscriptionCheckout()"
+        >
+          {{ 'PANEL.subscription.cta_activate' | transloco }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          [disabled]="isOpeningPortal"
+          (click)="openCustomerPortal()"
+        >
+          {{ 'PANEL.subscription.cta_manage_portal' | transloco }}
+        </button>
+      </div>
     </div>
   </div>
 

@@ -803,6 +803,7 @@
       "tabs": {
         "profile": "Profile",
         "security": "Security",
+        "subscription": "Subscription",
         "zoho": "Zoho CRM"
       },
       "alerts": {
