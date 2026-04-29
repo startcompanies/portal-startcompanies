@@ -156,6 +156,9 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
         { label: 'PANEL.menu.dashboard', route: '/panel/dashboard', icon: 'bi-speedometer2', roles: ['admin'] },
         { label: 'PANEL.menu.zoho_sync', route: '/panel/zoho-sync', icon: 'bi-arrow-repeat', roles: ['admin'] },
         { label: 'PANEL.menu.requests', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['admin'] },
+        { label: 'PANEL.menu.catalogo', route: '/panel/catalogo', icon: 'bi-box-seam', roles: ['admin'] },
+        { label: 'PANEL.menu.contabilidad', route: '/panel/contabilidad', icon: 'bi-calculator', roles: ['admin'] },
+        { label: 'PANEL.menu.documentos', route: '/panel/documentos', icon: 'bi-folder2-open', roles: ['admin'] },
         { label: 'PANEL.menu.clients', route: '/panel/clients', icon: 'bi-people', roles: ['admin'] },
         { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['admin'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['admin'] },
@@ -164,6 +167,9 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/dashboard', icon: 'bi-speedometer2', roles: ['user'] },
         { label: 'PANEL.menu.requests', route: '/panel/requests', icon: 'bi-file-earmark-text', roles: ['user'] },
+        { label: 'PANEL.menu.catalogo', route: '/panel/catalogo', icon: 'bi-box-seam', roles: ['user'] },
+        { label: 'PANEL.menu.contabilidad', route: '/panel/contabilidad', icon: 'bi-calculator', roles: ['user'] },
+        { label: 'PANEL.menu.documentos', route: '/panel/documentos', icon: 'bi-folder2-open', roles: ['user'] },
         { label: 'PANEL.menu.partners', route: '/panel/partners', icon: 'bi-briefcase', roles: ['user'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['user'] },
       ];
@@ -172,6 +178,7 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_clients', route: '/panel/my-clients', icon: 'bi-people', roles: ['partner'] },
+        { label: 'PANEL.menu.documentos', route: '/panel/documentos', icon: 'bi-folder2-open', roles: ['partner'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['partner'] },
       ];
     } else {
@@ -179,6 +186,10 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
       this.menuItems = [
         { label: 'PANEL.menu.dashboard', route: '/panel/client-dashboard', icon: 'bi-speedometer2', roles: ['partner', 'client'] },
         { label: 'PANEL.menu.my_requests', route: '/panel/my-requests', icon: 'bi-file-earmark-text', roles: ['partner', 'client'] },
+        { label: 'PANEL.menu.facturacion', route: '/panel/facturacion', icon: 'bi-receipt', roles: ['client'] },
+        { label: 'PANEL.menu.documentos', route: '/panel/documentos', icon: 'bi-folder2-open', roles: ['client'] },
+        { label: 'PANEL.menu.videos', route: '/panel/videos', icon: 'bi-play-btn', roles: ['client'] },
+        { label: 'PANEL.menu.guias', route: '/panel/guias', icon: 'bi-journal-text', roles: ['client'] },
         { label: 'PANEL.menu.lili_request', route: '/panel/lili-request', icon: 'bi-bank', roles: ['client'] },
         { label: 'PANEL.menu.settings', route: '/panel/settings', icon: 'bi-gear', roles: ['client'] },
       ];

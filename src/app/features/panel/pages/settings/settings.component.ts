@@ -181,11 +181,15 @@ export class SettingsComponent implements OnInit {
       this.handleConfirmEmailToken(token);
     }
     const tab = this.route.snapshot.queryParamMap.get('tab');
-    if (tab === 'subscription') {
+    if (tab === 'subscription' && this.canManageSubscription) {
       this.activeTab = 'subscription';
     }
     this.billingState = this.billingAccess.getSnapshot();
     void this.refreshBillingState();
+  }
+
+  get canManageSubscription(): boolean {
+    return this.currentUser?.type === 'client';
   }
 
   loadUserData(): void {

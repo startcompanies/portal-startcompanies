@@ -33,7 +33,7 @@
         {{ 'PANEL.settings_page.tabs.security' | transloco }}
       </button>
     </li>
-    <li class="nav-item" role="presentation">
+    <li *ngIf="canManageSubscription" class="nav-item" role="presentation">
       <button
         class="nav-link"
         [class.active]="activeTab === 'subscription'"
@@ -246,7 +246,7 @@
     </div>
   </div>
 
-  <div *ngIf="activeTab === 'subscription'" class="tab-content">
+  <div *ngIf="activeTab === 'subscription' && canManageSubscription" class="tab-content">
     <div class="settings-card">
       <h4>{{ 'PANEL.subscription.title' | transloco }}</h4>
       <p class="text-muted">{{ 'PANEL.subscription.subtitle' | transloco }}</p>

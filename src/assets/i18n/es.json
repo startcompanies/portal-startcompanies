@@ -563,7 +563,13 @@
       "my_requests": "Mis Solicitudes",
       "my_clients": "Mis Clientes",
       "service_history": "Historial de servicios",
-      "lili_request": "Solicitar cuenta Lili"
+      "lili_request": "Solicitar cuenta Lili",
+      "facturacion": "Facturación",
+      "catalogo": "Catálogo",
+      "contabilidad": "Contabilidad",
+      "documentos": "Documentos",
+      "videos": "Videos Premium",
+      "guias": "Guías LLC"
     },
     "layout": {
       "back_to_site": "Volver al sitio",
@@ -633,6 +639,30 @@
       "lili_request": {
         "title": "Solicitar cuenta Lili",
         "subtitle": "Completa el proceso bancario con los datos de tu perfil"
+      },
+      "facturacion": {
+        "title": "Facturación",
+        "subtitle": "Emite, administra y cobra tus facturas"
+      },
+      "catalogo": {
+        "title": "Catálogo",
+        "subtitle": "Administra productos y servicios facturables"
+      },
+      "contabilidad": {
+        "title": "Contabilidad",
+        "subtitle": "Importa movimientos y consulta tu P&L"
+      },
+      "documentos": {
+        "title": "Biblioteca de documentos",
+        "subtitle": "Centraliza documentos y carpetas del negocio"
+      },
+      "videos": {
+        "title": "Videos premium",
+        "subtitle": "Contenido exclusivo para clientes con suscripción activa"
+      },
+      "guias": {
+        "title": "Guías LLC",
+        "subtitle": "Guías prácticas para operar y mantener tu LLC"
       }
     },
     "language_modal": {

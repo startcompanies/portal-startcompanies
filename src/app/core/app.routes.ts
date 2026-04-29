@@ -541,6 +541,132 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
+        path: 'facturacion',
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/facturacion/facturacion-page.component').then(
+                (m) => m.FacturacionPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.facturacion.title',
+              panelSubtitleKey: 'PANEL.route_meta.facturacion.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'catalogo',
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/catalogo/catalogo-page.component').then(
+                (m) => m.CatalogoPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.catalogo.title',
+              panelSubtitleKey: 'PANEL.route_meta.catalogo.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'contabilidad',
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/contabilidad/contabilidad-page.component').then(
+                (m) => m.ContabilidadPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.contabilidad.title',
+              panelSubtitleKey: 'PANEL.route_meta.contabilidad.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'documentos',
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user', 'client', 'partner'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/documentos/documentos-page.component').then(
+                (m) => m.DocumentosPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.documentos.title',
+              panelSubtitleKey: 'PANEL.route_meta.documentos.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'videos',
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/videos/videos-page.component').then(
+                (m) => m.VideosPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.videos.title',
+              panelSubtitleKey: 'PANEL.route_meta.videos.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'guias',
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/guias/guias-page.component').then(
+                (m) => m.GuiasPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.guias.title',
+              panelSubtitleKey: 'PANEL.route_meta.guias.subtitle',
+            },
+          },
+        ],
+      },
+      {
         path: 'settings',
         canActivate: [authGuard, billingGuard],
         loadComponent: () =>

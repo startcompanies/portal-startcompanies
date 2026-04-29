@@ -546,7 +546,13 @@
       "my_requests": "My Requests",
       "my_clients": "My Clients",
       "service_history": "Service history",
-      "lili_request": "Request Lili account"
+      "lili_request": "Request Lili account",
+      "facturacion": "Invoicing",
+      "catalogo": "Catalog",
+      "contabilidad": "Accounting",
+      "documentos": "Documents",
+      "videos": "Premium Videos",
+      "guias": "LLC Guides"
     },
     "layout": {
       "back_to_site": "Back to site",
@@ -616,6 +622,30 @@
       "lili_request": {
         "title": "Request Lili account",
         "subtitle": "Complete the banking flow using your profile details"
+      },
+      "facturacion": {
+        "title": "Invoicing",
+        "subtitle": "Create, manage and collect invoices"
+      },
+      "catalogo": {
+        "title": "Catalog",
+        "subtitle": "Manage billable products and services"
+      },
+      "contabilidad": {
+        "title": "Accounting",
+        "subtitle": "Import bank movements and review your P&L"
+      },
+      "documentos": {
+        "title": "Documents library",
+        "subtitle": "Centralize business folders and files"
+      },
+      "videos": {
+        "title": "Premium videos",
+        "subtitle": "Exclusive content for clients with active subscription"
+      },
+      "guias": {
+        "title": "LLC guides",
+        "subtitle": "Practical guides to operate and maintain your LLC"
       }
     },
     "language_modal": {
