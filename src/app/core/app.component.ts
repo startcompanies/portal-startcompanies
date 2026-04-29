@@ -1,35 +1,11 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
-import { filter, Subscription, take } from 'rxjs';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { filter, take } from 'rxjs';
 import { ImagePreloaderComponent } from '../shared/components/image-preloader/image-preloader.component';
 import { WhatsappFloatComponent } from '../shared/components/whatsapp-float/whatsapp-float.component';
 import { CarouselSwipeService } from '../shared/services/carousel-swipe.service';
-import { FacebookPixelService } from '../shared/services/facebook-pixel.service';
 import { AuthService } from '../features/panel/services/auth.service';
 import { BrowserService } from '../shared/services/browser.service';
-
-/** Rutas públicas activas de formularios/wizard: el pixel lo gestiona cada flujo de forma específica. */
-const PUBLIC_FLOW_PATHS = new Set([
-  'apertura-llc',
-  'renovar-llc',
-  'apertura',
-  'llc-opening',
-  'llc-renewal',
-]);
-
-function isPublicFlowUrl(url: string): boolean {
-  const segments = url.replace(/^\//, '').split('/').filter(Boolean);
-  if (segments.length === 0) return false;
-  const first = segments[0];
-  if (first === 'en' && segments.length > 1) {
-    return PUBLIC_FLOW_PATHS.has(segments[1]);
-  }
-  return PUBLIC_FLOW_PATHS.has(first);
-}
-
-function isPanelUrl(url: string): boolean {
-  return url.startsWith('/panel');
-}
 
 @Component({
   selector: 'app-root',
@@ -38,13 +14,10 @@ function isPanelUrl(url: string): boolean {
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
   title = 'portal-startcompanies';
-  private routerSubscription: Subscription | null = null;
 
   private readonly carouselSwipeService = inject(CarouselSwipeService);
-  private readonly router = inject(Router);
-  private readonly facebookPixelService = inject(FacebookPixelService);
   private readonly authService = inject(AuthService);
   private readonly browser = inject(BrowserService);
 
@@ -68,19 +41,5 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.routerSubscription = this.router.events.pipe(
-      filter((e): e is NavigationEnd => e instanceof NavigationEnd)
-    ).subscribe((e: NavigationEnd) => {
-      const url = e.urlAfterRedirects?.split('?')[0] ?? '';
-      if (isPanelUrl(url) || isPublicFlowUrl(url)) {
-        return;
-      }
-      this.facebookPixelService.initializePixel('llc', { skipAutoPageView: true });
-      this.facebookPixelService.trackEvent('PageView');
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.routerSubscription?.unsubscribe();
   }
 }

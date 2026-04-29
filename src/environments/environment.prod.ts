@@ -3,15 +3,8 @@ import { DOMAIN, LILI } from './environment.base';
 export const environment = {
   production: true,
   staging: false,
-  noIndex: false,
   apiUrl: DOMAIN.api.production,
-  facebookPixel: {
-    llcPixelId: '703523572287021',
-    relayPixelId: '1055049486479771',
-    debug: false,
-  },
   baseUrl: DOMAIN.production,
-  domain: DOMAIN.domainName.production,
   wizardAndPanelEnabled: true,
   stripe: {
     publishableKey:

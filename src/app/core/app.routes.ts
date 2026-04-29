@@ -2,30 +2,12 @@ import { Routes } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { authGuard } from '../features/panel/guards/auth.guard';
 import { roleGuard } from '../features/panel/guards/role.guard';
-import { liliAuthGuard } from '../features/lili/guards/lili-auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     redirectTo: 'panel/login',
     pathMatch: 'full',
-  },
-
-  // ===== LILI BANKING =====
-  {
-    path: 'banking',
-    canActivate: [liliAuthGuard],
-    loadComponent: () =>
-      import('../features/lili/components/lili-onboarding/lili-onboarding.component').then(
-        (m) => m.LiliOnboardingComponent
-      ),
-  },
-  {
-    path: 'generate-lili-link-form',
-    loadComponent: () =>
-      import('../features/lili/components/lili-link-generator/lili-link-generator.component').then(
-        (m) => m.LiliLinkGeneratorComponent
-      ),
   },
 
   // ===== WIZARD — redirects legacy =====

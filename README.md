@@ -140,14 +140,10 @@ Ejecuta `ng e2e` para ejecutar los tests end-to-end. Necesitas agregar un paquet
 - `npm start` - Inicia el servidor de desarrollo
 - `npm run build` - Build de desarrollo
 - `npm run build:production` - Build de producción con SSR
-- `npm run build:production:pwa` - Build de producción con PWA, validación y optimización de imágenes
 - `npm run build:staging` - Build de staging con SSR
-- `npm run build:staging:pwa` - Build de staging con PWA, validación y optimización de imágenes
 - `npm run build:ssr` - Build con SSR
 - `npm run serve:ssr` - Servir aplicación con SSR
 - `npm run dev:ssr` - Build y servir SSR en un solo comando
-- `npm run optimize:images` - Optimizar imágenes para producción
-- `npm run validate:images` - Validar imágenes responsive
 - `npm run clean` - Limpiar directorio dist y caché de npm
 - `npm run docker:build` - Build de producción con Docker
 - `npm run docker:build:staging` - Build de staging con Docker
@@ -286,13 +282,11 @@ Ver `DOCKER_BUILD.md` para más detalles (si existe).
 1. Crea una rama desde `main` o `develop`
 2. Realiza tus cambios siguiendo las convenciones del proyecto
 3. Asegúrate de que el build pase correctamente
-4. Ejecuta las validaciones: `npm run validate:images`
-5. Crea un Pull Request
+4. Crea un Pull Request
 
 ### Checklist antes de commitear
 - [ ] El código sigue las convenciones de nomenclatura
 - [ ] Los builds de desarrollo y producción funcionan
-- [ ] Las imágenes están validadas y optimizadas
 - [ ] Las traducciones están actualizadas (si aplica)
 - [ ] El SEO está configurado correctamente (si es una nueva página)
 
@@ -317,11 +311,6 @@ El proyecto utiliza Angular SSR para mejorar el SEO y el rendimiento inicial. El
 
 ### Service Worker
 El proyecto incluye configuración de Service Worker para PWA. La configuración se encuentra en `ngsw-config.json`.
-
-### Optimización de Imágenes
-Antes de hacer build de producción, se ejecutan scripts de validación y optimización de imágenes:
-- `validate-responsive-images.js` - Valida que las imágenes tengan los tamaños correctos
-- `optimize-production.js` - Optimiza las imágenes para producción
 
 ---
 

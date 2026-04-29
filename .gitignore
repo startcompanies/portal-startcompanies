@@ -39,3 +39,8 @@ testem.log
 .DS_Store
 Thumbs.db
 .env
+
+.angular/
+.claude/
+.cursor/
+.vscode/

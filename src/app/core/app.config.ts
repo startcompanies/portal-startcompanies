@@ -24,11 +24,9 @@ import { provideTransloco } from '@jsverse/transloco';
   provideTranslocoPersistLang,
 } from '@jsverse/transloco-persist-lang';*/
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideServiceWorker } from '@angular/service-worker';
 import { initializeBootstrapComponents } from '../shared/bootstrap-imports';
 import { LanguageService } from '../shared/services/language.service';
 import { AuthService } from '../features/panel/services/auth.service';
-import { SchemaSeoInitializerService } from '../shared/services/schema-seo-initializer.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -64,16 +62,6 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: (auth: AuthService) => () => auth.loadUser(),
       deps: [AuthService],
-      multi: true,
-    },
-    // URLs dinámicas en JSON-LD y canonical según environment.baseUrl
-    {
-      provide: APP_INITIALIZER,
-      useFactory: (schema: SchemaSeoInitializerService) => () => {
-        schema.run();
-        return Promise.resolve();
-      },
-      deps: [SchemaSeoInitializerService],
       multi: true,
     },
     // NOTA: provideAnimations() y provideServiceWorker() se mueven a main.ts (browser)
