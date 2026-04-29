@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { BrowserService } from '../../../shared/services/browser.service';
 import { normalizeAuthEmailInput } from '../../../shared/utils/normalize-auth-email';
+import { BillingApiSnapshot } from '../../../shared/models/billing-access.model';
+import { BillingAccessService } from './billing-access.service';
 
 export interface User {
   id: number;
@@ -28,6 +30,8 @@ export interface User {
   phone?: string;
   company?: string;
   bio?: string;
+  createdAt?: string;
+  billing?: BillingApiSnapshot | null;
 }
 
 export interface AuthResponse {
@@ -92,6 +96,14 @@ function normalizePanelUser(raw: unknown): User | null {
     tr === 'admin' || tr === 'partner' || tr === 'client' || tr === 'user'
       ? tr
       : 'client';
+  const createdAtSrc = r['createdAt'] ?? r['created_at'];
+  const createdAt = typeof createdAtSrc === 'string' && createdAtSrc.trim() ? createdAtSrc : undefined;
+  const billingSrc = r['billing'] ?? r['billingAccess'] ?? r['subscription'];
+  const billing =
+    billingSrc && typeof billingSrc === 'object'
+      ? (billingSrc as BillingApiSnapshot)
+      : null;
+
   return {
     id: idNum,
     username,
@@ -103,6 +115,8 @@ function normalizePanelUser(raw: unknown): User | null {
     phone: typeof r['phone'] === 'string' ? r['phone'] : undefined,
     company: typeof r['company'] === 'string' ? r['company'] : undefined,
     bio: typeof r['bio'] === 'string' ? r['bio'] : undefined,
+    createdAt,
+    billing,
   };
 }
 
@@ -153,6 +167,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private browser: BrowserService,
+    private billingAccess: BillingAccessService,
   ) {}
 
   getCurrentUser(): User | null {
@@ -226,12 +241,15 @@ export class AuthService {
     if (this.loadUserPromise) {
       return this.loadUserPromise;
     }
-    this.loadUserPromise = firstValueFrom(this.fetchMeObservable())
-      .then((raw) => {
-        this.currentUserSubject.next(normalizePanelUser(raw));
+    const loadPromise: Promise<void> = firstValueFrom(this.fetchMeObservable())
+      .then(async (raw) => {
+        const user = normalizePanelUser(raw);
+        this.currentUserSubject.next(user);
+        await this.billingAccess.loadForUser(user);
       })
       .catch(() => {
         this.currentUserSubject.next(null);
+        this.billingAccess.clear();
       })
       .finally(() => {
         /** Un frame después de resolver sesión: el splash puede pintarse antes de ocultarse (F5 en /panel). */
@@ -242,7 +260,8 @@ export class AuthService {
           this.authReadySubject.next(true);
         }
       });
-    return this.loadUserPromise;
+    this.loadUserPromise = loadPromise;
+    return loadPromise;
   }
 
   /**
@@ -288,6 +307,7 @@ export class AuthService {
           const normalized = normalizePanelUser(user);
           if (normalized) {
             this.currentUserSubject.next(normalized);
+            void this.billingAccess.loadForUser(normalized);
           }
           return of(response as AuthResponse);
         }),
@@ -317,6 +337,7 @@ export class AuthService {
           const normalized = normalizePanelUser(user);
           if (normalized) {
             this.currentUserSubject.next(normalized);
+            void this.billingAccess.loadForUser(normalized);
           }
           return of(response);
         }),
@@ -386,6 +407,7 @@ export class AuthService {
             const u = normalizePanelUser(response.user);
             if (u) {
               this.currentUserSubject.next(u);
+              void this.billingAccess.loadForUser(u);
             }
           } else if (response?.token) {
             this.loadUserFromToken(response.token);
@@ -402,8 +424,10 @@ export class AuthService {
       const payload = JSON.parse(atob(parts[1]));
       const user = normalizePanelUser(payload);
       this.currentUserSubject.next(user);
+      void this.billingAccess.loadForUser(user);
     } catch {
       this.currentUserSubject.next(null);
+      this.billingAccess.clear();
     }
   }
 
@@ -419,6 +443,7 @@ export class AuthService {
         });
     }
     this.currentUserSubject.next(null);
+    this.billingAccess.clear();
     this.router.navigate(['/panel/login']);
   }
 

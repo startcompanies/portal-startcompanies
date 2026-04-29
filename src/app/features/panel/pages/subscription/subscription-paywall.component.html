@@ -1,0 +1,37 @@
+<div class="paywall-wrap">
+  <div class="paywall-card">
+    <h1>{{ 'PANEL.subscription.title' | transloco }}</h1>
+    <p class="lead">{{ 'PANEL.subscription.subtitle' | transloco }}</p>
+
+    <div class="state-chip">
+      {{ 'PANEL.subscription.status_label' | transloco }}:
+      <strong>{{ ('PANEL.subscription.status.' + state.accessState) | transloco }}</strong>
+    </div>
+
+    <p *ngIf="state.trialDaysLeft > 0" class="trial-hint">
+      {{ 'PANEL.subscription.trial_days_left' | transloco:{ days: state.trialDaysLeft } }}
+    </p>
+
+    <p class="price">
+      {{ 'PANEL.subscription.price' | transloco:{ amount: state.monthlyPriceUsd } }}
+    </p>
+
+    <div class="actions">
+      <button class="btn btn-primary" type="button" [disabled]="isStartingCheckout" (click)="startSubscriptionCheckout()">
+        {{ 'PANEL.subscription.cta_activate' | transloco }}
+      </button>
+      <button
+        class="btn btn-outline-primary"
+        type="button"
+        [disabled]="isOpeningPortal"
+        (click)="openCustomerPortal()"
+      >
+        {{ 'PANEL.subscription.cta_manage_portal' | transloco }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="goToPublicHome()">
+        {{ 'PANEL.subscription.cta_back_site' | transloco }}
+      </button>
+    </div>
+    <p class="error mt-3 mb-0" *ngIf="checkoutError">{{ checkoutError }}</p>
+  </div>
+</div>

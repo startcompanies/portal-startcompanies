@@ -574,6 +574,26 @@
       "settings": "Configuración",
       "logout": "Cerrar Sesión"
     },
+    "subscription": {
+      "title": "Activa tu suscripción",
+      "subtitle": "Tu acceso al panel depende de un trial vigente o de una suscripción mensual activa.",
+      "status_label": "Estado de acceso",
+      "status": {
+        "trial_active": "Trial activo",
+        "trial_expired": "Trial vencido",
+        "subscription_active": "Suscripción activa",
+        "subscription_past_due": "Pago pendiente",
+        "subscription_canceled": "Suscripción cancelada",
+        "no_subscription": "Sin suscripción"
+      },
+      "trial_days_left": "Te quedan {{days}} días de trial.",
+      "price": "Plan mensual: ${{amount}} USD / mes",
+      "cta_activate": "Activar suscripción",
+      "cta_manage_portal": "Administrar suscripción",
+      "cta_back_site": "Volver al sitio",
+      "banner_trial": "Trial activo: te quedan {{days}} días.",
+      "manage": "Gestionar suscripción"
+    },
     "route_meta": {
       "admin_requests": {
         "title": "Gestión de solicitudes",

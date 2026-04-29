@@ -80,6 +80,15 @@
       </div>
     </header>
 
+    <section class="billing-banner" *ngIf="shouldShowTrialBanner">
+      <p class="mb-0">
+        {{ 'PANEL.subscription.banner_trial' | transloco:{ days: billingState?.trialDaysLeft } }}
+      </p>
+      <a routerLink="/panel/subscription" class="btn btn-sm btn-outline-primary">
+        {{ 'PANEL.subscription.manage' | transloco }}
+      </a>
+    </section>
+
     <!-- Content Area -->
     <main class="content-area">
       <div class="page-wrapper">

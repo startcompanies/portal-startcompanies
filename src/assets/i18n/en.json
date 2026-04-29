@@ -557,6 +557,26 @@
       "settings": "Settings",
       "logout": "Log out"
     },
+    "subscription": {
+      "title": "Activate your subscription",
+      "subtitle": "Panel access requires an active trial or an active monthly subscription.",
+      "status_label": "Access status",
+      "status": {
+        "trial_active": "Trial active",
+        "trial_expired": "Trial expired",
+        "subscription_active": "Subscription active",
+        "subscription_past_due": "Payment past due",
+        "subscription_canceled": "Subscription canceled",
+        "no_subscription": "No subscription"
+      },
+      "trial_days_left": "You have {{days}} trial days left.",
+      "price": "Monthly plan: ${{amount}} USD / month",
+      "cta_activate": "Activate subscription",
+      "cta_manage_portal": "Manage subscription",
+      "cta_back_site": "Back to site",
+      "banner_trial": "Trial active: {{days}} days left.",
+      "manage": "Manage subscription"
+    },
     "route_meta": {
       "admin_requests": {
         "title": "Request management",

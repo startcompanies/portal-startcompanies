@@ -18,6 +18,8 @@ import { PanelPreferencesService } from '../../services/panel-preferences.servic
 import { ChooseLanguageModalComponent } from '../../components/choose-language-modal/choose-language-modal.component';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { environment } from '../../../../../environments/environment';
+import { BillingAccessService } from '../../services/billing-access.service';
+import { BillingViewState } from '../../../../shared/models/billing-access.model';
 
 @Component({
   selector: 'app-panel-layout',
@@ -39,6 +41,7 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
   isSidebarOpen = true;
   currentUser: User | null = null;
   showLanguageModal = false;
+  billingState: BillingViewState | null = null;
 
   /** Título/subtítulo del módulo actual (ruta hoja); si no hay, se usa el fallback por rol */
   panelTitleKey: string | null = null;
@@ -47,6 +50,7 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
   hideLayoutHeader = false;
 
   private routeEventsSub?: Subscription;
+  private billingSub?: Subscription;
 
   logoImages = {
     // Logo blanco (negativo) para sidebar con fondo azul
@@ -66,10 +70,16 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private panelLanguage: PanelLanguageService,
     private panelPreferences: PanelPreferencesService,
+    private billingAccess: BillingAccessService,
   ) {}
 
   ngOnInit(): void {
     this.currentUser = this.authService.getCurrentUser();
+    this.billingState = this.billingAccess.getSnapshot();
+    void this.billingAccess.loadForUser(this.currentUser);
+    this.billingSub = this.billingAccess.state$.subscribe((state) => {
+      this.billingState = state;
+    });
     this.panelLanguage.applyStoredLanguage();
     const localPrefs = this.panelPreferences.readLocalFallback();
     if (localPrefs?.theme) {
@@ -88,6 +98,7 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.routeEventsSub?.unsubscribe();
+    this.billingSub?.unsubscribe();
   }
 
   /** Clave i18n del título mostrado en el header (módulo o fallback por rol) */
@@ -96,6 +107,14 @@ export class PanelLayoutComponent implements OnInit, OnDestroy {
       return '';
     }
     return this.panelTitleKey ?? this.fallbackTitleKeyByRole();
+  }
+
+  get shouldShowTrialBanner(): boolean {
+    return (
+      this.currentUser?.type === 'client' &&
+      Boolean(this.billingState?.isTrial) &&
+      (this.billingState?.trialDaysLeft ?? 0) > 0
+    );
   }
 
   private fallbackTitleKeyByRole(): string {

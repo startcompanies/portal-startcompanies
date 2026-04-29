@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { authGuard } from '../features/panel/guards/auth.guard';
+import { billingGuard } from '../features/panel/guards/billing.guard';
 import { roleGuard } from '../features/panel/guards/role.guard';
 
 export const routes: Routes = [
@@ -188,7 +189,7 @@ export const routes: Routes = [
       },
       {
         path: 'home',
-        canActivate: [authGuard],
+        canActivate: [authGuard, billingGuard],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -232,8 +233,16 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'subscription',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('../features/panel/pages/subscription/subscription-paywall.component').then(
+            (m) => m.SubscriptionPaywallComponent
+          ),
+      },
+      {
         path: 'dashboard',
-        canActivate: [authGuard, roleGuard(['admin', 'user'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -254,7 +263,7 @@ export const routes: Routes = [
       },
       {
         path: 'requests',
-        canActivate: [authGuard, roleGuard(['admin', 'user'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -286,7 +295,7 @@ export const routes: Routes = [
       },
       {
         path: 'clients',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['admin'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -307,7 +316,7 @@ export const routes: Routes = [
       },
       {
         path: 'partners',
-        canActivate: [authGuard, roleGuard(['admin', 'user'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -339,7 +348,7 @@ export const routes: Routes = [
       },
       {
         path: 'my-requests',
-        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['client', 'partner'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -376,7 +385,7 @@ export const routes: Routes = [
       },
       {
         path: 'lili-request',
-        canActivate: [authGuard, roleGuard(['client'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -397,7 +406,7 @@ export const routes: Routes = [
       },
       {
         path: 'client-dashboard',
-        canActivate: [authGuard, roleGuard(['client', 'partner'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['client', 'partner'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -422,7 +431,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            canActivate: [authGuard, roleGuard(['partner'])],
+            canActivate: [authGuard, billingGuard, roleGuard(['partner'])],
             loadComponent: () =>
               import('../features/panel/pages/new-request/new-request.component').then(
                 (m) => m.NewRequestComponent
@@ -434,7 +443,7 @@ export const routes: Routes = [
           },
           {
             path: ':uuid',
-            canActivate: [authGuard, roleGuard(['partner', 'client', 'admin', 'user'])],
+            canActivate: [authGuard, billingGuard, roleGuard(['partner', 'client', 'admin', 'user'])],
             loadComponent: () =>
               import('../features/panel/pages/new-request/new-request.component').then(
                 (m) => m.NewRequestComponent
@@ -448,7 +457,7 @@ export const routes: Routes = [
       },
       {
         path: 'request-flow',
-        canActivate: [authGuard],
+        canActivate: [authGuard, billingGuard],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -456,7 +465,7 @@ export const routes: Routes = [
         children: [
           {
             path: 'select-service',
-            canActivate: [authGuard, roleGuard(['client', 'partner'])],
+            canActivate: [authGuard, billingGuard, roleGuard(['client', 'partner'])],
             loadComponent: () =>
               import('../features/panel/pages/request-flow/select-service-type-page.component').then(
                 (m) => m.SelectServiceTypePageComponent
@@ -468,7 +477,7 @@ export const routes: Routes = [
           },
           {
             path: 'client/:serviceType',
-            canActivate: [authGuard, roleGuard(['client'])],
+            canActivate: [authGuard, billingGuard, roleGuard(['client'])],
             loadComponent: () =>
               import('../features/panel/pages/request-flow/request-flow-redirect.component').then(
                 (m) => m.RequestFlowRedirectComponent
@@ -476,7 +485,7 @@ export const routes: Routes = [
           },
           {
             path: 'partner/:serviceType',
-            canActivate: [authGuard, roleGuard(['partner'])],
+            canActivate: [authGuard, billingGuard, roleGuard(['partner'])],
             loadComponent: () =>
               import('../features/panel/pages/request-flow/request-flow-redirect.component').then(
                 (m) => m.RequestFlowRedirectComponent
@@ -486,7 +495,7 @@ export const routes: Routes = [
       },
       {
         path: 'my-clients',
-        canActivate: [authGuard, roleGuard(['partner'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['partner'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -507,7 +516,7 @@ export const routes: Routes = [
       },
       {
         path: 'notifications',
-        canActivate: [authGuard],
+        canActivate: [authGuard, billingGuard],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -533,7 +542,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings',
-        canActivate: [authGuard],
+        canActivate: [authGuard, billingGuard],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -554,7 +563,7 @@ export const routes: Routes = [
       },
       {
         path: 'zoho-sync',
-        canActivate: [authGuard, roleGuard(['admin'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['admin'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent

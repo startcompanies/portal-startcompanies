@@ -1,0 +1,52 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--color-fondo-gris);
+  padding: 2rem 1rem;
+}
+
+.paywall-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.paywall-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(0, 18, 40, 0.08);
+}
+
+.lead {
+  color: #5c6675;
+  margin-bottom: 1rem;
+}
+
+.state-chip {
+  background: #f5f8ff;
+  border: 1px solid #dbe5ff;
+  color: #1d2a4d;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.trial-hint {
+  margin-bottom: 0.75rem;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.error {
+  color: #b42318;
+}
