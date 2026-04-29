@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { filter, take } from 'rxjs';
-import { ImagePreloaderComponent } from '../shared/components/image-preloader/image-preloader.component';
 import { WhatsappFloatComponent } from '../shared/components/whatsapp-float/whatsapp-float.component';
 import { CarouselSwipeService } from '../shared/services/carousel-swipe.service';
 import { AuthService } from '../features/panel/services/auth.service';
@@ -10,7 +9,7 @@ import { BrowserService } from '../shared/services/browser.service';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ImagePreloaderComponent, WhatsappFloatComponent],
+  imports: [RouterOutlet, WhatsappFloatComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

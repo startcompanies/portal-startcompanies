@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -10,16 +10,18 @@ import { ResetPasswordComponent } from '../../auth/reset-password/reset-password
 import { SetPasswordComponent } from '../../auth/set-password/set-password.component';
 import { ResponsiveImageComponent } from '../../../../shared/components/responsive-image/responsive-image.component';
 import { PanelLanguageService } from '../../services/panel-language.service';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [CommonModule, LoginComponent, RegisterComponent, ResetPasswordComponent, SetPasswordComponent, RouterLink, ResponsiveImageComponent],
+  imports: [CommonModule, LoginComponent, RegisterComponent, ResetPasswordComponent, SetPasswordComponent, ResponsiveImageComponent],
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.css'
 })
 export class AuthLayoutComponent implements OnInit {
   currentRoute: string = '';
+  readonly homeUrl = `${environment.baseUrl}/`;
 
   /* Login con fondo oscuro en vista: usar logo (blanco/negativo) */
   logoImages = {

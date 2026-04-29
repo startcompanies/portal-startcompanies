@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { WizardRequestFlowComponent } from '../../components/wizard-request-flow/wizard-request-flow.component';
 import { RequestFlowContext, ServiceType, FlowStepConfig } from '../../../../shared/models/request-flow-context';
@@ -14,7 +14,7 @@ import { environment } from '../../../../../environments/environment';
 @Component({
   selector: 'app-wizard-request-flow-page',
   standalone: true,
-  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent, RouterLink],
+  imports: [CommonModule, TranslocoPipe, WizardRequestFlowComponent, ResponsiveImageComponent],
   templateUrl: './wizard-request-flow-page.component.html',
   styleUrls: ['./wizard-request-flow-page.component.css'],
 })
@@ -23,6 +23,7 @@ export class WizardRequestFlowPageComponent implements OnInit {
   flowSource: 'wizard' | 'crm-lead' | 'panel' = 'wizard';
   flowSteps: FlowStepConfig[] = [];
   currentStepIndex = 0;
+  readonly homeUrl = `${environment.baseUrl}/`;
 
   /* Fondo oscuro del wizard: usar logo (blanco/negativo) */
   logoImages = {

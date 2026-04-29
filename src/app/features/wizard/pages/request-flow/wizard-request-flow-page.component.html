@@ -3,7 +3,7 @@
   <aside class="wizard-panel wizard-panel--left">
     <div class="wizard-panel__head">
       <div class="wizard-panel__logo pb-3">
-        <a routerLink="/" aria-label="Ir al inicio">
+        <a [href]="homeUrl" aria-label="Ir al inicio">
           <app-responsive-image
             [images]="logoImages"
             context="logo"
