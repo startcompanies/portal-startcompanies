@@ -1,0 +1,78 @@
+/* Tokens inspirados en el mock del panel (StartCompanies) */
+:root {
+  --sc-cyan: #00b4d8;
+  --sc-blue: #0077b6;
+  --sc-navy: #023e8a;
+  --sc-gold: #d4af37;
+  --sc-page-bg: #f0f4f8;
+  --sc-card-shadow: 0 4px 20px rgba(2, 62, 138, 0.08);
+  --sc-radius: 12px;
+}
+
+.sc-panel-page {
+  background: var(--sc-page-bg);
+  border-radius: var(--sc-radius);
+  padding: 1.25rem;
+}
+
+.sc-panel-card {
+  background: #fff;
+  border-radius: var(--sc-radius);
+  box-shadow: var(--sc-card-shadow);
+  border: 1px solid rgba(2, 62, 138, 0.06);
+}
+
+.sc-stat-card {
+  background: linear-gradient(135deg, #fff 0%, #f8fbff 100%);
+  border: 1px solid rgba(0, 119, 182, 0.12);
+  border-radius: var(--sc-radius);
+  padding: 1rem 1.1rem;
+}
+
+.sc-stat-card .sc-stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--sc-navy);
+}
+
+.sc-stat-card .sc-stat-label {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.sc-filter-pill {
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.875rem;
+  border: 1px solid rgba(0, 119, 182, 0.2);
+  background: #fff;
+  color: var(--sc-navy);
+}
+
+.sc-filter-pill.active {
+  background: linear-gradient(135deg, var(--sc-blue), var(--sc-navy));
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Tras Bootstrap: texto blanco (BS define --bs-btn-color en .btn y ganaba al tema). */
+.btn.sc-btn-gradient {
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+  --bs-btn-disabled-color: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(135deg, var(--sc-cyan), var(--sc-blue));
+  border: none;
+  color: #fff;
+}
+
+.btn.sc-btn-gradient:hover,
+.btn.sc-btn-gradient:focus-visible,
+.btn.sc-btn-gradient:active {
+  filter: brightness(1.05);
+  color: #fff;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-color: #fff;
+}

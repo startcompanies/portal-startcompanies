@@ -1,0 +1,130 @@
+<div class="sc-panel-page">
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <button type="button" class="nav-link" [class.active]="tab === 'videos'" (click)="setTab('videos')">
+        <i class="fa-solid fa-video me-2"></i>{{ 'PANEL.admin_media.tab_videos' | transloco }}
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" [class.active]="tab === 'guides'" (click)="setTab('guides')">
+        <i class="fa-solid fa-book me-2"></i>{{ 'PANEL.admin_media.tab_guides' | transloco }}
+      </button>
+    </li>
+  </ul>
+
+  <div *ngIf="tab === 'videos'" class="sc-panel-card p-3">
+    <h5 class="mb-3">{{ 'PANEL.admin_media.tab_videos' | transloco }}</h5>
+    <div class="row g-2 mb-3">
+      <div class="col-md-4">
+        <label class="form-label">{{ 'PANEL.admin_media.title_f' | transloco }}</label>
+        <input class="form-control" [(ngModel)]="videoForm.title" />
+      </div>
+      <div class="col-md-8">
+        <label class="form-label">{{ 'PANEL.admin_media.video_url' | transloco }}</label>
+        <input class="form-control" [(ngModel)]="videoForm.videoUrl" />
+      </div>
+      <div class="col-12">
+        <label class="form-label">{{ 'PANEL.admin_media.desc' | transloco }}</label>
+        <textarea class="form-control" rows="2" [(ngModel)]="videoForm.description"></textarea>
+      </div>
+      <div class="col-12 form-check">
+        <input class="form-check-input" type="checkbox" id="vp" [(ngModel)]="videoForm.isPublished" />
+        <label class="form-check-label" for="vp">{{ 'PANEL.admin_media.published' | transloco }}</label>
+      </div>
+      <div class="col-12">
+        <button type="button" class="btn sc-btn-gradient me-2" [disabled]="busy" (click)="saveVideo()">
+          {{ editingVideoId ? ('PANEL.admin_media.update' | transloco) : ('PANEL.admin_media.create' | transloco) }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" *ngIf="editingVideoId" (click)="cancelEdit()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{ 'PANEL.admin_media.title_f' | transloco }}</th>
+            <th>{{ 'PANEL.admin_media.published' | transloco }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of videos">
+            <td>{{ v.id }}</td>
+            <td>{{ v.title }}</td>
+            <td>{{ v.isPublished ? 'Sí' : 'No' }}</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="editVideo(v)">
+                Editar
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteVideo(v.id)">
+                {{ 'PANEL.admin_media.delete' | transloco }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="videos.length === 0">
+            <td colspan="4" class="text-muted">{{ 'PANEL.admin_media.list_empty' | transloco }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div *ngIf="tab === 'guides'" class="sc-panel-card p-3">
+    <h5 class="mb-3">{{ 'PANEL.admin_media.tab_guides' | transloco }}</h5>
+    <div class="row g-2 mb-3">
+      <div class="col-12">
+        <label class="form-label">{{ 'PANEL.admin_media.title_f' | transloco }}</label>
+        <input class="form-control" [(ngModel)]="guideForm.title" />
+      </div>
+      <div class="col-12">
+        <label class="form-label">{{ 'PANEL.admin_media.content' | transloco }}</label>
+        <textarea class="form-control" rows="4" [(ngModel)]="guideForm.content"></textarea>
+      </div>
+      <div class="col-12 form-check">
+        <input class="form-check-input" type="checkbox" id="gp" [(ngModel)]="guideForm.isPublished" />
+        <label class="form-check-label" for="gp">{{ 'PANEL.admin_media.published' | transloco }}</label>
+      </div>
+      <div class="col-12">
+        <button type="button" class="btn sc-btn-gradient me-2" [disabled]="busy" (click)="saveGuide()">
+          {{ editingGuideId ? ('PANEL.admin_media.update' | transloco) : ('PANEL.admin_media.create' | transloco) }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" *ngIf="editingGuideId" (click)="cancelEdit()">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm align-middle">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{{ 'PANEL.admin_media.title_f' | transloco }}</th>
+            <th>{{ 'PANEL.admin_media.published' | transloco }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let g of guides">
+            <td>{{ g.id }}</td>
+            <td>{{ g.title }}</td>
+            <td>{{ g.isPublished ? 'Sí' : 'No' }}</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="editGuide(g)">
+                Editar
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteGuide(g.id)">
+                {{ 'PANEL.admin_media.delete' | transloco }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="guides.length === 0">
+            <td colspan="4" class="text-muted">{{ 'PANEL.admin_media.list_empty' | transloco }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

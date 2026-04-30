@@ -1,0 +1,161 @@
+<div class="sc-panel-page contab-root">
+  <ul class="nav nav-tabs mb-3 cnt-tabs">
+    <li class="nav-item">
+      <button type="button" class="nav-link" [class.active]="tab === 'import'" (click)="setTab('import')">
+        <i class="fa-solid fa-file-import me-2"></i>{{ 'PANEL.contabilidad_page.tab_import' | transloco }}
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" [class.active]="tab === 'movements'" (click)="setTab('movements')">
+        <i class="fa-solid fa-list me-2"></i>{{ 'PANEL.contabilidad_page.tab_movements' | transloco }}
+      </button>
+    </li>
+    <li class="nav-item">
+      <button type="button" class="nav-link" [class.active]="tab === 'pl'" (click)="setTab('pl')">
+        <i class="fa-solid fa-chart-line me-2"></i>{{ 'PANEL.contabilidad_page.tab_pl' | transloco }}
+      </button>
+    </li>
+  </ul>
+
+  <div *ngIf="tab === 'import'" class="sc-panel-card p-3">
+    <p class="small text-muted"><i class="fa-solid fa-building-columns me-1"></i>{{ 'PANEL.contabilidad_page.banks_hint' | transloco }}</p>
+    <label class="form-label">{{ 'PANEL.contabilidad_page.drop_hint' | transloco }}</label>
+    <textarea class="form-control font-monospace small" rows="8" [(ngModel)]="csvText"></textarea>
+    <div class="mt-2 d-flex flex-wrap gap-2">
+      <button type="button" class="btn btn-outline-primary" (click)="runPreview()">
+        <i class="fa-solid fa-eye me-1"></i>{{ 'PANEL.contabilidad_page.preview' | transloco }}
+      </button>
+      <button type="button" class="btn sc-btn-gradient" [disabled]="!preview?.rows?.length" (click)="confirmImport()">
+        <i class="fa-solid fa-cloud-arrow-up me-1"></i>{{ 'PANEL.contabilidad_page.import_btn' | transloco }}
+      </button>
+    </div>
+    <div *ngIf="preview" class="mt-3">
+      <span class="badge bg-info text-dark me-2">{{ preview.detectedBank }}</span>
+      <span class="small text-muted">{{ preview.rows?.length }} / {{ preview.totalRows }} filas (vista previa)</span>
+      <div class="table-responsive mt-2">
+        <table class="table table-sm table-bordered bg-white">
+          <thead><tr><th>{{ 'PANEL.contabilidad_page.col_date' | transloco }}</th><th>{{ 'PANEL.contabilidad_page.col_desc' | transloco }}</th><th>{{ 'PANEL.contabilidad_page.col_amount' | transloco }}</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let r of preview.rows">
+              <td>{{ r.txDate }}</td>
+              <td>{{ r.description }}</td>
+              <td>{{ r.amount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="tab === 'movements'" class="row g-3">
+    <div class="col-12">
+      <div class="sc-panel-card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h6 class="mb-0">{{ 'PANEL.contabilidad_page.uncat_title' | transloco }} ({{ uncategorized.length }})</h6>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead><tr><th>{{ 'PANEL.contabilidad_page.col_date' | transloco }}</th><th>{{ 'PANEL.contabilidad_page.col_desc' | transloco }}</th><th>{{ 'PANEL.contabilidad_page.col_amount' | transloco }}</th><th></th></tr></thead>
+            <tbody>
+              <tr *ngFor="let tx of uncategorized">
+                <td>{{ tx.txDate }}</td>
+                <td>{{ tx.description }}</td>
+                <td>{{ tx.amount }}</td>
+                <td class="text-end text-nowrap">
+                  <button type="button" class="btn btn-sm btn-outline-secondary me-1" (click)="suggestFor(tx)">{{ 'PANEL.contabilidad_page.ai_suggest' | transloco }}</button>
+                  <button type="button" class="btn btn-sm btn-primary" (click)="openEdit(tx)">{{ 'PANEL.contabilidad_page.categorize' | transloco }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-12">
+      <div class="sc-panel-card p-3">
+        <h6 class="mb-2">{{ 'PANEL.contabilidad_page.cat_title' | transloco }} ({{ categorized.length }})</h6>
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>{{ 'PANEL.contabilidad_page.col_date' | transloco }}</th>
+                <th>{{ 'PANEL.contabilidad_page.col_desc' | transloco }}</th>
+                <th>{{ 'PANEL.contabilidad_page.col_account' | transloco }}</th>
+                <th>{{ 'PANEL.contabilidad_page.col_amount' | transloco }}</th>
+                <th>{{ 'PANEL.contabilidad_page.col_match' | transloco }}</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tx of categorized">
+                <td>{{ tx.accountingDate || tx.txDate }}</td>
+                <td>{{ tx.description }}</td>
+                <td>{{ tx.accountCode || '—' }}</td>
+                <td>{{ tx.amount }}</td>
+                <td>{{ tx.invoiceMatchNote || '—' }}</td>
+                <td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary" (click)="openEdit(tx)">Editar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="tab === 'pl'" class="sc-panel-card p-3">
+    <h6>{{ 'PANEL.contabilidad_page.pl_title' | transloco }}</h6>
+    <p class="small text-muted">{{ 'PANEL.contabilidad_page.pl_disclaimer' | transloco }}</p>
+    <div class="d-flex flex-wrap gap-2 mb-2">
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="setPeriod('month')">{{ 'PANEL.contabilidad_page.period_month' | transloco }}</button>
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="setPeriod('quarter')">{{ 'PANEL.contabilidad_page.period_quarter' | transloco }}</button>
+      <button type="button" class="btn btn-sm btn-outline-secondary" (click)="setPeriod('year')">{{ 'PANEL.contabilidad_page.period_year' | transloco }}</button>
+    </div>
+    <div class="row g-2 mb-2">
+      <div class="col-md-4">
+        <label class="form-label">{{ 'PANEL.contabilidad_page.from' | transloco }}</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="fromDate" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">{{ 'PANEL.contabilidad_page.to' | transloco }}</label>
+        <input type="date" class="form-control form-control-sm" [(ngModel)]="toDate" />
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary me-2" (click)="loadPl()">{{ 'PANEL.contabilidad_page.load_pl' | transloco }}</button>
+    <button type="button" class="btn btn-outline-secondary me-2" (click)="exportCsv()">{{ 'PANEL.contabilidad_page.export_csv' | transloco }}</button>
+    <button type="button" class="btn btn-outline-secondary" (click)="printPl()">{{ 'PANEL.contabilidad_page.print' | transloco }}</button>
+    <pre class="bg-light border rounded p-2 mt-3 small mb-0" *ngIf="pl">{{ pl | json }}</pre>
+  </div>
+
+  <div class="modal-backdrop fade show" *ngIf="editTx"></div>
+  <div class="modal d-block" *ngIf="editTx" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'PANEL.contabilidad_page.modal_cat_title' | transloco }}</h5>
+          <button type="button" class="btn-close" (click)="closeEdit()"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">Categoría (ID)</label>
+          <input type="number" class="form-control mb-2" [(ngModel)]="editForm.categoryId" />
+          <label class="form-label">{{ 'PANEL.contabilidad_page.account_code' | transloco }}</label>
+          <input class="form-control mb-2" [(ngModel)]="editForm.accountCode" />
+          <label class="form-label">{{ 'PANEL.contabilidad_page.accounting_date' | transloco }}</label>
+          <input type="date" class="form-control mb-2" [(ngModel)]="editForm.accountingDate" />
+          <label class="form-label">{{ 'PANEL.contabilidad_page.invoice_match' | transloco }}</label>
+          <input class="form-control" [(ngModel)]="editForm.invoiceMatchNote" />
+          <details class="mt-2 small">
+            <summary>Ingresos / Gastos (referencia)</summary>
+            <ul class="mb-0">
+              <li *ngFor="let c of categories.income">{{ c.id }} — {{ c.name }}</li>
+              <li *ngFor="let c of categories.expense">{{ c.id }} — {{ c.name }}</li>
+            </ul>
+          </details>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEdit()">Cerrar</button>
+          <button type="button" class="btn btn-primary" (click)="saveEdit()">{{ 'PANEL.contabilidad_page.save' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

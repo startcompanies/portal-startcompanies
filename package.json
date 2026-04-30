@@ -29,6 +29,7 @@
     "@angular/router": "^18.2.14",
     "@angular/service-worker": "^18.2.14",
     "@angular/ssr": "^18.2.14",
+    "@fortawesome/fontawesome-free": "^7.2.0",
     "@jsverse/transloco": "^7.6.1",
     "@jsverse/transloco-persist-lang": "8.0.0",
     "@jsverse/utils": "1.0.0-beta.5",

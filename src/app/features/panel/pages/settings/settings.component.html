@@ -11,6 +11,17 @@
         {{ 'PANEL.settings_page.tabs.profile' | transloco }}
       </button>
     </li>
+    <li *ngIf="currentUser?.type === 'client'" class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        [class.active]="activeTab === 'company'"
+        (click)="setActiveTab('company')"
+        type="button"
+      >
+        <i class="bi bi-building me-2"></i>
+        {{ 'PANEL.settings_page.tabs.company' | transloco }}
+      </button>
+    </li>
     <li *ngIf="showPreferences" class="nav-item" role="presentation">
       <button
         class="nav-link"
@@ -79,6 +90,136 @@
     <i class="bi bi-exclamation-triangle me-2"></i>
     {{ emailChangeError }}
     <button type="button" class="btn-close" (click)="emailChangeError = null" aria-label="Cerrar"></button>
+  </div>
+
+  <div *ngIf="activeTab === 'company' && currentUser?.type === 'client'" class="tab-content">
+    <div class="settings-card sc-panel-card">
+      <h4>{{ 'PANEL.settings_page.company_section.title' | transloco }}</h4>
+      <p class="text-muted">{{ 'PANEL.settings_page.company_section.subtitle' | transloco }}</p>
+      <form [formGroup]="companyForm" (ngSubmit)="saveCompany()">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.logo_image' | transloco }}</label>
+            <input type="hidden" formControlName="logoUrl" />
+            <div class="d-flex flex-wrap align-items-start gap-3">
+              <div
+                class="border rounded bg-light d-flex align-items-center justify-content-center overflow-hidden"
+                style="width: 120px; height: 120px"
+              >
+                <img
+                  *ngIf="companyForm.get('logoUrl')?.value"
+                  [src]="companyForm.get('logoUrl')?.value"
+                  alt=""
+                  style="max-width: 100%; max-height: 100%; object-fit: contain"
+                />
+                <span *ngIf="!companyForm.get('logoUrl')?.value" class="text-muted small px-2 text-center">
+                  {{ 'PANEL.settings_page.company_section.logo_preview_empty' | transloco }}
+                </span>
+              </div>
+              <div class="flex-grow-1" style="min-width: 200px">
+                <ng-container *ngIf="!companyForm.get('logoUrl')?.value; else companyLogoHasFile">
+                  <input
+                    type="file"
+                    class="form-control"
+                    accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                    [disabled]="isUploadingLogo"
+                    (change)="onCompanyLogoSelected($event)"
+                  />
+                  <small class="text-muted d-block mt-1">{{ 'PANEL.settings_page.company_section.logo_upload_hint' | transloco }}</small>
+                </ng-container>
+                <ng-template #companyLogoHasFile>
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary btn-sm"
+                      (click)="companyLogoReplaceInput.click()"
+                      [disabled]="isUploadingLogo || isDeletingLogo"
+                    >
+                      <i class="bi bi-arrow-repeat me-1"></i>{{ 'PANEL.settings_page.company_section.logo_change' | transloco }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="removeCompanyLogo()"
+                      [disabled]="isUploadingLogo || isDeletingLogo"
+                    >
+                      <i class="bi bi-trash me-1"></i>{{ 'PANEL.settings_page.company_section.logo_remove' | transloco }}
+                    </button>
+                  </div>
+                  <input
+                    #companyLogoReplaceInput
+                    type="file"
+                    class="d-none"
+                    accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                    [disabled]="isUploadingLogo || isDeletingLogo"
+                    (change)="onCompanyLogoSelected($event)"
+                  />
+                  <small class="text-muted d-block mt-2 mb-0">{{ 'PANEL.settings_page.company_section.logo_replace_hint' | transloco }}</small>
+                </ng-template>
+                <span
+                  *ngIf="isUploadingLogo || isDeletingLogo"
+                  class="spinner-border spinner-border-sm ms-2 mt-2 d-inline-block"
+                  role="status"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.legal_name' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="legalName" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.ein' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="ein" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.address' | transloco }}</label>
+            <textarea class="form-control" rows="2" formControlName="address"></textarea>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.billing_email' | transloco }}</label>
+            <input type="email" class="form-control" formControlName="billingEmail" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.phone' | transloco }}</label>
+            <input type="tel" class="form-control" formControlName="phone" />
+          </div>
+          <div class="col-12"><hr /></div>
+          <div class="col-md-12"><h5>{{ 'PANEL.settings_page.company_section.bank_heading' | transloco }}</h5></div>
+          <div class="col-md-6">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.bank_name' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="bankName" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.account_number' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="accountNumber" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.routing' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="routingAch" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.swift' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="swift" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.iban' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="iban" />
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">{{ 'PANEL.settings_page.company_section.zelle_paypal' | transloco }}</label>
+            <input type="text" class="form-control" formControlName="zelleOrPaypal" />
+          </div>
+        </div>
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!isLoading" class="bi bi-save me-2"></i>
+            {{ 'PANEL.settings_page.company_section.save' | transloco }}
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <div *ngIf="activeTab === 'profile'" class="tab-content">

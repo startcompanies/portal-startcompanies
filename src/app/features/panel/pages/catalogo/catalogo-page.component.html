@@ -1,0 +1,80 @@
+<div class="sc-panel-page catalogo-root">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h5 mb-0 text-navy">
+        <i class="fa-solid fa-boxes-stacked me-2 text-cyan"></i>{{ 'PANEL.catalogo_client.title' | transloco }}
+      </h2>
+      <p class="text-muted small mb-0">{{ 'PANEL.catalogo_client.subtitle' | transloco }}</p>
+    </div>
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="goToInvoices()">
+        <i class="fa-solid fa-arrow-left me-1"></i>{{ 'PANEL.catalogo_client.back_to_invoices' | transloco }}
+      </button>
+      <button type="button" class="btn btn-sm sc-btn-gradient" (click)="openAddModal()">
+        <i class="fa-solid fa-plus me-1"></i>{{ 'PANEL.catalogo_client.add_product' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <div class="sc-panel-card p-3">
+    <div *ngIf="items.length === 0" class="text-center text-muted py-4">
+      <i class="fa-solid fa-box-open me-2"></i>{{ 'PANEL.catalogo_client.empty' | transloco }}
+    </div>
+    <div class="d-grid gap-2" *ngIf="items.length > 0">
+      <div
+        *ngFor="let item of items"
+        class="d-flex justify-content-between align-items-start gap-2 border rounded px-3 py-2 bg-white"
+      >
+        <div>
+          <div class="fw-semibold">{{ item.name }}</div>
+          <div class="small text-muted">
+            {{ item.description || '—' }} · {{ item.unitMeasure || 'u' }} · USD {{ itemPriceUsd(item) | number : '1.2-2' }}
+          </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-danger" (click)="remove(item.id)">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop fade show" *ngIf="showCatalogModal"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showCatalogModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header py-2">
+          <h5 class="modal-title fs-6 mb-0">{{ 'PANEL.catalogo_client.add_product' | transloco }}</h5>
+          <button type="button" class="btn-close" (click)="closeAddModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label">{{ 'PANEL.catalogo_client.name' | transloco }}</label>
+              <input class="form-control form-control-sm" [(ngModel)]="form.name" />
+            </div>
+            <div class="col-12">
+              <label class="form-label">{{ 'PANEL.catalogo_client.description' | transloco }}</label>
+              <input class="form-control form-control-sm" [(ngModel)]="form.description" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">{{ 'PANEL.catalogo_client.unit' | transloco }}</label>
+              <input class="form-control form-control-sm" [(ngModel)]="form.unitMeasure" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">{{ 'PANEL.catalogo_client.price_usd' | transloco }}</label>
+              <input type="number" class="form-control form-control-sm" [(ngModel)]="form.unitPriceUsd" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeAddModal()">
+            {{ 'PANEL.facturacion_page.modal_close' | transloco }}
+          </button>
+          <button type="button" class="btn btn-sm sc-btn-gradient" (click)="add()">
+            {{ 'PANEL.catalogo_client.save' | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

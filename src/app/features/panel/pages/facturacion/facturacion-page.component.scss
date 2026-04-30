@@ -1,0 +1,104 @@
+.facturacion-root .text-navy {
+  color: var(--sc-navy);
+}
+
+.facturacion-root .text-cyan {
+  color: var(--sc-cyan);
+}
+
+.facturacion-root .modal {
+  background: rgba(2, 62, 138, 0.25);
+}
+
+/* Modal factura: más compacto que modal-xl + g-3 por defecto */
+.facturacion-root .inv-factura-modal {
+  max-width: 44rem;
+}
+
+@media (min-width: 1200px) {
+  .facturacion-root .inv-factura-modal {
+    max-width: 48rem;
+  }
+}
+
+.facturacion-root .inv-factura-modal .inv-section-title {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sc-muted, #64748b);
+  margin-bottom: 0.25rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-label {
+  margin-bottom: 0.1rem;
+  font-size: 0.72rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-emitter-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facturacion-root .inv-factura-modal .inv-emitter-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.facturacion-root .inv-factura-modal .inv-emitter-logo--empty {
+  font-size: 0.55rem;
+  line-height: 1.1;
+  text-align: center;
+  color: #64748b;
+  padding: 0.15rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-lines-table .table thead th {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--sc-muted, #64748b);
+  padding: 0.2rem 0.3rem;
+  border-bottom-width: 1px;
+  white-space: nowrap;
+}
+
+.facturacion-root .inv-factura-modal .inv-lines-table .table td {
+  padding: 0.15rem 0.3rem;
+  vertical-align: middle;
+}
+
+.facturacion-root .inv-factura-modal .inv-lines-table .form-control-sm {
+  padding: 0.12rem 0.35rem;
+  font-size: 0.8125rem;
+  min-height: calc(1.15em + 0.28rem);
+}
+
+.facturacion-root .inv-factura-modal .inv-col-um {
+  width: 4.25rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-col-qty {
+  width: 4.5rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-col-price {
+  width: 5.25rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-col-disc {
+  width: 4.25rem;
+}
+
+.facturacion-root .inv-factura-modal .inv-col-del {
+  width: 1.5rem;
+  text-align: center;
+}

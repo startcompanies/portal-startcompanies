@@ -24,6 +24,10 @@ import { SafeDatePipe } from '../../../../shared/pipes/safe-date.pipe';
 import { normalizeAuthEmailInput } from '../../../../shared/utils/normalize-auth-email';
 import { BillingAccessService } from '../../services/billing-access.service';
 import { BillingViewState } from '../../../../shared/models/billing-access.model';
+import {
+  CompanyProfileService,
+  ClientCompanyProfile,
+} from '../../services/company-profile.service';
 
 @Component({
   selector: 'app-settings',
@@ -35,7 +39,7 @@ import { BillingViewState } from '../../../../shared/models/billing-access.model
 export class SettingsComponent implements OnInit {
   currentUser: User | null = null;
   isAdmin = false;
-  activeTab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho' = 'profile';
+  activeTab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho' | 'company' = 'profile';
   showPreferences = true;
   billingState: BillingViewState | null = null;
   isStartingCheckout = false;
@@ -45,6 +49,7 @@ export class SettingsComponent implements OnInit {
   preferencesForm: FormGroup;
   passwordForm: FormGroup;
   zohoConfigForm: FormGroup;
+  companyForm: FormGroup;
 
   zohoConfigs: ZohoConfig[] = [];
   selectedConfig: ZohoConfig | null = null;
@@ -52,6 +57,8 @@ export class SettingsComponent implements OnInit {
   environment = environment;
 
   isLoading = false;
+  isUploadingLogo = false;
+  isDeletingLogo = false;
   saveSuccess = false;
   saveError: string | null = null;
 
@@ -73,6 +80,7 @@ export class SettingsComponent implements OnInit {
     private http: HttpClient,
     private route: ActivatedRoute,
     private billingAccess: BillingAccessService,
+    private companyProfileService: CompanyProfileService,
   ) {
     this.profileForm = this.fb.group({
       full_name: ['', Validators.required],
@@ -109,6 +117,21 @@ export class SettingsComponent implements OnInit {
       scopes: ['ZohoCRM.modules.ALL,ZohoCRM.settings.ALL', Validators.required],
       client_id: ['', Validators.required],
       client_secret: ['', Validators.required],
+    });
+
+    this.companyForm = this.fb.group({
+      legalName: [''],
+      ein: [''],
+      address: [''],
+      billingEmail: [''],
+      phone: [''],
+      bankName: [''],
+      accountNumber: [''],
+      routingAch: [''],
+      swift: [''],
+      iban: [''],
+      zelleOrPaypal: [''],
+      logoUrl: [''],
     });
 
     this.zohoConfigForm.get('service')?.valueChanges.subscribe((service) => {
@@ -184,8 +207,15 @@ export class SettingsComponent implements OnInit {
     if (tab === 'subscription' && this.canManageSubscription) {
       this.activeTab = 'subscription';
     }
+    if (tab === 'company' && this.currentUser?.type === 'client') {
+      this.activeTab = 'company';
+      void this.loadCompanyProfile();
+    }
     this.billingState = this.billingAccess.getSnapshot();
     void this.refreshBillingState();
+    if (this.currentUser?.type === 'client') {
+      void this.loadCompanyProfile();
+    }
   }
 
   get canManageSubscription(): boolean {
@@ -254,13 +284,119 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho'): void {
+  setActiveTab(tab: 'profile' | 'preferences' | 'security' | 'subscription' | 'zoho' | 'company'): void {
     this.activeTab = tab;
     this.saveSuccess = false;
     this.saveError = null;
     if (tab === 'zoho' && this.isAdmin) {
       this.loadZohoConfigs();
     }
+    if (tab === 'company' && this.currentUser?.type === 'client') {
+      void this.loadCompanyProfile();
+    }
+  }
+
+  async onCompanyLogoSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || this.currentUser?.type !== 'client') return;
+    this.isUploadingLogo = true;
+    this.saveError = null;
+    try {
+      const data = await this.companyProfileService.uploadCompanyLogo(file);
+      this.companyForm.patchValue({ logoUrl: data.logoUrl ?? '' });
+      this.saveSuccess = true;
+      setTimeout(() => (this.saveSuccess = false), 3000);
+    } catch (error: any) {
+      this.saveError =
+        error.error?.message ||
+        this.transloco.translate('PANEL.settings_page.company_section.logo_upload_error');
+    } finally {
+      this.isUploadingLogo = false;
+      input.value = '';
+    }
+  }
+
+  async removeCompanyLogo(): Promise<void> {
+    if (this.currentUser?.type !== 'client') return;
+    const msg = this.transloco.translate('PANEL.settings_page.company_section.logo_remove_confirm');
+    if (!confirm(msg)) return;
+    this.isDeletingLogo = true;
+    this.saveError = null;
+    try {
+      const data = await this.companyProfileService.deleteCompanyLogo();
+      this.companyForm.patchValue({ logoUrl: data.logoUrl ?? '' });
+      this.saveSuccess = true;
+      setTimeout(() => (this.saveSuccess = false), 3000);
+    } catch (error: any) {
+      this.saveError =
+        error.error?.message ||
+        this.transloco.translate('PANEL.settings_page.company_section.logo_remove_error');
+    } finally {
+      this.isDeletingLogo = false;
+    }
+  }
+
+  async loadCompanyProfile(): Promise<void> {
+    if (this.currentUser?.type !== 'client') return;
+    try {
+      const data = await this.companyProfileService.getCompany();
+      this.companyForm.patchValue({
+        legalName: data.legalName ?? '',
+        ein: data.ein ?? '',
+        address: data.address ?? '',
+        billingEmail: data.billingEmail ?? '',
+        phone: data.phone ?? '',
+        bankName: data.bankName ?? '',
+        accountNumber: data.accountNumber ?? '',
+        routingAch: data.routingAch ?? '',
+        swift: data.swift ?? '',
+        iban: data.iban ?? '',
+        zelleOrPaypal: data.zelleOrPaypal ?? '',
+        logoUrl: data.logoUrl ?? '',
+      });
+    } catch {
+      this.saveError = this.transloco.translate('PANEL.settings_page.company_section.load_error');
+    }
+  }
+
+  saveCompany(): void {
+    if (this.currentUser?.type !== 'client') return;
+    if (this.companyForm.invalid) {
+      this.markFormGroupTouched(this.companyForm);
+      return;
+    }
+    this.isLoading = true;
+    this.saveError = null;
+    const v = this.companyForm.getRawValue() as Record<string, string>;
+    const t = (k: string) => (v[k]?.trim() ? v[k].trim() : undefined);
+    const payload: Partial<ClientCompanyProfile> = {
+      legalName: t('legalName'),
+      ein: t('ein'),
+      address: t('address'),
+      billingEmail: t('billingEmail'),
+      phone: t('phone'),
+      bankName: t('bankName'),
+      accountNumber: t('accountNumber'),
+      routingAch: t('routingAch'),
+      swift: t('swift'),
+      iban: t('iban'),
+      zelleOrPaypal: t('zelleOrPaypal'),
+      logoUrl: t('logoUrl'),
+    };
+    void this.companyProfileService
+      .updateCompany(payload)
+      .then(() => {
+        this.isLoading = false;
+        this.saveSuccess = true;
+        setTimeout(() => (this.saveSuccess = false), 3000);
+      })
+      .catch((error) => {
+        this.saveError =
+          error.error?.message ||
+          this.transloco.translate('PANEL.settings_page.errors.generic_save');
+        this.isLoading = false;
+      });
   }
 
   async refreshBillingState(): Promise<void> {

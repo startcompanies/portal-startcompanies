@@ -1,0 +1,306 @@
+<div class="sc-panel-page facturacion-root">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+      <h2 class="h5 mb-0 text-navy">
+        <i class="fa-solid fa-file-invoice-dollar me-2 text-cyan"></i>{{ 'PANEL.route_meta.facturacion.title' | transloco }}
+      </h2>
+    </div>
+    <div class="d-flex gap-2">
+      <a routerLink="/panel/catalogo" class="btn btn-outline-secondary">
+        <i class="fa-solid fa-box me-1"></i>{{ 'PANEL.menu.catalogo' | transloco }}
+      </a>
+      <button type="button" class="btn sc-btn-gradient" (click)="openNew()">
+        <i class="fa-solid fa-plus me-1"></i>{{ 'PANEL.facturacion_page.new_invoice' | transloco }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="reload()">
+        <i class="fa-solid fa-rotate me-1"></i>{{ 'PANEL.facturacion_page.reload' | transloco }}
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="sc-stat-card h-100">
+        <div class="sc-stat-label">{{ 'PANEL.facturacion_page.kpi_total' | transloco }}</div>
+        <div class="sc-stat-value">{{ kpiTotal() }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="sc-stat-card h-100">
+        <div class="sc-stat-label">{{ 'PANEL.facturacion_page.kpi_draft' | transloco }}</div>
+        <div class="sc-stat-value">{{ kpiDraft() }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="sc-stat-card h-100">
+        <div class="sc-stat-label">{{ 'PANEL.facturacion_page.kpi_pending' | transloco }}</div>
+        <div class="sc-stat-value">{{ kpiPending() }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="sc-stat-card h-100">
+        <div class="sc-stat-label">{{ 'PANEL.facturacion_page.kpi_paid' | transloco }}</div>
+        <div class="sc-stat-value">{{ kpiPaid() }}</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4 col-xl-2">
+      <div class="sc-stat-card h-100">
+        <div class="sc-stat-label">{{ 'PANEL.facturacion_page.kpi_sum' | transloco }}</div>
+        <div class="sc-stat-value">{{ kpiSumUsd() | number : '1.2-2' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === null" (click)="setFilter(null)">
+      {{ 'PANEL.facturacion_page.filter_all' | transloco }}
+    </button>
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === 'draft'" (click)="setFilter('draft')">
+      {{ 'PANEL.facturacion_page.filter_draft' | transloco }}
+    </button>
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === 'sent'" (click)="setFilter('sent')">
+      {{ 'PANEL.facturacion_page.filter_sent' | transloco }}
+    </button>
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === 'paid'" (click)="setFilter('paid')">
+      {{ 'PANEL.facturacion_page.filter_paid' | transloco }}
+    </button>
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === 'partial'" (click)="setFilter('partial')">
+      {{ 'PANEL.facturacion_page.filter_partial' | transloco }}
+    </button>
+    <button type="button" class="sc-filter-pill" [class.active]="filterStatus === 'overdue'" (click)="setFilter('overdue')">
+      {{ 'PANEL.facturacion_page.filter_overdue' | transloco }}
+    </button>
+  </div>
+
+  <div class="sc-panel-card p-0 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>{{ 'PANEL.facturacion_page.col_number' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_client' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_issue' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_due' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_amount' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_paid' | transloco }}</th>
+            <th>{{ 'PANEL.facturacion_page.col_status' | transloco }}</th>
+            <th class="text-end">{{ 'PANEL.facturacion_page.col_actions' | transloco }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of filteredInvoices">
+            <td>{{ inv.invoiceNumber || inv.id }}</td>
+            <td>{{ (inv.billTo?.['companyName'] || inv.billTo?.['name'] || '—') }}</td>
+            <td>{{ inv.issueDate || (inv.createdAt | date : 'yyyy-MM-dd') }}</td>
+            <td>{{ inv.dueDate || '—' }}</td>
+            <td>{{ inv.currency }} {{ inv.totalAmount | number : '1.2-2' }}</td>
+            <td>{{ inv.paidAmount | number : '1.2-2' }}</td>
+            <td><span class="badge bg-secondary">{{ resolveStatus(inv) }}</span></td>
+            <td class="text-end text-nowrap">
+              <button type="button" class="btn btn-sm btn-outline-danger me-1" (click)="downloadPdf(inv.id)">
+                <i class="fa-solid fa-file-pdf"></i> {{ 'PANEL.facturacion_page.action_pdf' | transloco }}
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-primary me-1" (click)="openEdit(inv.id)">
+                {{ 'PANEL.facturacion_page.action_edit' | transloco }}
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary me-1" *ngIf="canRecordPartial(inv)" (click)="openPartial(inv.id)">
+                {{ 'PANEL.facturacion_page.action_partial' | transloco }}
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-success" *ngIf="canMarkAsPaid(inv)" (click)="markAsPaid(inv)">
+                {{ 'PANEL.facturacion_page.action_mark_paid' | transloco }}
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="filteredInvoices.length === 0">
+            <td colspan="8" class="text-center text-muted py-4">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal factura -->
+  <div class="modal-backdrop fade show" *ngIf="showModal"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showModal" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable inv-factura-modal">
+      <div class="modal-content">
+        <div class="modal-header py-2 px-3">
+          <h5 class="modal-title fs-6 mb-0">
+            {{ editingId ? ('PANEL.facturacion_page.modal_title_edit' | transloco) : ('PANEL.facturacion_page.modal_title_new' | transloco) }}
+          </h5>
+          <button type="button" class="btn-close btn-sm" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body py-2 px-3">
+          <div class="row g-2">
+            <div class="col-lg-5">
+              <div class="inv-section-title">{{ 'PANEL.facturacion_page.emitter' | transloco }}</div>
+              <ng-container *ngIf="!hasCompanyEmitterConfigured()">
+                <p class="small text-muted mb-1 lh-sm">{{ 'PANEL.facturacion_page.emitter_hint' | transloco }}</p>
+                <a class="small" routerLink="/panel/settings" [queryParams]="{ tab: 'company' }">{{ 'PANEL.facturacion_page.settings_link' | transloco }}</a>
+              </ng-container>
+              <div
+                class="inv-emitter-card border rounded px-2 py-1 bg-light small d-flex gap-2 align-items-start"
+                [class.mt-1]="!hasCompanyEmitterConfigured()"
+                [class.mt-0]="hasCompanyEmitterConfigured()"
+              >
+                <div class="inv-emitter-logo flex-shrink-0">
+                  <img *ngIf="company?.logoUrl" [src]="company?.logoUrl || ''" alt="" />
+                  <span *ngIf="!company?.logoUrl" class="inv-emitter-logo--empty">{{ 'PANEL.facturacion_page.no_logo' | transloco }}</span>
+                </div>
+                <div class="lh-sm">
+                  <strong class="d-block">{{ company?.legalName || '—' }}</strong>
+                  <span class="text-break">{{ company?.address || '' }}</span>
+                  <span *ngIf="company?.ein" class="d-block">EIN: {{ company?.ein }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7">
+              <div class="inv-section-title">{{ 'PANEL.facturacion_page.bill_to' | transloco }}</div>
+              <input class="form-control form-control-sm mb-1" [(ngModel)]="billTo.companyName" [placeholder]="'PANEL.facturacion_page.bt_company' | transloco" />
+              <input class="form-control form-control-sm mb-1" [(ngModel)]="billTo.ein" [placeholder]="'PANEL.facturacion_page.bt_ein' | transloco" />
+              <textarea class="form-control form-control-sm mb-1" rows="2" [(ngModel)]="billTo.address" [placeholder]="'PANEL.facturacion_page.bt_address' | transloco"></textarea>
+              <div class="row g-1">
+                <div class="col-sm-6">
+                  <input class="form-control form-control-sm" [(ngModel)]="billTo.email" [placeholder]="'PANEL.facturacion_page.bt_email' | transloco" />
+                </div>
+                <div class="col-sm-6">
+                  <input class="form-control form-control-sm" [(ngModel)]="billTo.phone" [placeholder]="'PANEL.facturacion_page.bt_phone' | transloco" />
+                </div>
+              </div>
+            </div>
+            <div class="col-12"><hr class="my-2 opacity-50" /></div>
+            <div class="col-12">
+              <div class="inv-section-title">{{ 'PANEL.facturacion_page.detail' | transloco }}</div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.currency' | transloco }}</label>
+              <select class="form-select form-select-sm" [(ngModel)]="invDetail.currency">
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+              </select>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.issue_date' | transloco }}</label>
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="invDetail.issueDate" />
+            </div>
+            <div class="col-12 col-sm-4 col-md-3">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.due_date' | transloco }}</label>
+              <input type="date" class="form-control form-control-sm" [(ngModel)]="invDetail.dueDate" />
+            </div>
+            <div class="col-6 col-sm-6 col-md-2">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.tax_rate_label' | transloco }}</label>
+              <input type="number" step="0.0001" class="form-control form-control-sm" [(ngModel)]="invDetail.taxRate" />
+            </div>
+            <div class="col-6 col-sm-6 col-md-2">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.tax' | transloco }}</label>
+              <input type="text" class="form-control form-control-sm" [(ngModel)]="invDetail.taxLabel" />
+            </div>
+            <div class="col-12">
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-1">
+                <div class="inv-section-title mb-0">{{ 'PANEL.facturacion_page.lines' | transloco }}</div>
+                <div class="d-flex flex-wrap gap-1">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addLine()">{{ 'PANEL.facturacion_page.add_line' | transloco }}</button>
+                  <button type="button" class="btn btn-sm sc-btn-gradient" (click)="openPicker()">{{ 'PANEL.facturacion_page.from_catalog' | transloco }}</button>
+                </div>
+              </div>
+              <div class="table-responsive inv-lines-table">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>{{ 'PANEL.facturacion_page.line_product' | transloco }}</th>
+                      <th>{{ 'PANEL.facturacion_page.line_desc' | transloco }}</th>
+                      <th>{{ 'PANEL.facturacion_page.line_um' | transloco }}</th>
+                      <th>{{ 'PANEL.facturacion_page.line_qty' | transloco }}</th>
+                      <th>{{ 'PANEL.facturacion_page.line_price' | transloco }}</th>
+                      <th>{{ 'PANEL.facturacion_page.line_disc' | transloco }}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let line of lines; let i = index">
+                      <td><input class="form-control form-control-sm" [(ngModel)]="line.productName" /></td>
+                      <td><input class="form-control form-control-sm" [(ngModel)]="line.description" /></td>
+                      <td class="inv-col-um"><input class="form-control form-control-sm" [(ngModel)]="line.unitMeasure" /></td>
+                      <td class="inv-col-qty"><input type="number" class="form-control form-control-sm" [(ngModel)]="line.qty" /></td>
+                      <td class="inv-col-price"><input type="number" class="form-control form-control-sm" [(ngModel)]="line.unitPrice" /></td>
+                      <td class="inv-col-disc"><input type="number" class="form-control form-control-sm" [(ngModel)]="line.discountPercent" /></td>
+                      <td class="inv-col-del"><button type="button" class="btn btn-sm btn-link text-danger p-0 lh-1" (click)="removeLine(i)">×</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="inv-section-title">{{ 'PANEL.facturacion_page.totals' | transloco }}</div>
+              <p class="small mb-0 lh-sm">{{ 'PANEL.facturacion_page.subtotal' | transloco }}: <strong>{{ invDetail.currency }} {{ subtotal() | number : '1.2-2' }}</strong></p>
+              <p class="small mb-0 lh-sm">{{ 'PANEL.facturacion_page.tax' | transloco }}: <strong>{{ invDetail.currency }} {{ taxAmount() | number : '1.2-2' }}</strong></p>
+              <p class="small mb-0 lh-sm">{{ 'PANEL.facturacion_page.total' | transloco }}: <strong>{{ invDetail.currency }} {{ grandTotal() | number : '1.2-2' }}</strong></p>
+            </div>
+            <div class="col-md-6">
+              <div class="inv-section-title">{{ 'PANEL.facturacion_page.payment_block' | transloco }}</div>
+              <div class="small border rounded px-2 py-1 bg-light lh-sm">
+                {{ company?.bankName }} · {{ company?.accountNumber }}<br />
+                Routing: {{ company?.routingAch }} · SWIFT: {{ company?.swift }}<br />
+                IBAN: {{ company?.iban }} · {{ company?.zelleOrPaypal }}
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label inv-label">{{ 'PANEL.facturacion_page.notes' | transloco }}</label>
+              <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="invDetail.notes"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer py-2 px-3">
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeModal()">{{ 'PANEL.facturacion_page.modal_close' | transloco }}</button>
+          <button type="button" class="btn btn-sm btn-primary" (click)="saveDraft()">{{ 'PANEL.facturacion_page.save_draft' | transloco }}</button>
+          <button type="button" class="btn btn-sm sc-btn-gradient" (click)="confirmSendInvoice()">{{ 'PANEL.facturacion_page.send_invoice' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Picker catálogo -->
+  <div class="modal-backdrop fade show" *ngIf="showPicker"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showPicker">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'PANEL.facturacion_page.picker_title' | transloco }}</h5>
+          <button type="button" class="btn-close" (click)="closePicker()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="list-group">
+            <button type="button" class="list-group-item list-group-item-action" *ngFor="let r of catalogRows" (click)="pickRow(r)">
+              <strong>{{ r.name }}</strong> — {{ r.amount }} {{ r.currency }} <span class="text-muted small">/ {{ r.unitMeasure }}</span>
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closePicker()">{{ 'PANEL.facturacion_page.picker_close' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parcial -->
+  <div class="modal-backdrop fade show" *ngIf="showPartial"></div>
+  <div class="modal d-block" tabindex="-1" *ngIf="showPartial">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">{{ 'PANEL.facturacion_page.partial_title' | transloco }}</h5>
+          <button type="button" class="btn-close" (click)="closePartial()"></button>
+        </div>
+        <div class="modal-body">
+          <label class="form-label">{{ 'PANEL.facturacion_page.partial_amount' | transloco }}</label>
+          <input type="number" class="form-control" [(ngModel)]="partialAmount" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closePartial()">Cerrar</button>
+          <button type="button" class="btn sc-btn-gradient" (click)="applyPartial()">{{ 'PANEL.facturacion_page.partial_apply' | transloco }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

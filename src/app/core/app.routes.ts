@@ -563,7 +563,7 @@ export const routes: Routes = [
       },
       {
         path: 'catalogo',
-        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -584,7 +584,7 @@ export const routes: Routes = [
       },
       {
         path: 'contabilidad',
-        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
+        canActivate: [authGuard, billingGuard, roleGuard(['client'])],
         loadComponent: () =>
           import('../features/panel/layout/panel-layout/panel-layout.component').then(
             (m) => m.PanelLayoutComponent
@@ -599,6 +599,27 @@ export const routes: Routes = [
             data: {
               panelTitleKey: 'PANEL.route_meta.contabilidad.title',
               panelSubtitleKey: 'PANEL.route_meta.contabilidad.subtitle',
+            },
+          },
+        ],
+      },
+      {
+        path: 'contenido',
+        canActivate: [authGuard, billingGuard, roleGuard(['admin', 'user'])],
+        loadComponent: () =>
+          import('../features/panel/layout/panel-layout/panel-layout.component').then(
+            (m) => m.PanelLayoutComponent
+          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('../features/panel/pages/admin-media/admin-media-page.component').then(
+                (m) => m.AdminMediaPageComponent
+              ),
+            data: {
+              panelTitleKey: 'PANEL.route_meta.contenido.title',
+              panelSubtitleKey: 'PANEL.route_meta.contenido.subtitle',
             },
           },
         ],
